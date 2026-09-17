@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "NestPrep — emulator backend",
+      "request": "launch",
+      "type": "dart",
+      "program": "app/lib/main.dart",
+      "cwd": "app",
+      "deviceId": "android",
+      "args": ["--dart-define=NESTPREP_BACKEND=emulator"]
+    },
+    {
+      "name": "NestPrep — cloud backend",
+      "request": "launch",
+      "type": "dart",
+      "program": "app/lib/main.dart",
+      "cwd": "app",
+      "deviceId": "android",
+      "args": ["--dart-define=NESTPREP_BACKEND=cloud"]
+    },
+    {
+      "name": "NestPrep — emulator on a physical device",
+      "request": "launch",
+      "type": "dart",
+      "program": "app/lib/main.dart",
+      "cwd": "app",
+      "deviceId": "android",
+      "args": [
+        "--dart-define=NESTPREP_BACKEND=emulator",
+        "--dart-define=NESTPREP_EMULATOR_HOST=CHANGE-ME-TO-THIS-MACS-LAN-IP"
+      ]
+    }
+  ]
+}

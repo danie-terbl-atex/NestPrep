@@ -41,6 +41,23 @@ flutterfire configure --project=nestprep-643b7 --platforms=android \
 
 Emulator ports are fixed in the root `firebase.json` and mirrored in `lib/app/emulator_endpoint.dart`.
 
+## Running it from VS Code
+
+Press F5 with **NestPrep — emulator backend** selected; `.vscode/launch.json` holds that and the
+cloud variant. Two things make an unconfigured F5 fail here, and neither is the app's fault:
+
+- **This app builds for Android and iOS only.** `flutter devices` also lists macOS and Chrome
+  because they exist on this machine, and picking either fails — there is no `macos/` or `web/`
+  folder, and `lib/app/emulator_endpoint.dart` imports `dart:io`, which web cannot compile. The
+  launch configs pin `deviceId: android` so this cannot happen by accident.
+- **The workspace folder decides whether VS Code finds the config at all.** `NullState/` holds two
+  Flutter projects (this one and Groomzy's), so a bare F5 there has no unambiguous target. There is
+  a `launch.json` at both `NestPrep/` and `NullState/` for that reason; only the one at the folder
+  you actually opened is read.
+
+The app launches without the emulator suite running — it will just show the sign-in screen and fail
+to sign in. Start the suite and seed it first (both commands are in the root `CLAUDE.md`).
+
 ## Shape
 
 - `lib/app/` — bootstrap: backend target, Firebase init, the Provider graph, the router.
