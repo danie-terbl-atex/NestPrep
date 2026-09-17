@@ -57,9 +57,16 @@ class NestChip extends StatelessWidget {
                       Icon(icon, size: NestSize.iconSmall, color: foreground),
                       const SizedBox(width: NestSpace.sm),
                     ],
-                    Text(
-                      label,
-                      style: nest.text.label.copyWith(color: foreground),
+                    // A chip is often given a fixed width by its parent, and its
+                    // label grows with the platform's text setting — so the
+                    // label yields rather than overflowing (`FE-13`).
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: nest.text.label.copyWith(color: foreground),
+                      ),
                     ),
                   ],
                 ),

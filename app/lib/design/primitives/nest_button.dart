@@ -58,7 +58,17 @@ class NestButton extends StatelessWidget {
         else if (icon != null)
           Icon(icon, size: NestSize.iconMedium, color: foreground),
         if (isLoading || icon != null) const SizedBox(width: NestSpace.sm),
-        Text(label, style: nest.text.button.copyWith(color: foreground)),
+        // The label grows with the platform's text setting while the button's
+        // width does not, so the label yields rather than overflowing
+        // (`FE-13`). Semantics carries the whole label either way.
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: nest.text.button.copyWith(color: foreground),
+          ),
+        ),
       ],
     );
 

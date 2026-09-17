@@ -1,11 +1,4 @@
-import {
-  deleteDoc,
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
 import {
@@ -87,9 +80,7 @@ describe('groceryItems/{itemId}', () => {
 
   it('denies adding an item in somebody else"s name', async () => {
     const db = await asUser(THANDI);
-    await assertFails(
-      setDoc(doc(db, `${ITEMS}/eggs`), { ...newItem, addedBy: SAM_MEMBER }),
-    );
+    await assertFails(setDoc(doc(db, `${ITEMS}/eggs`), { ...newItem, addedBy: SAM_MEMBER }));
   });
 
   it('denies adding an item already marked bought', async () => {
@@ -149,9 +140,7 @@ describe('groceryItems/{itemId}', () => {
       });
     });
     const db = await asUser(THANDI);
-    await assertSucceeds(
-      updateDoc(doc(db, `${ITEMS}/milk`), { boughtAt: null, boughtBy: null }),
-    );
+    await assertSucceeds(updateDoc(doc(db, `${ITEMS}/milk`), { boughtAt: null, boughtBy: null }));
   });
 
   it('denies unticking that leaves the buyer behind', async () => {

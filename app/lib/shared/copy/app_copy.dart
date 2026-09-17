@@ -1,4 +1,5 @@
 import '../failure/app_failure.dart';
+import '../recurrence/recurrence_rule.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -32,6 +33,79 @@ abstract final class AppCopy {
   static const groceriesUndo = 'Undo';
   static const groceriesEditItem = 'Edit item';
   static const groceriesOften = 'Often bought';
+
+  static const todosTitle = 'To do';
+  static const todosMine = 'Mine today';
+  static const todosEveryone = 'Everyone';
+  static const todosRoutines = 'Routines';
+  static const todosAddTask = 'Add a task';
+  static const todosEditTask = 'Edit task';
+  static const todosAddRoutine = 'Add a routine';
+  static const todosEditRoutine = 'Edit routine';
+  static const todosTitleLabel = 'What needs doing?';
+  static const todosNoteLabel = 'Note (optional)';
+  static const todosDueLabel = 'Due';
+  static const todosAssignLabel = 'For';
+  static const todosRoutineLabel = 'Part of a routine';
+  static const todosAnyone = 'Anyone';
+  static const todosNoRoutine = 'On its own';
+  static const todosOverdue = 'Overdue';
+  static const todosToday = 'Today';
+  static const todosMineEmptyTitle = 'Nothing for you today';
+  static const todosMineEmptyBody = 'Enjoy it, or add something for later.';
+  static const todosEveryoneEmptyTitle = 'Nothing planned';
+  static const todosEveryoneEmptyBody = 'Add the first task for the household.';
+  static const todosAllMembers = 'Everyone';
+  static const todosRoutineNameLabel = 'Routine name';
+  static const todosRoutineStartLabel = 'Starting';
+  static const todosRoutineDefaultFor = 'Usually for';
+  static const todosDoneFor = 'Done for';
+  static const todosCompleteFor = 'Mark done for…';
+
+  static const dateToday = 'Today';
+  static const dateTomorrow = 'Tomorrow';
+  static const dateYesterday = 'Yesterday';
+
+  static const repeatNever = 'Does not repeat';
+  static const repeatDaily = 'Every day';
+  static const repeatWeekly = 'Every week';
+  static const repeatMonthly = 'Every month';
+  static const repeatLabel = 'Repeats';
+  static const repeatEveryLabel = 'Every';
+  static const repeatOnDaysLabel = 'On';
+  static const repeatUntilLabel = 'Until';
+  static const repeatForever = 'No end date';
+
+  static const weekdayNames = <String>[
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
+
+  static String weekdayName(int isoWeekday) =>
+      weekdayNames[(isoWeekday - 1).clamp(0, 6)];
+
+  /// How a repeating thing describes itself in one line.
+  static String recurrenceSummary(RecurrenceRule? rule) {
+    if (rule == null) return repeatNever;
+    final every = rule.interval > 1
+        ? '$repeatEveryLabel ${rule.interval} '
+        : '';
+    return switch (rule.frequency) {
+      RecurrenceFrequency.daily =>
+        rule.interval > 1 ? '${every}days' : repeatDaily,
+      RecurrenceFrequency.weekly =>
+        rule.weekdays.isEmpty
+            ? (rule.interval > 1 ? '${every}weeks' : repeatWeekly)
+            : rule.weekdays.map(weekdayName).join(', '),
+      RecurrenceFrequency.monthly =>
+        rule.interval > 1 ? '${every}months' : repeatMonthly,
+    };
+  }
 
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =

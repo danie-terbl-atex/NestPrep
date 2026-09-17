@@ -19,7 +19,11 @@ import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/todos/data/todo_repository.dart';
+import '../features/todos/state/todo_controller.dart';
+import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
+import '../shared/time/household_clock.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -66,6 +70,21 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => TodoController(
+              todoRepository: context.read<TodoRepository>(),
+              householdClock: context.read<HouseholdClock>(),
+              householdId: HouseholdRoute.idFrom(state),
+              memberId: _viewerMemberId(context),
+              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
+            ),
+            child: TodoScreen(
+              onSelectTab: (tab) => _goToTab(context, state, tab),
+            ),
+          ),
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.groceries.segment}',

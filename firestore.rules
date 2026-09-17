@@ -193,6 +193,94 @@ service cloud.firestore {
                   || isOwnMember(householdId, resource.data.addedBy));
         }
       }
+
+      // ---- todos (todos ADR-0001, ADR-0002) ----
+
+      match /tasks/{taskId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
+                'createdBy', 'routineId', 'createdAt'])
+          && isNonEmptyString(request.resource.data.title)
+          && isNonEmptyString(request.resource.data.dueDate)
+          && request.resource.data.assigneeIds is list
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        // Anybody may retitle, reschedule or reassign what they created; an
+        // admin may do it to anything. Completing is not an edit — it is its
+        // own document (todos ADR-0002).
+        allow update: if isMember(householdId)
+          && onlyChanged(
+               ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId'])
+          && isNonEmptyString(request.resource.data.title)
+          && isNonEmptyString(request.resource.data.dueDate)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.createdBy));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.createdBy);
+      }
+
+      // A routine's schedule moves every task in it, which is why only an admin
+      // may write one (todos ADR-0001).
+      match /routines/{routineId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isAdmin(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['name', 'firstDate', 'recurrence', 'defaultAssigneeIds', 'color',
+                'createdBy', 'createdAt'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNonEmptyString(request.resource.data.firstDate)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if isAdmin(householdId)
+          && onlyChanged(['name', 'firstDate', 'recurrence', 'defaultAssigneeIds', 'color'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNonEmptyString(request.resource.data.firstDate);
+
+        allow delete: if isAdmin(householdId);
+      }
+
+      // One occurrence of one task, done. The document id is `{taskId}_{date}`,
+      // which is what makes completing the same occurrence twice the same write
+      // and stops a completion being filed against a different day (BE-06).
+      match /taskCompletions/{completionId} {
+        allow read: if isMember(householdId);
+
+        allow create, update: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['taskId', 'occurrenceDate', 'completedBy', 'completedFor', 'completedAt'])
+          && completionId ==
+               request.resource.data.taskId + '_' + request.resource.data.occurrenceDate
+          && isOwnMember(householdId, request.resource.data.completedBy)
+          && isServerTime('completedAt')
+          && mayCompleteFor(
+               householdId,
+               request.resource.data.taskId,
+               request.resource.data.completedFor);
+
+        allow delete: if isMember(householdId);
+
+        // An admin completes on anybody's behalf; everybody else completes only
+        // what is theirs, or what is for anyone (household ADR-0001).
+        function mayCompleteFor(householdId, taskId, forMemberId) {
+          return isAdmin(householdId)
+            || (isOwnMember(householdId, forMemberId)
+                  && (taskAssignees(householdId, taskId).size() == 0
+                        || forMemberId in taskAssignees(householdId, taskId)));
+        }
+
+        function taskAssignees(householdId, taskId) {
+          return get(
+            /databases/$(database)/documents/households/$(householdId)/tasks/$(taskId)
+          ).data.assigneeIds;
+        }
+      }
     }
 
     // Everything not named above (BE-05).
