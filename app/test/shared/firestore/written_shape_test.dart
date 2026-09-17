@@ -41,20 +41,23 @@ void main() {
   );
 
   group('users/{uid}', () {
-    test('writes exactly the keys the rule names, with both times the server"s', () {
-      final shape = shapeOf(
-        const Account(id: 'u', displayName: 'Sam Parent').toJson(),
-      );
-      expect(shape.keys, {
-        'displayName',
-        'photoUrl',
-        'householdIds',
-        'activeHouseholdId',
-        'createdAt',
-        'lastSignedInAt',
-      });
-      expect(shape.serverAssigned, {'createdAt', 'lastSignedInAt'});
-    });
+    test(
+      'writes exactly the keys the rule names, with both times the server"s',
+      () {
+        final shape = shapeOf(
+          const Account(id: 'u', displayName: 'Sam Parent').toJson(),
+        );
+        expect(shape.keys, {
+          'displayName',
+          'photoUrl',
+          'householdIds',
+          'activeHouseholdId',
+          'createdAt',
+          'lastSignedInAt',
+        });
+        expect(shape.serverAssigned, {'createdAt', 'lastSignedInAt'});
+      },
+    );
   });
 
   group('members/{memberId}', () {
