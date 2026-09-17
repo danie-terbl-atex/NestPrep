@@ -88,7 +88,7 @@ const newTask = {
   createdAt: serverTimestamp(),
 };
 
-function completion(taskId: string, by: string, forMember: string) {
+function completion(taskId: string, by: string, forMember: string): Record<string, unknown> {
   return {
     taskId,
     occurrenceDate: DATE,

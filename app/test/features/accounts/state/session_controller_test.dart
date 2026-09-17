@@ -63,43 +63,55 @@ void main() {
     expect(sessionOf(), isA<SignedOut>());
   });
 
-  test('signing in writes the account document before the session is ready', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    expect(accounts.ensured, [Fixtures.samUid]);
-    // The document has not come back through the listener yet.
-    expect(controller.session, isA<AsyncLoading<Session>>());
+  test(
+    'signing in writes the account document before the session is ready',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      expect(accounts.ensured, [Fixtures.samUid]);
+      // The document has not come back through the listener yet.
+      expect(controller.session, isA<AsyncLoading<Session>>());
 
-    accounts.emit(account());
-    await pumpEventQueue();
-    expect(sessionOf(), isA<SignedIn>());
-  });
+      accounts.emit(account());
+      await pumpEventQueue();
+      expect(sessionOf(), isA<SignedIn>());
+    },
+  );
 
-  test('does not flash signed-out while the account document is on its way', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    accounts.emit(null);
-    await pumpEventQueue();
-    expect(controller.session, isA<AsyncLoading<Session>>());
-  });
+  test(
+    'does not flash signed-out while the account document is on its way',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      accounts.emit(null);
+      await pumpEventQueue();
+      expect(controller.session, isA<AsyncLoading<Session>>());
+    },
+  );
 
-  test('the active household is the chosen one while it is still ours', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    accounts.emit(
-      account(householdIds: ['h1', 'h2'], activeHouseholdId: 'h2'),
-    );
-    await pumpEventQueue();
-    expect(controller.activeHouseholdId, 'h2');
-  });
+  test(
+    'the active household is the chosen one while it is still ours',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      accounts.emit(
+        account(householdIds: ['h1', 'h2'], activeHouseholdId: 'h2'),
+      );
+      await pumpEventQueue();
+      expect(controller.activeHouseholdId, 'h2');
+    },
+  );
 
-  test('a household left on another device falls back to one we still belong to', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    accounts.emit(account(householdIds: ['h1'], activeHouseholdId: 'gone'));
-    await pumpEventQueue();
-    expect(controller.activeHouseholdId, 'h1');
-  });
+  test(
+    'a household left on another device falls back to one we still belong to',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      accounts.emit(account(householdIds: ['h1'], activeHouseholdId: 'gone'));
+      await pumpEventQueue();
+      expect(controller.activeHouseholdId, 'h1');
+    },
+  );
 
   test('belonging to no household is null, not an empty string', () async {
     auth.emit(_sam);
@@ -132,12 +144,15 @@ void main() {
     expect(accounts.activeHouseholds, ['h2', 'h2']);
   });
 
-  test('backing out of the Google sheet is not a failure worth showing', () async {
-    auth.failSignInWith = const SignInFailure(SignInProblem.cancelled);
-    await controller.signInWithGoogle();
-    expect(controller.signInFailure, isNull);
-    expect(controller.isSigningIn, isFalse);
-  });
+  test(
+    'backing out of the Google sheet is not a failure worth showing',
+    () async {
+      auth.failSignInWith = const SignInFailure(SignInProblem.cancelled);
+      await controller.signInWithGoogle();
+      expect(controller.signInFailure, isNull);
+      expect(controller.isSigningIn, isFalse);
+    },
+  );
 
   test('a sign-in that really failed becomes copy', () async {
     auth.failSignInWith = const SignInFailure(SignInProblem.notConfigured);
@@ -145,27 +160,33 @@ void main() {
     expect(controller.signInFailure, isA<SignInFailure>());
   });
 
-  test('a session the backend no longer accepts signs the person out', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    accounts.failStreamWith(const SessionExpiredFailure());
-    await pumpEventQueue();
+  test(
+    'a session the backend no longer accepts signs the person out',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      accounts.failStreamWith(const SessionExpiredFailure());
+      await pumpEventQueue();
 
-    // Signed out, with copy that says why — not a retry on a read that can
-    // never succeed.
-    expect(auth.signOutCount, 1);
-    expect(controller.signInFailure, isA<SessionExpiredFailure>());
-  });
+      // Signed out, with copy that says why — not a retry on a read that can
+      // never succeed.
+      expect(auth.signOutCount, 1);
+      expect(controller.signInFailure, isA<SessionExpiredFailure>());
+    },
+  );
 
-  test('any other read failure offers a retry instead of signing out', () async {
-    auth.emit(_sam);
-    await pumpEventQueue();
-    accounts.failStreamWith(const UnavailableFailure());
-    await pumpEventQueue();
+  test(
+    'any other read failure offers a retry instead of signing out',
+    () async {
+      auth.emit(_sam);
+      await pumpEventQueue();
+      accounts.failStreamWith(const UnavailableFailure());
+      await pumpEventQueue();
 
-    expect(auth.signOutCount, 0);
-    expect(controller.session, isA<AsyncFailure<Session>>());
-  });
+      expect(auth.signOutCount, 0);
+      expect(controller.session, isA<AsyncFailure<Session>>());
+    },
+  );
 
   test('signing out ends the session', () async {
     auth.emit(_sam);

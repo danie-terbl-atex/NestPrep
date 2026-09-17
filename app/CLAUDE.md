@@ -50,7 +50,10 @@ Emulator ports are fixed in the root `firebase.json` and mirrored in `lib/app/em
   `AsyncState`; `ui/` screens that read the controller through `provider` and render all four
   async states.
 - `lib/shared/` — `AppFailure`, `AsyncState`, `AppCopy` (every user-facing string), the typed
-  Firestore collection helper and the server-timestamp converter.
+  Firestore collection helper and its three JSON converters, `time/` (`CalendarDate` and
+  `HouseholdClock` — the only class that knows a timezone exists), `recurrence/` (the one expansion
+  both todos and the calendar read), `text/` (the name normaliser groceries and meals share),
+  `format/` (every date a person reads) and `ui/` (widgets two features share).
 - `lib/design/` — the design system. `tokens/` (colours, member palette, type, spacing, shadows,
   motion, `NestTheme`, `nestThemeData`), `primitives/` (the kit), `gallery/` (the debug `/design`
   route), and `nest_kit.dart`, the only import a screen uses. To retheme: colours in
@@ -59,7 +62,9 @@ Emulator ports are fixed in the root `firebase.json` and mirrored in `lib/app/em
   fails the build if a pair drops below WCAG AA.
 - State management is `provider` (foundation ADR-0006): repositories via `Provider` at the root,
   a `ChangeNotifierProvider` per route, `context.watch` in screens. No Riverpod, no get_it.
-- Tests substitute a fake repository behind the controller; nothing pumps the Firestore SDK.
+- Tests substitute a fake repository behind the controller; nothing pumps the Firestore SDK. Every
+  feature screen has a test that pumps it in dark at 200% text on a 360-wide surface and fails on
+  an overflow — that is how `FE-13` and `FE-14` stay true rather than being checked once.
 
 ## Things that bite on this codebase
 
