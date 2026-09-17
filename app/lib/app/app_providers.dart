@@ -9,6 +9,8 @@ import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/data/firebase_auth_gateway.dart';
 import '../features/accounts/data/firestore_account_repository.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/calendar/data/calendar_repository.dart';
+import '../features/calendar/data/firestore_calendar_repository.dart';
 import '../features/groceries/data/firestore_grocery_repository.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/household/data/callable_household_directory.dart';
@@ -48,6 +50,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<GroceryRepository>(
     create: (context) =>
         FirestoreGroceryRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<CalendarRepository>(
+    create: (context) =>
+        FirestoreCalendarRepository(context.read<FirebaseFirestore>()),
   ),
   Provider<TodoRepository>(
     create: (context) =>

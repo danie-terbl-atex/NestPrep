@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../design/nest_kit.dart';
-import '../../../shared/format/nest_dates.dart';
-import '../../../shared/time/calendar_date.dart';
+import '../../design/nest_kit.dart';
+import '../format/nest_dates.dart';
+import '../time/calendar_date.dart';
 
 /// Picks a day. It hands the platform picker a UTC midnight and reads a
 /// `CalendarDate` back, so no instant and no zone ever escapes into a due date

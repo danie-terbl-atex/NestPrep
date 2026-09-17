@@ -8,6 +8,9 @@ import '../features/accounts/model/session.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
+import '../features/calendar/data/calendar_repository.dart';
+import '../features/calendar/state/calendar_controller.dart';
+import '../features/calendar/ui/calendar_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -70,6 +73,20 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => CalendarController(
+              calendarRepository: context.read<CalendarRepository>(),
+              householdClock: context.read<HouseholdClock>(),
+              householdId: HouseholdRoute.idFrom(state),
+              memberId: _viewerMemberId(context),
+            ),
+            child: CalendarScreen(
+              onSelectTab: (tab) => _goToTab(context, state, tab),
+            ),
+          ),
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',

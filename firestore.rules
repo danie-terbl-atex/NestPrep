@@ -281,6 +281,62 @@ service cloud.firestore {
           ).data.assigneeIds;
         }
       }
+
+      // ---- calendar (calendar ADR-0001, ADR-0002) ----
+
+      match /events/{eventId} {
+        allow read: if isMember(householdId);
+
+        // Any member creates an event for anyone; the creator or an admin edits
+        // and deletes it (calendar ADR-0001). The time is the household's wall
+        // clock, so `startMinute` is minutes since midnight or absent for an
+        // all-day event (calendar ADR-0002).
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['title', 'note', 'date', 'startMinute', 'endMinute', 'recurrence',
+                'memberIds', 'createdBy', 'createdAt'])
+          && isNonEmptyString(request.resource.data.title)
+          && isNonEmptyString(request.resource.data.date)
+          && isMinuteOfDay(request.resource.data.startMinute)
+          && isMinuteOfDay(request.resource.data.endMinute)
+          && request.resource.data.memberIds is list
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if isMember(householdId)
+          && onlyChanged(
+               ['title', 'note', 'date', 'startMinute', 'endMinute', 'recurrence',
+                'memberIds'])
+          && isNonEmptyString(request.resource.data.title)
+          && isNonEmptyString(request.resource.data.date)
+          && isMinuteOfDay(request.resource.data.startMinute)
+          && isMinuteOfDay(request.resource.data.endMinute)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.createdBy));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.createdBy);
+
+        function isMinuteOfDay(value) {
+          return value == null || (value is int && value >= 0 && value < 1440);
+        }
+      }
+
+      // One occurrence of a repeating event, skipped. Same shape and the same
+      // reasons as a task completion (todos ADR-0002).
+      match /eventExceptions/{exceptionId} {
+        allow read: if isMember(householdId);
+
+        allow create, update: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['eventId', 'occurrenceDate', 'skippedBy', 'skippedAt'])
+          && exceptionId ==
+               request.resource.data.eventId + '_' + request.resource.data.occurrenceDate
+          && isOwnMember(householdId, request.resource.data.skippedBy)
+          && isServerTime('skippedAt');
+
+        allow delete: if isMember(householdId);
+      }
     }
 
     // Everything not named above (BE-05).

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../household/model/member.dart';
+import '../model/member.dart';
 
 /// Chooses who something is for. No selection means *anyone*, which is a real
 /// answer and not an empty one — so it is offered as its own choice rather than
 /// left as the absence of one.
 ///
-/// Todos is the first use; the calendar is the second, and it moves to a shared
-/// home then (`ENG-02`).
+/// It lives with the household because the household owns members; todos and
+/// the calendar both read it from here (`ENG-02`).
 class MemberPicker extends StatelessWidget {
   const MemberPicker({
     required this.members,

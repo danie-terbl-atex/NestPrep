@@ -107,6 +107,24 @@ abstract final class AppCopy {
     };
   }
 
+  static const calendarTitle = 'Week';
+  static const calendarAddEvent = 'Add an event';
+  static const calendarEditEvent = 'Edit event';
+  static const calendarThisWeek = 'This week';
+  static const calendarPreviousWeek = 'Previous week';
+  static const calendarNextWeek = 'Next week';
+  static const calendarAllDay = 'All day';
+  static const calendarStarts = 'Starts';
+  static const calendarEnds = 'Ends';
+  static const calendarForLabel = 'For';
+  static const calendarEveryone = 'Everyone';
+  static const calendarEmptyTitle = 'Nothing on this week';
+  static const calendarEmptyBody = 'Add the first event.';
+  static const calendarDayEmpty = 'Nothing on';
+  static const calendarSkip = 'Skip this one';
+  static const calendarTitleLabel = 'What is happening?';
+  static const calendarWeekFilter = 'Showing';
+
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';

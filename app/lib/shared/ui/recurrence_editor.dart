@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../design/nest_kit.dart';
-import '../../../shared/copy/app_copy.dart';
-import '../../../shared/recurrence/recurrence_rule.dart';
-import '../../../shared/time/calendar_date.dart';
+import '../../design/nest_kit.dart';
+import '../copy/app_copy.dart';
+import '../recurrence/recurrence_rule.dart';
+import '../time/calendar_date.dart';
 
 /// Builds the small subset of recurrence NestPrep supports (foundation
 /// ADR-0005): never, daily, weekly on chosen weekdays, or monthly — with an
 /// interval and an optional end date.
 ///
-/// This is todos' first use. The calendar is the second, and it moves to a
-/// shared home then (`ENG-02`).
+/// Shared by todos and the calendar, which is why it lives here rather than in
+/// either (`ENG-02`). A change to it changes both features' idea of "repeats".
 class RecurrenceEditor extends StatelessWidget {
   const RecurrenceEditor({
     required this.rule,
