@@ -15,5 +15,11 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "test", "vitest.config.ts", "vitest.rules.config.ts"]
+  "include": [
+    "src",
+    "test",
+    "vitest.config.ts",
+    "vitest.rules.config.ts",
+    "vitest.emulator.config.ts"
+  ]
 }

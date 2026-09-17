@@ -16,6 +16,23 @@ abstract final class AppCopy {
   static const account = 'Account';
   static const sessionStarting = 'Getting things ready';
 
+  static const tabWeek = 'Week';
+  static const tabTodos = 'To do';
+  static const tabGroceries = 'Groceries';
+  static const tabMeals = 'Meals';
+
+  static const groceriesTitle = 'Groceries';
+  static const groceriesAddHint = 'Add an item';
+  static const groceriesQuantityHint = 'How much? (optional)';
+  static const groceriesAdd = 'Add';
+  static const groceriesBought = 'Bought';
+  static const groceriesToBuy = 'To buy';
+  static const groceriesEmptyTitle = 'Nothing on the list';
+  static const groceriesEmptyBody = 'Add the first thing you need.';
+  static const groceriesUndo = 'Undo';
+  static const groceriesEditItem = 'Edit item';
+  static const groceriesOften = 'Often bought';
+
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';

@@ -10,6 +10,7 @@ class NestTextField extends StatelessWidget {
   const NestTextField({
     required this.label,
     this.controller,
+    this.focusNode,
     this.hint,
     this.errorText,
     this.helperText,
@@ -30,6 +31,7 @@ class NestTextField extends StatelessWidget {
 
   final String label;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final String? hint;
   final String? errorText;
   final String? helperText;
@@ -62,6 +64,7 @@ class NestTextField extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         TextField(
           controller: controller,
+          focusNode: focusNode,
           enabled: enabled,
           keyboardType: keyboardType,
           textInputAction: textInputAction,

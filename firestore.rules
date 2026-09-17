@@ -34,6 +34,16 @@ service cloud.firestore {
       return isMember(householdId) && householdData(householdId).members[uid()] == 'admin';
     }
 
+    function memberData(householdId, memberId) {
+      return get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId)).data;
+    }
+
+    // The profile this account claimed. Anything a member creates is stamped
+    // with it, so nobody can write an item in somebody else's name (BE-03).
+    function isOwnMember(householdId, memberId) {
+      return isSignedIn() && memberData(householdId, memberId).claimedBy == uid();
+    }
+
     // ---- shapes ----
 
     function changedKeys() {
@@ -141,6 +151,47 @@ service cloud.firestore {
 
         // Removing a profile detaches whoever claimed it: `removeMember`.
         allow delete: if false;
+      }
+
+      // ---- groceries (groceries ADR-0001) ----
+
+      match /groceryItems/{itemId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy'])
+          && isNonEmptyString(request.resource.data.name)
+          && isOwnMember(householdId, request.resource.data.addedBy)
+          && isServerTime('addedAt')
+          && request.resource.data.boughtAt == null
+          && request.resource.data.boughtBy == null;
+
+        // Two different writes share this rule, and a caller may do exactly one
+        // of them: anybody in the household ticks anything, but only the person
+        // who added an item — or an admin — changes what it says.
+        allow update: if isMember(householdId)
+          && didNotChange('addedBy')
+          && didNotChange('addedAt')
+          && (isTickOrUntick(householdId) || isTextEdit(householdId));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.addedBy);
+
+        function isTickOrUntick(householdId) {
+          return onlyChanged(['boughtAt', 'boughtBy'])
+            && (request.resource.data.boughtAt == null
+                  ? request.resource.data.boughtBy == null
+                  : isServerTime('boughtAt')
+                      && isOwnMember(householdId, request.resource.data.boughtBy));
+        }
+
+        function isTextEdit(householdId) {
+          return onlyChanged(['name', 'quantity'])
+            && isNonEmptyString(request.resource.data.name)
+            && (isAdmin(householdId)
+                  || isOwnMember(householdId, resource.data.addedBy));
+        }
       }
     }
 

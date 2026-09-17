@@ -11,8 +11,9 @@ import {
 import type { Firestore } from 'firebase/firestore';
 
 export { assertFails, assertSucceeds };
+export type { Firestore };
 
-const PROJECT_ID = 'demo-nestprep-rules';
+const PROJECT_ID = 'nestprep-643b7';
 const RULES_PATH = resolve(import.meta.dirname, '../../../firestore.rules');
 
 let environment: RulesTestEnvironment | undefined;

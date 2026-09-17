@@ -18,9 +18,7 @@ const ACCOUNTS = [
   { email: 'helper@nestprep.test', displayName: 'Thandi Helper' },
 ];
 
-const signUpUrl =
-  `${HOST}/identitytoolkit.googleapis.com/v1/accounts:signUp` +
-  `?key=fake-api-key`;
+const signUpUrl = `${HOST}/identitytoolkit.googleapis.com/v1/accounts:signUp` + `?key=fake-api-key`;
 
 async function seed({ email, displayName }) {
   const response = await fetch(signUpUrl, {

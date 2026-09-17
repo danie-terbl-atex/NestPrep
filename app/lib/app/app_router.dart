@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -7,20 +8,25 @@ import '../features/accounts/model/session.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
+import '../features/groceries/data/grocery_repository.dart';
+import '../features/groceries/state/grocery_list_controller.dart';
+import '../features/groceries/ui/grocery_list_screen.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household.dart';
+import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
 import '../shared/async/async_state.dart';
 import 'household_route.dart';
+import 'household_shell.dart';
 
-/// Every screen is reachable by path, and the household it belongs to is in the
-/// path (`FE-17`, foundation ADR-0006). A route creates the controller its
-/// screen reads, so the controller's lifetime is the screen's — and switching
-/// household is a navigation, which is what drops the old listeners.
+/// A route creates the controller its screen reads, so the controller's
+/// lifetime is the screen's (foundation ADR-0006). The household shell is the
+/// one exception a level up: the household and its members are read once for
+/// every tab under it.
 GoRouter createAppRouter(SessionController session) => GoRouter(
   refreshListenable: session,
   initialLocation: SessionGateScreen.path,
@@ -46,18 +52,35 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         child: const HouseholdGateScreen(),
       ),
     ),
-    GoRoute(
-      path: HouseholdRoute.path,
-      name: HouseholdScreen.routeName,
-      builder: (context, state) => ChangeNotifierProvider(
+    ShellRoute(
+      builder: (context, state, child) => ChangeNotifierProvider(
         create: (context) => HouseholdController(
           householdRepository: context.read<HouseholdRepository>(),
           householdDirectory: context.read<HouseholdDirectory>(),
           householdId: HouseholdRoute.idFrom(state),
           viewerUid: session.uidOrEmpty,
         ),
-        child: const HouseholdScreen(),
+        child: HouseholdShell(child: child),
       ),
+      routes: [
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
+          builder: (context, state) => const HouseholdScreen(),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.groceries.segment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => GroceryListController(
+              groceryRepository: context.read<GroceryRepository>(),
+              householdId: HouseholdRoute.idFrom(state),
+              memberId: _viewerMemberId(context),
+            ),
+            child: GroceryListScreen(
+              onSelectTab: (tab) => _goToTab(context, state, tab),
+            ),
+          ),
+        ),
+      ],
     ),
     if (kDebugMode)
       GoRoute(
@@ -66,6 +89,16 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
       ),
   ],
 );
+
+void _goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
+  context.go(HouseholdRoute.pathFor(HouseholdRoute.idFrom(state), tab));
+}
+
+/// The profile the signed-in account claimed here. Everything a member creates
+/// is stamped with it, and the rules check it against `claimedBy` (household
+/// ADR-0001).
+String _viewerMemberId(BuildContext context) =>
+    context.read<HouseholdView>().viewerMember?.id ?? '';
 
 /// Where a caller in this session belongs, or null to leave them where they are.
 ///
@@ -96,7 +129,15 @@ String? redirectForSession(SessionController session, String location) {
     SignInScreen.path,
     HouseholdGateScreen.path,
   ];
-  return waitingRooms.contains(location)
-      ? HouseholdRoute.pathFor(householdId)
-      : null;
+  if (waitingRooms.contains(location)) {
+    return HouseholdRoute.homeFor(householdId);
+  }
+
+  // A household route for a household this account no longer belongs to — it
+  // was left on another device, or the link is somebody else's.
+  if (location.startsWith('/households/') &&
+      !location.startsWith('/households/$householdId/')) {
+    return HouseholdRoute.homeFor(householdId);
+  }
+  return null;
 }

@@ -9,6 +9,8 @@ import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/data/firebase_auth_gateway.dart';
 import '../features/accounts/data/firestore_account_repository.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/groceries/data/firestore_grocery_repository.dart';
+import '../features/groceries/data/grocery_repository.dart';
 import '../features/household/data/callable_household_directory.dart';
 import '../features/household/data/firestore_household_repository.dart';
 import '../features/household/data/household_directory.dart';
@@ -40,6 +42,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<HouseholdDirectory>(
     create: (context) =>
         CallableHouseholdDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<GroceryRepository>(
+    create: (context) =>
+        FirestoreGroceryRepository(context.read<FirebaseFirestore>()),
   ),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
