@@ -22,6 +22,12 @@ family in `nest_typography.dart`, the shape of a button in `primitives/nest_butt
 of "too purple" or "too round" changes one file, not eleven screens. That is the question worth
 answering here — the direction, not any single screen.
 
+## A starting point for the verdict
+
+[ASSESSMENT.md](ASSESSMENT.md) is my reading of these eleven pictures: keep the direction, change
+four token-level things. It exists so the verdict is a yes or a no rather than a blank page — react
+to it, do not defer to it.
+
 ## One thing to look at twice
 
 In `week-dark-200-percent-text.png` the weekday names run together — *MonTueWed* with no gap. Nothing
