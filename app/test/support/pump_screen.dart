@@ -64,6 +64,9 @@ Future<void> pumpScreen(
         ...providers,
       ],
       child: MaterialApp.router(
+        // Nothing asserts on it, and it sits on top of the top-right corner of
+        // every screenshot the design review takes.
+        debugShowCheckedModeBanner: false,
         theme: nestThemeData(nest),
         routerConfig: GoRouter(
           routes: [
