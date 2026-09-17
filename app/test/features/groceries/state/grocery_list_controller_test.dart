@@ -10,6 +10,8 @@ import '../../../support/household_fixtures.dart';
 
 final _now = DateTime.utc(2026, 9, 17, 12);
 
+/// Ticking always writes both fields together, so a fixture that sets only one
+/// is a shape the app never produces.
 GroceryItem item(String name, {DateTime? boughtAt, String id = 'i'}) =>
     GroceryItem(
       id: id,
@@ -17,6 +19,7 @@ GroceryItem item(String name, {DateTime? boughtAt, String id = 'i'}) =>
       addedBy: Fixtures.samMemberId,
       addedAt: _now,
       boughtAt: boughtAt,
+      boughtBy: boughtAt == null ? null : Fixtures.samMemberId,
     );
 
 void main() {
@@ -44,14 +47,10 @@ void main() {
     return (state as AsyncData<GroceryListView>).value;
   }
 
-  test('stays loading until both reads have answered', () async {
+  test('stays loading until the read has answered', () async {
     expect(controller.list, isA<AsyncLoading<GroceryListView>>());
 
-    repository.emitUnbought([item('Milk')]);
-    await pumpEventQueue();
-    expect(controller.list, isA<AsyncLoading<GroceryListView>>());
-
-    repository.emitRecentlyBought([]);
+    repository.emitItems([item('Milk')]);
     await pumpEventQueue();
     expect(controller.list, isA<AsyncData<GroceryListView>>());
   });
@@ -59,18 +58,20 @@ void main() {
   test(
     'shows what is still to buy and what was bought within the day',
     () async {
-      repository.emitUnbought([item('Milk', id: 'milk')]);
-      repository.emitRecentlyBought([
-        item(
-          'Bread',
-          id: 'bread',
-          boughtAt: _now.subtract(const Duration(hours: 2)),
-        ),
-        item(
-          'Jam',
-          id: 'jam',
-          boughtAt: _now.subtract(const Duration(hours: 30)),
-        ),
+      repository.emitItems([
+        ...[item('Milk', id: 'milk')],
+        ...[
+          item(
+            'Bread',
+            id: 'bread',
+            boughtAt: _now.subtract(const Duration(hours: 2)),
+          ),
+          item(
+            'Jam',
+            id: 'jam',
+            boughtAt: _now.subtract(const Duration(hours: 30)),
+          ),
+        ],
       ]);
       await pumpEventQueue();
 
@@ -83,8 +84,7 @@ void main() {
   test(
     'ranks the chips from everything bought, not just the last day',
     () async {
-      repository.emitUnbought([]);
-      repository.emitRecentlyBought([
+      repository.emitItems([
         item('Milk', id: 'a', boughtAt: _now.subtract(const Duration(days: 2))),
         item('Milk', id: 'b', boughtAt: _now.subtract(const Duration(days: 9))),
         item('Eggs', id: 'c', boughtAt: _now.subtract(const Duration(days: 3))),
@@ -99,8 +99,7 @@ void main() {
   test(
     'is empty when there is nothing to buy and nothing just bought',
     () async {
-      repository.emitUnbought([]);
-      repository.emitRecentlyBought([]);
+      repository.emitItems([]);
       await pumpEventQueue();
       expect(dataOf().isEmpty, isTrue);
     },
@@ -137,8 +136,7 @@ void main() {
   );
 
   test('a chip adds a new unbought item with that name', () async {
-    repository.emitUnbought([]);
-    repository.emitRecentlyBought([
+    repository.emitItems([
       item('Milk', id: 'a', boughtAt: _now.subtract(const Duration(days: 1))),
     ]);
     await pumpEventQueue();
@@ -160,7 +158,7 @@ void main() {
   );
 
   test('a read that fails becomes a failure state with a way back', () async {
-    repository.failUnboughtWith(const UnavailableFailure());
+    repository.failItemsWith(const UnavailableFailure());
     await pumpEventQueue();
     expect(controller.list, isA<AsyncFailure<GroceryListView>>());
 

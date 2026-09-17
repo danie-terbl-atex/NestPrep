@@ -1,13 +1,4 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "groceryItems",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "boughtAt", "order": "ASCENDING" },
-        { "fieldPath": "addedAt", "order": "DESCENDING" }
-      ]
-    }
-  ],
+  "indexes": [],
   "fieldOverrides": []
 }

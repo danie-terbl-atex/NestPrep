@@ -1,16 +1,17 @@
 import '../model/grocery_item.dart';
 
-/// What the groceries feature needs from Firestore. Both reads are bounded
-/// (`BE-08`): one household's list is small, and the history is capped at the
-/// window the chips are ranked from.
+/// What the groceries feature needs from Firestore.
+///
+/// **One read, split on the client.** Two queries over the same collection —
+/// one for unbought, one for bought — disagree while a write is still pending:
+/// the item shows twice, or not at all, until the network catches up. One
+/// listener cannot disagree with itself. It is bounded (`BE-08`) and it is also
+/// half the reads.
 abstract interface class GroceryRepository {
-  /// Everything still to buy, newest first.
-  Stream<List<GroceryItem>> watchUnbought(String householdId);
-
-  /// The most recently bought items, newest first. This one stream does two
-  /// jobs: the last day of it is what the list shows struck through, and all of
-  /// it is what the quick re-add chips are ranked from (groceries ADR-0001).
-  Stream<List<GroceryItem>> watchRecentlyBought(String householdId);
+  /// The household's list, newest first: what is still to buy, what has been
+  /// bought, and the history the quick re-add chips are ranked from
+  /// (groceries ADR-0001).
+  Stream<List<GroceryItem>> watchItems(String householdId);
 
   Future<void> add({
     required String householdId,
@@ -37,6 +38,7 @@ abstract interface class GroceryRepository {
 
   Future<void> remove({required String householdId, required String itemId});
 
-  /// How many bought items the history stream carries.
-  static const historyLimit = 200;
+  /// How much of a household's list is read at once. Bounded so a bug cannot
+  /// make it unbounded; far above what a household actually has.
+  static const itemLimit = 200;
 }

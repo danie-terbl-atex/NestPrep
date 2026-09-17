@@ -4,6 +4,10 @@ import 'grocery_suggestion.dart';
 /// What the grocery screen renders: the list as a person reads it, and the
 /// chips above the input. Derived once per emission rather than in the build
 /// method (`FE-12`).
+///
+/// The split happens here, off one snapshot, rather than in two Firestore
+/// queries — two queries over the same collection disagree while a write is
+/// pending, and the item shows twice or not at all (groceries phase 1).
 class GroceryListView {
   const GroceryListView({
     required this.toBuy,
@@ -12,18 +16,26 @@ class GroceryListView {
   });
 
   factory GroceryListView.from({
-    required List<GroceryItem> unbought,
-    required List<GroceryItem> recentlyBought,
+    required List<GroceryItem> items,
     required DateTime now,
   }) {
-    final justBought = [
-      for (final item in recentlyBought)
-        if (item.isStillVisible(now)) item,
-    ];
+    final toBuy = <GroceryItem>[];
+    final bought = <GroceryItem>[];
+    for (final item in items) {
+      (item.isBought ? bought : toBuy).add(item);
+    }
+
+    // Newest purchase first, and a tick the server has not timed yet counts as
+    // just now — which it is.
+    bought.sort((a, b) => (b.boughtAt ?? now).compareTo(a.boughtAt ?? now));
+
     return GroceryListView(
-      toBuy: unbought,
-      justBought: justBought,
-      suggestions: rankSuggestions(recentlyBought),
+      toBuy: toBuy,
+      justBought: [
+        for (final item in bought)
+          if (item.isStillVisible(now)) item,
+      ],
+      suggestions: rankSuggestions(bought),
     );
   }
 

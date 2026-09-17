@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
@@ -24,6 +25,17 @@ class HouseholdScreen extends StatelessWidget {
     final failure = controller.actionFailure;
     return NestScaffold(
       title: AppCopy.householdTitle,
+      // This screen is pushed from a tab, so it carries the way back itself
+      // rather than relying on the system gesture alone (`FE-17`). A deep link
+      // straight here has nothing to pop, and then there is no button.
+      leading: context.canPop()
+          ? NestIconButton(
+              icon: Icons.arrow_back,
+              label: AppCopy.back,
+              variant: NestIconButtonVariant.plain,
+              onPressed: context.pop,
+            )
+          : null,
       trailing: const [AccountMenuButton()],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

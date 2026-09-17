@@ -10,6 +10,10 @@ import '../model/household_view.dart';
 /// The way to the household from any feature tab. It is in the header rather
 /// than the bottom bar because the bar belongs to the four things a household
 /// does every day, and managing people is not one of them.
+///
+/// It **pushes**, where the tab bar replaces: the household is a detail reached
+/// from a tab, so back has to come back to that tab. Replacing would leave
+/// nothing to pop, and the system back button would close the app (`FE-17`).
 class HouseholdLinkButton extends StatelessWidget {
   const HouseholdLinkButton({super.key});
 
@@ -19,7 +23,8 @@ class HouseholdLinkButton extends StatelessWidget {
     return NestIconButton(
       icon: Icons.group_outlined,
       label: AppCopy.householdTitle,
-      onPressed: () => context.go(HouseholdRoute.householdPathFor(householdId)),
+      onPressed: () =>
+          context.push(HouseholdRoute.householdPathFor(householdId)),
     );
   }
 }

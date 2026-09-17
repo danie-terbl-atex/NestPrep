@@ -11,11 +11,6 @@ final class FirestoreGroceryRepository implements GroceryRepository {
   static const householdsPath = 'households';
   static const itemsPath = 'groceryItems';
 
-  /// A lower bound that every real timestamp is above, so "has been bought" can
-  /// be asked as a range on the same field the query sorts by — which needs no
-  /// composite index, where an inequality against null would (`BE-08`).
-  static final _beforeEverything = Timestamp.fromMillisecondsSinceEpoch(0);
-
   final FirebaseFirestore _firestore;
 
   CollectionReference<GroceryItem> _items(String householdId) =>
@@ -29,21 +24,14 @@ final class FirestoreGroceryRepository implements GroceryRepository {
       );
 
   @override
-  Stream<List<GroceryItem>> watchUnbought(String householdId) =>
+  Stream<List<GroceryItem>> watchItems(String householdId) =>
       _items(householdId)
-          .where('boughtAt', isNull: true)
+          // No filter, so nothing here can disagree with anything else while a
+          // write is pending; `addedAt` is always written, so nothing is
+          // excluded for missing it. The split into bought and unbought happens
+          // on the client, off one snapshot.
           .orderBy('addedAt', descending: true)
-          .limit(GroceryRepository.historyLimit)
-          .snapshots()
-          .map(_toList)
-          .handleError((Object error) => throw failureFromFirebase(error));
-
-  @override
-  Stream<List<GroceryItem>> watchRecentlyBought(String householdId) =>
-      _items(householdId)
-          .where('boughtAt', isGreaterThan: _beforeEverything)
-          .orderBy('boughtAt', descending: true)
-          .limit(GroceryRepository.historyLimit)
+          .limit(GroceryRepository.itemLimit)
           .snapshots()
           .map(_toList)
           .handleError((Object error) => throw failureFromFirebase(error));

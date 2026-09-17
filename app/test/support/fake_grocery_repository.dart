@@ -7,8 +7,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 /// Stands in for Firestore behind the controller, so a test drives the two live
 /// streams by hand and nothing pumps the SDK (foundation ADR-0006).
 final class FakeGroceryRepository implements GroceryRepository {
-  final _unbought = StreamController<List<GroceryItem>>.broadcast();
-  final _bought = StreamController<List<GroceryItem>>.broadcast();
+  final _items = StreamController<List<GroceryItem>>.broadcast();
 
   /// Set to make the next write fail, the way a rules denial does.
   AppFailure? failWritesWith;
@@ -18,22 +17,13 @@ final class FakeGroceryRepository implements GroceryRepository {
   final renamed = <({String itemId, String name, String? quantity})>[];
   final removed = <String>[];
 
-  void emitUnbought(List<GroceryItem> items) => _unbought.add(items);
-  void emitRecentlyBought(List<GroceryItem> items) => _bought.add(items);
-  void failUnboughtWith(Object error) => _unbought.addError(error);
+  void emitItems(List<GroceryItem> items) => _items.add(items);
+  void failItemsWith(Object error) => _items.addError(error);
 
-  Future<void> close() async {
-    await _unbought.close();
-    await _bought.close();
-  }
+  Future<void> close() => _items.close();
 
   @override
-  Stream<List<GroceryItem>> watchUnbought(String householdId) =>
-      _unbought.stream;
-
-  @override
-  Stream<List<GroceryItem>> watchRecentlyBought(String householdId) =>
-      _bought.stream;
+  Stream<List<GroceryItem>> watchItems(String householdId) => _items.stream;
 
   @override
   Future<void> add({

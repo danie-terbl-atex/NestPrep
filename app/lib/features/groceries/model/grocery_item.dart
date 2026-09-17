@@ -34,11 +34,22 @@ abstract class GroceryItem with _$GroceryItem {
   factory GroceryItem.fromJson(Map<String, Object?> json) =>
       _$GroceryItemFromJson(json);
 
-  bool get isBought => boughtAt != null;
+  /// Bought is decided by **who** bought it, not when.
+  ///
+  /// `boughtBy` is written by the device and is there the instant somebody
+  /// ticks; `boughtAt` is the server's and is null until the write reaches it.
+  /// Keying on the timestamp made a tick made offline vanish from the list
+  /// entirely — it was in neither the unbought nor the bought set until the
+  /// network came back (groceries phase 1).
+  bool get isBought => boughtBy != null;
 
   /// Whether a bought item is still worth showing, struck through, so somebody
   /// who ticked the wrong thing can undo it (groceries ADR-0001).
+  ///
+  /// A tick whose timestamp has not reached the server yet was, by definition,
+  /// a moment ago.
   bool isStillVisible(DateTime now) {
+    if (!isBought) return true;
     final bought = boughtAt;
     if (bought == null) return true;
     return now.difference(bought) < visibleAfterBuying;

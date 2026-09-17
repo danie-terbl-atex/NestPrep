@@ -20,6 +20,7 @@ GroceryItem item(String name, {String id = 'i', DateTime? boughtAt}) =>
       addedBy: Fixtures.samMemberId,
       addedAt: _now,
       boughtAt: boughtAt,
+      boughtBy: boughtAt == null ? null : Fixtures.samMemberId,
     );
 
 void main() {
@@ -66,8 +67,7 @@ void main() {
 
   testWidgets('says what to do next when the list is empty', (tester) async {
     await pump(tester);
-    repository.emitUnbought([]);
-    repository.emitRecentlyBought([]);
+    repository.emitItems([...[], ...[]]);
     await tester.pumpAndSettle();
 
     expect(find.text(AppCopy.groceriesEmptyTitle), findsOneWidget);
@@ -78,7 +78,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    repository.failUnboughtWith(const UnavailableFailure());
+    repository.failItemsWith(const UnavailableFailure());
     await tester.pumpAndSettle();
 
     expect(
@@ -90,13 +90,15 @@ void main() {
 
   testWidgets('lists what is to buy and what was just bought', (tester) async {
     await pump(tester);
-    repository.emitUnbought([item('Milk', id: 'milk')]);
-    repository.emitRecentlyBought([
-      item(
-        'Bread',
-        id: 'bread',
-        boughtAt: _now.subtract(const Duration(hours: 1)),
-      ),
+    repository.emitItems([
+      ...[item('Milk', id: 'milk')],
+      ...[
+        item(
+          'Bread',
+          id: 'bread',
+          boughtAt: _now.subtract(const Duration(hours: 1)),
+        ),
+      ],
     ]);
     await tester.pumpAndSettle();
 
@@ -118,8 +120,10 @@ void main() {
 
   testWidgets('tapping a row ticks it off', (tester) async {
     await pump(tester);
-    repository.emitUnbought([item('Milk', id: 'milk')]);
-    repository.emitRecentlyBought([]);
+    repository.emitItems([
+      ...[item('Milk', id: 'milk')],
+      ...[],
+    ]);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Milk'));
@@ -131,9 +135,11 @@ void main() {
 
   testWidgets('a chip adds the item again in one tap', (tester) async {
     await pump(tester);
-    repository.emitUnbought([]);
-    repository.emitRecentlyBought([
-      item('Milk', id: 'a', boughtAt: _now.subtract(const Duration(days: 3))),
+    repository.emitItems([
+      ...[],
+      ...[
+        item('Milk', id: 'a', boughtAt: _now.subtract(const Duration(days: 3))),
+      ],
     ]);
     await tester.pumpAndSettle();
 
@@ -149,8 +155,7 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    repository.emitUnbought([]);
-    repository.emitRecentlyBought([]);
+    repository.emitItems([...[], ...[]]);
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField).first, 'Eggs');
@@ -166,8 +171,10 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    repository.emitUnbought([item('Milk', id: 'milk')]);
-    repository.emitRecentlyBought([]);
+    repository.emitItems([
+      ...[item('Milk', id: 'milk')],
+      ...[],
+    ]);
     await tester.pumpAndSettle();
 
     repository.failWritesWith = const PermissionDeniedFailure();
@@ -189,8 +196,10 @@ void main() {
     addTearDown(tester.view.reset);
 
     await pump(tester, brightness: Brightness.dark, scale: 2);
-    repository.emitUnbought([item('Full cream milk', id: 'milk')]);
-    repository.emitRecentlyBought([]);
+    repository.emitItems([
+      ...[item('Full cream milk', id: 'milk')],
+      ...[],
+    ]);
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);

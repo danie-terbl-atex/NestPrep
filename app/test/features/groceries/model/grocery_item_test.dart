@@ -18,6 +18,7 @@ void main() {
         name: 'Milk',
         addedBy: 'm-sam',
         boughtAt: now.subtract(const Duration(hours: 23, minutes: 59)),
+        boughtBy: 'm-sam',
       );
       expect(justBought.isBought, isTrue);
       expect(justBought.isStillVisible(now), isTrue);
@@ -29,10 +30,50 @@ void main() {
         name: 'Milk',
         addedBy: 'm-sam',
         boughtAt: now.subtract(const Duration(hours: 24, minutes: 1)),
+        boughtBy: 'm-sam',
       );
       expect(yesterday.isStillVisible(now), isFalse);
       expect(yesterday.isBought, isTrue);
     });
+  });
+
+  group('a tick made offline', () {
+    // Ticking writes `boughtBy` from the device and `boughtAt` from the
+    // server. Offline the timestamp is still null, and keying "bought" on it
+    // made the item vanish from the list entirely until the network came back.
+    test(
+      'is bought the moment it is ticked, before the server has timed it',
+      () {
+        const ticked = GroceryItem(
+          id: 'i',
+          name: 'Milk',
+          addedBy: 'm-sam',
+          boughtBy: 'm-sam',
+        );
+        expect(ticked.isBought, isTrue);
+        expect(ticked.boughtAt, isNull);
+      },
+    );
+
+    test('is still on the list, struck through, rather than gone', () {
+      const ticked = GroceryItem(
+        id: 'i',
+        name: 'Milk',
+        addedBy: 'm-sam',
+        boughtBy: 'm-sam',
+      );
+      // A tick the server has not timed yet was, by definition, a moment ago.
+      expect(ticked.isStillVisible(now), isTrue);
+    });
+
+    test(
+      'an untouched item is not bought just because it has no timestamp',
+      () {
+        const untouched = GroceryItem(id: 'i', name: 'Milk', addedBy: 'm-sam');
+        expect(untouched.isBought, isFalse);
+        expect(untouched.isStillVisible(now), isTrue);
+      },
+    );
   });
 
   group('the stored shape', () {

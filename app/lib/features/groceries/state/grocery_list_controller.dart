@@ -30,11 +30,7 @@ final class GroceryListController extends ChangeNotifier {
   final String memberId;
   final DateTime Function() _now;
 
-  StreamSubscription<List<GroceryItem>>? _unboughtSubscription;
-  StreamSubscription<List<GroceryItem>>? _boughtSubscription;
-
-  List<GroceryItem>? _unbought;
-  List<GroceryItem>? _recentlyBought;
+  StreamSubscription<List<GroceryItem>>? _subscription;
 
   AsyncState<GroceryListView> _list = const AsyncLoading();
   AppFailure? _actionFailure;
@@ -50,8 +46,6 @@ final class GroceryListController extends ChangeNotifier {
 
   Future<void> retry() async {
     await _cancel();
-    _unbought = null;
-    _recentlyBought = null;
     _list = const AsyncLoading();
     notifyListeners();
     _subscribe();
@@ -117,32 +111,10 @@ final class GroceryListController extends ChangeNotifier {
   }
 
   void _subscribe() {
-    _unboughtSubscription = _repository.watchUnbought(householdId).listen((
-      items,
-    ) {
-      _unbought = items;
-      _publish();
+    _subscription = _repository.watchItems(householdId).listen((items) {
+      _list = AsyncData(GroceryListView.from(items: items, now: _now()));
+      notifyListeners();
     }, onError: _onError);
-    _boughtSubscription = _repository.watchRecentlyBought(householdId).listen((
-      items,
-    ) {
-      _recentlyBought = items;
-      _publish();
-    }, onError: _onError);
-  }
-
-  void _publish() {
-    final unbought = _unbought;
-    final bought = _recentlyBought;
-    if (unbought == null || bought == null) return;
-    _list = AsyncData(
-      GroceryListView.from(
-        unbought: unbought,
-        recentlyBought: bought,
-        now: _now(),
-      ),
-    );
-    notifyListeners();
   }
 
   void _onError(Object error) {
@@ -151,10 +123,8 @@ final class GroceryListController extends ChangeNotifier {
   }
 
   Future<void> _cancel() async {
-    await _unboughtSubscription?.cancel();
-    await _boughtSubscription?.cancel();
-    _unboughtSubscription = null;
-    _boughtSubscription = null;
+    await _subscription?.cancel();
+    _subscription = null;
   }
 
   @override
