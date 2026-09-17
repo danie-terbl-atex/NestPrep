@@ -1,0 +1,30 @@
+{
+  "name": "nestprep-functions",
+  "private": true,
+  "description": "NestPrep Cloud Functions — only what Firestore Security Rules cannot express (foundation ADR-0002).",
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "serve": "npm run build && firebase emulators:start --only functions --project demo-nestprep"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.4.0",
+    "firebase-functions": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "eslint": "^9.39.0",
+    "prettier": "^3.9.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^3.2.0"
+  }
+}

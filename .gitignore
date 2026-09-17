@@ -1,0 +1,22 @@
+# OS and IDE
+.DS_Store
+.idea/
+*.iml
+
+# Design inspiration images are not source; they stay local
+DesignsInsp/
+
+# Firebase CLI
+.firebase/
+*-debug.log
+firebase-export-*/
+emulator-data/
+
+# Node
+node_modules/
+functions/lib/
+
+# Local-only configuration (values never in git — ENG-18)
+.env
+.env.*
+*.local

@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+
+import '../tokens/nest_motion.dart';
+import '../tokens/nest_spacing.dart';
+import '../tokens/nest_theme.dart';
+
+/// A pill chip: a filter, a segment, a tag. Selected is the tonal violet.
+class NestChip extends StatelessWidget {
+  const NestChip({
+    required this.label,
+    this.isSelected = false,
+    this.onTap,
+    this.icon,
+    super.key,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback? onTap;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final c = nest.colors;
+    final foreground = isSelected ? c.accentInk : c.inkSecondary;
+    return Semantics(
+      button: onTap != null,
+      selected: isSelected,
+      label: label,
+      onTap: onTap,
+      excludeSemantics: true,
+      child: AnimatedContainer(
+        duration: NestMotion.of(context).quick,
+        decoration: ShapeDecoration(
+          color: isSelected ? c.accentSoft : c.surface,
+          shape: StadiumBorder(
+            side: BorderSide(color: isSelected ? c.accentSoft : c.outline),
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          shape: const StadiumBorder(),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: NestSize.controlSmall,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: NestSpace.lg),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, size: NestSize.iconSmall, color: foreground),
+                      const SizedBox(width: NestSpace.sm),
+                    ],
+                    Text(
+                      label,
+                      style: nest.text.label.copyWith(color: foreground),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

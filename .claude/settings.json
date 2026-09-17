@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/../nullstate-vault/tools/hooks/session-context.sh\" nestprep" } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/../nullstate-vault/tools/hooks/stop-lint.sh\"" } ] }
+    ]
+  }
+}

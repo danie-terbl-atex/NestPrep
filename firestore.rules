@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Deny by default; every match states who may read and who may write (BE-05).
+// Household-scoped blocks arrive with their features (foundation ADR-0002).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Foundation smoke test only: lets an unsigned-in build prove it reached
+    // Firestore. Accounts phase 1 deletes this block together with the
+    // diagnostics feature (nestprep-project/foundation/phases/phase-1-app-skeleton-on-firebase).
+    match /diagnostics/{pingId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['sentFrom', 'sentAt'])
+        && request.resource.data.sentFrom is string
+        && request.resource.data.sentAt == request.time;
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
