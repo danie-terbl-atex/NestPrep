@@ -22,6 +22,9 @@ import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/meal_planning/data/meal_repository.dart';
+import '../features/meal_planning/state/meal_plan_controller.dart';
+import '../features/meal_planning/ui/meal_plan_screen.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
@@ -99,6 +102,20 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               isAdmin: context.read<HouseholdView>().viewerIsAdmin,
             ),
             child: TodoScreen(
+              onSelectTab: (tab) => _goToTab(context, state, tab),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.meals.segment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => MealPlanController(
+              mealRepository: context.read<MealRepository>(),
+              householdClock: context.read<HouseholdClock>(),
+              householdId: HouseholdRoute.idFrom(state),
+              memberId: _viewerMemberId(context),
+            ),
+            child: MealPlanScreen(
               onSelectTab: (tab) => _goToTab(context, state, tab),
             ),
           ),

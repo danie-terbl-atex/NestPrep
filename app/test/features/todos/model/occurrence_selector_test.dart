@@ -249,10 +249,7 @@ void main() {
 
     test('leaves out what is already done', () {
       expect(
-        mine(
-          [task(id: 'a')],
-          completions: [done('a', '2026-09-19')],
-        ),
+        mine([task(id: 'a')], completions: [done('a', '2026-09-19')]),
         isEmpty,
       );
     });

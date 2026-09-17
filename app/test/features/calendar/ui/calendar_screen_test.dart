@@ -43,10 +43,7 @@ void main() {
     repository = FakeCalendarRepository();
     controller = CalendarController(
       calendarRepository: repository,
-      householdClock: HouseholdClock(
-        'Africa/Johannesburg',
-        now: () => _nowUtc,
-      ),
+      householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
     );
@@ -86,19 +83,26 @@ void main() {
     expect(find.text(AppCopy.calendarTitle), findsOneWidget);
   });
 
-  testWidgets('says what to do next on a day with nothing on it', (tester) async {
+  testWidgets('says what to do next on a day with nothing on it', (
+    tester,
+  ) async {
     await pump(tester);
     await emit(tester);
     expect(find.text(AppCopy.calendarEmptyBody), findsOneWidget);
     expect(find.text(AppCopy.calendarAddEvent), findsWidgets);
   });
 
-  testWidgets('shows human copy and a retry when the read fails', (tester) async {
+  testWidgets('shows human copy and a retry when the read fails', (
+    tester,
+  ) async {
     await pump(tester);
     repository.failEventsWith(const UnavailableFailure());
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.failure(const UnavailableFailure())), findsOneWidget);
+    expect(
+      find.text(AppCopy.failure(const UnavailableFailure())),
+      findsOneWidget,
+    );
     expect(find.text(AppCopy.retry), findsOneWidget);
   });
 
@@ -154,7 +158,9 @@ void main() {
     expect(find.text('21'), findsOneWidget);
   });
 
-  testWidgets('the phone width has no horizontal scroll at 200% text', (tester) async {
+  testWidgets('the phone width has no horizontal scroll at 200% text', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(360 * 3, 800 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);

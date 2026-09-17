@@ -46,10 +46,7 @@ void main() {
     repository = FakeCalendarRepository();
     controller = CalendarController(
       calendarRepository: repository,
-      householdClock: HouseholdClock(
-        'Africa/Johannesburg',
-        now: () => _nowUtc,
-      ),
+      householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
     );
@@ -108,24 +105,30 @@ void main() {
     expect(controller.week, isA<AsyncData<CalendarWeek>>());
   });
 
-  test('groups the week into seven days, whether or not anything is on', () async {
-    await emit(events: [event()]);
-    expect(weekOf().days.map((d) => d.iso).first, '2026-09-14');
-    expect(weekOf().days, hasLength(7));
-    expect(weekOf().on(date('2026-09-18')), hasLength(1));
-    expect(weekOf().on(date('2026-09-17')), isEmpty);
-  });
+  test(
+    'groups the week into seven days, whether or not anything is on',
+    () async {
+      await emit(events: [event()]);
+      expect(weekOf().days.map((d) => d.iso).first, '2026-09-14');
+      expect(weekOf().days, hasLength(7));
+      expect(weekOf().on(date('2026-09-18')), hasLength(1));
+      expect(weekOf().on(date('2026-09-17')), isEmpty);
+    },
+  );
 
-  test('selects today when today is in the week, and the Monday when it is not', () async {
-    await emit();
-    expect(controller.selectedDay.iso, '2026-09-18');
+  test(
+    'selects today when today is in the week, and the Monday when it is not',
+    () async {
+      await emit();
+      expect(controller.selectedDay.iso, '2026-09-18');
 
-    controller.goToNextWeek();
-    await pumpEventQueue();
-    repository.emitExceptions([]);
-    await pumpEventQueue();
-    expect(controller.selectedDay.iso, '2026-09-21');
-  });
+      controller.goToNextWeek();
+      await pumpEventQueue();
+      repository.emitExceptions([]);
+      await pumpEventQueue();
+      expect(controller.selectedDay.iso, '2026-09-21');
+    },
+  );
 
   test('filters by member, and the filter survives the week moving', () async {
     await emit(
@@ -137,10 +140,9 @@ void main() {
     expect(weekOf().on(date('2026-09-18')), hasLength(2));
 
     controller.filterBy(Fixtures.kidMemberId);
-    expect(
-      weekOf().on(date('2026-09-18')).map((o) => o.event.title),
-      ['Theirs'],
-    );
+    expect(weekOf().on(date('2026-09-18')).map((o) => o.event.title), [
+      'Theirs',
+    ]);
     expect(controller.memberFilter, Fixtures.kidMemberId);
   });
 

@@ -322,6 +322,55 @@ service cloud.firestore {
         }
       }
 
+      // ---- meal planning (meal-planning ADR-0001) ----
+
+      // The library is what the household has typed before. `nameKey` is the
+      // normalised name the app asks "have we had this before" with.
+      //
+      // The rule checks that it is present and lower-cased, and no more: the
+      // normaliser also collapses runs of whitespace, and the rules language
+      // has no way to express that. A wrong key is a duplicate in one
+      // household's own library, not a way into anybody's data — so this is a
+      // validation the client owns and the rules cannot (BE-03).
+      match /meals/{mealId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['name', 'nameKey', 'addedBy', 'createdAt'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNormalisedKey(request.resource.data.nameKey)
+          && isOwnMember(householdId, request.resource.data.addedBy)
+          && isServerTime('createdAt');
+
+        allow update: if isMember(householdId)
+          && onlyChanged(['name', 'nameKey'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNormalisedKey(request.resource.data.nameKey)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.addedBy));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.addedBy);
+
+        function isNormalisedKey(value) {
+          return value is string && value.size() > 0 && value == value.lower();
+        }
+      }
+
+      // One document is one week, keyed by its Monday. The plan has no owner:
+      // any member fills, changes or clears any slot (meal-planning ADR-0001).
+      match /mealPlans/{weekStart} {
+        allow read: if isMember(householdId);
+
+        allow create, update: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(['slots'])
+          && request.resource.data.slots is map
+          && request.resource.data.slots.size() <= 21;
+
+        allow delete: if isAdmin(householdId);
+      }
+
       // One occurrence of a repeating event, skipped. Same shape and the same
       // reasons as a task completion (todos ADR-0002).
       match /eventExceptions/{exceptionId} {

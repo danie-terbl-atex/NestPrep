@@ -34,7 +34,8 @@ final class FakeCalendarRepository implements CalendarRepository {
   }
 
   @override
-  Stream<List<HouseholdEvent>> watchEvents(String householdId) => _events.stream;
+  Stream<List<HouseholdEvent>> watchEvents(String householdId) =>
+      _events.stream;
 
   @override
   Stream<List<EventException>> watchExceptions(

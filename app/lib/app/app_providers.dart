@@ -17,6 +17,8 @@ import '../features/household/data/callable_household_directory.dart';
 import '../features/household/data/firestore_household_repository.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
+import '../features/meal_planning/data/firestore_meal_repository.dart';
+import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import 'firebase_bootstrap.dart';
@@ -54,6 +56,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<CalendarRepository>(
     create: (context) =>
         FirestoreCalendarRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<MealRepository>(
+    create: (context) =>
+        FirestoreMealRepository(context.read<FirebaseFirestore>()),
   ),
   Provider<TodoRepository>(
     create: (context) =>

@@ -125,6 +125,31 @@ abstract final class AppCopy {
   static const calendarTitleLabel = 'What is happening?';
   static const calendarWeekFilter = 'Showing';
 
+  static const mealsTitle = 'Meals';
+  static const mealsBreakfast = 'Breakfast';
+  static const mealsLunch = 'Lunch';
+  static const mealsDinner = 'Dinner';
+  static const mealsCopyLastWeek = 'Copy last week';
+  static const mealsEmptyTitle = 'Nothing planned yet';
+  static const mealsEmptyBody = 'Plan your first meal, or copy last week.';
+  static const mealsPickTitle = 'What are we eating?';
+  static const mealsTypeHint = 'Type a meal';
+  static const mealsLibrary = 'Meals you have made before';
+  static const mealsClearSlot = 'Clear';
+  static const mealsNothingPlanned = 'Nothing planned';
+  static const mealsManage = 'Meals';
+  static const mealsRename = 'Rename meal';
+  static const mealsDelete = 'Delete meal';
+  static const mealsDeleteConfirm = 'Delete this meal?';
+  static const mealsDeleteBody =
+      'It will be cleared from every week it is planned for.';
+
+  static String mealSlotName(String slot) => switch (slot) {
+    'breakfast' => mealsBreakfast,
+    'lunch' => mealsLunch,
+    _ => mealsDinner,
+  };
+
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';

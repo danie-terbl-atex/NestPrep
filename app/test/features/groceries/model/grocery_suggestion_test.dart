@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/model/grocery_suggestion.dart';
-import 'package:nestprep/features/groceries/model/item_name.dart';
+import 'package:nestprep/shared/text/normalised_name.dart';
 
 GroceryItem bought(String name, {int minutesAgo = 0}) => GroceryItem(
   id: '$name-$minutesAgo',
@@ -18,13 +18,13 @@ GroceryItem bought(String name, {int minutesAgo = 0}) => GroceryItem(
 void main() {
   group('normalising a name', () {
     test('treats case and stray whitespace as the same thing', () {
-      expect(normalisedItemName('Milk'), normalisedItemName('  milk '));
-      expect(normalisedItemName('full  cream   milk'), 'full cream milk');
+      expect(normalisedName('Milk'), normalisedName('  milk '));
+      expect(normalisedName('full  cream   milk'), 'full cream milk');
     });
 
     test('does not change what the person actually typed', () {
       const typed = '  Full Cream Milk ';
-      expect(normalisedItemName(typed), 'full cream milk');
+      expect(normalisedName(typed), 'full cream milk');
       expect(typed, '  Full Cream Milk ');
     });
   });

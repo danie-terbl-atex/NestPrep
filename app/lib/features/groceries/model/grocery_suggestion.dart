@@ -1,5 +1,5 @@
+import '../../../shared/text/normalised_name.dart';
 import 'grocery_item.dart';
-import 'item_name.dart';
 
 /// A name the household buys often enough to be one tap away.
 class GrocerySuggestion {
@@ -26,7 +26,7 @@ List<GrocerySuggestion> rankSuggestions(
 
   for (var index = 0; index < boughtItems.length; index++) {
     final item = boughtItems[index];
-    final key = normalisedItemName(item.name);
+    final key = normalisedName(item.name);
     if (key.isEmpty) continue;
     counts[key] = (counts[key] ?? 0) + 1;
     mostRecentSpelling.putIfAbsent(key, () => item.name.trim());

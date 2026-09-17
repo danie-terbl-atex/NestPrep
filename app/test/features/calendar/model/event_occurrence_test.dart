@@ -73,22 +73,28 @@ void main() {
       ]);
     });
 
-    test('renders a Tue/Thu rule across a month boundary on the right days', () {
-      final occurrences = selectEventOccurrences(
-        events: [
-          event(
-            recurrence: const RecurrenceRule(
-              frequency: RecurrenceFrequency.weekly,
-              weekdays: [DateTime.tuesday, DateTime.thursday],
+    test(
+      'renders a Tue/Thu rule across a month boundary on the right days',
+      () {
+        final occurrences = selectEventOccurrences(
+          events: [
+            event(
+              recurrence: const RecurrenceRule(
+                frequency: RecurrenceFrequency.weekly,
+                weekdays: [DateTime.tuesday, DateTime.thursday],
+              ),
             ),
-          ),
-        ],
-        exceptions: [],
-        from: date('2026-09-28'),
-        to: date('2026-10-04'),
-      );
-      expect(occurrences.map((o) => o.date.iso), ['2026-09-29', '2026-10-01']);
-    });
+          ],
+          exceptions: [],
+          from: date('2026-09-28'),
+          to: date('2026-10-04'),
+        );
+        expect(occurrences.map((o) => o.date.iso), [
+          '2026-09-29',
+          '2026-10-01',
+        ]);
+      },
+    );
 
     test('hides only the occurrence somebody skipped', () {
       final occurrences = selectEventOccurrences(
