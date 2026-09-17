@@ -1,21 +1,150 @@
 rules_version = '2';
 
-// Deny by default; every match states who may read and who may write (BE-05).
-// Household-scoped blocks arrive with their features (foundation ADR-0002).
+// NestPrep's authorisation and validation layer (foundation ADR-0002). Deny by
+// default; every match states who may read and who may write, and every rule has
+// an allowed and a denied test in `functions/test/rules/` (BE-05, BE-14).
+//
+// Membership is read from the household document's uid→role map, which only
+// Cloud Functions write. Everything a household owns is nested under it, so the
+// scope is structural rather than repeated per collection.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Foundation smoke test only: lets an unsigned-in build prove it reached
-    // Firestore. Accounts phase 1 deletes this block together with the
-    // diagnostics feature (nestprep-project/foundation/phases/phase-1-app-skeleton-on-firebase).
-    match /diagnostics/{pingId} {
-      allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['sentFrom', 'sentAt'])
-        && request.resource.data.sentFrom is string
-        && request.resource.data.sentAt == request.time;
-      allow update, delete: if false;
+    // ---- who the caller is ----
+
+    function isSignedIn() {
+      return request.auth != null;
     }
 
+    function uid() {
+      return request.auth.uid;
+    }
+
+    // ---- what the caller is in a household ----
+
+    function householdData(householdId) {
+      return get(/databases/$(database)/documents/households/$(householdId)).data;
+    }
+
+    function isMember(householdId) {
+      return isSignedIn() && uid() in householdData(householdId).members;
+    }
+
+    function isAdmin(householdId) {
+      return isMember(householdId) && householdData(householdId).members[uid()] == 'admin';
+    }
+
+    // ---- shapes ----
+
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    function onlyChanged(fields) {
+      return changedKeys().hasOnly(fields);
+    }
+
+    function didNotChange(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+
+    // A timestamp the server assigns, never one the client chose (BE-03).
+    function isServerTime(field) {
+      return request.resource.data[field] == request.time;
+    }
+
+    function isNonEmptyString(value) {
+      return value is string && value.size() > 0;
+    }
+
+    function isRole(value) {
+      return value in ['admin', 'member', 'helper'];
+    }
+
+    // ---- accounts (accounts ADR-0001) ----
+
+    match /users/{userId} {
+      function isSelf() {
+        return isSignedIn() && userId == uid();
+      }
+
+      allow read: if isSelf();
+
+      // A new account belongs to no household and has none active: only a
+      // Function may change that (household ADR-0002).
+      allow create: if isSelf()
+        && request.resource.data.keys().hasOnly(
+             ['displayName', 'photoUrl', 'householdIds', 'activeHouseholdId',
+              'createdAt', 'lastSignedInAt'])
+        && isNonEmptyString(request.resource.data.displayName)
+        && request.resource.data.householdIds.size() == 0
+        && request.resource.data.activeHouseholdId == null
+        && isServerTime('createdAt');
+
+      // What Google tells us about the person, and which household is showing.
+      // `householdIds` and `createdAt` are not in the list, so they cannot move.
+      allow update: if isSelf()
+        && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt'])
+        && isNonEmptyString(request.resource.data.displayName)
+        && (request.resource.data.activeHouseholdId == null
+            || request.resource.data.activeHouseholdId in resource.data.householdIds)
+        && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'));
+
+      // Deleting an account is a Function, in the phase that ships to a store.
+      allow delete: if false;
+    }
+
+    // ---- invites (household ADR-0002) ----
+    // No client reads or writes these at all: a readable invite collection is a
+    // list of valid codes. `createInvite` and `redeemInvite` are the only way in.
+    match /invites/{code} {
+      allow read, write: if false;
+    }
+
+    // ---- households (household ADR-0001, ADR-0002) ----
+
+    match /households/{householdId} {
+      allow read: if isMember(householdId);
+
+      // Created by `createHousehold`; the membership map is written only by
+      // Functions, which is why there is no client write that touches it.
+      allow create, delete: if false;
+
+      allow update: if isAdmin(householdId)
+        && onlyChanged(['name', 'timeZone'])
+        && isNonEmptyString(request.resource.data.name)
+        && isNonEmptyString(request.resource.data.timeZone);
+
+      match /members/{memberId} {
+        allow read: if isMember(householdId);
+
+        // An admin adds a profile for somebody whether or not they will ever
+        // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
+        allow create: if isAdmin(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['displayName', 'color', 'role', 'claimedBy', 'createdAt'])
+          && isNonEmptyString(request.resource.data.displayName)
+          && isNonEmptyString(request.resource.data.color)
+          && isRole(request.resource.data.role)
+          && request.resource.data.claimedBy == null
+          && isServerTime('createdAt');
+
+        // A claimed member's role also lives in the household's uid→role map,
+        // and one write cannot touch two documents — so changing it is
+        // `setMemberRole`, and here it may only change while nobody holds it.
+        allow update: if isAdmin(householdId)
+          && onlyChanged(['displayName', 'color', 'role'])
+          && isNonEmptyString(request.resource.data.displayName)
+          && isNonEmptyString(request.resource.data.color)
+          && isRole(request.resource.data.role)
+          && (resource.data.claimedBy == null || didNotChange('role'));
+
+        // Removing a profile detaches whoever claimed it: `removeMember`.
+        allow delete: if false;
+      }
+    }
+
+    // Everything not named above (BE-05).
     match /{document=**} {
       allow read, write: if false;
     }

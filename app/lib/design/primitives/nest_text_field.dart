@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -22,6 +23,8 @@ class NestTextField extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.autofocus = false,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.sentences,
     super.key,
   });
 
@@ -41,6 +44,12 @@ class NestTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final bool autofocus;
 
+  /// Applied as the person types. Anything that changes what they typed has to
+  /// be visible while they type it, never on submit (`FE-10`).
+  final List<TextInputFormatter>? inputFormatters;
+
+  final TextCapitalization textCapitalization;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
@@ -56,6 +65,8 @@ class NestTextField extends StatelessWidget {
           enabled: enabled,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
+          inputFormatters: inputFormatters,
+          textCapitalization: textCapitalization,
           obscureText: obscureText,
           maxLines: maxLines,
           autofocus: autofocus,

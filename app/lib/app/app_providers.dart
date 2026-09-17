@@ -1,17 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import '../features/diagnostics/data/firestore_ping_repository.dart';
-import '../features/diagnostics/data/ping_repository.dart';
+import '../features/accounts/data/account_repository.dart';
+import '../features/accounts/data/auth_gateway.dart';
+import '../features/accounts/data/firebase_auth_gateway.dart';
+import '../features/accounts/data/firestore_account_repository.dart';
+import '../features/accounts/state/session_controller.dart';
+import '../features/household/data/callable_household_directory.dart';
+import '../features/household/data/firestore_household_repository.dart';
+import '../features/household/data/household_directory.dart';
+import '../features/household/data/household_repository.dart';
+import 'firebase_bootstrap.dart';
 
-/// The app-wide dependency graph: the platform instance and one repository per
-/// feature, each behind its interface so tests substitute a fake
-/// (foundation ADR-0006). Per-screen controllers are created at their route.
-List<SingleChildWidget> appProviders(FirebaseFirestore firestore) => [
-  Provider<FirebaseFirestore>.value(value: firestore),
-  Provider<PingRepository>(
+/// The app-wide dependency graph: the platform instances and one repository per
+/// feature, each registered behind its interface so a widget test substitutes a
+/// fake and never pumps a Firebase SDK (foundation ADR-0006).
+///
+/// `SessionController` is the one controller here rather than at a route: the
+/// router redirects on it, so it has to outlive every route. Every other
+/// controller is created by the route that shows it.
+List<SingleChildWidget> appProviders(FirebaseServices services) => [
+  Provider<FirebaseFirestore>.value(value: services.firestore),
+  Provider<FirebaseAuth>.value(value: services.auth),
+  Provider<FirebaseFunctions>.value(value: services.functions),
+  Provider<AuthGateway>(
+    create: (context) => FirebaseAuthGateway(context.read<FirebaseAuth>()),
+  ),
+  Provider<AccountRepository>(
     create: (context) =>
-        FirestorePingRepository(context.read<FirebaseFirestore>()),
+        FirestoreAccountRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<HouseholdRepository>(
+    create: (context) =>
+        FirestoreHouseholdRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<HouseholdDirectory>(
+    create: (context) =>
+        CallableHouseholdDirectory(context.read<FirebaseFunctions>()),
+  ),
+  ChangeNotifierProvider<SessionController>(
+    create: (context) => SessionController(
+      authGateway: context.read<AuthGateway>(),
+      accountRepository: context.read<AccountRepository>(),
+    ),
   ),
 ];

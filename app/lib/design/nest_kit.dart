@@ -9,6 +9,7 @@ export 'primitives/nest_bottom_bar.dart';
 export 'primitives/nest_button.dart';
 export 'primitives/nest_card.dart';
 export 'primitives/nest_chip.dart';
+export 'primitives/nest_confirm.dart';
 export 'primitives/nest_empty_view.dart';
 export 'primitives/nest_error_view.dart';
 export 'primitives/nest_icon_button.dart';

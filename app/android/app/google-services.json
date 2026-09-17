@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "388847987716",
+    "project_id": "nestprep-643b7",
+    "storage_bucket": "nestprep-643b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388847987716:android:3c7b01370726812f7c5951",
+        "android_client_info": {
+          "package_name": "io.nullstate.nestprep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA51y17wxHN1wcmXwzkMf1p8yDxggI3O1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

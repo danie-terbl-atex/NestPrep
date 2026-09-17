@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug builds only. The Local Emulator Suite speaks plain HTTP, and Android has
+  refused cleartext by default since API 28 — Firestore's gRPC channel survives
+  that, Firebase Auth's REST calls do not, so sign-in fails with "Cleartext HTTP
+  traffic to 10.0.2.2 not permitted" and nothing else.
+
+  This file is under src/debug/, so a release build never sees it and keeps the
+  platform default of no cleartext at all. The host is whatever
+  NESTPREP_EMULATOR_HOST points at — 10.0.2.2 on the Android emulator, or a LAN
+  address for a physical device — which is why this permits cleartext generally
+  rather than naming one address.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
