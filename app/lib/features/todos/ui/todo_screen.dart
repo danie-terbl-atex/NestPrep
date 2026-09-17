@@ -87,17 +87,16 @@ class _TodoScreenState extends State<TodoScreen> {
           Expanded(
             child: NestAsyncView<TodoBoard>(
               state: controller.board,
-              isEmpty: (board) => _showingEveryone
-                  ? board.everyone.isEmpty
-                  : board.mine.isEmpty,
+              // The everyone view is its own empty state: it carries the member
+              // filter and the routine list, and the first routine is created on
+              // a household that has no tasks yet. Replacing it would take away
+              // the only way in — the same mistake the grocery suggestions and
+              // the meal grid each made once.
+              isEmpty: (board) => !_showingEveryone && board.mine.isEmpty,
               onRetry: controller.retry,
-              emptyBuilder: (_) => NestEmptyView(
-                title: _showingEveryone
-                    ? AppCopy.todosEveryoneEmptyTitle
-                    : AppCopy.todosMineEmptyTitle,
-                message: _showingEveryone
-                    ? AppCopy.todosEveryoneEmptyBody
-                    : AppCopy.todosMineEmptyBody,
+              emptyBuilder: (_) => const NestEmptyView(
+                title: AppCopy.todosMineEmptyTitle,
+                message: AppCopy.todosMineEmptyBody,
                 icon: Icons.check_circle_outline,
               ),
               dataBuilder: (_, board) => _showingEveryone

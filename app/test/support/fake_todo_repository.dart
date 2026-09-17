@@ -24,9 +24,28 @@ final class FakeTodoRepository implements TodoRepository {
       <({String taskId, CalendarDate date, String by, String forMember})>[];
   final uncompleted = <({String taskId, CalendarDate date})>[];
   final savedTasks =
-      <({String? taskId, String title, List<String> assigneeIds})>[];
+      <
+        ({
+          String? taskId,
+          String title,
+          CalendarDate dueDate,
+          RecurrenceRule? recurrence,
+          List<String> assigneeIds,
+          String? routineId,
+        })
+      >[];
   final deletedTasks = <String>[];
-  final savedRoutines = <({String? routineId, String name})>[];
+  final savedRoutines =
+      <
+        ({
+          String? routineId,
+          String name,
+          CalendarDate firstDate,
+          RecurrenceRule? recurrence,
+          List<String> defaultAssigneeIds,
+          MemberColor color,
+        })
+      >[];
   final deletedRoutines = <String>[];
 
   void emitTasks(List<Task> tasks) => _tasks.add(tasks);
@@ -71,7 +90,14 @@ final class FakeTodoRepository implements TodoRepository {
     String? routineId,
   }) async {
     _refuseIfAsked();
-    savedTasks.add((taskId: taskId, title: title, assigneeIds: assigneeIds));
+    savedTasks.add((
+      taskId: taskId,
+      title: title,
+      dueDate: dueDate,
+      recurrence: recurrence,
+      assigneeIds: assigneeIds,
+      routineId: routineId,
+    ));
   }
 
   @override
@@ -122,7 +148,14 @@ final class FakeTodoRepository implements TodoRepository {
     required String createdBy,
   }) async {
     _refuseIfAsked();
-    savedRoutines.add((routineId: routineId, name: name));
+    savedRoutines.add((
+      routineId: routineId,
+      name: name,
+      firstDate: firstDate,
+      recurrence: recurrence,
+      defaultAssigneeIds: defaultAssigneeIds,
+      color: color,
+    ));
   }
 
   @override
