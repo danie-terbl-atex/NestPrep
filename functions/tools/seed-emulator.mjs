@@ -9,7 +9,7 @@
  *     npm run seed        (with the emulator suite already running)
  */
 const HOST = process.env.NESTPREP_AUTH_EMULATOR ?? 'http://127.0.0.1:9099';
-const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'demo-nestprep';
+const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'nestprep-643b7';
 const PASSWORD = 'nestprep';
 
 const ACCOUNTS = [

@@ -32,7 +32,9 @@ abstract class WeekPlan with _$WeekPlan {
   /// An empty week, for one that has never been planned.
   factory WeekPlan.empty(CalendarDate monday) => WeekPlan(id: monday.iso);
 
-  static const slotCount = 7 * 3;
+  /// Seven days, three meals each — the whole shape of a week (ADR-0001).
+  static const daysInAWeek = 7;
+  static const slotCount = daysInAWeek * 3;
 
   static String slotKey(int isoWeekday, MealSlot slot) =>
       '${isoWeekday}_${slot.name}';

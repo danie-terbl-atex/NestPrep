@@ -37,7 +37,7 @@ class MealWeek {
       today: today,
       library: meals,
       days: [
-        for (var offset = 0; offset < WeekPlan.slotCount ~/ 3; offset++)
+        for (var offset = 0; offset < WeekPlan.daysInAWeek; offset++)
           _dayAt(weekStart, offset, plan, byId),
       ],
     );
