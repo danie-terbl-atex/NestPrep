@@ -35,7 +35,7 @@ class PlannedDayCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            NestDates.relative(day.date, today),
+            NestDates.dayInARun(day.date, today),
             style: nest.text.bodyStrong.copyWith(
               color: isToday ? nest.colors.accentInk : nest.colors.ink,
             ),

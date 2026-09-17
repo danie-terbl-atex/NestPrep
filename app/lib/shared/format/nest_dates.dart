@@ -25,6 +25,18 @@ abstract final class NestDates {
     };
   }
 
+  /// A day that sits in a column of consecutive days — a week of meal cards, a
+  /// todo list grouped by day. Always the date, never "Yesterday".
+  ///
+  /// `relative` is right for a date on its own, where "Today" is warmer and
+  /// shorter than "Fri 18 Sep". It is wrong in a run of days: one row saying
+  /// *Yesterday* between rows saying *Mon 14 Sep* and *Wed 16 Sep* reads as two
+  /// labelling systems at once, and the eye stops being able to scan the
+  /// column. Which day is today is carried by the card's own tint instead, so
+  /// nothing is lost by being consistent here.
+  static String dayInARun(CalendarDate date, CalendarDate today) =>
+      full(date, today);
+
   /// The date, with the year only when it is not this one.
   static String full(CalendarDate date, CalendarDate today) =>
       date.year == today.year

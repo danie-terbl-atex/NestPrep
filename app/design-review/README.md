@@ -24,16 +24,17 @@ answering here — the direction, not any single screen.
 
 ## A starting point for the verdict
 
-[ASSESSMENT.md](ASSESSMENT.md) is my reading of these eleven pictures: keep the direction, change
-four token-level things. It exists so the verdict is a yes or a no rather than a blank page — react
-to it, do not defer to it.
+[ASSESSMENT.md](ASSESSMENT.md) is my reading of these eleven pictures: keep the direction. Of the
+four things it first flagged, the two that were defects are fixed; two are judgement calls left for
+you, with measurements rather than adjectives. React to it, do not defer to it.
 
-## One thing to look at twice
+## What the pictures already caught
 
-In `week-dark-200-percent-text.png` the weekday names run together — *MonTueWed* with no gap. Nothing
-is clipped and nothing overflows, so `FE-14` holds, but at the largest text size the strip reads as
-one word. It is a spacing decision, not a bug, and it is the kind of thing that is easier to judge
-from a picture than from a rule.
+The first render of `week-dark-200-percent-text.png` showed the weekday names running together —
+*MonTueWed*, no gap. Nothing clipped and nothing overflowed, so every existing test passed; a
+`FittedBox` will shrink type forever rather than admit it has run out of room. It is fixed, and the
+fix has a test that measures the gap. These images are regenerated from the current code, so that
+one now shows seven separate days.
 
 ## Regenerating them
 

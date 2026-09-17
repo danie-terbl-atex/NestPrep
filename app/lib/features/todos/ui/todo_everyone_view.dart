@@ -107,7 +107,7 @@ class _GroupedList extends StatelessWidget {
       children: [
         for (final day in days) ...[
           NestSectionHeader(
-            title: NestDates.relative(byDay[day]!.first.date, board.today),
+            title: NestDates.dayInARun(byDay[day]!.first.date, board.today),
           ),
           const SizedBox(height: NestSpace.sm),
           for (final occurrence in byDay[day]!)

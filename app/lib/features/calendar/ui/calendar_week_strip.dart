@@ -106,7 +106,14 @@ class _DayCell extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(NestRadius.lg),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: NestSpace.xs),
+          // The horizontal gutter is not decoration. Seven columns sit edge to
+          // edge, and at the largest text size the scaled-down day names meet
+          // in the middle and read as one word — MonTueWed. A gap costs a
+          // fraction of a point of type and buys seven separate days (`FE-13`).
+          padding: const EdgeInsets.symmetric(
+            vertical: NestSpace.xs,
+            horizontal: NestSpace.xs,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
