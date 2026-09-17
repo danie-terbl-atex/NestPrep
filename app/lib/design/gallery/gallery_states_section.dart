@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/observability/crash_reporting.dart';
 import '../../shared/async/async_state.dart';
 import '../../shared/failure/app_failure.dart';
 import '../nest_kit.dart';
@@ -13,6 +14,22 @@ class GalleryStatesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const GalleryGroup(
+          title: 'Crash reporting',
+          children: [
+            NestBanner(
+              message:
+                  'A debug or emulator build sends nothing to Crashlytics '
+                  '(observability ADR-0001).',
+            ),
+            NestButton(
+              label: 'Force a crash',
+              icon: Icons.bug_report_outlined,
+              variant: NestButtonVariant.danger,
+              onPressed: CrashReporting.forceACrashForTesting,
+            ),
+          ],
+        ),
         const GalleryGroup(
           title: 'Banners',
           children: [

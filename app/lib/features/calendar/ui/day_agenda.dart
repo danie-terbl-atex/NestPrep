@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
-import '../../household/model/household_view.dart';
 import '../model/calendar_week.dart';
-import '../state/calendar_controller.dart';
 import 'event_row.dart';
-import 'event_sheet.dart';
 
 /// One day, all-day events first and then by the time they start (calendar
 /// ADR-0001). The empty state names the day, so it never reads as a failure.
@@ -22,18 +18,16 @@ class DayAgenda extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final occurrences = week.on(day);
-    final controller = context.read<CalendarController>();
-    final view = context.read<HouseholdView>();
 
     if (occurrences.isEmpty) {
+      // No action here: the screen's own "Add an event" button is a thumb's
+      // reach away, and two identical calls to action read as a mistake.
       return NestEmptyView(
         title:
             '${AppCopy.calendarDayEmpty} '
             '${NestDates.relative(day, week.today).toLowerCase()}',
         message: AppCopy.calendarEmptyBody,
         icon: Icons.event_available_outlined,
-        actionLabel: AppCopy.calendarAddEvent,
-        onAction: () => _add(context, controller, view, day),
       );
     }
 
@@ -52,30 +46,6 @@ class DayAgenda extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-
-  Future<void> _add(
-    BuildContext context,
-    CalendarController controller,
-    HouseholdView view,
-    CalendarDate date,
-  ) async {
-    final draft = await showEventSheet(
-      context: context,
-      members: view.members,
-      today: controller.today,
-      initialDate: date,
-    );
-    if (draft is! EventSaved) return;
-    await controller.saveEvent(
-      title: draft.title,
-      note: draft.note,
-      date: draft.date,
-      startMinute: draft.startMinute,
-      endMinute: draft.endMinute,
-      recurrence: draft.recurrence,
-      memberIds: draft.memberIds,
     );
   }
 }

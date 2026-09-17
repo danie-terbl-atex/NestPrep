@@ -89,7 +89,8 @@ void main() {
     await pump(tester);
     await emit(tester);
     expect(find.text(AppCopy.calendarEmptyBody), findsOneWidget);
-    expect(find.text(AppCopy.calendarAddEvent), findsWidgets);
+    // Exactly one call to action: the screen's own button.
+    expect(find.text(AppCopy.calendarAddEvent), findsOneWidget);
   });
 
   testWidgets('shows human copy and a retry when the read fails', (

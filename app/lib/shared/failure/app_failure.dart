@@ -19,6 +19,14 @@ final class NotFoundFailure extends AppFailure {
   const NotFoundFailure();
 }
 
+/// The signed-in session is no longer one the backend accepts — the account was
+/// deleted or disabled, or the token was issued by a backend that has since
+/// been replaced. Nothing the person can do except sign in again, so the app
+/// signs them out rather than showing a read that will never succeed.
+final class SessionExpiredFailure extends AppFailure {
+  const SessionExpiredFailure();
+}
+
 /// Why a sign-in did not happen. Kept apart from the Firestore failures because
 /// the person can act on most of these, and because `cancelled` is not a
 /// failure at all — it is what backing out of the Google sheet looks like.

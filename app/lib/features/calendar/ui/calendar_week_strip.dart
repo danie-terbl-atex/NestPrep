@@ -110,12 +110,16 @@ class _DayCell extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                NestDates.weekday(date),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-                style: nest.text.caption.copyWith(
-                  color: nest.colors.inkTertiary,
+              // Seven columns on a phone leave no room to grow, so the day
+              // name shrinks to fit rather than losing a letter (`FE-13`).
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  NestDates.weekday(date),
+                  maxLines: 1,
+                  style: nest.text.caption.copyWith(
+                    color: nest.colors.inkTertiary,
+                  ),
                 ),
               ),
               const SizedBox(height: NestSpace.xxs),
@@ -133,10 +137,13 @@ class _DayCell extends StatelessWidget {
                         )
                       : null,
                 ),
-                child: Text(
-                  NestDates.dayOfMonth(date),
-                  maxLines: 1,
-                  style: nest.text.bodyStrong.copyWith(color: ink),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    NestDates.dayOfMonth(date),
+                    maxLines: 1,
+                    style: nest.text.bodyStrong.copyWith(color: ink),
+                  ),
                 ),
               ),
               const SizedBox(height: NestSpace.xxs),

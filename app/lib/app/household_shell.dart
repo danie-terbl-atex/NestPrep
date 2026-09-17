@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
+import '../features/observability/crash_reporting.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
 
@@ -27,6 +30,18 @@ class HouseholdShell extends StatefulWidget {
 class _HouseholdShellState extends State<HouseholdShell> {
   HouseholdClock? _clock;
   String? _clockTimeZone;
+  String? _reportedMemberId;
+
+  /// Ties this device's crash reports to the profile using it — an opaque
+  /// household key, never a name (observability ADR-0001, `ENG-22`). Done off
+  /// the frame, because a build is not where side effects belong (`FE-05`).
+  void _rememberMember(String? memberId) {
+    if (_reportedMemberId == memberId) return;
+    _reportedMemberId = memberId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(CrashReporting.setMember(memberId));
+    });
+  }
 
   /// One clock per timezone, kept across rebuilds so the widgets reading it do
   /// not rebuild every time the household document does (`FE-12`).
@@ -46,15 +61,18 @@ class _HouseholdShellState extends State<HouseholdShell> {
       isEmpty: (_) => false,
       onRetry: controller.retry,
       emptyBuilder: (_) => const SizedBox.shrink(),
-      dataBuilder: (context, view) => MultiProvider(
-        providers: [
-          Provider<HouseholdView>.value(value: view),
-          Provider<HouseholdClock>.value(
-            value: _clockFor(view.household.timeZone),
-          ),
-        ],
-        child: widget.child,
-      ),
+      dataBuilder: (context, view) {
+        _rememberMember(view.viewerMember?.id);
+        return MultiProvider(
+          providers: [
+            Provider<HouseholdView>.value(value: view),
+            Provider<HouseholdClock>.value(
+              value: _clockFor(view.household.timeZone),
+            ),
+          ],
+          child: widget.child,
+        );
+      },
     );
   }
 }

@@ -56,7 +56,19 @@ class NestScaffold extends StatelessWidget {
                   trailing: trailing,
                 ),
               Expanded(
-                child: Padding(padding: bodyPadding, child: body),
+                child: Padding(
+                  // A floating action floats *over* the body, so the body
+                  // reserves room for it — otherwise an empty state's message
+                  // ends up underneath it (`FE-14`).
+                  padding: bodyPadding.add(
+                    EdgeInsets.only(
+                      bottom: floatingAction == null
+                          ? 0
+                          : NestSize.controlLarge + NestSpace.lg,
+                    ),
+                  ),
+                  child: body,
+                ),
               ),
             ],
           ),

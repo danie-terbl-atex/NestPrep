@@ -13,6 +13,7 @@ AppFailure failureFromFirebase(Object error) {
     'permission-denied' => const PermissionDeniedFailure(),
     'unavailable' || 'deadline-exceeded' => const UnavailableFailure(),
     'not-found' => const NotFoundFailure(),
+    'unauthenticated' => const SessionExpiredFailure(),
     _ => UnknownFailure(error),
   };
 }

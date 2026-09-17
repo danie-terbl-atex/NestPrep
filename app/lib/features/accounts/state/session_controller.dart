@@ -145,8 +145,7 @@ final class SessionController extends ChangeNotifier {
     try {
       await _accounts.ensureAccount(user);
     } on AppFailure catch (failure) {
-      _session = AsyncFailure(failure);
-      notifyListeners();
+      await _failSession(failure);
       return;
     }
 
@@ -162,12 +161,24 @@ final class SessionController extends ChangeNotifier {
             notifyListeners();
           },
           onError: (Object error) {
-            _session = AsyncFailure(
-              error is AppFailure ? error : UnknownFailure(error),
+            unawaited(
+              _failSession(error is AppFailure ? error : UnknownFailure(error)),
             );
-            notifyListeners();
           },
         );
+  }
+
+  /// A failed session read. A session the backend no longer accepts is not
+  /// something retrying fixes, so the person is signed out and lands back on
+  /// the sign-in screen with copy that says why.
+  Future<void> _failSession(AppFailure failure) async {
+    if (failure is SessionExpiredFailure) {
+      _signInFailure = failure;
+      await signOut();
+      return;
+    }
+    _session = AsyncFailure(failure);
+    notifyListeners();
   }
 
   void _onAuthError(Object error) {

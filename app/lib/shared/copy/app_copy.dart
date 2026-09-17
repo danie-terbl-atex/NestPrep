@@ -208,6 +208,8 @@ abstract final class AppCopy {
     UnavailableFailure() =>
       'NestPrep cannot reach the server right now. Check your connection.',
     NotFoundFailure() => 'That is no longer there.',
+    SessionExpiredFailure() =>
+      'Your sign-in has expired. Please sign in again.',
     SignInFailure(:final problem) => signInProblem(problem),
     HouseholdFailure(:final problem) => householdProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
