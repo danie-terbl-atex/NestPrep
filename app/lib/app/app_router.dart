@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +29,7 @@ import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
+import 'design_gallery_access.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -135,7 +135,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         ),
       ],
     ),
-    if (kDebugMode)
+    if (DesignGalleryAccess.isAvailable)
       GoRoute(
         path: DesignGalleryScreen.path,
         builder: (context, state) => const DesignGalleryScreen(),
@@ -160,7 +160,9 @@ String _viewerMemberId(BuildContext context) =>
 /// exempt because it renders no data and debug builds use it before sign-in.
 @visibleForTesting
 String? redirectForSession(SessionController session, String location) {
-  if (kDebugMode && location == DesignGalleryScreen.path) return null;
+  if (DesignGalleryAccess.isAvailable && location == DesignGalleryScreen.path) {
+    return null;
+  }
 
   final state = session.session;
   if (state is! AsyncData<Session>) {
