@@ -1,0 +1,142 @@
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+/// `ENG-10`: errors are never swallowed. An empty catch is a decision to lose
+/// data silently, and it is on the workspace's never-skipped list.
+///
+/// The analyzer already refuses a `catch` with no `on` clause. What no lint
+/// looks at is whether the catch *does* anything, and whether a stream's errors
+/// have anywhere to go — a `listen` without `onError` sends a rules denial to
+/// the zone, where it becomes an unhandled error and a crash report instead of
+/// the banner the screen already knows how to draw (`FE-08`).
+void main() {
+  final repoRoot = Directory.current.parent;
+
+  List<File> sourcesIn(String path, String extension) {
+    final directory = Directory('${repoRoot.path}/$path');
+    if (!directory.existsSync()) return const [];
+    return directory
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((file) => file.path.endsWith(extension))
+        .where((file) => !file.path.endsWith('.g.dart'))
+        .where((file) => !file.path.endsWith('.freezed.dart'))
+        .toList();
+  }
+
+  final dart = sourcesIn('app/lib', '.dart');
+  final typescript = sourcesIn('functions/src', '.ts');
+
+  String at(File file, String source, int offset) {
+    final line = '\n'.allMatches(source.substring(0, offset)).length + 1;
+    return '${file.path.split('/NestPrep/').last}:$line';
+  }
+
+  test('it can see both codebases', () {
+    expect(dart, isNotEmpty);
+    expect(typescript, isNotEmpty);
+  });
+
+  test('no catch does nothing at all', () {
+    // Deliberately only matches a body with no nested braces — a catch that
+    // does something has statements, and this is looking for the ones that do
+    // not.
+    final emptyCatch = RegExp(r'catch\s*\([^)]*\)\s*\{([^{}]*)\}');
+    final comment = RegExp(r'//[^\n]*');
+    final offences = <String>[];
+
+    for (final file in [...dart, ...typescript]) {
+      final source = file.readAsStringSync();
+      for (final match in emptyCatch.allMatches(source)) {
+        final body = match.group(1)!.replaceAll(comment, '').trim();
+        if (body.isEmpty) {
+          offences.add('${at(file, source, match.start)}  an empty catch');
+        }
+      }
+    }
+
+    expect(
+      offences,
+      isEmpty,
+      reason: 'an empty catch is a decision to lose data silently (`ENG-10`)',
+    );
+  });
+
+  test('every stream a screen depends on sends its errors somewhere', () {
+    final listen = RegExp(r'\.listen\(', multiLine: true);
+    final offences = <String>[];
+
+    for (final file in dart) {
+      final source = file.readAsStringSync();
+      for (final match in listen.allMatches(source)) {
+        // The call runs to the matching close paren; `onError` has to be in it.
+        var depth = 0;
+        var index = match.end - 1;
+        for (; index < source.length; index++) {
+          if (source[index] == '(') depth++;
+          if (source[index] == ')') {
+            depth--;
+            if (depth == 0) break;
+          }
+        }
+        final call = source.substring(match.start, index);
+        if (!call.contains('onError')) {
+          offences.add(
+            '${at(file, source, match.start)}  a listen with no onError',
+          );
+        }
+      }
+    }
+
+    expect(
+      offences,
+      isEmpty,
+      reason:
+          'an error on a listener with no onError goes to the zone, where '
+          'it is an unhandled crash instead of the screen saying what '
+          'happened (`ENG-10`, `FE-08`)',
+    );
+  });
+
+  test('nothing quietly discards a future', () {
+    final offences = <String>[];
+    for (final file in dart) {
+      final source = file.readAsStringSync();
+      for (final match in RegExp(r'\.catchError\(').allMatches(source)) {
+        offences.add('${at(file, source, match.start)}  .catchError');
+      }
+    }
+
+    expect(
+      offences,
+      isEmpty,
+      reason:
+          'failures reach a screen through AppFailure and a controller, '
+          'not through a callback that returns a fallback value',
+    );
+  });
+
+  test('and no lint about errors has been silenced', () {
+    final silenced = RegExp(
+      r'//\s*ignore(_for_file)?:[^\n]*'
+      r'(empty_catches|avoid_catches_without_on_clauses|unawaited_futures'
+      r'|discarded_futures|only_throw_errors)',
+    );
+    final offences = <String>[];
+    for (final file in dart) {
+      final source = file.readAsStringSync();
+      for (final match in silenced.allMatches(source)) {
+        offences.add('${at(file, source, match.start)}  ${match.group(0)}');
+      }
+    }
+
+    expect(
+      offences,
+      isEmpty,
+      reason:
+          'the rule is the point; silencing it one line at a time is how '
+          'it stops being true',
+    );
+  });
+}
