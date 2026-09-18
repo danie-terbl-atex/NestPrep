@@ -161,7 +161,6 @@ class _HouseholdBody extends StatelessWidget {
               context.push(HouseholdRoute.wherePathFor(view.household.id)),
         ),
         const SizedBox(height: NestSpace.lg),
-        const SizedBox(height: NestSpace.xxl),
         // The household's papers hang off this screen rather than the bottom
         // bar, which stays at the four things a household does in a week
         // (documents ADR-0001).
