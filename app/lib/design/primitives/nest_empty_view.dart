@@ -26,7 +26,12 @@ class NestEmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final label = actionLabel;
-    return Center(
+    // Centred when there is room and scrollable when there is not. An empty
+    // state is the one surface with no content to push things off the edge, so
+    // an overflow here is always the *frame* being short — a small phone, a
+    // landscape keyboard, 200% text, or a screen that grew a row above it. It
+    // adapts rather than showing the stripes (`FE-08`, `FE-14`).
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(NestSpace.xxl),
         child: Column(

@@ -6,6 +6,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
@@ -77,7 +78,38 @@ class CalendarScreen extends StatelessWidget {
             onPrevious: controller.goToPreviousWeek,
             onNext: controller.goToNextWeek,
           ),
-          const SizedBox(height: NestSpace.lg),
+          const SizedBox(height: NestSpace.md),
+          Row(
+            children: [
+              Text(
+                AppCopy.calendarWeekFilter,
+                style: NestTheme.of(context).text.label
+                    .copyWith(color: NestTheme.of(context).colors.inkSecondary),
+              ),
+              const SizedBox(width: NestSpace.sm),
+              Expanded(
+                child: MemberFilter(
+                  members: view.members,
+                  selectedId: controller.memberFilter,
+                  onSelect: controller.filterBy,
+                  everybodyLabel: AppCopy.calendarEveryone,
+                ),
+              ),
+              // Paging three weeks out and back again is the long way home.
+              // The way back only exists when there is somewhere to go.
+              if (controller.weekStart != controller.today.weekStart) ...[
+                const SizedBox(width: NestSpace.sm),
+                NestButton(
+                  label: AppCopy.calendarThisWeek,
+                  variant: NestButtonVariant.ghost,
+                  size: NestButtonSize.small,
+                  isExpanded: false,
+                  onPressed: controller.goToThisWeek,
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: NestSpace.md),
           Expanded(
             child: NestAsyncView<CalendarWeek>(
               state: controller.week,

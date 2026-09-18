@@ -134,9 +134,7 @@ void main() {
     // exists is this test lying.
     const noScreenYet = {
       'sessionStarting',
-      'calendarThisWeek',
       'calendarEmptyTitle',
-      'calendarWeekFilter',
       'householdMembers',
     };
 

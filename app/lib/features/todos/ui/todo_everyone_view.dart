@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../../shared/ui/member_filter.dart';
 import '../../household/model/household_view.dart';
-import '../../household/model/member.dart';
 import '../model/task_occurrence.dart';
 import '../model/todo_board.dart';
 import '../state/todo_controller.dart';
@@ -29,10 +29,11 @@ class TodoEveryoneView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _MemberFilter(
+        MemberFilter(
           members: members,
           selectedId: controller.memberFilter,
           onSelect: controller.filterBy,
+          everybodyLabel: AppCopy.todosAllMembers,
         ),
         const SizedBox(height: NestSpace.lg),
         RoutineList(board: board),
@@ -47,43 +48,6 @@ class TodoEveryoneView extends StatelessWidget {
               : _GroupedList(occurrences: occurrences, board: board),
         ),
       ],
-    );
-  }
-}
-
-class _MemberFilter extends StatelessWidget {
-  const _MemberFilter({
-    required this.members,
-    required this.selectedId,
-    required this.onSelect,
-  });
-
-  final List<Member> members;
-  final String? selectedId;
-  final ValueChanged<String?> onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: NestSize.controlSmall,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          NestChip(
-            label: AppCopy.todosAllMembers,
-            isSelected: selectedId == null,
-            onTap: () => onSelect(null),
-          ),
-          for (final member in members) ...[
-            const SizedBox(width: NestSpace.sm),
-            NestChip(
-              label: member.displayName,
-              isSelected: selectedId == member.id,
-              onTap: () => onSelect(member.id),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

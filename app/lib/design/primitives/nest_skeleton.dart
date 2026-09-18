@@ -82,13 +82,17 @@ class _NestSkeletonRows extends NestSkeleton {
 class _NestSkeletonRowsState extends State<_NestSkeletonRows> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var index = 0; index < widget.count; index++) ...[
-          const NestSkeleton(height: NestSize.controlLarge),
-          if (index < widget.count - 1) const SizedBox(height: NestSpace.md),
-        ],
-      ],
+    // A placeholder must never be the thing that overflows. It is standing in
+    // for content that will scroll, in a frame whose height it cannot know —
+    // a short phone, a landscape keyboard, or a screen that grew a row above
+    // it — so it scrolls too, and shows as many rows as there is room for
+    // (`FE-08`, `FE-14`).
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: widget.count,
+      separatorBuilder: (_, _) => const SizedBox(height: NestSpace.md),
+      itemBuilder: (_, _) => const NestSkeleton(height: NestSize.controlLarge),
     );
   }
 }
