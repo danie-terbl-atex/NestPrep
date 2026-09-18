@@ -7,6 +7,8 @@ import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -160,6 +162,13 @@ List<ModelFixture> modelFixtures() {
     createdAt: at,
   );
   const plan = WeekPlan(id: '2026-09-21', slots: {'2026-09-21-dinner': 'ml1'});
+  final location = MemberLocation(
+    id: 'm1',
+    point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+    accuracyMetres: 12,
+    reportedAt: at,
+    sharingUntil: at.add(const Duration(hours: 1)),
+  );
 
   return [
     ModelFixture(
@@ -306,6 +315,18 @@ List<ModelFixture> modelFixtures() {
       note:
           '`nameKey` is what the "have we typed this before" query reads; it '
           'is derived from `name` and never typed.',
+    ),
+    ModelFixture(
+      label: 'MemberLocation',
+      id: 'm1',
+      value: location,
+      toJson: location.toJson,
+      fromJson: MemberLocation.fromJson,
+      keys: const {'point', 'accuracyMetres', 'reportedAt', 'sharingUntil'},
+      note:
+          'the document id is the member id, which is what makes the rule '
+          '`isOwnMember` on the path and not on a field — rename the key and '
+          'anybody could write anybody"s position (live-location ADR-0001).',
     ),
     ModelFixture(
       label: 'WeekPlan',

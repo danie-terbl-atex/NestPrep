@@ -49,6 +49,10 @@ void main() {
         'writes Firestore',
     'lib/features/household/data/callable_household_directory.dart':
         'calls Functions',
+    'lib/features/live_location/data/firestore_live_location_repository.dart':
+        'writes Firestore',
+    'lib/features/live_location/data/geolocator_location_source.dart':
+        'wraps the platform location plugin',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -58,6 +62,10 @@ void main() {
     'lib/features/groceries/data/grocery_repository.dart': 'interface only',
     'lib/features/household/data/household_repository.dart': 'interface only',
     'lib/features/meal_planning/data/meal_repository.dart': 'interface only',
+    'lib/features/live_location/data/live_location_repository.dart':
+        'interface only',
+    'lib/features/live_location/data/location_reporter.dart': 'interface only',
+    'lib/features/live_location/data/location_source.dart': 'interface only',
     'lib/features/todos/data/todo_repository.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 

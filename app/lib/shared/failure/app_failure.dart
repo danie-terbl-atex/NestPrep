@@ -94,6 +94,30 @@ final class HouseholdFailure extends AppFailure {
   final HouseholdProblem problem;
 }
 
+/// Why this device is not reporting where it is. Kept apart from the Firestore
+/// failures because none of these is the backend saying no — every one of them
+/// is something the person holding the phone decided, or can undo, and nobody
+/// else in the household can answer for them (live-location ADR-0002).
+enum LocationProblem {
+  /// Asked, and refused this time. Asking again is allowed.
+  permissionRefused,
+
+  /// Refused in a way only the settings screen can undo.
+  permissionRefusedForever,
+
+  /// Location is switched off on the device itself, for every app.
+  switchedOff,
+
+  /// A share that had started stopped producing positions.
+  reportingStopped,
+}
+
+final class LocationFailure extends AppFailure {
+  const LocationFailure(this.problem);
+
+  final LocationProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

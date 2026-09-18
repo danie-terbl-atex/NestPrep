@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
@@ -142,6 +143,23 @@ class _HouseholdBody extends StatelessWidget {
                   : () => _remove(context, member),
             ),
           ),
+        const SizedBox(height: NestSpace.lg),
+        // The way to the live-location screen. It sits with the people rather
+        // than in the bottom bar, and says what it is before it is tapped —
+        // that sharing is each person's own, and ends on its own.
+        NestListRow(
+          leading: const NestIconTile(icon: Icons.person_pin_circle_outlined),
+          title: AppCopy.locationTitle,
+          subtitle: AppCopy.locationYoursBody,
+          trailing: Icon(
+            Icons.chevron_right,
+            size: NestSize.iconMedium,
+            color: NestTheme.of(context).colors.inkTertiary,
+          ),
+          onTap: () =>
+              context.push(HouseholdRoute.wherePathFor(view.household.id)),
+        ),
+        const SizedBox(height: NestSpace.lg),
         const SizedBox(height: NestSpace.xxl),
         NestButton(
           label: AppCopy.householdLeave,

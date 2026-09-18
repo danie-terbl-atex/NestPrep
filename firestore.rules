@@ -389,6 +389,56 @@ service cloud.firestore {
         allow delete: if isAdmin(householdId);
       }
 
+      // ---- live location (live-location ADR-0001, ADR-0002) ----
+      //
+      // The document id is the member id, and that is the whole authorisation
+      // story. `isOwnMember` on the path means a member writes only their own
+      // position; there is no field anybody could put somebody else's id into.
+      // It also means **an unclaimed profile cannot have a location at all**:
+      // its `claimedBy` is null, no uid is null, so no caller anywhere can
+      // create that document.
+      //
+      // An admin has no write here. Starting or extending somebody else's
+      // sharing is the one thing this feature must not permit, and it is
+      // refused by the path rather than by a check that could be got wrong.
+      match /memberLocations/{memberId} {
+        // Membership, and nothing about the window. A read rule comparing
+        // `request.time` to document data fails the *whole* listener the
+        // moment any one member's window closes, because Firestore evaluates a
+        // query against every document in its result and a listener's bounds
+        // are fixed when it opens. The window is enforced on write instead, and
+        // the client reads a closed one as *not sharing* (live-location
+        // ADR-0001).
+        allow read: if isMember(householdId);
+
+        allow create, update: if isOwnMember(householdId, memberId)
+          && request.resource.data.keys().hasOnly(
+               ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil'])
+          && request.resource.data.point is latlng
+          && request.resource.data.accuracyMetres is int
+          && request.resource.data.accuracyMetres >= 0
+          && isServerTime('reportedAt')
+          && isBoundedShare(request.resource.data.sharingUntil);
+
+        // Stopping is deleting: nothing is left for the household to read
+        // (live-location ADR-0002). An admin may clear the pin a removed
+        // member's dead phone left behind — a delete only ever removes what
+        // somebody can see, never reveals it.
+        allow delete: if isOwnMember(householdId, memberId)
+          || isAdmin(householdId);
+
+        // The window has to end, and it has to still be open. The first half is
+        // what stops a share running for ever; the second is what actually ends
+        // one, because a device whose window has passed can no longer say
+        // anything. The number is mirrored in
+        // `LiveLocationRepository.longestShare`.
+        function isBoundedShare(sharingUntil) {
+          return sharingUntil is timestamp
+            && sharingUntil > request.time
+            && sharingUntil < request.time + duration.value(4, 'h');
+        }
+      }
+
       // One occurrence of a repeating event, skipped. Same shape and the same
       // reasons as a task completion (todos ADR-0002).
       match /eventExceptions/{exceptionId} {

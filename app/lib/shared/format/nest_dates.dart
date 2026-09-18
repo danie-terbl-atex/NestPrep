@@ -68,6 +68,15 @@ abstract final class NestDates {
   static String dayOfMonth(CalendarDate date) =>
       _dayOnly.format(_asDateTime(date));
 
+  /// How long ago something happened, as a person would say it, rounded down.
+  /// Anything under a minute is *just now*, because a household reading a live
+  /// screen does not want a number that changes while they look at it.
+  static String ago(Duration age) {
+    if (age < const Duration(minutes: 1)) return AppCopy.timeJustNow;
+    if (age.inMinutes < 60) return AppCopy.minutesAgo(age.inMinutes);
+    return AppCopy.hoursAgo(age.inHours);
+  }
+
   /// A wall-clock time, from minutes since midnight in the household's zone.
   static String timeOfDay(int minutesOfDay) {
     final hour = minutesOfDay ~/ 60;
