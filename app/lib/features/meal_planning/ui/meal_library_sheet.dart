@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/ui/rename_sheet.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../state/meal_plan_controller.dart';
@@ -48,6 +49,9 @@ class _MealLibraryBody extends StatelessWidget {
               child: NestListRow(
                 key: ValueKey(meal.id),
                 title: meal.name,
+                // Tapping the name edits it; the bin stays its own target, so
+                // a mis-tap renames rather than deletes.
+                onTap: () => _rename(context, meal),
                 trailing: NestIconButton(
                   icon: Icons.delete_outline,
                   label: AppCopy.mealsDelete,
@@ -59,6 +63,20 @@ class _MealLibraryBody extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// A meal typed in a hurry keeps its spelling for ever otherwise, and every
+  /// week that used it shows the typo — the slot points at the meal, so a
+  /// rename fixes all of them at once.
+  Future<void> _rename(BuildContext context, Meal meal) async {
+    final name = await showRenameSheet(
+      context: context,
+      title: AppCopy.mealsRename,
+      label: AppCopy.mealsPickTitle,
+      initial: meal.name,
+    );
+    if (name == null) return;
+    await controller.renameMeal(meal.id, name);
   }
 
   Future<void> _delete(BuildContext context, Meal meal) async {

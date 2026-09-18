@@ -8,6 +8,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
 import '../state/household_controller.dart';
+import 'household_settings_sheet.dart';
 import 'invite_sheet.dart';
 import 'member_row.dart';
 import 'member_sheet.dart';
@@ -95,13 +96,28 @@ class _HouseholdBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        NestSectionHeader(
-          title: view.household.name,
-          actionIcon: view.viewerIsAdmin ? Icons.person_add_alt : null,
-          actionLabel: view.viewerIsAdmin ? AppCopy.householdAddMember : null,
-          onAction: view.viewerIsAdmin
-              ? () => HouseholdScreen._addMember(context, controller)
-              : null,
+        Row(
+          children: [
+            Expanded(
+              child: NestSectionHeader(
+                title: view.household.name,
+                actionIcon: view.viewerIsAdmin ? Icons.person_add_alt : null,
+                actionLabel: view.viewerIsAdmin
+                    ? AppCopy.householdAddMember
+                    : null,
+                onAction: view.viewerIsAdmin
+                    ? () => HouseholdScreen._addMember(context, controller)
+                    : null,
+              ),
+            ),
+            if (view.viewerIsAdmin)
+              NestIconButton(
+                icon: Icons.tune,
+                label: AppCopy.householdEditHousehold,
+                variant: NestIconButtonVariant.plain,
+                onPressed: () => _editHousehold(context, view),
+              ),
+          ],
         ),
         const SizedBox(height: NestSpace.md),
         for (final member in view.members)
@@ -140,6 +156,21 @@ class _HouseholdBody extends StatelessWidget {
           ),
         const SizedBox(height: NestSpace.huge),
       ],
+    );
+  }
+
+  /// The household's name and the zone its days are counted in. The zone is
+  /// what every due date and every all-day event means (`ENG-21`), so a
+  /// household that moves changes it here once.
+  Future<void> _editHousehold(BuildContext context, HouseholdView view) async {
+    final settings = await showHouseholdSettingsSheet(
+      context: context,
+      household: view.household,
+    );
+    if (settings == null) return;
+    await controller.renameHousehold(
+      name: settings.name,
+      timeZone: settings.timeZone,
     );
   }
 

@@ -267,6 +267,96 @@ void main() {
     expect(find.byType(NestBanner), findsNothing);
   });
 
+  group('the household itself', () {
+    Finder fieldLabelled(String label) => find.descendant(
+      of: find.ancestor(
+        of: find.text(label),
+        matching: find.byType(NestTextField),
+      ),
+      matching: find.byType(TextField),
+    );
+
+    testWidgets('an admin is offered its settings', (tester) async {
+      await pump(tester);
+      await emit(tester);
+      expect(find.byIcon(Icons.tune), findsOneWidget);
+    });
+
+    testWidgets('a helper is not', (tester) async {
+      await pump(tester, viewerUid: Fixtures.thandiUid);
+      await emit(tester);
+      expect(
+        find.byIcon(Icons.tune),
+        findsNothing,
+        reason: 'the rules refuse it, so the screen must not offer it',
+      );
+    });
+
+    testWidgets('renaming it, and moving its time zone, is one write', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester);
+
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        fieldLabelled(AppCopy.householdNameLabel),
+        'The Parker-Dlaminis',
+      );
+      await tester.enterText(
+        fieldLabelled(AppCopy.householdTimeZoneLabel),
+        'Europe/London',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
+      await tester.pumpAndSettle();
+
+      final saved = repository.renamed.single;
+      expect(saved.name, 'The Parker-Dlaminis');
+      expect(
+        saved.timeZone,
+        'Europe/London',
+        reason: 'the zone is what every due date and all-day event means',
+      );
+    });
+
+    testWidgets('changing nothing is not offered as a save', (tester) async {
+      await pump(tester);
+      await emit(tester);
+
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+
+      final save = tester.widget<NestButton>(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      expect(save.onPressed, isNull);
+    });
+
+    testWidgets('and an empty zone is refused before it is sent', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester);
+
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+      await tester.enterText(fieldLabelled(AppCopy.householdTimeZoneLabel), '');
+      await tester.pumpAndSettle();
+
+      final save = tester.widget<NestButton>(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      expect(
+        save.onPressed,
+        isNull,
+        reason: 'a household with no zone has no idea what day it is',
+      );
+    });
+  });
+
   testWidgets('it holds at phone width in dark at 200% text', (tester) async {
     tester.view.physicalSize = const Size(360 * 3, 800 * 3);
     tester.view.devicePixelRatio = 3;

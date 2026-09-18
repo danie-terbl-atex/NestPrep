@@ -102,6 +102,65 @@ void main() {
     expect(repository.deletedMeals, isEmpty);
   });
 
+  group('renaming', () {
+    Finder fieldLabelled(String label) => find.descendant(
+      of: find.ancestor(
+        of: find.text(label),
+        matching: find.byType(NestTextField),
+      ),
+      matching: find.byType(TextField),
+    );
+
+    testWidgets('a typo can be fixed, and every week that used it follows', (
+      tester,
+    ) async {
+      await open(tester, library: [meal('m1', 'Spagetti')]);
+
+      await tester.tap(find.text('Spagetti'));
+      await tester.pumpAndSettle();
+      expect(find.text(AppCopy.mealsRename), findsWidgets);
+
+      await tester.enterText(
+        fieldLabelled(AppCopy.mealsPickTitle),
+        'Spaghetti',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
+      await tester.pumpAndSettle();
+
+      final renamed = repository.renamedMeals.single;
+      expect(renamed.mealId, 'm1');
+      expect(renamed.name, 'Spaghetti');
+    });
+
+    testWidgets('saving the same name is not offered', (tester) async {
+      await open(tester, library: [meal('m1', 'Spaghetti')]);
+
+      await tester.tap(find.text('Spaghetti'));
+      await tester.pumpAndSettle();
+
+      final save = tester.widget<NestButton>(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      expect(
+        save.onPressed,
+        isNull,
+        reason: 'a rename to the same name is a write that changes nothing',
+      );
+    });
+
+    testWidgets('closing without saving renames nothing', (tester) async {
+      await open(tester, library: [meal('m1', 'Spaghetti')]);
+
+      await tester.tap(find.text('Spaghetti'));
+      await tester.pumpAndSettle();
+      Navigator.of(tester.element(find.byType(NestTextField))).pop();
+      await tester.pumpAndSettle();
+
+      expect(repository.renamedMeals, isEmpty);
+    });
+  });
+
   testWidgets('and deletes when it is confirmed', (tester) async {
     await open(tester, library: [meal('m1', 'Spaghetti')]);
 

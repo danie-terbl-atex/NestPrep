@@ -187,6 +187,8 @@ abstract final class AppCopy {
   static const householdSave = 'Save';
   static const householdCancel = 'Cancel';
   static const householdTimeZoneLabel = 'Time zone';
+  static const householdEditHousehold = 'Household settings';
+  static const householdTimeZoneHint = 'An IANA name, like Africa/Johannesburg';
   static const householdProblemLastAdmin =
       'You are the only admin. Make somebody else an admin before you leave.';
   static const householdMemberNameHint = 'Their name';

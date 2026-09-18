@@ -137,9 +137,7 @@ void main() {
       'calendarThisWeek',
       'calendarEmptyTitle',
       'calendarWeekFilter',
-      'mealsRename',
       'householdMembers',
-      'householdTimeZoneLabel',
     };
 
     expect(
