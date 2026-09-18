@@ -4,6 +4,7 @@ import '../../design/nest_kit.dart';
 import '../copy/app_copy.dart';
 import '../recurrence/recurrence_rule.dart';
 import '../time/calendar_date.dart';
+import 'nest_date_field.dart';
 
 /// Builds the small subset of recurrence NestPrep supports (foundation
 /// ADR-0005): never, daily, weekly on chosen weekdays, or monthly — with an
@@ -72,9 +73,52 @@ class RecurrenceEditor extends StatelessWidget {
                 onChanged(current.copyWith(weekdays: weekdays)),
           ),
         ],
+        if (current != null) ...[
+          const SizedBox(height: NestSpace.lg),
+          Text(
+            AppCopy.repeatUntilLabel,
+            style: nest.text.label.copyWith(color: nest.colors.inkSecondary),
+          ),
+          const SizedBox(height: NestSpace.sm),
+          // Forever is the default and the common case — a school run has no
+          // end date — so it is a choice of its own rather than an empty field
+          // somebody has to work out how to clear.
+          Wrap(
+            spacing: NestSpace.sm,
+            runSpacing: NestSpace.sm,
+            children: [
+              NestChip(
+                label: AppCopy.repeatForever,
+                isSelected: current.until == null,
+                onTap: () => onChanged(current.withNoEnd()),
+              ),
+              NestChip(
+                label: AppCopy.repeatUntilLabel,
+                isSelected: current.until != null,
+                onTap: () => onChanged(
+                  current.copyWith(until: current.until ?? _defaultEnd()),
+                ),
+              ),
+            ],
+          ),
+          if (current.until != null) ...[
+            const SizedBox(height: NestSpace.sm),
+            NestDateField(
+              label: AppCopy.repeatUntilLabel,
+              value: current.until!,
+              today: firstDate,
+              onChanged: (date) => onChanged(current.copyWith(until: date)),
+            ),
+          ],
+        ],
       ],
     );
   }
+
+  /// A year out: far enough that nobody has to pick again next month, near
+  /// enough that "until" means something.
+  CalendarDate _defaultEnd() =>
+      CalendarDate(firstDate.year + 1, firstDate.month, 1);
 
   /// Keeps the interval and end date when somebody changes their mind about the
   /// frequency, because they usually mean "the same thing, but monthly".

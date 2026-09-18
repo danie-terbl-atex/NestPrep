@@ -54,6 +54,14 @@ abstract class RecurrenceRule with _$RecurrenceRule {
       weekdays.every(Weekday.isValid) &&
       (frequency != RecurrenceFrequency.weekly || weekdays.length <= 7);
 
+  /// The same rule, repeating forever. `copyWith` cannot put a null back into
+  /// a nullable field, so clearing an end date needs a name of its own.
+  RecurrenceRule withNoEnd() => RecurrenceRule(
+    frequency: frequency,
+    interval: interval,
+    weekdays: weekdays,
+  );
+
   /// An interval nobody means, and past which expansion is pointless work.
   static const maxInterval = 366;
 }

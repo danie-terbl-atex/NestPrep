@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/copy/app_copy.dart';
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -54,7 +55,7 @@ class _NestSkeletonState extends State<NestSkeleton>
   Widget build(BuildContext context) {
     final color = NestTheme.of(context).colors.skeleton;
     return Semantics(
-      label: 'Loading',
+      label: AppCopy.loading,
       child: FadeTransition(
         opacity: _pulse,
         child: DecoratedBox(
