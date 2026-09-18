@@ -1,0 +1,22 @@
+# Code generation for this app. `dart run build_runner build
+# --delete-conflicting-outputs` after changing it, and commit what moves.
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Nest a model inside another and the generated `toJson` writes the
+          # object itself, not its map — because `jsonEncode` calls `toJson()`
+          # on whatever it meets, so for a JSON string that is correct.
+          #
+          # **Firestore never calls `toJson()`.** It walks the map and refuses
+          # any value that is not one of its own types, so a nested model is a
+          # write that fails at runtime against the real backend while every
+          # test that does not touch the SDK stays green. `Task`, `Routine` and
+          # `HouseholdEvent` all nest a `RecurrenceRule`, and creating one was
+          # broken this way while updating one — which hand-builds its map —
+          # worked.
+          #
+          # `test/shared/firestore/writes_are_firestore_encodable_test.dart`
+          # fails if this is ever turned off again.
+          explicit_to_json: true

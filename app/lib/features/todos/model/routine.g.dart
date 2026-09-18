@@ -28,7 +28,7 @@ _Routine _$RoutineFromJson(Map<String, dynamic> json) => _Routine(
 Map<String, dynamic> _$RoutineToJson(_Routine instance) => <String, dynamic>{
   'name': instance.name,
   'firstDate': const CalendarDateConverter().toJson(instance.firstDate),
-  'recurrence': instance.recurrence,
+  'recurrence': instance.recurrence?.toJson(),
   'defaultAssigneeIds': instance.defaultAssigneeIds,
   'color': const MemberColorConverter().toJson(instance.color),
   'createdBy': instance.createdBy,

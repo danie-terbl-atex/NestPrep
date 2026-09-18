@@ -33,7 +33,7 @@ Map<String, dynamic> _$HouseholdEventToJson(_HouseholdEvent instance) =>
       'date': const CalendarDateConverter().toJson(instance.date),
       'startMinute': instance.startMinute,
       'endMinute': instance.endMinute,
-      'recurrence': instance.recurrence,
+      'recurrence': instance.recurrence?.toJson(),
       'memberIds': instance.memberIds,
       'createdBy': instance.createdBy,
       'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),

@@ -28,7 +28,7 @@ Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
   'title': instance.title,
   'note': instance.note,
   'dueDate': const CalendarDateConverter().toJson(instance.dueDate),
-  'recurrence': instance.recurrence,
+  'recurrence': instance.recurrence?.toJson(),
   'assigneeIds': instance.assigneeIds,
   'createdBy': instance.createdBy,
   'routineId': instance.routineId,
