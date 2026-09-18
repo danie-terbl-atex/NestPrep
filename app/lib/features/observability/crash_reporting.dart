@@ -30,15 +30,36 @@ abstract final class CrashReporting {
     // Errors from the framework: a build, a layout, a gesture callback.
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
-      crashlytics.recordFlutterFatalError(details);
+      _report(() => crashlytics.recordFlutterFatalError(details));
     };
 
     // Everything else that reaches the engine unhandled, including errors from
     // futures nobody awaited.
     PlatformDispatcher.instance.onError = (error, stack) {
-      unawaited(crashlytics.recordError(error, stack, fatal: true));
+      _report(() => crashlytics.recordError(error, stack, fatal: true));
       return true;
     };
+  }
+
+  /// Reports without ever throwing.
+  ///
+  /// These two handlers *are* the app's last resort: whatever reaches them has
+  /// already gone wrong. A report that fails must not add a second failure on
+  /// top — and because `PlatformDispatcher.onError` is where an unawaited
+  /// future's error lands, a throw from inside it comes straight back to
+  /// itself. Nothing is awaited here, so nothing can be awaited badly.
+  static void _report(Future<void> Function() send) {
+    unawaited(() async {
+      try {
+        await send();
+      } on Object catch (error) {
+        AppLog.failure(
+          'crashlytics report',
+          code: 'report-failed',
+          error: error,
+        );
+      }
+    }());
   }
 
   /// Ties the reports from this device to a member profile, so a crash can be

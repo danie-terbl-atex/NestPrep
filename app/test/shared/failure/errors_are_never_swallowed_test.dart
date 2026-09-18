@@ -117,6 +117,57 @@ void main() {
     );
   });
 
+  test('every fire-and-forget future has somewhere for its failure to go', () {
+    // `unawaited` drops the future's errors into the zone. That is fine when
+    // the future cannot fail, or handles its own — and it is how crash
+    // reporting nearly took the app down with it: the shell called
+    // `setMember` without awaiting, so a Crashlytics failure became an
+    // unhandled error, and `PlatformDispatcher.onError` reported *that* by
+    // calling Crashlytics again.
+    //
+    // So each one is listed with why it is safe. A new name here is a fire and
+    // forget nobody has thought about yet.
+    const accountedFor = {
+      // Cancelling a subscription in dispose. There is no screen left to tell.
+      '_cancel()',
+      '_authSubscription?.cancel()',
+      '_accountSubscription?.cancel()',
+      // Cancel and re-listen; the new stream's errors go to its onError.
+      '_resubscribeToExceptions()',
+      '_resubscribeToWeek()',
+      // Handles its own failure — see the try/catch inside it.
+      'CrashReporting.setMember(memberId)',
+      // The guarded reporter itself: an async closure that catches everything.
+      '() async {',
+      // `signOut` catches its own AppFailure.
+      '_failSession(error is AppFailure ? error : UnknownFailure(error))',
+      // Controllers that keep a refusal instead of throwing it.
+      'controller.joinWithCode(_code.text.trim())',
+      'controller.createHousehold(',
+    };
+
+    final unaccounted = <String>[];
+    for (final file in dart) {
+      final source = file.readAsStringSync();
+      for (final match in RegExp(
+        r'unawaited\(\s*([^\n]*)',
+      ).allMatches(source)) {
+        final argument = (match.group(1) ?? '').trim().replaceAll(',', '');
+        if (accountedFor.any(argument.startsWith)) continue;
+        unaccounted.add('${at(file, source, match.start)}  $argument');
+      }
+    }
+
+    expect(
+      unaccounted,
+      isEmpty,
+      reason:
+          'an unawaited future whose failure nobody handles becomes an '
+          'unhandled error, and the thing that reports unhandled errors is '
+          'itself an unawaited future (`ENG-10`)',
+    );
+  });
+
   test('and no lint about errors has been silenced', () {
     final silenced = RegExp(
       r'//\s*ignore(_for_file)?:[^\n]*'
