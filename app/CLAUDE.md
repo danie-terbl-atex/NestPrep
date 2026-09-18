@@ -39,7 +39,10 @@ flutterfire configure --project=nestprep-643b7 --platforms=android \
   --out=lib/app/firebase_options.dart
 ```
 
-Emulator ports are fixed in the root `firebase.json` and mirrored in `lib/app/emulator_endpoint.dart`.
+Emulator ports are fixed in the root `firebase.json` and mirrored in four places —
+`lib/app/emulator_endpoint.dart`, the emulator and rules harnesses, and the seed script.
+`functions/test/unit/emulator_ports.test.ts` checks every copy against `firebase.json`, because a
+mirror that has stopped mirroring reads as a broken emulator rather than a changed number.
 
 ## Running it from VS Code
 
