@@ -38,10 +38,4 @@ abstract class Task with _$Task {
   const Task._();
 
   factory Task.fromJson(Map<String, Object?> json) => _$TaskFromJson(json);
-
-  bool get isForAnyone => assigneeIds.isEmpty;
-
-  bool isFor(String memberId) => isForAnyone || assigneeIds.contains(memberId);
-
-  bool get belongsToARoutine => routineId != null;
 }

@@ -11,11 +11,22 @@ enum BackendTarget {
     defaultValue: 'emulator',
   );
 
-  static BackendTarget fromEnvironment() => switch (_defined) {
+  static BackendTarget fromEnvironment() => fromName(_defined);
+
+  /// Parses the define's value.
+  ///
+  /// Separate from [fromEnvironment] because `_defined` is a compile-time
+  /// constant: under `flutter test` it is always `'emulator'`, so the `'cloud'`
+  /// branch — the one every real cloud build takes — and the refusal below are
+  /// both unreachable through [fromEnvironment]. A typo in either would have
+  /// surfaced as an app that throws on launch, and only on the build nobody
+  /// runs locally. Named to match `MemberColor.fromName` and
+  /// `MemberRole.fromName`.
+  static BackendTarget fromName(String name) => switch (name) {
     'emulator' => BackendTarget.emulator,
     'cloud' => BackendTarget.cloud,
     _ => throw ArgumentError.value(
-      _defined,
+      name,
       defineName,
       'expected "emulator" or "cloud"',
     ),

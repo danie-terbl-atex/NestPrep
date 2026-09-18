@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../shared/audience/member_audience.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/recurrence/calendar_date_converter.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
@@ -44,9 +45,9 @@ abstract class HouseholdEvent with _$HouseholdEvent {
 
   bool get isAllDay => startMinute == null;
 
-  bool get isForEveryone => memberIds.isEmpty;
+  bool get isForEveryone => MemberAudience.isEveryone(memberIds);
 
-  bool isFor(String memberId) => isForEveryone || memberIds.contains(memberId);
+  bool isFor(String memberId) => MemberAudience.includes(memberIds, memberId);
 
   /// Where a timed event sorts within its day. All-day events come first, which
   /// is what `-1` buys without a second sort key.

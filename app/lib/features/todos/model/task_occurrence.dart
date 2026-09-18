@@ -1,3 +1,4 @@
+import '../../../shared/audience/member_audience.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/time/calendar_date.dart';
 import 'routine.dart';
@@ -28,9 +29,9 @@ class TaskOccurrence {
 
   bool get isDone => completion != null;
 
-  bool get isForAnyone => assigneeIds.isEmpty;
+  bool get isForAnyone => MemberAudience.isEveryone(assigneeIds);
 
-  bool isFor(String memberId) => isForAnyone || assigneeIds.contains(memberId);
+  bool isFor(String memberId) => MemberAudience.includes(assigneeIds, memberId);
 
   bool isOverdue(CalendarDate today) => !isDone && date.isBefore(today);
 
