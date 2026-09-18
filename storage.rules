@@ -74,7 +74,8 @@ service firebase.storage {
     match /households/{householdId}/documents/{documentId} {
       allow read: if isMember(householdId);
 
-      allow create: if isMember(householdId)
+      allow create: if resource == null
+        && isMember(householdId)
         && isSmallEnough()
         && isAKeptType()
         && isStampedWithTheCaller();

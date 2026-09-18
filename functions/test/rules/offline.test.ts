@@ -31,6 +31,7 @@ const DATE = '2026-09-18';
 const WEEK = '2026-09-14';
 
 const offline: Firestore[] = [];
+const queued: Promise<unknown>[] = [];
 
 /** Takes a client off the network, and guarantees it comes back. */
 async function goOffline(db: Firestore): Promise<void> {
@@ -38,11 +39,27 @@ async function goOffline(db: Firestore): Promise<void> {
   await disableNetwork(db);
 }
 
+/**
+ * A write made while the client is offline. Its promise settles only on
+ * reconnect, so the test asserts the outcome through the database rather than
+ * through the promise — but the promise must still be settled before the test
+ * ends. One that is left in flight lands after a later file has cleared
+ * Firestore, where `isMember` can no longer find its household; the rule
+ * refuses it, and the rejection surfaces with nobody to catch it, attributed to
+ * whichever test happens to be running then.
+ */
+function whileOffline(write: Promise<unknown>): void {
+  queued.push(write);
+}
+
 async function reconnectEverything(): Promise<void> {
   while (offline.length > 0) {
     const db = offline.pop();
     if (db) await enableNetwork(db);
   }
+  // Settled, not awaited for success: what each one should have done is
+  // asserted above, in the test that queued it.
+  await Promise.allSettled(queued.splice(0));
 }
 
 describe('a member who is offline', () => {
@@ -65,14 +82,16 @@ describe('a member who is offline', () => {
     await goOffline(thandi);
 
     // Deliberately not awaited: offline, this settles only on reconnect.
-    void setDoc(doc(thandi, `${home}/groceryItems/eggs`), {
-      name: 'Eggs',
-      quantity: null,
-      addedBy: THANDI_MEMBER,
-      addedAt: serverTimestamp(),
-      boughtAt: null,
-      boughtBy: null,
-    });
+    whileOffline(
+      setDoc(doc(thandi, `${home}/groceryItems/eggs`), {
+        name: 'Eggs',
+        quantity: null,
+        addedBy: THANDI_MEMBER,
+        addedAt: serverTimestamp(),
+        boughtAt: null,
+        boughtBy: null,
+      }),
+    );
 
     const own = await getDoc(doc(thandi, `${home}/groceryItems/eggs`));
     expect(own.get('name')).toBe('Eggs');
@@ -82,14 +101,16 @@ describe('a member who is offline', () => {
   it('is invisible to everyone else until they are back', async () => {
     await goOffline(thandi);
 
-    void setDoc(doc(thandi, `${home}/groceryItems/eggs`), {
-      name: 'Eggs',
-      quantity: null,
-      addedBy: THANDI_MEMBER,
-      addedAt: serverTimestamp(),
-      boughtAt: null,
-      boughtBy: null,
-    });
+    whileOffline(
+      setDoc(doc(thandi, `${home}/groceryItems/eggs`), {
+        name: 'Eggs',
+        quantity: null,
+        addedBy: THANDI_MEMBER,
+        addedAt: serverTimestamp(),
+        boughtAt: null,
+        boughtBy: null,
+      }),
+    );
 
     const nothingYet = await getDoc(doc(sam, `${home}/groceryItems/eggs`));
     expect(nothingYet.exists()).toBe(false);
@@ -112,10 +133,12 @@ describe('a member who is offline', () => {
     });
     await goOffline(thandi);
 
-    void updateDoc(doc(thandi, `${home}/groceryItems/milk`), {
-      boughtAt: serverTimestamp(),
-      boughtBy: THANDI_MEMBER,
-    });
+    whileOffline(
+      updateDoc(doc(thandi, `${home}/groceryItems/milk`), {
+        boughtAt: serverTimestamp(),
+        boughtBy: THANDI_MEMBER,
+      }),
+    );
 
     const arrives = watchDoc(
       sam,
@@ -141,13 +164,15 @@ describe('a member who is offline', () => {
     });
     await goOffline(thandi);
 
-    void setDoc(doc(thandi, `${home}/taskCompletions/bins_${DATE}`), {
-      taskId: 'bins',
-      occurrenceDate: DATE,
-      completedBy: THANDI_MEMBER,
-      completedFor: THANDI_MEMBER,
-      completedAt: serverTimestamp(),
-    });
+    whileOffline(
+      setDoc(doc(thandi, `${home}/taskCompletions/bins_${DATE}`), {
+        taskId: 'bins',
+        occurrenceDate: DATE,
+        completedBy: THANDI_MEMBER,
+        completedFor: THANDI_MEMBER,
+        completedAt: serverTimestamp(),
+      }),
+    );
 
     const arrives = watchDoc(sam, `${home}/taskCompletions/bins_${DATE}`, (record) =>
       record.exists(),
@@ -159,17 +184,19 @@ describe('a member who is offline', () => {
   it('has an event added on a plane on the week when they land', async () => {
     await goOffline(thandi);
 
-    void setDoc(doc(thandi, `${home}/events/school-run`), {
-      title: 'School run',
-      note: null,
-      date: DATE,
-      startMinute: 450,
-      endMinute: 510,
-      recurrence: null,
-      memberIds: [],
-      createdBy: THANDI_MEMBER,
-      createdAt: serverTimestamp(),
-    });
+    whileOffline(
+      setDoc(doc(thandi, `${home}/events/school-run`), {
+        title: 'School run',
+        note: null,
+        date: DATE,
+        startMinute: 450,
+        endMinute: 510,
+        recurrence: null,
+        memberIds: [],
+        createdBy: THANDI_MEMBER,
+        createdAt: serverTimestamp(),
+      }),
+    );
 
     const arrives = watchDoc(sam, `${home}/events/school-run`, (event) => event.exists());
     await enableNetwork(thandi);
@@ -231,8 +258,8 @@ describe('two members who both set the same meal slot offline', () => {
     await goOffline(thandi);
 
     const plan = `${home}/mealPlans/${WEEK}`;
-    void setDoc(doc(sam, plan), { slots: { '2_dinner': 'curry' } });
-    void setDoc(doc(thandi, plan), { slots: { '2_dinner': 'spaghetti' } });
+    whileOffline(setDoc(doc(sam, plan), { slots: { '2_dinner': 'curry' } }));
+    whileOffline(setDoc(doc(thandi, plan), { slots: { '2_dinner': 'spaghetti' } }));
 
     // Sam's queue drains first, so Thandi is unambiguously the later write.
     await enableNetwork(sam);

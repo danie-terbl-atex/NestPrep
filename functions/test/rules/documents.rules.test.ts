@@ -159,7 +159,7 @@ describe('documentFolders/{folderId}', () => {
 
   it('denies changing who made it', async () => {
     await assertFails(
-      updateDoc(doc(await asUser(SAM), `${FOLDERS}/school`), { createdBy: SAM_MEMBER }),
+      updateDoc(doc(await asUser(SAM), `${FOLDERS}/school`), { createdBy: THANDI_MEMBER }),
     );
   });
 
@@ -289,9 +289,7 @@ describe('documents/{documentId}', () => {
 
   it('denies changing what the bytes are', async () => {
     const db = await asUser(THANDI);
-    await assertFails(
-      updateDoc(doc(db, `${DOCUMENTS}/letter`), { contentType: 'application/pdf' }),
-    );
+    await assertFails(updateDoc(doc(db, `${DOCUMENTS}/letter`), { contentType: 'image/png' }));
     await assertFails(updateDoc(doc(db, `${DOCUMENTS}/letter`), { sizeBytes: 1 }));
     await assertFails(updateDoc(doc(db, `${DOCUMENTS}/letter`), { uploadedBy: SAM_MEMBER }));
   });
