@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
+import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../data/calendar_repository.dart';
@@ -16,7 +17,7 @@ import '../model/household_event.dart';
 /// The calendar's controller. The week being looked at is the one piece of
 /// state the screen owns, and the exceptions listener follows it — which is why
 /// moving a week reopens that one read and nothing else.
-final class CalendarController extends ChangeNotifier {
+final class CalendarController extends ChangeNotifier with ActionFailureHolder {
   CalendarController({
     required CalendarRepository calendarRepository,
     required HouseholdClock householdClock,
@@ -43,12 +44,10 @@ final class CalendarController extends ChangeNotifier {
 
   late CalendarDate _weekStart;
   AsyncState<CalendarWeek> _week = const AsyncLoading();
-  AppFailure? _actionFailure;
   String? _memberFilter;
   CalendarDate? _selectedDay;
 
   AsyncState<CalendarWeek> get week => _week;
-  AppFailure? get actionFailure => _actionFailure;
   CalendarDate get weekStart => _weekStart;
   CalendarDate get today => _clock.today;
   String? get memberFilter => _memberFilter;
@@ -86,12 +85,6 @@ final class CalendarController extends ChangeNotifier {
   void goToNextWeek() => goToWeek(_weekStart.addDays(7));
   void goToThisWeek() => goToWeek(today.weekStart);
 
-  void dismissActionFailure() {
-    if (_actionFailure == null) return;
-    _actionFailure = null;
-    notifyListeners();
-  }
-
   Future<void> retry() async {
     await _cancel();
     _events = null;
@@ -114,7 +107,7 @@ final class CalendarController extends ChangeNotifier {
   }) {
     final trimmed = title.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(
+    return runAction(
       () => _repository.saveEvent(
         householdId: householdId,
         eventId: eventId,
@@ -130,13 +123,13 @@ final class CalendarController extends ChangeNotifier {
     );
   }
 
-  Future<void> deleteEvent(String eventId) => _run(
+  Future<void> deleteEvent(String eventId) => runAction(
     () => _repository.deleteEvent(householdId: householdId, eventId: eventId),
   );
 
   /// Hides one occurrence. Editing a repeating event edits every occurrence;
   /// this is the only per-occurrence change v1 offers (calendar ADR-0001).
-  Future<void> skip(EventOccurrence occurrence) => _run(
+  Future<void> skip(EventOccurrence occurrence) => runAction(
     () => _repository.skipOccurrence(
       householdId: householdId,
       eventId: occurrence.event.id,
@@ -144,16 +137,6 @@ final class CalendarController extends ChangeNotifier {
       memberId: memberId,
     ),
   );
-
-  Future<void> _run(Future<void> Function() action) async {
-    _actionFailure = null;
-    try {
-      await action();
-    } on AppFailure catch (failure) {
-      _actionFailure = failure;
-      notifyListeners();
-    }
-  }
 
   void _subscribeToEvents() {
     _eventSubscription = _repository.watchEvents(householdId).listen((events) {

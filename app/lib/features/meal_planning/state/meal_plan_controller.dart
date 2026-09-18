@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../data/meal_repository.dart';
@@ -13,7 +14,7 @@ import '../model/week_plan.dart';
 
 /// The meal plan's controller: the household's library and the week being
 /// looked at. Moving a week reopens the week's listener and nothing else.
-final class MealPlanController extends ChangeNotifier {
+final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
   MealPlanController({
     required MealRepository mealRepository,
     required HouseholdClock householdClock,
@@ -40,11 +41,9 @@ final class MealPlanController extends ChangeNotifier {
 
   late CalendarDate _weekStart;
   AsyncState<MealWeek> _week = const AsyncLoading();
-  AppFailure? _actionFailure;
   bool _isCopying = false;
 
   AsyncState<MealWeek> get week => _week;
-  AppFailure? get actionFailure => _actionFailure;
   CalendarDate get weekStart => _weekStart;
   CalendarDate get today => _clock.today;
 
@@ -65,12 +64,6 @@ final class MealPlanController extends ChangeNotifier {
   void goToPreviousWeek() => goToWeek(_weekStart.addDays(-7));
   void goToNextWeek() => goToWeek(_weekStart.addDays(7));
 
-  void dismissActionFailure() {
-    if (_actionFailure == null) return;
-    _actionFailure = null;
-    notifyListeners();
-  }
-
   Future<void> retry() async {
     await _cancel();
     _meals = null;
@@ -82,7 +75,7 @@ final class MealPlanController extends ChangeNotifier {
   }
 
   /// Fills a slot with a meal already in the library.
-  Future<void> setSlot(String slotKey, String mealId) => _run(
+  Future<void> setSlot(String slotKey, String mealId) => runAction(
     () => _repository.setSlot(
       householdId: householdId,
       monday: _weekStart,
@@ -98,7 +91,7 @@ final class MealPlanController extends ChangeNotifier {
   Future<void> setSlotByName(String slotKey, String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(() async {
+    return runAction(() async {
       final mealId = await _repository.addMeal(
         householdId: householdId,
         name: trimmed,
@@ -119,7 +112,7 @@ final class MealPlanController extends ChangeNotifier {
     _isCopying = true;
     notifyListeners();
     try {
-      await _run(() async {
+      await runAction(() async {
         final previous = await _repository.readWeek(
           householdId,
           _weekStart.addDays(-7),
@@ -142,7 +135,7 @@ final class MealPlanController extends ChangeNotifier {
   Future<void> renameMeal(String mealId, String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(
+    return runAction(
       () => _repository.renameMeal(
         householdId: householdId,
         mealId: mealId,
@@ -153,23 +146,13 @@ final class MealPlanController extends ChangeNotifier {
 
   /// Deletes a meal and clears the slots that used it, in the weeks either side
   /// of the one showing — which is as far as a plan is ever looked at.
-  Future<void> deleteMeal(String mealId) => _run(
+  Future<void> deleteMeal(String mealId) => runAction(
     () => _repository.deleteMeal(
       householdId: householdId,
       mealId: mealId,
       weeksToClear: [_weekStart.addDays(-7), _weekStart, _weekStart.addDays(7)],
     ),
   );
-
-  Future<void> _run(Future<void> Function() action) async {
-    _actionFailure = null;
-    try {
-      await action();
-    } on AppFailure catch (failure) {
-      _actionFailure = failure;
-      notifyListeners();
-    }
-  }
 
   void _subscribeToMeals() {
     _mealSubscription = _repository.watchMeals(householdId).listen((meals) {

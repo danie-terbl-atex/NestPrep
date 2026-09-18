@@ -6,6 +6,7 @@ import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
+import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../data/todo_repository.dart';
@@ -20,7 +21,7 @@ import '../model/todo_board.dart';
 /// completions read is windowed, so the window has to be decided before the
 /// listener opens — it is the overdue horizon behind today and a fortnight
 /// ahead, which is as far as either view looks.
-final class TodoController extends ChangeNotifier {
+final class TodoController extends ChangeNotifier with ActionFailureHolder {
   TodoController({
     required TodoRepository todoRepository,
     required HouseholdClock householdClock,
@@ -50,11 +51,9 @@ final class TodoController extends ChangeNotifier {
   List<TaskCompletion>? _completions;
 
   AsyncState<TodoBoard> _board = const AsyncLoading();
-  AppFailure? _actionFailure;
   String? _memberFilter;
 
   AsyncState<TodoBoard> get board => _board;
-  AppFailure? get actionFailure => _actionFailure;
 
   /// Which member the household view is filtered to, or null for everyone.
   String? get memberFilter => _memberFilter;
@@ -66,12 +65,6 @@ final class TodoController extends ChangeNotifier {
   void filterBy(String? memberId) {
     if (_memberFilter == memberId) return;
     _memberFilter = memberId;
-    notifyListeners();
-  }
-
-  void dismissActionFailure() {
-    if (_actionFailure == null) return;
-    _actionFailure = null;
     notifyListeners();
   }
 
@@ -92,7 +85,7 @@ final class TodoController extends ChangeNotifier {
     TaskOccurrence occurrence, {
     required bool isDone,
     String? forMemberId,
-  }) => _run(() async {
+  }) => runAction(() async {
     if (!isDone) {
       await _repository.uncomplete(
         householdId: householdId,
@@ -121,7 +114,7 @@ final class TodoController extends ChangeNotifier {
   }) {
     final trimmed = title.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(
+    return runAction(
       () => _repository.saveTask(
         householdId: householdId,
         taskId: taskId,
@@ -136,7 +129,7 @@ final class TodoController extends ChangeNotifier {
     );
   }
 
-  Future<void> deleteTask(String taskId) => _run(
+  Future<void> deleteTask(String taskId) => runAction(
     () => _repository.deleteTask(householdId: householdId, taskId: taskId),
   );
 
@@ -150,7 +143,7 @@ final class TodoController extends ChangeNotifier {
   }) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(
+    return runAction(
       () => _repository.saveRoutine(
         householdId: householdId,
         routineId: routineId,
@@ -164,22 +157,12 @@ final class TodoController extends ChangeNotifier {
     );
   }
 
-  Future<void> deleteRoutine(String routineId) => _run(
+  Future<void> deleteRoutine(String routineId) => runAction(
     () => _repository.deleteRoutine(
       householdId: householdId,
       routineId: routineId,
     ),
   );
-
-  Future<void> _run(Future<void> Function() action) async {
-    _actionFailure = null;
-    try {
-      await action();
-    } on AppFailure catch (failure) {
-      _actionFailure = failure;
-      notifyListeners();
-    }
-  }
 
   void _subscribe() {
     _taskSubscription = _repository.watchTasks(householdId).listen((tasks) {

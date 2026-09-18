@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/state/action_failure.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../model/household.dart';
@@ -15,7 +16,8 @@ import '../model/member_role.dart';
 /// The household screen's controller: the household and its profiles, live, and
 /// the admin actions the screen offers. Created at the route, so its listeners
 /// end when the screen does (foundation ADR-0006).
-final class HouseholdController extends ChangeNotifier {
+final class HouseholdController extends ChangeNotifier
+    with ActionFailureHolder {
   HouseholdController({
     required HouseholdRepository householdRepository,
     required HouseholdDirectory householdDirectory,
@@ -39,21 +41,13 @@ final class HouseholdController extends ChangeNotifier {
 
   AsyncState<HouseholdView> _view = const AsyncLoading();
   bool _isBusy = false;
-  AppFailure? _actionFailure;
   InviteCode? _lastInvite;
 
   AsyncState<HouseholdView> get view => _view;
   bool get isBusy => _isBusy;
-  AppFailure? get actionFailure => _actionFailure;
 
   /// The code the last `createInvite` produced, for the sheet to show.
   InviteCode? get lastInvite => _lastInvite;
-
-  void dismissActionFailure() {
-    if (_actionFailure == null) return;
-    _actionFailure = null;
-    notifyListeners();
-  }
 
   void dismissInvite() {
     if (_lastInvite == null) return;
@@ -140,16 +134,19 @@ final class HouseholdController extends ChangeNotifier {
   Future<bool> leaveHousehold() =>
       _run(() => _directory.leaveHousehold(householdId));
 
+  /// Like `runAction`, with two things this screen needs and the others do
+  /// not: a guard so a double tap cannot remove somebody twice, and an answer
+  /// the caller can act on.
   Future<bool> _run(Future<void> Function() action) async {
     if (_isBusy) return false;
     _isBusy = true;
-    _actionFailure = null;
+    clearFailureQuietly();
     notifyListeners();
     try {
       await action();
       return true;
     } on AppFailure catch (failure) {
-      _actionFailure = failure;
+      recordFailure(failure);
       return false;
     } finally {
       _isBusy = false;

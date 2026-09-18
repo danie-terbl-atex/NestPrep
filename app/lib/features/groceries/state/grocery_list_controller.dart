@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/state/action_failure.dart';
 import '../data/grocery_repository.dart';
 import '../model/grocery_item.dart';
 import '../model/grocery_list_view.dart';
@@ -12,7 +13,8 @@ import '../model/grocery_suggestion.dart';
 /// The grocery list screen's controller. Two live reads — what is still to buy,
 /// and what the household has bought recently — become one `AsyncState` so the
 /// screen has one loading state, not two (foundation ADR-0006).
-final class GroceryListController extends ChangeNotifier {
+final class GroceryListController extends ChangeNotifier
+    with ActionFailureHolder {
   GroceryListController({
     required GroceryRepository groceryRepository,
     required this.householdId,
@@ -33,16 +35,8 @@ final class GroceryListController extends ChangeNotifier {
   StreamSubscription<List<GroceryItem>>? _subscription;
 
   AsyncState<GroceryListView> _list = const AsyncLoading();
-  AppFailure? _actionFailure;
 
   AsyncState<GroceryListView> get list => _list;
-  AppFailure? get actionFailure => _actionFailure;
-
-  void dismissActionFailure() {
-    if (_actionFailure == null) return;
-    _actionFailure = null;
-    notifyListeners();
-  }
 
   Future<void> retry() async {
     await _cancel();
@@ -54,7 +48,7 @@ final class GroceryListController extends ChangeNotifier {
   Future<void> add(String name, {String? quantity}) async {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
-    await _run(
+    await runAction(
       () => _repository.add(
         householdId: householdId,
         name: trimmed,
@@ -66,7 +60,7 @@ final class GroceryListController extends ChangeNotifier {
     );
   }
 
-  Future<void> toggleBought(GroceryItem item) => _run(
+  Future<void> toggleBought(GroceryItem item) => runAction(
     () => _repository.setBought(
       householdId: householdId,
       itemId: item.id,
@@ -82,7 +76,7 @@ final class GroceryListController extends ChangeNotifier {
   }) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
-    return _run(
+    return runAction(
       () => _repository.rename(
         householdId: householdId,
         itemId: item.id,
@@ -94,21 +88,12 @@ final class GroceryListController extends ChangeNotifier {
     );
   }
 
-  Future<void> remove(GroceryItem item) =>
-      _run(() => _repository.remove(householdId: householdId, itemId: item.id));
+  Future<void> remove(GroceryItem item) => runAction(
+    () => _repository.remove(householdId: householdId, itemId: item.id),
+  );
 
   Future<void> addFromSuggestion(GrocerySuggestion suggestion) =>
       add(suggestion.name);
-
-  Future<void> _run(Future<void> Function() action) async {
-    _actionFailure = null;
-    try {
-      await action();
-    } on AppFailure catch (failure) {
-      _actionFailure = failure;
-      notifyListeners();
-    }
-  }
 
   void _subscribe() {
     _subscription = _repository.watchItems(householdId).listen((items) {
