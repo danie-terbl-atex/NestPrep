@@ -1,4 +1,5 @@
 import '../../../design/tokens/nest_member_palette.dart';
+import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
@@ -26,12 +27,14 @@ abstract interface class HouseholdRepository {
   /// Every profile in the household, live, ordered by name.
   Stream<List<Member>> watchMembers(String householdId);
 
-  /// Adds an unclaimed profile. Admin only, and the rules say so too.
+  /// Adds an unclaimed profile. Admin only, and the rules say so too. A null
+  /// birthday is the ordinary case, not a missing one (birthdays ADR-0001).
   Future<void> addMember({
     required String householdId,
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   });
 
   /// Renames or recolours a profile, and changes the role of one nobody has
@@ -43,6 +46,7 @@ abstract interface class HouseholdRepository {
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   });
 
   /// Renames the household or changes its timezone. Admin only.

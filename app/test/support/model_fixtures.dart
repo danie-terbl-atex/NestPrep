@@ -3,9 +3,14 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/documents/model/document_folder.dart';
+import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -88,6 +93,9 @@ List<ModelFixture> modelFixtures() {
     displayName: 'Ada',
     color: MemberColor.teal,
     roleName: 'admin',
+    // With a year, because the year-less shape is the one a round trip could
+    // quietly lose; `birthday_test.dart` covers `--MM-DD` on its own.
+    birthday: Birthday(year: 1985, month: 12, day: 10),
     claimedBy: 'uidA',
     createdAt: at,
   );
@@ -156,6 +164,28 @@ List<ModelFixture> modelFixtures() {
     createdAt: at,
   );
   const plan = WeekPlan(id: '2026-09-21', slots: {'2026-09-21-dinner': 'ml1'});
+  final location = MemberLocation(
+    id: 'm1',
+    point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+    accuracyMetres: 12,
+    reportedAt: at,
+    sharingUntil: at.add(const Duration(hours: 1)),
+  );
+  final folder = DocumentFolder(
+    id: 'f1',
+    name: 'School',
+    createdBy: 'm1',
+    createdAt: at,
+  );
+  final document = HouseholdDocument(
+    id: 'd1',
+    folderId: 'f1',
+    name: 'Term letter',
+    contentType: 'application/pdf',
+    sizeBytes: 120000,
+    uploadedBy: 'm1',
+    uploadedAt: at,
+  );
 
   return [
     ModelFixture(
@@ -191,8 +221,18 @@ List<ModelFixture> modelFixtures() {
       value: member,
       toJson: member.toJson,
       fromJson: Member.fromJson,
-      keys: const {'displayName', 'color', 'role', 'claimedBy', 'createdAt'},
-      note: '`roleName` is stored as `role`, which is the name the rules read.',
+      keys: const {
+        'displayName',
+        'color',
+        'role',
+        'birthday',
+        'claimedBy',
+        'createdAt',
+      },
+      note:
+          '`roleName` is stored as `role`, which is the name the rules read. '
+          '`birthday` is a string in one of two shapes, never a nested model '
+          '(birthdays ADR-0001).',
     ),
     ModelFixture(
       label: 'GroceryItem',
@@ -294,12 +334,50 @@ List<ModelFixture> modelFixtures() {
           'is derived from `name` and never typed.',
     ),
     ModelFixture(
+      label: 'MemberLocation',
+      id: 'm1',
+      value: location,
+      toJson: location.toJson,
+      fromJson: MemberLocation.fromJson,
+      keys: const {'point', 'accuracyMetres', 'reportedAt', 'sharingUntil'},
+      note:
+          'the document id is the member id, which is what makes the rule '
+          '`isOwnMember` on the path and not on a field — rename the key and '
+          'anybody could write anybody"s position (live-location ADR-0001).',
+    ),
+    ModelFixture(
       label: 'WeekPlan',
       id: '2026-09-21',
       value: plan,
       toJson: plan.toJson,
       fromJson: WeekPlan.fromJson,
       keys: const {'slots'},
+    ),
+    ModelFixture(
+      label: 'DocumentFolder',
+      id: 'f1',
+      value: folder,
+      toJson: folder.toJson,
+      fromJson: DocumentFolder.fromJson,
+      keys: const {'name', 'createdBy', 'createdAt'},
+    ),
+    ModelFixture(
+      label: 'HouseholdDocument',
+      id: 'd1',
+      value: document,
+      toJson: document.toJson,
+      fromJson: HouseholdDocument.fromJson,
+      keys: const {
+        'folderId',
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+      },
+      note:
+          'the document id is also the name of its Cloud Storage object, so a '
+          'row and its bytes are found from each other (documents ADR-0001).',
     ),
   ];
 }

@@ -74,6 +74,40 @@ abstract final class AppCopy {
   static const todosDoneFor = 'Done for';
   static const todosCompleteFor = 'Mark done for…';
 
+  static const locationTitle = 'Where we are';
+  static const locationYours = 'Your location';
+  static const locationYoursBody =
+      'Only you can start or stop this, and every share ends on its own.';
+  static const locationShareFor = 'Share for';
+  static const locationStop = 'Stop sharing';
+  static const locationSharingUntil = 'Sharing until';
+  static const locationFifteenMinutes = '15 minutes';
+  static const locationOneHour = '1 hour';
+  static const locationFourHours = '4 hours';
+  static const locationHereNow = 'Here now';
+  static const locationLastSeen = 'Last seen';
+  static const locationNotSharing = 'Not sharing';
+  static const locationAloneTitle = 'Nobody else here yet';
+  static const locationAloneBody =
+      'Add the people who live here, and this is where you will see who is out.';
+
+  /// How far away somebody is, in the units a person would use for it.
+  static String distanceAway(double metres) => metres < 1000
+      ? '${metres.round()} m away'
+      : '${(metres / 1000).toStringAsFixed(1)} km away';
+
+  /// How sure the phone was. "Here now, within 12 m" and "here now, within
+  /// 900 m" are different answers to the same question.
+  static String withinMetres(int metres) => 'within $metres m';
+
+  static const timeJustNow = 'Just now';
+
+  static String minutesAgo(int minutes) =>
+      minutes == 1 ? '1 minute ago' : '$minutes minutes ago';
+
+  static String hoursAgo(int hours) =>
+      hours == 1 ? '1 hour ago' : '$hours hours ago';
+
   static const dateToday = 'Today';
   static const dateTomorrow = 'Tomorrow';
   static const dateYesterday = 'Yesterday';
@@ -136,6 +170,15 @@ abstract final class AppCopy {
   static const calendarTitleLabel = 'What is happening?';
   static const calendarWeekFilter = 'Showing';
 
+  /// A birthday is derived from a member's profile and cannot be changed from
+  /// the calendar, so its row says where it comes from (birthdays ADR-0001).
+  static const calendarBirthdayFromProfile = 'From the household';
+  static const calendarBirthdayOpenProfile = 'Open the household';
+
+  static String birthdayOf(String name) => '$name\u2019s birthday';
+
+  static String birthdayTurning(String name, int age) => '$name turns $age';
+
   static const mealsTitle = 'Meals';
   static const mealsBreakfast = 'Breakfast';
   static const mealsLunch = 'Lunch';
@@ -161,6 +204,52 @@ abstract final class AppCopy {
     _ => mealsDinner,
   };
 
+  static const documentsTitle = 'Documents';
+  static const documentsFolderFallbackTitle = 'Folder';
+  static const documentsOpenLibrary = 'Shared documents';
+  static const documentsEmptyTitle = 'No folders yet';
+  static const documentsEmptyBody =
+      'Make a folder for the papers this house keeps needing.';
+  static const documentsEmptyBodyForMembers =
+      'An admin makes the folders; you can add documents to them.';
+  static const documentsAddFolder = 'Add a folder';
+  static const documentsEditFolder = 'Edit folder';
+  static const documentsFolderNameLabel = 'Folder name';
+  static const documentsFolderNameHint = 'School';
+  static const documentsDeleteFolder = 'Delete folder';
+  static const documentsDeleteFolderConfirm = 'Delete this folder?';
+  static const documentsDeleteFolderBody =
+      'A folder can only go once everything in it has.';
+  static const documentsFolderEmptyTitle = 'Nothing filed here yet';
+  static const documentsFolderEmptyBody =
+      'Add the first document to this folder.';
+  static const documentsAdd = 'Add a document';
+  static const documentsNameLabel = 'Document name';
+  static const documentsFolderLabel = 'Folder';
+  static const documentsOpen = 'Open';
+  static const documentsOpenOutside = 'Open outside NestPrep';
+  static const documentsDelete = 'Delete document';
+  static const documentsDeleteConfirm = 'Delete this document?';
+  static const documentsDeleteBody =
+      'It goes for everybody in the household, and it cannot be undone.';
+  static const documentsUploading = 'Adding the file';
+  static const documentsStopUpload = 'Stop adding';
+  static const documentsOfflineNote =
+      'Names are kept on this phone; the files are not, so opening one needs '
+      'a connection.';
+  static const documentsPickFile = 'Choose a file';
+
+  /// The units a file size is read in. Nothing here is ever more than a few
+  /// megabytes, and a household does not want three decimal places.
+  static const byteUnits = <String>['B', 'kB', 'MB'];
+
+  /// How many documents a folder holds, for the row under its name.
+  static String documentsInFolder(int count) => switch (count) {
+    0 => 'Empty',
+    1 => '1 document',
+    _ => '$count documents',
+  };
+
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';
@@ -179,6 +268,12 @@ abstract final class AppCopy {
   static const householdMemberName = 'Name';
   static const householdMemberColour = 'Colour';
   static const householdMemberRole = 'Role';
+  static const householdMemberBirthday = 'Birthday';
+  static const householdBirthdayNone = 'Not set';
+  static const householdBirthdayKnown = 'A date';
+  static const householdBirthdayNoYear = 'Day and month only';
+  static const householdBirthdayPick = 'Pick the day';
+  static const householdBirthdayYearUnknown = 'Year not known';
   static const householdInvite = 'Invite';
   static const householdInviteTitle = 'Invite code';
   static const householdInviteBody =
@@ -224,7 +319,22 @@ abstract final class AppCopy {
       'Your sign-in has expired. Please sign in again.',
     SignInFailure(:final problem) => signInProblem(problem),
     HouseholdFailure(:final problem) => householdProblem(problem),
+    LocationFailure(:final problem) => locationProblem(problem),
+    DocumentFailure(:final problem) => documentProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
+  };
+
+  static String documentProblem(DocumentProblem problem) => switch (problem) {
+    DocumentProblem.folderNotFound => 'That folder is no longer there.',
+    DocumentProblem.folderNotEmpty =>
+      'Take everything out of this folder before you delete it.',
+    DocumentProblem.fileTooLarge =>
+      'That file is too big to keep here. Twenty megabytes is the most.',
+    DocumentProblem.unsupportedType =>
+      'NestPrep keeps PDFs and photos. That one is neither.',
+    DocumentProblem.uploadCancelled => 'That file was not added.',
+    DocumentProblem.cannotOpen =>
+      'Nothing on this phone offered to open that file.',
   };
 
   static String householdProblem(HouseholdProblem problem) => switch (problem) {
@@ -249,6 +359,19 @@ abstract final class AppCopy {
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',
+  };
+
+  static String locationProblem(LocationProblem problem) => switch (problem) {
+    LocationProblem.permissionRefused =>
+      'NestPrep needs your permission to share where you are.',
+    LocationProblem.permissionRefusedForever =>
+      'Location is turned off for NestPrep. Turn it on in your phone settings '
+          'to share where you are.',
+    LocationProblem.switchedOff =>
+      'Location is switched off on this phone. Switch it on to share where '
+          'you are.',
+    LocationProblem.reportingStopped =>
+      'Sharing stopped, because this phone stopped saying where it is.',
   };
 
   static String signInProblem(SignInProblem problem) => switch (problem) {

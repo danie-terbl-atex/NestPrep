@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
@@ -18,8 +19,24 @@ final class FakeHouseholdRepository implements HouseholdRepository {
   /// Set to make the next write fail the way a rules denial does.
   AppFailure? failWritesWith;
 
-  final added = <({String displayName, MemberColor color, MemberRole role})>[];
-  final updated = <({String memberId, String displayName, MemberRole role})>[];
+  final added =
+      <
+        ({
+          String displayName,
+          MemberColor color,
+          MemberRole role,
+          Birthday? birthday,
+        })
+      >[];
+  final updated =
+      <
+        ({
+          String memberId,
+          String displayName,
+          MemberRole role,
+          Birthday? birthday,
+        })
+      >[];
   final renamed = <({String name, String timeZone})>[];
 
   void emitHousehold(Household? household) => _households.add(household);
@@ -52,9 +69,15 @@ final class FakeHouseholdRepository implements HouseholdRepository {
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) async {
     _refuseIfAsked();
-    added.add((displayName: displayName, color: color, role: role));
+    added.add((
+      displayName: displayName,
+      color: color,
+      role: role,
+      birthday: birthday,
+    ));
   }
 
   @override
@@ -64,9 +87,15 @@ final class FakeHouseholdRepository implements HouseholdRepository {
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) async {
     _refuseIfAsked();
-    updated.add((memberId: memberId, displayName: displayName, role: role));
+    updated.add((
+      memberId: memberId,
+      displayName: displayName,
+      role: role,
+      birthday: birthday,
+    ));
   }
 
   @override

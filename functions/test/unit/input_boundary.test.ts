@@ -10,13 +10,16 @@ import {
   removeMemberInput,
   setMemberRoleInput,
 } from '../../src/household/schemas';
+import { deleteDocumentFolderInput } from '../../src/documents/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
  *
  * The emulator tests exercise the paths the callables take; they cannot say
  * what the boundary *refuses*, because a refused body never reaches a callable.
- * This says it — for every field of every one of the six.
+ * This says it — for every field of every callable that takes a body.
+ * `syncDocumentAccess` takes none: its subject is the caller, re-derived from
+ * the token and Firestore, so there is nothing at its edge to refuse.
  */
 
 /** What a valid body looks like for each callable. */
@@ -43,6 +46,10 @@ const validBodies = {
   setMemberRole: {
     schema: setMemberRoleInput,
     body: { householdId: 'h1', memberId: 'm-kid', role: 'admin' },
+  },
+  deleteDocumentFolder: {
+    schema: deleteDocumentFolderInput,
+    body: { householdId: 'h1', folderId: 'f-school' },
   },
 } as const;
 

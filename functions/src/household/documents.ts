@@ -30,6 +30,18 @@ export interface MemberDocument extends DocumentData {
   readonly color: string;
   readonly role: Role;
   readonly claimedBy: string | null;
+
+  /**
+   * `YYYY-MM-DD`, or `--MM-DD` where the household does not know the year, and
+   * absent on every profile written before the field existed (birthdays
+   * ADR-0001).
+   *
+   * No callable writes it: a profile's birthday is set by the client, under the
+   * `members` rules. It is declared here because this interface is the home of
+   * the stored member shape, and a stored field missing from it is how the next
+   * callable to touch a member overwrites something it did not know was there.
+   */
+  readonly birthday?: string | null;
 }
 
 export interface InviteDocument extends DocumentData {

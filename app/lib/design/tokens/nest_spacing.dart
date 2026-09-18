@@ -51,6 +51,11 @@ abstract final class NestSize {
   static const double sheetHandleWidth = 44;
   static const double sheetHandleHeight = 4;
   static const double bottomBarHeight = 68;
+
+  /// How much of a document's own image a sheet shows before it would be a
+  /// screen of its own. Tall enough to recognise a letter, short enough to
+  /// leave the actions under it visible at 200% text.
+  static const double previewHeight = 240;
 }
 
 /// Stroke widths for hairlines and focus rings.

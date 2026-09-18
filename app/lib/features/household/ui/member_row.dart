@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/format/nest_dates.dart';
 import '../model/member.dart';
 
 /// One profile in the household list. The colour is never the only signal that
@@ -62,10 +63,24 @@ class MemberRow extends StatelessWidget {
     );
   }
 
+  /// The role, who this is, and the birthday when there is one — this row is
+  /// where a birthday is read and changed, so it says so rather than making
+  /// somebody open the sheet to find out (birthdays ADR-0001).
   String get _subtitle {
-    final role = AppCopy.roleName(member.roleName);
-    if (isViewer) return '$role · ${AppCopy.householdYou}';
-    if (!member.isClaimed) return '$role · ${AppCopy.householdUnclaimed}';
-    return role;
+    final birthday = member.birthday;
+    final parts = [
+      AppCopy.roleName(member.roleName),
+      if (isViewer)
+        AppCopy.householdYou
+      else if (!member.isClaimed)
+        AppCopy.householdUnclaimed,
+      if (birthday != null)
+        NestDates.dayOfYear(
+          month: birthday.month,
+          day: birthday.day,
+          year: birthday.year,
+        ),
+    ];
+    return parts.join(' · ');
   }
 }

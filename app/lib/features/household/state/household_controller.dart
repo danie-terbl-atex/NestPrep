@@ -8,6 +8,7 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
+import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
@@ -68,12 +69,14 @@ final class HouseholdController extends ChangeNotifier
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) => _run(
     () => _repository.addMember(
       householdId: householdId,
       displayName: displayName,
       color: color,
       role: role,
+      birthday: birthday,
     ),
   );
 
@@ -82,6 +85,7 @@ final class HouseholdController extends ChangeNotifier
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) async {
     final member = _members?.where((value) => value.id == memberId).firstOrNull;
     // A claimed member's role also lives in the household's uid→role map, so it
@@ -96,6 +100,7 @@ final class HouseholdController extends ChangeNotifier
         displayName: displayName,
         color: color,
         role: roleMovedOnAClaimedMember ? member.role : role,
+        birthday: birthday,
       );
       if (roleMovedOnAClaimedMember) {
         await _directory.setMemberRole(

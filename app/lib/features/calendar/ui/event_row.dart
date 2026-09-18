@@ -9,6 +9,7 @@ import '../../household/model/household_view.dart';
 import '../model/event_occurrence.dart';
 import '../state/calendar_controller.dart';
 import 'event_sheet.dart';
+import 'member_stripe.dart';
 
 /// One event on one day. The member colours run down the left edge, with the
 /// names in the subtitle — colour is never the only thing saying who it is for
@@ -36,7 +37,7 @@ class EventRow extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _MemberStripe(
+              MemberStripe(
                 colors: [for (final member in members) member.color],
               ),
               Expanded(
@@ -115,29 +116,5 @@ class EventRow extends StatelessWidget {
           memberIds: draft.memberIds,
         );
     }
-  }
-}
-
-/// The colours of everybody an event is for, stacked down its left edge.
-class _MemberStripe extends StatelessWidget {
-  const _MemberStripe({required this.colors});
-
-  final List<MemberColor> colors;
-
-  @override
-  Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
-    final stripes = colors.isEmpty
-        ? [nest.colors.outlineStrong]
-        : [for (final color in colors) nest.members.of(color).fill];
-    return SizedBox(
-      width: NestSpace.xs,
-      child: Column(
-        children: [
-          for (final color in stripes)
-            Expanded(child: ColoredBox(color: color)),
-        ],
-      ),
-    );
   }
 }

@@ -1,8 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/calendar/model/birthday_occurrence.dart';
 import 'package:nestprep/features/calendar/model/calendar_week.dart';
+import 'package:nestprep/features/calendar/model/day_entry.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
+import 'package:nestprep/features/calendar/model/event_occurrence.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
+import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
@@ -49,6 +54,7 @@ void main() {
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
   });
 
@@ -62,6 +68,13 @@ void main() {
     expect(state, isA<AsyncData<CalendarWeek>>());
     return (state as AsyncData<CalendarWeek>).value;
   }
+
+  /// The events on a day, with the derived birthdays left out — what every
+  /// test written before birthdays existed meant by "what is on that day".
+  List<EventOccurrence> eventsOn(CalendarDate day) => [
+    for (final entry in weekOf().on(day))
+      if (entry is EventEntry) entry.occurrence,
+  ];
 
   Future<void> emit({
     List<HouseholdEvent> events = const [],
@@ -140,9 +153,7 @@ void main() {
     expect(weekOf().on(date('2026-09-18')), hasLength(2));
 
     controller.filterBy(Fixtures.kidMemberId);
-    expect(weekOf().on(date('2026-09-18')).map((o) => o.event.title), [
-      'Theirs',
-    ]);
+    expect(eventsOn(date('2026-09-18')).map((o) => o.event.title), ['Theirs']);
     expect(controller.memberFilter, Fixtures.kidMemberId);
   });
 
@@ -171,7 +182,7 @@ void main() {
 
   test('skipping asks for that occurrence only', () async {
     await emit(events: [event()]);
-    final occurrence = weekOf().on(date('2026-09-18')).single;
+    final occurrence = eventsOn(date('2026-09-18')).single;
     await controller.skip(occurrence);
 
     expect(repository.skipped.single.eventId, 'e1');
@@ -222,5 +233,105 @@ void main() {
 
     controller.goToThisWeek();
     expect(controller.weekStart.iso, '2026-09-14');
+  });
+
+  group('birthdays, which nothing stores', () {
+    /// Kid was born on the Friday this week holds; Sam's year is unknown.
+    List<Member> theParkers({String kidName = 'Kid Parker'}) => [
+      Fixtures.kid.copyWith(
+        displayName: kidName,
+        birthday: Birthday(year: 2017, month: 9, day: 18),
+      ),
+      Fixtures.sam.copyWith(birthday: Birthday(month: 9, day: 19)),
+      Fixtures.thandi,
+    ];
+
+    List<BirthdayOccurrence> birthdaysOn(CalendarDate day) => [
+      for (final entry in weekOf().on(day))
+        if (entry is BirthdayEntry) entry.birthday,
+    ];
+
+    test('arrive on the week without a second read of anything', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit();
+
+      expect(birthdaysOn(date('2026-09-18')).single.age, 9);
+      expect(birthdaysOn(date('2026-09-19')).single.age, isNull);
+      expect(
+        repository.exceptionWindows,
+        hasLength(1),
+        reason: 'a birthday is derived, so it opens no listener of its own',
+      );
+    });
+
+    test('and share the day with the events already on it', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit(events: [event()]);
+
+      final day = weekOf().on(date('2026-09-18'));
+      expect(day, hasLength(2));
+      expect(
+        day.first,
+        isA<BirthdayEntry>(),
+        reason: 'a birthday leads the day it is on',
+      );
+      expect(day.last, isA<EventEntry>());
+    });
+
+    test('renaming somebody renames their birthday, with no write', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit();
+      expect(
+        birthdaysOn(date('2026-09-18')).single.member.displayName,
+        'Kid Parker',
+      );
+
+      controller.showBirthdaysOf(theParkers(kidName: 'Kid Parker-Jones'));
+
+      expect(
+        birthdaysOn(date('2026-09-18')).single.member.displayName,
+        'Kid Parker-Jones',
+        reason: 'the entry is a view of the profile, not a copy of it',
+      );
+      expect(repository.savedEvents, isEmpty);
+    });
+
+    test('removing somebody leaves nothing of theirs behind', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit();
+      expect(birthdaysOn(date('2026-09-18')), hasLength(1));
+
+      controller.showBirthdaysOf([Fixtures.thandi]);
+
+      expect(
+        birthdaysOn(date('2026-09-18')),
+        isEmpty,
+        reason: 'no orphan event, because there was never an event',
+      );
+    });
+
+    test('the same profiles again publish nothing', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit();
+      var rebuilds = 0;
+      controller.addListener(() => rebuilds += 1);
+
+      controller.showBirthdaysOf(theParkers());
+
+      expect(rebuilds, 0, reason: 'the household document changes often');
+    });
+
+    test('moving a week moves them with it', () async {
+      controller.showBirthdaysOf(theParkers());
+      await emit();
+      expect(birthdaysOn(date('2026-09-18')), hasLength(1));
+
+      controller.goToNextWeek();
+      await pumpEventQueue();
+      repository.emitExceptions([]);
+      await pumpEventQueue();
+
+      expect(weekOf().isEmpty, isTrue);
+    });
   });
 }

@@ -3,9 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
+import 'package:nestprep/features/documents/model/document_folder.dart';
+import 'package:nestprep/features/documents/model/household_document.dart';
+import 'package:nestprep/features/documents/state/document_library_controller.dart';
+import 'package:nestprep/features/documents/ui/document_folder_screen.dart';
+import 'package:nestprep/features/documents/ui/document_library_screen.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
+import 'package:nestprep/features/live_location/state/live_location_controller.dart';
+import 'package:nestprep/features/live_location/ui/live_location_screen.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
@@ -18,7 +27,9 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../support/fake_calendar_repository.dart';
+import '../../support/fake_documents.dart';
 import '../../support/fake_grocery_repository.dart';
+import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
 import '../../support/fake_todo_repository.dart';
 import '../../support/household_fixtures.dart';
@@ -128,6 +139,21 @@ void main() {
     handle.dispose();
   }
 
+  /// The documents controller, with every device-side collaborator faked.
+  DocumentLibraryController documentController(
+    FakeDocumentRepository repository,
+  ) => DocumentLibraryController(
+    documentRepository: repository,
+    documentStore: FakeDocumentStore(),
+    documentDirectory: FakeDocumentDirectory(),
+    documentPicker: FakeDocumentPicker(),
+    documentOpener: FakeDocumentOpener(),
+    householdId: Fixtures.householdId,
+    memberId: Fixtures.samMemberId,
+    viewerUid: Fixtures.samUid,
+    isAdmin: true,
+  );
+
   /// A phone, because a target's size depends on the space it is given.
   void phone(WidgetTester tester) {
     tester.view.physicalSize = const Size(360 * 3, 800 * 3);
@@ -144,6 +170,7 @@ void main() {
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => now),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
     addTearDown(controller.dispose);
 
@@ -232,6 +259,110 @@ void main() {
     ]);
 
     await expectAccessible(tester, 'groceries');
+  });
+
+  testWidgets('where everybody is', (tester) async {
+    phone(tester);
+    final repository = FakeLiveLocationRepository();
+    final reporter = FakeLocationReporter();
+    addTearDown(repository.close);
+    addTearDown(reporter.close);
+    final controller = LiveLocationController(
+      liveLocationRepository: repository,
+      locationReporter: reporter,
+      householdId: Fixtures.householdId,
+      viewerMemberId: Fixtures.samMemberId,
+      members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
+      now: () => now,
+    );
+
+    await pumpScreen(
+      tester,
+      const LiveLocationScreen(),
+      providers: [
+        ChangeNotifierProvider<LiveLocationController>.value(value: controller),
+      ],
+    );
+    repository.emitLocations([
+      MemberLocation(
+        id: Fixtures.thandiMemberId,
+        point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+        accuracyMetres: 12,
+        reportedAt: now,
+        sharingUntil: now.add(const Duration(hours: 1)),
+      ),
+    ]);
+
+    await expectAccessible(tester, 'where everybody is');
+    // Disposed here rather than in a teardown: this controller recounts the
+    // ages on screen every thirty seconds, and a timer still pending when the
+    // body ends fails the test before any teardown runs.
+    controller.dispose();
+  });
+
+  testWidgets('the document folders', (tester) async {
+    phone(tester);
+    final repository = FakeDocumentRepository();
+    addTearDown(repository.close);
+    final controller = documentController(repository);
+    addTearDown(controller.dispose);
+
+    await pumpScreen(
+      tester,
+      const DocumentLibraryScreen(),
+      providers: [
+        ChangeNotifierProvider<DocumentLibraryController>.value(
+          value: controller,
+        ),
+      ],
+    );
+    repository.emitFolders([
+      const DocumentFolder(
+        id: 'f-school',
+        name: 'School',
+        createdBy: Fixtures.samMemberId,
+      ),
+    ]);
+    repository.emitDocuments([]);
+
+    await expectAccessible(tester, 'the document folders');
+  });
+
+  testWidgets('one document folder', (tester) async {
+    phone(tester);
+    final repository = FakeDocumentRepository();
+    addTearDown(repository.close);
+    final controller = documentController(repository);
+    addTearDown(controller.dispose);
+
+    await pumpScreen(
+      tester,
+      const DocumentFolderScreen(folderId: 'f-school'),
+      providers: [
+        ChangeNotifierProvider<DocumentLibraryController>.value(
+          value: controller,
+        ),
+      ],
+    );
+    repository.emitFolders([
+      const DocumentFolder(
+        id: 'f-school',
+        name: 'School',
+        createdBy: Fixtures.samMemberId,
+      ),
+    ]);
+    repository.emitDocuments([
+      const HouseholdDocument(
+        id: 'd1',
+        folderId: 'f-school',
+        name: 'Term letter',
+        contentType: 'application/pdf',
+        sizeBytes: 120000,
+        uploadedBy: Fixtures.samMemberId,
+      ),
+    ]);
+
+    await expectAccessible(tester, 'one document folder');
   });
 
   testWidgets('meals', (tester) async {

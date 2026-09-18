@@ -4,8 +4,14 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/documents/model/document_folder.dart';
+import 'package:nestprep/features/documents/model/document_limits.dart';
+import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -73,6 +79,7 @@ void main() {
         'displayName',
         'color',
         'role',
+        'birthday',
         'claimedBy',
         'createdAt',
       });
@@ -80,6 +87,37 @@ void main() {
       // The rules refuse a create that claims a profile for somebody.
       expect(json['claimedBy'], isNull);
       expect(json['color'], 'mint');
+      expect(
+        json['birthday'],
+        isNull,
+        reason: 'no birthday is what the rule calls an absent one',
+      );
+    });
+
+    test('writes a birthday as the string the rule matches, not a model', () {
+      // Firestore never calls `toJson()`, so a birthday left as an object is a
+      // write that fails on a device and nowhere else.
+      expect(
+        Member(
+          id: 'm',
+          displayName: 'Thandi',
+          color: MemberColor.mint,
+          roleName: 'helper',
+          birthday: Birthday(year: 1991, month: 3, day: 7),
+        ).toJson()['birthday'],
+        '1991-03-07',
+      );
+      expect(
+        Member(
+          id: 'm',
+          displayName: 'Kid',
+          color: MemberColor.sky,
+          roleName: 'member',
+          birthday: Birthday(month: 2, day: 29),
+        ).toJson()['birthday'],
+        '--02-29',
+        reason: 'the year-less shape the rules also accept',
+      );
     });
   });
 
@@ -235,6 +273,39 @@ void main() {
     });
   });
 
+  group('memberLocations/{memberId}', () {
+    test('writes the four keys the rule names, and the server times it', () {
+      final json = MemberLocation(
+        id: 'm-sam',
+        point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+        accuracyMetres: 12,
+        sharingUntil: DateTime.utc(2026, 9, 18, 15),
+      ).toJson();
+      final shape = shapeOf(json);
+
+      expect(shape.keys, {
+        'point',
+        'accuracyMetres',
+        'reportedAt',
+        'sharingUntil',
+      });
+      // `reportedAt` is the server's, so how old a position is cannot be
+      // something a device flatters itself about; `sharingUntil` is the
+      // member's own and the rules bound it instead (live-location ADR-0001).
+      expect(shape.serverAssigned, {'reportedAt'});
+      expect(json['point'], isA<GeoPoint>());
+      expect(json['sharingUntil'], isA<Timestamp>());
+      expect(
+        json.containsKey('memberId'),
+        isFalse,
+        reason:
+            'the member id is the document id, which is what makes the rule '
+            '`isOwnMember` on the path — a field here would be a second copy '
+            'of it, and the wrong one to trust',
+      );
+    });
+  });
+
   group('meals/{mealId}', () {
     test('writes a normalised key beside the name the person typed', () {
       final json = Meal.named(
@@ -248,6 +319,59 @@ void main() {
       expect(json['name'], 'Spaghetti Bolognese');
       // The rule insists the key is lower-cased.
       expect(json['nameKey'], 'spaghetti bolognese');
+    });
+  });
+
+  group('documentFolders/{folderId}', () {
+    test('writes exactly the keys the rule names', () {
+      final json = const DocumentFolder(
+        id: 'f',
+        name: 'School',
+        createdBy: 'm-sam',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {'name', 'createdBy', 'createdAt'});
+      expect(shape.serverAssigned, {'createdAt'});
+    });
+  });
+
+  group('documents/{documentId}', () {
+    test('writes exactly the keys the rule names', () {
+      final json = const HouseholdDocument(
+        id: 'd',
+        folderId: 'f',
+        name: 'Term letter',
+        contentType: 'application/pdf',
+        sizeBytes: 120000,
+        uploadedBy: 'm-sam',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {
+        'folderId',
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+      });
+      expect(shape.serverAssigned, {'uploadedAt'});
+      // Nothing names the Storage object, because the document's own id does
+      // (documents ADR-0001). A `storagePath` field here would be a second
+      // copy of the same fact, and the rules refuse the key besides.
+      expect(json.containsKey('storagePath'), isFalse);
+    });
+
+    test('writes a type and a size the rules would accept', () {
+      final json = const HouseholdDocument(
+        id: 'd',
+        folderId: 'f',
+        name: 'Term letter',
+        contentType: 'application/pdf',
+        sizeBytes: DocumentLimits.maxSizeBytes,
+        uploadedBy: 'm-sam',
+      ).toJson();
+      expect(DocumentLimits.keptContentTypes, contains(json['contentType']));
+      expect(json['sizeBytes'], lessThanOrEqualTo(DocumentLimits.maxSizeBytes));
     });
   });
 

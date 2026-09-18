@@ -205,6 +205,10 @@ void main() {
       // Only Sam is an admin in the fixture household.
       await emit(tester);
 
+      await tester.scrollUntilVisible(
+        find.widgetWithText(NestButton, AppCopy.householdLeave),
+        120,
+      );
       expect(find.text(AppCopy.householdProblemLastAdmin), findsOneWidget);
       final leave = tester.widget<NestButton>(
         find.widgetWithText(NestButton, AppCopy.householdLeave),
@@ -231,6 +235,10 @@ void main() {
         ),
       );
 
+      await tester.scrollUntilVisible(
+        find.widgetWithText(NestButton, AppCopy.householdLeave),
+        120,
+      );
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdLeave));
       await tester.pumpAndSettle();
       expect(find.text(AppCopy.householdLeaveConfirm), findsOneWidget);
@@ -354,6 +362,56 @@ void main() {
         isNull,
         reason: 'a household with no zone has no idea what day it is',
       );
+    });
+  });
+
+  group('the way to where everybody is', () {
+    testWidgets('is on this screen, and says what it is before it is tapped', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester);
+
+      expect(find.text(AppCopy.locationTitle), findsOneWidget);
+      expect(
+        find.text(AppCopy.locationYoursBody),
+        findsOneWidget,
+        reason:
+            'that sharing is each person"s own is worth knowing before the '
+            'tap, not after (live-location ADR-0002)',
+      );
+    });
+
+    testWidgets('goes there, and pushes so that back comes back here', (
+      tester,
+    ) async {
+      // Two failures in one test. The first is the one this app has had
+      // twice: a capability finished in the model, the repository and the
+      // rules, with the words already written, and no control anywhere that
+      // opened it. The second is `go` where `push` was meant — identical
+      // until somebody presses back and the app closes (`FE-17`).
+      await pump(tester);
+      await emit(tester);
+
+      await tester.tap(find.text(AppCopy.locationTitle));
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    });
+
+    testWidgets('is offered to a helper exactly as it is to an admin', (
+      tester,
+    ) async {
+      // Nothing here is an admin action: every member controls their own
+      // sharing and nobody else's (live-location ADR-0002).
+      await pump(tester, viewerUid: Fixtures.thandiUid);
+      await emit(tester);
+
+      expect(find.text(AppCopy.locationTitle), findsOneWidget);
     });
   });
 

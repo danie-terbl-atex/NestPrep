@@ -71,6 +71,19 @@ service cloud.firestore {
       return value in ['admin', 'member', 'helper'];
     }
 
+    // A member's birthday (birthdays ADR-0001): absent, null, `YYYY-MM-DD`, or
+    // `--MM-DD` where the household does not know the year. The month and the
+    // day are range-checked here; that 31 February is not a day is the only
+    // part left to the client, because the rules language cannot count the
+    // days in a month and a wrong one is a wrong date in one household's own
+    // profile, not a way into anybody's data (BE-03).
+    function isBirthday(value) {
+      return value == null
+        || (value is string
+            && (value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+                || value.matches('^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')));
+    }
+
     // ---- accounts (accounts ADR-0001) ----
 
     match /users/{userId} {
@@ -132,21 +145,26 @@ service cloud.firestore {
         // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
-               ['displayName', 'color', 'role', 'claimedBy', 'createdAt'])
+               ['displayName', 'color', 'role', 'birthday', 'claimedBy', 'createdAt'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
+          && isBirthday(request.resource.data.get('birthday', null))
           && request.resource.data.claimedBy == null
           && isServerTime('createdAt');
 
         // A claimed member's role also lives in the household's uid→role map,
         // and one write cannot touch two documents — so changing it is
         // `setMemberRole`, and here it may only change while nobody holds it.
+        // `get('birthday', null)` rather than a bare read: every profile
+        // written before the field existed has no key at all, and a rule that
+        // reads a missing key refuses the write (BE-10).
         allow update: if isAdmin(householdId)
-          && onlyChanged(['displayName', 'color', 'role'])
+          && onlyChanged(['displayName', 'color', 'role', 'birthday'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
+          && isBirthday(request.resource.data.get('birthday', null))
           && (resource.data.claimedBy == null || didNotChange('role'));
 
         // Removing a profile detaches whoever claimed it: `removeMember`.
@@ -371,6 +389,56 @@ service cloud.firestore {
         allow delete: if isAdmin(householdId);
       }
 
+      // ---- live location (live-location ADR-0001, ADR-0002) ----
+      //
+      // The document id is the member id, and that is the whole authorisation
+      // story. `isOwnMember` on the path means a member writes only their own
+      // position; there is no field anybody could put somebody else's id into.
+      // It also means **an unclaimed profile cannot have a location at all**:
+      // its `claimedBy` is null, no uid is null, so no caller anywhere can
+      // create that document.
+      //
+      // An admin has no write here. Starting or extending somebody else's
+      // sharing is the one thing this feature must not permit, and it is
+      // refused by the path rather than by a check that could be got wrong.
+      match /memberLocations/{memberId} {
+        // Membership, and nothing about the window. A read rule comparing
+        // `request.time` to document data fails the *whole* listener the
+        // moment any one member's window closes, because Firestore evaluates a
+        // query against every document in its result and a listener's bounds
+        // are fixed when it opens. The window is enforced on write instead, and
+        // the client reads a closed one as *not sharing* (live-location
+        // ADR-0001).
+        allow read: if isMember(householdId);
+
+        allow create, update: if isOwnMember(householdId, memberId)
+          && request.resource.data.keys().hasOnly(
+               ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil'])
+          && request.resource.data.point is latlng
+          && request.resource.data.accuracyMetres is int
+          && request.resource.data.accuracyMetres >= 0
+          && isServerTime('reportedAt')
+          && isBoundedShare(request.resource.data.sharingUntil);
+
+        // Stopping is deleting: nothing is left for the household to read
+        // (live-location ADR-0002). An admin may clear the pin a removed
+        // member's dead phone left behind — a delete only ever removes what
+        // somebody can see, never reveals it.
+        allow delete: if isOwnMember(householdId, memberId)
+          || isAdmin(householdId);
+
+        // The window has to end, and it has to still be open. The first half is
+        // what stops a share running for ever; the second is what actually ends
+        // one, because a device whose window has passed can no longer say
+        // anything. The number is mirrored in
+        // `LiveLocationRepository.longestShare`.
+        function isBoundedShare(sharingUntil) {
+          return sharingUntil is timestamp
+            && sharingUntil > request.time
+            && sharingUntil < request.time + duration.value(4, 'h');
+        }
+      }
+
       // One occurrence of a repeating event, skipped. Same shape and the same
       // reasons as a task completion (todos ADR-0002).
       match /eventExceptions/{exceptionId} {
@@ -385,6 +453,85 @@ service cloud.firestore {
           && isServerTime('skippedAt');
 
         allow delete: if isMember(householdId);
+      }
+
+      // ---- documents (documents ADR-0001) ----
+
+      // The household's filing cabinet: one level of folders, no nesting. A
+      // folder is admin-managed because renaming one changes what everybody
+      // else sees, which is why a routine is admin-only too (todos ADR-0001).
+      //
+      // Deleting one is `deleteDocumentFolder`, not a client write: rules
+      // cannot count the documents in a collection, and a folder deleted out
+      // from under its documents leaves bytes nobody can see and nobody stops
+      // paying for (foundation ADR-0002, BE-07).
+      match /documentFolders/{folderId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isAdmin(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['name', 'createdBy', 'createdAt'])
+          && isDocumentName(request.resource.data.name)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if isAdmin(householdId)
+          && onlyChanged(['name'])
+          && isDocumentName(request.resource.data.name);
+
+        allow delete: if false;
+      }
+
+      // What a document *is*; the bytes are the Storage object of the same
+      // name, guarded by `storage.rules`. Size and content type are stored for
+      // the label a person reads — the limits that matter are enforced where
+      // the bytes are, because that is the only place that can see them
+      // (BE-03).
+      match /documents/{documentId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
+                'uploadedAt'])
+          && isNonEmptyString(request.resource.data.folderId)
+          && isDocumentName(request.resource.data.name)
+          && isKeptType(request.resource.data.contentType)
+          && isSmallEnough(request.resource.data.sizeBytes)
+          && isOwnMember(householdId, request.resource.data.uploadedBy)
+          && isServerTime('uploadedAt');
+
+        // Renaming and moving between folders; the bytes never change, so
+        // neither does anything describing them.
+        allow update: if isMember(householdId)
+          && onlyChanged(['name', 'folderId'])
+          && isDocumentName(request.resource.data.name)
+          && isNonEmptyString(request.resource.data.folderId)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.uploadedBy));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.uploadedBy);
+      }
+
+      // A name somebody typed, bounded so a document list cannot be used as a
+      // place to store a megabyte of text for free.
+      function isDocumentName(value) {
+        return isNonEmptyString(value) && value.size() <= 80;
+      }
+
+      function isKeptType(value) {
+        return value in [
+          'application/pdf',
+          'image/jpeg',
+          'image/png',
+          'image/heic',
+          'image/webp'
+        ];
+      }
+
+      function isSmallEnough(value) {
+        return value is int && value > 0 && value <= 20 * 1024 * 1024;
       }
     }
 

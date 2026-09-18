@@ -10,6 +10,14 @@ import '../features/accounts/ui/sign_in_screen.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
+import '../features/documents/data/document_directory.dart';
+import '../features/documents/data/document_opener.dart';
+import '../features/documents/data/document_picker.dart';
+import '../features/documents/data/document_repository.dart';
+import '../features/documents/data/document_store.dart';
+import '../features/documents/state/document_library_controller.dart';
+import '../features/documents/ui/document_folder_screen.dart';
+import '../features/documents/ui/document_library_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -21,6 +29,10 @@ import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/live_location/data/live_location_repository.dart';
+import '../features/live_location/data/location_reporter.dart';
+import '../features/live_location/state/live_location_controller.dart';
+import '../features/live_location/ui/live_location_screen.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/meal_planning/state/meal_plan_controller.dart';
 import '../features/meal_planning/ui/meal_plan_screen.dart';
@@ -30,6 +42,7 @@ import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'design_gallery_access.dart';
+import 'documents_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -77,19 +90,65 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
         ),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => CalendarController(
-              calendarRepository: context.read<CalendarRepository>(),
-              householdClock: context.read<HouseholdClock>(),
+        // A shell of its own, so the folders screen and a folder share one
+        // controller and one pair of listeners rather than opening a second
+        // set on the way in (documents ADR-0001).
+        ShellRoute(
+          builder: (context, state, child) => ChangeNotifierProvider(
+            create: (context) => DocumentLibraryController(
+              documentRepository: context.read<DocumentRepository>(),
+              documentStore: context.read<DocumentStore>(),
+              documentDirectory: context.read<DocumentDirectory>(),
+              documentPicker: context.read<DocumentPicker>(),
+              documentOpener: context.read<DocumentOpener>(),
               householdId: HouseholdRoute.idFrom(state),
               memberId: _viewerMemberId(context),
+              viewerUid: session.uidOrEmpty,
+              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
             ),
-            child: CalendarScreen(
-              onSelectTab: (tab) => _goToTab(context, state, tab),
-            ),
+            child: child,
           ),
+          routes: [
+            GoRoute(
+              path: DocumentsRoute.path,
+              builder: (context, state) => const DocumentLibraryScreen(),
+            ),
+            GoRoute(
+              path: DocumentsRoute.folderPath,
+              builder: (context, state) => DocumentFolderScreen(
+                folderId: DocumentsRoute.folderIdFrom(state),
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => LiveLocationController(
+              liveLocationRepository: context.read<LiveLocationRepository>(),
+              locationReporter: context.read<LocationReporter>(),
+              householdId: HouseholdRoute.idFrom(state),
+              viewerMemberId: _viewerMemberId(context),
+              members: context.read<HouseholdView>().members,
+            ),
+            child: const LiveLocationScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
+          // The only route whose controller follows another provider: the week
+          // derives its birthdays from the household's profiles, so a rename or
+          // a recolour has to reach it (birthdays ADR-0001).
+          builder: (context, state) =>
+              ChangeNotifierProxyProvider<HouseholdView, CalendarController>(
+                create: (context) => _calendarController(context, state),
+                update: (context, view, controller) =>
+                    (controller ?? _calendarController(context, state))
+                      ..showBirthdaysOf(view.members),
+                child: CalendarScreen(
+                  onSelectTab: (tab) => _goToTab(context, state, tab),
+                ),
+              ),
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
@@ -141,6 +200,17 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         builder: (context, state) => const DesignGalleryScreen(),
       ),
   ],
+);
+
+CalendarController _calendarController(
+  BuildContext context,
+  GoRouterState state,
+) => CalendarController(
+  calendarRepository: context.read<CalendarRepository>(),
+  householdClock: context.read<HouseholdClock>(),
+  householdId: HouseholdRoute.idFrom(state),
+  memberId: _viewerMemberId(context),
+  householdMembers: context.read<HouseholdView>().members,
 );
 
 void _goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {

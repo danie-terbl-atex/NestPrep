@@ -10,6 +10,7 @@ class EmulatorEndpoint {
     required this.firestorePort,
     required this.authPort,
     required this.functionsPort,
+    required this.storagePort,
   });
 
   static const hostDefineName = 'NESTPREP_EMULATOR_HOST';
@@ -18,11 +19,13 @@ class EmulatorEndpoint {
   static const _defaultFirestorePort = 8080;
   static const _defaultAuthPort = 9099;
   static const _defaultFunctionsPort = 5001;
+  static const _defaultStoragePort = 9199;
 
   final String host;
   final int firestorePort;
   final int authPort;
   final int functionsPort;
+  final int storagePort;
 
   factory EmulatorEndpoint.forThisDevice() {
     final host = _definedHost.isNotEmpty
@@ -35,6 +38,7 @@ class EmulatorEndpoint {
       firestorePort: _defaultFirestorePort,
       authPort: _defaultAuthPort,
       functionsPort: _defaultFunctionsPort,
+      storagePort: _defaultStoragePort,
     );
   }
 }

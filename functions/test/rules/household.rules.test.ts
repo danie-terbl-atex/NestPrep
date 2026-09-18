@@ -46,6 +46,7 @@ async function givenTheParkers(): Promise<void> {
       displayName: 'Kid',
       color: 'sky',
       role: 'member',
+      birthday: '2017-09-18',
       claimedBy: null,
       createdAt: new Date(),
     });
@@ -216,5 +217,133 @@ describe('households/{id}/members/{memberId}', () => {
   it('denies deleting a profile from a client — removeMember does that', async () => {
     const db = await asUser(SAM);
     await assertFails(deleteDoc(doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`)));
+  });
+});
+
+describe('households/{id}/members/{memberId} — the birthday (birthdays ADR-0001)', () => {
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+  });
+
+  it('lets an admin add a profile with a birthday', async () => {
+    const db = await asUser(SAM);
+    await assertSucceeds(
+      setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+        ...newMember,
+        birthday: '1952-04-30',
+      }),
+    );
+  });
+
+  it('lets one be added with no year, which some households do not know', async () => {
+    const db = await asUser(SAM);
+    await assertSucceeds(
+      setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+        ...newMember,
+        birthday: '--04-30',
+      }),
+    );
+  });
+
+  it('lets one be added with none at all, as a null and as an absent field', async () => {
+    const db = await asUser(SAM);
+    await assertSucceeds(
+      setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+        ...newMember,
+        birthday: null,
+      }),
+    );
+    // `newMember` has no birthday key. Every profile written before the field
+    // existed looks exactly like this, and must still be writable (BE-10).
+    await assertSucceeds(setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gogo`), newMember));
+  });
+
+  it('denies a birthday that is not one', async () => {
+    const db = await asUser(SAM);
+    for (const wrong of ['', 'yesterday', '30-04-1952', '1952-13-30', '1952-04-32', '--00-30']) {
+      await assertFails(
+        setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+          ...newMember,
+          birthday: wrong,
+        }),
+      );
+    }
+  });
+
+  it('denies a birthday that is not a string at all', async () => {
+    const db = await asUser(SAM);
+    await assertFails(
+      setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+        ...newMember,
+        birthday: 19520430,
+      }),
+    );
+  });
+
+  it('lets an admin set, change and clear one on an existing profile', async () => {
+    const db = await asUser(SAM);
+    const kid = doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`);
+    await assertSucceeds(updateDoc(kid, { birthday: '2017-09-19' }));
+    await assertSucceeds(updateDoc(kid, { birthday: '--09-19' }));
+    await assertSucceeds(updateDoc(kid, { birthday: null }));
+  });
+
+  it('lets an admin set one on a claimed profile without touching the role', async () => {
+    const db = await asUser(SAM);
+    await assertSucceeds(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${THANDI_MEMBER}`), {
+        birthday: '1988-02-29',
+      }),
+    );
+  });
+
+  it('denies updating a profile to a malformed birthday', async () => {
+    const db = await asUser(SAM);
+    await assertFails(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`), {
+        birthday: 'sometime in September',
+      }),
+    );
+  });
+
+  it('denies a non-admin setting anybody"s birthday, including their own', async () => {
+    const db = await asUser(THANDI);
+    await assertFails(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${THANDI_MEMBER}`), {
+        birthday: '1988-02-29',
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`), {
+        birthday: '2017-01-01',
+      }),
+    );
+  });
+
+  it('denies a stranger setting one', async () => {
+    const db = await asUser(STRANGER);
+    await assertFails(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`), {
+        birthday: '2017-01-01',
+      }),
+    );
+  });
+
+  it('still denies a field nobody named, now that the list has grown', async () => {
+    // The birthday was added to `hasOnly`; deny-by-default has to survive it.
+    const db = await asUser(SAM);
+    await assertFails(
+      setDoc(doc(db, `households/${HOUSEHOLD}/members/m-gran`), {
+        ...newMember,
+        birthday: '1952-04-30',
+        nickname: 'Gran',
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(db, `households/${HOUSEHOLD}/members/${KID_MEMBER}`), {
+        nickname: 'Kiddo',
+      }),
+    );
   });
 });

@@ -4,10 +4,14 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /**
- * The emulator ports are written down five times, in four files, and
+ * The emulator ports are written down seven times, in four files, and
  * `app/CLAUDE.md` says so out loud: "fixed in the root `firebase.json` and
  * mirrored in `lib/app/emulator_endpoint.dart`". The word *mirrored* is the
  * warning.
+ *
+ * Adding the storage emulator for the documents feature is what that warning
+ * is about: one new number in `firebase.json`, two new mirrors, and three
+ * assertions in this file that had the old count baked into them.
  *
  * They agree today. If one changes and the others do not, nothing fails
  * usefully: the app cannot reach a service that is running, the seed script
@@ -40,6 +44,7 @@ const ports = {
   auth: portOf('auth'),
   firestore: portOf('firestore'),
   functions: portOf('functions'),
+  storage: portOf('storage'),
 };
 
 /** Every number in a file, so a port can be looked for without a shape. */
@@ -54,13 +59,13 @@ function numbersIn(source: string): Set<number> {
 describe('every copy of an emulator port matches firebase.json', () => {
   it('and firebase.json actually declares them', () => {
     expect(Object.values(ports).every((port) => port > 1024)).toBe(true);
-    expect(new Set(Object.values(ports)).size).toBe(3);
+    expect(new Set(Object.values(ports)).size).toBe(4);
   });
 
   const mirrors: [file: string, services: (keyof typeof ports)[]][] = [
-    ['app/lib/app/emulator_endpoint.dart', ['auth', 'firestore', 'functions']],
+    ['app/lib/app/emulator_endpoint.dart', ['auth', 'firestore', 'functions', 'storage']],
     ['functions/test/emulator/emulator_harness.ts', ['auth', 'firestore', 'functions']],
-    ['functions/test/rules/rules_harness.ts', ['firestore']],
+    ['functions/test/rules/rules_harness.ts', ['firestore', 'storage']],
     ['functions/tools/seed-emulator.mjs', ['auth']],
   ];
 
