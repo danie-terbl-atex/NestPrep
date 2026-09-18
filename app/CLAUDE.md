@@ -19,6 +19,7 @@ dart run build_runner build --delete-conflicting-outputs   # freezed + json_seri
 flutter analyze --fatal-infos                               # zero diagnostics is the bar
 dart format --set-exit-if-changed lib test
 flutter test
+flutter test integration_test/ -d <device>       # the repositories, against a running emulator suite
 flutter run                                                 # emulator backend by default
 flutter build apk --debug
 ```
