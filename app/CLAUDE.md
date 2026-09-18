@@ -86,7 +86,10 @@ to sign in. Start the suite and seed it first (both commands are in the root `CL
 ## Things that bite on this codebase
 
 - Generated `*.g.dart` and `*.freezed.dart` are committed and never hand-edited; if the analyzer
-  complains about a missing part, run `build_runner`.
+  complains about a missing part, run `build_runner`. To check nobody has (`ENG-24`), regenerate and
+  look for movement — `dart run build_runner build --delete-conflicting-outputs && git status
+  --porcelain` must print nothing. Verified clean across all 25 files on 2026-09-18;
+  `test/shared/generated_code_test.dart` covers the cheap half on every run.
 - `build_runner` rewrites `analysis_options.yaml` to add `build/`, `android/` and `ios/` to the
   analyzer excludes the first time it runs; that edit is expected and harmless.
 - **Debug builds need `src/debug/res/xml/network_security_config.xml`.** Android refuses cleartext
