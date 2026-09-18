@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:nestprep/app/backend_target.dart';
-import 'package:nestprep/app/firebase_bootstrap.dart';
-import 'package:nestprep/features/household/data/callable_household_directory.dart';
-import 'package:nestprep/features/household/data/firestore_household_repository.dart';
 import 'package:nestprep/features/meal_planning/data/firestore_meal_repository.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
+
+import 'household_fixture.dart';
 
 /// The repository layer, against the real Firestore in the emulator suite.
 ///
@@ -34,51 +31,17 @@ import 'package:nestprep/shared/time/calendar_date.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  late TestHousehold home;
   late FirestoreMealRepository meals;
-  late FirestoreHouseholdRepository households;
-  late CallableHouseholdDirectory directory;
-  late String household;
-
-  /// The member profile the callable claimed for this uid. Needed because the
-  /// rules insist a meal's `addedBy` is a profile the caller has claimed —
-  /// `isOwnMember` — so an invented id is refused. The first draft used `'m1'`
-  /// and every meal write was denied, correctly.
-  late String member;
 
   setUpAll(() async {
-    final services = await bootstrapFirebase(BackendTarget.emulator);
-    // Signed in, because every rule under a household starts at `isMember`.
-    // An anonymous user is enough for that — `requireUid` asks only that there
-    // is a uid — and it keeps this about the client's write shapes rather than
-    // about authorisation, which the rules suite covers from the other side.
-    await services.auth.signInAnonymously();
-    meals = FirestoreMealRepository(services.firestore);
-    households = FirestoreHouseholdRepository(services.firestore);
-    directory = CallableHouseholdDirectory(services.functions);
+    home = await signInAndCreateAHousehold();
+    meals = FirestoreMealRepository(home.firestore);
   });
 
-  setUp(() async {
-    // A real household through the real callable, one per test. Writing the
-    // document from here is impossible by design: only a Function may write the
-    // membership map (foundation ADR-0002), which is why the first draft of
-    // this test was refused by the rules — correctly.
-    //
-    // One per test because the emulator is not cleared between them, and a
-    // shared household makes one test's leftovers another's mystery.
-    household = await directory.createHousehold(
-      name: 'Integration',
-      timeZone: 'Africa/Johannesburg',
-      adminDisplayName: 'Tester',
-      adminColorName: 'violet',
-    );
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final profiles = await households.watchMembers(household).first;
-    member = profiles.firstWhere((profile) => profile.claimedBy == uid).id;
-  });
+  setUp(() async => home = await home.freshHousehold());
 
-  tearDownAll(() async {
-    await FirebaseAuth.instance.signOut();
-  });
+  tearDownAll(() async => home.signOut());
 
   group('setSlots merges only the slots it names', () {
     test('filling Wednesday leaves Tuesday alone', () async {
@@ -87,19 +50,19 @@ void main() {
       final monday = CalendarDate(2026, 9, 21);
 
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slotKey: '2026-09-22-dinner',
         mealId: 'tuesday-meal',
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slotKey: '2026-09-23-dinner',
         mealId: 'wednesday-meal',
       );
 
-      final plan = await meals.readWeek(household, monday);
+      final plan = await meals.readWeek(home.id, monday);
       expect(plan.slots['2026-09-22-dinner'], 'tuesday-meal');
       expect(plan.slots['2026-09-23-dinner'], 'wednesday-meal');
     });
@@ -108,7 +71,7 @@ void main() {
       final monday = CalendarDate(2026, 9, 21);
 
       await meals.setSlots(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slots: const {
           '2026-09-21-breakfast': 'oats',
@@ -116,13 +79,13 @@ void main() {
         },
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slotKey: '2026-09-21-lunch',
         mealId: 'sandwiches',
       );
 
-      final plan = await meals.readWeek(household, monday);
+      final plan = await meals.readWeek(home.id, monday);
       expect(plan.slots, hasLength(3));
       expect(plan.slots['2026-09-21-breakfast'], 'oats');
       expect(plan.slots['2026-09-21-dinner'], 'stew');
@@ -133,7 +96,7 @@ void main() {
       final monday = CalendarDate(2026, 9, 21);
 
       await meals.setSlots(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slots: const {
           '2026-09-21-dinner': 'stew',
@@ -141,13 +104,13 @@ void main() {
         },
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: monday,
         slotKey: '2026-09-21-dinner',
         mealId: 'curry',
       );
 
-      final plan = await meals.readWeek(household, monday);
+      final plan = await meals.readWeek(home.id, monday);
       expect(plan.slots['2026-09-21-dinner'], 'curry');
       expect(plan.slots['2026-09-22-dinner'], 'pasta');
     });
@@ -158,14 +121,14 @@ void main() {
       'typing a name the household already has returns the same id',
       () async {
         final first = await meals.addMeal(
-          householdId: household,
+          householdId: home.id,
           name: 'Spaghetti',
-          addedBy: member,
+          addedBy: home.memberId,
         );
         final again = await meals.addMeal(
-          householdId: household,
+          householdId: home.id,
           name: 'spaghetti  ',
-          addedBy: member,
+          addedBy: home.memberId,
         );
 
         expect(again, first, reason: 'a second Spaghetti is the first one');
@@ -174,14 +137,14 @@ void main() {
 
     test('a different name is a different meal', () async {
       final one = await meals.addMeal(
-        householdId: household,
+        householdId: home.id,
         name: 'Spaghetti',
-        addedBy: member,
+        addedBy: home.memberId,
       );
       final two = await meals.addMeal(
-        householdId: household,
+        householdId: home.id,
         name: 'Lasagne',
-        addedBy: member,
+        addedBy: home.memberId,
       );
 
       expect(two, isNot(one));
@@ -196,36 +159,36 @@ void main() {
       final second = CalendarDate(2026, 9, 28);
 
       final mealId = await meals.addMeal(
-        householdId: household,
+        householdId: home.id,
         name: 'Stew',
-        addedBy: member,
+        addedBy: home.memberId,
       );
       final keeper = await meals.addMeal(
-        householdId: household,
+        householdId: home.id,
         name: 'Salad',
-        addedBy: member,
+        addedBy: home.memberId,
       );
 
       await meals.setSlots(
-        householdId: household,
+        householdId: home.id,
         monday: first,
         slots: {'2026-09-21-dinner': mealId, '2026-09-22-dinner': keeper},
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: second,
         slotKey: '2026-09-28-dinner',
         mealId: mealId,
       );
 
       await meals.deleteMeal(
-        householdId: household,
+        householdId: home.id,
         mealId: mealId,
         weeksToClear: [first, second],
       );
 
-      final weekOne = await meals.readWeek(household, first);
-      final weekTwo = await meals.readWeek(household, second);
+      final weekOne = await meals.readWeek(home.id, first);
+      final weekTwo = await meals.readWeek(home.id, second);
 
       expect(weekOne.slots.containsKey('2026-09-21-dinner'), isFalse);
       expect(
@@ -235,7 +198,7 @@ void main() {
       );
       expect(weekTwo.slots, isEmpty);
 
-      final library = await meals.watchMeals(household).first;
+      final library = await meals.watchMeals(home.id).first;
       expect(library.map((meal) => meal.id), isNot(contains(mealId)));
       expect(library.map((meal) => meal.id), contains(keeper));
     });
@@ -245,30 +208,30 @@ void main() {
       final other = CalendarDate(2026, 9, 28);
 
       final mealId = await meals.addMeal(
-        householdId: household,
+        householdId: home.id,
         name: 'Stew',
-        addedBy: member,
+        addedBy: home.memberId,
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: used,
         slotKey: '2026-09-21-dinner',
         mealId: mealId,
       );
       await meals.setSlot(
-        householdId: household,
+        householdId: home.id,
         monday: other,
         slotKey: '2026-09-28-dinner',
         mealId: 'something-else',
       );
 
       await meals.deleteMeal(
-        householdId: household,
+        householdId: home.id,
         mealId: mealId,
         weeksToClear: [used, other],
       );
 
-      final untouched = await meals.readWeek(household, other);
+      final untouched = await meals.readWeek(home.id, other);
       expect(untouched.slots['2026-09-28-dinner'], 'something-else');
     });
   });
