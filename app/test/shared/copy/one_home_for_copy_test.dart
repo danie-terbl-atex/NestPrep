@@ -123,20 +123,20 @@ void main() {
       }
     }
 
-    // Every one of these is words for a capability that exists in the model,
-    // the repository and the controller, and has no screen. Finding them is
-    // what this check turned out to be for: `repeatUntilLabel` and
-    // `repeatForever` were on this list until the recurrence end date was
-    // built, which is how the gap was found.
+    // This list is empty, and that is the interesting part.
     //
-    // The list may only ever shrink. A name added to it is a capability
-    // somebody stopped one layer short of; a name left on it after the screen
-    // exists is this test lying.
-    const noScreenYet = {
-      'sessionStarting',
-      'calendarEmptyTitle',
-      'householdMembers',
-    };
+    // It began at ten names. Every one turned out to be a capability finished
+    // in the model, the repository, the controller and the rules, with the
+    // words already written, and no control anywhere that opened it: the
+    // recurrence end date, completing a task for somebody else, switching
+    // households, renaming a household or its zone, renaming a meal, the
+    // calendar's member filter, and its way back to this week. Two more were
+    // copy superseded by a better decision and were deleted. One was a screen
+    // that said nothing while it worked.
+    //
+    // A name appearing here again is a capability somebody stopped one layer
+    // short of. Either wire it up, or do not write the words yet.
+    const noScreenYet = <String>{};
 
     expect(
       names.difference(usedAnywhere),

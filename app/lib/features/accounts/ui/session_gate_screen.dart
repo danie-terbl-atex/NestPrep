@@ -25,7 +25,21 @@ class SessionGateScreen extends StatelessWidget {
             retryLabel: AppCopy.retry,
             onRetry: controller.retry,
           ),
-          _ => const NestLoadingView(rows: 3),
+          // The very first thing anybody sees on a cold start. Three grey bars
+          // with no words is a screen that looks broken for as long as the
+          // session read takes, which on a bad connection is a while.
+          _ => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppCopy.sessionStarting,
+                style: NestTheme.of(context).text.bodySecondary,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: NestSpace.lg),
+              const NestLoadingView(rows: 3),
+            ],
+          ),
         },
       ),
     );

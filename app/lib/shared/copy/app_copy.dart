@@ -118,7 +118,6 @@ abstract final class AppCopy {
   static const calendarEnds = 'Ends';
   static const calendarForLabel = 'For';
   static const calendarEveryone = 'Everyone';
-  static const calendarEmptyTitle = 'Nothing on this week';
   static const calendarEmptyBody = 'Add the first event.';
   static const calendarDayEmpty = 'Nothing on';
   static const calendarSkip = 'Skip this one';
@@ -163,7 +162,6 @@ abstract final class AppCopy {
   static const inviteCodeLabel = 'Invite code';
   static const inviteCodeHint = 'ABCD2345';
   static const householdTitle = 'Household';
-  static const householdMembers = 'Members';
   static const householdAddMember = 'Add a person';
   static const householdEditMember = 'Edit person';
   static const householdMemberName = 'Name';
