@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
@@ -128,6 +129,26 @@ void main() {
     // `pumpScreen`'s router stands the household route up as a placeholder;
     // arriving there is the whole assertion (`FE-17`).
     expect(find.byType(Placeholder), findsOneWidget);
+    expect(find.text(AppCopy.calendarTitle), findsNothing);
+  });
+
+  testWidgets('and the week is still there to come back to', (tester) async {
+    await pump(tester);
+    await tester.tap(
+      find.text(AppCopy.birthdayTurning(Fixtures.kid.displayName, 9)),
+    );
+    await tester.pumpAndSettle();
+
+    // It has to push, not replace. The header's household link was written
+    // replacing once, and the system back button closed the app
+    // (`household_navigation_test.dart`).
+    final router = GoRouter.of(tester.element(find.byType(Placeholder)));
+    expect(router.canPop(), isTrue);
+
+    router.pop();
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppCopy.calendarTitle), findsOneWidget);
   });
 
   testWidgets('a day with only a birthday is not an empty day', (tester) async {

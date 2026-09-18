@@ -44,7 +44,12 @@ class BirthdayRow extends StatelessWidget {
         excludeSemantics: true,
         child: InkWell(
           borderRadius: BorderRadius.circular(NestRadius.lg),
-          onTap: () => context.go(HouseholdRoute.householdPathFor(householdId)),
+          // It **pushes**, like the header's household link and for the same
+          // reason: the household opens over the week, so back comes back to
+          // the week. Replacing would leave nothing to pop and the system back
+          // button would close the app (`FE-17`).
+          onTap: () =>
+              context.push(HouseholdRoute.householdPathFor(householdId)),
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
