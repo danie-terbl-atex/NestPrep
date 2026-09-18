@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
+import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
@@ -65,6 +66,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) async {
     final members = _members(householdId);
     final document = members.doc();
@@ -75,6 +77,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
           displayName: displayName,
           color: color,
           roleName: role.name,
+          birthday: birthday,
         ),
       ),
     );
@@ -87,11 +90,16 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
     required String displayName,
     required MemberColor color,
     required MemberRole role,
+    Birthday? birthday,
   }) => _guarded(
+    // Hand-built because an update names the fields it moves, so the birthday
+    // goes in as the string it is stored as — Firestore never calls `toJson`
+    // on a model it is handed.
     () => _members(householdId).doc(memberId).update({
       'displayName': displayName,
       'color': color.name,
       'role': role.name,
+      'birthday': birthday?.iso,
     }),
   );
 

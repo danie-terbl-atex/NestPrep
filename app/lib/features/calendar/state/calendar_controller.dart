@@ -8,7 +8,9 @@ import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../household/model/member.dart';
 import '../data/calendar_repository.dart';
+import '../model/birthday_occurrence.dart';
 import '../model/calendar_week.dart';
 import '../model/event_exception.dart';
 import '../model/event_occurrence.dart';
@@ -17,15 +19,21 @@ import '../model/household_event.dart';
 /// The calendar's controller. The week being looked at is the one piece of
 /// state the screen owns, and the exceptions listener follows it — which is why
 /// moving a week reopens that one read and nothing else.
+///
+/// The members come from the household shell's listener rather than a read of
+/// this feature's own, and the birthdays on the week are derived from them
+/// every time the window or the profiles move (birthdays ADR-0001).
 final class CalendarController extends ChangeNotifier with ActionFailureHolder {
   CalendarController({
     required CalendarRepository calendarRepository,
     required HouseholdClock householdClock,
     required this.householdId,
     required this.memberId,
+    required List<Member> householdMembers,
     CalendarDate? initialWeekStart,
   }) : _repository = calendarRepository,
-       _clock = householdClock {
+       _clock = householdClock,
+       _members = householdMembers {
     _weekStart = initialWeekStart ?? _clock.today.weekStart;
     _subscribeToEvents();
     _subscribeToExceptions();
@@ -41,6 +49,7 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
 
   List<HouseholdEvent>? _events;
   List<EventException>? _exceptions;
+  List<Member> _members;
 
   late CalendarDate _weekStart;
   AsyncState<CalendarWeek> _week = const AsyncLoading();
@@ -62,6 +71,15 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
     if (_selectedDay == date) return;
     _selectedDay = date;
     notifyListeners();
+  }
+
+  /// The household's profiles, as the shell's listener last saw them. Renaming
+  /// or recolouring somebody changes their birthday on the week with no write
+  /// of any kind, because the entry was never stored.
+  void showBirthdaysOf(List<Member> members) {
+    if (listEquals(_members, members)) return;
+    _members = members;
+    _publish();
   }
 
   void filterBy(String? memberId) {
@@ -168,13 +186,19 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
     final events = _events;
     final exceptions = _exceptions;
     if (events == null || exceptions == null) return;
+    final weekEnd = _weekStart.addDays(CalendarWeek.daysInAWeek - 1);
     _week = AsyncData(
       CalendarWeek.from(
         occurrences: selectEventOccurrences(
           events: events,
           exceptions: exceptions,
           from: _weekStart,
-          to: _weekStart.addDays(CalendarWeek.daysInAWeek - 1),
+          to: weekEnd,
+        ),
+        birthdays: selectBirthdayOccurrences(
+          members: _members,
+          from: _weekStart,
+          to: weekEnd,
         ),
         weekStart: _weekStart,
         today: today,

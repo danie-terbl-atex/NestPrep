@@ -4,6 +4,7 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
@@ -88,6 +89,9 @@ List<ModelFixture> modelFixtures() {
     displayName: 'Ada',
     color: MemberColor.teal,
     roleName: 'admin',
+    // With a year, because the year-less shape is the one a round trip could
+    // quietly lose; `birthday_test.dart` covers `--MM-DD` on its own.
+    birthday: Birthday(year: 1985, month: 12, day: 10),
     claimedBy: 'uidA',
     createdAt: at,
   );
@@ -191,8 +195,18 @@ List<ModelFixture> modelFixtures() {
       value: member,
       toJson: member.toJson,
       fromJson: Member.fromJson,
-      keys: const {'displayName', 'color', 'role', 'claimedBy', 'createdAt'},
-      note: '`roleName` is stored as `role`, which is the name the rules read.',
+      keys: const {
+        'displayName',
+        'color',
+        'role',
+        'birthday',
+        'claimedBy',
+        'createdAt',
+      },
+      note:
+          '`roleName` is stored as `role`, which is the name the rules read. '
+          '`birthday` is a string in one of two shapes, never a nested model '
+          '(birthdays ADR-0001).',
     ),
     ModelFixture(
       label: 'GroceryItem',

@@ -238,6 +238,7 @@ void main() {
       householdClock: _clock,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
     addTearDown(controller.dispose);
 
@@ -403,6 +404,7 @@ void main() {
       householdClock: _clock,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
     addTearDown(controller.dispose);
 

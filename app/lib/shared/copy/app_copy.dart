@@ -124,6 +124,15 @@ abstract final class AppCopy {
   static const calendarTitleLabel = 'What is happening?';
   static const calendarWeekFilter = 'Showing';
 
+  /// A birthday is derived from a member's profile and cannot be changed from
+  /// the calendar, so its row says where it comes from (birthdays ADR-0001).
+  static const calendarBirthdayFromProfile = 'From the household';
+  static const calendarBirthdayOpenProfile = 'Open the household';
+
+  static String birthdayOf(String name) => '$name\u2019s birthday';
+
+  static String birthdayTurning(String name, int age) => '$name turns $age';
+
   static const mealsTitle = 'Meals';
   static const mealsBreakfast = 'Breakfast';
   static const mealsLunch = 'Lunch';
@@ -167,6 +176,12 @@ abstract final class AppCopy {
   static const householdMemberName = 'Name';
   static const householdMemberColour = 'Colour';
   static const householdMemberRole = 'Role';
+  static const householdMemberBirthday = 'Birthday';
+  static const householdBirthdayNone = 'Not set';
+  static const householdBirthdayKnown = 'A date';
+  static const householdBirthdayNoYear = 'Day and month only';
+  static const householdBirthdayPick = 'Pick the day';
+  static const householdBirthdayYearUnknown = 'Year not known';
   static const householdInvite = 'Invite';
   static const householdInviteTitle = 'Invite code';
   static const householdInviteBody =

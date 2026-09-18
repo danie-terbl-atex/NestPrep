@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/time/household_clock.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
@@ -76,12 +77,16 @@ class HouseholdScreen extends StatelessWidget {
     BuildContext context,
     HouseholdController controller,
   ) async {
-    final result = await showMemberSheet(context: context);
+    final result = await showMemberSheet(
+      context: context,
+      today: context.read<HouseholdClock>().today,
+    );
     if (result == null) return;
     await controller.addMember(
       displayName: result.displayName,
       color: result.color,
       role: result.role,
+      birthday: result.birthday,
     );
   }
 }
@@ -175,13 +180,18 @@ class _HouseholdBody extends StatelessWidget {
   }
 
   Future<void> _editMember(BuildContext context, Member member) async {
-    final result = await showMemberSheet(context: context, existing: member);
+    final result = await showMemberSheet(
+      context: context,
+      today: context.read<HouseholdClock>().today,
+      existing: member,
+    );
     if (result == null) return;
     await controller.updateMember(
       memberId: member.id,
       displayName: result.displayName,
       color: result.color,
       role: result.role,
+      birthday: result.birthday,
     );
   }
 

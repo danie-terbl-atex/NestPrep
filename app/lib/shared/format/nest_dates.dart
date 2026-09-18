@@ -12,6 +12,12 @@ abstract final class NestDates {
   static final _monthAndYear = DateFormat('MMMM yyyy');
   static final _weekdayOnly = DateFormat('EEE');
   static final _dayOnly = DateFormat('d');
+  static final _dayAndMonthOnly = DateFormat('d MMMM');
+  static final _dayMonthAndYear = DateFormat('d MMMM yyyy');
+
+  /// Only ever a carrier for a month and a day that has no year of its own —
+  /// leap, so 29 February formats rather than rolling into March.
+  static const _aLeapYear = 2000;
 
   /// "Today", "Yesterday", "Tomorrow", or the date — because a household reads
   /// a list of days, not a list of dates.
@@ -42,6 +48,16 @@ abstract final class NestDates {
       date.year == today.year
       ? _dayAndMonth.format(_asDateTime(date))
       : _dayMonthYear.format(_asDateTime(date));
+
+  /// A day of the year — somebody's birthday. The year is shown only when the
+  /// household knows it; without one this is a day and a month and nothing
+  /// else, which is exactly what is stored (birthdays ADR-0001).
+  static String dayOfYear({required int month, required int day, int? year}) {
+    final asDay = DateTime.utc(year ?? _aLeapYear, month, day);
+    return year == null
+        ? _dayAndMonthOnly.format(asDay)
+        : _dayMonthAndYear.format(asDay);
+  }
 
   static String monthAndYear(CalendarDate date) =>
       _monthAndYear.format(_asDateTime(date));

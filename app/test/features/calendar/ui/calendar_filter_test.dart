@@ -39,6 +39,7 @@ void main() {
       ),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
   });
 

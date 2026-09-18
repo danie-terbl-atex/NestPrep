@@ -79,17 +79,19 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => CalendarController(
-              calendarRepository: context.read<CalendarRepository>(),
-              householdClock: context.read<HouseholdClock>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
-            ),
-            child: CalendarScreen(
-              onSelectTab: (tab) => _goToTab(context, state, tab),
-            ),
-          ),
+          // The only route whose controller follows another provider: the week
+          // derives its birthdays from the household's profiles, so a rename or
+          // a recolour has to reach it (birthdays ADR-0001).
+          builder: (context, state) =>
+              ChangeNotifierProxyProvider<HouseholdView, CalendarController>(
+                create: (context) => _calendarController(context, state),
+                update: (context, view, controller) =>
+                    (controller ?? _calendarController(context, state))
+                      ..showBirthdaysOf(view.members),
+                child: CalendarScreen(
+                  onSelectTab: (tab) => _goToTab(context, state, tab),
+                ),
+              ),
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
@@ -141,6 +143,17 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         builder: (context, state) => const DesignGalleryScreen(),
       ),
   ],
+);
+
+CalendarController _calendarController(
+  BuildContext context,
+  GoRouterState state,
+) => CalendarController(
+  calendarRepository: context.read<CalendarRepository>(),
+  householdClock: context.read<HouseholdClock>(),
+  householdId: HouseholdRoute.idFrom(state),
+  memberId: _viewerMemberId(context),
+  householdMembers: context.read<HouseholdView>().members,
 );
 
 void _goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {

@@ -5,6 +5,7 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
@@ -73,6 +74,7 @@ void main() {
         'displayName',
         'color',
         'role',
+        'birthday',
         'claimedBy',
         'createdAt',
       });
@@ -80,6 +82,37 @@ void main() {
       // The rules refuse a create that claims a profile for somebody.
       expect(json['claimedBy'], isNull);
       expect(json['color'], 'mint');
+      expect(
+        json['birthday'],
+        isNull,
+        reason: 'no birthday is what the rule calls an absent one',
+      );
+    });
+
+    test('writes a birthday as the string the rule matches, not a model', () {
+      // Firestore never calls `toJson()`, so a birthday left as an object is a
+      // write that fails on a device and nowhere else.
+      expect(
+        Member(
+          id: 'm',
+          displayName: 'Thandi',
+          color: MemberColor.mint,
+          roleName: 'helper',
+          birthday: Birthday(year: 1991, month: 3, day: 7),
+        ).toJson()['birthday'],
+        '1991-03-07',
+      );
+      expect(
+        Member(
+          id: 'm',
+          displayName: 'Kid',
+          color: MemberColor.sky,
+          roleName: 'member',
+          birthday: Birthday(month: 2, day: 29),
+        ).toJson()['birthday'],
+        '--02-29',
+        reason: 'the year-less shape the rules also accept',
+      );
     });
   });
 

@@ -144,6 +144,7 @@ void main() {
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => now),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
     addTearDown(controller.dispose);
 

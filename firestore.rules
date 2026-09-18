@@ -71,6 +71,19 @@ service cloud.firestore {
       return value in ['admin', 'member', 'helper'];
     }
 
+    // A member's birthday (birthdays ADR-0001): absent, null, `YYYY-MM-DD`, or
+    // `--MM-DD` where the household does not know the year. The month and the
+    // day are range-checked here; that 31 February is not a day is the only
+    // part left to the client, because the rules language cannot count the
+    // days in a month and a wrong one is a wrong date in one household's own
+    // profile, not a way into anybody's data (BE-03).
+    function isBirthday(value) {
+      return value == null
+        || (value is string
+            && (value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+                || value.matches('^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')));
+    }
+
     // ---- accounts (accounts ADR-0001) ----
 
     match /users/{userId} {
@@ -132,21 +145,26 @@ service cloud.firestore {
         // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
-               ['displayName', 'color', 'role', 'claimedBy', 'createdAt'])
+               ['displayName', 'color', 'role', 'birthday', 'claimedBy', 'createdAt'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
+          && isBirthday(request.resource.data.get('birthday', null))
           && request.resource.data.claimedBy == null
           && isServerTime('createdAt');
 
         // A claimed member's role also lives in the household's uid→role map,
         // and one write cannot touch two documents — so changing it is
         // `setMemberRole`, and here it may only change while nobody holds it.
+        // `get('birthday', null)` rather than a bare read: every profile
+        // written before the field existed has no key at all, and a rule that
+        // reads a missing key refuses the write (BE-10).
         allow update: if isAdmin(householdId)
-          && onlyChanged(['displayName', 'color', 'role'])
+          && onlyChanged(['displayName', 'color', 'role', 'birthday'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
+          && isBirthday(request.resource.data.get('birthday', null))
           && (resource.data.claimedBy == null || didNotChange('role'));
 
         // Removing a profile detaches whoever claimed it: `removeMember`.

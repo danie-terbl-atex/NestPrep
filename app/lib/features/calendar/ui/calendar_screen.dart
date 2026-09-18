@@ -116,8 +116,11 @@ class CalendarScreen extends StatelessWidget {
               isEmpty: (_) => false,
               onRetry: controller.retry,
               emptyBuilder: (_) => const SizedBox.shrink(),
-              dataBuilder: (_, week) =>
-                  DayAgenda(week: week, day: controller.selectedDay),
+              dataBuilder: (_, week) => DayAgenda(
+                week: week,
+                day: controller.selectedDay,
+                householdId: controller.householdId,
+              ),
             ),
           ),
         ],

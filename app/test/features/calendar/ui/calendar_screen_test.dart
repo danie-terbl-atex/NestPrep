@@ -46,6 +46,7 @@ void main() {
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      householdMembers: const [],
     );
   });
 
