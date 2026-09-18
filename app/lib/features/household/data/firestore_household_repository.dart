@@ -39,6 +39,18 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
       .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
+  Future<List<Household>> readHouseholds(List<String> householdIds) async {
+    try {
+      final documents = await Future.wait([
+        for (final id in householdIds) _households.doc(id).get(),
+      ]);
+      return [for (final document in documents) ?document.data()];
+    } on Object catch (error) {
+      throw failureFromFirebase(error);
+    }
+  }
+
+  @override
   Stream<List<Member>> watchMembers(String householdId) =>
       _members(householdId)
           .orderBy('displayName')

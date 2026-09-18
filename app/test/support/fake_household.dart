@@ -34,6 +34,15 @@ final class FakeHouseholdRepository implements HouseholdRepository {
   @override
   Stream<Household?> watchHousehold(String householdId) => _households.stream;
 
+  /// What `readHouseholds` answers with, by id.
+  final storedHouseholds = <String, Household>{};
+
+  @override
+  Future<List<Household>> readHouseholds(List<String> householdIds) async {
+    _refuseIfAsked();
+    return [for (final id in householdIds) ?storedHouseholds[id]];
+  }
+
   @override
   Stream<List<Member>> watchMembers(String householdId) => _members.stream;
 

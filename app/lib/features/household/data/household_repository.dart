@@ -11,6 +11,12 @@ abstract interface class HouseholdRepository {
   /// because this account is no longer a member.
   Stream<Household?> watchHousehold(String householdId);
 
+  /// The households this account belongs to, by name, for choosing between
+  /// them. A one-off read rather than a listener: nobody is watching the list
+  /// of households they are in while they read it, and the ids come from the
+  /// account document, which *is* live.
+  Future<List<Household>> readHouseholds(List<String> householdIds);
+
   /// Every profile in the household, live, ordered by name.
   Stream<List<Member>> watchMembers(String householdId);
 

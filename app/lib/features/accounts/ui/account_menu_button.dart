@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../household/ui/switch_household_sheet.dart';
 import '../model/session.dart';
 import '../state/session_controller.dart';
 
@@ -46,6 +47,24 @@ class AccountMenuButton extends StatelessWidget {
             title: signedIn.account.displayName,
             subtitle: signedIn.user.email,
           ),
+          if (signedIn.account.householdIds.length > 1) ...[
+            const SizedBox(height: NestSpace.lg),
+            NestButton(
+              label: AppCopy.householdSwitch,
+              variant: NestButtonVariant.outline,
+              icon: Icons.swap_horiz,
+              onPressed: () async {
+                final chosen = await showSwitchHouseholdSheet(
+                  context: sheetContext,
+                  householdIds: signedIn.account.householdIds,
+                  activeHouseholdId: signedIn.account.activeHouseholdId,
+                );
+                if (chosen == null || !sheetContext.mounted) return;
+                Navigator.of(sheetContext).pop();
+                await controller.switchHousehold(chosen);
+              },
+            ),
+          ],
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: AppCopy.signOut,

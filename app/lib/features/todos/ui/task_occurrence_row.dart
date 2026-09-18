@@ -7,6 +7,8 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/household_view.dart';
+import '../../household/model/member.dart';
+import '../../household/ui/member_choice_sheet.dart';
 import '../model/task_occurrence.dart';
 import '../state/todo_controller.dart';
 import 'task_sheet.dart';
@@ -88,12 +90,58 @@ class TaskOccurrenceRow extends StatelessWidget {
                   ],
                 ),
               ),
+              if (_completableForSomebodyElse(view)) ...[
+                NestIconButton(
+                  icon: Icons.how_to_reg_outlined,
+                  label: AppCopy.todosCompleteFor,
+                  variant: NestIconButtonVariant.plain,
+                  onPressed: () =>
+                      _completeForSomebody(context, controller, view),
+                ),
+                const SizedBox(width: NestSpace.xs),
+              ],
               _AssigneeAvatars(occurrence: occurrence, view: view),
             ],
           ),
         ),
       ),
     );
+  }
+
+  /// An admin may tick something off for a profile nobody has claimed — a
+  /// child's task, done by a parent (household ADR-0001, todos ADR-0001). The
+  /// rules allow exactly that and no more, so the button appears in exactly
+  /// that case: an admin, an unfinished task, and at least one assignee who
+  /// has not joined.
+  ///
+  /// It is a button rather than a different meaning for the tap, because the
+  /// tap has to stay the fast thing it is.
+  bool _completableForSomebodyElse(HouseholdView view) =>
+      view.viewerIsAdmin &&
+      !occurrence.isDone &&
+      _unclaimedAssignees(view).isNotEmpty;
+
+  List<Member> _unclaimedAssignees(HouseholdView view) => [
+    for (final id in occurrence.assigneeIds)
+      if (view.memberById(id) case final member? when !member.isClaimed) member,
+  ];
+
+  Future<void> _completeForSomebody(
+    BuildContext context,
+    TodoController controller,
+    HouseholdView view,
+  ) async {
+    final candidates = _unclaimedAssignees(view);
+    // One unclaimed assignee is not a choice; asking would be ceremony.
+    final member = candidates.length == 1
+        ? candidates.single
+        : await showMemberChoiceSheet(
+            context: context,
+            title: AppCopy.todosCompleteFor,
+            members: candidates,
+          );
+    if (member == null) return;
+    await controller.setDone(occurrence, isDone: true, forMemberId: member.id);
   }
 
   /// When it is for, who it is for, and which routine it came from — never a
@@ -108,6 +156,13 @@ class TaskOccurrenceRow extends StatelessWidget {
         for (final id in occurrence.assigneeIds)
           ?view.memberById(id)?.displayName,
       ]);
+    }
+    final doneFor = occurrence.completion?.completedFor;
+    if (doneFor != null && doneFor != occurrence.completion?.completedBy) {
+      final member = view.memberById(doneFor);
+      if (member != null) {
+        parts.add('${AppCopy.todosDoneFor} ${member.displayName}');
+      }
     }
     if (showsRoutine && occurrence.routine != null) {
       parts.add(occurrence.routine!.name);

@@ -134,14 +134,11 @@ void main() {
     // exists is this test lying.
     const noScreenYet = {
       'sessionStarting',
-      'todosDoneFor',
-      'todosCompleteFor',
       'calendarThisWeek',
       'calendarEmptyTitle',
       'calendarWeekFilter',
       'mealsRename',
       'householdMembers',
-      'householdSwitch',
       'householdTimeZoneLabel',
     };
 
