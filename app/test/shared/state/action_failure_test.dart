@@ -20,6 +20,10 @@ final class _Controller extends ChangeNotifier with ActionFailureHolder {
   }
 
   Future<void> run(Future<void> Function() action) => runAction(action);
+
+  /// `recordFailure` is protected, which is right — only a controller should
+  /// reach it. A test drives it the way a controller would, through the class.
+  void hold(AppFailure failure) => recordFailure(failure);
 }
 
 void main() {
@@ -42,7 +46,7 @@ void main() {
 
   test('and dismissing it tells the screen exactly once', () {
     controller
-      ..recordFailure(const UnavailableFailure())
+      ..hold(const UnavailableFailure())
       ..dismissActionFailure()
       ..dismissActionFailure();
 
@@ -55,7 +59,7 @@ void main() {
   });
 
   test('the next action clears the last one', () async {
-    controller.recordFailure(const UnavailableFailure());
+    controller.hold(const UnavailableFailure());
     await controller.run(() async {});
     expect(controller.actionFailure, isNull);
   });
