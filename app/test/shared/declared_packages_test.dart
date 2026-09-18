@@ -16,10 +16,25 @@ import 'package:flutter_test/flutter_test.dart';
 /// both manifests, so the answer cannot drift.
 void main() {
   final repoRoot = Directory.current.parent;
+
+  // The vault is a *different repo*, beside this one in the workspace. This is
+  // the only test in the app that reads outside its own repo, and a cold clone
+  // somewhere else has no vault to read — so it must not fail there. Verified
+  // 2026-09-18 by cloning to a scratch directory: it failed four tests.
+  final vault = Directory('${repoRoot.parent.path}/nullstate-vault');
   final note = File(
-    '${repoRoot.parent.path}/nullstate-vault/nestprep-project/'
-    'nestprep-technology-stack.md',
+    '${vault.path}/nestprep-project/nestprep-technology-stack.md',
   );
+
+  // Absent vault means a clone that does not sit beside it, which is fine.
+  // A vault that *is* there with no note is a rename or a broken path, and that
+  // must fail rather than quietly skipping — a skip nobody sees is how a check
+  // stops checking.
+  final Object skipUnlessBesideTheVault = vault.existsSync()
+      ? false
+      : 'no vault beside this clone at ${vault.path} — '
+            'the app repo passes its own tests standalone, and this check runs '
+            'in the workspace where the note lives';
 
   /// Keys in `pubspec.yaml` that are not packages.
   const notPackages = {
@@ -59,10 +74,11 @@ void main() {
       note.existsSync(),
       isTrue,
       reason:
-          'if the stack note moved, point this at it rather than deleting '
-          'it — the question it answers does not go away',
+          'the vault is beside this clone but the stack note is not where this '
+          'looks — point it at the note rather than deleting the check, '
+          'because the question it answers does not go away',
     );
-  });
+  }, skip: skipUnlessBesideTheVault);
 
   test('every package the app depends on is named in the note', () {
     final text = note.readAsStringSync();
@@ -81,7 +97,7 @@ void main() {
           'adding a package is an ADR and a row in the note, in the same '
           'change as the dependency (`ENG-17`)',
     );
-  });
+  }, skip: skipUnlessBesideTheVault);
 
   test('and every package the Functions depend on', () {
     final text = note.readAsStringSync();
@@ -94,7 +110,7 @@ void main() {
     ];
 
     expect(undeclared, isEmpty, reason: 'same rule, other half of the repo');
-  });
+  }, skip: skipUnlessBesideTheVault);
 
   test('and the note has not kept a row for something that has gone', () {
     // The note also lists what was deliberately *not* used, which is half its
@@ -124,5 +140,5 @@ void main() {
       isEmpty,
       reason: 'a package listed as deliberately not used, that is used',
     );
-  });
+  }, skip: skipUnlessBesideTheVault);
 }
