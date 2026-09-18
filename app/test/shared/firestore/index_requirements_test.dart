@@ -112,7 +112,7 @@ void main() {
 
     for (final declared in declaredComposites()) {
       expect(
-        asked.any((fields) => declared.containsAll(fields)),
+        asked.any(declared.containsAll),
         isTrue,
         reason:
             'an index nothing queries still costs a write on every document '
