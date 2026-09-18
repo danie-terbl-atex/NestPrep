@@ -9,6 +9,7 @@ import {
   givenData,
   type Firestore,
 } from './rules_harness';
+import { weeklyOn } from '../recurrence_shape';
 
 const SAM = 'uid-sam';
 const THANDI = 'uid-thandi';
@@ -44,7 +45,7 @@ async function givenTheParkers(): Promise<void> {
       date: DATE,
       startMinute: 450,
       endMinute: 510,
-      recurrence: { frequency: 'weekly', interval: 1, weekdays: [2], until: null },
+      recurrence: weeklyOn([2]),
       memberIds: [THANDI_MEMBER],
       createdBy: THANDI_MEMBER,
       createdAt: new Date(),

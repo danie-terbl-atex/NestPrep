@@ -9,6 +9,7 @@ import {
   givenData,
   type Firestore,
 } from './rules_harness';
+import { weeklyOn } from '../recurrence_shape';
 
 const SAM = 'uid-sam';
 const THANDI = 'uid-thandi';
@@ -113,6 +114,15 @@ describe('tasks/{taskId}', () => {
     await assertSucceeds(setDoc(doc(await asUser(THANDI), `${TASKS}/plants`), newTask));
   });
 
+  it('lets a member create a task that repeats, with the shape the client writes', async () => {
+    await assertSucceeds(
+      setDoc(doc(await asUser(THANDI), `${TASKS}/plants`), {
+        ...newTask,
+        recurrence: weeklyOn([2, 4], '2027-03-31'),
+      }),
+    );
+  });
+
   it('denies creating a task in somebody else"s name', async () => {
     await assertFails(
       setDoc(doc(await asUser(THANDI), `${TASKS}/plants`), {
@@ -170,7 +180,7 @@ describe('routines/{routineId}', () => {
   const newRoutine = {
     name: 'Laundry Day Tasks',
     firstDate: DATE,
-    recurrence: { frequency: 'weekly', interval: 1, weekdays: [6], until: null },
+    recurrence: weeklyOn([6]),
     defaultAssigneeIds: [THANDI_MEMBER],
     color: 'mint',
     createdBy: SAM_MEMBER,

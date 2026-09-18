@@ -14,6 +14,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { givenAHouseholdOfTwo, SAM, SAM_MEMBER, THANDI, THANDI_MEMBER } from './household_fixture';
 import { stopWatching, watchDoc } from './live_watch';
 import { asUser, givenData, type Firestore } from './rules_harness';
+import { weeklyOn } from '../recurrence_shape';
 
 /**
  * A phone in a shop basement, or a car on the N2, still has to work. The app
@@ -182,7 +183,7 @@ describe('a member who is offline', () => {
     // server is the one that decides, and it decides on reconnect.
     const refused = setDoc(doc(thandi, `${home}/routines/laundry`), {
       name: 'Laundry Day',
-      recurrence: { kind: 'weekly', interval: 1, weekdays: [6] },
+      recurrence: weeklyOn([6]),
       defaultAssigneeIds: [],
       createdBy: THANDI_MEMBER,
       createdAt: serverTimestamp(),
