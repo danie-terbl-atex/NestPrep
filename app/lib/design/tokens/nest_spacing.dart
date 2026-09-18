@@ -28,7 +28,12 @@ abstract final class NestRadius {
 /// Fixed dimensions: control heights, icon sizes and the touch-target floor.
 abstract final class NestSize {
   static const double touchTarget = 48;
-  static const double controlSmall = 40;
+
+  /// The smallest a control may be. Not a design choice: `FE-13` sets the
+  /// floor at 44×44, and it was 40 until an audit of the semantics tree found
+  /// the filter chips, the todo tabs and "Copy last week" all sitting under it.
+  /// A thumb is about 45 wide and does not care what the layout wanted.
+  static const double controlSmall = 44;
   static const double controlMedium = 48;
   static const double controlLarge = 56;
   static const double iconSmall = 18;
