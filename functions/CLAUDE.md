@@ -42,6 +42,10 @@ cloud because the client redirects every service.
 ## Things that bite on this codebase
 
 - `lib/` is build output and gitignored; deploy runs `lint` and `build` first via `firebase.json`.
+- **The Functions emulator runs `lib/`, not `src/`.** Editing TypeScript changes nothing in a
+  running suite until `npm run build`. This bites hardest when mutation-testing: break a rule in
+  `src/`, run the integration tests, watch them all pass, and conclude the tests are weak — when in
+  fact the mutation never reached the emulator. Build, wait a few seconds for the reload, then run.
 - Three vitest configs, three `include` globs. A test file in the wrong folder runs in the wrong
   suite: `test/unit/` needs nothing, `test/rules/` and `test/emulator/` need the emulator around
   them.
