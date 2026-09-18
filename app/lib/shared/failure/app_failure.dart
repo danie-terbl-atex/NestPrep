@@ -94,6 +94,42 @@ final class HouseholdFailure extends AppFailure {
   final HouseholdProblem problem;
 }
 
+/// Why something about a document did not happen.
+///
+/// Only the refusals the household vocabulary has no word for. "You are not in
+/// this household" and "only an admin can do that" are the same sentence
+/// whichever callable said them, so those stay `HouseholdProblem` and this
+/// enum does not repeat them (documents ADR-0001).
+enum DocumentProblem {
+  /// The folder was deleted while somebody was looking at it.
+  folderNotFound,
+
+  /// A folder is deleted only once it is empty, because rules cannot count
+  /// what is in one and an orphaned document is bytes nobody can see.
+  folderNotEmpty,
+
+  /// Past the 20 MiB the rules allow. Refused before the upload starts, so
+  /// nobody waits for it.
+  fileTooLarge,
+
+  /// Not one of the types a household keeps.
+  unsupportedType,
+
+  /// Somebody stopped the upload. Not a fault, but the screen still says what
+  /// became of the file.
+  uploadCancelled,
+
+  /// The file left the app and no viewer on the device took it. The document
+  /// is fine; the phone is the problem, and the person can say so.
+  cannotOpen,
+}
+
+final class DocumentFailure extends AppFailure {
+  const DocumentFailure(this.problem);
+
+  final DocumentProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

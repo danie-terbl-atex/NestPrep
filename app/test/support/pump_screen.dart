@@ -24,6 +24,33 @@ Future<void> pumpScreen(
   HouseholdView? view,
   Brightness brightness = Brightness.light,
   double textScale = 1,
+}) => pumpRouter(
+  tester,
+  router: GoRouter(
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => screen),
+      GoRoute(
+        path: '/households/:householdId/household',
+        builder: (context, state) => const Placeholder(),
+      ),
+    ],
+  ),
+  providers: providers,
+  view: view,
+  brightness: brightness,
+  textScale: textScale,
+);
+
+/// The same scaffolding, for a test that needs its own route table — pushing
+/// one screen over another, and proving there is somewhere to go back to
+/// (`FE-17`). `pumpScreen` is this with a one-screen router.
+Future<void> pumpRouter(
+  WidgetTester tester, {
+  required GoRouter router,
+  required List<SingleChildWidget> providers,
+  HouseholdView? view,
+  Brightness brightness = Brightness.light,
+  double textScale = 1,
 }) {
   tz_data.initializeTimeZones();
   final householdView = view ?? Fixtures.view();
@@ -68,21 +95,13 @@ Future<void> pumpScreen(
         // every screenshot the design review takes.
         debugShowCheckedModeBanner: false,
         theme: nestThemeData(nest),
-        routerConfig: GoRouter(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: TextScaler.linear(textScale)),
-                child: screen,
-              ),
-            ),
-            GoRoute(
-              path: '/households/:householdId/household',
-              builder: (context, state) => const Placeholder(),
-            ),
-          ],
+        routerConfig: router,
+        // Above the router rather than inside one route's builder, so every
+        // screen a test pushes is scaled, not only the first.
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child ?? const SizedBox.shrink(),
         ),
       ),
     ),

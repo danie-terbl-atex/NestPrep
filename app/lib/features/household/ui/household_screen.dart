@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/documents_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
@@ -137,6 +138,27 @@ class _HouseholdBody extends StatelessWidget {
                   : () => _remove(context, member),
             ),
           ),
+        const SizedBox(height: NestSpace.xxl),
+        // The household's papers hang off this screen rather than the bottom
+        // bar, which stays at the four things a household does in a week
+        // (documents ADR-0001).
+        NestCard(
+          variant: NestCardVariant.flat,
+          padding: EdgeInsets.zero,
+          child: NestListRow(
+            title: AppCopy.documentsOpenLibrary,
+            subtitle: AppCopy.documentsEmptyBody,
+            leading: const NestIconTile(
+              icon: Icons.folder_shared_outlined,
+              tint: NestTileTint.sky,
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            // Pushed, not gone to: this opens *over* the household screen, so
+            // back lands here rather than closing the app (`FE-17`).
+            onTap: () =>
+                context.push(DocumentsRoute.pathFor(view.household.id)),
+          ),
+        ),
         const SizedBox(height: NestSpace.xxl),
         NestButton(
           label: AppCopy.householdLeave,

@@ -1,4 +1,5 @@
-import { deleteApp, getApps, initializeApp } from 'firebase-admin/app';
+import { deleteApp, getApps, initializeApp, type App } from 'firebase-admin/app';
+import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 
 /**
@@ -71,15 +72,28 @@ export async function callAs<T>(user: TestUser | null, name: string, data: unkno
 
 let store: Firestore | undefined;
 
+/** The admin app the tests read and write through, pointed at the emulators. */
+function testApp(): App {
+  process.env['FIRESTORE_EMULATOR_HOST'] = FIRESTORE_HOST;
+  process.env['FIREBASE_AUTH_EMULATOR_HOST'] = AUTH_HOST;
+  return (
+    getApps().find((candidate) => candidate.name === 'tests') ??
+    initializeApp({ projectId: PROJECT_ID }, 'tests')
+  );
+}
+
 export function adminDb(): Firestore {
-  if (store === undefined) {
-    process.env['FIRESTORE_EMULATOR_HOST'] = FIRESTORE_HOST;
-    const app =
-      getApps().find((candidate) => candidate.name === 'tests') ??
-      initializeApp({ projectId: PROJECT_ID }, 'tests');
-    store = getFirestore(app);
-  }
+  store ??= getFirestore(testApp());
   return store;
+}
+
+/**
+ * Auth as the server sees it. One test needs it: the custom claim
+ * `syncDocumentAccess` writes is on the token, not in Firestore, so there is
+ * nowhere else to read it back from (documents ADR-0001).
+ */
+export function adminAuth(): Auth {
+  return getAuth(testApp());
 }
 
 export async function clearFirestore(): Promise<void> {

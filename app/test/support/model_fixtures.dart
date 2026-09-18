@@ -3,6 +3,8 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/documents/model/document_folder.dart';
+import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -156,6 +158,21 @@ List<ModelFixture> modelFixtures() {
     createdAt: at,
   );
   const plan = WeekPlan(id: '2026-09-21', slots: {'2026-09-21-dinner': 'ml1'});
+  final folder = DocumentFolder(
+    id: 'f1',
+    name: 'School',
+    createdBy: 'm1',
+    createdAt: at,
+  );
+  final document = HouseholdDocument(
+    id: 'd1',
+    folderId: 'f1',
+    name: 'Term letter',
+    contentType: 'application/pdf',
+    sizeBytes: 120000,
+    uploadedBy: 'm1',
+    uploadedAt: at,
+  );
 
   return [
     ModelFixture(
@@ -300,6 +317,32 @@ List<ModelFixture> modelFixtures() {
       toJson: plan.toJson,
       fromJson: WeekPlan.fromJson,
       keys: const {'slots'},
+    ),
+    ModelFixture(
+      label: 'DocumentFolder',
+      id: 'f1',
+      value: folder,
+      toJson: folder.toJson,
+      fromJson: DocumentFolder.fromJson,
+      keys: const {'name', 'createdBy', 'createdAt'},
+    ),
+    ModelFixture(
+      label: 'HouseholdDocument',
+      id: 'd1',
+      value: document,
+      toJson: document.toJson,
+      fromJson: HouseholdDocument.fromJson,
+      keys: const {
+        'folderId',
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+      },
+      note:
+          'the document id is also the name of its Cloud Storage object, so a '
+          'row and its bytes are found from each other (documents ADR-0001).',
     ),
   ];
 }
