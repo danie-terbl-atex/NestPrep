@@ -95,6 +95,45 @@ void main() {
     );
   });
 
+  testWidgets('the picture is one sentence to a screen reader', (tester) async {
+    final handle = tester.ensureSemantics();
+    await pump(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel(AppCopy.signInOrbitLabel), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(AppCopy.signInOrbitInitials),
+      findsNothing,
+      reason: 'the marks in orbit are an illustration, not nine things to read',
+    );
+    handle.dispose();
+  });
+
+  testWidgets('the way in works before the entrance has finished', (
+    tester,
+  ) async {
+    await pump(tester);
+
+    // No settle: this is the first frame, with the button still faded out and
+    // below where it lands. Somebody who taps the moment they see it must not
+    // have that tap go nowhere (`FE-15`).
+    await tester.tap(find.text(AppCopy.signInWithGoogle));
+    await tester.pumpAndSettle();
+
+    expect(auth.googleSignIns, hasLength(1));
+  });
+
+  testWidgets('the screen comes to rest', (tester) async {
+    await pump(tester);
+
+    // `pumpAndSettle` throws rather than hanging if anything here repeats
+    // forever, which is the whole reason the entrance is an arrival and not a
+    // carousel — every other test on this screen depends on it.
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppCopy.signInTagline), findsOneWidget);
+  });
+
   testWidgets('it holds at phone width in dark at 200% text', (tester) async {
     tester.view.physicalSize = const Size(360 * 3, 900 * 3);
     tester.view.devicePixelRatio = 3;

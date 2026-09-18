@@ -40,6 +40,11 @@ abstract final class NestSize {
   static const double iconMedium = 22;
   static const double iconLarge = 28;
   static const double iconTile = 52;
+
+  /// The app's own mark and the glyph inside it, on the screens somebody sees
+  /// before there is any data — the welcome and the household gate.
+  static const double mark = 72;
+  static const double iconMark = 36;
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;
   static const double avatarLarge = 56;

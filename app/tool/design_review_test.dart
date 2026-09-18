@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/household/state/household_gate_controller.dart';
+import 'package:nestprep/features/household/ui/household_gate_screen.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
@@ -26,6 +29,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/fake_calendar_repository.dart';
 import '../test/support/fake_grocery_repository.dart';
+import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
@@ -126,6 +130,45 @@ void main() {
     } finally {
       debugDisableShadows = true;
     }
+  }
+
+  // ------------------------------------------------------------- the way in
+
+  /// The two screens somebody sees before there is any data to show: the
+  /// welcome, and the household they make on it. Both are choreographed, and
+  /// `capture` settles before it presses the shutter, so these are the screens
+  /// at rest rather than a frame of the entrance.
+  Future<void> signIn(WidgetTester tester, Brightness brightness) => capture(
+    tester,
+    'sign-in-${brightness.name}',
+    // It reads the session `pumpScreen` already provides, and nothing else.
+    screen: const SignInScreen(),
+    providers: const [],
+    brightness: brightness,
+    emit: () async {},
+  );
+
+  Future<void> householdGate(WidgetTester tester, Brightness brightness) async {
+    final directory = FakeHouseholdDirectory();
+    final controller = HouseholdGateController(
+      householdDirectory: directory,
+      suggestedName: 'Sam Parent',
+      defaultTimeZone: 'Africa/Johannesburg',
+    );
+    addTearDown(controller.dispose);
+
+    await capture(
+      tester,
+      'household-gate-${brightness.name}',
+      screen: const HouseholdGateScreen(),
+      providers: [
+        ChangeNotifierProvider<HouseholdGateController>.value(
+          value: controller,
+        ),
+      ],
+      brightness: brightness,
+      emit: () async {},
+    );
   }
 
   // ---------------------------------------------------------------- groceries
@@ -383,6 +426,14 @@ void main() {
           await tester.tap(find.text(AppCopy.todosEveryone));
         },
       );
+    });
+
+    testWidgets('sign in — ${brightness.name}', (tester) async {
+      await signIn(tester, brightness);
+    });
+
+    testWidgets('household gate — ${brightness.name}', (tester) async {
+      await householdGate(tester, brightness);
     });
 
     testWidgets('groceries — ${brightness.name}', (tester) async {

@@ -1,6 +1,6 @@
 # Design review — every screen, both themes
 
-Eleven pictures of NestPrep v1, taken from the real widgets with the real theme and the real font.
+Fifteen pictures of NestPrep v1, taken from the real widgets with the real theme and the real font.
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
@@ -13,20 +13,30 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked |
 | `meals-light.png` / `meals-dark.png` | the week's twenty-one slots, some filled |
+| `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the nest mark in a two-ring orbit of the four tabs and five member marks, the name, the tagline, and the way in |
+| `household-gate-light.png` / `household-gate-dark.png` | the screen after it, where a household is made or joined |
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 
 ## What to look at
 
 The design system is tokens, not screens: colours in `lib/design/tokens/nest_colors.dart`, the type
 family in `nest_typography.dart`, the shape of a button in `primitives/nest_button.dart`. A verdict
-of "too purple" or "too round" changes one file, not eleven screens. That is the question worth
+of "too purple" or "too round" changes one file, not fifteen screens. That is the question worth
 answering here — the direction, not any single screen.
+
+**The two way-in screens move, and a still cannot show it.** They are choreographed: the mark, then
+the rings, then each thing in orbit, then the name, then the tagline typing itself out, then the
+button — once, in about a second and a half, and then the screen is still. These are pictures of the
+end of that. The deliberate choice behind them is in design-system ADR-0002: the app this was drawn
+from drifts forever and ours stops, and the honest question to bring back is whether stopping leaves
+it too quiet.
 
 ## A starting point for the verdict
 
-[ASSESSMENT.md](ASSESSMENT.md) is my reading of these eleven pictures: keep the direction. Of the
+[ASSESSMENT.md](ASSESSMENT.md) is my reading of the first eleven pictures: keep the direction. Of the
 four things it first flagged, the two that were defects are fixed; two are judgement calls left for
-you, with measurements rather than adjectives. React to it, do not defer to it.
+you, with measurements rather than adjectives. React to it, do not defer to it. It predates the four
+way-in pictures and does not cover them.
 
 ## What the pictures already caught
 
@@ -35,6 +45,11 @@ The first render of `week-dark-200-percent-text.png` showed the weekday names ru
 `FittedBox` will shrink type forever rather than admit it has run out of room. It is fixed, and the
 fix has a test that measures the gap. These images are regenerated from the current code, so that
 one now shows seven separate days.
+
+The first render of `sign-in-light.png` did the same job for the welcome: two of the member marks
+had landed on the same bearing as the tiles inside them and overlapped, which no test could have
+had an opinion about. The bearings are picked by eye now, and the reason is written where the
+numbers are.
 
 ## Regenerating them
 

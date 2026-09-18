@@ -7,13 +7,23 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../state/session_controller.dart';
 import 'seeded_account_picker.dart';
+import 'sign_in_welcome.dart';
 
 /// The way in (accounts ADR-0001). Google is the only real provider; the seeded
 /// shortcut below it exists only on an emulator build.
+///
+/// The picture, the name and the line arrive in that order and then stop
+/// (`FE-15`). A failure banner is **not** part of the choreography: when
+/// something has gone wrong it appears at once, because making somebody wait
+/// for an apology to fade in is the wrong moment for delight.
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
   static const path = '/sign-in';
+
+  /// Where the way in sits in the entrance, counted from the welcome's own
+  /// last step so the button follows the tagline rather than racing it.
+  static const _waysInStep = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +37,7 @@ class SignInScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const _SignInMasthead(),
+                const SignInWelcome(),
                 const SizedBox(height: NestSpace.xxxl),
                 if (failure != null) ...[
                   NestBanner(
@@ -36,21 +46,27 @@ class SignInScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: NestSpace.lg),
                 ],
-                NestButton(
-                  label: AppCopy.signInWithGoogle,
-                  icon: Icons.login,
-                  isLoading: session.isSigningIn,
-                  onPressed: session.signInWithGoogle,
+                NestRiseIn(
+                  index: _waysInStep,
+                  child: NestButton(
+                    label: AppCopy.signInWithGoogle,
+                    icon: Icons.login,
+                    isLoading: session.isSigningIn,
+                    onPressed: session.signInWithGoogle,
+                  ),
                 ),
                 if (BackendTarget.fromEnvironment() ==
                     BackendTarget.emulator) ...[
                   const SizedBox(height: NestSpace.xxl),
-                  SeededAccountPicker(
-                    accounts: EmulatorAccount.all,
-                    isBusy: session.isSigningIn,
-                    onPick: (account) => session.signInWithSeededUser(
-                      email: account.email,
-                      password: EmulatorAccount.password,
+                  NestRiseIn(
+                    index: _waysInStep + 1,
+                    child: SeededAccountPicker(
+                      accounts: EmulatorAccount.all,
+                      isBusy: session.isSigningIn,
+                      onPick: (account) => session.signInWithSeededUser(
+                        email: account.email,
+                        password: EmulatorAccount.password,
+                      ),
                     ),
                   ),
                 ],
@@ -59,35 +75,6 @@ class SignInScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _SignInMasthead extends StatelessWidget {
-  const _SignInMasthead();
-
-  @override
-  Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
-    return Column(
-      children: [
-        const NestIconTile(
-          icon: Icons.home_rounded,
-          size: NestSize.avatarLarge,
-        ),
-        const SizedBox(height: NestSpace.xl),
-        Text(
-          AppCopy.appName,
-          style: nest.text.display.copyWith(color: nest.colors.ink),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: NestSpace.sm),
-        Text(
-          AppCopy.signInTagline,
-          style: nest.text.body.copyWith(color: nest.colors.inkSecondary),
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 }

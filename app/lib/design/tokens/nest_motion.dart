@@ -9,6 +9,8 @@ class NestMotion {
     required this.quick,
     required this.standard,
     required this.slow,
+    required this.stagger,
+    required this.tick,
     required this.isReduced,
   });
 
@@ -16,6 +18,8 @@ class NestMotion {
     quick: Duration(milliseconds: 120),
     standard: Duration(milliseconds: 220),
     slow: Duration(milliseconds: 360),
+    stagger: Duration(milliseconds: 70),
+    tick: Duration(milliseconds: 45),
     isReduced: false,
   );
 
@@ -23,6 +27,8 @@ class NestMotion {
     quick: Duration.zero,
     standard: Duration.zero,
     slow: Duration.zero,
+    stagger: Duration.zero,
+    tick: Duration.zero,
     isReduced: true,
   );
 
@@ -34,6 +40,14 @@ class NestMotion {
 
   /// A sheet or a page.
   final Duration slow;
+
+  /// The gap between one item of an entrance and the next, so a group arrives
+  /// in the order it reads rather than all at once.
+  final Duration stagger;
+
+  /// One character of typed text.
+  final Duration tick;
+
   final bool isReduced;
 
   static const Curve enter = Curves.easeOutCubic;

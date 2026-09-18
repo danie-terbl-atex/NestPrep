@@ -42,34 +42,42 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
               ),
               const SizedBox(height: NestSpace.lg),
             ],
-            Row(
-              children: [
-                Expanded(
-                  child: NestChip(
-                    label: AppCopy.householdCreate,
-                    isSelected: !_isJoining,
-                    onTap: () => _switchTo(isJoining: false),
+            // The two ways forward arrive after the question they answer, the
+            // same entrance the sign-in screen uses, so creating a household
+            // reads as the next beat of one flow rather than a new app.
+            NestRiseIn(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: NestChip(
+                      label: AppCopy.householdCreate,
+                      isSelected: !_isJoining,
+                      onTap: () => _switchTo(isJoining: false),
+                    ),
                   ),
-                ),
-                const SizedBox(width: NestSpace.sm),
-                Expanded(
-                  child: NestChip(
-                    label: AppCopy.householdJoin,
-                    isSelected: _isJoining,
-                    onTap: () => _switchTo(isJoining: true),
+                  const SizedBox(width: NestSpace.sm),
+                  Expanded(
+                    child: NestChip(
+                      label: AppCopy.householdJoin,
+                      isSelected: _isJoining,
+                      onTap: () => _switchTo(isJoining: true),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: NestSpace.xl),
-            NestCard(
-              child: AnimatedSize(
-                duration: motion.standard,
-                curve: NestMotion.standardCurve,
-                alignment: Alignment.topCenter,
-                child: _isJoining
-                    ? const JoinHouseholdForm()
-                    : const CreateHouseholdForm(),
+            NestRiseIn(
+              index: 1,
+              child: NestCard(
+                child: AnimatedSize(
+                  duration: motion.standard,
+                  curve: NestMotion.standardCurve,
+                  alignment: Alignment.topCenter,
+                  child: _isJoining
+                      ? const JoinHouseholdForm()
+                      : const CreateHouseholdForm(),
+                ),
               ),
             ),
           ],

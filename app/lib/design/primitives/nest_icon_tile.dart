@@ -13,6 +13,7 @@ class NestIconTile extends StatelessWidget {
     required this.icon,
     this.tint = NestTileTint.accent,
     this.size = NestSize.iconTile,
+    this.iconSize = NestSize.iconLarge,
     this.label,
     super.key,
   });
@@ -20,6 +21,11 @@ class NestIconTile extends StatelessWidget {
   final IconData icon;
   final NestTileTint tint;
   final double size;
+
+  /// The glyph inside the tile. It does not follow [size]: a tile used as a
+  /// mark rather than a row's leading wants a different ratio, and guessing
+  /// one from the box is how a 28-pixel icon ends up in a 96-pixel square.
+  final double iconSize;
   final String? label;
 
   @override
@@ -33,14 +39,16 @@ class NestIconTile extends StatelessWidget {
       NestTileTint.sky => c.tileSky,
       NestTileTint.peach => c.tilePeach,
     };
+    // A big tile reads as a blob at the row radius; it wants the next one up.
+    final radius = size > NestSize.iconTile ? NestRadius.xl : NestRadius.md;
     final tile = DecoratedBox(
       decoration: BoxDecoration(
         color: fill,
-        borderRadius: BorderRadius.circular(NestRadius.md),
+        borderRadius: BorderRadius.circular(radius),
       ),
       child: SizedBox.square(
         dimension: size,
-        child: Icon(icon, color: c.accentInk, size: NestSize.iconLarge),
+        child: Icon(icon, color: c.accentInk, size: iconSize),
       ),
     );
     final text = label;
