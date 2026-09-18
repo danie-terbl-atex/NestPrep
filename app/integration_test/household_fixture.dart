@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nestprep/app/backend_target.dart';
 import 'package:nestprep/app/firebase_bootstrap.dart';
+import 'package:nestprep/features/accounts/data/firestore_account_repository.dart';
+import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/household/data/callable_household_directory.dart';
 import 'package:nestprep/features/household/data/firestore_household_repository.dart';
 
@@ -68,6 +70,25 @@ Future<TestHousehold> signInAndCreateAHousehold() async {
 
   final directory = CallableHouseholdDirectory(services.functions);
   final households = FirestoreHouseholdRepository(services.firestore);
+
+  // The account document first, exactly as the app does it: `SessionController`
+  // calls `ensureAccount` when the auth state arrives, before any household
+  // exists. It matters more than it looks. `createHousehold` merges
+  // `householdIds` into `users/{uid}`, and a merge onto a document that is not
+  // there *creates* it — with those two fields and no `displayName`. `Account`
+  // requires a `displayName`, so the converter then throws on read and the
+  // account screen dies rather than degrades.
+  //
+  // Nothing enforces that ordering; it simply happens to hold on every path
+  // today. Skipping it here is how that came to light.
+  await FirestoreAccountRepository(services.firestore).ensureAccount(
+    AuthUser(
+      uid: services.auth.currentUser!.uid,
+      email: 'tester@example.invalid',
+      displayName: 'Tester',
+    ),
+  );
+
   final householdId = await directory.createHousehold(
     name: 'Integration',
     timeZone: 'Africa/Johannesburg',
