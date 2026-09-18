@@ -4,6 +4,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../app/backend_target.dart';
+import '../../shared/log/app_log.dart';
 
 /// Crash and unhandled-error reporting (observability ADR-0001).
 ///
@@ -42,8 +43,19 @@ abstract final class CrashReporting {
 
   /// Ties the reports from this device to a member profile, so a crash can be
   /// put next to the household it happened in without naming anybody.
-  static Future<void> setMember(String? memberId) =>
-      FirebaseCrashlytics.instance.setUserIdentifier(memberId ?? '');
+  ///
+  /// Its own failure is kept here. The shell calls this without awaiting it —
+  /// nothing on screen depends on the answer — so anything thrown would reach
+  /// the zone as an unhandled error, which is a crash report about crash
+  /// reporting. Whatever is wrong with Crashlytics, the household's week still
+  /// has to open.
+  static Future<void> setMember(String? memberId) async {
+    try {
+      await FirebaseCrashlytics.instance.setUserIdentifier(memberId ?? '');
+    } on Object catch (error) {
+      AppLog.failure('crashlytics user', code: 'set-user-failed', error: error);
+    }
+  }
 
   /// Throws on purpose, to prove reporting works end to end. Reachable only
   /// from the debug gallery (observability phase 1).

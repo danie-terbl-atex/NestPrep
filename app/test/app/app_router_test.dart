@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nestprep/app/app_router.dart';
+import 'package:nestprep/app/household_route.dart';
+import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/accounts/model/account.dart';
+import 'package:nestprep/features/accounts/model/auth_user.dart';
+import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
+import 'package:nestprep/features/calendar/data/calendar_repository.dart';
+import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
+import 'package:nestprep/features/groceries/data/grocery_repository.dart';
+import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/household/data/household_directory.dart';
+import 'package:nestprep/features/household/data/household_repository.dart';
+import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
+import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/todos/data/todo_repository.dart';
+import 'package:nestprep/features/todos/ui/todo_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+
+import '../support/fake_auth.dart';
+import '../support/fake_calendar_repository.dart';
+import '../support/fake_grocery_repository.dart';
+import '../support/fake_household.dart';
+import '../support/fake_meal_repository.dart';
+import '../support/fake_todo_repository.dart';
+import '../support/household_fixtures.dart';
+
+/// The wiring every screen arrives through.
+///
+/// `redirectForSession` decides *where* somebody goes and has its own tests.
+/// This is the other half: that each route can actually build its screen. A
+/// controller asking for a repository nobody registered compiles, analyses and
+/// ships, and then throws a ProviderNotFoundException the first time anybody
+/// opens that tab — on a real phone, in front of a household.
+void main() {
+  setUpAll(tz_data.initializeTimeZones);
+
+  late FakeAuthGateway auth;
+  late FakeAccountRepository accounts;
+  late SessionController session;
+  late FakeHouseholdRepository households;
+  late FakeHouseholdDirectory directory;
+  late FakeCalendarRepository calendar;
+  late FakeTodoRepository todos;
+  late FakeMealRepository meals;
+  late FakeGroceryRepository groceries;
+
+  setUp(() {
+    auth = FakeAuthGateway();
+    accounts = FakeAccountRepository();
+    session = SessionController(authGateway: auth, accountRepository: accounts);
+    households = FakeHouseholdRepository();
+    directory = FakeHouseholdDirectory();
+    calendar = FakeCalendarRepository();
+    todos = FakeTodoRepository();
+    meals = FakeMealRepository();
+    groceries = FakeGroceryRepository();
+  });
+
+  tearDown(() async {
+    session.dispose();
+    await auth.close();
+    await accounts.close();
+    await households.close();
+    await calendar.close();
+    await todos.close();
+    await meals.close();
+    await groceries.close();
+  });
+
+  late GoRouter router;
+
+  Future<void> pumpApp(WidgetTester tester) async {
+    router = createAppRouter(session);
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          Provider<HouseholdRepository>.value(value: households),
+          Provider<HouseholdDirectory>.value(value: directory),
+          Provider<CalendarRepository>.value(value: calendar),
+          Provider<TodoRepository>.value(value: todos),
+          Provider<MealRepository>.value(value: meals),
+          Provider<GroceryRepository>.value(value: groceries),
+          ChangeNotifierProvider<SessionController>.value(value: session),
+        ],
+        child: MaterialApp.router(
+          theme: nestThemeData(NestTheme.light()),
+          routerConfig: router,
+        ),
+      ),
+    );
+  }
+
+  /// The session and its account arrive over real futures, which pumping
+  /// frames cannot advance.
+  Future<void> settle(WidgetTester tester) async {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+
+  /// Signs in and hands the household shell everything it reads, so a tab can
+  /// build.
+  Future<void> signInWithAHousehold(WidgetTester tester) async {
+    auth.emit(const AuthUser(uid: Fixtures.samUid, email: 'sam@nestprep.test'));
+    await settle(tester);
+    accounts.emit(
+      const Account(
+        id: Fixtures.samUid,
+        displayName: 'Sam Parent',
+        householdIds: [Fixtures.householdId],
+        activeHouseholdId: Fixtures.householdId,
+      ),
+    );
+    await settle(tester);
+    households.emitHousehold(Fixtures.household());
+    households.emitMembers([Fixtures.sam, Fixtures.thandi, Fixtures.kid]);
+    await settle(tester);
+  }
+
+  testWidgets('signed out, the app lands on the way in', (tester) async {
+    await pumpApp(tester);
+    auth.emit(null);
+    await settle(tester);
+
+    expect(find.byType(SignInScreen), findsOneWidget);
+  });
+
+  group('every tab builds, with the controller it asks for', () {
+    for (final (tab, screen) in [
+      (HouseholdTab.week, CalendarScreen),
+      (HouseholdTab.todos, TodoScreen),
+      (HouseholdTab.groceries, GroceryListScreen),
+      (HouseholdTab.meals, MealPlanScreen),
+    ]) {
+      testWidgets(tab.name, (tester) async {
+        await pumpApp(tester);
+        await signInWithAHousehold(tester);
+
+        router.go(HouseholdRoute.pathFor(Fixtures.householdId, tab));
+        await settle(tester);
+
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'a repository nobody registered throws here and nowhere else',
+        );
+        expect(find.byType(screen), findsOneWidget);
+      });
+    }
+  });
+
+  testWidgets('and so does the household screen under the shell', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(
+      HouseholdRoute.pathFor(
+        Fixtures.householdId,
+        HouseholdTab.week,
+      ).replaceAll(HouseholdTab.week.segment, 'household'),
+    );
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(HouseholdScreen), findsOneWidget);
+  });
+}
