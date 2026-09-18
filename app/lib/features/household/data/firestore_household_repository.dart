@@ -54,6 +54,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
   Stream<List<Member>> watchMembers(String householdId) =>
       _members(householdId)
           .orderBy('displayName')
+          .limit(HouseholdRepository.memberLimit)
           .snapshots()
           .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
           .handleError((Object error) => throw failureFromFirebase(error));

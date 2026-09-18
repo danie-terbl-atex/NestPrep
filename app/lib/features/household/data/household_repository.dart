@@ -17,6 +17,12 @@ abstract interface class HouseholdRepository {
   /// account document, which *is* live.
   Future<List<Household>> readHouseholds(List<String> householdIds);
 
+  /// As many profiles as a household could plausibly have. Every other
+  /// listener in the app is bounded (`BE-08`) and this one was not: a member
+  /// list is small in practice, and "small in practice" is how an unbounded
+  /// read ships. Past this many the household is not a household.
+  static const memberLimit = 50;
+
   /// Every profile in the household, live, ordered by name.
   Stream<List<Member>> watchMembers(String householdId);
 
