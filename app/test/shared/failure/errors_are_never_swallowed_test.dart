@@ -117,46 +117,59 @@ void main() {
     );
   });
 
-  test('every fire-and-forget future has somewhere for its failure to go', () {
-    // `unawaited` drops the future's errors into the zone. That is fine when
-    // the future cannot fail, or handles its own — and it is how crash
-    // reporting nearly took the app down with it: the shell called
-    // `setMember` without awaiting, so a Crashlytics failure became an
-    // unhandled error, and `PlatformDispatcher.onError` reported *that* by
-    // calling Crashlytics again.
-    //
-    // So each one is listed with why it is safe. A new name here is a fire and
-    // forget nobody has thought about yet.
-    const accountedFor = {
-      // Cancelling a subscription in dispose. There is no screen left to tell.
-      '_cancel()',
-      '_authSubscription?.cancel()',
-      '_accountSubscription?.cancel()',
-      // Cancel and re-listen; the new stream's errors go to its onError.
-      '_resubscribeToExceptions()',
-      '_resubscribeToWeek()',
-      // Handles its own failure — see the try/catch inside it.
-      'CrashReporting.setMember(memberId)',
-      // The guarded reporter itself: an async closure that catches everything.
-      '() async {',
-      // `signOut` catches its own AppFailure.
-      '_failSession(error is AppFailure ? error : UnknownFailure(error))',
-      // Controllers that keep a refusal instead of throwing it.
-      'controller.joinWithCode(_code.text.trim())',
-      'controller.createHousehold(',
-    };
+  // `unawaited` drops the future's errors into the zone. That is fine when the
+  // future cannot fail, or handles its own — and it is how crash reporting
+  // nearly took the app down with it: the shell called `setMember` without
+  // awaiting, so a Crashlytics failure became an unhandled error, and
+  // `PlatformDispatcher.onError` reported *that* by calling Crashlytics again.
+  //
+  // So each one is listed with why it is safe. A new name here is a fire and
+  // forget nobody has thought about yet, and a name that has gone is an excuse
+  // waiting to be handed to something else.
+  const accountedFor = {
+    // Cancelling a subscription in dispose. There is no screen left to tell.
+    '_cancel()',
+    '_authSubscription?.cancel()',
+    '_accountSubscription?.cancel()',
+    // Cancel and re-listen; the new stream's errors go to its onError.
+    '_resubscribeToExceptions()',
+    '_resubscribeToWeek()',
+    // Handles its own failure — it goes through `bestEffort`.
+    'CrashReporting.setMember(memberId)',
+    // The reporter itself. `bestEffort` is the one named place the app
+    // swallows an error, and it catches `Object` — so nothing escapes into
+    // the zone, which is where reporting would report itself.
+    "bestEffort('crashlytics report'",
+    // `signOut` catches its own AppFailure.
+    '_failSession(error is AppFailure ? error : UnknownFailure(error))',
+    // Controllers that keep a refusal instead of throwing it.
+    'controller.joinWithCode(_code.text.trim())',
+    'controller.createHousehold(',
+  };
 
-    final unaccounted = <String>[];
+  /// Every `unawaited(...)` argument in the app, as written.
+  List<({String where, String argument})> everyFireAndForget() {
+    final found = <({String where, String argument})>[];
     for (final file in dart) {
       final source = file.readAsStringSync();
       for (final match in RegExp(
         r'unawaited\(\s*([^\n]*)',
       ).allMatches(source)) {
-        final argument = (match.group(1) ?? '').trim().replaceAll(',', '');
-        if (accountedFor.any(argument.startsWith)) continue;
-        unaccounted.add('${at(file, source, match.start)}  $argument');
+        found.add((
+          where: at(file, source, match.start),
+          argument: (match.group(1) ?? '').trim().replaceAll(',', ''),
+        ));
       }
     }
+    return found;
+  }
+
+  test('every fire-and-forget future has somewhere for its failure to go', () {
+    final unaccounted = [
+      for (final call in everyFireAndForget())
+        if (!accountedFor.any(call.argument.startsWith))
+          '${call.where}  ${call.argument}',
+    ];
 
     expect(
       unaccounted,
@@ -166,6 +179,21 @@ void main() {
           'unhandled error, and the thing that reports unhandled errors is '
           'itself an unawaited future (`ENG-10`)',
     );
+  });
+
+  test('and nothing is excused that no longer exists', () {
+    // A dead entry on that list reads as a considered exemption while
+    // permitting nothing, and it is one rename away from quietly excusing
+    // something new. The previous entry was `'() async {'`, which stopped
+    // existing the moment the reporter was given a name.
+    final arguments = everyFireAndForget().map((call) => call.argument);
+
+    final dead = [
+      for (final excuse in accountedFor)
+        if (!arguments.any((argument) => argument.startsWith(excuse))) excuse,
+    ];
+
+    expect(dead, isEmpty, reason: 'delete it, or it will excuse the next one');
   });
 
   test('and no lint about errors has been silenced', () {

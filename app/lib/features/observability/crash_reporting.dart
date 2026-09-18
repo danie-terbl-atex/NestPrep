@@ -4,7 +4,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../app/backend_target.dart';
-import '../../shared/log/app_log.dart';
+import '../../shared/log/best_effort.dart';
 
 /// Crash and unhandled-error reporting (observability ADR-0001).
 ///
@@ -19,7 +19,20 @@ abstract final class CrashReporting {
   /// Whether reports actually leave the device. A debug build or an emulator
   /// build sends nothing, so development noise never reaches the dashboard.
   static bool shouldSend(BackendTarget target) =>
-      kReleaseMode && target == BackendTarget.cloud;
+      shouldSendFrom(isReleaseBuild: kReleaseMode, target: target);
+
+  /// The rule itself, with the build mode passed in.
+  ///
+  /// `kReleaseMode` is a compile-time constant, so under `flutter test` the
+  /// whole expression folds to `false` before the target is looked at — which
+  /// means a test calling [shouldSend] gets `false` whatever it passes, and
+  /// cannot tell the two conditions apart. Both have to hold, and both are
+  /// checked here.
+  @visibleForTesting
+  static bool shouldSendFrom({
+    required bool isReleaseBuild,
+    required BackendTarget target,
+  }) => isReleaseBuild && target == BackendTarget.cloud;
 
   /// Installs the two handlers that catch everything Flutter does not.
   /// Called once, from `main()`, after Firebase is initialised.
@@ -49,17 +62,9 @@ abstract final class CrashReporting {
   /// future's error lands, a throw from inside it comes straight back to
   /// itself. Nothing is awaited here, so nothing can be awaited badly.
   static void _report(Future<void> Function() send) {
-    unawaited(() async {
-      try {
-        await send();
-      } on Object catch (error) {
-        AppLog.failure(
-          'crashlytics report',
-          code: 'report-failed',
-          error: error,
-        );
-      }
-    }());
+    unawaited(
+      bestEffort('crashlytics report', code: 'report-failed', run: send),
+    );
   }
 
   /// Ties the reports from this device to a member profile, so a crash can be
@@ -71,11 +76,11 @@ abstract final class CrashReporting {
   /// reporting. Whatever is wrong with Crashlytics, the household's week still
   /// has to open.
   static Future<void> setMember(String? memberId) async {
-    try {
-      await FirebaseCrashlytics.instance.setUserIdentifier(memberId ?? '');
-    } on Object catch (error) {
-      AppLog.failure('crashlytics user', code: 'set-user-failed', error: error);
-    }
+    await bestEffort(
+      'crashlytics user',
+      code: 'set-user-failed',
+      run: () => FirebaseCrashlytics.instance.setUserIdentifier(memberId ?? ''),
+    );
   }
 
   /// Throws on purpose, to prove reporting works end to end. Reachable only
