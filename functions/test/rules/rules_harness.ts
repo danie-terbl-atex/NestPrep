@@ -9,29 +9,35 @@ import {
   type RulesTestContext,
 } from '@firebase/rules-unit-testing';
 import type { Firestore } from 'firebase/firestore';
+import type { FirebaseStorage } from 'firebase/storage';
 
 export { assertFails, assertSucceeds };
-export type { Firestore };
+export type { Firestore, FirebaseStorage };
 
 const PROJECT_ID = 'nestprep-643b7';
 const RULES_PATH = resolve(import.meta.dirname, '../../../firestore.rules');
+const STORAGE_RULES_PATH = resolve(import.meta.dirname, '../../../storage.rules');
 
 let environment: RulesTestEnvironment | undefined;
 
 /**
- * The one Firestore emulator instance every rules test shares. Starting it per
- * file would cost more than the tests do.
+ * The one emulator pair every rules test shares — Firestore for the metadata,
+ * Storage for the bytes. Starting them per file would cost more than the tests
+ * do.
  */
 export async function rulesEnvironment(): Promise<RulesTestEnvironment> {
   environment ??= await initializeTestEnvironment({
     projectId: PROJECT_ID,
     firestore: { rules: readFileSync(RULES_PATH, 'utf8'), host: '127.0.0.1', port: 8080 },
+    storage: { rules: readFileSync(STORAGE_RULES_PATH, 'utf8'), host: '127.0.0.1', port: 9199 },
   });
   return environment;
 }
 
 export async function clearData(): Promise<void> {
-  await (await rulesEnvironment()).clearFirestore();
+  const active = await rulesEnvironment();
+  await active.clearFirestore();
+  await active.clearStorage();
 }
 
 export async function closeRulesEnvironment(): Promise<void> {
@@ -49,6 +55,34 @@ export async function asUser(uid: string): Promise<Firestore> {
 export async function asSignedOut(): Promise<Firestore> {
   const context: RulesTestContext = (await rulesEnvironment()).unauthenticatedContext();
   return context.firestore() as unknown as Firestore;
+}
+
+/**
+ * Storage as a signed-in account sees it, carrying the `households` claim that
+ * `syncDocumentAccess` writes. Storage rules cannot read Firestore, so this map
+ * is the only thing they have to go on (documents ADR-0001) — and a test that
+ * passes the wrong one is the test that proves it.
+ */
+export async function storageAs(
+  uid: string,
+  households: Record<string, string>,
+): Promise<FirebaseStorage> {
+  const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid, {
+    households,
+  });
+  return context.storage();
+}
+
+/** Storage as a signed-in account with no household claim at all. */
+export async function storageAsStranger(uid: string): Promise<FirebaseStorage> {
+  const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid);
+  return context.storage();
+}
+
+/** Storage as nobody: no token at all. */
+export async function storageAsSignedOut(): Promise<FirebaseStorage> {
+  const context: RulesTestContext = (await rulesEnvironment()).unauthenticatedContext();
+  return context.storage();
 }
 
 /**

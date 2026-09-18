@@ -153,6 +153,15 @@ void main() {
     // Already failing: the position stream gave up, and the failure that
     // caused it is on `problems` on the next line.
     '_stopReporting()',
+    // Puts the household claim on the token before anything touches Storage
+    // (documents ADR-0001). It catches its own `AppFailure` and holds it for
+    // the screen's banner, so nothing escapes; it is unawaited because a
+    // controller's constructor cannot wait and the listeners must open now.
+    '_openStorageAccess()',
+    // Closing the upload's own progress stream once it has ended. There is
+    // nobody left to tell: the failure, if there was one, has already been
+    // put on that stream and delivered.
+    '_close()',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

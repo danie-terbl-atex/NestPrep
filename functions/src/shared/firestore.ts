@@ -1,14 +1,8 @@
-import { getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 
-/**
- * The one admin Firestore handle every Function shares. Initialised lazily so
- * importing a module never starts the SDK — the emulator and the unit tests
- * both import these files without one.
- */
+import { adminApp } from './admin_app';
+
+/** The one admin Firestore handle every Function shares. */
 export function db(): Firestore {
-  if (getApps().length === 0) {
-    initializeApp();
-  }
-  return getFirestore();
+  return getFirestore(adminApp());
 }

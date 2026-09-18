@@ -90,17 +90,24 @@ describe('every callable declares what it may cost', () => {
     }
   });
 
-  it('and every exported callable is one of the six', () => {
+  it('and every exported callable is one we meant to ship', () => {
+    // The list is the point: a Function is what rules cannot express, so a new
+    // name here should have cost somebody an ADR to justify. Six were the
+    // household's; the two documents ones are the household claim Storage rules
+    // need and the folder-is-empty check no rule can perform (documents
+    // ADR-0001).
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
     expect([...exported].sort()).toEqual([
       'createHousehold',
       'createInvite',
+      'deleteDocumentFolder',
       'leaveHousehold',
       'redeemInvite',
       'removeMember',
       'setMemberRole',
+      'syncDocumentAccess',
     ]);
   });
 });

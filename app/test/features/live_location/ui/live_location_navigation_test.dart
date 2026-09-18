@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/household_route.dart';
@@ -72,9 +71,8 @@ void main() {
       members: [Fixtures.sam, Fixtures.thandi],
       now: () => now,
     );
-    await pumpScreen(
+    await pumpRouter(
       tester,
-      const SizedBox.shrink(),
       router: router,
       providers: [
         ChangeNotifierProvider<LiveLocationController>.value(value: controller),

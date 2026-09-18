@@ -15,7 +15,7 @@ npm install
 npm run build          # tsc -p tsconfig.build.json → lib/
 npm run lint           # eslint (strictTypeChecked) + prettier --check
 npm test               # vitest, pure functions only — needs nothing running
-npm run test:rules     # firestore.rules, allowed and denied, around the emulator
+npm run test:rules     # firestore.rules *and* storage.rules, allowed and denied, around the emulator
 npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order
 npm run seed           # three signed-in users, against a running Auth emulator
@@ -30,6 +30,9 @@ cloud because the client redirects every service.
 
 - `src/<feature>/` — one folder per feature (`ENG-04`); `src/index.ts` only re-exports and sets
   global options.
+- `src/shared/admin_app.ts` is the one lazily-initialised admin app; `firestore.ts` and `auth.ts`
+  are the two handles taken from it. `auth()` exists for one job: writing the `households` custom
+  claim that Storage Security Rules read, because they cannot read Firestore (documents ADR-0001).
 - A callable parses its input with a zod schema at the edge and never casts (`ENG-09`). Errors go
   through `household/errors.ts`: one `refuse('<reason>')` that puts the reason in the error's
   `details`, because three different refusals share the gRPC code `already-exists` and the client

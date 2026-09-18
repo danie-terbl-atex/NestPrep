@@ -6,6 +6,8 @@ export { redeemInvite } from './household/redeem_invite';
 export { leaveHousehold } from './household/leave_household';
 export { removeMember } from './household/remove_member';
 export { setMemberRole } from './household/set_member_role';
+export { syncDocumentAccess } from './documents/sync_document_access';
+export { deleteDocumentFolder } from './documents/delete_document_folder';
 
 // One region for every function, chosen when the cloud project exists
 // (foundation ADR-0003). Explicit limits are BE-19.

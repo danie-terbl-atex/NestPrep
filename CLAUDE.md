@@ -28,8 +28,8 @@ This folder is the NestPrep monorepo: one Firebase project, three parts. Each pa
 
 - `app/` — the Flutter client, Android and iOS from one codebase
 - `functions/` — Cloud Functions (TypeScript, 2nd gen); only what Security Rules cannot express
-- `firebase.json`, `firestore.rules`, `firestore.indexes.json` — the Firebase config at the root;
-  `firestore.rules` is the authorisation layer and every rule has a denied-case test
+- `firebase.json`, `firestore.rules`, `storage.rules`, `firestore.indexes.json` — the Firebase config
+  at the root; the two rules files are the authorisation layer and every rule has a denied-case test
 
 `DesignsInsp/` is design inspiration, not source; it is gitignored on purpose.
 
@@ -37,7 +37,7 @@ Development runs on the Local Emulator Suite. It needs no cloud *access* — the
 configuration is committed — but it does run under the real project id (foundation ADR-0008):
 
 ```sh
-firebase emulators:start --project nestprep-643b7     # Auth 9099, Firestore 8080, Functions 5001, UI 4000
+firebase emulators:start --project nestprep-643b7     # Auth 9099, Firestore 8080, Functions 5001, Storage 9199, UI 4000
 npm --prefix functions run seed                       # three signed-in users for the emulator
 ```
 
@@ -46,8 +46,8 @@ vault. A `demo-` project id no longer works: the Android Cloud Functions SDK val
 configuration before every callable, and only a real project has any — foundation ADR-0008 and the
 vault lesson on what Auth and Functions need that Firestore does not.
 
-What keeps a development build off the cloud is `bootstrapFirebase`, which points Firestore, Auth
-and Functions at the emulator in one place before anything uses them. **A Firebase service added
+What keeps a development build off the cloud is `bootstrapFirebase`, which points Firestore, Auth,
+Functions and Storage at the emulator in one place before anything uses them. **A Firebase service added
 later is redirected there or not at all.**
 
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

@@ -53,6 +53,16 @@ void main() {
         'writes Firestore',
     'lib/features/live_location/data/geolocator_location_source.dart':
         'wraps the platform location plugin',
+    'lib/features/documents/data/firestore_document_repository.dart':
+        'writes Firestore',
+    'lib/features/documents/data/storage_document_store.dart':
+        'wraps FirebaseStorage',
+    'lib/features/documents/data/callable_document_directory.dart':
+        'calls Functions and refreshes an ID token',
+    'lib/features/documents/data/file_selector_document_picker.dart':
+        'opens the platform file picker',
+    'lib/features/documents/data/launcher_document_opener.dart':
+        'hands a link to the platform',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -67,6 +77,11 @@ void main() {
     'lib/features/live_location/data/location_reporter.dart': 'interface only',
     'lib/features/live_location/data/location_source.dart': 'interface only',
     'lib/features/todos/data/todo_repository.dart': 'interface only',
+    'lib/features/documents/data/document_repository.dart': 'interface only',
+    'lib/features/documents/data/document_store.dart': 'interface only',
+    'lib/features/documents/data/document_directory.dart': 'interface only',
+    'lib/features/documents/data/document_picker.dart': 'interface only',
+    'lib/features/documents/data/document_opener.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

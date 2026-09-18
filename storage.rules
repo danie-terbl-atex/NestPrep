@@ -1,0 +1,97 @@
+rules_version = '2';
+
+// NestPrep's authorisation layer for the bytes of a household's documents
+// (documents ADR-0001). Same posture as `firestore.rules`: deny by default,
+// every match states who may read and who may write, and every rule has an
+// allowed and a denied test in `functions/test/rules/` (BE-05, BE-14).
+//
+// The difference that shapes this whole file: **Storage rules cannot read
+// Firestore.** There is no `get()`, so the uid→role map every Firestore rule
+// consults is unreachable from here. Membership arrives instead as a custom
+// claim on the caller's ID token — `households: { householdId: role }` — which
+// the `syncDocumentAccess` callable writes from what Firestore already says.
+// The claim is derived from the membership map, never a second copy of it.
+//
+// A claim is up to an hour stale after a removal. Firestore cuts a removed
+// member off instantly, so they cannot list or find anything; this window only
+// covers a path they had already written down (documents ADR-0001).
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ---- what the caller is in a household ----
+
+    function households() {
+      return request.auth.token.households;
+    }
+
+    function isMember(householdId) {
+      return request.auth != null
+        && households() is map
+        && householdId in households();
+    }
+
+    function isAdmin(householdId) {
+      return isMember(householdId) && households()[householdId] == 'admin';
+    }
+
+    // ---- what may be stored ----
+
+    // Enforced here and nowhere else that counts. The client refuses an
+    // oversized or unreadable file earlier so a person is not made to wait for
+    // a refusal, but that check is a courtesy and this one is the rule
+    // (FE-04, BE-20). `document_limits_match_the_rules_test.dart` reads this
+    // file and fails when the two drift apart.
+    function isSmallEnough() {
+      return request.resource.size <= 20 * 1024 * 1024;
+    }
+
+    // What a household actually keeps: a scan or a photo of a piece of paper.
+    function isAKeptType() {
+      return request.resource.contentType in [
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/heic',
+        'image/webp'
+      ];
+    }
+
+    // Storage rules know uids; Firestore rules know member profiles. Both are
+    // the same person through `claimedBy`, and stamping the uid on the object
+    // is what lets the delete rule below agree with the Firestore rule on the
+    // metadata row that shares this object's name.
+    function isStampedWithTheCaller() {
+      return request.resource.metadata.uploadedByUid == request.auth.uid;
+    }
+
+    // ---- a household's documents (documents ADR-0001) ----
+    //
+    // The object's name is the id of its metadata document at
+    // `households/{householdId}/documents/{documentId}`. They are deliberately
+    // the same string: an orphan on either side is findable by listing the
+    // other, which is what makes a half-finished upload or delete recoverable
+    // rather than an invisible bill (BE-07).
+    match /households/{householdId}/documents/{documentId} {
+      allow read: if isMember(householdId);
+
+      allow create: if isMember(householdId)
+        && isSmallEnough()
+        && isAKeptType()
+        && isStampedWithTheCaller();
+
+      // Bytes are never rewritten in place. Replacing a document is a delete
+      // and an add, so "what is in this object" stays answerable from the one
+      // metadata row that carries its name.
+      allow update: if false;
+
+      allow delete: if isAdmin(householdId)
+        || (isMember(householdId)
+              && resource.metadata.uploadedByUid == request.auth.uid);
+    }
+
+    // Everything not named above (BE-05).
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

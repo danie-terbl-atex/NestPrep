@@ -192,6 +192,52 @@ abstract final class AppCopy {
     _ => mealsDinner,
   };
 
+  static const documentsTitle = 'Documents';
+  static const documentsFolderFallbackTitle = 'Folder';
+  static const documentsOpenLibrary = 'Shared documents';
+  static const documentsEmptyTitle = 'No folders yet';
+  static const documentsEmptyBody =
+      'Make a folder for the papers this house keeps needing.';
+  static const documentsEmptyBodyForMembers =
+      'An admin makes the folders; you can add documents to them.';
+  static const documentsAddFolder = 'Add a folder';
+  static const documentsEditFolder = 'Edit folder';
+  static const documentsFolderNameLabel = 'Folder name';
+  static const documentsFolderNameHint = 'School';
+  static const documentsDeleteFolder = 'Delete folder';
+  static const documentsDeleteFolderConfirm = 'Delete this folder?';
+  static const documentsDeleteFolderBody =
+      'A folder can only go once everything in it has.';
+  static const documentsFolderEmptyTitle = 'Nothing filed here yet';
+  static const documentsFolderEmptyBody =
+      'Add the first document to this folder.';
+  static const documentsAdd = 'Add a document';
+  static const documentsNameLabel = 'Document name';
+  static const documentsFolderLabel = 'Folder';
+  static const documentsOpen = 'Open';
+  static const documentsOpenOutside = 'Open outside NestPrep';
+  static const documentsDelete = 'Delete document';
+  static const documentsDeleteConfirm = 'Delete this document?';
+  static const documentsDeleteBody =
+      'It goes for everybody in the household, and it cannot be undone.';
+  static const documentsUploading = 'Adding the file';
+  static const documentsStopUpload = 'Stop adding';
+  static const documentsOfflineNote =
+      'Names are kept on this phone; the files are not, so opening one needs '
+      'a connection.';
+  static const documentsPickFile = 'Choose a file';
+
+  /// The units a file size is read in. Nothing here is ever more than a few
+  /// megabytes, and a household does not want three decimal places.
+  static const byteUnits = <String>['B', 'kB', 'MB'];
+
+  /// How many documents a folder holds, for the row under its name.
+  static String documentsInFolder(int count) => switch (count) {
+    0 => 'Empty',
+    1 => '1 document',
+    _ => '$count documents',
+  };
+
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';
@@ -262,7 +308,21 @@ abstract final class AppCopy {
     SignInFailure(:final problem) => signInProblem(problem),
     HouseholdFailure(:final problem) => householdProblem(problem),
     LocationFailure(:final problem) => locationProblem(problem),
+    DocumentFailure(:final problem) => documentProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
+  };
+
+  static String documentProblem(DocumentProblem problem) => switch (problem) {
+    DocumentProblem.folderNotFound => 'That folder is no longer there.',
+    DocumentProblem.folderNotEmpty =>
+      'Take everything out of this folder before you delete it.',
+    DocumentProblem.fileTooLarge =>
+      'That file is too big to keep here. Twenty megabytes is the most.',
+    DocumentProblem.unsupportedType =>
+      'NestPrep keeps PDFs and photos. That one is neither.',
+    DocumentProblem.uploadCancelled => 'That file was not added.',
+    DocumentProblem.cannotOpen =>
+      'Nothing on this phone offered to open that file.',
   };
 
   static String householdProblem(HouseholdProblem problem) => switch (problem) {

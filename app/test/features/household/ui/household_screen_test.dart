@@ -205,6 +205,10 @@ void main() {
       // Only Sam is an admin in the fixture household.
       await emit(tester);
 
+      await tester.scrollUntilVisible(
+        find.widgetWithText(NestButton, AppCopy.householdLeave),
+        120,
+      );
       expect(find.text(AppCopy.householdProblemLastAdmin), findsOneWidget);
       final leave = tester.widget<NestButton>(
         find.widgetWithText(NestButton, AppCopy.householdLeave),
@@ -231,6 +235,10 @@ void main() {
         ),
       );
 
+      await tester.scrollUntilVisible(
+        find.widgetWithText(NestButton, AppCopy.householdLeave),
+        120,
+      );
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdLeave));
       await tester.pumpAndSettle();
       expect(find.text(AppCopy.householdLeaveConfirm), findsOneWidget);

@@ -454,6 +454,85 @@ service cloud.firestore {
 
         allow delete: if isMember(householdId);
       }
+
+      // ---- documents (documents ADR-0001) ----
+
+      // The household's filing cabinet: one level of folders, no nesting. A
+      // folder is admin-managed because renaming one changes what everybody
+      // else sees, which is why a routine is admin-only too (todos ADR-0001).
+      //
+      // Deleting one is `deleteDocumentFolder`, not a client write: rules
+      // cannot count the documents in a collection, and a folder deleted out
+      // from under its documents leaves bytes nobody can see and nobody stops
+      // paying for (foundation ADR-0002, BE-07).
+      match /documentFolders/{folderId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isAdmin(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['name', 'createdBy', 'createdAt'])
+          && isDocumentName(request.resource.data.name)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if isAdmin(householdId)
+          && onlyChanged(['name'])
+          && isDocumentName(request.resource.data.name);
+
+        allow delete: if false;
+      }
+
+      // What a document *is*; the bytes are the Storage object of the same
+      // name, guarded by `storage.rules`. Size and content type are stored for
+      // the label a person reads — the limits that matter are enforced where
+      // the bytes are, because that is the only place that can see them
+      // (BE-03).
+      match /documents/{documentId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isMember(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
+                'uploadedAt'])
+          && isNonEmptyString(request.resource.data.folderId)
+          && isDocumentName(request.resource.data.name)
+          && isKeptType(request.resource.data.contentType)
+          && isSmallEnough(request.resource.data.sizeBytes)
+          && isOwnMember(householdId, request.resource.data.uploadedBy)
+          && isServerTime('uploadedAt');
+
+        // Renaming and moving between folders; the bytes never change, so
+        // neither does anything describing them.
+        allow update: if isMember(householdId)
+          && onlyChanged(['name', 'folderId'])
+          && isDocumentName(request.resource.data.name)
+          && isNonEmptyString(request.resource.data.folderId)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.uploadedBy));
+
+        allow delete: if isAdmin(householdId)
+          || isOwnMember(householdId, resource.data.uploadedBy);
+      }
+
+      // A name somebody typed, bounded so a document list cannot be used as a
+      // place to store a megabyte of text for free.
+      function isDocumentName(value) {
+        return isNonEmptyString(value) && value.size() <= 80;
+      }
+
+      function isKeptType(value) {
+        return value in [
+          'application/pdf',
+          'image/jpeg',
+          'image/png',
+          'image/heic',
+          'image/webp'
+        ];
+      }
+
+      function isSmallEnough(value) {
+        return value is int && value > 0 && value <= 20 * 1024 * 1024;
+      }
     }
 
     // Everything not named above (BE-05).

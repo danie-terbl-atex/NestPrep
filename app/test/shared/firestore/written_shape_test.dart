@@ -4,6 +4,9 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/documents/model/document_folder.dart';
+import 'package:nestprep/features/documents/model/document_limits.dart';
+import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -316,6 +319,59 @@ void main() {
       expect(json['name'], 'Spaghetti Bolognese');
       // The rule insists the key is lower-cased.
       expect(json['nameKey'], 'spaghetti bolognese');
+    });
+  });
+
+  group('documentFolders/{folderId}', () {
+    test('writes exactly the keys the rule names', () {
+      final json = const DocumentFolder(
+        id: 'f',
+        name: 'School',
+        createdBy: 'm-sam',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {'name', 'createdBy', 'createdAt'});
+      expect(shape.serverAssigned, {'createdAt'});
+    });
+  });
+
+  group('documents/{documentId}', () {
+    test('writes exactly the keys the rule names', () {
+      final json = const HouseholdDocument(
+        id: 'd',
+        folderId: 'f',
+        name: 'Term letter',
+        contentType: 'application/pdf',
+        sizeBytes: 120000,
+        uploadedBy: 'm-sam',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {
+        'folderId',
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+      });
+      expect(shape.serverAssigned, {'uploadedAt'});
+      // Nothing names the Storage object, because the document's own id does
+      // (documents ADR-0001). A `storagePath` field here would be a second
+      // copy of the same fact, and the rules refuse the key besides.
+      expect(json.containsKey('storagePath'), isFalse);
+    });
+
+    test('writes a type and a size the rules would accept', () {
+      final json = const HouseholdDocument(
+        id: 'd',
+        folderId: 'f',
+        name: 'Term letter',
+        contentType: 'application/pdf',
+        sizeBytes: DocumentLimits.maxSizeBytes,
+        uploadedBy: 'm-sam',
+      ).toJson();
+      expect(DocumentLimits.keptContentTypes, contains(json['contentType']));
+      expect(json['sizeBytes'], lessThanOrEqualTo(DocumentLimits.maxSizeBytes));
     });
   });
 
