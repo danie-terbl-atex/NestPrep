@@ -6,8 +6,14 @@ import 'gallery_controls_section.dart';
 import 'gallery_states_section.dart';
 import 'gallery_surfaces_section.dart';
 
-/// Debug-only route showing every primitive in the current theme, with a
-/// toggle to preview the other one. Not reachable in release builds.
+/// Route showing every primitive in the current theme, with a toggle to preview
+/// the other one.
+///
+/// Debug builds always carry it. A release build carries it only when it opts in
+/// with `NESTPREP_CRASH_TEST`, because the one thing only a release build can
+/// prove — that a crash reaches Crashlytics — needs a trigger as well as a
+/// release build. `DesignGalleryAccess` is the gate; this screen renders no
+/// household data and reads nothing, so carrying it exposes nobody.
 class DesignGalleryScreen extends StatefulWidget {
   const DesignGalleryScreen({super.key});
 
