@@ -6,6 +6,10 @@ import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
+import 'package:nestprep/features/live_location/state/live_location_controller.dart';
+import 'package:nestprep/features/live_location/ui/live_location_screen.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
@@ -19,6 +23,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../support/fake_calendar_repository.dart';
 import '../../support/fake_grocery_repository.dart';
+import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
 import '../../support/fake_todo_repository.dart';
 import '../../support/household_fixtures.dart';
@@ -232,6 +237,45 @@ void main() {
     ]);
 
     await expectAccessible(tester, 'groceries');
+  });
+
+  testWidgets('where everybody is', (tester) async {
+    phone(tester);
+    final repository = FakeLiveLocationRepository();
+    final reporter = FakeLocationReporter();
+    addTearDown(repository.close);
+    addTearDown(reporter.close);
+    final controller = LiveLocationController(
+      liveLocationRepository: repository,
+      locationReporter: reporter,
+      householdId: Fixtures.householdId,
+      viewerMemberId: Fixtures.samMemberId,
+      members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
+      now: () => now,
+    );
+
+    await pumpScreen(
+      tester,
+      const LiveLocationScreen(),
+      providers: [
+        ChangeNotifierProvider<LiveLocationController>.value(value: controller),
+      ],
+    );
+    repository.emitLocations([
+      MemberLocation(
+        id: Fixtures.thandiMemberId,
+        point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+        accuracyMetres: 12,
+        reportedAt: now,
+        sharingUntil: now.add(const Duration(hours: 1)),
+      ),
+    ]);
+
+    await expectAccessible(tester, 'where everybody is');
+    // Disposed here rather than in a teardown: this controller recounts the
+    // ages on screen every thirty seconds, and a timer still pending when the
+    // body ends fails the test before any teardown runs.
+    controller.dispose();
   });
 
   testWidgets('meals', (tester) async {

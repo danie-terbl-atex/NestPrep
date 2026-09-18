@@ -21,6 +21,10 @@ import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/live_location/data/live_location_repository.dart';
+import '../features/live_location/data/location_reporter.dart';
+import '../features/live_location/state/live_location_controller.dart';
+import '../features/live_location/ui/live_location_screen.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/meal_planning/state/meal_plan_controller.dart';
 import '../features/meal_planning/ui/meal_plan_screen.dart';
@@ -76,6 +80,19 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
+        ),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => LiveLocationController(
+              liveLocationRepository: context.read<LiveLocationRepository>(),
+              locationReporter: context.read<LocationReporter>(),
+              householdId: HouseholdRoute.idFrom(state),
+              viewerMemberId: _viewerMemberId(context),
+              members: context.read<HouseholdView>().members,
+            ),
+            child: const LiveLocationScreen(),
+          ),
         ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',

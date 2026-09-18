@@ -6,6 +6,8 @@ import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -232,6 +234,39 @@ void main() {
       });
       expect(shape.serverAssigned, {'skippedAt'});
       expect(exception.id, 'e_2026-09-18');
+    });
+  });
+
+  group('memberLocations/{memberId}', () {
+    test('writes the four keys the rule names, and the server times it', () {
+      final json = MemberLocation(
+        id: 'm-sam',
+        point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
+        accuracyMetres: 12,
+        sharingUntil: DateTime.utc(2026, 9, 18, 15),
+      ).toJson();
+      final shape = shapeOf(json);
+
+      expect(shape.keys, {
+        'point',
+        'accuracyMetres',
+        'reportedAt',
+        'sharingUntil',
+      });
+      // `reportedAt` is the server's, so how old a position is cannot be
+      // something a device flatters itself about; `sharingUntil` is the
+      // member's own and the rules bound it instead (live-location ADR-0001).
+      expect(shape.serverAssigned, {'reportedAt'});
+      expect(json['point'], isA<GeoPoint>());
+      expect(json['sharingUntil'], isA<Timestamp>());
+      expect(
+        json.containsKey('memberId'),
+        isFalse,
+        reason:
+            'the member id is the document id, which is what makes the rule '
+            '`isOwnMember` on the path — a field here would be a second copy '
+            'of it, and the wrong one to trust',
+      );
     });
   });
 

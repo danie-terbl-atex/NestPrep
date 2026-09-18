@@ -17,11 +17,17 @@ import '../features/household/data/callable_household_directory.dart';
 import '../features/household/data/firestore_household_repository.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
+import '../features/live_location/data/firestore_live_location_repository.dart';
+import '../features/live_location/data/geolocator_location_source.dart';
+import '../features/live_location/data/live_location_repository.dart';
+import '../features/live_location/data/location_reporter.dart';
+import '../features/live_location/data/location_source.dart';
 import '../features/meal_planning/data/firestore_meal_repository.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import 'firebase_bootstrap.dart';
+import 'location_reporting.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -64,6 +70,23 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<TodoRepository>(
     create: (context) =>
         FirestoreTodoRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<LiveLocationRepository>(
+    create: (context) =>
+        FirestoreLiveLocationRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<LocationSource>(
+    create: (context) => const GeolocatorLocationSource(),
+  ),
+  // Above every route on purpose: a share the person opened keeps reporting
+  // when they navigate away from the screen, and stops when its window closes
+  // (live-location ADR-0001).
+  Provider<LocationReporter>(
+    create: (context) => locationReporterFor(
+      LocationReporting.fromEnvironment(),
+      locationSource: context.read<LocationSource>(),
+      liveLocationRepository: context.read<LiveLocationRepository>(),
+    ),
   ),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(

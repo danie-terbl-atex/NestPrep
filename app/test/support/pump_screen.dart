@@ -17,6 +17,13 @@ import 'household_fixtures.dart';
 /// Pumps a feature screen the way its route does: the household and its clock
 /// above it, its controller beside it, and a router under it so a header link
 /// has somewhere to go (`FE-17`).
+///
+/// [router] replaces the one-screen router for a test whose subject *is* the
+/// navigation — whether a row pushes or replaces, and whether the screen it
+/// opens can be come back from. [screen] is then unused, because the router
+/// builds its own. Everything above the router is the same either way, which is
+/// the reason this takes a router rather than a second helper growing its own
+/// copy of the session (`ENG-01`).
 Future<void> pumpScreen(
   WidgetTester tester,
   Widget screen, {
@@ -24,6 +31,7 @@ Future<void> pumpScreen(
   HouseholdView? view,
   Brightness brightness = Brightness.light,
   double textScale = 1,
+  GoRouter? router,
 }) {
   tz_data.initializeTimeZones();
   final householdView = view ?? Fixtures.view();
@@ -68,22 +76,28 @@ Future<void> pumpScreen(
         // every screenshot the design review takes.
         debugShowCheckedModeBanner: false,
         theme: nestThemeData(nest),
-        routerConfig: GoRouter(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: TextScaler.linear(textScale)),
-                child: screen,
-              ),
+        routerConfig:
+            router ??
+            GoRouter(
+              routes: [
+                GoRoute(
+                  path: '/',
+                  builder: (context, state) => MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: TextScaler.linear(textScale)),
+                    child: screen,
+                  ),
+                ),
+                GoRoute(
+                  path: '/households/:householdId/household',
+                  builder: (context, state) => const Placeholder(),
+                ),
+                GoRoute(
+                  path: '/households/:householdId/where',
+                  builder: (context, state) => const Placeholder(),
+                ),
+              ],
             ),
-            GoRoute(
-              path: '/households/:householdId/household',
-              builder: (context, state) => const Placeholder(),
-            ),
-          ],
-        ),
       ),
     ),
   );

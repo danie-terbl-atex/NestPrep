@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Live location, phase 1: while the app is in front of somebody, and no
+         further. ACCESS_BACKGROUND_LOCATION and FOREGROUND_SERVICE_LOCATION are
+         deliberately absent — adding either is what makes this app subject to
+         Play's prominent-disclosure declaration and the demo video that goes
+         with it, and neither exists yet (live-location ADR-0001, phase 2). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:label="nestprep"
         android:name="${applicationName}"

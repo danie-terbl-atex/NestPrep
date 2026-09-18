@@ -20,6 +20,7 @@ void main() {
     UnknownFailure(Exception('a socket closed somewhere')),
     for (final problem in SignInProblem.values) SignInFailure(problem),
     for (final problem in HouseholdProblem.values) HouseholdFailure(problem),
+    for (final problem in LocationProblem.values) LocationFailure(problem),
   ];
 
   /// Words that mean something to us and nothing to a person holding a phone.
@@ -41,6 +42,7 @@ void main() {
       final label = switch (failure) {
         SignInFailure(:final problem) => '$name.${problem.name}',
         HouseholdFailure(:final problem) => '$name.${problem.name}',
+        LocationFailure(:final problem) => '$name.${problem.name}',
         _ => name,
       };
 

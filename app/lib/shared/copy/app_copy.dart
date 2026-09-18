@@ -62,6 +62,40 @@ abstract final class AppCopy {
   static const todosDoneFor = 'Done for';
   static const todosCompleteFor = 'Mark done for…';
 
+  static const locationTitle = 'Where we are';
+  static const locationYours = 'Your location';
+  static const locationYoursBody =
+      'Only you can start or stop this, and every share ends on its own.';
+  static const locationShareFor = 'Share for';
+  static const locationStop = 'Stop sharing';
+  static const locationSharingUntil = 'Sharing until';
+  static const locationFifteenMinutes = '15 minutes';
+  static const locationOneHour = '1 hour';
+  static const locationFourHours = '4 hours';
+  static const locationHereNow = 'Here now';
+  static const locationLastSeen = 'Last seen';
+  static const locationNotSharing = 'Not sharing';
+  static const locationAloneTitle = 'Nobody else here yet';
+  static const locationAloneBody =
+      'Add the people who live here, and this is where you will see who is out.';
+
+  /// How far away somebody is, in the units a person would use for it.
+  static String distanceAway(double metres) => metres < 1000
+      ? '${metres.round()} m away'
+      : '${(metres / 1000).toStringAsFixed(1)} km away';
+
+  /// How sure the phone was. "Here now, within 12 m" and "here now, within
+  /// 900 m" are different answers to the same question.
+  static String withinMetres(int metres) => 'within $metres m';
+
+  static const timeJustNow = 'Just now';
+
+  static String minutesAgo(int minutes) =>
+      minutes == 1 ? '1 minute ago' : '$minutes minutes ago';
+
+  static String hoursAgo(int hours) =>
+      hours == 1 ? '1 hour ago' : '$hours hours ago';
+
   static const dateToday = 'Today';
   static const dateTomorrow = 'Tomorrow';
   static const dateYesterday = 'Yesterday';
@@ -212,6 +246,7 @@ abstract final class AppCopy {
       'Your sign-in has expired. Please sign in again.',
     SignInFailure(:final problem) => signInProblem(problem),
     HouseholdFailure(:final problem) => householdProblem(problem),
+    LocationFailure(:final problem) => locationProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
@@ -237,6 +272,19 @@ abstract final class AppCopy {
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',
+  };
+
+  static String locationProblem(LocationProblem problem) => switch (problem) {
+    LocationProblem.permissionRefused =>
+      'NestPrep needs your permission to share where you are.',
+    LocationProblem.permissionRefusedForever =>
+      'Location is turned off for NestPrep. Turn it on in your phone settings '
+          'to share where you are.',
+    LocationProblem.switchedOff =>
+      'Location is switched off on this phone. Switch it on to share where '
+          'you are.',
+    LocationProblem.reportingStopped =>
+      'Sharing stopped, because this phone stopped saying where it is.',
   };
 
   static String signInProblem(SignInProblem problem) => switch (problem) {

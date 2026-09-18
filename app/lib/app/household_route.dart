@@ -14,11 +14,18 @@ abstract final class HouseholdRoute {
   /// Managing people: reached from a tab's header, not from the bottom bar.
   static const householdSegment = 'household';
 
+  /// Where everybody is: reached from the household screen, one level further
+  /// in than the tabs, because it is about the people rather than the week.
+  static const whereSegment = 'where';
+
   static String pathFor(String householdId, HouseholdTab tab) =>
       '/households/$householdId/${tab.segment}';
 
   static String householdPathFor(String householdId) =>
       '/households/$householdId/$householdSegment';
+
+  static String wherePathFor(String householdId) =>
+      '/households/$householdId/$whereSegment';
 
   /// Where a household opens: the week, because that is the question the app
   /// exists to answer.
