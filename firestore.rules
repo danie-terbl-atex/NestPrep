@@ -38,6 +38,62 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId)).data;
     }
 
+    // ---- what the caller may see and do, per area (household ADR-0003) ----
+    //
+    // Family — admin, parent, and the old `member` — sees and does everything,
+    // as every member did before. A kid, helper or carer holds one level per
+    // area in the household's `access` map, which only Functions write:
+    // `none`, `own` (only what is theirs), `view` (read) or `edit` (what family
+    // does). A helper claimed before ADR-0003 has no entry and keeps `edit`
+    // everywhere until a parent chooses; a kid or carer with none has nothing.
+    //
+    // The area keys are a contract other features gate on — the household
+    // overview lists them, and `functions/test/unit/access_contract.test.ts`
+    // checks this file against `functions/src/household/access.ts`.
+
+    function isFamily(householdId) {
+      return isMember(householdId)
+        && householdData(householdId).members[uid()] in ['admin', 'parent', 'member'];
+    }
+
+    function levelIn(householdId, area) {
+      let household = householdData(householdId);
+      let grant = household.get('access', {}).get(uid(), null);
+      return grant != null
+        ? grant.get(area, 'none')
+        : (household.members[uid()] == 'helper' ? 'edit' : 'none');
+    }
+
+    function canView(householdId, area) {
+      return isFamily(householdId)
+        || (isMember(householdId) && levelIn(householdId, area) in ['view', 'edit']);
+    }
+
+    function canEdit(householdId, area) {
+      return isFamily(householdId)
+        || (isMember(householdId) && levelIn(householdId, area) == 'edit');
+    }
+
+    function hasOwnOnly(householdId, area) {
+      return isMember(householdId) && !isFamily(householdId)
+        && levelIn(householdId, area) == 'own';
+    }
+
+    // The member id this account claimed, which is what `own` compares with.
+    // Empty for an account claimed before ADR-0003, which never holds `own`.
+    function ownMemberId(householdId) {
+      return householdData(householdId).get('profiles', {}).get(uid(), '');
+    }
+
+    function isGrant(value) {
+      return value == null
+        || (value is map
+            && value.keys().hasOnly(
+                 ['calendar', 'groceries', 'todos', 'meals', 'documents', 'lunch',
+                  'familyProfiles', 'medical', 'homeCare', 'nannyHub'])
+            && value.values().hasOnly(['none', 'own', 'view', 'edit']));
+    }
+
     // The profile this account claimed. Anything a member creates is stamped
     // with it, so nobody can write an item in somebody else's name (BE-03).
     function isOwnMember(householdId, memberId) {
@@ -67,8 +123,10 @@ service cloud.firestore {
       return value is string && value.size() > 0;
     }
 
+    // `member` is household ADR-0001's family adult. An app installed before
+    // ADR-0003 still writes it, so it is still accepted, and read as parent.
     function isRole(value) {
-      return value in ['admin', 'member', 'helper'];
+      return value in ['admin', 'parent', 'member', 'kid', 'helper', 'carer'];
     }
 
     // A member's birthday (birthdays ADR-0001): absent, null, `YYYY-MM-DD`, or
@@ -134,9 +192,17 @@ service cloud.firestore {
       allow create, delete: if false;
 
       allow update: if isAdmin(householdId)
-        && onlyChanged(['name', 'timeZone'])
-        && isNonEmptyString(request.resource.data.name)
-        && isNonEmptyString(request.resource.data.timeZone);
+        && ((onlyChanged(['name', 'timeZone'])
+              && isNonEmptyString(request.resource.data.name)
+              && isNonEmptyString(request.resource.data.timeZone))
+            || isFinishingSetup());
+
+      // The invite step `createHousehold` opens (household ADR-0003). An admin
+      // may close it — done or skipped — and never open it again.
+      function isFinishingSetup() {
+        return onlyChanged(['pendingSetupStep'])
+          && request.resource.data.pendingSetupStep == null;
+      }
 
       match /members/{memberId} {
         allow read: if isMember(householdId);
@@ -145,11 +211,13 @@ service cloud.firestore {
         // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
-               ['displayName', 'color', 'role', 'birthday', 'claimedBy', 'createdAt'])
+               ['displayName', 'color', 'role', 'birthday', 'access', 'claimedBy',
+                'createdAt'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
           && isBirthday(request.resource.data.get('birthday', null))
+          && isGrant(request.resource.data.get('access', null))
           && request.resource.data.claimedBy == null
           && isServerTime('createdAt');
 
@@ -159,13 +227,19 @@ service cloud.firestore {
         // `get('birthday', null)` rather than a bare read: every profile
         // written before the field existed has no key at all, and a rule that
         // reads a missing key refuses the write (BE-10).
+        //
+        // The grant follows the same rule as the role, for the same reason: a
+        // claimed member's lives in the household document too, so changing
+        // it is `setMemberAccess` (household ADR-0003).
         allow update: if isAdmin(householdId)
-          && onlyChanged(['displayName', 'color', 'role', 'birthday'])
+          && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
           && isBirthday(request.resource.data.get('birthday', null))
-          && (resource.data.claimedBy == null || didNotChange('role'));
+          && isGrant(request.resource.data.get('access', null))
+          && (resource.data.claimedBy == null
+                || (didNotChange('role') && !changedKeys().hasAny(['access'])));
 
         // Removing a profile detaches whoever claimed it: `removeMember`.
         allow delete: if false;
@@ -174,9 +248,9 @@ service cloud.firestore {
       // ---- groceries (groceries ADR-0001) ----
 
       match /groceryItems/{itemId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'groceries');
 
-        allow create: if isMember(householdId)
+        allow create: if canEdit(householdId, 'groceries')
           && request.resource.data.keys().hasOnly(
                ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy'])
           && isNonEmptyString(request.resource.data.name)
@@ -188,13 +262,14 @@ service cloud.firestore {
         // Two different writes share this rule, and a caller may do exactly one
         // of them: anybody in the household ticks anything, but only the person
         // who added an item — or an admin — changes what it says.
-        allow update: if isMember(householdId)
+        allow update: if canEdit(householdId, 'groceries')
           && didNotChange('addedBy')
           && didNotChange('addedAt')
           && (isTickOrUntick(householdId) || isTextEdit(householdId));
 
         allow delete: if isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.addedBy);
+          || (canEdit(householdId, 'groceries')
+                && isOwnMember(householdId, resource.data.addedBy));
 
         function isTickOrUntick(householdId) {
           return onlyChanged(['boughtAt', 'boughtBy'])
@@ -215,9 +290,14 @@ service cloud.firestore {
       // ---- todos (todos ADR-0001, ADR-0002) ----
 
       match /tasks/{taskId} {
-        allow read: if isMember(householdId);
+        // `own` is a helper's or a kid's own chores: what lists them as an
+        // assignee. The client asks for exactly those (`array-contains`),
+        // because a rule is not a filter (household ADR-0003).
+        allow read: if canView(householdId, 'todos')
+          || (hasOwnOnly(householdId, 'todos')
+                && ownMemberId(householdId) in resource.data.assigneeIds);
 
-        allow create: if isMember(householdId)
+        allow create: if canEdit(householdId, 'todos')
           && request.resource.data.keys().hasOnly(
                ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
                 'createdBy', 'routineId', 'createdAt'])
@@ -230,7 +310,7 @@ service cloud.firestore {
         // Anybody may retitle, reschedule or reassign what they created; an
         // admin may do it to anything. Completing is not an edit — it is its
         // own document (todos ADR-0002).
-        allow update: if isMember(householdId)
+        allow update: if canEdit(householdId, 'todos')
           && onlyChanged(
                ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId'])
           && isNonEmptyString(request.resource.data.title)
@@ -239,13 +319,14 @@ service cloud.firestore {
                 || isOwnMember(householdId, resource.data.createdBy));
 
         allow delete: if isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.createdBy);
+          || (canEdit(householdId, 'todos')
+                && isOwnMember(householdId, resource.data.createdBy));
       }
 
       // A routine's schedule moves every task in it, which is why only an admin
       // may write one (todos ADR-0001).
       match /routines/{routineId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'todos');
 
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
@@ -268,9 +349,12 @@ service cloud.firestore {
       // which is what makes completing the same occurrence twice the same write
       // and stops a completion being filed against a different day (BE-06).
       match /taskCompletions/{completionId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'todos')
+          || (hasOwnOnly(householdId, 'todos')
+                && resource.data.completedFor == ownMemberId(householdId));
 
-        allow create, update: if isMember(householdId)
+        allow create, update: if (canEdit(householdId, 'todos')
+                                    || hasOwnOnly(householdId, 'todos'))
           && request.resource.data.keys().hasOnly(
                ['taskId', 'occurrenceDate', 'completedBy', 'completedFor', 'completedAt'])
           && completionId ==
@@ -282,14 +366,19 @@ service cloud.firestore {
                request.resource.data.taskId,
                request.resource.data.completedFor);
 
-        allow delete: if isMember(householdId);
+        allow delete: if canEdit(householdId, 'todos')
+          || (hasOwnOnly(householdId, 'todos')
+                && resource.data.completedFor == ownMemberId(householdId));
 
         // An admin completes on anybody's behalf; everybody else completes only
-        // what is theirs, or what is for anyone (household ADR-0001).
+        // what is theirs, or what is for anyone (household ADR-0001). With
+        // `own`, "for anyone" is not theirs: they cannot even see it
+        // (household ADR-0003).
         function mayCompleteFor(householdId, taskId, forMemberId) {
           return isAdmin(householdId)
             || (isOwnMember(householdId, forMemberId)
-                  && (taskAssignees(householdId, taskId).size() == 0
+                  && ((taskAssignees(householdId, taskId).size() == 0
+                          && !hasOwnOnly(householdId, 'todos'))
                         || forMemberId in taskAssignees(householdId, taskId)));
         }
 
@@ -303,13 +392,13 @@ service cloud.firestore {
       // ---- calendar (calendar ADR-0001, ADR-0002) ----
 
       match /events/{eventId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'calendar');
 
         // Any member creates an event for anyone; the creator or an admin edits
         // and deletes it (calendar ADR-0001). The time is the household's wall
         // clock, so `startMinute` is minutes since midnight or absent for an
         // all-day event (calendar ADR-0002).
-        allow create: if isMember(householdId)
+        allow create: if canEdit(householdId, 'calendar')
           && request.resource.data.keys().hasOnly(
                ['title', 'note', 'date', 'startMinute', 'endMinute', 'recurrence',
                 'memberIds', 'createdBy', 'createdAt'])
@@ -321,7 +410,7 @@ service cloud.firestore {
           && isOwnMember(householdId, request.resource.data.createdBy)
           && isServerTime('createdAt');
 
-        allow update: if isMember(householdId)
+        allow update: if canEdit(householdId, 'calendar')
           && onlyChanged(
                ['title', 'note', 'date', 'startMinute', 'endMinute', 'recurrence',
                 'memberIds'])
@@ -333,7 +422,8 @@ service cloud.firestore {
                 || isOwnMember(householdId, resource.data.createdBy));
 
         allow delete: if isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.createdBy);
+          || (canEdit(householdId, 'calendar')
+                && isOwnMember(householdId, resource.data.createdBy));
 
         function isMinuteOfDay(value) {
           return value == null || (value is int && value >= 0 && value < 1440);
@@ -351,9 +441,9 @@ service cloud.firestore {
       // household's own library, not a way into anybody's data — so this is a
       // validation the client owns and the rules cannot (BE-03).
       match /meals/{mealId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'meals');
 
-        allow create: if isMember(householdId)
+        allow create: if canEdit(householdId, 'meals')
           && request.resource.data.keys().hasOnly(
                ['name', 'nameKey', 'addedBy', 'createdAt'])
           && isNonEmptyString(request.resource.data.name)
@@ -361,7 +451,7 @@ service cloud.firestore {
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('createdAt');
 
-        allow update: if isMember(householdId)
+        allow update: if canEdit(householdId, 'meals')
           && onlyChanged(['name', 'nameKey'])
           && isNonEmptyString(request.resource.data.name)
           && isNormalisedKey(request.resource.data.nameKey)
@@ -369,7 +459,8 @@ service cloud.firestore {
                 || isOwnMember(householdId, resource.data.addedBy));
 
         allow delete: if isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.addedBy);
+          || (canEdit(householdId, 'meals')
+                && isOwnMember(householdId, resource.data.addedBy));
 
         function isNormalisedKey(value) {
           return value is string && value.size() > 0 && value == value.lower();
@@ -379,9 +470,9 @@ service cloud.firestore {
       // One document is one week, keyed by its Monday. The plan has no owner:
       // any member fills, changes or clears any slot (meal-planning ADR-0001).
       match /mealPlans/{weekStart} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'meals');
 
-        allow create, update: if isMember(householdId)
+        allow create, update: if canEdit(householdId, 'meals')
           && request.resource.data.keys().hasOnly(['slots'])
           && request.resource.data.slots is map
           && request.resource.data.slots.size() <= 21;
@@ -442,9 +533,9 @@ service cloud.firestore {
       // One occurrence of a repeating event, skipped. Same shape and the same
       // reasons as a task completion (todos ADR-0002).
       match /eventExceptions/{exceptionId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'calendar');
 
-        allow create, update: if isMember(householdId)
+        allow create, update: if canEdit(householdId, 'calendar')
           && request.resource.data.keys().hasOnly(
                ['eventId', 'occurrenceDate', 'skippedBy', 'skippedAt'])
           && exceptionId ==
@@ -452,7 +543,7 @@ service cloud.firestore {
           && isOwnMember(householdId, request.resource.data.skippedBy)
           && isServerTime('skippedAt');
 
-        allow delete: if isMember(householdId);
+        allow delete: if canEdit(householdId, 'calendar');
       }
 
       // ---- documents (documents ADR-0001) ----
@@ -466,7 +557,7 @@ service cloud.firestore {
       // from under its documents leaves bytes nobody can see and nobody stops
       // paying for (foundation ADR-0002, BE-07).
       match /documentFolders/{folderId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'documents');
 
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
@@ -488,9 +579,9 @@ service cloud.firestore {
       // the bytes are, because that is the only place that can see them
       // (BE-03).
       match /documents/{documentId} {
-        allow read: if isMember(householdId);
+        allow read: if canView(householdId, 'documents');
 
-        allow create: if isMember(householdId)
+        allow create: if canEdit(householdId, 'documents')
           && request.resource.data.keys().hasOnly(
                ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
                 'uploadedAt'])
@@ -503,7 +594,7 @@ service cloud.firestore {
 
         // Renaming and moving between folders; the bytes never change, so
         // neither does anything describing them.
-        allow update: if isMember(householdId)
+        allow update: if canEdit(householdId, 'documents')
           && onlyChanged(['name', 'folderId'])
           && isDocumentName(request.resource.data.name)
           && isNonEmptyString(request.resource.data.folderId)
@@ -511,7 +602,8 @@ service cloud.firestore {
                 || isOwnMember(householdId, resource.data.uploadedBy));
 
         allow delete: if isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.uploadedBy);
+          || (canEdit(householdId, 'documents')
+                && isOwnMember(householdId, resource.data.uploadedBy));
       }
 
       // A name somebody typed, bounded so a document list cannot be used as a

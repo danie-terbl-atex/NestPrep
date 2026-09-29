@@ -23,7 +23,11 @@ describe('the membership map', () => {
 });
 
 describe('the roles', () => {
-  it('are the three the household ADR names, in the order it names them', () => {
-    expect(ROLES).toEqual(['admin', 'member', 'helper']);
+  it('are the five household ADR-0003 names, in the order it names them', () => {
+    expect(ROLES).toEqual(['admin', 'parent', 'kid', 'helper', 'carer']);
+  });
+
+  it('never offer `member` again, which is read as parent wherever it is stored', () => {
+    expect(ROLES).not.toContain('member');
   });
 });

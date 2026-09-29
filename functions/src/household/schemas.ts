@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { ROLES } from './documents';
+import { AREAS, AREA_LEVELS, LEVELS, type Area } from './access';
+import { ROLES, type AssignableRole } from './documents';
 
 /**
  * Every callable's input, parsed at the edge and never cast (ENG-09, BE-03).
@@ -61,9 +62,48 @@ export const removeMemberInput = z.object({
 });
 export type RemoveMemberInput = z.infer<typeof removeMemberInput>;
 
+/**
+ * An app installed before household ADR-0003 still sends `member` for a family
+ * adult. It is accepted and written as `parent`, so the old app keeps working
+ * and the old name stops spreading (BE-10, BE-17).
+ */
+const assignableRole = z
+  .enum([...ROLES, 'member'])
+  .transform((role): AssignableRole => (role === 'member' ? 'parent' : role));
+
 export const setMemberRoleInput = z.object({
   householdId: z.string().trim().min(1).max(64),
   memberId: z.string().trim().min(1).max(64),
-  role: z.enum(ROLES),
+  role: assignableRole,
 });
 export type SetMemberRoleInput = z.infer<typeof setMemberRoleInput>;
+
+/**
+ * A whole grant: every area named exactly once, each at a level that area
+ * accepts (household ADR-0003). A partial grant is refused rather than filled
+ * in, because "the parent did not say" and "none" are different answers and
+ * only the client knows which it meant.
+ */
+const level = z.enum(LEVELS);
+const grant = z
+  .object({
+    calendar: level,
+    groceries: level,
+    todos: level,
+    meals: level,
+    documents: level,
+    lunch: level,
+    familyProfiles: level,
+    medical: level,
+    homeCare: level,
+    nannyHub: level,
+  } satisfies Record<Area, typeof level>)
+  .strict()
+  .refine((value) => AREAS.every((area) => AREA_LEVELS[area].includes(value[area])));
+
+export const setMemberAccessInput = z.object({
+  householdId: z.string().trim().min(1).max(64),
+  memberId: z.string().trim().min(1).max(64),
+  access: grant,
+});
+export type SetMemberAccessInput = z.infer<typeof setMemberAccessInput>;

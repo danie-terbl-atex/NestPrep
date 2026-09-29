@@ -21,6 +21,7 @@ export const HOUSEHOLD_REFUSALS = {
   lastAdmin: ['failed-precondition', 'A household needs an admin.'],
   cannotRemoveSelf: ['failed-precondition', 'Leave the household instead of removing yourself.'],
   emailNotVerified: ['failed-precondition', 'Verify your email address first.'],
+  familyHasFullAccess: ['failed-precondition', 'Family members already see everything.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type HouseholdRefusal = keyof typeof HOUSEHOLD_REFUSALS;

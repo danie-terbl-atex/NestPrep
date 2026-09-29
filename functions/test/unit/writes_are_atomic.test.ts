@@ -71,8 +71,10 @@ describe('every write a callable makes is atomic', () => {
     expect(redeem).toBeDefined();
     const source = redeem?.source ?? '';
     expect(source).toContain('runTransaction');
+    // `recordClaim(transaction, …)` stages the household's side of the claim —
+    // role, profile and grant (household ADR-0003) — on the same transaction.
     expect(
-      (source.match(/transaction\.(set|update|delete)\(/g) ?? []).length,
+      (source.match(/transaction\.(set|update|delete)\(|recordClaim\(transaction/g) ?? []).length,
     ).toBeGreaterThanOrEqual(4);
   });
 });
@@ -109,7 +111,8 @@ describe('every callable declares what it may cost', () => {
     // name here should have cost somebody an ADR to justify. Six were the
     // household's; the two documents ones are the household claim Storage rules
     // need and the folder-is-empty check no rule can perform (documents
-    // ADR-0001).
+    // ADR-0001). `setMemberAccess` is the grant a parent chooses, which lives on
+    // the profile and on the household document at once (household ADR-0003).
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
@@ -120,6 +123,7 @@ describe('every callable declares what it may cost', () => {
       'leaveHousehold',
       'redeemInvite',
       'removeMember',
+      'setMemberAccess',
       'setMemberRole',
       'syncDocumentAccess',
     ]);

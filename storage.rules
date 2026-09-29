@@ -34,6 +34,40 @@ service firebase.storage {
       return isMember(householdId) && households()[householdId] == 'admin';
     }
 
+    // ---- what the caller may see and do, per area (household ADR-0003) ----
+    //
+    // The same answer `firestore.rules` gives, from the token instead of a
+    // `get()`. Family — admin, parent, the old `member` — sees everything. A
+    // kid, helper or carer carries a second claim, `access`, holding a level
+    // per area for the areas whose bytes live here; an area missing from it is
+    // `none`. Both claims are written from Firestore by the Functions, never
+    // by a client.
+
+    function isFamily(householdId) {
+      return isMember(householdId)
+        && households()[householdId] in ['admin', 'parent', 'member'];
+    }
+
+    // A token with no `access` claim at all predates ADR-0003: a helper on it
+    // keeps the `edit` every helper had, exactly as `firestore.rules` treats a
+    // helper with no grant. Once the claim exists, a household missing from it
+    // is `none`.
+    function levelIn(householdId, area) {
+      return !('access' in request.auth.token)
+        ? (households()[householdId] == 'helper' ? 'edit' : 'none')
+        : request.auth.token.access.get(householdId, {}).get(area, 'none');
+    }
+
+    function canView(householdId, area) {
+      return isFamily(householdId)
+        || (isMember(householdId) && levelIn(householdId, area) in ['view', 'edit']);
+    }
+
+    function canEdit(householdId, area) {
+      return isFamily(householdId)
+        || (isMember(householdId) && levelIn(householdId, area) == 'edit');
+    }
+
     // ---- what may be stored ----
 
     // Enforced here and nowhere else that counts. The client refuses an
@@ -72,10 +106,10 @@ service firebase.storage {
     // other, which is what makes a half-finished upload or delete recoverable
     // rather than an invisible bill (BE-07).
     match /households/{householdId}/documents/{documentId} {
-      allow read: if isMember(householdId);
+      allow read: if canView(householdId, 'documents');
 
       allow create: if resource == null
-        && isMember(householdId)
+        && canEdit(householdId, 'documents')
         && isSmallEnough()
         && isAKeptType()
         && isStampedWithTheCaller();
@@ -86,7 +120,7 @@ service firebase.storage {
       allow update: if false;
 
       allow delete: if isAdmin(householdId)
-        || (isMember(householdId)
+        || (canEdit(householdId, 'documents')
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 

@@ -33,9 +33,9 @@ function endpoints(): [string, Endpoint][] {
 }
 
 describe('every callable', () => {
-  it('there are eight of them, so a new one cannot slip past these checks', () => {
+  it('there are nine of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    expect(endpoints()).toHaveLength(8);
+    expect(endpoints()).toHaveLength(9);
   });
 
   it('runs in the one region, which is the database region', () => {

@@ -11,5 +11,7 @@ export { redeemInvite } from './household/redeem_invite';
 export { leaveHousehold } from './household/leave_household';
 export { removeMember } from './household/remove_member';
 export { setMemberRole } from './household/set_member_role';
+// household phase 2 — what each role may see (household ADR-0003)
+export { setMemberAccess } from './household/set_member_access';
 export { syncDocumentAccess } from './documents/sync_document_access';
 export { deleteDocumentFolder } from './documents/delete_document_folder';

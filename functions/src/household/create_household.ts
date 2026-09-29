@@ -29,6 +29,10 @@ export const createHousehold = onCall(async (request) => {
     name: input.name,
     timeZone: input.timeZone,
     members: { [uid]: 'admin' },
+    profiles: { [uid]: member.id },
+    // The app shows its admin the invite step until they finish or skip it:
+    // inviting a second adult is part of setting up (household ADR-0003).
+    pendingSetupStep: 'invitePeople',
     createdBy: uid,
     createdAt: FieldValue.serverTimestamp(),
   });
