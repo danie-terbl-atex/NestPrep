@@ -1,6 +1,7 @@
 import '../../../design/tokens/nest_member_palette.dart';
 import '../model/access_grant.dart';
 import '../model/birthday.dart';
+import '../model/guardian_consent.dart';
 import '../model/household.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
@@ -35,7 +36,8 @@ abstract interface class HouseholdRepository {
   /// Adds an unclaimed profile. Admin only, and the rules say so too. A null
   /// birthday is the ordinary case, not a missing one (birthdays ADR-0001). A
   /// kid, helper or carer is written with its grant; family with none
-  /// (household ADR-0003). Returns the new profile's id, which the invite step
+  /// (household ADR-0003). A kid is written with a parent's consent, which
+  /// the rules require (accounts ADR-0005). Returns the new profile's id, which the invite step
   /// makes a code for at once.
   Future<String> addMember({
     required String householdId,
@@ -44,6 +46,7 @@ abstract interface class HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   });
 
   /// Renames or recolours a profile, and changes the role — and with it the
@@ -57,6 +60,7 @@ abstract interface class HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   });
 
   /// Closes the invite step a new household opens, whether it was finished

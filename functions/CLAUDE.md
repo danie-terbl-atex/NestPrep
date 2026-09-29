@@ -24,6 +24,7 @@ npm run seed           # three signed-in users, against a running Auth emulator
 npm run serve          # build, then the functions emulator alone
 npm run beta-numbers   # print the weekly beta numbers (after `npm run build`; `-- --recount` recounts first)
 npm run grant-analytics-reader -- <email> [--revoke]   # who may open the Beta numbers screen
+npm run deletion-requests [-- --erase <id> --confirm | --close <id>]   # the web page's deletion requests (after `npm run build`)
 ```
 
 The two analytics tools (product-analytics ADR-0001) read `lib/`, so build first. Against the
@@ -98,6 +99,29 @@ made for the tests and trusted by nothing else.
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
 `<CALENDAR_FUNCTIONS_BASE_URL>/calendarOAuthCallback`).
+
+## Account data, rate limits and App Check (accounts ADR-0006)
+
+- `src/account_data/` is Delete my account, Download my data and the public deletion-request
+  endpoint. Erasing reads the plan again on the server and refuses if the households it would end
+  differ from the ones the person agreed to; the order is households → records outside them →
+  `users/{uid}` → the Auth user last, and every step is safe to re-run. **A new collection that
+  holds a person's data belongs in its inventory**: `personal_refs.ts` for a document keyed by the
+  member id, `authored_records.ts` for a record stamped with its author —
+  `test/unit/account_data_exports.test.ts` fails when a rules partial stamps authorship on a
+  collection the export does not list.
+- An export is written to Storage at `accountExports/{uid}/…`, readable by that account for one
+  hour (`rules/storage/paths/account_exports.rules`) and swept hourly. It is the Functions' first
+  server-side Storage use (`shared/storage.ts`); in the emulator the runtime is given no bucket, so
+  it falls back to `<project>.firebasestorage.app`, and `npm run test:emulator` now starts Storage.
+- Web deletion requests land in `accountDeletionRequests` and are dealt with by
+  `tools/deletion-requests.mjs` after the address is confirmed by email.
+- `shared/rate_limit.ts` counts attempts in `rateLimits/{hash}` — `redeemKidPairing` and the web
+  request per address and overall, exports per account. Each document carries `expiresAt`; a
+  Firestore **TTL policy on `rateLimits.expiresAt`** removes them (console, once — an outside ask).
+- `shared/app_check.ts`: `APP_CHECK_ENFORCED` is `false`. Flipping it to `true` and deploying makes
+  every callable refuse a request without a valid App Check token — only after the console's App
+  Check metrics show nearly all requests verified (foundation's App Check ADR).
 
 ## Things that bite on this codebase
 

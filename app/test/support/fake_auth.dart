@@ -4,6 +4,8 @@ import 'package:nestprep/features/accounts/data/account_repository.dart';
 import 'package:nestprep/features/accounts/data/auth_gateway.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
+import 'package:nestprep/features/accounts/model/legal_consent.dart';
+import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 /// Firebase Auth, without a platform channel. A test drives who is signed in by
@@ -143,8 +145,23 @@ final class FakeAccountRepository implements AccountRepository {
   AppFailure? failWritesWith;
   final ensured = <String>[];
   final activeHouseholds = <String>[];
+  final acceptedLegal = <LegalConsent>[];
 
-  void emit(Account? account) => _accounts.add(account);
+  /// What this build asks people to agree to, as an account that has.
+  static const currentConsent = LegalConsent(
+    termsVersion: LegalVersions.terms,
+    privacyVersion: LegalVersions.privacy,
+  );
+
+  /// Emits [account] as the account document. An account with no consent is
+  /// emitted as one that has agreed to the current documents, so the tests
+  /// written before the consent step keep testing what they were written for
+  /// (accounts ADR-0005); pass [consented] false to meet the consent step.
+  void emit(Account? account, {bool consented = true}) => _accounts.add(
+    consented && account != null && account.legalConsent == null
+        ? account.copyWith(legalConsent: currentConsent)
+        : account,
+  );
   void failStreamWith(Object error) => _accounts.addError(error);
   Future<void> close() => _accounts.close();
 
@@ -166,5 +183,18 @@ final class FakeAccountRepository implements AccountRepository {
     final failure = failWritesWith;
     if (failure != null) throw failure;
     activeHouseholds.add(householdId);
+  }
+
+  @override
+  Future<void> acceptLegal({
+    required String uid,
+    required int termsVersion,
+    required int privacyVersion,
+  }) async {
+    final failure = failWritesWith;
+    if (failure != null) throw failure;
+    acceptedLegal.add(
+      LegalConsent(termsVersion: termsVersion, privacyVersion: privacyVersion),
+    );
   }
 }

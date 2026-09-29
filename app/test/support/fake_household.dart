@@ -5,6 +5,7 @@ import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
+import 'package:nestprep/features/household/model/guardian_consent.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
@@ -29,6 +30,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
           MemberRole role,
           Birthday? birthday,
           AccessGrant? access,
+          GuardianConsent? guardianConsent,
         })
       >[];
   final updated =
@@ -39,6 +41,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
           MemberRole role,
           Birthday? birthday,
           AccessGrant? access,
+          GuardianConsent? guardianConsent,
         })
       >[];
   final renamed = <({String name, String timeZone})>[];
@@ -90,6 +93,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   }) async {
     _refuseIfAsked();
     added.add((
@@ -98,6 +102,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
       role: role,
       birthday: birthday,
       access: access,
+      guardianConsent: guardianConsent,
     ));
     return 'm-new-${added.length}';
   }
@@ -117,6 +122,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   }) async {
     _refuseIfAsked();
     updated.add((
@@ -125,6 +131,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
       role: role,
       birthday: birthday,
       access: access,
+      guardianConsent: guardianConsent,
     ));
   }
 

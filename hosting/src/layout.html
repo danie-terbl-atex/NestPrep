@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+    <meta name="description" content="{{description}}" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="{{robots}}" />
+    <link rel="icon" type="image/png" href="/assets/nest_mark.png" />
+    <link rel="stylesheet" href="/assets/site.css" />
+{{head}}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <img class="brand__mark" src="/assets/nest_mark.png" width="720" height="553" alt="" />
+          <span class="wordmark" role="img" aria-label="NestPrep"></span>
+        </a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+            <li><a href="/privacy"{{current:privacy}}>Privacy</a></li>
+            <li><a href="/terms"{{current:terms}}>Terms</a></li>
+            <li><a href="/delete-account"{{current:delete-account}}>Delete your account</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+{{body}}
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <nav class="site-nav" aria-label="Legal">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/delete-account">Delete your account</a></li>
+          </ul>
+        </nav>
+        <p>
+          NestPrep is provided by <mark class="placeholder">[legal entity name]</mark>. Questions
+          about your information: <mark class="placeholder">[Information Officer email address]</mark>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

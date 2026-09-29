@@ -33,13 +33,19 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
+/** The callables allowed past thirty seconds and 256 MiB, and exactly how far. */
+const LONGER_WORK: Record<string, { timeoutSeconds: number; memoryMb: number }> = {
+  deleteAccount: { timeoutSeconds: 300, memoryMb: 512 },
+  exportAccountData: { timeoutSeconds: 120, memoryMb: 512 },
+};
+
 /** A scheduled job sets its own timeout; everything else is a callable. */
 function isScheduled(endpoint: Endpoint): boolean {
   return endpoint.scheduleTrigger !== undefined;
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are forty-two of them, so a new one cannot slip past these checks', () => {
+  it('there are forty-seven of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -52,8 +58,10 @@ describe('every function — callable, trigger or schedule', () => {
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
     // (nanny-hub ADR-0002). Subscriptions: six — three callables, the App
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
-    // (subscriptions ADR-0001). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(42);
+    // (subscriptions ADR-0001). Account data: five — preview and delete an
+    // account, export its data, the hourly export sweep and the web deletion
+    // request (accounts ADR-0006). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(47);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -72,9 +80,21 @@ describe('every function — callable, trigger or schedule', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
+      if (name in LONGER_WORK) continue;
       expect(endpoint.availableMemoryMb, name).toBe(256);
       if (isScheduled(endpoint)) continue;
       expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('the two that do more than one request’s work say how much more, and it is bounded', () => {
+    // Erasing an account walks every household it is in and may end one with
+    // all its bytes; an export reads all of it (accounts ADR-0006, BE-19).
+    for (const [name, limits] of Object.entries(LONGER_WORK)) {
+      const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
+      expect(endpoint?.timeoutSeconds, name).toBe(limits.timeoutSeconds);
+      expect(endpoint?.availableMemoryMb, name).toBe(limits.memoryMb);
+      expect(limits.timeoutSeconds, name).toBeLessThanOrEqual(300);
     }
   });
 

@@ -31,6 +31,7 @@ List<GoRoute> householdAccessRoutes() => [
           householdId: HouseholdRoute.idFrom(state),
           householdName: view.household.name,
           coloursInUse: view.members.map((member) => member.color),
+          viewerMemberId: view.viewerMember?.id,
         ),
         child: const InviteStepScreen(),
       );

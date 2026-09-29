@@ -67,6 +67,8 @@ describe('a grant on a profile', () => {
         ...newHelper,
         role: 'kid',
         access: ROLE_DEFAULTS.kid,
+        // A child's profile carries a parent's consent (accounts ADR-0005).
+        guardianConsent: { byMemberId: PEOPLE.admin.member, version: 1, at: serverTimestamp() },
       }),
     );
   });
@@ -112,7 +114,20 @@ describe('a grant on a profile', () => {
     const db = await asUser(PEOPLE.admin.uid);
     for (const role of ['admin', 'parent', 'member', 'kid', 'helper', 'carer']) {
       await assertSucceeds(
-        setDoc(doc(db, `${HOME}/members/m-${role}-new`), { ...newHelper, role }),
+        setDoc(doc(db, `${HOME}/members/m-${role}-new`), {
+          ...newHelper,
+          role,
+          // A kid carries a parent's consent (accounts ADR-0005).
+          ...(role === 'kid'
+            ? {
+                guardianConsent: {
+                  byMemberId: PEOPLE.admin.member,
+                  version: 1,
+                  at: serverTimestamp(),
+                },
+              }
+            : {}),
+        }),
       );
     }
     await assertFails(setDoc(doc(db, `${HOME}/members/m-owner`), { ...newHelper, role: 'owner' }));

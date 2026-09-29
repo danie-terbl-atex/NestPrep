@@ -1,4 +1,5 @@
 import '../../../shared/text/normalised_name.dart';
+import '../../legal/model/legal_versions.dart';
 import '../data/child_profile_directory.dart';
 import '../data/family_profile_repository.dart';
 import '../model/allergy.dart';
@@ -36,11 +37,20 @@ final class FamilyEdits {
   /// to date. The rules hold the same number.
   static const listLimit = 30;
 
-  Future<void> setIsChild(String memberId, {required bool isChild}) => _run(
+  /// [withGuardianConsent] says the parent has just consented to this
+  /// child's information being kept (accounts ADR-0005).
+  Future<void> setIsChild(
+    String memberId, {
+    required bool isChild,
+    bool withGuardianConsent = false,
+  }) => _run(
     () => _children.setIsChild(
       householdId: householdId,
       memberId: memberId,
       isChild: isChild,
+      guardianConsentVersion: withGuardianConsent
+          ? LegalVersions.privacy
+          : null,
     ),
   );
 

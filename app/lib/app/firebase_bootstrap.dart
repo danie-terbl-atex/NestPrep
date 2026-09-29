@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../shared/log/best_effort.dart';
+import 'app_check_providers.dart';
 import 'backend_target.dart';
 import 'emulator_endpoint.dart';
 import 'firebase_options.dart';
@@ -49,6 +52,10 @@ class FirebaseServices {
 /// and its metadata does not (documents ADR-0001).
 Future<FirebaseServices> bootstrapFirebase(BackendTarget target) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Before any service makes a request, so each one carries a token
+  // (foundation ADR-0016). Off on the emulator target: App Check has no
+  // emulator, and a service is redirected there or not used at all.
+  await activateAppCheck(AppCheckPlan.forThisBuild(target));
 
   final firestore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
@@ -69,5 +76,27 @@ Future<FirebaseServices> bootstrapFirebase(BackendTarget target) async {
     auth: auth,
     functions: functions,
     storage: storage,
+  );
+}
+
+/// Starts App Check with the plan's providers (foundation ADR-0016), or does
+/// nothing when the plan is [AppCheckPlan.off].
+///
+/// Best-effort on purpose, and named as such rather than swallowed (`ENG-10`):
+/// nothing enforces App Check until Daniel turns enforcement on, so a phone
+/// that cannot attest — no Play services, an old iPhone — must still open the
+/// household's week. The failure is logged. Once enforcement is on, the
+/// refusal a request then meets reaches the person as copy, like any other.
+Future<void> activateAppCheck(AppCheckPlan plan) async {
+  final android = plan.android;
+  final apple = plan.apple;
+  if (android == null || apple == null) return;
+  await bestEffort(
+    'app check activation',
+    code: 'activate-failed',
+    run: () => FirebaseAppCheck.instance.activate(
+      providerAndroid: android,
+      providerApple: apple,
+    ),
   );
 }

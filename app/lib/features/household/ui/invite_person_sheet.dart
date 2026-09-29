@@ -8,10 +8,17 @@ import 'role_picker.dart';
 /// Who is being invited, and as what. Null from `showInvitePersonSheet` means
 /// the sheet was closed without inviting anybody.
 class InviteDraft {
-  const InviteDraft({required this.displayName, required this.role});
+  const InviteDraft({
+    required this.displayName,
+    required this.role,
+    this.guardianConsent = false,
+  });
 
   final String displayName;
   final MemberRole role;
+
+  /// A kid is invited with the inviting adult's consent (accounts ADR-0005).
+  final bool guardianConsent;
 }
 
 /// A name and a role — nothing else is needed to make a profile somebody can
@@ -38,6 +45,9 @@ class _InvitePersonBody extends StatefulWidget {
 class _InvitePersonBodyState extends State<_InvitePersonBody> {
   final _name = TextEditingController();
   late MemberRole _role = widget.suggestedRole;
+  bool _guardianConsent = false;
+
+  bool get _asksForConsent => _role == MemberRole.kid;
 
   @override
   void dispose() {
@@ -45,12 +55,18 @@ class _InvitePersonBodyState extends State<_InvitePersonBody> {
     super.dispose();
   }
 
-  bool get _canSend => _name.text.trim().isNotEmpty;
+  bool get _canSend =>
+      _name.text.trim().isNotEmpty && (!_asksForConsent || _guardianConsent);
 
   void _send() {
     if (!_canSend) return;
-    Navigator.of(context)
-        .pop(InviteDraft(displayName: _name.text.trim(), role: _role));
+    Navigator.of(context).pop(
+      InviteDraft(
+        displayName: _name.text.trim(),
+        role: _role,
+        guardianConsent: _asksForConsent && _guardianConsent,
+      ),
+    );
   }
 
   @override
@@ -81,6 +97,14 @@ class _InvitePersonBodyState extends State<_InvitePersonBody> {
             selected: _role,
             onSelect: (role) => setState(() => _role = role),
           ),
+          if (_asksForConsent) ...[
+            const SizedBox(height: NestSpace.xl),
+            NestCheckRow(
+              label: LegalCopy.guardianConsentLabel,
+              value: _guardianConsent,
+              onChanged: (value) => setState(() => _guardianConsent = value),
+            ),
+          ],
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: AccessCopy.inviteSend,

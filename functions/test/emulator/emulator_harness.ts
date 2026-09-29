@@ -1,6 +1,7 @@
 import { deleteApp, getApps, initializeApp, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
 import { FUNCTIONS_REGION } from '../../src/shared/region';
 
 /**
@@ -14,6 +15,7 @@ export const REGION = FUNCTIONS_REGION;
 const AUTH_HOST = process.env['FIREBASE_AUTH_EMULATOR_HOST'] ?? '127.0.0.1:9099';
 const FIRESTORE_HOST = process.env['FIRESTORE_EMULATOR_HOST'] ?? '127.0.0.1:8080';
 const FUNCTIONS_HOST = process.env['FUNCTIONS_EMULATOR_HOST'] ?? '127.0.0.1:5001';
+const STORAGE_HOST = process.env['FIREBASE_STORAGE_EMULATOR_HOST'] ?? '127.0.0.1:9199';
 
 export interface TestUser {
   readonly uid: string;
@@ -144,6 +146,7 @@ let store: Firestore | undefined;
 function testApp(): App {
   process.env['FIRESTORE_EMULATOR_HOST'] = FIRESTORE_HOST;
   process.env['FIREBASE_AUTH_EMULATOR_HOST'] = AUTH_HOST;
+  process.env['FIREBASE_STORAGE_EMULATOR_HOST'] = STORAGE_HOST;
   return (
     getApps().find((candidate) => candidate.name === 'tests') ??
     initializeApp({ projectId: PROJECT_ID }, 'tests')
@@ -164,6 +167,24 @@ export function adminAuth(): Auth {
   return getAuth(testApp());
 }
 
+/**
+ * The default bucket as the Functions see it in the emulator, for the tests
+ * that check what an erasure removed and what an export wrote (accounts
+ * ADR-0006). The Functions runtime in the emulator is given no bucket in its
+ * `FIREBASE_CONFIG`, so `shared/storage.ts` falls back to the project's real
+ * `<project>.firebasestorage.app`; the test process is told `appspot.com`,
+ * which is why the name is spelled out here rather than read from the
+ * environment. The Storage emulator serves any name.
+ */
+export function adminBucket(): Bucket {
+  return getStorage(testApp()).bucket(`${PROJECT_ID}.firebasestorage.app`);
+}
+
+/** Where an HTTP (not callable) Function is served in the emulator. */
+export function httpFunctionUrl(name: string): string {
+  return `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${REGION}/${name}`;
+}
+
 export async function clearFirestore(): Promise<void> {
   await fetch(
     `http://${FIRESTORE_HOST}/emulator/v1/projects/${PROJECT_ID}/databases/(default)/documents`,
@@ -178,3 +199,4 @@ export async function closeAdmin(): Promise<void> {
 }
 
 export type { Firestore };
+type Bucket = ReturnType<ReturnType<typeof getStorage>['bucket']>;

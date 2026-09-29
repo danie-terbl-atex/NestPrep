@@ -186,6 +186,15 @@ describe('every callable declares what it may cost', () => {
         'reconcileSubscriptions',
         'setChildProfile',
         'verifyPurchase',
+        // Account data (accounts ADR-0006): erasing an account moves every
+        // household it is in and deletes Auth users and Storage bytes; an
+        // export reads across all of it; the web request is rate-limited and
+        // written where no client can read — none of which a rule can do.
+        'deleteAccount',
+        'exportAccountData',
+        'previewAccountDeletion',
+        'requestAccountDeletion',
+        'sweepAccountExports',
       ].sort(),
     );
   });

@@ -5,11 +5,17 @@ import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
+import 'package:nestprep/features/accounts/model/legal_consent.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/session_gate_screen.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/accounts/ui/verify_email_screen.dart';
 import 'package:nestprep/features/household/ui/household_gate_screen.dart';
+import 'package:nestprep/features/legal/model/legal_versions.dart';
+import 'package:nestprep/features/legal/ui/about_screen.dart';
+import 'package:nestprep/features/legal/ui/consent_screen.dart';
+import 'package:nestprep/features/legal/ui/legal_document_screen.dart';
+import 'package:nestprep/features/legal/ui/licences_screen.dart';
 
 import '../support/fake_auth.dart';
 import '../support/household_fixtures.dart';
@@ -51,6 +57,7 @@ void main() {
   Future<void> signIn({
     List<String> households = const [],
     bool emailVerified = true,
+    LegalConsent? consent = FakeAccountRepository.currentConsent,
   }) async {
     auth.emit(
       AuthUser(
@@ -66,7 +73,9 @@ void main() {
         displayName: 'Sam Parent',
         householdIds: households,
         activeHouseholdId: households.isEmpty ? null : households.first,
+        legalConsent: consent,
       ),
+      consented: false,
     );
     await pumpEventQueue();
   }
@@ -169,5 +178,79 @@ void main() {
         reason: '${tab.name} is inside the household',
       );
     }
+  });
+
+  group('consent (accounts ADR-0005)', () {
+    const readable = [
+      AboutScreen.path,
+      LegalDocumentScreen.privacyPath,
+      LegalDocumentScreen.termsPath,
+      LicencesScreen.path,
+      '${LicencesScreen.path}/provider',
+    ];
+
+    test('never agreed: only the consent step and what it links to', () async {
+      await signIn(households: const [Fixtures.householdId], consent: null);
+      for (final location in [
+        somewhereInside,
+        HouseholdGateScreen.path,
+        SessionGateScreen.path,
+      ]) {
+        expect(
+          redirectForSession(session, location),
+          ConsentScreen.path,
+          reason: location,
+        );
+      }
+      expect(redirectForSession(session, ConsentScreen.path), isNull);
+      for (final location in readable) {
+        expect(redirectForSession(session, location), isNull, reason: location);
+      }
+    });
+
+    test('before the address or the household gate is even asked', () async {
+      await signIn(emailVerified: false, consent: null);
+      expect(
+        redirectForSession(session, VerifyEmailScreen.path),
+        ConsentScreen.path,
+      );
+    });
+
+    test('an older version is asked again', () async {
+      await signIn(
+        households: const [Fixtures.householdId],
+        consent: const LegalConsent(
+          termsVersion: LegalVersions.terms - 1,
+          privacyVersion: LegalVersions.privacy,
+        ),
+      );
+      expect(redirectForSession(session, somewhereInside), ConsentScreen.path);
+      expect(session.hasAcceptedEarlierLegal, isTrue);
+    });
+
+    test('the current version lets them through, and off the step', () async {
+      await signIn(households: const [Fixtures.householdId]);
+      expect(redirectForSession(session, somewhereInside), isNull);
+      expect(
+        redirectForSession(session, ConsentScreen.path),
+        HouseholdRoute.homeFor(Fixtures.householdId),
+      );
+    });
+
+    test('agreed with no household, the step hands over to the gate', () async {
+      await signIn();
+      expect(
+        redirectForSession(session, ConsentScreen.path),
+        HouseholdGateScreen.path,
+      );
+    });
+
+    test('signed out, the consent step is not a way in', () async {
+      await signOut();
+      expect(
+        redirectForSession(session, ConsentScreen.path),
+        SignInScreen.path,
+      );
+    });
   });
 }

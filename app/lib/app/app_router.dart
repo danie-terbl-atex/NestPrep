@@ -25,6 +25,7 @@ import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/legal/ui/consent_screen.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/location_reporter.dart';
 import '../features/live_location/state/live_location_controller.dart';
@@ -40,6 +41,7 @@ import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
+import 'account_routes.dart';
 import 'calendar_routes.dart';
 import 'chore_points_route.dart';
 import 'design_gallery_access.dart';
@@ -50,6 +52,7 @@ import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'kid_routes.dart';
+import 'legal_routes.dart';
 import 'lunch_routes.dart';
 import 'nanny_hub_routes.dart';
 import 'subscription_routes.dart';
@@ -95,6 +98,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
     ),
     // Kid sign-in: the kid's way in and the kid's home (accounts ADR-0003).
     ...kidRoutes(session),
+    // The account centre, download, delete and the legal pages (accounts
+    // ADR-0005, ADR-0006).
+    ...accountRoutes(),
     GoRoute(
       path: HouseholdGateScreen.path,
       builder: (context, state) => ChangeNotifierProvider(
@@ -267,6 +273,19 @@ String? redirectForSession(SessionController session, String location) {
   // A kid device has one screen (accounts ADR-0003).
   if (state.value is KidSignedIn) return redirectForKid(location);
 
+  // ---- account data (accounts ADR-0006) ----
+  // The account centre — download, delete, the legal pages — is open to any
+  // signed-in person whatever else is unfinished: no household, an address
+  // not confirmed, terms not yet agreed. Somebody who will not agree to new
+  // terms must still be able to delete their account.
+  if (isAccountLocation(location)) return null;
+
+  // ---- consent (accounts ADR-0005) ----
+  // Nothing else opens until this account has agreed to the terms and the
+  // privacy policy this build ships; the two documents, About and the
+  // licences stay readable meanwhile.
+  if (session.needsLegalConsent) return redirectForConsent(location);
+
   final householdId = session.activeHouseholdId;
 
   // An unproved address cannot create or join a household — the callables
@@ -290,6 +309,8 @@ String? redirectForSession(SessionController session, String location) {
     ForgotPasswordScreen.path,
     VerifyEmailScreen.path,
     HouseholdGateScreen.path,
+    // Agreed, so the consent step is behind them (accounts ADR-0005).
+    ConsentScreen.path,
   ];
   if (waitingRooms.contains(location)) {
     return HouseholdRoute.homeFor(householdId);

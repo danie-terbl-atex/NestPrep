@@ -17,6 +17,9 @@ export const KID_REFUSALS = {
   codeExpired: ['deadline-exceeded', 'That pairing code has expired.'],
   deviceNotFound: ['not-found', 'That device is no longer signed in.'],
   signInUnavailable: ['unavailable', 'Kid sign-in cannot mint a token right now.'],
+  // Too many redemptions from one address: the guard against guessing codes
+  // on the one callable anybody can reach (accounts ADR-0006).
+  tooManyAttempts: ['resource-exhausted', 'Too many codes tried. Wait and try again.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type KidRefusal = keyof typeof KID_REFUSALS;

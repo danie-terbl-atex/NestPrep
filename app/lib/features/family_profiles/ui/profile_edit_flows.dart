@@ -40,15 +40,37 @@ final class ProfileEditFlows {
   /// the server, and the answer to that is premium, not an apology: the
   /// paywall opens on it, and once premium is bought the child is marked
   /// after all (subscriptions ADR-0001).
+  ///
+  /// Marking somebody a child asks the parent's consent first, unless it is
+  /// on record already (accounts ADR-0005); a no leaves them as they were.
   Future<void> toggleChild(BuildContext context) async {
     final isChild = !entry.isChild;
-    await family.edit.setIsChild(_memberId, isChild: isChild);
+    final asksForConsent = isChild && !entry.member.hasGuardianConsent;
+    if (asksForConsent) {
+      final consented = await showNestConfirm(
+        context: context,
+        title: LegalCopy.guardianConsentTitle,
+        message: LegalCopy.guardianConsentLabel,
+        confirmLabel: LegalCopy.guardianConsentConfirm,
+        cancelLabel: LegalCopy.guardianConsentCancel,
+      );
+      if (consented != true) return;
+    }
+    await family.edit.setIsChild(
+      _memberId,
+      isChild: isChild,
+      withGuardianConsent: asksForConsent,
+    );
     final failure = family.actionFailure;
     if (failure is! PremiumRequiredFailure || !context.mounted) return;
     family.dismissActionFailure();
     final upgraded = await showPaywall(context, feature: failure.feature);
     if (!upgraded) return;
-    await family.edit.setIsChild(_memberId, isChild: isChild);
+    await family.edit.setIsChild(
+      _memberId,
+      isChild: isChild,
+      withGuardianConsent: asksForConsent,
+    );
   }
 
   Future<void> addAllergy(BuildContext context) => editAllergy(context, null);

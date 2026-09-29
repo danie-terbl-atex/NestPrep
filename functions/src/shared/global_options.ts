@@ -1,5 +1,6 @@
 import { setGlobalOptions } from 'firebase-functions/v2';
 
+import { APP_CHECK_ENFORCED } from './app_check';
 import { FUNCTIONS_REGION } from './region';
 
 /**
@@ -28,4 +29,7 @@ setGlobalOptions({
   maxInstances: 10,
   timeoutSeconds: 30,
   memory: '256MiB',
+  // Callables only, and off until the App Check metrics say it is safe — see
+  // `app_check.ts` for why and for how to flip it.
+  enforceAppCheck: APP_CHECK_ENFORCED,
 });

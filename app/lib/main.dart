@@ -3,6 +3,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'app/backend_target.dart';
 import 'app/firebase_bootstrap.dart';
+import 'app/font_licences.dart';
 import 'app/nestprep_app.dart';
 import 'features/observability/crash_reporting.dart';
 
@@ -11,6 +12,8 @@ Future<void> main() async {
   // The IANA database every household's timezone is resolved against
   // (foundation ADR-0007). Loaded once, before anything reads a date.
   tz_data.initializeTimeZones();
+  // The bundled fonts' own licences, beside the packages' (accounts ADR-0005).
+  registerFontLicences();
 
   final target = BackendTarget.fromEnvironment();
   final services = await bootstrapFirebase(target);

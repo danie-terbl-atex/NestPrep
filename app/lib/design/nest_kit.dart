@@ -10,6 +10,7 @@ export 'primitives/nest_bottom_bar.dart';
 export 'primitives/nest_brand_mark.dart';
 export 'primitives/nest_button.dart';
 export 'primitives/nest_card.dart';
+export 'primitives/nest_check_row.dart';
 export 'primitives/nest_chip.dart';
 export 'primitives/nest_confirm.dart';
 export 'primitives/nest_empty_view.dart';

@@ -1,6 +1,7 @@
 import { randomInt } from 'node:crypto';
 
 import type { MemberDocument, Role } from '../household/documents';
+import type { RateLimitRule } from '../shared/rate_limit';
 import type { KidPairingDocument } from './kid_documents';
 import type { KidRefusal } from './kid_errors';
 
@@ -14,6 +15,23 @@ export const KID_CODE_LENGTH = 6;
 
 /** Ten minutes: long enough to find the tablet, short enough to be no use later. */
 export const KID_CODE_LIFETIME_MS = 10 * 60 * 1000;
+
+/**
+ * Twenty redemptions in ten minutes from one address, and a thousand an hour
+ * from everywhere: far past a family pairing its tablets, far short of
+ * guessing a six-character code (accounts ADR-0006). The address is spoofable,
+ * which is why the second limit exists.
+ */
+export const KID_REDEEM_PER_ADDRESS: RateLimitRule = {
+  name: 'redeemKidPairing:address',
+  limit: 20,
+  windowSeconds: 10 * 60,
+};
+export const KID_REDEEM_OVERALL: RateLimitRule = {
+  name: 'redeemKidPairing:all',
+  limit: 1000,
+  windowSeconds: 60 * 60,
+};
 
 /** A lost tablet, a phone, a school laptop, and room to spare. */
 export const KID_DEVICE_LIMIT = 5;

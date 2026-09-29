@@ -33,5 +33,11 @@ export const setChildProfileInput = z.object({
   householdId: id,
   memberId: id,
   isChild: z.boolean(),
+  // A parent's consent, given as they marked the child, against the privacy
+  // policy's version (accounts ADR-0005). Who gave it is the caller.
+  guardianConsent: z
+    .object({ version: z.number().int().min(1).max(1000) })
+    .strict()
+    .optional(),
 });
 export type SetChildProfileInput = z.infer<typeof setChildProfileInput>;

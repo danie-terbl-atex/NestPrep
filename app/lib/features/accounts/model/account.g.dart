@@ -20,6 +20,9 @@ _Account _$AccountFromJson(Map<String, dynamic> json) => _Account(
   lastSignedInAt: const ServerTimestampConverter().fromJson(
     json['lastSignedInAt'],
   ),
+  legalConsent: json['legalConsent'] == null
+      ? null
+      : LegalConsent.fromJson(json['legalConsent'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{

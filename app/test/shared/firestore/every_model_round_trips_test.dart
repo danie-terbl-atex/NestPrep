@@ -35,8 +35,8 @@ void main() {
     // four (home-care ADR-0001); lunch box added four (lunch-box ADR-0001);
     // subscriptions added one (subscriptions ADR-0001); lunch box's V2 tools
     // added five, and the grocery line the pantry writes (lunch-box ADR-0006
-    // to ADR-0008).
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 52);
+    // to ADR-0008); consent added one (accounts ADR-0005).
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 53);
   });
 
   for (final fixture in fixtures) {

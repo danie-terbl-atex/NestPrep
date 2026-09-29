@@ -5,6 +5,7 @@ import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
 import '../model/access_grant.dart';
 import '../model/birthday.dart';
+import '../model/guardian_consent.dart';
 import '../model/household.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
@@ -77,6 +78,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   }) async {
     final members = _members(householdId);
     final document = members.doc();
@@ -89,6 +91,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
           roleName: role.name,
           birthday: birthday,
           access: access,
+          guardianConsent: guardianConsent,
         ),
       ),
     );
@@ -104,6 +107,7 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
     required MemberRole role,
     Birthday? birthday,
     AccessGrant? access,
+    GuardianConsent? guardianConsent,
   }) => _guarded(
     // Hand-built because an update names the fields it moves, so the birthday
     // goes in as the string it is stored as — Firestore never calls `toJson`
@@ -117,6 +121,8 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
       'role': role.name,
       'birthday': birthday?.iso,
       'access': ?access?.toJson(),
+      // Only when it is being given: the rules refuse removing one.
+      'guardianConsent': ?guardianConsent?.toJson(),
     }),
   );
 

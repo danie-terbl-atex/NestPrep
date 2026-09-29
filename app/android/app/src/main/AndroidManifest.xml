@@ -15,7 +15,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
 
     <application
-        android:label="nestprep"
+        android:label="NestPrep"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

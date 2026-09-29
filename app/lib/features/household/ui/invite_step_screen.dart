@@ -120,7 +120,11 @@ class InviteStepScreen extends StatelessWidget {
       suggestedRole: suggested,
     );
     if (draft == null) return;
-    await controller.invite(displayName: draft.displayName, role: draft.role);
+    await controller.invite(
+      displayName: draft.displayName,
+      role: draft.role,
+      guardianConsent: draft.guardianConsent,
+    );
   }
 
   /// Done and skip are the same act: the step is closed, and the household

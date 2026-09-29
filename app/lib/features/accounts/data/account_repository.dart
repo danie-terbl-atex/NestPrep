@@ -18,4 +18,14 @@ abstract interface class AccountRepository {
     required String uid,
     required String householdId,
   });
+
+  /// Records that this person agreed to these versions of the terms and the
+  /// privacy policy, stamped with the server's time (accounts ADR-0005). The
+  /// rules refuse any other shape, and a version lower than one already
+  /// agreed.
+  Future<void> acceptLegal({
+    required String uid,
+    required int termsVersion,
+    required int privacyVersion,
+  });
 }

@@ -111,6 +111,9 @@ abstract final class KidCopy {
     KidSignInProblem.deviceNotFound => 'That device is already signed out.',
     KidSignInProblem.signInUnavailable =>
       'Kid sign-in is not working right now. A grown-up can try again later.',
+    KidSignInProblem.tooManyAttempts =>
+      'That was a lot of tries. Wait ten minutes, then ask your grown-up for '
+          'a new code.',
     KidSignInProblem.deviceDisconnected =>
       'A grown-up has signed this device out. Ask them for a new code.',
   };

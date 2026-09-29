@@ -64,4 +64,23 @@ final class FirestoreAccountRepository implements AccountRepository {
       throw failureFromFirebase(error);
     }
   }
+
+  @override
+  Future<void> acceptLegal({
+    required String uid,
+    required int termsVersion,
+    required int privacyVersion,
+  }) async {
+    try {
+      await _accounts.doc(uid).update({
+        'legalConsent': {
+          'termsVersion': termsVersion,
+          'privacyVersion': privacyVersion,
+          'acceptedAt': FieldValue.serverTimestamp(),
+        },
+      });
+    } on FirebaseException catch (error) {
+      throw failureFromFirebase(error);
+    }
+  }
 }

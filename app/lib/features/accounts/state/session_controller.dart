@@ -85,6 +85,23 @@ final class SessionController extends ChangeNotifier {
     _ => true,
   };
 
+  /// Whether this account has still to agree to the documents this build
+  /// ships — never agreed, or agreed to an older version (accounts ADR-0005).
+  /// The router holds a person on the consent step until it is false.
+  bool get needsLegalConsent => switch (_session) {
+    AsyncData(value: final SignedIn signedIn) =>
+      !signedIn.account.hasAcceptedCurrentLegal,
+    _ => false,
+  };
+
+  /// Whether the consent being asked for replaces an earlier one, so the
+  /// step says what changed rather than introducing itself.
+  bool get hasAcceptedEarlierLegal => switch (_session) {
+    AsyncData(value: final SignedIn signedIn) =>
+      signedIn.account.hasAcceptedEarlierLegal,
+    _ => false,
+  };
+
   /// The address a credential is waiting to be linked onto, so the sign-in
   /// screen can say whose account it is about to join up.
   String? get pendingLinkEmail => _auth.pendingLinkEmail;

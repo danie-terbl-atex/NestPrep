@@ -195,6 +195,7 @@ class HouseholdBody extends StatelessWidget {
       color: result.color,
       role: result.role,
       birthday: result.birthday,
+      guardianConsent: result.guardianConsent,
     );
   }
 

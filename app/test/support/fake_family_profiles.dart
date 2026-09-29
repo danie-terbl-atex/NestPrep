@@ -94,7 +94,12 @@ final class FakeFamilyProfileRepository
     required String householdId,
     required String memberId,
     required bool isChild,
-  }) => _record('setIsChild', {'memberId': memberId, 'isChild': isChild});
+    int? guardianConsentVersion,
+  }) => _record('setIsChild', {
+    'memberId': memberId,
+    'isChild': isChild,
+    'guardianConsentVersion': ?guardianConsentVersion,
+  });
 
   @override
   Future<void> saveFood({
