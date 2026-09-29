@@ -13,7 +13,7 @@ import {
 } from '../../src/household/schemas';
 import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
-import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
+import { endNannyShiftInput, setCarerShiftOnlyInput } from '../../src/nanny_hub/schemas';
 import {
   createDocumentShareInput,
   revokeDocumentShareInput,
@@ -232,6 +232,11 @@ const validBodies = {
       clothes: null,
       note: null,
     },
+  },
+  // Nanny hub V2: marking a carer shift-only (nanny-hub ADR-0006).
+  setCarerShiftOnly: {
+    schema: setCarerShiftOnlyInput,
+    body: { householdId: 'h1', memberId: 'm-nomsa', shiftOnly: true },
   },
 } as const;
 

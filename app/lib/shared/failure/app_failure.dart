@@ -476,6 +476,17 @@ enum NannyHubProblem {
 
   /// Nothing on the phone would place the call.
   cannotCall,
+
+  /// Only a carer can be kept to their booked shifts (nanny-hub ADR-0006).
+  notACarer,
+
+  /// The phone would not keep the hub's photos for offline — out of space,
+  /// or its own folder refused (nanny-hub ADR-0007).
+  cannotSaveOffline,
+
+  /// A house code is only shown while a shift the viewer is booked on is
+  /// open (nanny-hub ADR-0006).
+  codesClosed,
 }
 
 final class NannyHubFailure extends AppFailure {

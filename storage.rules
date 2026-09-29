@@ -103,6 +103,47 @@ service firebase.storage {
       ];
     }
 
+    // ==== rules/storage/shared/shift_window.rules ====
+    // ---- shift-only carers (nanny-hub ADR-0006) ----
+    //
+    // The Storage half of `rules/firestore/shared/shift_window.rules`. A carer a
+    // parent marked shift-only sees the household only from 15 minutes before a
+    // shift booked for them to 15 minutes after it ends — in Firestore through
+    // `memberLevelIn`, here through `isOnShiftIfShiftOnly` beside each path's
+    // area check. A token cannot know the time, so this reads Firestore live:
+    // the household document says who is shift-only (only Functions write it),
+    // and the carer's pass carries the booked times, which the Firestore rules
+    // checked against the booking when the pass was written. Family is never
+    // narrowed and costs no read; anybody else costs one read (the household),
+    // and a shift-only carer two.
+    //
+    // A read that fails — too many cross-service reads on a path that already
+    // reads Firestore — refuses, which is the safe side for somebody off shift.
+
+    function isShiftWindowPassOpen(householdId, memberId) {
+      let pass = firestore.get(/databases/(default)/documents/households/$(householdId)/nannyShiftPasses/$(memberId));
+      return pass != null
+        && request.time >= pass.data.startsAt - duration.value(15, 'm')
+        && request.time <= pass.data.endsAt + duration.value(15, 'm');
+    }
+
+    // A household document it cannot find marks nobody shift-only: the token
+    // already said this caller is in the household.
+    function isShiftOnlyOffShift(householdId) {
+      let household = firestore.get(/databases/(default)/documents/households/$(householdId));
+      let memberId = household == null
+        ? ''
+        : household.data.get('profiles', {}).get(request.auth.uid, '');
+      return memberId != ''
+        && household.data.get('shiftOnly', {}).get(memberId, false) == true
+        && !isShiftWindowPassOpen(householdId, memberId);
+    }
+
+    // What every non-family branch of a household path adds.
+    function isOnShiftIfShiftOnly(householdId) {
+      return isFamily(householdId) || !isShiftOnlyOffShift(householdId);
+    }
+
     // ==== rules/storage/paths/document_vaults.rules ====
     // ---- personal vaults (documents ADR-0002, ADR-0003) ----
     //
@@ -167,11 +208,16 @@ service firebase.storage {
     // the same string: an orphan on either side is findable by listing the
     // other, which is what makes a half-finished upload or delete recoverable
     // rather than an invisible bill (BE-07).
+    //
+    // A shift-only carer (nanny-hub ADR-0006) reads, lists and adds nothing here
+    // off shift, as in Firestore (`shared/shift_window.rules`) — without it a
+    // token's `documents` grant would list every file at any hour.
     match /households/{householdId}/documents/{documentId} {
-      allow read: if canView(householdId, 'documents');
+      allow read: if canView(householdId, 'documents') && isOnShiftIfShiftOnly(householdId);
 
       allow create: if resource == null
         && canEdit(householdId, 'documents')
+        && isOnShiftIfShiftOnly(householdId)
         && isSmallEnough()
         && isAKeptType()
         && isStampedWithTheCaller();
@@ -183,6 +229,7 @@ service firebase.storage {
 
       allow delete: if isAdmin(householdId)
         || (canEdit(householdId, 'documents')
+              && isOnShiftIfShiftOnly(householdId)
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 
@@ -195,7 +242,8 @@ service firebase.storage {
     // jobs whose helper is my profile", which only the job document knows,
     // and a grant a parent narrows is refused on the next request. At most
     // two Firestore documents are read per request — the household and the
-    // job.
+    // job — and a third, the pass, only for a carer marked shift-only, who is
+    // refused off shift (nanny-hub ADR-0006, `shared/shift_window.rules`).
     match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
       function homeCareHousehold() {
         return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
@@ -230,6 +278,7 @@ service firebase.storage {
       }
 
       allow read: if request.auth != null
+        && isOnShiftIfShiftOnly(householdId)
         && (homeCareLevel() in ['view', 'edit']
               || (homeCareLevel() == 'own' && isTheJobsHelper()));
 
@@ -237,6 +286,7 @@ service firebase.storage {
       // after the bytes are there.
       allow create: if request.auth != null
         && resource == null
+        && isOnShiftIfShiftOnly(householdId)
         && isAJobPhoto()
         && ((photoId == 'before' && homeCareLevel() == 'edit')
               || (photoId.matches('after-[0-9]+')
@@ -246,7 +296,9 @@ service firebase.storage {
 
       allow update: if false;
 
-      allow delete: if request.auth != null && homeCareLevel() == 'edit';
+      allow delete: if request.auth != null
+        && homeCareLevel() == 'edit'
+        && isOnShiftIfShiftOnly(householdId);
     }
 
     // ==== rules/storage/paths/nanny_hub.rules ====
@@ -258,11 +310,15 @@ service firebase.storage {
     // is small on purpose: a photo past it was not made by the app. Whoever
     // may read the hub sees them; whoever may write it adds them; a photo is
     // removed by whoever added it, or by family.
+    //
+    // A carer a parent marked shift-only (nanny-hub ADR-0006) is refused outside
+    // their booked window (`shared/shift_window.rules`).
     match /households/{householdId}/nannyHub/{photoId} {
-      allow read: if canView(householdId, 'nannyHub');
+      allow read: if canView(householdId, 'nannyHub') && isOnShiftIfShiftOnly(householdId);
 
       allow create: if resource == null
         && canEdit(householdId, 'nannyHub')
+        && isOnShiftIfShiftOnly(householdId)
         && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
         // 2 MiB, written as bytes — the number `nanny_contract_test.dart` reads.
         && request.resource.size <= 2097152
@@ -273,6 +329,7 @@ service firebase.storage {
 
       allow delete: if isFamily(householdId)
         || (canEdit(householdId, 'nannyHub')
+              && isOnShiftIfShiftOnly(householdId)
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 

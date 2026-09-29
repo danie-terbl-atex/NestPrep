@@ -6,7 +6,8 @@
 // jobs whose helper is my profile", which only the job document knows,
 // and a grant a parent narrows is refused on the next request. At most
 // two Firestore documents are read per request — the household and the
-// job.
+// job — and a third, the pass, only for a carer marked shift-only, who is
+// refused off shift (nanny-hub ADR-0006, `shared/shift_window.rules`).
 match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
   function homeCareHousehold() {
     return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
@@ -41,6 +42,7 @@ match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
   }
 
   allow read: if request.auth != null
+    && isOnShiftIfShiftOnly(householdId)
     && (homeCareLevel() in ['view', 'edit']
           || (homeCareLevel() == 'own' && isTheJobsHelper()));
 
@@ -48,6 +50,7 @@ match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
   // after the bytes are there.
   allow create: if request.auth != null
     && resource == null
+    && isOnShiftIfShiftOnly(householdId)
     && isAJobPhoto()
     && ((photoId == 'before' && homeCareLevel() == 'edit')
           || (photoId.matches('after-[0-9]+')
@@ -57,5 +60,7 @@ match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
 
   allow update: if false;
 
-  allow delete: if request.auth != null && homeCareLevel() == 'edit';
+  allow delete: if request.auth != null
+    && homeCareLevel() == 'edit'
+    && isOnShiftIfShiftOnly(householdId);
 }

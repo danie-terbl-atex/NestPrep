@@ -4,8 +4,12 @@ import 'package:provider/provider.dart';
 
 import '../../../app/nanny_hub_route.dart';
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../../shared/time/household_clock.dart';
+import '../data/photo_picker.dart';
 import '../model/handover_entry.dart';
 import '../model/handover_kind.dart';
 import '../model/nanny_hub_view.dart';
@@ -13,11 +17,14 @@ import '../model/photo_change.dart';
 import '../model/shift.dart';
 import '../model/shift_log.dart';
 import '../state/nanny_hub_controller.dart';
+import '../state/photo_feed_controller.dart';
 import '../state/shift_controller.dart';
 import 'end_shift_sheet.dart';
 import 'handover_timeline.dart';
 import 'log_entry_sheet.dart';
+import 'photo_update_sheet.dart';
 import 'quick_log_grid.dart';
+import 'send_photo_card.dart';
 import 'shift_checklist_panel.dart';
 import 'shift_header.dart';
 
@@ -71,6 +78,24 @@ class ShiftBody extends StatelessWidget {
     }
   }
 
+  /// A photo for the parents, straight from the camera or the library: picked,
+  /// captioned, sent (nanny-hub ADR-0004).
+  Future<void> _sendPhoto(
+    BuildContext context,
+    PhotoFeedController feed,
+    PhotoSource source,
+  ) async {
+    final photo = await hub.pickPhoto(source);
+    if (photo == null || !context.mounted) return;
+    final choice = await showPhotoUpdateSheet(
+      context: context,
+      photo: photo,
+      children: [for (final child in view.children) child.member],
+    );
+    if (choice == null) return;
+    await feed.send(photo, caption: choice.caption, childIds: choice.childIds);
+  }
+
   Future<void> _end(BuildContext context, Shift current) async {
     final note = await showEndShiftSheet(context: context);
     if (note == null) return;
@@ -87,6 +112,12 @@ class ShiftBody extends StatelessWidget {
     final access = hub.access;
     final isOpen = current.isOpen;
     final canLog = isOpen && access.canEdit;
+    final feed = context.watch<PhotoFeedController>();
+    final sendsPhotos =
+        canLog &&
+        context.watch<FeatureFlagsController>().isOn(
+          FeatureFlag.nannyPhotoUpdates,
+        );
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -126,6 +157,22 @@ class ShiftBody extends StatelessWidget {
           QuickLogGrid(
             isBusy: shift.isSaving,
             onLog: (kind) => _log(context, kind),
+          ),
+          const SizedBox(height: NestSpace.xl),
+        ],
+        // After the log, which comes first in shift mode (nanny-hub ADR-0002):
+        // a photo for the parents (ADR-0004).
+        if (sendsPhotos) ...[
+          SendPhotoCard(
+            sentCount: switch (feed.feed) {
+              AsyncData(:final value) => value.updates.length,
+              _ => 0,
+            },
+            isSending: feed.isSending,
+            onPick: (source) => _sendPhoto(context, feed, source),
+            onOpenFeed: () => context.push(
+              NannyHubRoute.photosPathFor(hub.householdId, current.id),
+            ),
           ),
           const SizedBox(height: NestSpace.xl),
         ],

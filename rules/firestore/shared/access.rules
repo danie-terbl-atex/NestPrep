@@ -25,12 +25,15 @@ function isFamily(householdId) {
     && householdData(householdId).members[uid()] in ['admin', 'parent', 'member'];
 }
 
+// A shift-only carer outside their booked window holds nothing anywhere
+// (nanny-hub ADR-0006, `shift_window.rules`).
 function memberLevelIn(householdId, area) {
   let household = householdData(householdId);
   let grant = household.get('access', {}).get(uid(), null);
-  return grant != null
+  let level = grant != null
     ? grant.get(area, 'none')
     : (household.members[uid()] == 'helper' ? 'edit' : 'none');
+  return level != 'none' && isShiftOnlyOffShift(householdId, household) ? 'none' : level;
 }
 
 function kidDeviceLevelIn(householdId, area) {

@@ -24,7 +24,24 @@ enum FeatureFlag {
 
   /// A child in two homes: shared schedules and handovers (household
   /// ADR-0004).
-  coParenting('coParenting');
+  coParenting('coParenting'),
+
+  // ---- nanny hub V2 (nanny-hub ADR-0004 to ADR-0007) ----
+
+  /// A carer's photos to the parents during a shift (nanny-hub ADR-0004).
+  nannyPhotoUpdates('nannyPhotoUpdates'),
+
+  /// Who may collect each child, and the school run (nanny-hub ADR-0005).
+  nannyPickups('nannyPickups'),
+
+  /// Booked shifts, shift-only carers and the house codes (nanny-hub
+  /// ADR-0006). The rules enforce a shift-only carer's window whatever this
+  /// says; the switch only hides the screens that set one up.
+  nannyShiftOnly('nannyShiftOnly'),
+
+  /// The emergency sheet and child cards saved for no signal (nanny-hub
+  /// ADR-0007).
+  nannyOffline('nannyOffline');
 
   const FeatureFlag(this.field);
 

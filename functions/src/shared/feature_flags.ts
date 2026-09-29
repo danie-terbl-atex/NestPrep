@@ -22,6 +22,11 @@ export const FEATURE_FLAGS = [
   'mentalLoadView',
   // ---- two homes (household ADR-0004) ----
   'coParenting',
+  // ---- nanny hub V2 (nanny-hub ADR-0004 to ADR-0007) ----
+  'nannyPhotoUpdates',
+  'nannyPickups',
+  'nannyShiftOnly',
+  'nannyOffline',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

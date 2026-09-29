@@ -33,8 +33,13 @@ export 'lunch_copy.dart';
 
 // calendar V2: the mental-load view (calendar ADR-0006).
 export 'mental_load_copy.dart';
-// nanny hub: its words live in their own files, reached through this one.
+// nanny hub: its words live in their own files, reached through this one —
+// V2 (nanny-hub ADR-0004 to ADR-0007) one file per capability.
+export 'nanny_booking_copy.dart';
 export 'nanny_copy.dart';
+export 'nanny_offline_copy.dart';
+export 'nanny_photo_copy.dart';
+export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';

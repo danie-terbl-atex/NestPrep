@@ -18,6 +18,13 @@ export const NANNY_REFUSALS = {
   shiftAlreadyEnded: ['failed-precondition', 'That shift has already ended.'],
   // A carer ends their own shift; family ends anybody's.
   notYourShift: ['permission-denied', 'That shift is somebody else’s.'],
+  // Marking a carer shift-only (nanny-hub ADR-0006). The first two keep the
+  // household feature's names, which the client already has words for.
+  notAnAdmin: ['permission-denied', 'Only an admin can change what somebody may see.'],
+  memberNotFound: ['not-found', 'That person is not in this household.'],
+  // Only a carer is ever shift-only: family sees everything, and a helper or
+  // kid is not somebody a parent books by the shift.
+  notACarer: ['failed-precondition', 'Only a carer can be limited to their booked shifts.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type NannyRefusal = keyof typeof NANNY_REFUSALS;

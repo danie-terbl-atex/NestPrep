@@ -47,7 +47,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are fifty-five of them, so a new one cannot slip past these checks', () => {
+  it('there are fifty-six of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -64,9 +64,10 @@ describe('every function — callable, trigger or schedule', () => {
     // function a shared link opens and the trigger that ends a shift's links
     // (documents ADR-0006). Snap a school letter: readSchoolLetter, the first
     // AI call (calendar ADR-0005). Co-parenting: eight callables that write
-    // both homes' copies of a link at once (household ADR-0004). A feature
-    // adds its count and its line.
-    expect(endpoints()).toHaveLength(55);
+    // both homes' copies of a link at once (household ADR-0004). Nanny hub
+    // V2: setCarerShiftOnly (nanny-hub ADR-0006). A feature adds its count
+    // and its line.
+    expect(endpoints()).toHaveLength(56);
   });
 
   it('runs in the one region, which is the database region', () => {

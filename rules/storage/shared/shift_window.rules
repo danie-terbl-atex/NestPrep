@@ -1,0 +1,39 @@
+// ---- shift-only carers (nanny-hub ADR-0006) ----
+//
+// The Storage half of `rules/firestore/shared/shift_window.rules`. A carer a
+// parent marked shift-only sees the household only from 15 minutes before a
+// shift booked for them to 15 minutes after it ends — in Firestore through
+// `memberLevelIn`, here through `isOnShiftIfShiftOnly` beside each path's
+// area check. A token cannot know the time, so this reads Firestore live:
+// the household document says who is shift-only (only Functions write it),
+// and the carer's pass carries the booked times, which the Firestore rules
+// checked against the booking when the pass was written. Family is never
+// narrowed and costs no read; anybody else costs one read (the household),
+// and a shift-only carer two.
+//
+// A read that fails — too many cross-service reads on a path that already
+// reads Firestore — refuses, which is the safe side for somebody off shift.
+
+function isShiftWindowPassOpen(householdId, memberId) {
+  let pass = firestore.get(/databases/(default)/documents/households/$(householdId)/nannyShiftPasses/$(memberId));
+  return pass != null
+    && request.time >= pass.data.startsAt - duration.value(15, 'm')
+    && request.time <= pass.data.endsAt + duration.value(15, 'm');
+}
+
+// A household document it cannot find marks nobody shift-only: the token
+// already said this caller is in the household.
+function isShiftOnlyOffShift(householdId) {
+  let household = firestore.get(/databases/(default)/documents/households/$(householdId));
+  let memberId = household == null
+    ? ''
+    : household.data.get('profiles', {}).get(request.auth.uid, '');
+  return memberId != ''
+    && household.data.get('shiftOnly', {}).get(memberId, false) == true
+    && !isShiftWindowPassOpen(householdId, memberId);
+}
+
+// What every non-family branch of a household path adds.
+function isOnShiftIfShiftOnly(householdId) {
+  return isFamily(householdId) || !isShiftOnlyOffShift(householdId);
+}

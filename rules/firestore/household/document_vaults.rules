@@ -43,8 +43,11 @@ match /vaults/{ownerMemberId} {
     return isFamily(householdId) || isVaultOwner();
   }
 
+  // A carer marked shift-only reads a vault shared with them only on shift
+  // (nanny-hub ADR-0006).
   function isGrantedVault() {
     return isMember(householdId)
+      && !isShiftOnlyOffShiftNow(householdId)
       && exists(/databases/$(database)/documents/households/$(householdId)/vaults/$(ownerMemberId)/grants/$(uid()));
   }
 

@@ -42,6 +42,15 @@ class HouseholdView {
               .length ==
           1;
 
+  /// Whether the viewer sees this household only during a shift a parent
+  /// booked for them (nanny-hub ADR-0006). Family never is.
+  bool get viewerIsShiftOnly {
+    final memberId = viewerMember?.id;
+    return memberId != null &&
+        !permissions.isFamily &&
+        household.isShiftOnly(memberId);
+  }
+
   Member? memberById(String memberId) =>
       members.where((member) => member.id == memberId).firstOrNull;
 

@@ -7,6 +7,7 @@ import '../model/nanny_limits.dart';
 import '../model/photo_change.dart';
 import '../model/shift_moment.dart';
 import 'photo_library.dart';
+import 'photo_write.dart';
 
 /// Every change a parent — or a carer whose hub is `edit` — makes to what the
 /// hub holds, each run through the controller's one action runner so a
@@ -194,27 +195,9 @@ final class HubEdits {
         ),
       );
 
-  /// Stores a picked photo first and writes the record pointing at it; an old
-  /// photo the record no longer points at is discarded after. A record write
-  /// that fails after its photo was stored takes that photo back out.
   Future<void> _withPhoto(
     PhotoChange change, {
     required String? current,
     required Future<void> Function(String? photoId) write,
-  }) async {
-    final photoId = switch (change) {
-      PhotoKept() => current,
-      PhotoRemoved() => null,
-      PhotoPicked(:final bytes) => await _photos.store(bytes),
-    };
-    try {
-      await write(photoId);
-    } on Object {
-      if (change is PhotoPicked && photoId != null) {
-        await _photos.discard(photoId);
-      }
-      rethrow;
-    }
-    if (current != null && current != photoId) await _photos.discard(current);
-  }
+  }) => writeWithPhoto(_photos, change, current: current, write: write);
 }

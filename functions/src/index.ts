@@ -78,3 +78,5 @@ export { endCoParentLink } from './coparent/end_coparent_link';
 export { proposeCoParentChange } from './coparent/propose_coparent_change';
 export { answerCoParentChange } from './coparent/answer_coparent_change';
 export { saveCoParentHandover } from './coparent/save_coparent_handover';
+// nanny hub V2: a carer who sees the household only on a booked shift (nanny-hub ADR-0006)
+export { setCarerShiftOnly } from './nanny_hub/set_carer_shift_only';

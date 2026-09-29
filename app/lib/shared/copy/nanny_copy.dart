@@ -227,5 +227,12 @@ abstract final class NannyCopy {
           'in your phone settings.',
     NannyHubProblem.cannotCall =>
       'This phone would not place the call. Dial the number yourself.',
+    NannyHubProblem.notACarer =>
+      'Only a carer can be kept to their booked shifts.',
+    NannyHubProblem.cannotSaveOffline =>
+      'This phone would not keep a copy for offline. It may be short of '
+          'space.',
+    NannyHubProblem.codesClosed =>
+      'The house codes open 15 minutes before your booked shift.',
   };
 }

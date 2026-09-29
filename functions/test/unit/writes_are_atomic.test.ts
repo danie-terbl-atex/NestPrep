@@ -208,6 +208,9 @@ describe('every callable declares what it may cost', () => {
         'previewCoParentInvite',
         'proposeCoParentChange',
         'saveCoParentHandover',
+        // Nanny hub V2: the shift-only mark lives in the household document,
+        // which only Functions write (nanny-hub ADR-0006).
+        'setCarerShiftOnly',
       ].sort(),
     );
   });

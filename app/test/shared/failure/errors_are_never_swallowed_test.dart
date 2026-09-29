@@ -250,6 +250,23 @@ void main() {
     '_listeners.moveWindow(from: _weekStart to: _weekEnd));',
     // Closing the week's reads in dispose: there is no screen left to tell.
     '_listeners.close());',
+    // ---- nanny hub V2 (nanny-hub ADR-0006, ADR-0007) ----
+    // The offline keeper's three moves each catch their own `AppFailure` and
+    // hold it as the keeper's status, which the "saved for offline" line
+    // shows with a way to try again.
+    'context.read<OfflineKeeper>().open())',
+    'keeper.open())',
+    'keeper.saveNow())',
+    'keeper.forget())',
+    // Naming the booked shift on the pass runs through `bestEffort`, which
+    // logs a failure and never throws; the pass is written again at the next
+    // edge of the window.
+    '_savePass(named))',
+    // Fetching the house codes catches its own `AppFailure` into the codes'
+    // state, which the screen renders with a retry.
+    '_fetch())',
+    // Closing a listener in dispose is allowed above (subscriptions): nobody
+    // is left to tell — here and in the V2 switches' controller.
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

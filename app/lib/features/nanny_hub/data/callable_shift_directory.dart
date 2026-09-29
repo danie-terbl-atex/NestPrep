@@ -24,4 +24,21 @@ final class CallableShiftDirectory implements ShiftDirectory {
       throw failureFromNannyCallable(error);
     }
   }
+
+  @override
+  Future<void> setCarerShiftOnly({
+    required String householdId,
+    required String memberId,
+    required bool isShiftOnly,
+  }) async {
+    try {
+      await _functions.httpsCallable('setCarerShiftOnly').call<Object?>({
+        'householdId': householdId,
+        'memberId': memberId,
+        'shiftOnly': isShiftOnly,
+      });
+    } on FirebaseFunctionsException catch (error) {
+      throw failureFromNannyCallable(error);
+    }
+  }
 }

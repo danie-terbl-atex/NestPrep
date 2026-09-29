@@ -12,6 +12,7 @@ import 'emergency_contact_row.dart';
 import 'home_details_card.dart';
 import 'home_details_sheet.dart';
 import 'nanny_hub_page.dart';
+import 'offline_badge.dart';
 
 /// The emergency sheet: the public numbers first and biggest — they work
 /// whether or not anybody filled anything in — then the address to give an
@@ -75,6 +76,10 @@ class _EmergencyBody extends StatelessWidget {
         Text(NannyCopy.emergencyIntro, style: nest.text.bodyStrong),
         const SizedBox(height: NestSpace.md),
         EmergencyCallButtons(onCall: controller.call),
+        const SizedBox(height: NestSpace.lg),
+        // After the public numbers, which never need a signal to be shown:
+        // whether the rest of the sheet is on this phone (nanny-hub ADR-0007).
+        const OfflineBadge(),
         const SizedBox(height: NestSpace.xl),
         HomeDetailsCard(
           sheet: view.hub.sheet,
