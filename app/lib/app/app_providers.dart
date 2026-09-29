@@ -58,9 +58,11 @@ import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'chore_points_providers.dart';
 import 'documents_providers.dart';
+import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
+import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
 import 'subscription_providers.dart';
 
@@ -76,6 +78,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<FirebaseAuth>.value(value: services.auth),
   Provider<FirebaseFunctions>.value(value: services.functions),
   Provider<FirebaseStorage>.value(value: services.storage),
+  // The V2 switches (foundation ADR-0014).
+  ...featureFlagProviders(),
   Provider<AuthGateway>(
     create: (context) => FirebaseAuthGateway(context.read<FirebaseAuth>()),
   ),
@@ -202,6 +206,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // subscriptions — the store, premium and the free tier's one child
   // (subscriptions ADR-0001)
   ...subscriptionProviders(),
+  // lunch-box V2 — pantry, budget, kid picks (lunch-box ADR-0005 to ADR-0007)
+  ...lunchPlanningProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

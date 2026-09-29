@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:nestprep/features/groceries/data/grocery_repository.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/groceries/model/grocery_source.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 /// Stands in for Firestore behind the controller, so a test drives the two live
@@ -17,6 +18,9 @@ final class FakeGroceryRepository implements GroceryRepository {
   final renamed = <({String itemId, String name, String? quantity})>[];
   final removed = <String>[];
 
+  /// Where each added line came from, in the order they were added.
+  final origins = <GrocerySource?>[];
+
   void emitItems(List<GroceryItem> items) => _items.add(items);
   void failItemsWith(Object error) => _items.addError(error);
 
@@ -31,9 +35,11 @@ final class FakeGroceryRepository implements GroceryRepository {
     required String name,
     String? quantity,
     required String addedBy,
+    GrocerySource? origin,
   }) async {
     _refuseIfAsked();
     added.add((name: name, quantity: quantity, addedBy: addedBy));
+    origins.add(origin);
   }
 
   @override

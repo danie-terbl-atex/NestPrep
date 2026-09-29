@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
+import 'grocery_source.dart';
 
 part 'grocery_item.freezed.dart';
 part 'grocery_item.g.dart';
@@ -27,6 +28,11 @@ abstract class GroceryItem with _$GroceryItem {
     @ServerTimestampConverter() DateTime? addedAt,
     @NullableTimestampConverter() DateTime? boughtAt,
     String? boughtBy,
+
+    /// Where it came from when nobody typed it — `GrocerySource`'s name, or
+    /// null for a line a person added (lunch-box ADR-0006). Read through
+    /// [origin].
+    @JsonKey(includeIfNull: false) String? source,
   }) = _GroceryItem;
 
   const GroceryItem._();
@@ -56,4 +62,6 @@ abstract class GroceryItem with _$GroceryItem {
   }
 
   static const visibleAfterBuying = Duration(hours: 24);
+
+  GrocerySource? get origin => GrocerySource.fromName(source);
 }

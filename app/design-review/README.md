@@ -61,6 +61,13 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `lunch-card-story-cream.png`, `lunch-card-story-forest.png`, `lunch-card-post-leaf.png`, `lunch-card-chat-straw.png` | **the exported images themselves**, 1080 wide, straight from the offscreen renderer: a story (9:16) in cream with an initial and in forest with no names, a square post in leaf with a first name, a WhatsApp card (4:5) in straw with the invite line off (`flutter test tool/lunch_card_design_review_test.dart --update-goldens`) |
 | `lunch-card-family-story-cream.png`, `lunch-card-family-post-forest.png` | every child on one card: two columns of boxes with each day's main named, and the square with what is in the boxes listed under the grid |
 | `lunch-planner-blank.pdf` / `.png`, `lunch-planner-filled.pdf` / `.png` | the printable A4 planner — blank, the free printable, and this week filled in — as the PDFs themselves and a picture of each (`sips -s format png <pdf> --out <png>`) |
+| `lunch-planning-board-light.png` | the lunch board with its V2 tools switched on (lunch-box ADR-0006 to ADR-0008): Pantry, Budget, Kid picks, and *Plan from what we have* on, with *Fill from the pantry* and what the week still needs |
+| `lunch-pantry-light.png` / `lunch-pantry-dark.png` | the pantry: what the week still needs with the one button to groceries, then what is in the house against the week, stepped by the box |
+| `lunch-budget-light.png` / `lunch-budget-dark.png` | budget mode for a premium household: the week against its budget, a meter never red, what has no price yet, each child's week by the day, and cheaper swaps |
+| `lunch-budget-locked-light.png` | budget mode for a free household: what it does, and the way to premium |
+| `lunch-prices-light.png` | every library item's price, unpriced first |
+| `lunch-kid-picks-light.png` / `lunch-kid-picks-dark.png` | a parent's kid picks: *Suggest options*, *Let Lwazi choose now*, and each day's compartments with their options and what the child chose |
+| `lunch-choose-light.png` / `lunch-choose-dark.png` / `lunch-choose-dark-200-percent-text.png` | the chooser a child sees, on their tablet or a parent's phone: big drawn cards, a tick and stars; at large text one card to a row |
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
@@ -108,6 +115,7 @@ numbers are.
 ```sh
 flutter test tool/ --update-goldens                           # every screen, lunch's included
 flutter test tool/lunch_design_review_test.dart --update-goldens   # the lunch screens alone
+flutter test tool/lunch_planning_design_review_test.dart --update-goldens   # lunch's V2 tools alone
 ```
 
 `tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.

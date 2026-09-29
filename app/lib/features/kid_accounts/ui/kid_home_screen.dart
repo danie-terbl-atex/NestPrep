@@ -16,6 +16,7 @@ import '../../chore_points/ui/kid_stars_section.dart';
 import '../model/kid_day.dart';
 import '../state/kid_home_controller.dart';
 import 'kid_day_view.dart';
+import 'kid_lunch_picks_card.dart';
 
 /// The only screen a kid device has (accounts ADR-0003). Loading, error and
 /// success come from the kit; the one failure that is not an error — a parent
@@ -100,6 +101,7 @@ class KidHomeScreen extends StatelessWidget {
                         isAsking: stars.isAsking,
                         onAsk: (reward) => _ask(context, stars, reward),
                       ),
+                lunchPicks: const KidLunchPicksCard(),
                 noteFor: (chore) =>
                     KidChoreNote.of(chore, loaded?.claimFor(chore.key)),
               ),

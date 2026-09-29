@@ -40,6 +40,7 @@ Future<LunchPickerChoice?> showLunchPickerSheet({
   required String childName,
   required RankedLunchItems ranked,
   required LunchPick? current,
+  List<String> Function(LunchItem item) notesFor = noLunchNotes,
 }) => showNestSheet<LunchPickerChoice>(
   context: context,
   title: LunchCopy.pickerTitle(slot, dayName),
@@ -48,8 +49,12 @@ Future<LunchPickerChoice?> showLunchPickerSheet({
     childName: childName,
     ranked: ranked,
     current: current,
+    notesFor: notesFor,
   ),
 );
+
+/// Nothing more to say about an item than its taste.
+List<String> noLunchNotes(LunchItem item) => const [];
 
 class _PickerBody extends StatelessWidget {
   const _PickerBody({
@@ -57,12 +62,16 @@ class _PickerBody extends StatelessWidget {
     required this.childName,
     required this.ranked,
     required this.current,
+    required this.notesFor,
   });
 
   final LunchSlot slot;
   final String childName;
   final RankedLunchItems ranked;
   final LunchPick? current;
+
+  /// What the pantry and budget mode add (lunch-box ADR-0006, ADR-0007).
+  final List<String> Function(LunchItem item) notesFor;
 
   @override
   Widget build(BuildContext context) {
@@ -101,18 +110,21 @@ class _PickerBody extends StatelessWidget {
           entries: ranked.suggested,
           current: current,
           canPick: true,
+          notesFor: notesFor,
         ),
         _PickerSection(
           title: LunchCopy.dislikedBy(childName),
           entries: ranked.disliked,
           current: current,
           canPick: true,
+          notesFor: notesFor,
         ),
         _PickerSection(
           title: LunchCopy.notSafeFor(childName),
           entries: ranked.unsafe,
           current: current,
           canPick: false,
+          notesFor: notesFor,
         ),
       ],
     );
@@ -138,12 +150,14 @@ class _PickerSection extends StatelessWidget {
     required this.entries,
     required this.current,
     required this.canPick,
+    required this.notesFor,
   });
 
   final String title;
   final List<LunchSuggestion> entries;
   final LunchPick? current;
   final bool canPick;
+  final List<String> Function(LunchItem item) notesFor;
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +172,7 @@ class _PickerSection extends StatelessWidget {
           LunchSuggestionRow(
             key: ValueKey(entry.item.id),
             suggestion: entry,
+            notes: notesFor(entry.item),
             isCurrent: entry.item.id == current?.itemId,
             onTap: canPick
                 ? () => Navigator.of(context).pop(LunchItemChosen(entry.item))

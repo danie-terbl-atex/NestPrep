@@ -234,6 +234,11 @@ void main() {
     'showPaywall(context',
     '_subscription.cancel())',
     '_subscription?.cancel())',
+    // lunch-box V2 (lunch-box ADR-0006 to ADR-0008): letting go of a week's
+    // packed-box listener, or the stream a kid device learns today from.
+    // Either one's failures went to its own onError already.
+    '_packedSubscription?.cancel())',
+    '_todaySubscription?.cancel())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

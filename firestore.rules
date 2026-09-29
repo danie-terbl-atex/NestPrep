@@ -269,6 +269,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ==== rules/firestore/root/app_config.rules ====
+    // ---- app config: the V2 switches (foundation ADR-0014) ----
+    // One document, `appConfig/flags`: a boolean per V2 capability. Anybody may
+    // read it — it is a list of switches, not anybody's data — and nobody writes
+    // it from a client; Daniel sets it in the console. Any other id here is
+    // closed, so the collection cannot quietly grow into a place for data.
+    match /appConfig/{configId} {
+      allow get: if configId == 'flags';
+      allow list: if false;
+      allow write: if false;
+    }
+
     // ==== rules/firestore/root/calendar_sync.rules ====
     // ---- calendar sync, the credentials (calendar ADR-0003) ----
     // A refresh token or a calendar link, a connection in flight, and a feed
@@ -901,8 +913,12 @@ service cloud.firestore {
 
         allow create: if canEdit(householdId, 'groceries')
           && request.resource.data.keys().hasOnly(
-               ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy'])
+               ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy', 'source'])
           && isNonEmptyString(request.resource.data.name)
+          // Where a line nobody typed came from (lunch-box ADR-0006); a typed one
+          // has none. `GrocerySource` in the app spells the same list.
+          && (!('source' in request.resource.data)
+                || request.resource.data.source in ['lunch', 'pantry'])
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('addedAt')
           && request.resource.data.boughtAt == null
@@ -1627,6 +1643,306 @@ service cloud.firestore {
               && feedback[day].get('items', {}).values().hasOnly(['ate', 'left'])
               && isOwnMember(householdId, feedback[day].by)
               && feedback[day].at == request.time);
+      }
+
+      // ==== rules/firestore/household/lunch_budget.rules ====
+      // ---- lunch-box V2: budget mode (lunch-box ADR-0007) ----
+      //
+      // Premium: every write needs `hasPremium` as well as `lunch` at edit, and a
+      // lapsed household keeps reading what it wrote (subscriptions ADR-0001).
+      // Money is whole cents in rand — never a float (ENG-20, BE-11).
+
+      // What the household pays for one library item: the document id is the
+      // item's. `cents` buys `portions` boxes' worth.
+      match /lunchPrices/{itemId} {
+        allow read: if canView(householdId, 'lunch');
+
+        allow create, update: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
+          && isLunchPrice(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt')
+          && exists(/databases/$(database)/documents/households/$(householdId)/lunchItems/$(itemId));
+
+        allow delete: if canEdit(householdId, 'lunch');
+      }
+
+      // The household's weekly lunch budget — one document, `weekly`.
+      match /lunchBudget/{budgetId} {
+        allow read: if canView(householdId, 'lunch');
+
+        allow create, update: if budgetId == 'weekly'
+          && canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
+          && isLunchBudget(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow delete: if canEdit(householdId, 'lunch');
+      }
+
+      // Up to R5 000 for something that does one to a hundred boxes.
+      function isLunchPrice(data) {
+        return data.keys().hasOnly(['cents', 'portions', 'currency', 'updatedBy', 'updatedAt'])
+          && data.cents is int && data.cents >= 0 && data.cents <= 500000
+          && data.portions is int && data.portions >= 1 && data.portions <= 100
+          && data.currency == 'ZAR'
+          && data.updatedBy is string;
+      }
+
+      // R1 to R100 000 a week.
+      function isLunchBudget(data) {
+        return data.keys().hasOnly(['cents', 'currency', 'updatedBy', 'updatedAt'])
+          && data.cents is int && data.cents >= 100 && data.cents <= 10000000
+          && data.currency == 'ZAR'
+          && data.updatedBy is string;
+      }
+
+      // ==== rules/firestore/household/lunch_kid_picks.rules ====
+      // ---- lunch-box V2: kid picks (lunch-box ADR-0008) ----
+      //
+      // A parent approves two or three options per compartment per day; the child
+      // chooses one, on their own device or a parent's phone. Options are refused
+      // here if they are not safe for the child, with the plan's own avoid set
+      // (`lunchAvoidFor`, lunch_box.rules). The child's choice is written into
+      // their plan: the second `match /lunchPlans` below lets a caller whose lunch
+      // grant is `own` change one slot of their own plan, only to one of that
+      // slot's approved options — and still only when it is safe for them. A write
+      // is allowed when any matching statement allows it, so lunch_box.rules is
+      // untouched and still governs everybody else.
+      //
+      // Every check here looks at one day, or one slot, never all twenty-five:
+      // the rules evaluate at most a thousand expressions a request, and a
+      // twenty-five-slot sweep of option lists costs more than that. So a parent's
+      // write says which day it changed (`editedDay`), and a child's choice says
+      // which slot (`chosenKey`), and the rules hold the write to exactly that.
+
+      // `{childId}_{YYYY-Www}` — the plan's own id.
+      match /lunchChoices/{choiceId} {
+        allow read: if canView(householdId, 'lunch')
+          || lunchKidOwnsWeek(householdId, choiceId);
+
+        allow create: if canEdit(householdId, 'lunch')
+          && isLunchChoices(choiceId, request.resource.data)
+          && request.resource.data.get('chosen', {}).size() == 0
+          && request.resource.data.get('options', {}).keys()
+               .hasOnly(lunchDayKeys(request.resource.data.editedDay))
+          && isLunchChild(householdId, request.resource.data.childId)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt')
+          && lunchOptionsAreSafe(householdId, request.resource.data.childId,
+               request.resource.data.get('options', {}),
+               request.resource.data.get('options', {}).keys(),
+               request.resource.data.editedDay);
+
+        allow update: if canEdit(householdId, 'lunch')
+          && onlyChanged(['options', 'chosen', 'editedDay', 'updatedBy', 'updatedAt'])
+          && isLunchChoices(choiceId, request.resource.data)
+          && request.resource.data.get('options', {})
+               .diff(resource.data.get('options', {})).affectedKeys()
+               .hasOnly(lunchDayKeys(request.resource.data.editedDay))
+          && request.resource.data.get('chosen', {})
+               .diff(resource.data.get('chosen', {})).affectedKeys()
+               .hasOnly(lunchDayKeys(request.resource.data.editedDay))
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt')
+          && lunchOptionsAreSafe(householdId, resource.data.childId,
+               request.resource.data.get('options', {}),
+               request.resource.data.get('options', {})
+                 .diff(resource.data.get('options', {})).affectedKeys(),
+               request.resource.data.editedDay);
+
+        // The child says which slot they chose, and what — nothing else.
+        allow update: if lunchKidOwnsWeek(householdId, choiceId)
+          && onlyChanged(['chosen', 'chosenKey'])
+          && isLunchSlotKey(request.resource.data.chosenKey)
+          && request.resource.data.get('chosen', {})
+               .diff(resource.data.get('chosen', {})).affectedKeys()
+               .hasOnly([request.resource.data.chosenKey]);
+
+        allow delete: if canEdit(householdId, 'lunch');
+      }
+
+      // The child's choice, into their own plan — in the same batch as the
+      // choices document naming the slot, which is read after the batch. A choice
+      // is a plan write, held to the free tier like a parent's (`lunchPlansFor`,
+      // lunch-box ADR-0009).
+      match /lunchPlans/{planId} {
+        allow create: if lunchKidOwnsWeek(householdId, planId)
+          && isLunchKidPlan(planId, request.resource.data)
+          && isLunchChild(householdId, request.resource.data.childId)
+          && lunchPlansFor(householdId, request.resource.data.childId)
+          && lunchKidChoiceIsApproved(householdId, planId, request.resource.data.childId,
+               request.resource.data.slots, request.resource.data.slots.keys());
+
+        allow update: if lunchKidOwnsWeek(householdId, planId)
+          && onlyChanged(['slots'])
+          && lunchPlansFor(householdId, resource.data.childId)
+          && lunchKidChoiceIsApproved(householdId, planId, resource.data.childId,
+               request.resource.data.get('slots', {}),
+               request.resource.data.get('slots', {})
+                 .diff(resource.data.get('slots', {})).affectedKeys());
+      }
+
+      // A kid device or member whose lunch grant is `own`, on their own week.
+      function lunchKidOwnsWeek(householdId, weekDocumentId) {
+        return hasOwnOnly(householdId, 'lunch')
+          && isLunchPlanOf(weekDocumentId, ownMemberId(householdId));
+      }
+
+      function isLunchSlotKey(key) {
+        return key is string && key.matches('^[1-5]_(main|fruit|veg|snack|treat)$');
+      }
+
+      // The five slot keys of one school day.
+      function lunchDayKeys(day) {
+        return [day + '_main', day + '_fruit', day + '_veg', day + '_snack', day + '_treat'];
+      }
+
+      function isLunchChoices(choiceId, data) {
+        return data.keys().hasOnly(
+               ['childId', 'week', 'options', 'chosen', 'editedDay', 'chosenKey', 'updatedBy', 'updatedAt'])
+          && data.childId is string
+          && data.week is string && data.week.matches('^[0-9]{4}-W[0-9]{2}$')
+          && choiceId == data.childId + '_' + data.week
+          && data.get('options', {}) is map
+          && data.get('chosen', {}) is map
+          && data.editedDay is string && data.editedDay.matches('^[1-5]$')
+          && data.updatedBy is string;
+      }
+
+      // A pick's shape and nothing the child must avoid. Lighter than the plan's
+      // `isLunchPick` on purpose — a day holds up to fifteen options — and safe
+      // to be: an option reaches a box only through a child's choice, and that
+      // write is checked with the plan's own `isLunchPick` and allergy rule.
+      function isLunchOptionSafe(option, avoid) {
+        return option is map
+          && option.keys().hasOnly(['itemId', 'name', 'allergens'])
+          && option.itemId is string
+          && option.name is string
+          && option.get('allergens', []) is list
+          && !option.get('allergens', []).hasAny(avoid);
+      }
+
+      function isLunchOptionList(options, avoid) {
+        return options is list
+          && options.size() >= 2 && options.size() <= 3
+          && isLunchOptionSafe(options[0], avoid)
+          && isLunchOptionSafe(options[1], avoid)
+          && (options.size() < 3 || isLunchOptionSafe(options[2], avoid));
+      }
+
+      function lunchOptionIsSafe(options, changed, avoid, key) {
+        return !(key in changed) || !(key in options) || isLunchOptionList(options[key], avoid);
+      }
+
+      // The one day this write changed, slot by slot. A slot whose options were
+      // taken away is fine.
+      function lunchOptionsAreSafe(householdId, childId, options, changed, day) {
+        return changed.size() == 0
+          || lunchOptionDayIsSafe(options, changed, lunchAvoidFor(householdId, childId), day);
+      }
+
+      function lunchOptionDayIsSafe(options, changed, avoid, day) {
+        return lunchOptionIsSafe(options, changed, avoid, day + '_main')
+          && lunchOptionIsSafe(options, changed, avoid, day + '_fruit')
+          && lunchOptionIsSafe(options, changed, avoid, day + '_veg')
+          && lunchOptionIsSafe(options, changed, avoid, day + '_snack')
+          && lunchOptionIsSafe(options, changed, avoid, day + '_treat');
+      }
+
+      // A new plan a child's first choice creates: the week it says, one slot.
+      function isLunchKidPlan(planId, data) {
+        return data.keys().hasOnly(['childId', 'week', 'weekStart', 'slots'])
+          && data.childId is string
+          && data.week is string && data.week.matches('^[0-9]{4}-W[0-9]{2}$')
+          && planId == data.childId + '_' + data.week
+          && data.weekStart is string && data.weekStart.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && data.slots is map;
+      }
+
+      // Exactly one slot changed — the one the choices document names after the
+      // batch — and it now holds one of that slot's approved options, which is
+      // safe for the child as their profile stands now.
+      function lunchKidChoiceIsApproved(householdId, planId, childId, slots, changed) {
+        let path = /databases/$(database)/documents/households/$(householdId)/lunchChoices/$(planId);
+        return existsAfter(path)
+          && lunchKidChoiceIsOneOf(getAfter(path).data, slots, changed)
+          && lunchKidPickIsSafe(slots[getAfter(path).data.chosenKey], lunchAvoidFor(householdId, childId));
+      }
+
+      // The chosen pick in full — the plan's own shape and vocabulary, since this
+      // is the one place an option lands in a box — with nothing the child must
+      // avoid.
+      function lunchKidPickIsSafe(pick, avoid) {
+        return isLunchPick(pick) && !pick.get('allergens', []).hasAny(avoid);
+      }
+
+      function lunchKidChoiceIsOneOf(choices, slots, changed) {
+        return isLunchSlotKey(choices.get('chosenKey', null))
+          && changed.size() == 1
+          && changed.hasOnly([choices.chosenKey])
+          && choices.chosenKey in slots
+          && slots[choices.chosenKey] in choices.get('options', {}).get(choices.chosenKey, []);
+      }
+
+      // ==== rules/firestore/household/lunch_pantry.rules ====
+      // ---- lunch-box V2: the pantry (lunch-box ADR-0006) ----
+      //
+      // What is in the house for lunches, in boxes' worth per library item, and a
+      // record of each box marked packed — which is what takes its portions out of
+      // the pantry, in the same batch, once. Everything is the `lunch` grant:
+      // `edit` stocks and packs, `view` reads, `own` and `none` see nothing.
+
+      // One entry per library item: the document id is the item's.
+      match /lunchPantry/{itemId} {
+        allow read: if canView(householdId, 'lunch');
+
+        allow create, update: if canEdit(householdId, 'lunch')
+          && isLunchPantryEntry(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt')
+          && exists(/databases/$(database)/documents/households/$(householdId)/lunchItems/$(itemId));
+
+        allow delete: if canEdit(householdId, 'lunch');
+      }
+
+      // `{childId}_{YYYY-MM-DD}`: that box was packed. Created once and never
+      // changed, so the same box cannot use the pantry up twice; deleting it is
+      // the undo, which gives the portions back.
+      match /lunchPacked/{packedId} {
+        allow read: if canView(householdId, 'lunch');
+
+        allow create: if canEdit(householdId, 'lunch')
+          && isLunchPackedDay(packedId, request.resource.data)
+          && isLunchChild(householdId, request.resource.data.childId)
+          && isOwnMember(householdId, request.resource.data.by)
+          && isServerTime('at');
+
+        allow update: if false;
+
+        allow delete: if canEdit(householdId, 'lunch');
+      }
+
+      // Whole boxes' worth, never below nothing and never past what a pantry
+      // holds for school lunches.
+      function isLunchPantryEntry(data) {
+        return data.keys().hasOnly(['portions', 'updatedBy', 'updatedAt'])
+          && data.portions is int
+          && data.portions >= 0
+          && data.portions <= 99
+          && data.updatedBy is string;
+      }
+
+      function isLunchPackedDay(packedId, data) {
+        return data.keys().hasOnly(['childId', 'date', 'week', 'itemIds', 'by', 'at'])
+          && data.childId is string
+          && data.date is string && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && data.week is string && data.week.matches('^[0-9]{4}-W[0-9]{2}$')
+          && packedId == data.childId + '_' + data.date
+          && data.itemIds is list
+          && data.itemIds.size() <= 5
+          && data.by is string;
       }
 
       // ==== rules/firestore/household/meal_planning.rules ====

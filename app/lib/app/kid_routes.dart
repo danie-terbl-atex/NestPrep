@@ -17,10 +17,16 @@ import '../features/kid_accounts/state/kid_sign_in_controller.dart';
 import '../features/kid_accounts/ui/kid_code_screen.dart';
 import '../features/kid_accounts/ui/kid_home_screen.dart';
 import '../features/kid_accounts/ui/kid_sign_in_screen.dart';
+import '../features/lunch_box/data/lunch_choices_repository.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
+import '../features/lunch_box/state/lunch_choose_controller.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/todo_repository.dart';
+import '../shared/flags/feature_flag.dart';
+import '../shared/flags/feature_flags_controller.dart';
 import 'household_route.dart';
+import 'lunch_planning_route.dart';
+import 'lunch_planning_routes.dart';
 
 /// Where kid sign-in lives in the route table (accounts ADR-0003), kept out of
 /// `app_router.dart` so the router only has to spread it in.
@@ -81,11 +87,32 @@ List<RouteBase> kidRoutes(SessionController session) => [
             update: (context, home, stars) =>
                 stars!..follow(home.areas, home.today),
           ),
+          // Lunch to choose (lunch-box ADR-0008): opens once the home knows
+          // today, only when the grant shows lunch and the switch is on.
+          ChangeNotifierProxyProvider<KidHomeController, LunchChooseController>(
+            create: (context) => LunchChooseController(
+              lunchRepository: context.read<LunchRepository>(),
+              choicesRepository: context.read<LunchChoicesRepository>(),
+              householdId: kid.householdId,
+              childId: kid.memberId,
+            ),
+            update: (context, home, choose) => choose!
+              ..follow(
+                today: home.today,
+                show:
+                    (home.areas?.lunch ?? false) &&
+                    (context.read<FeatureFlagsController?>()?.isOn(
+                          FeatureFlag.lunchKidPicks,
+                        ) ??
+                        false),
+              ),
+          ),
         ],
         child: const KidHomeScreen(),
       );
     },
   ),
+  kidLunchChooseRoute(() => session.kidIdentity),
 ];
 
 /// The parent's kid sign-in screen, under the household shell so it has the
@@ -103,7 +130,11 @@ GoRoute kidSignInRoute() => GoRoute(
   ),
 );
 
-/// A kid device is only ever on its home. Every other location — the ways in,
-/// the household screens, a stale deep link — sends it there.
+/// A kid device is only ever on its home — or choosing its lunch from there
+/// (lunch-box ADR-0008). Every other location — the ways in, the household
+/// screens, a stale deep link — sends it home.
 String? redirectForKid(String location) =>
-    location == KidRoute.homePath ? null : KidRoute.homePath;
+    location == KidRoute.homePath ||
+        location == LunchPlanningRoute.kidChoosePath
+    ? null
+    : KidRoute.homePath;

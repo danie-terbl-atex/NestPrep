@@ -16,11 +16,15 @@ class LunchSuggestionRow extends StatelessWidget {
     required this.suggestion,
     required this.isCurrent,
     required this.onTap,
+    this.notes = const [],
     super.key,
   });
 
   final LunchSuggestion suggestion;
   final bool isCurrent;
+
+  /// Said after its reasons — what is in the pantry, what a box of it costs.
+  final List<String> notes;
 
   /// Null for an item that cannot go in this box.
   final VoidCallback? onTap;
@@ -29,7 +33,7 @@ class LunchSuggestionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = suggestion.item;
     final slot = item.slot;
-    final reasons = suggestionReasons(suggestion);
+    final reasons = [...suggestionReasons(suggestion), ...notes];
     return Semantics(
       enabled: onTap != null,
       selected: isCurrent,

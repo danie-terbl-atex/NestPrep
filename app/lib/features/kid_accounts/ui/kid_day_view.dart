@@ -28,6 +28,7 @@ class KidDayView extends StatelessWidget {
     required this.onToggle,
     this.stars,
     this.shelf,
+    this.lunchPicks,
     this.noteFor = _noNote,
     super.key,
   });
@@ -36,6 +37,9 @@ class KidDayView extends StatelessWidget {
   final void Function(int index) onToggle;
   final Widget? stars;
   final Widget? shelf;
+
+  /// Lunch to choose, when a grown-up offered some (lunch-box ADR-0008).
+  final Widget? lunchPicks;
   final KidChoreNote Function(TaskOccurrence chore) noteFor;
 
   static KidChoreNote _noNote(TaskOccurrence chore) =>
@@ -83,6 +87,10 @@ class KidDayView extends StatelessWidget {
               title: KidCopy.choresAllDone,
               message: KidCopy.choresAllDoneBody,
             ),
+        ],
+        if (lunchPicks case final picks? when day.areas.lunch) ...[
+          const SizedBox(height: NestSpace.xxl),
+          picks,
         ],
         // Their own box, before the household's meals: it is the food they
         // carry (lunch-box ADR-0004).

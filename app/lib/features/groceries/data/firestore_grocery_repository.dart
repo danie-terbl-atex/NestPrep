@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
 import '../model/grocery_item.dart';
+import '../model/grocery_source.dart';
 import 'grocery_repository.dart';
 
 final class FirestoreGroceryRepository implements GroceryRepository {
@@ -42,6 +43,7 @@ final class FirestoreGroceryRepository implements GroceryRepository {
     required String name,
     String? quantity,
     required String addedBy,
+    GrocerySource? origin,
   }) {
     final items = _items(householdId);
     final document = items.doc();
@@ -52,6 +54,7 @@ final class FirestoreGroceryRepository implements GroceryRepository {
           name: name,
           quantity: quantity,
           addedBy: addedBy,
+          source: origin?.name,
         ),
       ),
     );

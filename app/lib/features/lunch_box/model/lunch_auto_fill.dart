@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../family_profiles/model/food_rules.dart';
 import 'lunch_favourite.dart';
+import 'lunch_fill_bias.dart';
 import 'lunch_item.dart';
 import 'lunch_pick.dart';
 import 'lunch_plan.dart';
@@ -42,6 +43,10 @@ class LunchAutoFillResult {
 ///
 /// It never replaces something a person put in a box: a filled slot is
 /// locked by being filled. Deterministic: the same inputs pack the same week.
+///
+/// A [LunchFillBias] — planning from the pantry (lunch-box ADR-0006) — may
+/// skip a go-to box and choose among a slot's suggestions; without one this
+/// is exactly ADR-0003's fill.
 abstract final class LunchAutoFill {
   /// Monday 5 January 1970, from which a week's place in the rotation counts.
   static final _firstMonday = CalendarDate(1970, 1, 5);
@@ -53,10 +58,12 @@ abstract final class LunchAutoFill {
     required List<LunchItem> library,
     required FoodRules rules,
     required LunchTaste taste,
+    LunchFillBias? bias,
   }) {
     final itemsById = {for (final item in library) item.id: item};
     final picks = <String, LunchPick>{};
     final uses = _usesIn(plan);
+    final added = <String, int>{};
 
     LunchPick fresh(LunchPick pick) {
       final item = itemsById[pick.itemId];
@@ -66,6 +73,7 @@ abstract final class LunchAutoFill {
     void put(String key, LunchPick pick) {
       picks[key] = pick;
       uses[pick.itemId] = (uses[pick.itemId] ?? 0) + 1;
+      added[pick.itemId] = (added[pick.itemId] ?? 0) + 1;
     }
 
     final rotation = rotationFor(
@@ -81,7 +89,13 @@ abstract final class LunchAutoFill {
     for (final day in week.schoolDays) {
       if (rotation.isEmpty) break;
       if (!plan.boxOn(day.weekday).isEmpty) continue;
-      final favourite = rotation.removeAt(0);
+      final index = bias == null
+          ? 0
+          : rotation.indexWhere((f) => bias.acceptsFavourite(f, added));
+      // What a bias turns down now it turns down later too: a fill only
+      // ever takes more.
+      if (index < 0) break;
+      final favourite = rotation.removeAt(index);
       for (final (slot, pick) in favourite.box.filled) {
         put(LunchPlan.slotKey(day.weekday, slot), fresh(pick));
       }
@@ -93,13 +107,14 @@ abstract final class LunchAutoFill {
         final key = LunchPlan.slotKey(day.weekday, slot);
         if (plan.slots.containsKey(key) || picks.containsKey(key)) continue;
         if (!slot.isAutoFilledOn(day.weekday)) continue;
-        final best = LunchSuggestions.rank(
+        final ranked = LunchSuggestions.rank(
           slot: slot,
           library: library,
           rules: rules,
           taste: taste,
           usesThisWeek: uses,
-        ).best;
+        );
+        final best = bias == null ? ranked.best : bias.choose(ranked, added);
         if (best != null) put(key, LunchPick.of(best.item));
       }
     }

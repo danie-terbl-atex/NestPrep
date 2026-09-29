@@ -18,9 +18,8 @@ abstract final class SubscriptionCopy {
     PremiumFeature.additionalChild => 'Room for every child',
     PremiumFeature.lunchLearning => 'Lunches that learn',
     PremiumFeature.prepList => 'Sunday prep, sorted',
-    PremiumFeature.aiPlanning ||
-    PremiumFeature.budgetMode ||
-    PremiumFeature.direct => 'NestPrep Premium',
+    PremiumFeature.budgetMode => 'Lunches on a budget',
+    PremiumFeature.aiPlanning || PremiumFeature.direct => 'NestPrep Premium',
   };
 
   static String pitch(PremiumFeature feature) => switch (feature) {
@@ -33,9 +32,10 @@ abstract final class SubscriptionCopy {
     PremiumFeature.prepList =>
       'Everything the week’s lunchboxes need, gathered into one list to '
           'batch-prep on Sunday.',
-    PremiumFeature.aiPlanning ||
-    PremiumFeature.budgetMode ||
-    PremiumFeature.direct =>
+    PremiumFeature.budgetMode =>
+      'See what each box and the week cost, keep to a weekly budget, and '
+          'get cheaper swaps your children will still eat.',
+    PremiumFeature.aiPlanning || PremiumFeature.direct =>
       'Take more of the planning off the family’s plate.',
   };
 
