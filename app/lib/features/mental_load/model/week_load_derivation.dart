@@ -8,6 +8,9 @@ import 'week_load.dart';
 /// Who picked up what in the week starting [weekStart] — derived, never
 /// stored (calendar ADR-0006).
 ///
+/// Calendar, to-dos, groceries, carer shifts, lunch boxes checked and
+/// cleaning jobs set up are counted.
+///
 /// Only the household's adults are counted: its admins and parents. A kid's
 /// ticks and a helper's jobs are theirs, and this view is about how the
 /// family's own adults share the running of it. Nothing is ranked: the
@@ -100,6 +103,24 @@ WeekLoad deriveWeekLoad({
         inWeek(dayOf(endedAt)) &&
         endedBy != summary.carerMemberId) {
       tally.add(endedBy, LoadKind.careShifts);
+    }
+  }
+
+  // Lunch boxes marked when they came home, on the day they were marked.
+  for (final plan in sources.lunchPlans) {
+    for (final mark in plan.feedback.values) {
+      final at = mark.at;
+      if (inWeek(at == null ? today : dayOf(at))) {
+        tally.add(mark.by, LoadKind.lunchesChecked);
+      }
+    }
+  }
+
+  // A cleaning job set up for a helper: noticing the spot and writing it up.
+  for (final job in sources.homeCareJobs) {
+    final createdAt = job.createdAt;
+    if (inWeek(createdAt == null ? today : dayOf(createdAt))) {
+      tally.add(job.createdBy, LoadKind.homeCareJobsSet, job.title);
     }
   }
 

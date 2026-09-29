@@ -11,12 +11,14 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'fake_calendar_repository.dart';
 import 'fake_calendar_v2.dart';
 import 'fake_grocery_repository.dart';
+import 'fake_home_care.dart';
+import 'fake_lunch_repository.dart';
 import 'fake_nanny_shifts.dart';
 import 'fake_todo_repository.dart';
 import 'household_fixtures.dart';
 import 'mental_load_fixtures.dart';
 
-/// The shared week's controller over the four features' fakes (calendar
+/// The shared week's controller over the six features' fakes (calendar
 /// ADR-0006), with a helper that answers every read at once.
 final class MentalLoadHarness {
   MentalLoadHarness({this.includeCare = true, List<Member>? members}) {
@@ -27,6 +29,8 @@ final class MentalLoadHarness {
         todoRepository: todos,
         groceryRepository: groceries,
         shiftRepository: shifts,
+        lunchRepository: lunches,
+        cleaningJobRepository: jobs,
         householdId: Fixtures.householdId,
         includeCare: includeCare,
       ),
@@ -44,6 +48,8 @@ final class MentalLoadHarness {
   final todos = FakeTodoRepository();
   final groceries = FakeGroceryRepository();
   final shifts = FakeShiftRepository();
+  final lunches = FakeLunchRepository();
+  final jobs = FakeCleaningJobRepository();
   final sharer = FakeCardImageSharer();
   late final MentalLoadController controller;
 
@@ -62,6 +68,8 @@ final class MentalLoadHarness {
       ..emitRoutines(const [])
       ..emitCompletions(completions);
     groceries.emitItems(items);
+    lunches.emitPlans(const []);
+    jobs.emitJobs(const []);
     if (includeCare) {
       shifts.openShifts.add(const []);
       shifts.summaries.add(const []);
@@ -98,5 +106,7 @@ final class MentalLoadHarness {
     await todos.close();
     await groceries.close();
     await shifts.close();
+    await lunches.close();
+    await jobs.close();
   }
 }

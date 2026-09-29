@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/groceries/data/grocery_repository.dart';
+import '../features/home_care/data/cleaning_job_repository.dart';
 import '../features/household/model/household_view.dart';
+import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/mental_load/data/card_image_sharer.dart';
 import '../features/mental_load/state/load_listeners.dart';
 import '../features/mental_load/state/mental_load_controller.dart';
@@ -48,6 +50,8 @@ List<GoRoute> calendarV2Routes() => [
               todoRepository: context.read<TodoRepository>(),
               groceryRepository: context.read<GroceryRepository>(),
               shiftRepository: context.read<ShiftRepository>(),
+              lunchRepository: context.read<LunchRepository>(),
+              cleaningJobRepository: context.read<CleaningJobRepository>(),
               householdId: HouseholdRoute.idFrom(state),
               includeCare: NannyAccess.of(context.read<HouseholdView>())
                   .canView,

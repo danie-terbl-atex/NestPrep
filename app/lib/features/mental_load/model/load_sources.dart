@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../../calendar/model/event_exception.dart';
 import '../../calendar/model/household_event.dart';
 import '../../groceries/model/grocery_item.dart';
+import '../../home_care/model/cleaning_job.dart';
+import '../../lunch_box/model/lunch_plan.dart';
 import '../../nanny_hub/model/shift.dart';
 import '../../nanny_hub/model/shift_summary.dart';
 import '../../todos/model/routine.dart';
@@ -23,6 +25,8 @@ final class LoadSources {
     this.groceries = const [],
     this.openShifts = const [],
     this.shiftSummaries = const [],
+    this.lunchPlans = const [],
+    this.homeCareJobs = const [],
   });
 
   final List<HouseholdEvent> events;
@@ -33,4 +37,10 @@ final class LoadSources {
   final List<GroceryItem> groceries;
   final List<Shift> openShifts;
   final List<ShiftSummary> shiftSummaries;
+
+  /// Every child's lunch plan for the week (lunch-box ADR-0001).
+  final List<LunchPlan> lunchPlans;
+
+  /// The household's cleaning jobs (home-care ADR-0001).
+  final List<CleaningJob> homeCareJobs;
 }

@@ -51,6 +51,10 @@ abstract final class MentalLoadCopy {
       count == 1 ? 'grocery added to the list' : 'groceries added to the list',
     LoadKind.careShifts =>
       count == 1 ? 'carer shift handed over' : 'carer shifts handed over',
+    LoadKind.lunchesChecked =>
+      count == 1 ? 'lunch box checked' : 'lunch boxes checked',
+    LoadKind.homeCareJobsSet =>
+      count == 1 ? 'cleaning job set up' : 'cleaning jobs set up',
   };
 
   static String including(String highlights) => 'Including $highlights';

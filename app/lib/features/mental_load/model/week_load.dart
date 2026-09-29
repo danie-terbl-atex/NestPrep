@@ -5,10 +5,8 @@ import '../../household/model/member.dart';
 
 /// The kinds of thing that keep a household running which NestPrep can see
 /// someone doing (calendar ADR-0006). Each is counted from a read the app
-/// already makes; none is stored.
-///
-/// Lunch-box plans packed and home-care jobs join this list when those
-/// features exist on the same base — one value and one source each.
+/// already makes; none is stored. A new kind is one value here and one
+/// source in `LoadSources`.
 enum LoadKind {
   /// Events they put on the calendar that happen this week.
   eventsPlanned,
@@ -30,6 +28,14 @@ enum LoadKind {
 
   /// A carer's shift they started or closed this week.
   careShifts,
+
+  /// Lunch boxes they marked when they came home this week (lunch-box
+  /// ADR-0003). A plan names nobody, so packing one is credited to no one;
+  /// checking what came back is.
+  lunchesChecked,
+
+  /// Cleaning jobs they set up for a helper this week (home-care ADR-0001).
+  homeCareJobsSet,
 }
 
 /// What one adult picked up in one week.

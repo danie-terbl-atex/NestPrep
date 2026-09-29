@@ -31,6 +31,8 @@ class AdultLoadCard extends StatelessWidget {
     LoadKind.groceriesBought: Icons.shopping_basket_outlined,
     LoadKind.groceriesAdded: Icons.playlist_add_outlined,
     LoadKind.careShifts: Icons.child_care_outlined,
+    LoadKind.lunchesChecked: Icons.lunch_dining_outlined,
+    LoadKind.homeCareJobsSet: Icons.cleaning_services_outlined,
   };
 
   @override
