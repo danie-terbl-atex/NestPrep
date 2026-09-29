@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/photos/compressed_photo.dart';
 import '../data/photo_source.dart';
-import '../model/compressed_photo.dart';
 import '../model/spot_mark.dart';
 import 'marked_photo.dart';
 

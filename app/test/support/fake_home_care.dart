@@ -4,10 +4,8 @@ import 'dart:typed_data';
 import 'package:nestprep/features/home_care/data/cleaning_job_repository.dart';
 import 'package:nestprep/features/home_care/data/home_care_library_repository.dart';
 import 'package:nestprep/features/home_care/data/job_photo_store.dart';
-import 'package:nestprep/features/home_care/data/photo_compressor.dart';
 import 'package:nestprep/features/home_care/data/photo_source.dart';
 import 'package:nestprep/features/home_care/model/cleaning_job.dart';
-import 'package:nestprep/features/home_care/model/compressed_photo.dart';
 import 'package:nestprep/features/home_care/model/home_care_product.dart';
 import 'package:nestprep/features/home_care/model/home_care_room.dart';
 import 'package:nestprep/features/home_care/model/job_details.dart';
@@ -17,6 +15,8 @@ import 'package:nestprep/features/home_care/model/room_kind.dart';
 import 'package:nestprep/features/home_care/model/spot_mark.dart';
 import 'package:nestprep/features/home_care/state/photo_intake.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/photos/compressed_photo.dart';
+import 'package:nestprep/shared/photos/photo_compressor.dart';
 
 /// Everything a write was asked to do, in order, as `(method, arguments)` —
 /// so a test asserts what a tap asked the backend for (`FE-20`).
@@ -271,7 +271,7 @@ final class FakePhotoSource implements PhotoSource {
 }
 
 /// A compressor that does no work: a test is about what the controller does
-/// with a photo, and `photo_compressor_test.dart` is about compressing one.
+/// with a photo, and `jpeg_compressor_test.dart` is about compressing one.
 final class FakePhotoCompressor implements PhotoCompressor {
   const FakePhotoCompressor();
 

@@ -132,4 +132,26 @@ void main() {
       isA<AsyncData<Uint8List>>(),
     );
   });
+
+  test('by default it compresses through the shared pipeline, and refuses '
+      'what is no picture in the hub\'s words', () async {
+    final real = PhotoLibrary(
+      photoStore: store,
+      documentDirectory: directory,
+      householdId: 'h1',
+      uploaderUid: 'uid-nomsa',
+    );
+    addTearDown(real.dispose);
+    await expectLater(
+      real.store(Uint8List.fromList([1, 2, 3])),
+      throwsA(
+        isA<NannyHubFailure>().having(
+          (failure) => failure.problem,
+          'problem',
+          NannyHubProblem.photoUnreadable,
+        ),
+      ),
+    );
+    expect(store.objects, isEmpty);
+  });
 }

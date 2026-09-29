@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import '../model/compressed_photo.dart';
+import '../../../shared/photos/compressed_photo.dart';
 
 /// The bytes of a job's photos, in Cloud Storage at
 /// `households/{h}/homeCareJobs/{jobId}/{photoId}` (home-care ADR-0003).

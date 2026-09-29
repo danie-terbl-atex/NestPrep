@@ -4,7 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/failure/storage_failure_mapper.dart';
-import '../model/compressed_photo.dart';
+import '../../../shared/photos/compressed_photo.dart';
+import '../model/home_care_photo.dart';
 import 'job_photo_store.dart';
 
 final class StorageJobPhotoStore implements JobPhotoStore {
@@ -59,7 +60,7 @@ final class StorageJobPhotoStore implements JobPhotoStore {
         householdId,
         jobId,
         photoId,
-      ).getData(CompressedPhoto.maxBytes);
+      ).getData(HomeCarePhoto.maxBytes);
       if (bytes == null) throw const NotFoundFailure();
       return bytes;
     } on FirebaseException catch (error) {

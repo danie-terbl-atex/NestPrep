@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/home_care/data/storage_job_photo_store.dart';
-import 'package:nestprep/features/home_care/model/compressed_photo.dart';
+import 'package:nestprep/features/home_care/model/home_care_photo.dart';
+import 'package:nestprep/shared/photos/compressed_photo.dart';
 
 /// The photo limits are `storage.rules`' (home-care ADR-0003); the app keeps
 /// a copy only so a photo too big is refused before anybody waits for the
@@ -22,7 +23,7 @@ void main() {
 
   test('the size cap is the one the compressor refuses at', () {
     final cap = RegExp(r'(\d+) \* 1024 \* 1024').firstMatch(block);
-    expect(int.parse(cap!.group(1)!) * 1024 * 1024, CompressedPhoto.maxBytes);
+    expect(int.parse(cap!.group(1)!) * 1024 * 1024, HomeCarePhoto.maxBytes);
   });
 
   test('a JPEG is the only thing kept, which is what the compressor makes', () {

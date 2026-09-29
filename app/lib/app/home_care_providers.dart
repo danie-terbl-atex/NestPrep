@@ -9,8 +9,8 @@ import '../features/home_care/data/firestore_home_care_library_repository.dart';
 import '../features/home_care/data/home_care_library_repository.dart';
 import '../features/home_care/data/image_picker_photo_source.dart';
 import '../features/home_care/data/job_photo_store.dart';
-import '../features/home_care/data/photo_compressor.dart';
 import '../features/home_care/data/storage_job_photo_store.dart';
+import '../features/home_care/model/home_care_photo.dart';
 import '../features/home_care/state/photo_intake.dart';
 
 /// Home care's part of the app-wide graph (home-care ADR-0001 to ADR-0003):
@@ -35,7 +35,7 @@ List<SingleChildWidget> homeCareProviders() => [
   Provider<PhotoIntake>(
     create: (context) => PhotoIntake(
       source: ImagePickerPhotoSource(),
-      compressor: const JpegPhotoCompressor(),
+      compressor: HomeCarePhoto.compressor,
     ),
   ),
 ];

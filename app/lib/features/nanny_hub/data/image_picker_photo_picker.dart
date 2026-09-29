@@ -7,7 +7,7 @@ import 'photo_picker.dart';
 
 /// `image_picker` — the platform's own camera and library screens, so the app
 /// asks for no photo permission of its own on Android and uses the system
-/// picker on iOS (nanny-hub ADR-0003). Compression is `PhotoCompressor`'s, so
+/// picker on iOS (nanny-hub ADR-0003). Compression is the shared `JpegCompressor`'s, so
 /// it is the same on both platforms.
 final class ImagePickerPhotoPicker implements PhotoPicker {
   ImagePickerPhotoPicker([ImagePicker? picker])

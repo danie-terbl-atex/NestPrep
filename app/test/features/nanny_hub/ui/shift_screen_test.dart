@@ -19,6 +19,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/nanny_fixtures.dart';
 import '../../../support/pump_nanny_hub.dart';
+import '../../../support/pump_until.dart';
 
 void main() {
   late NannyFakes fakes;
@@ -153,10 +154,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text(NannyShiftCopy.logIt));
     // Compression runs in a background isolate, which only real time moves.
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 500)),
+    await pumpUntil(
+      tester,
+      () => fakes.shifts.writes.isNotEmpty,
+      reason: 'the photo was never compressed and logged',
     );
-    await tester.pumpAndSettle();
 
     expect(fakes.picker.asked, [PhotoSource.camera]);
     final draft = fakes.shifts.writes.single.$2['draft']! as HandoverDraft;

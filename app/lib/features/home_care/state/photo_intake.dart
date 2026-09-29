@@ -1,6 +1,6 @@
-import '../data/photo_compressor.dart';
+import '../../../shared/photos/compressed_photo.dart';
+import '../../../shared/photos/photo_compressor.dart';
 import '../data/photo_source.dart';
-import '../model/compressed_photo.dart';
 
 /// Takes or chooses a photo and compresses it to what the rules keep — the
 /// one path both the before photo and the after photo come in by

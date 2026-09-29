@@ -5,9 +5,10 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/best_effort.dart';
+import '../../../shared/photos/jpeg_compressor.dart';
 import '../../documents/data/document_directory.dart';
-import '../data/photo_compressor.dart';
 import '../data/photo_store.dart';
+import '../model/nanny_limits.dart';
 
 /// The hub's photos for the screens under it: fetched once each, held while
 /// the hub is open, and stored — compressed first — when somebody adds one
@@ -25,7 +26,7 @@ final class PhotoLibrary extends ChangeNotifier {
     required DocumentDirectory documentDirectory,
     required this.householdId,
     required this.uploaderUid,
-    this._compress = PhotoCompressor.compress,
+    this._compress = _compressForTheHub,
   }) : _store = photoStore,
        _directory = documentDirectory;
 
@@ -145,3 +146,14 @@ final class PhotoLibrary extends ChangeNotifier {
     super.dispose();
   }
 }
+
+/// The shared pipeline (`ENG-01`, nanny-hub ADR-0003) under the hub's cap,
+/// refusing in the hub's words.
+const _hubCompressor = JpegCompressor(
+  maxBytes: NannyLimits.photoBytes,
+  unreadable: NannyHubFailure(NannyHubProblem.photoUnreadable),
+  tooLarge: NannyHubFailure(NannyHubProblem.photoTooLarge),
+);
+
+Future<Uint8List> _compressForTheHub(Uint8List picked) async =>
+    (await _hubCompressor.compress(picked)).bytes;

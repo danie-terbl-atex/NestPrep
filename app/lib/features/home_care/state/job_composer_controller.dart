@@ -2,12 +2,13 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/best_effort.dart';
+import '../../../shared/photos/compressed_photo.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../data/cleaning_job_repository.dart';
 import '../data/job_photo_store.dart';
 import '../data/photo_source.dart';
-import '../model/compressed_photo.dart';
+import '../model/home_care_photo.dart';
 import '../model/job_details.dart';
 import '../model/job_photo.dart';
 import '../model/spot_mark.dart';
