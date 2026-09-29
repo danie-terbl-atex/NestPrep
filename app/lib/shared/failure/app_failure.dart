@@ -110,6 +110,11 @@ enum HouseholdProblem {
   /// verified (accounts ADR-0002).
   emailNotVerified,
 
+  /// A kid device asked for something only an adult's account may do. The kid
+  /// app never offers one, so this is the server refusing what the screen
+  /// already does not show (accounts ADR-0003).
+  kidAccount,
+
   /// The app sent something the Function would not accept — our bug.
   badRequest,
 
@@ -181,6 +186,42 @@ final class DocumentFailure extends AppFailure {
   const DocumentFailure(this.problem);
 
   final DocumentProblem problem;
+}
+
+/// Why a kid sign-in did not happen, or stopped (accounts ADR-0003). Kept
+/// apart from the household refusals because half of them are read by a child
+/// holding a tablet, and they get words written for that person.
+///
+/// Every one but [deviceDisconnected] is a `reason` a kid sign-in callable
+/// puts in its error's details; that one is the client's own, for a device
+/// whose reads the rules have started refusing because a parent signed it out.
+enum KidSignInProblem {
+  /// The profile is claimed by somebody, or is not a child's.
+  notEligible,
+
+  /// The profile already has as many devices as it may.
+  tooManyDevices,
+
+  /// The code typed is not a live code — mistyped, already used, or retired.
+  codeNotFound,
+
+  /// The code was right and has run out.
+  codeExpired,
+
+  /// A parent tried to sign out a device that is already signed out.
+  deviceNotFound,
+
+  /// The server cannot mint a sign-in right now. Ours, not the child's.
+  signInUnavailable,
+
+  /// A parent signed this device out, or removed the profile it was.
+  deviceDisconnected,
+}
+
+final class KidSignInFailure extends AppFailure {
+  const KidSignInFailure(this.problem);
+
+  final KidSignInProblem problem;
 }
 
 /// Anything not recognised. The cause is kept for logging, never for display.

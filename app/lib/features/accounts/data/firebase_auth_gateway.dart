@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
 import '../model/auth_user.dart';
+import '../model/kid_identity.dart';
 import 'auth_failure_mapper.dart';
 import 'auth_gateway.dart';
 import 'credential_linking.dart';
@@ -23,7 +24,7 @@ final class FirebaseAuthGateway implements AuthGateway {
 
   @override
   Stream<AuthUser?> authStateChanges() =>
-      _auth.authStateChanges().map(_toAuthUser);
+      _auth.authStateChanges().asyncMap(_withKidClaim);
 
   @override
   String? get pendingLinkEmail => _linking.pendingEmail;
@@ -114,6 +115,19 @@ final class FirebaseAuthGateway implements AuthGateway {
   }) => signInWithEmail(email: email, password: password);
 
   @override
+  Future<AuthUser> signInWithKidToken(String token) async {
+    _linking.clear();
+    try {
+      final credential = await _auth.signInWithCustomToken(token);
+      final user = credential.user;
+      if (user == null) throw const SignInFailure(SignInProblem.unknown);
+      return await _withKidClaim(user) ?? _fromUser(user);
+    } on FirebaseAuthException catch (error) {
+      throw failureFromFirebaseAuth(error);
+    }
+  }
+
+  @override
   Future<void> signOut() async {
     _linking.clear();
     // Firebase first: if signing out of Google fails, the app must still not be
@@ -157,6 +171,22 @@ final class FirebaseAuthGateway implements AuthGateway {
   }
 
   AuthUser? _toAuthUser(User? user) => user == null ? null : _fromUser(user);
+
+  /// The user, with the kid claim read off its token when it could be a kid
+  /// device (accounts ADR-0003). Only a user with no provider at all — which is
+  /// what a custom-token sign-in is — pays for the token read, so a Google or
+  /// password account's start-up is exactly what it was.
+  Future<AuthUser?> _withKidClaim(User? user) async {
+    if (user == null) return null;
+    final base = _fromUser(user);
+    if (user.providerData.isNotEmpty || user.isAnonymous) return base;
+    try {
+      final token = await user.getIdTokenResult();
+      return base.copyWith(kid: KidIdentity.fromClaims(token.claims));
+    } on FirebaseAuthException catch (error) {
+      throw failureFromFirebaseAuth(error);
+    }
+  }
 
   AuthUser _fromUser(User user) => AuthUser(
     uid: user.uid,

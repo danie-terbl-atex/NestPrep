@@ -44,6 +44,29 @@ service cloud.firestore {
       return isSignedIn() && memberData(householdId, memberId).claimedBy == uid();
     }
 
+    // ---- kid devices (accounts ADR-0003) ----
+    //
+    // A kid device is **not a member**: it is never in the uid→role map, so no
+    // `isMember()` anywhere admits it, and every collection — including ones
+    // added later by somebody who never thought about kids — refuses it by
+    // default. What a kid may do is granted below, block by block, through
+    // these three. They read the household's `kids` map (uid → the member
+    // profile the device is signed in as), which only Functions write and a
+    // parent empties in one call; never the token's `kidProfile` claim, which
+    // would outlive a revoke until the token refreshed.
+
+    function isKid(householdId) {
+      return isSignedIn() && uid() in householdData(householdId).get('kids', {});
+    }
+
+    function kidMemberId(householdId) {
+      return householdData(householdId).kids[uid()];
+    }
+
+    function isKidAs(householdId, memberId) {
+      return isKid(householdId) && kidMemberId(householdId) == memberId;
+    }
+
     // ---- shapes ----
 
     function changedKeys() {
@@ -94,8 +117,11 @@ service cloud.firestore {
       allow read: if isSelf();
 
       // A new account belongs to no household and has none active: only a
-      // Function may change that (household ADR-0002).
+      // Function may change that (household ADR-0002). A kid device has no
+      // account document at all — it belongs to one household, through the
+      // `kids` map, and to nothing else (accounts ADR-0003).
       allow create: if isSelf()
+        && request.auth.token.get('kidProfile', null) == null
         && request.resource.data.keys().hasOnly(
              ['displayName', 'photoUrl', 'householdIds', 'activeHouseholdId',
               'createdAt', 'lastSignedInAt'])
@@ -124,10 +150,20 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ---- kid pairing codes (accounts ADR-0003) ----
+    // Closed for the same reason invites are: a readable collection of codes
+    // is a list of ways into somebody's household. `createKidPairing`,
+    // `cancelKidPairing` and `redeemKidPairing` are the only way in.
+    match /kidPairings/{code} {
+      allow read, write: if false;
+    }
+
     // ---- households (household ADR-0001, ADR-0002) ----
 
     match /households/{householdId} {
-      allow read: if isMember(householdId);
+      // A kid device reads it for the household's name and the zone that
+      // makes "today" the household's today (accounts ADR-0003).
+      allow read: if isMember(householdId) || isKid(householdId);
 
       // Created by `createHousehold`; the membership map is written only by
       // Functions, which is why there is no client write that touches it.
@@ -139,7 +175,9 @@ service cloud.firestore {
         && isNonEmptyString(request.resource.data.timeZone);
 
       match /members/{memberId} {
-        allow read: if isMember(householdId);
+        // A kid device reads its own profile and nobody else's — not the list
+        // (accounts ADR-0003).
+        allow read: if isMember(householdId) || isKidAs(householdId, memberId);
 
         // An admin adds a profile for somebody whether or not they will ever
         // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
@@ -215,7 +253,11 @@ service cloud.firestore {
       // ---- todos (todos ADR-0001, ADR-0002) ----
 
       match /tasks/{taskId} {
-        allow read: if isMember(householdId);
+        // A kid device reads the chores that name it, which is also the only
+        // query it can make (accounts ADR-0003).
+        allow read: if isMember(householdId)
+          || (isKid(householdId)
+                && kidMemberId(householdId) in resource.data.assigneeIds);
 
         allow create: if isMember(householdId)
           && request.resource.data.keys().hasOnly(
@@ -245,7 +287,8 @@ service cloud.firestore {
       // A routine's schedule moves every task in it, which is why only an admin
       // may write one (todos ADR-0001).
       match /routines/{routineId} {
-        allow read: if isMember(householdId);
+        // A kid device reads routines so a chore in one lands on the right day.
+        allow read: if isMember(householdId) || isKid(householdId);
 
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
@@ -268,21 +311,38 @@ service cloud.firestore {
       // which is what makes completing the same occurrence twice the same write
       // and stops a completion being filed against a different day (BE-06).
       match /taskCompletions/{completionId} {
-        allow read: if isMember(householdId);
+        allow read: if isMember(householdId)
+          || isKidAs(householdId, resource.data.completedFor);
 
-        allow create, update: if isMember(householdId)
-          && request.resource.data.keys().hasOnly(
-               ['taskId', 'occurrenceDate', 'completedBy', 'completedFor', 'completedAt'])
-          && completionId ==
-               request.resource.data.taskId + '_' + request.resource.data.occurrenceDate
-          && isOwnMember(householdId, request.resource.data.completedBy)
-          && isServerTime('completedAt')
-          && mayCompleteFor(
-               householdId,
-               request.resource.data.taskId,
-               request.resource.data.completedFor);
+        allow create, update: if isCompletionShape(completionId)
+          && ((isMember(householdId)
+                && isOwnMember(householdId, request.resource.data.completedBy)
+                && mayCompleteFor(
+                     householdId,
+                     request.resource.data.taskId,
+                     request.resource.data.completedFor))
+              || isKidCompletingOwnChore(householdId));
 
-        allow delete: if isMember(householdId);
+        allow delete: if isMember(householdId)
+          || isKidAs(householdId, resource.data.completedFor);
+
+        function isCompletionShape(completionId) {
+          return request.resource.data.keys().hasOnly(
+                   ['taskId', 'occurrenceDate', 'completedBy', 'completedFor',
+                    'completedAt'])
+            && completionId ==
+                 request.resource.data.taskId + '_' + request.resource.data.occurrenceDate
+            && isServerTime('completedAt');
+        }
+
+        // A kid device ticks off a chore that names it, as itself and for
+        // itself — never on anybody's behalf (accounts ADR-0003).
+        function isKidCompletingOwnChore(householdId) {
+          return isKidAs(householdId, request.resource.data.completedFor)
+            && request.resource.data.completedBy == request.resource.data.completedFor
+            && request.resource.data.completedFor
+                 in taskAssignees(householdId, request.resource.data.taskId);
+        }
 
         // An admin completes on anybody's behalf; everybody else completes only
         // what is theirs, or what is for anyone (household ADR-0001).
@@ -351,7 +411,8 @@ service cloud.firestore {
       // household's own library, not a way into anybody's data — so this is a
       // validation the client owns and the rules cannot (BE-03).
       match /meals/{mealId} {
-        allow read: if isMember(householdId);
+        // A kid device reads the library to name what is on today's plan.
+        allow read: if isMember(householdId) || isKid(householdId);
 
         allow create: if isMember(householdId)
           && request.resource.data.keys().hasOnly(
@@ -379,7 +440,7 @@ service cloud.firestore {
       // One document is one week, keyed by its Monday. The plan has no owner:
       // any member fills, changes or clears any slot (meal-planning ADR-0001).
       match /mealPlans/{weekStart} {
-        allow read: if isMember(householdId);
+        allow read: if isMember(householdId) || isKid(householdId);
 
         allow create, update: if isMember(householdId)
           && request.resource.data.keys().hasOnly(['slots'])
@@ -453,6 +514,14 @@ service cloud.firestore {
           && isServerTime('skippedAt');
 
         allow delete: if isMember(householdId);
+      }
+
+      // ---- kid devices (accounts ADR-0003) ----
+      // Which devices are signed in as which kid, for the parents who can end
+      // them. Written only by the kid sign-in callables and `removeMember`.
+      match /kidDevices/{deviceUid} {
+        allow read: if isAdmin(householdId);
+        allow write: if false;
       }
 
       // ---- documents (documents ADR-0001) ----

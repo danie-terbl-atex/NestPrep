@@ -36,6 +36,11 @@ abstract final class NestSize {
   static const double controlSmall = 44;
   static const double controlMedium = 48;
   static const double controlLarge = 56;
+
+  /// The kid screens' target: a chore to tick, a letter of a code. A child's
+  /// aim is looser than an adult's, and these are the controls they use most
+  /// (accounts ADR-0003).
+  static const double controlHuge = 72;
   static const double iconSmall = 18;
   static const double iconMedium = 22;
   static const double iconLarge = 28;

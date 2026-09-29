@@ -63,6 +63,10 @@ void main() {
         'opens the platform file picker',
     'lib/features/documents/data/launcher_document_opener.dart':
         'hands a link to the platform',
+    'lib/features/kid_accounts/data/callable_kid_sign_in_directory.dart':
+        'calls Functions',
+    'lib/features/kid_accounts/data/firestore_kid_device_repository.dart':
+        'reads Firestore',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -82,6 +86,10 @@ void main() {
     'lib/features/documents/data/document_directory.dart': 'interface only',
     'lib/features/documents/data/document_picker.dart': 'interface only',
     'lib/features/documents/data/document_opener.dart': 'interface only',
+    'lib/features/kid_accounts/data/kid_sign_in_directory.dart':
+        'interface only',
+    'lib/features/kid_accounts/data/kid_device_repository.dart':
+        'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

@@ -13,3 +13,10 @@ export { removeMember } from './household/remove_member';
 export { setMemberRole } from './household/set_member_role';
 export { syncDocumentAccess } from './documents/sync_document_access';
 export { deleteDocumentFolder } from './documents/delete_document_folder';
+
+// Kid sign-in (accounts ADR-0003).
+export { createKidPairing } from './accounts/create_kid_pairing';
+export { cancelKidPairing } from './accounts/cancel_kid_pairing';
+export { redeemKidPairing } from './accounts/redeem_kid_pairing';
+export { revokeKidDevice } from './accounts/revoke_kid_device';
+export { resetKidSignIn } from './accounts/reset_kid_sign_in';

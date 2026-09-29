@@ -110,6 +110,17 @@ final class FakeAuthGateway implements AuthGateway {
     AuthUser(uid: 'uid-$email', email: email, emailVerified: emailIsVerified),
   );
 
+  /// The tokens a kid device signed in with, and who each one signs in as —
+  /// set [kidTokenSignsInAs] to play out `redeemKidPairing`'s token.
+  final kidTokens = <String>[];
+  AuthUser? kidTokenSignsInAs;
+
+  @override
+  Future<AuthUser> signInWithKidToken(String token) {
+    kidTokens.add(token);
+    return _signIn(kidTokenSignsInAs ?? AuthUser(uid: 'kid_$token', email: ''));
+  }
+
   @override
   Future<void> signOut() async {
     signOutCount += 1;

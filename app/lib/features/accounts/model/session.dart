@@ -1,5 +1,6 @@
 import 'account.dart';
 import 'auth_user.dart';
+import 'kid_identity.dart';
 
 /// Who the app is being used by right now. The router switches on this and
 /// nothing else (accounts phase 1).
@@ -20,4 +21,14 @@ final class SignedIn extends Session {
   final Account account;
 
   String get uid => user.uid;
+}
+
+/// Signed in on a kid device (accounts ADR-0003): a profile in one household,
+/// with no account document and none of an account's choices. The router sends
+/// it to the kid's home and nowhere else.
+final class KidSignedIn extends Session {
+  const KidSignedIn({required this.uid, required this.kid});
+
+  final String uid;
+  final KidIdentity kid;
 }

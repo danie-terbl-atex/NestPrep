@@ -57,5 +57,10 @@ abstract interface class AuthGateway {
     required String password,
   });
 
+  /// Signs a kid device in with the custom token `redeemKidPairing` minted for
+  /// it (accounts ADR-0003). The user that comes back carries its
+  /// [AuthUser.kid]; there is no credential to link and no address.
+  Future<AuthUser> signInWithKidToken(String token);
+
   Future<void> signOut();
 }

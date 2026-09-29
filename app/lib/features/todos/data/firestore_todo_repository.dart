@@ -75,6 +75,30 @@ final class FirestoreTodoRepository implements TodoRepository {
       .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
+  Stream<List<Task>> watchTasksFor(String householdId, String memberId) =>
+      _tasks(householdId)
+          .where('assigneeIds', arrayContains: memberId)
+          .limit(TodoRepository.taskLimit)
+          .snapshots()
+          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+          .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
+  Stream<List<TaskCompletion>> watchCompletionsFor(
+    String householdId,
+    String memberId, {
+    required CalendarDate from,
+    required CalendarDate to,
+  }) =>
+      _completions(householdId)
+          .where('completedFor', isEqualTo: memberId)
+          .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
+          .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
+          .snapshots()
+          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+          .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
   Future<void> saveTask({
     required String householdId,
     String? taskId,

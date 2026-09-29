@@ -23,6 +23,19 @@ abstract interface class TodoRepository {
     required CalendarDate to,
   });
 
+  /// The tasks that name one member — the only task read a kid device may
+  /// make, because the rules let it see nothing else (accounts ADR-0003).
+  Stream<List<Task>> watchTasksFor(String householdId, String memberId);
+
+  /// What has been done *for* one member between two days, inclusive — a kid
+  /// device's own ticks and the ones a parent made on its behalf.
+  Stream<List<TaskCompletion>> watchCompletionsFor(
+    String householdId,
+    String memberId, {
+    required CalendarDate from,
+    required CalendarDate to,
+  });
+
   Future<void> saveTask({
     required String householdId,
     String? taskId,

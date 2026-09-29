@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
@@ -33,7 +30,7 @@ import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
-import '../test/support/pump_screen.dart';
+import 'design_review_press.dart';
 
 /// Not a test — a screenshot press. It renders every tab of the app with a
 /// believable week of a believable household, in light and dark, and writes the
@@ -55,82 +52,16 @@ import '../test/support/pump_screen.dart';
 final _now = DateTime.utc(2026, 9, 18, 6, 30);
 final _today = CalendarDate.parse('2026-09-18');
 
-const _phone = Size(390, 844);
-
 HouseholdClock get _clock =>
     HouseholdClock('Africa/Johannesburg', now: () => _now);
-
-/// Every font the app ships, read from the bundle's own manifest — the type
-/// family *and* the icon font. A test renders in Ahem by default, so without
-/// this the screenshots are black boxes where the words and the icons should be,
-/// which is the opposite of useful for a design review.
-Future<void> _loadEveryFont() async {
-  final manifest = json.decode(
-    await rootBundle.loadString('FontManifest.json'),
-  ) as List<Object?>;
-  for (final entry in manifest.cast<Map<String, Object?>>()) {
-    final family = entry['family'] as String?;
-    final assets = (entry['fonts'] as List<Object?>? ?? const [])
-        .cast<Map<String, Object?>>();
-    if (family == null || assets.isEmpty) continue;
-    final loader = FontLoader(family);
-    for (final asset in assets) {
-      final path = asset['asset'] as String?;
-      if (path != null) loader.addFont(rootBundle.load(path));
-    }
-    // A family the bundle names but does not carry — cupertino_icons is one —
-    // must not take the whole press down with it.
-    try {
-      await loader.load();
-    } on Exception {
-      continue;
-    }
-  }
-}
 
 void main() {
   setUpAll(() async {
     tz_data.initializeTimeZones();
-    await _loadEveryFont();
+    await loadEveryFont();
   });
 
-  /// Renders one screen at phone size and writes it to `design-review/`.
-  Future<void> capture(
-    WidgetTester tester,
-    String name, {
-    required Widget screen,
-    required List<ChangeNotifierProvider<Object?>> providers,
-    required Future<void> Function() emit,
-    Brightness brightness = Brightness.light,
-    double textScale = 1,
-  }) async {
-    tester.view.devicePixelRatio = 2;
-    tester.view.physicalSize = _phone * 2;
-    addTearDown(tester.view.reset);
-    // Elevation is part of the look being reviewed; tests normally hide it. It
-    // has to go back before the test ends, or the framework's painting-invariant
-    // check fails the test it was meant to illustrate.
-    debugDisableShadows = false;
-
-    await pumpScreen(
-      tester,
-      screen,
-      providers: providers,
-      brightness: brightness,
-      textScale: textScale,
-    );
-    await emit();
-    await tester.pumpAndSettle();
-
-    try {
-      await expectLater(
-        find.byType(MaterialApp),
-        matchesGoldenFile('../design-review/$name.png'),
-      );
-    } finally {
-      debugDisableShadows = true;
-    }
-  }
+  const capture = captureForReview;
 
   // ------------------------------------------------------------- the way in
 

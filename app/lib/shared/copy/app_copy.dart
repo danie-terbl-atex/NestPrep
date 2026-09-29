@@ -1,5 +1,6 @@
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
+import 'kid_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -364,6 +365,7 @@ abstract final class AppCopy {
     HouseholdFailure(:final problem) => householdProblem(problem),
     LocationFailure(:final problem) => locationProblem(problem),
     DocumentFailure(:final problem) => documentProblem(problem),
+    KidSignInFailure(:final problem) => KidCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
@@ -401,6 +403,8 @@ abstract final class AppCopy {
       'To leave the household, use Leave household.',
     HouseholdProblem.emailNotVerified =>
       'Confirm your email address first — check your inbox for the link.',
+    HouseholdProblem.kidAccount =>
+      'That needs a grown-up\u2019s account, not a kid sign-in.',
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',

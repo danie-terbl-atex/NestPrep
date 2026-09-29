@@ -31,8 +31,12 @@ cloud because the client redirects every service.
 - `src/<feature>/` — one folder per feature (`ENG-04`); `src/index.ts` only re-exports and sets
   global options.
 - `src/shared/admin_app.ts` is the one lazily-initialised admin app; `firestore.ts` and `auth.ts`
-  are the two handles taken from it. `auth()` exists for one job: writing the `households` custom
-  claim that Storage Security Rules read, because they cannot read Firestore (documents ADR-0001).
+  are the two handles taken from it. `auth()` exists for two jobs: writing the `households` custom
+  claim that Storage Security Rules read, because they cannot read Firestore (documents ADR-0001),
+  and opening and closing kid devices — their users, their `kidProfile` claim and the custom token
+  that signs them in (accounts ADR-0003). **`createCustomToken` on Cloud Functions needs the runtime
+  service account to hold Service Account Token Creator on itself**; without it `redeemKidPairing`
+  refuses with `signInUnavailable`. The emulator needs nothing.
 - A callable parses its input with a zod schema at the edge and never casts (`ENG-09`). Errors go
   through `household/errors.ts`: one `refuse('<reason>')` that puts the reason in the error's
   `details`, because three different refusals share the gRPC code `already-exists` and the client

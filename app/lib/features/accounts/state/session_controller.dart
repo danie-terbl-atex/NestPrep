@@ -8,6 +8,7 @@ import '../data/account_repository.dart';
 import '../data/auth_gateway.dart';
 import '../model/account.dart';
 import '../model/auth_user.dart';
+import '../model/kid_identity.dart';
 import '../model/session.dart';
 
 /// Who is signed in, for the whole app. This is the one controller that is not
@@ -48,6 +49,13 @@ final class SessionController extends ChangeNotifier {
   String? get activeHouseholdId => switch (_session) {
     AsyncData(value: final SignedIn signedIn) =>
       signedIn.account.householdToShow,
+    _ => null,
+  };
+
+  /// Which kid profile this device is signed in as, or null when it is not a
+  /// kid device (accounts ADR-0003).
+  KidIdentity? get kidIdentity => switch (_session) {
+    AsyncData(value: KidSignedIn(:final kid)) => kid,
     _ => null,
   };
 
@@ -189,6 +197,16 @@ final class SessionController extends ChangeNotifier {
 
     if (user == null) {
       _session = const AsyncData(SignedOut());
+      notifyListeners();
+      return;
+    }
+
+    // A kid device has no account document to read or write: it is a profile
+    // in one household, and that is the whole of its session (accounts
+    // ADR-0003).
+    final kid = user.kid;
+    if (kid != null) {
+      _session = AsyncData(KidSignedIn(uid: user.uid, kid: kid));
       notifyListeners();
       return;
     }
