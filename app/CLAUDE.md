@@ -137,7 +137,7 @@ so the on-screen copy cannot tell you the backend was unreachable.
 - **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
   `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
   fetched from the real service on both targets (it is a way to reach the phone, not household
-  data). The four Android channels are created by `MainActivity.kt` over the method channel
+  data). The Android channels (`AndroidChannel` — digest, documents, handover, chores, photos, the other home) are created by `MainActivity.kt` over the method channel
   `io.nullstate.nestprep/notifications`, with the app's own words; the status-bar mark is
   `res/drawable/ic_notification.xml`. The permission prompt appears only from a tap on *Turn on
   notifications*, never at launch. **iOS push is not wired**: `ios/Runner/Runner.entitlements`

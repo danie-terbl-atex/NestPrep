@@ -2416,7 +2416,9 @@ service cloud.firestore {
 
       function notificationsCategoriesAreValid(value) {
         return value is map
-          && value.keys().hasOnly(['documents', 'handover', 'chores'])
+          // `photos` and `coParenting` are the V2 producers' switches (nanny-hub
+          // ADR-0004, household ADR-0004).
+          && value.keys().hasOnly(['documents', 'handover', 'chores', 'photos', 'coParenting'])
           && value.values().hasOnly([true, false]);
       }
 

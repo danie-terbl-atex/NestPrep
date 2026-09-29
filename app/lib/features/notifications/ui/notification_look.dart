@@ -14,6 +14,8 @@ abstract final class NotificationLook {
         NotificationCategory.documents => Icons.description_outlined,
         NotificationCategory.handover => Icons.child_care_outlined,
         NotificationCategory.chores => Icons.star_outline_rounded,
+        NotificationCategory.photos => Icons.photo_camera_outlined,
+        NotificationCategory.coParenting => Icons.cottage_outlined,
         NotificationCategory.test => Icons.notifications_active_outlined,
       };
 
@@ -23,6 +25,8 @@ abstract final class NotificationLook {
         NotificationCategory.documents => NestTileTint.sky,
         NotificationCategory.handover => NestTileTint.pink,
         NotificationCategory.chores => NestTileTint.mint,
+        NotificationCategory.photos => NestTileTint.pink,
+        NotificationCategory.coParenting => NestTileTint.peach,
         NotificationCategory.test => NestTileTint.accent,
       };
 
@@ -51,5 +55,7 @@ abstract final class NotificationLook {
         SwitchableCategory.documents => Icons.description_outlined,
         SwitchableCategory.handover => Icons.child_care_outlined,
         SwitchableCategory.chores => Icons.star_outline_rounded,
+        SwitchableCategory.photos => Icons.photo_camera_outlined,
+        SwitchableCategory.coParenting => Icons.cottage_outlined,
       };
 }

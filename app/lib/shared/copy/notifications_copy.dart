@@ -27,6 +27,8 @@ abstract final class NotificationsCopy {
         NotificationCategory.documents => 'Document reminder',
         NotificationCategory.handover => 'Shift handover',
         NotificationCategory.chores => 'Chores and rewards',
+        NotificationCategory.photos => 'Photo from a shift',
+        NotificationCategory.coParenting => 'The other home',
         NotificationCategory.test => 'Test',
       };
 
@@ -100,6 +102,8 @@ abstract final class NotificationsCopy {
         SwitchableCategory.documents => 'Documents to renew',
         SwitchableCategory.handover => 'Shift handovers',
         SwitchableCategory.chores => 'Chores and rewards',
+        SwitchableCategory.photos => 'Photos from a shift',
+        SwitchableCategory.coParenting => 'The other home',
       };
   static String categoryHint(SwitchableCategory category) => switch (category) {
     SwitchableCategory.documents =>
@@ -107,6 +111,9 @@ abstract final class NotificationsCopy {
     SwitchableCategory.handover => 'When a carer ends a shift',
     SwitchableCategory.chores =>
       'When a chore waits for your check, or a reward is asked for',
+    SwitchableCategory.photos => 'When a carer sends a photo during a shift',
+    SwitchableCategory.coParenting =>
+      'When the other home asks for a change or leaves a handover note',
   };
 
   static const quietTitle = 'Quiet hours';
@@ -132,11 +139,15 @@ abstract final class NotificationsCopy {
     AndroidChannel.documents => 'Document reminders',
     AndroidChannel.handover => 'Shift handovers',
     AndroidChannel.chores => 'Chores and rewards',
+    AndroidChannel.photos => 'Photos from a shift',
+    AndroidChannel.twoHomes => 'The other home',
   };
   static String channelDescription(AndroidChannel channel) => switch (channel) {
     AndroidChannel.digest => 'One summary of your day, each morning',
     AndroidChannel.documents => 'When a household document needs renewing',
     AndroidChannel.handover => 'When a carer ends a shift',
     AndroidChannel.chores => 'Chores to check and rewards asked for',
+    AndroidChannel.photos => 'When a carer sends a photo during a shift',
+    AndroidChannel.twoHomes => 'Changes and handover notes from the other home',
   };
 }

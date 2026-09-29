@@ -47,7 +47,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are sixty-five of them, so a new one cannot slip past these checks', () => {
+  it('there are sixty-eight of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -70,8 +70,11 @@ describe('every function — callable, trigger or schedule', () => {
     // (product-analytics ADR-0002). Notifications: six — two schedules (the
     // digest and delivery), three Firestore triggers (a handover, a chore to
     // check, a reward asked for) and the test callable (notifications
-    // ADR-0001 to ADR-0003). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(65);
+    // ADR-0001 to ADR-0003), and three more triggers on the same channel: a
+    // carer's photo (nanny-hub ADR-0004) and the other home's requests and
+    // handover notes (household ADR-0004). A feature adds its count and its
+    // line.
+    expect(endpoints()).toHaveLength(68);
   });
 
   it('runs in the one region, which is the database region', () => {

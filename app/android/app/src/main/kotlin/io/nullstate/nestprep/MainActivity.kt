@@ -12,9 +12,10 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterFragmentActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        // The four notification channels a person can silence one by one in
-        // the phone's own settings (notifications ADR-0001). Their names come
-        // from the app's copy; this only asks Android to make them.
+        // The notification channels (`AndroidChannel` in the app) a person can
+        // silence one by one in the phone's own settings (notifications
+        // ADR-0001). Their names come from the app's copy; this only asks
+        // Android to make them.
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, NOTIFICATIONS)
             .setMethodCallHandler { call, result ->
                 when (call.method) {

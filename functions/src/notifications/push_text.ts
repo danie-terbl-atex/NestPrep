@@ -64,3 +64,23 @@ export const TEST_TEXT: PushText = {
   title: 'Notifications are on',
   body: 'This is how NestPrep will tap you on the shoulder.',
 };
+
+export const PHOTO_UPDATE_TEXT: PushText = {
+  title: 'A photo from the shift',
+  body: 'The carer sent a photo — open NestPrep to see it.',
+};
+
+export const COPARENT_SWAP_TEXT: PushText = {
+  title: 'The other home asked to swap days',
+  body: 'Nothing changes until you answer.',
+};
+
+export const COPARENT_SCHEDULE_TEXT: PushText = {
+  title: 'The other home proposed a new schedule',
+  body: 'Nothing changes until you answer.',
+};
+
+export const COPARENT_HANDOVER_TEXT: PushText = {
+  title: 'A handover note from the other home',
+  body: 'See what is coming across before the switch.',
+};

@@ -4,17 +4,19 @@ import { logger } from 'firebase-functions/v2';
 import { deliverExpiryReminders, type ReminderReport } from './expiry_delivery';
 import { NOTIFICATION_INBOX } from './notification_refs';
 import { dispatchInboxItem, type DispatchResult } from './push_dispatch';
+import { deliverPendingPhotoUpdates } from './photo_delivery';
 import type { PushSender } from './push_sender';
 import { deliverPendingSummaries } from './shift_delivery';
 
 /**
  * The delivery job's run, apart from its schedule so the emulator suite can
- * drive it with a fixed clock (notifications ADR-0001, BE-15). Three passes,
+ * drive it with a fixed clock (notifications ADR-0001, BE-15). Four passes,
  * each bounded and each safe to run twice:
  *
  * 1. the pending expiry reminders documents wrote (documents ADR-0005);
  * 2. any shift handover the trigger never reached (nanny-hub ADR-0002);
- * 3. every push that is due now and not yet sent — held by somebody's quiet
+ * 3. any carer's photo update the trigger never reached (nanny-hub ADR-0004);
+ * 4. every push that is due now and not yet sent — held by somebody's quiet
  *    hours, or put back after an outage.
  */
 export const DUE_PAGE = 100;
@@ -23,6 +25,7 @@ export const DUE_PAGES = 5;
 export interface DeliveryRunReport {
   readonly reminders: ReminderReport;
   readonly handovers: number;
+  readonly photos: number;
   readonly pushes: Readonly<Partial<Record<DispatchResult, number>>>;
 }
 
@@ -60,8 +63,9 @@ export async function runNotificationDelivery(
 ): Promise<DeliveryRunReport> {
   const reminders = await deliverExpiryReminders(store, sender, now);
   const handovers = await deliverPendingSummaries(store, sender, now);
+  const photos = await deliverPendingPhotoUpdates(store, sender, now);
   const pushes = await sendDuePushes(store, sender, now);
-  const report = { reminders, handovers, pushes };
-  logger.info('notifications delivered', { ...reminders, handovers, ...pushes });
+  const report = { reminders, handovers, photos, pushes };
+  logger.info('notifications delivered', { ...reminders, handovers, photos, ...pushes });
   return report;
 }

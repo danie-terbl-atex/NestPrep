@@ -6,6 +6,7 @@ import 'documents_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'nanny_hub_route.dart';
+import 'two_homes_route.dart';
 
 /// Where notifications live under the household shell (notifications
 /// ADR-0001), and where each kind of notification lands when it is tapped.
@@ -55,6 +56,12 @@ abstract final class NotificationsRoute {
       NannyHubRoute.summaryPathFor(householdId, targetId),
     NotificationTarget.shiftSummary => NannyHubRoute.pathFor(householdId),
     NotificationTarget.stars => ChorePointsRoute.pathFor(householdId),
+    NotificationTarget.photoUpdates when targetId != null =>
+      NannyHubRoute.photosPathFor(householdId, targetId),
+    NotificationTarget.photoUpdates => NannyHubRoute.pathFor(householdId),
+    NotificationTarget.coParentLink when targetId != null =>
+      TwoHomesRoute.linkPathFor(householdId, targetId),
+    NotificationTarget.coParentLink => TwoHomesRoute.pathFor(householdId),
   };
 
   /// Where a digest section's link goes.

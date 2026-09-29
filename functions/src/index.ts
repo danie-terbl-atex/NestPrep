@@ -91,3 +91,7 @@ export { notifyShiftHandover } from './notifications/notify_shift_handover';
 export { notifyChoreCheck } from './notifications/notify_chore_check';
 export { notifyRewardRequest } from './notifications/notify_reward_request';
 export { sendTestNotification } from './notifications/send_test_notification';
+// the V2 producers on the same channel: a carer's photo (nanny-hub ADR-0004) and
+// the other home's requests and handover notes (household ADR-0004)
+export { notifyPhotoUpdate } from './notifications/notify_photo_update';
+export { notifyCoParentRequest, notifyCoParentHandover } from './notifications/notify_coparent';

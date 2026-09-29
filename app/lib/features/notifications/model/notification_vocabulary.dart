@@ -15,6 +15,13 @@ enum NotificationCategory {
   documents,
   handover,
   chores,
+
+  /// A carer's photo mid-shift (nanny-hub ADR-0004).
+  photos,
+
+  /// The other home asking for a change, or leaving a handover note
+  /// (household ADR-0004).
+  coParenting,
   test;
 
   static NotificationCategory fromName(String name) =>
@@ -22,7 +29,7 @@ enum NotificationCategory {
 }
 
 /// The categories a person switches off one by one (notifications ADR-0003).
-enum SwitchableCategory { documents, handover, chores }
+enum SwitchableCategory { documents, handover, chores, photos, coParenting }
 
 /// The sections a digest can hold, in the order it reads (ADR-0002).
 enum DigestSectionKind {
@@ -45,7 +52,13 @@ enum NotificationTarget {
   documents,
   vault,
   shiftSummary,
-  stars;
+  stars,
+
+  /// A shift's photo feed; the id is the shift (nanny-hub ADR-0004).
+  photoUpdates,
+
+  /// One co-parent link; the id is the link (household ADR-0004).
+  coParentLink;
 
   /// Unknown targets open the inbox, which always holds the notification.
   static NotificationTarget fromName(String name) =>
@@ -58,7 +71,9 @@ enum AndroidChannel {
   digest('nestprep_digest'),
   documents('nestprep_documents'),
   handover('nestprep_handover'),
-  chores('nestprep_chores');
+  chores('nestprep_chores'),
+  photos('nestprep_photos'),
+  twoHomes('nestprep_two_homes');
 
   const AndroidChannel(this.id);
 

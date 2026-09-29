@@ -10,21 +10,31 @@
  */
 
 /**
- * What a notification is about. `digest` is the morning summary; the other
- * three are things other features ask this one to say. `test` is the push a
- * person sends themselves from the settings screen.
+ * What a notification is about. `digest` is the morning summary; the others
+ * are things other features ask this one to say — `photos` a carer's photo
+ * mid-shift (nanny-hub ADR-0004), `coParenting` the other home asking for a
+ * change or leaving a handover note (household ADR-0004). `test` is the push
+ * a person sends themselves from the settings screen.
  */
 export const NOTIFICATION_CATEGORIES = [
   'digest',
   'documents',
   'handover',
   'chores',
+  'photos',
+  'coParenting',
   'test',
 ] as const;
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
 
 /** The categories a person can switch off one by one (notifications ADR-0003). */
-export const SWITCHABLE_CATEGORIES = ['documents', 'handover', 'chores'] as const;
+export const SWITCHABLE_CATEGORIES = [
+  'documents',
+  'handover',
+  'chores',
+  'photos',
+  'coParenting',
+] as const;
 export type SwitchableCategory = (typeof SWITCHABLE_CATEGORIES)[number];
 
 /** The sections a digest can hold, in the order it reads (notifications ADR-0002). */
@@ -49,6 +59,8 @@ export const NOTIFICATION_TARGETS = [
   'vault',
   'shiftSummary',
   'stars',
+  'photoUpdates',
+  'coParentLink',
 ] as const;
 export type NotificationTarget = (typeof NOTIFICATION_TARGETS)[number];
 
@@ -61,6 +73,8 @@ export const ANDROID_CHANNELS: Record<NotificationCategory, string> = {
   documents: 'nestprep_documents',
   handover: 'nestprep_handover',
   chores: 'nestprep_chores',
+  photos: 'nestprep_photos',
+  coParenting: 'nestprep_two_homes',
   test: 'nestprep_digest',
 };
 

@@ -228,6 +228,11 @@ describe('every callable declares what it may cost', () => {
         'notifyRewardRequest',
         'notifyShiftHandover',
         'sendTestNotification',
+        // The V2 producers on the same channel (nanny-hub ADR-0004, household
+        // ADR-0004): each fans a record out to the people it concerns.
+        'notifyCoParentHandover',
+        'notifyCoParentRequest',
+        'notifyPhotoUpdate',
       ].sort(),
     );
   });
