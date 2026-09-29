@@ -17,6 +17,8 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../two_homes/ui/custody_day_bands.dart';
+import '../../two_homes/ui/custody_day_mark.dart';
 import '../model/calendar_week.dart';
 import '../model/quick_add/quick_add_result.dart';
 import '../state/calendar_controller.dart';
@@ -137,6 +139,9 @@ class CalendarScreen extends StatelessWidget {
             onSelect: controller.selectDay,
             onPrevious: controller.goToPreviousWeek,
             onNext: controller.goToNextWeek,
+            // co-parenting: which home each linked child is with (household
+            // ADR-0004). Draws nothing when two homes is off.
+            dayFooter: (day) => CustodyDayMark(day: day),
           ),
           const SizedBox(height: NestSpace.md),
           Row(
@@ -176,10 +181,16 @@ class CalendarScreen extends StatelessWidget {
               isEmpty: (_) => false,
               onRetry: controller.retry,
               emptyBuilder: (_) => const SizedBox.shrink(),
-              dataBuilder: (_, week) => DayAgenda(
+              dataBuilder: (context, week) => DayAgenda(
                 week: week,
                 day: controller.selectedDay,
                 householdId: controller.householdId,
+                // co-parenting: the linked children's all-day bands, at the
+                // top of the day (household ADR-0004). None when there are
+                // none, or when two homes is off.
+                lead: CustodyDayBands.showsOn(context, controller.selectedDay)
+                    ? CustodyDayBands(day: controller.selectedDay)
+                    : null,
               ),
             ),
           ),

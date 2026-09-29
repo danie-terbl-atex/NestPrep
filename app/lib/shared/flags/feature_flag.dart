@@ -20,7 +20,11 @@ enum FeatureFlag {
   snapSchoolLetter('snapSchoolLetter'),
 
   /// The shared week: who is handling what (calendar ADR-0006).
-  mentalLoadView('mentalLoadView');
+  mentalLoadView('mentalLoadView'),
+
+  /// A child in two homes: shared schedules and handovers (household
+  /// ADR-0004).
+  coParenting('coParenting');
 
   const FeatureFlag(this.field);
 

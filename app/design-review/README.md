@@ -11,7 +11,8 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
 `flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
-The nanny hub's eleven are `tool/nanny_design_review_test.dart`.
+The nanny hub's eleven are `tool/nanny_design_review_test.dart`. Two homes' fourteen are
+`tool/two_homes_design_review_test.dart` (household ADR-0004).
 
 Five presses share one shutter: `design_review_test.dart` (the tabs and the way in),
 `kid_design_review_test.dart`, `family_design_review_test.dart`, `household_access_review_test.dart`
@@ -66,6 +67,13 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `shared-links-light.png` / `shared-links-dark.png` | every live link: when it ends, how often it was opened, who shared it, a PIN tag, and the stop button |
 | `offline-copies-light.png` / `offline-copies-dark.png` | what this phone keeps behind the vaults' lock: the room it takes, each copy with its "Available offline" badge (documents ADR-0007) |
 | `share-page-{document,pdf,pin,expired}-{light,dark}.png` | the one page a person without NestPrep sees — served by the `documentShare` Function, shot at 390 px by headless Chrome with `tools/share_page_review.sh`, not by the press: a picture inline, a PDF behind a button, the PIN form after a wrong try, and an expired link |
+| `two-homes-light.png` / `two-homes-dark.png` | two homes: a link waiting for this home to confirm, and a live one — where the child is today, the coming week in each home's colour, the next handover — then the ways in and the privacy boundary (household ADR-0004) |
+| `two-homes-link-light.png` / `two-homes-link-dark.png` | one link: the next two weeks, the coming handovers with how far the bag has got, and a swap the other home has asked for |
+| `two-homes-handover-light.png` / `two-homes-handover-dark.png` | a handover: who goes where, the bag half packed, the usual things a tap away, and the notes both homes read |
+| `two-homes-setup-light.png` / `two-homes-setup-dark.png` | making a code: the child, this home's name and colour, then the schedule chosen from four patterns |
+| `two-homes-join-light.png` / `two-homes-join-dark.png` | accepting a code: what the other home offers, the fortnight it proposes, this home's profile for the child, and what will be shared |
+| `two-homes-privacy-light.png` / `two-homes-privacy-dark.png` | what the other home can see, and what stays — the same two lists everywhere they appear |
+| `week-two-homes-light.png` / `week-two-homes-dark.png` | the week with a linked child: a small bar under each day in the home's colour, and the day's all-day band — *goes to Mum's home, at 17:00* |
 
 ## What to look at
 

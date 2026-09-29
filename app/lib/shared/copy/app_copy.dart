@@ -15,6 +15,7 @@ import 'product_analytics_copy.dart';
 import 'school_letter_copy.dart';
 import 'share_link_copy.dart';
 import 'subscription_copy.dart';
+import 'two_homes_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
@@ -40,6 +41,8 @@ export 'offline_copies_copy.dart';
 // calendar V2: snap a school letter (calendar ADR-0005).
 export 'school_letter_copy.dart';
 export 'share_link_copy.dart';
+// co-parenting: a child in two homes (household ADR-0004).
+export 'two_homes_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -426,6 +429,8 @@ abstract final class AppCopy {
     AiFailure(:final problem) => AiCopy.problem(problem),
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
+    // co-parenting (household ADR-0004).
+    CoParentFailure(:final problem) => TwoHomesCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

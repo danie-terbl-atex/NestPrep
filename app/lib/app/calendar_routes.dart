@@ -12,6 +12,7 @@ import '../features/calendar_sync/state/connected_calendars_controller.dart';
 import '../features/calendar_sync/ui/connected_calendars_screen.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
+import '../features/two_homes/ui/custody_calendar_scope.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/time/household_clock.dart';
 import 'app_router.dart';
@@ -36,8 +37,13 @@ List<GoRoute> calendarRoutes(SessionController session) => [
           update: (context, view, controller) =>
               (controller ?? calendarControllerFor(context, state))
                 ..showBirthdaysOf(view.members),
-          child: CalendarScreen(
-            onSelectTab: (tab) => goToTab(context, state, tab),
+          // co-parenting: the linked children's days on the week, when two
+          // homes is on (household ADR-0004).
+          child: CustodyCalendarScope(
+            householdId: HouseholdRoute.idFrom(state),
+            child: CalendarScreen(
+              onSelectTab: (tab) => goToTab(context, state, tab),
+            ),
           ),
         ),
   ),

@@ -8,6 +8,7 @@ import '../../../app/family_route.dart';
 import '../../../app/home_care_route.dart';
 import '../../../app/household_route.dart';
 import '../../../app/nanny_hub_route.dart';
+import '../../../app/two_homes_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
@@ -15,6 +16,7 @@ import '../../../shared/flags/feature_flags_controller.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
 import '../../subscriptions/ui/plan_link.dart';
+import '../../two_homes/model/two_homes_access.dart';
 import '../model/household_area.dart';
 import '../model/household_view.dart';
 
@@ -49,6 +51,29 @@ class HouseholdPlaces extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () =>
                   context.push(NannyHubRoute.pathFor(view.household.id)),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // co-parenting: a child in two homes (household ADR-0004), for the
+        // family, behind its flag.
+        if (context.watch<FeatureFlagsController>().isOn(
+              FeatureFlag.coParenting,
+            ) &&
+            TwoHomesAccess.of(view).showsWayIn) ...[
+          NestCard(
+            variant: NestCardVariant.flat,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: TwoHomesCopy.openFromHousehold,
+              subtitle: TwoHomesCopy.openFromHouseholdBody,
+              leading: const NestIconTile(
+                icon: Icons.cottage_outlined,
+                tint: NestTileTint.peach,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  context.push(TwoHomesRoute.pathFor(view.household.id)),
             ),
           ),
           const SizedBox(height: NestSpace.lg),

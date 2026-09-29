@@ -143,6 +143,11 @@ void main() {
         'builds the subscription providers over live Firebase and the store',
     'lib/features/subscriptions/data/in_app_purchase_store_billing.dart':
         'wraps the platform store plugin',
+    // co-parenting (household ADR-0004).
+    'lib/app/two_homes_providers.dart':
+        'builds the two-homes providers over live Firebase',
+    'lib/features/two_homes/data/callable_two_homes_directory.dart':
+        'calls Functions',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -210,6 +215,9 @@ void main() {
     'lib/features/school_letter/data/letter_picker.dart':
         'an enum and an interface only',
     'lib/features/mental_load/data/card_image_sharer.dart': 'interface only',
+    'lib/features/two_homes/data/two_homes_repository.dart': 'interface only',
+    'lib/features/two_homes/data/two_homes_directory.dart':
+        'an enum and an interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

@@ -20,6 +20,8 @@ export const FEATURE_FLAGS = [
   // ---- calendar V2 (calendar ADR-0005, ADR-0006) ----
   'snapSchoolLetter',
   'mentalLoadView',
+  // ---- two homes (household ADR-0004) ----
+  'coParenting',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

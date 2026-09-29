@@ -304,6 +304,20 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ==== rules/firestore/root/coparent.rules ====
+    // ---- co-parenting: codes and the authority (household ADR-0004) ----
+    // Closed to every client. A readable code collection is a list of ways into
+    // a child's week; the authority names both households of a link, which is
+    // exactly what neither home may learn about the other. The co-parenting
+    // Functions are the only way in.
+    match /coParentInvites/{code} {
+      allow read, write: if false;
+    }
+
+    match /coParentLinks/{linkId} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/document_shares.rules ====
     // ---- documents: a shared link's secrets (documents ADR-0006) ----
     // Keyed by the hash of the link's token, holding the PIN's hash and how
@@ -564,6 +578,33 @@ service cloud.firestore {
           && isServerTime('requestedAt');
 
         allow update, delete: if false;
+      }
+
+      // ==== rules/firestore/household/coparent.rules ====
+      // ---- co-parenting: a child in two homes (household ADR-0004) ----
+      // This household's own copy of a link with another home. Only the
+      // co-parenting Functions write it — both homes' copies in one transaction —
+      // so no client ever writes across households. It is read here under this
+      // household's grants and nothing else: no rule names the other household,
+      // so no read a phone can make reaches the other home's data.
+      //
+      // The link and its schedule are where the child is, so they are read with
+      // the calendar. A handover carries medicine given, so it needs `medical`
+      // too. Requests are a negotiation between the adults who run the week, so
+      // they are read by whoever may change the calendar.
+      match /coParentLinks/{linkId} {
+        allow read: if canView(householdId, 'calendar');
+        allow write: if false;
+
+        match /handovers/{date} {
+          allow read: if canView(householdId, 'calendar') && canView(householdId, 'medical');
+          allow write: if false;
+        }
+
+        match /requests/{requestId} {
+          allow read: if canEdit(householdId, 'calendar');
+          allow write: if false;
+        }
       }
 
       // ==== rules/firestore/household/document_shares.rules ====

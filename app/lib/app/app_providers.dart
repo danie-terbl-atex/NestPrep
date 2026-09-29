@@ -66,6 +66,7 @@ import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
 import 'subscription_providers.dart';
+import 'two_homes_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -210,6 +211,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // calendar V2: the school-letter reader and the card sharer (calendar
   // ADR-0005, ADR-0006). The switches are provided above.
   ...calendarV2Providers(),
+  // co-parenting: two homes (household ADR-0004).
+  ...twoHomesProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

@@ -46,6 +46,7 @@ import 'document_tools_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
+import 'two_homes_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -658,6 +659,8 @@ List<ModelFixture> modelFixtures() {
     ...homeCareModelFixtures(),
     // documents V2: a shared link (documents ADR-0006).
     ...documentToolsModelFixtures(),
+    // co-parenting: a child in two homes (household ADR-0004).
+    ...twoHomesModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
   ];
