@@ -6,6 +6,7 @@ import '../../../shared/format/nest_dates.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/ui/nest_date_field.dart';
+import '../../../shared/ui/pick_minute_of_day.dart';
 import '../../../shared/ui/recurrence_editor.dart';
 import '../../household/model/member.dart';
 import '../../household/ui/member_picker.dart';
@@ -269,11 +270,8 @@ class _TimeField extends StatelessWidget {
   }
 
   Future<void> _pick(BuildContext context) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
-    );
+    final picked = await pickMinuteOfDay(context, initialMinutes: minutes);
     if (picked == null) return;
-    onChanged((picked.hour * 60) + picked.minute);
+    onChanged(picked);
   }
 }

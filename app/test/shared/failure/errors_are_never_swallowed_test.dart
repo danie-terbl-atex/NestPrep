@@ -182,6 +182,10 @@ void main() {
     // (accounts ADR-0004). Cancelling a listener has no failure to report:
     // anything it was going to say has already reached `_onError`.
     'subscription.cancel())',
+    // Family profiles re-reading when a changed grant moves which profiles
+    // the viewer may read (family-profiles ADR-0002). `retry` puts any
+    // failure on the roster the screen renders.
+    'retry())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

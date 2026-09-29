@@ -83,6 +83,11 @@ void main() {
   );
 
   Future<void> pump(WidgetTester tester, String initialLocation) async {
+    // A tall phone: the way in sits below the people, the children and the
+    // family's profiles, and this is about where it goes, not where it is.
+    tester.view.devicePixelRatio = 3;
+    tester.view.physicalSize = const Size(390 * 3, 1400 * 3);
+    addTearDown(tester.view.reset);
     await pumpRouter(
       tester,
       router: routerFrom(initialLocation),

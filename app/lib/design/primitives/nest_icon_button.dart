@@ -39,7 +39,11 @@ class NestIconButton extends StatelessWidget {
         Colors.transparent,
       ),
     };
+    // Its own node, so it never merges into the heading beside it — a section
+    // header read as one button, "Allergies, Add an allergy, No allergies", is
+    // what it did before (`FE-13`).
     return Semantics(
+      container: true,
       button: true,
       label: label,
       enabled: onPressed != null,

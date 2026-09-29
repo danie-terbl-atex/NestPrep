@@ -116,10 +116,11 @@ void main() {
     final owner = <String, String>{};
     for (final MapEntry(key: path, value: className) in copyFiles.entries) {
       final copySource = File(path).readAsStringSync();
+      // Constants, and the functions that build a sentence from a value.
       for (final match in RegExp(
-        r'static const (\w+) =',
+        r'static (?:const (\w+) =|String (\w+)\()',
       ).allMatches(copySource)) {
-        final name = '$className.${match.group(1)!}';
+        final name = '$className.${match.group(1) ?? match.group(2)!}';
         names.add(name);
         owner[name] = path;
       }

@@ -1,0 +1,175 @@
+// ---- family profiles (family-profiles ADR-0001, ADR-0002) ----
+//
+// What the household knows about each person, beside the member rather
+// than on it, because rules can hide a document and never a field. The
+// document id is the member id, so there is no field to put somebody
+// else's id into. An admin writes anybody's; everybody else writes only
+// their own. Nobody deletes one: it goes with its member, inside
+// `removeMember`, so a removed child's health data does not outlive them.
+// Every client write is a merge, so these rules judge the document as it
+// will be after the write.
+//
+// Who reads what is the household's grant (household ADR-0003, family-profiles
+// ADR-0002): a profile — allergies included — by the `familyProfiles` area,
+// medication by the `medical` area, each at `own` only for the caller's own
+// member (a kid device's own is the profile it is bound to, accounts
+// ADR-0004). A person with their own login always reads and writes their own
+// profile and medication, whatever the grant: it is about them.
+
+match /familyProfiles/{memberId} {
+  // Allergies live here rather than behind `medical`: whoever the household
+  // lets see a child's profile — the person packing a lunch — must be able to
+  // see what the child cannot eat (family-profiles ADR-0002).
+  allow read: if canView(householdId, 'familyProfiles')
+    || (hasOwnOnly(householdId, 'familyProfiles') && memberId == ownMemberId(householdId))
+    || hasClaimed(householdId, memberId);
+
+  allow create: if mayEditProfile(householdId, memberId)
+    && memberExists(householdId, memberId)
+    && isFamilyProfile(request.resource.data)
+    && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
+
+  // The school is checked only when it moves: a school deleted after a
+  // child pointed at it must not lock the rest of that child's profile.
+  allow update: if mayEditProfile(householdId, memberId)
+    && isFamilyProfile(request.resource.data)
+    && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
+        || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
+
+  allow delete: if false;
+}
+
+// Medication, in a document of its own so that fewer people read it.
+match /memberHealth/{memberId} {
+  allow read: if mayReadHealth(householdId, memberId);
+
+  allow create: if mayEditProfile(householdId, memberId)
+    && memberExists(householdId, memberId)
+    && isMemberHealth(request.resource.data);
+
+  allow update: if mayEditProfile(householdId, memberId)
+    && isMemberHealth(request.resource.data);
+
+  allow delete: if false;
+}
+
+// A school is shared by every child at it — marking one nut-free is a
+// rule for all of them — so only an admin changes one.
+match /schools/{schoolId} {
+  // A school's name and whether it is nut-free say nothing about anybody,
+  // and a child at `own` needs theirs beside their profile.
+  allow read: if canView(householdId, 'familyProfiles')
+    || hasOwnOnly(householdId, 'familyProfiles');
+
+  allow create: if isAdmin(householdId)
+    && request.resource.data.keys().hasOnly(['name', 'nutFree', 'createdAt'])
+    && isBoundedText(request.resource.data.name, 80)
+    && request.resource.data.nutFree is bool
+    && isServerTime('createdAt');
+
+  allow update: if isAdmin(householdId)
+    && onlyChanged(['name', 'nutFree'])
+    && isBoundedText(request.resource.data.name, 80)
+    && request.resource.data.nutFree is bool;
+
+  allow delete: if isAdmin(householdId);
+}
+
+// An admin writes anybody's profile and medication; everybody else only
+// their own, through their own login — `hasClaimed`, not `isOwnMember`, so a
+// kid device reads its profile at `own` and changes nothing in it
+// (accounts ADR-0004). A grant of `edit` does not widen this: family other
+// than an admin cannot edit somebody else's profile either.
+function mayEditProfile(householdId, memberId) {
+  return isAdmin(householdId) || hasClaimed(householdId, memberId);
+}
+
+// Who may read a person's medication: the `medical` grant — family always,
+// a kid, helper or carer as a parent chose — and the person themselves.
+// Mirrored by `FamilyAccess.canSeeHealth` (family-profiles ADR-0002).
+function mayReadHealth(householdId, memberId) {
+  return canView(householdId, 'medical')
+    || (hasOwnOnly(householdId, 'medical') && memberId == ownMemberId(householdId))
+    || hasClaimed(householdId, memberId);
+}
+
+function memberExists(householdId, memberId) {
+  return exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
+}
+
+function isKnownSchool(householdId, schoolId) {
+  return schoolId == null
+    || (schoolId is string
+        && exists(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)));
+}
+
+function isBoundedText(value, longest) {
+  return isNonEmptyString(value) && value.size() <= longest;
+}
+
+function isOptionalText(value, longest) {
+  return value == null || isBoundedText(value, longest);
+}
+
+// Likes and dislikes. The number is `FamilyEdits.listLimit`.
+function isShortList(value) {
+  return value is list && value.size() <= 30;
+}
+
+// The allergen and diet vocabularies are `Allergen` and `DietaryFlag`
+// in the app; `family_vocabulary_matches_the_rules_test.dart` keeps the
+// three lists the same.
+function isFamilyProfile(data) {
+  return data.keys().hasOnly(
+       ['isChild', 'likes', 'dislikes', 'diet', 'allergies', 'otherAllergies',
+        'schoolId', 'grade', 'clothingSize', 'shoeSize'])
+    && data.get('isChild', false) is bool
+    && isShortList(data.get('likes', []))
+    && isShortList(data.get('dislikes', []))
+    && data.get('diet', []) is list
+    && data.get('diet', []).hasOnly(
+         ['nutFree', 'vegetarian', 'vegan', 'halal', 'kosher', 'noPork',
+          'glutenFree', 'dairyFree'])
+    && isAllergyMap(data.get('allergies', {}))
+    && data.get('otherAllergies', {}) is map
+    && data.get('otherAllergies', {}).size() <= 10
+    && isOptionalText(data.get('schoolId', null), 128)
+    && isOptionalText(data.get('grade', null), 40)
+    && isOptionalText(data.get('clothingSize', null), 40)
+    && isOptionalText(data.get('shoeSize', null), 40);
+}
+
+// Keyed by allergen, so the vocabulary is one `hasOnly` — and so a rule
+// elsewhere (lunch-box) can ask `allergies.keys().hasAny(...)` with one
+// read. Every value's shape is checked by name, because rules cannot loop.
+function isAllergyMap(allergies) {
+  return allergies is map
+    && allergies.keys().hasOnly(
+         ['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish',
+          'shellfish', 'sesame'])
+    && isAllergyAt(allergies, 'peanut')
+    && isAllergyAt(allergies, 'treeNut')
+    && isAllergyAt(allergies, 'milk')
+    && isAllergyAt(allergies, 'egg')
+    && isAllergyAt(allergies, 'wheat')
+    && isAllergyAt(allergies, 'soy')
+    && isAllergyAt(allergies, 'fish')
+    && isAllergyAt(allergies, 'shellfish')
+    && isAllergyAt(allergies, 'sesame');
+}
+
+function isAllergyAt(allergies, code) {
+  return !(code in allergies)
+    || (allergies[code] is map
+        && allergies[code].keys().hasOnly(['severity', 'note'])
+        && allergies[code].get('severity', '') in ['mild', 'moderate', 'severe']
+        && isOptionalText(allergies[code].get('note', null), 300));
+}
+
+// Medicines are keyed by a generated id, and rules cannot loop over a
+// map's values, so only their number is bounded here.
+function isMemberHealth(data) {
+  return data.keys().hasOnly(['medications'])
+    && data.get('medications', {}) is map
+    && data.get('medications', {}).size() <= 12;
+}

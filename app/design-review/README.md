@@ -1,6 +1,6 @@
 # Design review — every screen, both themes
 
-Fifteen pictures of NestPrep v1, taken from the real widgets with the real theme and the real font.
+Twenty pictures of NestPrep, taken from the real widgets with the real theme and the real font.
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
@@ -27,6 +27,9 @@ was left alone rather than retaken on a branch that did not change that screen.
 | `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, the jobs as big tiles, and today's food |
 | `kids-sign-in-light.png` / `kids-sign-in-dark.png` | the parent's side: each child, the devices they are signed in on, add one or sign them all out |
 | `kids-pairing-light.png` / `kids-pairing-dark.png` | the code a parent reads out, counting down its ten minutes |
+| `family-light.png` / `family-dark.png` | family profiles: children first, each with their allergies in their severity's tone and the nut-free rule, then everyone else and the household's schools |
+| `family-profile-light.png` / `family-profile-dark.png` | one child's profile: the severe-allergy banner, the nut-free rule with its reasons, then allergies, food and the rest below the fold |
+| `family-profile-dark-200-percent-text.png` | the same profile at the largest text a phone offers |
 
 ## What to look at
 
@@ -56,6 +59,10 @@ The first render of `week-dark-200-percent-text.png` showed the weekday names ru
 `FittedBox` will shrink type forever rather than admit it has run out of room. It is fixed, and the
 fix has a test that measures the gap. These images are regenerated from the current code, so that
 one now shows seven separate days.
+
+The first render of `family-profile-dark-200-percent-text.png` caught the nut-free rule as a tag cut
+to *Nut-free · nut allergy,…* — the reasons, which are the point, were the part that went. It is a
+wrapping banner now.
 
 The first render of `sign-in-light.png` did the same job for the welcome: two of the member marks
 had landed on the same bearing as the tiles inside them and overlapped, which no test could have

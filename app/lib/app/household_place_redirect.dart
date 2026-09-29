@@ -1,6 +1,7 @@
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import 'documents_route.dart';
+import 'family_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -55,6 +56,11 @@ HouseholdArea? _areaAt(String location, String householdId) {
   }
   if (location.startsWith(DocumentsRoute.pathFor(householdId))) {
     return HouseholdArea.documents;
+  }
+  // Family profiles (family-profiles ADR-0002): a deep link is no way round
+  // a grant of `none`.
+  if (location.startsWith(FamilyRoute.pathFor(householdId))) {
+    return HouseholdArea.familyProfiles;
   }
   return null;
 }

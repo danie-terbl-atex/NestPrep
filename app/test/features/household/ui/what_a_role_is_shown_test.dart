@@ -34,14 +34,7 @@ void main() {
   final now = DateTime.utc(2026, 9, 29, 9);
 
   /// The household as Thandi sees it, holding [grant].
-  HouseholdView thandiWith(AccessGrant grant) => HouseholdView(
-    household: Fixtures.household().copyWith(
-      access: {Fixtures.thandiUid: grant},
-      profiles: {Fixtures.thandiUid: Fixtures.thandiMemberId},
-    ),
-    members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
-    viewerUid: Fixtures.thandiUid,
-  );
+  HouseholdView thandiWith(AccessGrant grant) => Fixtures.helperView(grant);
 
   group('the tab bar', () {
     testWidgets('shows a helper only the areas they may use', (tester) async {

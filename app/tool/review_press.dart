@@ -12,9 +12,11 @@ import '../test/support/pump_screen.dart';
 /// with the real fonts and the real shadows, written to `design-review/`.
 ///
 /// Every press uses it — the tabs (`design_review_test.dart`), household
-/// phase 2's screens (`household_access_review_test.dart`) and the kid device
-/// (`kid_design_review_test.dart`) — which is why it is its own file rather
-/// than a copy in each (`ENG-02`).
+/// phase 2's screens (`household_access_review_test.dart`), the kid device
+/// (`kid_design_review_test.dart`) and family profiles
+/// (`family_design_review_test.dart`) — which is why it is its own file rather
+/// than a copy in each (`ENG-02`). A new press imports this; it never writes a
+/// second shutter.
 const reviewPhone = Size(390, 844);
 
 /// Every font the app ships, read from the bundle's own manifest — the type

@@ -59,6 +59,8 @@ void main() {
         'wraps the platform location plugin',
     'lib/features/documents/data/firestore_document_repository.dart':
         'writes Firestore',
+    'lib/features/family_profiles/data/firestore_family_profile_repository.dart':
+        'writes Firestore',
     'lib/features/documents/data/storage_document_store.dart':
         'wraps FirebaseStorage',
     'lib/features/documents/data/callable_document_directory.dart':
@@ -93,6 +95,8 @@ void main() {
     'lib/features/kid_accounts/data/kid_sign_in_directory.dart':
         'interface only',
     'lib/features/kid_accounts/data/kid_device_repository.dart':
+        'interface only',
+    'lib/features/family_profiles/data/family_profile_repository.dart':
         'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 

@@ -85,7 +85,10 @@ in name order, which does not change what the rules mean. To add a feature's rul
    a bare `isMember` or a role name; that makes it right for helpers, carers, kids and kid devices
    at once (household ADR-0003, accounts ADR-0004). Stamp authorship with `isOwnMember`.
 2. A helper several features need goes in a new `rules/firestore/shared/<name>.rules`; do not grow
-   `access.rules` or `shapes.rules` for one feature.
+   `access.rules` or `shapes.rules` for one feature. **Every partial in a scope shares one
+   namespace**: a function a feature keeps to itself is prefixed with the feature
+   (`isFamilyProfile`, `isDocumentName`), because two partials declaring the same name fail to
+   compile — and the emulator says so only when the suite starts.
 3. `npm --prefix functions run rules:build`, and commit the partial and `firestore.rules` together.
    `npm run test:rules` builds first; `functions/test/unit/rules_are_generated.test.ts` fails when
    the committed file is not what the partials build to, and when a partial passes 300 lines.

@@ -104,6 +104,15 @@ final class Birthday implements Comparable<Birthday> {
     return age < 0 ? null : age;
   }
 
+  /// How old somebody is on [today] — the number a family profile shows under
+  /// a name. Null when the year is unknown or [today] is before they were born.
+  int? ageOn(CalendarDate today) {
+    final turning = ageTurningIn(today.year);
+    if (turning == null) return null;
+    final age = occurrenceIn(today.year).isAfter(today) ? turning - 1 : turning;
+    return age < 0 ? null : age;
+  }
+
   /// By the day of the year, so a list of them reads as a calendar rather than
   /// as the order the members happen to be in.
   @override

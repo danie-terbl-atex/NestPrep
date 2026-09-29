@@ -3,6 +3,7 @@ import { logger } from 'firebase-functions/v2';
 
 import { kidAuthAccounts } from '../accounts/kid_auth_accounts';
 import { detachKidDevices, readKidDeviceUids } from '../accounts/kid_devices';
+import { memberDetailRefs } from '../family_profiles/member_details';
 import { db } from '../shared/firestore';
 import { adminCount, memberRef, readHousehold, roleOf } from './documents';
 import { refuse } from './errors';
@@ -19,6 +20,9 @@ import { removeMemberInput } from './schemas';
  * Every kid device signed in as the profile goes with it, in the same
  * transaction, so no tablet is left acting as somebody who is not there
  * (accounts ADR-0003).
+ *
+ * What the household knew about the person — their family profile and their
+ * medication — is deleted with them (family-profiles ADR-0001).
  */
 export const removeMember = onCall(async (request) => {
   const uid = requireUid(request.auth);
@@ -47,6 +51,10 @@ export const removeMember = onCall(async (request) => {
       });
     }
     transaction.delete(memberRef(store, input.householdId, input.memberId));
+    // family-profiles: their allergies, medication and the rest go with them.
+    for (const detail of memberDetailRefs(store, input.householdId, input.memberId)) {
+      transaction.delete(detail);
+    }
     detachKidDevices(transaction, store, input.householdId, devices);
     return devices;
   });

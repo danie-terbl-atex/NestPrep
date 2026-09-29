@@ -47,6 +47,43 @@ class GalleryStatesSection extends StatelessWidget {
           ],
         ),
         const GalleryGroup(
+          title: 'Tags and tone rows',
+          children: [
+            Wrap(
+              spacing: NestSpace.sm,
+              runSpacing: NestSpace.sm,
+              children: [
+                NestTag(label: 'Neutral'),
+                NestTag(label: 'Accent', tone: NestTagTone.accent),
+                NestTag(label: 'Success', tone: NestTagTone.success),
+                NestTag(
+                  label: 'Nut-free',
+                  tone: NestTagTone.warning,
+                  icon: Icons.no_food_outlined,
+                ),
+                NestTag(
+                  label: 'Severe',
+                  tone: NestTagTone.danger,
+                  icon: Icons.emergency_outlined,
+                ),
+              ],
+            ),
+            NestToneRow(
+              icon: Icons.emergency_outlined,
+              tone: NestTagTone.danger,
+              title: 'Peanuts',
+              subtitle: 'Adrenaline pen in the school bag',
+              trailing: NestTag(label: 'Severe', tone: NestTagTone.danger),
+            ),
+            NestToneRow(
+              icon: Icons.warning_amber_rounded,
+              tone: NestTagTone.warning,
+              title: 'Kiwi',
+              trailing: NestTag(label: 'Moderate', tone: NestTagTone.warning),
+            ),
+          ],
+        ),
+        const GalleryGroup(
           title: 'Loading',
           children: [NestLoadingView(rows: 3)],
         ),

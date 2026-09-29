@@ -31,7 +31,7 @@ void main() {
   test('every model with a JSON boundary has a fixture', () {
     // The count is the ratchet: a sixteenth stored model has to be added here
     // before this passes again.
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 15);
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 18);
   });
 
   for (final fixture in fixtures) {

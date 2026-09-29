@@ -22,6 +22,8 @@ import '../features/documents/data/file_selector_document_picker.dart';
 import '../features/documents/data/firestore_document_repository.dart';
 import '../features/documents/data/launcher_document_opener.dart';
 import '../features/documents/data/storage_document_store.dart';
+import '../features/family_profiles/data/family_profile_repository.dart';
+import '../features/family_profiles/data/firestore_family_profile_repository.dart';
 import '../features/groceries/data/firestore_grocery_repository.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/household/data/callable_household_directory.dart';
@@ -156,6 +158,11 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<KidDeviceRepository>(
     create: (context) =>
         FirestoreKidDeviceRepository(context.read<FirebaseFirestore>()),
+  ),
+  // family-profiles (family-profiles ADR-0001).
+  Provider<FamilyProfileRepository>(
+    create: (context) =>
+        FirestoreFamilyProfileRepository(context.read<FirebaseFirestore>()),
   ),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(

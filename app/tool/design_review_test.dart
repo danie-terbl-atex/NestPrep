@@ -90,15 +90,16 @@ void main() {
   /// welcome, and the household they make on it. Both are choreographed, and
   /// `capture` settles before it presses the shutter, so these are the screens
   /// at rest rather than a frame of the entrance.
-  Future<void> signIn(WidgetTester tester, Brightness brightness) => capture(
-    tester,
-    'sign-in-${brightness.name}',
-    // It reads the session `pumpScreen` already provides, and nothing else.
-    screen: const SignInScreen(),
-    providers: const [],
-    brightness: brightness,
-    emit: () async {},
-  );
+  Future<void> signIn(WidgetTester tester, Brightness brightness) =>
+      captureScreen(
+        tester,
+        'sign-in-${brightness.name}',
+        // It reads the session `pumpScreen` already provides, and nothing else.
+        screen: const SignInScreen(),
+        providers: const [],
+        brightness: brightness,
+        emit: () async {},
+      );
 
   Future<void> householdGate(WidgetTester tester, Brightness brightness) async {
     final directory = FakeHouseholdDirectory();
@@ -109,7 +110,7 @@ void main() {
     );
     addTearDown(controller.dispose);
 
-    await capture(
+    await captureScreen(
       tester,
       'household-gate-${brightness.name}',
       screen: const HouseholdGateScreen(),
@@ -136,7 +137,7 @@ void main() {
     );
     addTearDown(controller.dispose);
 
-    await capture(
+    await captureScreen(
       tester,
       'groceries-${brightness.name}',
       screen: GroceryListScreen(onSelectTab: (_) {}),
@@ -237,7 +238,7 @@ void main() {
     );
     addTearDown(controller.dispose);
 
-    await capture(
+    await captureScreen(
       tester,
       'week-${brightness.name}',
       screen: CalendarScreen(onSelectTab: (_) {}),
@@ -307,7 +308,7 @@ void main() {
       ('m7', 'Sandwiches'),
     ];
 
-    await capture(
+    await captureScreen(
       tester,
       'meals-${brightness.name}',
       screen: MealPlanScreen(onSelectTab: (_) {}),
@@ -349,7 +350,7 @@ void main() {
 
     testWidgets('todos, mine today — ${brightness.name}', (tester) async {
       final parts = todoParts();
-      await capture(
+      await captureScreen(
         tester,
         'todos-mine-${brightness.name}',
         screen: TodoScreen(onSelectTab: (_) {}),
@@ -365,7 +366,7 @@ void main() {
       tester,
     ) async {
       final parts = todoParts();
-      await capture(
+      await captureScreen(
         tester,
         'todos-everyone-${brightness.name}',
         screen: TodoScreen(onSelectTab: (_) {}),
@@ -468,7 +469,7 @@ void main() {
     );
     addTearDown(controller.dispose);
 
-    await capture(
+    await captureScreen(
       tester,
       'week-dark-200-percent-text',
       screen: CalendarScreen(onSelectTab: (_) {}),

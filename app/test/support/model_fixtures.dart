@@ -5,6 +5,10 @@ import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
+import 'package:nestprep/features/family_profiles/model/family_profile.dart';
+import 'package:nestprep/features/family_profiles/model/medication.dart';
+import 'package:nestprep/features/family_profiles/model/member_health.dart';
+import 'package:nestprep/features/family_profiles/model/school.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
@@ -19,6 +23,8 @@ import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/model/task_completion.dart';
 import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
+
+import 'fake_family_profiles.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -193,6 +199,20 @@ List<ModelFixture> modelFixtures() {
     label: 'Tablet',
     pairedBy: 'uid-sam',
     pairedAt: at,
+  );
+
+  const health = MemberHealth(
+    id: 'm-kid',
+    medications: {
+      'a': FamilyFixtures.inhaler,
+      'b': Medication(name: 'Antihistamine', note: 'When needed'),
+    },
+  );
+  final school = School(
+    id: 'oakwood',
+    name: 'Oakwood Primary',
+    nutFree: true,
+    createdAt: at,
   );
 
   return [
@@ -399,6 +419,45 @@ List<ModelFixture> modelFixtures() {
       note:
           'only the kid sign-in callables write it; the client reads it, and '
           'the document id is the device\'s own Auth uid (accounts ADR-0003).',
+    ),
+    // family-profiles (family-profiles ADR-0001): the first stored models
+    // that nest maps of models, which is the nested-model lesson's case.
+    ModelFixture(
+      label: 'FamilyProfile',
+      id: FamilyFixtures.kid.id,
+      value: FamilyFixtures.kid,
+      toJson: FamilyFixtures.kid.toJson,
+      fromJson: FamilyProfile.fromJson,
+      keys: const {
+        'isChild',
+        'likes',
+        'dislikes',
+        'diet',
+        'allergies',
+        'otherAllergies',
+        'schoolId',
+        'grade',
+        'clothingSize',
+        'shoeSize',
+      },
+      note: 'the document id is the member id; there is no field for it',
+    ),
+    ModelFixture(
+      label: 'MemberHealth',
+      id: health.id,
+      value: health,
+      toJson: health.toJson,
+      fromJson: MemberHealth.fromJson,
+      keys: const {'medications'},
+      note: 'medication only — anything else here a helper could not see',
+    ),
+    ModelFixture(
+      label: 'School',
+      id: school.id,
+      value: school,
+      toJson: school.toJson,
+      fromJson: School.fromJson,
+      keys: const {'name', 'nutFree', 'createdAt'},
     ),
   ];
 }

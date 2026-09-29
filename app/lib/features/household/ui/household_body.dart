@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../app/documents_route.dart';
 import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -16,6 +15,7 @@ import '../model/household_view.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
 import '../state/household_controller.dart';
+import 'household_places.dart';
 import 'household_screen.dart';
 import 'household_settings_sheet.dart';
 import 'invite_sheet.dart';
@@ -125,44 +125,7 @@ class HouseholdBody extends StatelessWidget {
           KidSignInLink(householdId: view.household.id),
           const SizedBox(height: NestSpace.lg),
         ],
-        // The way to the live-location screen. It sits with the people rather
-        // than in the bottom bar, and says what it is before it is tapped —
-        // that sharing is each person's own, and ends on its own.
-        NestListRow(
-          leading: const NestIconTile(icon: Icons.person_pin_circle_outlined),
-          title: AppCopy.locationTitle,
-          subtitle: AppCopy.locationYoursBody,
-          trailing: Icon(
-            Icons.chevron_right,
-            size: NestSize.iconMedium,
-            color: NestTheme.of(context).colors.inkTertiary,
-          ),
-          onTap: () =>
-              context.push(HouseholdRoute.wherePathFor(view.household.id)),
-        ),
-        const SizedBox(height: NestSpace.lg),
-        // The household's papers hang off this screen rather than the bottom
-        // bar, which stays at the four things a household does in a week
-        // (documents ADR-0001) — and only for somebody allowed to open them
-        // (household ADR-0003).
-        if (view.permissions.canUse(HouseholdArea.documents))
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: AppCopy.documentsOpenLibrary,
-              subtitle: AppCopy.documentsEmptyBody,
-              leading: const NestIconTile(
-                icon: Icons.folder_shared_outlined,
-                tint: NestTileTint.sky,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              // Pushed, not gone to: this opens *over* the household screen, so
-              // back lands here rather than closing the app (`FE-17`).
-              onTap: () =>
-                  context.push(DocumentsRoute.pathFor(view.household.id)),
-            ),
-          ),
+        HouseholdPlaces(view: view),
         const SizedBox(height: NestSpace.xxl),
         NestButton(
           label: AppCopy.householdLeave,

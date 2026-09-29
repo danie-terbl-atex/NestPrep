@@ -41,7 +41,7 @@ abstract final class AccessCopy {
     HouseholdArea.documents => 'Documents',
     HouseholdArea.lunch => 'Lunch boxes',
     HouseholdArea.familyProfiles => 'Family profiles',
-    HouseholdArea.medical => 'Allergies and medication',
+    HouseholdArea.medical => 'Medication',
     HouseholdArea.homeCare => 'Home care',
     HouseholdArea.nannyHub => 'Nanny hub',
   };
@@ -53,8 +53,9 @@ abstract final class AccessCopy {
     HouseholdArea.meals => 'What everybody is eating this week.',
     HouseholdArea.documents => 'Passports, school letters, the lease.',
     HouseholdArea.lunch => 'The children\'s school lunches.',
-    HouseholdArea.familyProfiles => 'Likes, dislikes, school, sizes.',
-    HouseholdArea.medical => 'Allergies, medication and medical notes.',
+    HouseholdArea.familyProfiles =>
+      'Allergies, likes, dislikes, school, sizes.',
+    HouseholdArea.medical => 'Medicines, doses and medical notes.',
     HouseholdArea.homeCare => 'Cleaning jobs, with photos and steps.',
     HouseholdArea.nannyHub =>
       'Child cards, emergency sheet, house rules, handover.',

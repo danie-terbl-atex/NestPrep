@@ -16,14 +16,6 @@ import '../features/accounts/ui/verify_email_screen.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
-import '../features/documents/data/document_directory.dart';
-import '../features/documents/data/document_opener.dart';
-import '../features/documents/data/document_picker.dart';
-import '../features/documents/data/document_repository.dart';
-import '../features/documents/data/document_store.dart';
-import '../features/documents/state/document_library_controller.dart';
-import '../features/documents/ui/document_folder_screen.dart';
-import '../features/documents/ui/document_library_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -52,11 +44,13 @@ import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'design_gallery_access.dart';
-import 'documents_route.dart';
+import 'documents_routes.dart';
+import 'family_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'kid_routes.dart';
+import 'viewer_member.dart';
 
 /// A route creates the controller its screen reads, so the controller's
 /// lifetime is the screen's (foundation ADR-0006). The household shell is the
@@ -127,39 +121,13 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // household phase 2: the invite step and the access editor (household
         // ADR-0003).
         ...householdAccessRoutes(),
-        // A shell of its own, so the folders screen and a folder share one
-        // controller and one pair of listeners rather than opening a second
-        // set on the way in (documents ADR-0001).
-        ShellRoute(
-          builder: (context, state, child) => ChangeNotifierProvider(
-            create: (context) => DocumentLibraryController(
-              documentRepository: context.read<DocumentRepository>(),
-              documentStore: context.read<DocumentStore>(),
-              documentDirectory: context.read<DocumentDirectory>(),
-              documentPicker: context.read<DocumentPicker>(),
-              documentOpener: context.read<DocumentOpener>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
-              viewerUid: session.uidOrEmpty,
-              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
-            ),
-            child: child,
-          ),
-          routes: [
-            GoRoute(
-              path: DocumentsRoute.path,
-              builder: (context, state) => const DocumentLibraryScreen(),
-            ),
-            GoRoute(
-              path: DocumentsRoute.folderPath,
-              builder: (context, state) => DocumentFolderScreen(
-                folderId: DocumentsRoute.folderIdFrom(state),
-              ),
-            ),
-          ],
-        ),
+        // documents (documents ADR-0001).
+        documentsRoutes(session),
         // The parent's kid sign-in screen (accounts ADR-0003).
         kidSignInRoute(),
+        // family-profiles (family-profiles ADR-0001): the family and one
+        // person's profile.
+        familyRoutes(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(
@@ -167,7 +135,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               liveLocationRepository: context.read<LiveLocationRepository>(),
               locationReporter: context.read<LocationReporter>(),
               householdId: HouseholdRoute.idFrom(state),
-              viewerMemberId: _viewerMemberId(context),
+              viewerMemberId: viewerMemberIdOf(context),
               members: context.read<HouseholdView>().members,
             ),
             child: const LiveLocationScreen(),
@@ -196,7 +164,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               todoRepository: context.read<TodoRepository>(),
               householdClock: context.read<HouseholdClock>(),
               householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
+              memberId: viewerMemberIdOf(context),
               isAdmin: context.read<HouseholdView>().viewerIsAdmin,
               // household phase 2 (household ADR-0003).
               isOwnOnly: context.read<HouseholdView>().permissions.hasOwnOnly(
@@ -218,7 +186,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               mealRepository: context.read<MealRepository>(),
               householdClock: context.read<HouseholdClock>(),
               householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
+              memberId: viewerMemberIdOf(context),
             ),
             child: MealPlanScreen(
               onSelectTab: (tab) => _goToTab(context, state, tab),
@@ -231,7 +199,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             create: (context) => GroceryListController(
               groceryRepository: context.read<GroceryRepository>(),
               householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
+              memberId: viewerMemberIdOf(context),
             ),
             child: GroceryListScreen(
               onSelectTab: (tab) => _goToTab(context, state, tab),
@@ -268,19 +236,13 @@ CalendarController _calendarController(
   calendarRepository: context.read<CalendarRepository>(),
   householdClock: context.read<HouseholdClock>(),
   householdId: HouseholdRoute.idFrom(state),
-  memberId: _viewerMemberId(context),
+  memberId: viewerMemberIdOf(context),
   householdMembers: context.read<HouseholdView>().members,
 );
 
 void _goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
   context.go(HouseholdRoute.pathFor(HouseholdRoute.idFrom(state), tab));
 }
-
-/// The profile the signed-in account claimed here. Everything a member creates
-/// is stamped with it, and the rules check it against `claimedBy` (household
-/// ADR-0001).
-String _viewerMemberId(BuildContext context) =>
-    context.read<HouseholdView>().viewerMember?.id ?? '';
 
 /// Where a caller in this session belongs, or null to leave them where they are.
 ///

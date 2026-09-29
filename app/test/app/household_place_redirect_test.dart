@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/app/documents_route.dart';
+import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_place_redirect.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
@@ -108,6 +109,16 @@ void main() {
       expect(
         householdPlaceRedirect(
           location: DocumentsRoute.folderPathFor(id, 'f-passports'),
+          view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
+        ),
+        HouseholdRoute.householdPathFor(id),
+      );
+    });
+
+    test('and out of family profiles, even by a deep link to one', () {
+      expect(
+        householdPlaceRedirect(
+          location: FamilyRoute.memberPathFor(id, Fixtures.kidMemberId),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
         HouseholdRoute.householdPathFor(id),

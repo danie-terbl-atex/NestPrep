@@ -1,5 +1,6 @@
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
+import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -59,6 +60,17 @@ abstract final class Fixtures {
     household: household(timeZone: timeZone),
     members: members ?? [sam, thandi, kid],
     viewerUid: viewerUid,
+  );
+
+  /// The household as Thandi, a helper, sees it while holding [grant]
+  /// (household ADR-0003) — what the rules read for her.
+  static HouseholdView helperView(AccessGrant grant) => HouseholdView(
+    household: household().copyWith(
+      access: {thandiUid: grant},
+      profiles: {thandiUid: thandiMemberId},
+    ),
+    members: [sam, thandi, kid],
+    viewerUid: thandiUid,
   );
 
   static MemberRole get adminRole => MemberRole.admin;
