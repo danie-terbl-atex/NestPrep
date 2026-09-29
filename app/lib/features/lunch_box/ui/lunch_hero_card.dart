@@ -72,7 +72,7 @@ class LunchHeroCard extends StatelessWidget {
               isLoading: controller.edit.isFilling,
               onPressed: isFull
                   ? null
-                  : () => controller.edit.autoFill(childWeek.childId),
+                  : () => LunchFlows.fillWeek(context, childWeek: childWeek),
             ),
             const SizedBox(height: NestSpace.sm),
             Text(

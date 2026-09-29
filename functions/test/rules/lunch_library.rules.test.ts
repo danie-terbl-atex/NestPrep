@@ -10,6 +10,7 @@ import {
   WEEK,
   WRAP,
   ZOLA,
+  givenLunchPremium,
   givenTheLunchHousehold,
   kidsTablet,
 } from './lunch_box_fixture';
@@ -66,7 +67,9 @@ describe('lunchItems/{itemId}', () => {
   it('refuses one in somebody else’s name, or that dates itself', async () => {
     const db = await asUser(SAM);
     await assertFails(setDoc(doc(db, `${ITEMS}/pb`), { ...newItem, addedBy: 'm-mia' }));
-    await assertFails(setDoc(doc(db, `${ITEMS}/pb`), { ...newItem, createdAt: new Date() }));
+    await assertFails(
+      setDoc(doc(db, `${ITEMS}/pb`), { ...newItem, createdAt: new Date(Date.now() - 60_000) }),
+    );
   });
 
   it('refuses an item the checks could not read', async () => {
@@ -164,6 +167,10 @@ describe('lunchFavourites/{favouriteId}', () => {
 });
 
 describe('lunchPrep/{week}', () => {
+  // The prep list is premium (lunch-box ADR-0009); the free side of it is in
+  // `lunch_premium.rules.test.ts`.
+  beforeEach(() => givenLunchPremium());
+
   it('family ticks the week’s prep', async () => {
     const db = await asUser(SAM);
     await assertSucceeds(setDoc(doc(db, `${PREP}/${WEEK}`), { done: ['apple'] }));

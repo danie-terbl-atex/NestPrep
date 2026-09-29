@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../data/entitlement_repository.dart';
 import '../model/entitlement.dart';
+import '../model/free_child.dart';
 
 /// The household's entitlement, as its listener last saw it — one listener
 /// for everything under the household shell, like the household itself
@@ -29,8 +30,10 @@ final class HouseholdEntitlement extends ChangeNotifier {
   final String householdId;
 
   StreamSubscription<Entitlement>? _subscription;
+  StreamSubscription<FreeChild?>? _freeChildSubscription;
   Timer? _lapse;
   AsyncState<Entitlement> _entitlement = const AsyncLoading();
+  AsyncState<FreeChild?> _freeChild = const AsyncLoading();
 
   AsyncState<Entitlement> get entitlement => _entitlement;
 
@@ -44,12 +47,25 @@ final class HouseholdEntitlement extends ChangeNotifier {
 
   DateTime now() => _now();
 
+  /// Whether this household's lunch plans may be written for [childId]
+  /// (lunch-box ADR-0009) — the rules' `lunchPlansFor`: every child with
+  /// premium; otherwise the child the free tier recorded, or any child while
+  /// there is no record. Unknown is no, as for [isPremium].
+  bool plansChild(String childId) =>
+      isPremium ||
+      switch (_freeChild) {
+        AsyncData(:final value) => value == null || value.memberId == childId,
+        _ => false,
+      };
+
   /// Listens again. The old listener is let go without waiting for it: its
   /// last word has already been heard, and the new one should not queue
   /// behind it.
   void retry() {
     unawaited(_subscription?.cancel());
+    unawaited(_freeChildSubscription?.cancel());
     _entitlement = const AsyncLoading();
+    _freeChild = const AsyncLoading();
     notifyListeners();
     _listen();
   }
@@ -58,6 +74,21 @@ final class HouseholdEntitlement extends ChangeNotifier {
     _subscription = _repository
         .watchEntitlement(householdId)
         .listen(_onEntitlement, onError: _onError);
+    _freeChildSubscription = _repository
+        .watchFreeChild(householdId)
+        .listen(_onFreeChild, onError: _onFreeChildError);
+  }
+
+  void _onFreeChild(FreeChild? freeChild) {
+    _freeChild = AsyncData(freeChild);
+    notifyListeners();
+  }
+
+  void _onFreeChildError(Object error) {
+    _freeChild = AsyncFailure(
+      error is AppFailure ? error : UnknownFailure(error),
+    );
+    notifyListeners();
   }
 
   void _onEntitlement(Entitlement entitlement) {
@@ -85,6 +116,7 @@ final class HouseholdEntitlement extends ChangeNotifier {
   void dispose() {
     _lapse?.cancel();
     unawaited(_subscription?.cancel());
+    unawaited(_freeChildSubscription?.cancel());
     super.dispose();
   }
 }

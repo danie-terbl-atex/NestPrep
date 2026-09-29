@@ -155,22 +155,34 @@ final class FirestoreLunchRepository implements LunchRepository {
     () => _items(householdId).doc(itemId).update({'archived': archived}),
   );
 
+  /// One write per school day the picks touch, all sent at once. The rules
+  /// check every pick a write changes, and a write holding a whole week is
+  /// past what Firestore evaluates in one request (lunch-box ADR-0010); a
+  /// day is five slots, well inside it. Sent together, not one after
+  /// another, so a week filled offline is queued whole.
   @override
   Future<void> setPicks({
     required String householdId,
     required String childId,
     required LunchWeek week,
     required Map<String, LunchPick?> picks,
-  }) => _writePlan(
-    householdId: householdId,
-    childId: childId,
-    week: week,
-    field: 'slots',
-    values: {
-      for (final MapEntry(:key, :value) in picks.entries)
-        key: value?.toJson() ?? FieldValue.delete(),
-    },
-  );
+  }) async {
+    final byDay = <String, Map<String, Object?>>{};
+    for (final MapEntry(:key, :value) in picks.entries) {
+      final day = key.split('_').first;
+      (byDay[day] ??= {})[key] = value?.toJson() ?? FieldValue.delete();
+    }
+    await Future.wait([
+      for (final values in byDay.values)
+        _writePlan(
+          householdId: householdId,
+          childId: childId,
+          week: week,
+          field: 'slots',
+          values: values,
+        ),
+    ]);
+  }
 
   @override
   Future<void> setFeedback({

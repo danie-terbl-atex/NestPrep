@@ -12,6 +12,7 @@ import '../state/lunch_board_controller.dart';
 import 'lunch_auto_fill_note.dart';
 import 'lunch_child_switcher.dart';
 import 'lunch_day_card.dart';
+import 'lunch_flows.dart';
 import 'lunch_hero_card.dart';
 
 /// One child's week, top to bottom: whose it is, the next box drawn with the
@@ -67,8 +68,10 @@ class LunchBoardBody extends StatelessWidget {
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,
-                onPressed: () =>
-                    context.push(LunchRoute.prepPathFor(householdId)),
+                onPressed: () => LunchFlows.openPrep(
+                  context,
+                  path: LunchRoute.prepPathFor(householdId),
+                ),
               ),
               if (canEdit)
                 NestButton(

@@ -8,7 +8,7 @@ import { db } from '../shared/firestore';
 import { FREE_CHILD_PROFILES } from '../subscriptions/entitlement';
 import { premiumRequired, refuseSubscription } from '../subscriptions/errors';
 import { type SetChildProfileInput, setChildProfileInput } from '../subscriptions/schemas';
-import { householdHasPremium } from '../subscriptions/subscription_documents';
+import { freeChildRef, householdHasPremium } from '../subscriptions/subscription_documents';
 import { FAMILY_PROFILES } from './member_details';
 
 /**
@@ -17,6 +17,11 @@ import { FAMILY_PROFILES } from './member_details';
  * by: one child profile free, more with premium (subscriptions ADR-0001).
  * Rules cannot count, so the count is here, in the same transaction as the
  * write and the entitlement it is checked against (BE-06).
+ *
+ * It also keeps which child the free tier plans for (lunch-box ADR-0009):
+ * the first child marked, until they are unmarked, when another child — if
+ * there is one — takes the place. A premium household plans for every child;
+ * the record says which one stays planned if premium lapses.
  *
  * Who may do it is who may edit the profile: an admin, or the person
  * themselves (family-profiles ADR-0001's `mayEditProfile`). Unmarking is
@@ -49,14 +54,57 @@ export async function markChild(
     if (role !== 'admin' && member.get('claimedBy') !== uid) throw refuseSubscription('notAnAdmin');
 
     const profiles = householdRef(store, input.householdId).collection(FAMILY_PROFILES);
+    const children = await transaction.get(
+      profiles.where('isChild', '==', true).limit(FREE_CHILD_PROFILES + 1),
+    );
+    const others = children.docs.filter((doc) => doc.id !== input.memberId).map((doc) => doc.id);
+    const freeChild = await transaction.get(freeChildRef(store, input.householdId));
+    const freeChildId = freeChildIdOf(freeChild.get('memberId'));
+    // The query above stops at two, so the free child's own profile says
+    // whether they are still a child — in a premium household with several.
+    const freeChildIsAChild =
+      freeChildId !== null &&
+      freeChildId !== input.memberId &&
+      (await transaction.get(profiles.doc(freeChildId))).get('isChild') === true;
     if (input.isChild) {
-      const children = await transaction.get(
-        profiles.where('isChild', '==', true).limit(FREE_CHILD_PROFILES + 1),
-      );
-      const others = children.docs.filter((doc) => doc.id !== input.memberId).length;
       const isPremium = await householdHasPremium(transaction, store, input.householdId, now);
-      if (others >= FREE_CHILD_PROFILES && !isPremium) throw premiumRequired('additionalChild');
+      if (others.length >= FREE_CHILD_PROFILES && !isPremium) {
+        throw premiumRequired('additionalChild');
+      }
     }
     transaction.set(profiles.doc(input.memberId), { isChild: input.isChild }, { merge: true });
+    const nextFreeChild = freeChildAfter({
+      current: freeChildId,
+      currentIsAChild: freeChildIsAChild,
+      memberId: input.memberId,
+      isChild: input.isChild,
+      otherChildren: others,
+    });
+    if (nextFreeChild === freeChildId) return;
+    if (nextFreeChild === null) transaction.delete(freeChildRef(store, input.householdId));
+    else transaction.set(freeChildRef(store, input.householdId), { memberId: nextFreeChild });
   });
+}
+
+function freeChildIdOf(value: unknown): string | null {
+  return typeof value === 'string' && value.length > 0 ? value : null;
+}
+
+/**
+ * Which child the free tier plans for once this marking is written: whoever
+ * it already was, while they are still a child; otherwise the child just
+ * marked, or another child the household already has; otherwise nobody.
+ */
+export function freeChildAfter(marking: {
+  current: string | null;
+  currentIsAChild: boolean;
+  memberId: string;
+  isChild: boolean;
+  otherChildren: readonly string[];
+}): string | null {
+  const { current, currentIsAChild, memberId, isChild, otherChildren } = marking;
+  if (current !== null && current !== memberId && currentIsAChild) return current;
+  if (current === memberId && isChild) return current;
+  if (isChild) return otherChildren[0] ?? memberId;
+  return otherChildren[0] ?? null;
 }

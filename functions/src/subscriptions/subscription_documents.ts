@@ -17,6 +17,9 @@ import { BILLING_STORES, type BillingStore, PLANS, PURCHASE_STATUSES } from './p
  *
  * - `households/{h}/entitlement/current` — what the household may do, read
  *   by everybody in it and by the rules; written only here.
+ * - `households/{h}/entitlement/freeChild` — `{ memberId }`, the one child
+ *   the free tier plans for (lunch-box ADR-0009); kept by `setChildProfile`,
+ *   read by the rules and the app, written only here.
  * - `storePurchases/{key}` — one document per store subscription, keyed by a
  *   hash of the store and its own id; the purchase token or original
  *   transaction id, the household it gives premium to and who linked it.
@@ -25,6 +28,7 @@ import { BILLING_STORES, type BillingStore, PLANS, PURCHASE_STATUSES } from './p
  */
 export const ENTITLEMENT = 'entitlement';
 export const CURRENT = 'current';
+export const FREE_CHILD = 'freeChild';
 export const STORE_PURCHASES = 'storePurchases';
 
 /** How many subscriptions one household's entitlement is read from, at most. */
@@ -32,6 +36,10 @@ export const PURCHASES_PER_HOUSEHOLD = 20;
 
 export function entitlementRef(store: Firestore, householdId: string): DocumentReference {
   return householdRef(store, householdId).collection(ENTITLEMENT).doc(CURRENT);
+}
+
+export function freeChildRef(store: Firestore, householdId: string): DocumentReference {
+  return householdRef(store, householdId).collection(ENTITLEMENT).doc(FREE_CHILD);
 }
 
 export function purchaseKey(billingStore: BillingStore, storeRef: string): string {

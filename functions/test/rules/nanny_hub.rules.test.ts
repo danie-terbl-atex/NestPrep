@@ -165,7 +165,11 @@ describe('the emergency sheet', () => {
       updatedAt: serverTimestamp(),
     };
     await assertSucceeds(setDoc(doc(db, PATHS.sheet), sheet));
-    await assertFails(setDoc(doc(db, PATHS.sheet), { ...sheet, updatedAt: new Date() }));
+    // A client's clock, a minute off: `new Date()` can land on the very
+    // millisecond the emulator stamps as request.time and pass.
+    await assertFails(
+      setDoc(doc(db, PATHS.sheet), { ...sheet, updatedAt: new Date(Date.now() - 60_000) }),
+    );
     await assertFails(setDoc(doc(db, `${HOME}/nannyHome/other`), sheet));
     await assertFails(setDoc(doc(db, PATHS.sheet), { ...sheet, alarmCode: '1234' }));
     await assertFails(deleteDoc(doc(db, PATHS.sheet)));

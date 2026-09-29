@@ -13,6 +13,7 @@ import 'package:nestprep/features/lunch_box/data/firestore_lunch_repository.dart
 import 'package:nestprep/features/lunch_box/model/lunch_feedback.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_item.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
@@ -134,8 +135,25 @@ void main() {
     },
   );
 
+  test('a whole week fills, a day per write (lunch-box ADR-0010)', () async {
+    await lunches.setPicks(
+      householdId: home.id,
+      childId: childId,
+      week: week,
+      picks: {
+        for (final key in LunchPlan.allSlotKeys) key: pick('apple', 'Apple'),
+      },
+    );
+    final plan = await lunches
+        .watchPlan(home.id, childId: childId, week: week)
+        .firstWhere(
+          (plan) => plan.slots.length == LunchPlan.allSlotKeys.length,
+        );
+    expect(plan.slots, hasLength(25));
+  });
+
   test(
-    'the starter library seeds, and a mark keeps the server’s time',
+    'the starter library seeds, and a free household marks nothing eaten',
     () async {
       await lunches.seedItems(
         home.id,
@@ -152,38 +170,35 @@ void main() {
           '3_main': pick('wrap', 'Chicken wrap', ['wheat']),
         },
       );
-      await lunches.setFeedback(
-        householdId: home.id,
-        childId: childId,
-        week: week,
-        isoWeekday: 3,
-        feedback: LunchFeedback.of(
-          box: LunchVerdict.ate,
-          items: const {},
-          by: home.memberId,
+      // Learning from what came home is premium, and a household made here
+      // is free (lunch-box ADR-0009): only a Function can grant premium, so
+      // the device proves the refusal; the rules suite proves the rest.
+      await expectLater(
+        lunches.setFeedback(
+          householdId: home.id,
+          childId: childId,
+          week: week,
+          isoWeekday: 3,
+          feedback: LunchFeedback.of(
+            box: LunchVerdict.ate,
+            items: const {},
+            by: home.memberId,
+          ),
         ),
+        throwsA(isA<PermissionDeniedFailure>()),
       );
-      final plan = await lunches
-          .watchPlan(home.id, childId: childId, week: week)
-          .firstWhere((plan) => plan.feedbackOn(3)?.at != null);
-      expect(plan.feedbackOn(3)?.boxVerdict, LunchVerdict.ate);
     },
   );
 
-  test('a prep tick is added and taken away', () async {
-    await lunches.setPrepDone(
-      householdId: home.id,
-      week: week,
-      itemId: 'carrots',
-      done: true,
+  test('a free household ticks no prep list (lunch-box ADR-0009)', () async {
+    await expectLater(
+      lunches.setPrepDone(
+        householdId: home.id,
+        week: week,
+        itemId: 'carrots',
+        done: true,
+      ),
+      throwsA(isA<PermissionDeniedFailure>()),
     );
-    expect((await lunches.watchPrep(home.id, week).first).done, ['carrots']);
-    await lunches.setPrepDone(
-      householdId: home.id,
-      week: week,
-      itemId: 'carrots',
-      done: false,
-    );
-    expect((await lunches.watchPrep(home.id, week).first).done, isEmpty);
   });
 }

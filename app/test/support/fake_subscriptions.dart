@@ -5,6 +5,7 @@ import 'package:nestprep/features/subscriptions/data/store_billing.dart';
 import 'package:nestprep/features/subscriptions/data/subscription_directory.dart';
 import 'package:nestprep/features/subscriptions/model/billing_store.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/free_child.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/features/subscriptions/model/store_product.dart';
 import 'package:nestprep/features/subscriptions/model/store_update.dart';
@@ -164,10 +165,32 @@ final class FakeSubscriptionDirectory implements SubscriptionDirectory {
 /// The household's entitlement document, emitted by hand. A new listener
 /// hears the latest emission first, as a Firestore snapshot listener does.
 final class FakeEntitlementRepository implements EntitlementRepository {
-  FakeEntitlementRepository({Entitlement? initial}) : _latest = initial;
+  /// No free-child record by default, as for a household that has not marked
+  /// a child since the record began: every child is planned.
+  FakeEntitlementRepository({Entitlement? initial, FreeChild? freeChild})
+    : _latest = initial,
+      _latestFreeChild = freeChild;
 
   Entitlement? _latest;
+  FreeChild? _latestFreeChild;
   final _entitlement = StreamController<Entitlement>.broadcast();
+  final _freeChild = StreamController<FreeChild?>.broadcast();
+
+  void emitFreeChild(FreeChild? freeChild) {
+    _latestFreeChild = freeChild;
+    _freeChild.add(freeChild);
+  }
+
+  @override
+  Stream<FreeChild?> watchFreeChild(String householdId) =>
+      Stream.multi((listener) {
+        listener.add(_latestFreeChild);
+        final subscription = _freeChild.stream.listen(
+          listener.add,
+          onError: listener.addError,
+        );
+        listener.onCancel = subscription.cancel;
+      });
 
   void emit(Entitlement entitlement) {
     _latest = entitlement;
@@ -176,7 +199,10 @@ final class FakeEntitlementRepository implements EntitlementRepository {
 
   void fail(Object error) => _entitlement.addError(error);
 
-  Future<void> close() => _entitlement.close();
+  Future<void> close() async {
+    await _entitlement.close();
+    await _freeChild.close();
+  }
 
   @override
   Stream<Entitlement> watchEntitlement(String householdId) =>

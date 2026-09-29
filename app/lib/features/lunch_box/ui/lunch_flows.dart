@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/copy/app_copy.dart';
@@ -14,6 +15,7 @@ import 'lunch_day_menu.dart';
 import 'lunch_favourites_sheet.dart';
 import 'lunch_feedback_sheet.dart';
 import 'lunch_picker_sheet.dart';
+import 'lunch_premium.dart';
 
 /// The conversations a day card starts — a sheet asked, an answer handed to
 /// the controller — kept out of the card so it stays about how a day looks
@@ -29,6 +31,8 @@ abstract final class LunchFlows {
     required LunchDay day,
     required LunchSlot slot,
   }) async {
+    if (!await LunchPremium.mayPlan(context, childWeek.childId)) return;
+    if (!context.mounted) return;
     final controller = context.read<LunchBoardController>();
     final choice = await showLunchPickerSheet(
       context: context,
@@ -81,6 +85,8 @@ abstract final class LunchFlows {
       case LunchDayAction.packFavourite:
         await packFavourite(context, childWeek: childWeek, day: day);
       case LunchDayAction.clear:
+        if (!await LunchPremium.mayPlan(context, childWeek.childId)) return;
+        if (!context.mounted) return;
         await context.read<LunchBoardController>().edit.clearDay(
           childId: childWeek.childId,
           isoWeekday: day.date.weekday,
@@ -113,6 +119,8 @@ abstract final class LunchFlows {
     required LunchChildWeek childWeek,
     required LunchDay day,
   }) async {
+    if (!await LunchPremium.mayPlan(context, childWeek.childId)) return;
+    if (!context.mounted) return;
     final controller = context.read<LunchBoardController>();
     final favourite = await showLunchFavouritesSheet(
       context: context,
@@ -132,17 +140,23 @@ abstract final class LunchFlows {
     required LunchChildWeek childWeek,
     required LunchDay day,
     required LunchVerdict verdict,
-  }) => context.read<LunchBoardController>().edit.markEaten(
-    childId: childWeek.childId,
-    isoWeekday: day.date.weekday,
-    box: verdict,
-  );
+  }) async {
+    if (!await LunchPremium.mayLearn(context, childWeek.childId)) return;
+    if (!context.mounted) return;
+    await context.read<LunchBoardController>().edit.markEaten(
+      childId: childWeek.childId,
+      isoWeekday: day.date.weekday,
+      box: verdict,
+    );
+  }
 
   static Future<void> markItems(
     BuildContext context, {
     required LunchChildWeek childWeek,
     required LunchDay day,
   }) async {
+    if (!await LunchPremium.mayLearn(context, childWeek.childId)) return;
+    if (!context.mounted) return;
     final controller = context.read<LunchBoardController>();
     final outcome = await showLunchFeedbackSheet(
       context: context,
@@ -166,5 +180,25 @@ abstract final class LunchFlows {
           isoWeekday: weekday,
         );
     }
+  }
+
+  /// Packs the rest of the week from what ranks best for the child.
+  static Future<void> fillWeek(
+    BuildContext context, {
+    required LunchChildWeek childWeek,
+  }) async {
+    if (!await LunchPremium.mayPlan(context, childWeek.childId)) return;
+    if (!context.mounted) return;
+    await context.read<LunchBoardController>().edit.autoFill(childWeek.childId);
+  }
+
+  /// Opens the Sunday prep list, which is premium.
+  static Future<void> openPrep(
+    BuildContext context, {
+    required String path,
+  }) async {
+    if (!await LunchPremium.mayPrep(context)) return;
+    if (!context.mounted) return;
+    await context.push(path);
   }
 }

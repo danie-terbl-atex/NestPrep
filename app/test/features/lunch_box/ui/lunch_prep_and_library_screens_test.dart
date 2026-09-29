@@ -3,12 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
-import 'package:nestprep/features/lunch_box/state/lunch_board_controller.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
-import 'package:provider/provider.dart';
 
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
@@ -33,11 +31,7 @@ void main() {
     await pumpScreen(
       tester,
       screen,
-      providers: [
-        ChangeNotifierProvider<LunchBoardController>.value(
-          value: harness.controller,
-        ),
-      ],
+      providers: harness.providers,
       brightness: brightness,
       textScale: scale,
     );

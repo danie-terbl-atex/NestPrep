@@ -52,7 +52,9 @@ describe('starting a shift', () => {
     const path = `${HOME}/nannyShifts/new`;
     await assertFails(setDoc(doc(db, path), { ...shift(CARER.member), status: 'ended' }));
     await assertFails(setDoc(doc(db, path), { ...shift(CARER.member), ticks: { 'x:y': true } }));
-    await assertFails(setDoc(doc(db, path), { ...shift(CARER.member), startedAt: new Date() }));
+    await assertFails(
+      setDoc(doc(db, path), { ...shift(CARER.member), startedAt: new Date(Date.now() - 60_000) }),
+    );
   });
 
   it('refuses anybody whose hub is not edit', async () => {

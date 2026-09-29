@@ -17,8 +17,13 @@ import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 /// and every box using it is refused; a key the rules do not list is never
 /// safety-checked.
 void main() {
-  final rules = File('../rules/firestore/household/lunch_box.rules')
-      .readAsStringSync();
+  // The feature's rules are two partials: the matches, and the checks every
+  // plan write calls (lunch-box ADR-0010).
+  final rules = [
+    File('../rules/firestore/household/lunch_box.rules').readAsStringSync(),
+    File('../rules/firestore/household/lunch_box_checks.rules')
+        .readAsStringSync(),
+  ].join('\n');
   final analytics = File(
     '../functions/src/product_analytics/analytics_documents.ts',
   ).readAsStringSync();
@@ -44,9 +49,10 @@ void main() {
   }
 
   test('the rules know exactly the allergens the app does', () {
-    expect(listAfter('function isLunchAllergens'), {
-      for (final allergen in Allergen.values) allergen.name,
-    });
+    final codes = {for (final allergen in Allergen.values) allergen.name};
+    expect(listAfter('function isLunchAllergens'), codes);
+    // A pick in a plan is checked with its own copy of the list.
+    expect(listAfter("]).hasOnly(['peanut'"), codes);
   });
 
   test('and exactly its five slots, for items and for go-to boxes', () {
@@ -59,15 +65,12 @@ void main() {
     expect(listAfter("data.get('slots', {}).keys().hasOnly("), {
       ...LunchPlan.allSlotKeys,
     });
-    for (final slot in LunchSlot.values) {
+    for (final key in LunchPlan.allSlotKeys) {
       expect(
         rules,
-        contains("isLunchSlotSafe(slots, day + '_${slot.name}', avoid)"),
+        contains("lunchPickIsSafe(slots['$key'], avoid)"),
         reason: 'rules cannot loop, so each slot is checked by name',
       );
-    }
-    for (var day = 1; day <= 5; day++) {
-      expect(rules, contains("lunchDayIsSafe(slots, changed, avoid, '$day')"));
     }
   });
 

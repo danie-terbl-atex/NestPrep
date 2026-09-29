@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { Timestamp, doc, setDoc } from 'firebase/firestore';
 
 import { KID, PROFILES, THANDI, givenTheKidsDetails, givenTheParkers } from './family_fixture';
 import { asKid, givenData, type Firestore } from './rules_harness';
@@ -70,5 +70,27 @@ export async function givenThandiHasLunch(level: 'view' | 'edit'): Promise<void>
       { access: { [THANDI]: { familyProfiles: 'view', lunch: level } } },
       { merge: true },
     );
+  });
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Premium for the Parkers, a month ahead — or lapsed a day ago — written the
+ * way only the subscriptions Functions write it (lunch-box ADR-0009).
+ */
+export async function givenLunchPremium(state: 'active' | 'lapsed' = 'active'): Promise<void> {
+  const until = state === 'active' ? Date.now() + 30 * DAY : Date.now() - DAY;
+  await givenData(async (db: Firestore) => {
+    await setDoc(doc(db, 'households/h1/entitlement/current'), {
+      premiumUntil: Timestamp.fromMillis(until),
+    });
+  });
+}
+
+/** The child the free tier plans for, as `setChildProfile` records it. */
+export async function givenTheFreeChild(memberId: string): Promise<void> {
+  await givenData(async (db: Firestore) => {
+    await setDoc(doc(db, 'households/h1/entitlement/freeChild'), { memberId });
   });
 }

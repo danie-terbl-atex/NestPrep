@@ -10,6 +10,12 @@
 // school — `FoodRules.mustAvoid` in the app. A slot copies its item's
 // allergen codes, because rules cannot look an item up per slot; the
 // library is where those codes are kept honest.
+//
+// Free and premium (lunch-box ADR-0009, subscriptions ADR-0001): a free
+// household plans one child's week — the child `entitlement/freeChild` names
+// — and marks nothing eaten and ticks no prep list. Premium plans every
+// child, learns from what came home and keeps the Sunday prep list. Only
+// writes are gated: a household that lapses reads everything it made.
 
 // The household's library. Never deleted — put away instead — because past
 // weeks' eaten-or-not history names its items.
@@ -40,6 +46,8 @@ match /lunchPlans/{planId} {
   allow create: if canEdit(householdId, 'lunch')
     && isLunchPlan(planId, request.resource.data)
     && isLunchChild(householdId, request.resource.data.childId)
+    && lunchPlansFor(householdId, request.resource.data.childId)
+    && (request.resource.data.get('feedback', {}).size() == 0 || hasPremium(householdId))
     && lunchSlotsAreSafe(householdId, request.resource.data.childId,
          request.resource.data.get('slots', {}),
          request.resource.data.get('slots', {}).keys())
@@ -49,6 +57,9 @@ match /lunchPlans/{planId} {
   allow update: if canEdit(householdId, 'lunch')
     && onlyChanged(['slots', 'feedback'])
     && isLunchPlan(planId, request.resource.data)
+    && lunchPlansFor(householdId, resource.data.childId)
+    && (request.resource.data.get('feedback', {}) == resource.data.get('feedback', {})
+          || hasPremium(householdId))
     && lunchSlotsAreSafe(householdId, resource.data.childId,
          request.resource.data.get('slots', {}),
          request.resource.data.get('slots', {}).diff(resource.data.get('slots', {})).affectedKeys())
@@ -79,11 +90,12 @@ match /lunchFavourites/{favouriteId} {
   allow delete: if canEdit(householdId, 'lunch');
 }
 
-// A week's Sunday prep ticks, one document per household week.
+// A week's Sunday prep ticks, one document per household week. Premium.
 match /lunchPrep/{week} {
   allow read: if canView(householdId, 'lunch');
 
   allow create, update: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && week.matches('^[0-9]{4}-W[0-9]{2}$')
     && request.resource.data.keys().hasOnly(['done'])
     && request.resource.data.done is list
@@ -163,81 +175,20 @@ function isLunchPlan(planId, data) {
     && data.get('feedback', {}).keys().hasOnly(['1', '2', '3', '4', '5']);
 }
 
+// Whether this household's plan may be written for this child: every child
+// with premium; without it, the one child `setChildProfile` recorded. A
+// household with no record has not marked a child since the record began,
+// so it is not held to one it never had.
+function lunchPlansFor(householdId, childId) {
+  let freeChild = /databases/$(database)/documents/households/$(householdId)/entitlement/freeChild;
+  return hasPremium(householdId)
+    || !exists(freeChild)
+    || get(freeChild).data.get('memberId', '') == childId;
+}
+
 // Lunches are planned for children: a member family profiles marks as one.
 function isLunchChild(householdId, childId) {
   return childId is string
     && exists(/databases/$(database)/documents/households/$(householdId)/familyProfiles/$(childId))
     && get(/databases/$(database)/documents/households/$(householdId)/familyProfiles/$(childId)).data.get('isChild', false) == true;
-}
-
-// The allergen codes that must stay out of this child's box: their fixed
-// allergies, and both nuts when nuts are ruled out for them — the rules'
-// copy of `FoodRules.mustAvoid`.
-function lunchAvoidFor(householdId, childId) {
-  let profile = get(/databases/$(database)/documents/households/$(householdId)/familyProfiles/$(childId)).data;
-  let allergens = profile.get('allergies', {}).keys();
-  let isNutFree = allergens.hasAny(['peanut', 'treeNut'])
-    || profile.get('diet', []).hasAny(['nutFree'])
-    || lunchSchoolIsNutFree(householdId, profile.get('schoolId', null));
-  return isNutFree ? allergens.concat(['peanut', 'treeNut']) : allergens;
-}
-
-// Only a school that exists makes a rule; a deleted one reads as no school,
-// as it does in the app (`FamilyRoster`).
-function lunchSchoolIsNutFree(householdId, schoolId) {
-  return schoolId is string
-    && exists(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId))
-    && get(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)).data.get('nutFree', false) == true;
-}
-
-// A slot that is gone, or holds a well-formed pick with nothing the child
-// must avoid.
-function isLunchSlotSafe(slots, key, avoid) {
-  return !(key in slots)
-    || (isLunchPick(slots[key]) && !slots[key].get('allergens', []).hasAny(avoid));
-}
-
-// Every slot this write changed, checked by name — rules cannot loop, and
-// slots it did not touch are not this write's to answer for.
-function lunchSlotsAreSafe(householdId, childId, slots, changed) {
-  return changed.size() == 0 || lunchChangedSlotsAreSafe(slots, changed, lunchAvoidFor(householdId, childId));
-}
-
-function lunchChangedSlotsAreSafe(slots, changed, avoid) {
-  return lunchDayIsSafe(slots, changed, avoid, '1')
-    && lunchDayIsSafe(slots, changed, avoid, '2')
-    && lunchDayIsSafe(slots, changed, avoid, '3')
-    && lunchDayIsSafe(slots, changed, avoid, '4')
-    && lunchDayIsSafe(slots, changed, avoid, '5');
-}
-
-function lunchDayIsSafe(slots, changed, avoid, day) {
-  return (!((day + '_main') in changed) || isLunchSlotSafe(slots, day + '_main', avoid))
-    && (!((day + '_fruit') in changed) || isLunchSlotSafe(slots, day + '_fruit', avoid))
-    && (!((day + '_veg') in changed) || isLunchSlotSafe(slots, day + '_veg', avoid))
-    && (!((day + '_snack') in changed) || isLunchSlotSafe(slots, day + '_snack', avoid))
-    && (!((day + '_treat') in changed) || isLunchSlotSafe(slots, day + '_treat', avoid));
-}
-
-// What came home: a verdict for the box, optionally one per slot, marked in
-// the caller's own name at the server's time. A day taken back is gone.
-function lunchFeedbackIsValid(householdId, feedback, changed) {
-  return lunchDayFeedbackIsValid(householdId, feedback, changed, '1')
-    && lunchDayFeedbackIsValid(householdId, feedback, changed, '2')
-    && lunchDayFeedbackIsValid(householdId, feedback, changed, '3')
-    && lunchDayFeedbackIsValid(householdId, feedback, changed, '4')
-    && lunchDayFeedbackIsValid(householdId, feedback, changed, '5');
-}
-
-function lunchDayFeedbackIsValid(householdId, feedback, changed, day) {
-  return !(day in changed)
-    || !(day in feedback)
-    || (feedback[day] is map
-        && feedback[day].keys().hasOnly(['verdict', 'items', 'by', 'at'])
-        && feedback[day].verdict in ['ate', 'left']
-        && feedback[day].get('items', {}) is map
-        && feedback[day].get('items', {}).keys().hasOnly(['main', 'fruit', 'veg', 'snack', 'treat'])
-        && feedback[day].get('items', {}).values().hasOnly(['ate', 'left'])
-        && isOwnMember(householdId, feedback[day].by)
-        && feedback[day].at == request.time);
 }

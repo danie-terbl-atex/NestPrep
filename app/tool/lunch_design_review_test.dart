@@ -6,11 +6,9 @@ import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
-import 'package:nestprep/features/lunch_box/state/lunch_board_controller.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/household_fixtures.dart';
@@ -93,11 +91,7 @@ void main() {
       tester,
       name,
       screen: screen,
-      providers: [
-        ChangeNotifierProvider<LunchBoardController>.value(
-          value: harness.controller,
-        ),
-      ],
+      providers: harness.providers,
       emit: () => emitWeek(harness),
       brightness: brightness,
       textScale: textScale,

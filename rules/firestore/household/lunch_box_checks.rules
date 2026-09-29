@@ -1,0 +1,110 @@
+// ---- lunch boxes: the safety and what-came-home checks (lunch-box ADR-0001, ADR-0010) ----
+//
+// The functions `lunch_box.rules` calls on every plan write, apart so each
+// file stays one reading. Nothing here is a match.
+
+// The allergen codes that must stay out of this child's box: their fixed
+// allergies, and both nuts when nuts are ruled out for them — the rules'
+// copy of `FoodRules.mustAvoid`.
+function lunchAvoidFor(householdId, childId) {
+  let profile = get(/databases/$(database)/documents/households/$(householdId)/familyProfiles/$(childId)).data;
+  let allergens = profile.get('allergies', {}).keys();
+  let isNutFree = allergens.hasAny(['peanut', 'treeNut'])
+    || profile.get('diet', []).hasAny(['nutFree'])
+    || lunchSchoolIsNutFree(householdId, profile.get('schoolId', null));
+  return isNutFree ? allergens.concat(['peanut', 'treeNut']) : allergens;
+}
+
+// Only a school that exists makes a rule; a deleted one reads as no school,
+// as it does in the app (`FamilyRoster`).
+function lunchSchoolIsNutFree(householdId, schoolId) {
+  return schoolId is string
+    && exists(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId))
+    && get(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)).data.get('nutFree', false) == true;
+}
+
+// A well-formed pick with nothing the child must avoid, in as few
+// expressions as the check allows: Firestore stops a request at 1000, and a
+// plan write with its grant, child, premium and shape checks has room for
+// six of these (measured, lunch-box ADR-0010). The app writes one day — five
+// slots — at most per write for that reason.
+function lunchPickIsSafe(pick, avoid) {
+  return pick.keys().hasOnly(['itemId', 'name', 'allergens'])
+    && pick.itemId is string
+    && pick.name is string && pick.name.size() > 0 && pick.name.size() <= 60
+    && pick.get('allergens', []).hasOnly(['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish', 'shellfish', 'sesame'])
+    && !pick.get('allergens', []).hasAny(avoid);
+}
+
+// Every slot this write changed, checked by name — rules cannot loop, and
+// slots it did not touch are not this write's to answer for.
+//
+// Each argument is bound once with `let` before the checks use it: an
+// argument that is an expression is otherwise worked out again at every use.
+function lunchSlotsAreSafe(householdId, childId, slots, changed) {
+  let theSlots = slots;
+  let theChanged = changed;
+  return theChanged.size() == 0 || lunchChangedSlotsAreSafeFor(householdId, childId, theSlots, theChanged);
+}
+
+function lunchChangedSlotsAreSafeFor(householdId, childId, slots, changed) {
+  let avoid = lunchAvoidFor(householdId, childId);
+  return lunchChangedSlotsAreSafe(slots, changed, avoid);
+}
+
+function lunchChangedSlotsAreSafe(slots, changed, avoid) {
+  return (!('1_main' in changed) || !('1_main' in slots) || lunchPickIsSafe(slots['1_main'], avoid))
+    && (!('1_fruit' in changed) || !('1_fruit' in slots) || lunchPickIsSafe(slots['1_fruit'], avoid))
+    && (!('1_veg' in changed) || !('1_veg' in slots) || lunchPickIsSafe(slots['1_veg'], avoid))
+    && (!('1_snack' in changed) || !('1_snack' in slots) || lunchPickIsSafe(slots['1_snack'], avoid))
+    && (!('1_treat' in changed) || !('1_treat' in slots) || lunchPickIsSafe(slots['1_treat'], avoid))
+    && (!('2_main' in changed) || !('2_main' in slots) || lunchPickIsSafe(slots['2_main'], avoid))
+    && (!('2_fruit' in changed) || !('2_fruit' in slots) || lunchPickIsSafe(slots['2_fruit'], avoid))
+    && (!('2_veg' in changed) || !('2_veg' in slots) || lunchPickIsSafe(slots['2_veg'], avoid))
+    && (!('2_snack' in changed) || !('2_snack' in slots) || lunchPickIsSafe(slots['2_snack'], avoid))
+    && (!('2_treat' in changed) || !('2_treat' in slots) || lunchPickIsSafe(slots['2_treat'], avoid))
+    && (!('3_main' in changed) || !('3_main' in slots) || lunchPickIsSafe(slots['3_main'], avoid))
+    && (!('3_fruit' in changed) || !('3_fruit' in slots) || lunchPickIsSafe(slots['3_fruit'], avoid))
+    && (!('3_veg' in changed) || !('3_veg' in slots) || lunchPickIsSafe(slots['3_veg'], avoid))
+    && (!('3_snack' in changed) || !('3_snack' in slots) || lunchPickIsSafe(slots['3_snack'], avoid))
+    && (!('3_treat' in changed) || !('3_treat' in slots) || lunchPickIsSafe(slots['3_treat'], avoid))
+    && (!('4_main' in changed) || !('4_main' in slots) || lunchPickIsSafe(slots['4_main'], avoid))
+    && (!('4_fruit' in changed) || !('4_fruit' in slots) || lunchPickIsSafe(slots['4_fruit'], avoid))
+    && (!('4_veg' in changed) || !('4_veg' in slots) || lunchPickIsSafe(slots['4_veg'], avoid))
+    && (!('4_snack' in changed) || !('4_snack' in slots) || lunchPickIsSafe(slots['4_snack'], avoid))
+    && (!('4_treat' in changed) || !('4_treat' in slots) || lunchPickIsSafe(slots['4_treat'], avoid))
+    && (!('5_main' in changed) || !('5_main' in slots) || lunchPickIsSafe(slots['5_main'], avoid))
+    && (!('5_fruit' in changed) || !('5_fruit' in slots) || lunchPickIsSafe(slots['5_fruit'], avoid))
+    && (!('5_veg' in changed) || !('5_veg' in slots) || lunchPickIsSafe(slots['5_veg'], avoid))
+    && (!('5_snack' in changed) || !('5_snack' in slots) || lunchPickIsSafe(slots['5_snack'], avoid))
+    && (!('5_treat' in changed) || !('5_treat' in slots) || lunchPickIsSafe(slots['5_treat'], avoid));
+}
+
+// What came home: a verdict for the box, optionally one per slot, marked in
+// the caller's own name at the server's time. A day taken back is gone.
+function lunchFeedbackIsValid(householdId, feedback, changed) {
+  let theFeedback = feedback;
+  let theChanged = changed;
+  return theChanged.size() == 0 || lunchFeedbackDaysAreValid(householdId, theFeedback, theChanged);
+}
+
+function lunchFeedbackDaysAreValid(householdId, feedback, changed) {
+  return lunchDayFeedbackIsValid(householdId, feedback, changed, '1')
+    && lunchDayFeedbackIsValid(householdId, feedback, changed, '2')
+    && lunchDayFeedbackIsValid(householdId, feedback, changed, '3')
+    && lunchDayFeedbackIsValid(householdId, feedback, changed, '4')
+    && lunchDayFeedbackIsValid(householdId, feedback, changed, '5');
+}
+
+function lunchDayFeedbackIsValid(householdId, feedback, changed, day) {
+  return !(day in changed)
+    || !(day in feedback)
+    || (feedback[day] is map
+        && feedback[day].keys().hasOnly(['verdict', 'items', 'by', 'at'])
+        && feedback[day].verdict in ['ate', 'left']
+        && feedback[day].get('items', {}) is map
+        && feedback[day].get('items', {}).keys().hasOnly(['main', 'fruit', 'veg', 'snack', 'treat'])
+        && feedback[day].get('items', {}).values().hasOnly(['ate', 'left'])
+        && isOwnMember(householdId, feedback[day].by)
+        && feedback[day].at == request.time);
+}

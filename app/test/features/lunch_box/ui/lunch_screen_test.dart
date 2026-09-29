@@ -7,11 +7,9 @@ import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_feedback.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
-import 'package:nestprep/features/lunch_box/state/lunch_board_controller.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
-import 'package:provider/provider.dart';
 
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
@@ -38,11 +36,7 @@ void main() {
     await pumpScreen(
       tester,
       LunchScreen(onSelectTab: (_) {}),
-      providers: [
-        ChangeNotifierProvider<LunchBoardController>.value(
-          value: (using ?? harness).controller,
-        ),
-      ],
+      providers: (using ?? harness).providers,
       view: viewOnly
           ? Fixtures.helperView(
               AccessGrant({
