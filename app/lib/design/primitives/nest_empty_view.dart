@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_brand_mark.dart';
 import 'nest_button.dart';
 import 'nest_icon_tile.dart';
 
 /// The empty state: what this place is for and what to do next (`FE-08`).
+///
+/// With an [icon], a tile that says what belongs here. Without one, the nest
+/// from the logo — for the places a new household meets empty on its first
+/// day, where the honest picture is "nothing in the nest yet"
+/// (design-system ADR-0003).
 class NestEmptyView extends StatelessWidget {
   const NestEmptyView({
     required this.title,
     required this.message,
-    this.icon = Icons.auto_awesome_outlined,
+    this.icon,
     this.actionLabel,
     this.onAction,
     super.key,
@@ -18,7 +24,7 @@ class NestEmptyView extends StatelessWidget {
 
   final String title;
   final String message;
-  final IconData icon;
+  final IconData? icon;
   final String? actionLabel;
   final VoidCallback? onAction;
 
@@ -26,6 +32,7 @@ class NestEmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final label = actionLabel;
+    final glyph = icon;
     // Centred when there is room and scrollable when there is not. An empty
     // state is the one surface with no content to push things off the edge, so
     // an overflow here is always the *frame* being short — a small phone, a
@@ -37,7 +44,10 @@ class NestEmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            NestIconTile(icon: icon, size: NestSize.avatarLarge),
+            if (glyph == null)
+              const NestBrandMark()
+            else
+              NestIconTile(icon: glyph, size: NestSize.avatarLarge),
             const SizedBox(height: NestSpace.lg),
             Text(title, style: nest.text.title, textAlign: TextAlign.center),
             const SizedBox(height: NestSpace.sm),

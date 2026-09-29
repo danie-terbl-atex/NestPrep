@@ -12,6 +12,20 @@ class GallerySurfacesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const GalleryGroup(
+          title: 'Brand',
+          children: [
+            Center(child: NestBrandMark(width: NestSize.brandMarkLarge)),
+            Center(child: NestWordmark(semanticsLabel: 'NestPrep')),
+            Row(
+              children: [
+                NestBrandMark(width: NestSize.brandMarkSmall),
+                SizedBox(width: NestSpace.md),
+                NestBrandMark(),
+              ],
+            ),
+          ],
+        ),
         GalleryGroup(
           title: 'Cards',
           children: [

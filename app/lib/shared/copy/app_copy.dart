@@ -30,7 +30,8 @@ abstract final class AppCopy {
   /// it. The orbiting marks carry no semantics of their own, so this sentence
   /// is the whole of it.
   static const signInOrbitLabel =
-      'A calendar, to-dos, meals and groceries, shared by one household.';
+      'A nest holding a calendar, a lunchbox and to-dos, with a household '
+      'around it.';
 
   /// The letters on the member marks circling the sign-in screen. They are an
   /// illustration's initials, not people — one string so they stay together

@@ -1,6 +1,9 @@
 # Design review — every screen, both themes
 
-Twenty pictures of NestPrep, taken from the real widgets with the real theme and the real font.
+Forty pictures of NestPrep, taken from the real widgets with the real theme, the real fonts and the
+real logo. **All of them were retaken on 2026-09-29, when the app moved onto Daniel's logo**
+(design-system ADR-0003: forest green acts, teal selects, cream pages, Nunito headings, the nest as
+the mark).
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
@@ -8,9 +11,10 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`).
 
-`sign-in-*` was retaken on 2026-09-29 when the kids' way in joined it. `household-gate-*` is
-**stale**: it no longer matches the screen (a 5% pixel difference, from before kid sign-in), and it
-was left alone rather than retaken on a branch that did not change that screen.
+Five presses share one shutter: `design_review_test.dart` (the tabs and the way in),
+`kid_design_review_test.dart`, `family_design_review_test.dart`, `household_access_review_test.dart`
+and `brand_design_review_test.dart` (the launch screen and a first-run empty state). The shutter
+decodes every image for real before it fires; without that the nest is a blank box.
 
 | File | What it shows |
 |---|---|
@@ -19,8 +23,10 @@ was left alone rather than retaken on a branch that did not change that screen.
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked |
 | `meals-light.png` / `meals-dark.png` | the week's twenty-one slots, some filled |
-| `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the nest mark in a two-ring orbit of the four tabs and five member marks, the name, the tagline, and the way in |
-| `household-gate-light.png` / `household-gate-dark.png` | the screen after it, where a household is made or joined |
+| `launch-light.png` / `launch-dark.png` | what the native splash hands over to while the session is read: the nest at the splash's size, the words, one pulsing bar |
+| `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the logo's nest with the household's five member marks circling it, the wordmark, the tagline, and the way in |
+| `household-gate-light.png` / `household-gate-dark.png` | the screen after it: the nest and wordmark, the question, then making or joining a household |
+| `groceries-empty-light.png` / `groceries-empty-dark.png` | a new household's first list — a first-run empty state drawn with the nest |
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 | `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
 | `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
@@ -72,7 +78,7 @@ numbers are.
 ## Regenerating them
 
 ```sh
-flutter test tool/design_review_test.dart --update-goldens
+flutter test tool/ --update-goldens
 ```
 
 `tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.

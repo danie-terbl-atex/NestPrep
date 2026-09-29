@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../tokens/nest_motion.dart';
@@ -140,6 +141,7 @@ class _NestOrbitState extends State<NestOrbit>
                     child: _OrbitRings(
                       progress: _atStep(1),
                       color: nest.colors.outlineStrong,
+                      rings: {for (final item in widget.items) item.ring},
                     ),
                   ),
                   Center(
@@ -226,27 +228,43 @@ class _Arriving extends StatelessWidget {
   );
 }
 
-/// The two hairline circles the items ride, drawn outward from the centre.
+/// The hairline circles the items ride, drawn outward from the centre. Only
+/// a ring something rides is drawn: an empty ring through a large centre mark
+/// reads as a line struck through it.
 class _OrbitRings extends StatelessWidget {
-  const _OrbitRings({required this.progress, required this.color});
+  const _OrbitRings({
+    required this.progress,
+    required this.color,
+    required this.rings,
+  });
 
   final Animation<double> progress;
   final Color color;
+  final Set<NestOrbitRing> rings;
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: progress,
     builder: (context, _) => CustomPaint(
-      painter: _OrbitRingsPainter(progress: progress.value, color: color),
+      painter: _OrbitRingsPainter(
+        progress: progress.value,
+        color: color,
+        rings: rings,
+      ),
     ),
   );
 }
 
 class _OrbitRingsPainter extends CustomPainter {
-  const _OrbitRingsPainter({required this.progress, required this.color});
+  const _OrbitRingsPainter({
+    required this.progress,
+    required this.color,
+    required this.rings,
+  });
 
   final double progress;
   final Color color;
+  final Set<NestOrbitRing> rings;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -256,7 +274,7 @@ class _OrbitRingsPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = NestStroke.hairline
       ..color = color.withValues(alpha: color.a * progress * _restingAlpha);
-    for (final ring in NestOrbitRing.values) {
+    for (final ring in rings) {
       canvas.drawCircle(
         centre,
         size.width * ring.radiusFraction * (0.85 + 0.15 * progress),
@@ -271,5 +289,7 @@ class _OrbitRingsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_OrbitRingsPainter old) =>
-      old.progress != progress || old.color != color;
+      old.progress != progress ||
+      old.color != color ||
+      !setEquals(old.rings, rings);
 }

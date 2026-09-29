@@ -49,10 +49,22 @@ abstract final class NestSize {
   static const double iconLarge = 28;
   static const double iconTile = 52;
 
-  /// The app's own mark and the glyph inside it, on the screens somebody sees
-  /// before there is any data — the welcome and the household gate.
+  /// A big icon tile used as a mark — a hero card, a lock, a code screen —
+  /// and the glyph inside it.
   static const double mark = 72;
   static const double iconMark = 36;
+
+  /// The nest from the logo, by width (design-system ADR-0003): the welcome and
+  /// the launch screen, the household gate and a first-run empty state, and
+  /// the home tab's header.
+  static const double brandMarkLarge = 184;
+  static const double brandMarkMedium = 128;
+  static const double brandMarkSmall = 48;
+
+  /// The wordmark, by height: under the welcome's nest, and under the
+  /// household gate's.
+  static const double wordmarkLarge = 44;
+  static const double wordmarkSmall = 22;
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;
   static const double avatarLarge = 56;

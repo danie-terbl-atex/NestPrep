@@ -10,6 +10,11 @@ import 'join_household_form.dart';
 
 /// Where an account with no household lands (household ADR-0002). Two ways
 /// forward and nothing else, because there is nothing else to do here yet.
+///
+/// It is the second screen of the way in, so it opens the way the welcome
+/// does: the nest and the wordmark, then the question, then the answers, each
+/// rising in on the next step and then still (design-system ADR-0002,
+/// ADR-0003).
 class HouseholdGateScreen extends StatefulWidget {
   const HouseholdGateScreen({super.key});
 
@@ -28,13 +33,13 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
     final failure = controller.failure;
     final motion = NestMotion.of(context);
     return NestScaffold(
-      title: AppCopy.householdGateTitle,
-      subtitle: AppCopy.householdGateBody,
       trailing: const [AccountMenuButton()],
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const NestRiseIn(child: _GateWelcome()),
+            const SizedBox(height: NestSpace.xxl),
             if (failure != null) ...[
               NestBanner(
                 message: AppCopy.failure(failure),
@@ -46,6 +51,7 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
             // same entrance the sign-in screen uses, so creating a household
             // reads as the next beat of one flow rather than a new app.
             NestRiseIn(
+              index: 2,
               child: Row(
                 children: [
                   Expanded(
@@ -68,7 +74,7 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
             ),
             const SizedBox(height: NestSpace.xl),
             NestRiseIn(
-              index: 1,
+              index: 3,
               child: NestCard(
                 child: AnimatedSize(
                   duration: motion.standard,
@@ -90,5 +96,41 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
     if (_isJoining == isJoining) return;
     context.read<HouseholdGateController>().dismissFailure();
     setState(() => _isJoining = isJoining);
+  }
+}
+
+/// The nest, the name, and the question this screen asks — the welcome's
+/// picture at a size that leaves the form on the first screenful.
+class _GateWelcome extends StatelessWidget {
+  const _GateWelcome();
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return Column(
+      children: [
+        const NestBrandMark(),
+        const SizedBox(height: NestSpace.sm),
+        const NestWordmark(
+          semanticsLabel: AppCopy.appName,
+          height: NestSize.wordmarkSmall,
+        ),
+        const SizedBox(height: NestSpace.xxl),
+        Semantics(
+          header: true,
+          child: Text(
+            AppCopy.householdGateTitle,
+            style: nest.text.headline,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: NestSpace.xs),
+        Text(
+          AppCopy.householdGateBody,
+          style: nest.text.bodySecondary,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
   }
 }

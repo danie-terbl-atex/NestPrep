@@ -33,7 +33,7 @@ class NestChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final c = nest.colors;
-    final foreground = isSelected ? c.accentInk : c.inkSecondary;
+    final foreground = isSelected ? c.secondaryInk : c.inkSecondary;
     // Its own node: a chip beside a name or a heading must not merge into
     // them, or a screen reader announces the heading as the button and a tap
     // anywhere on it toggles the chip (`FE-13`).
@@ -47,9 +47,9 @@ class NestChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: NestMotion.of(context).quick,
         decoration: ShapeDecoration(
-          color: isSelected ? c.accentSoft : c.surface,
+          color: isSelected ? c.secondarySoft : c.surface,
           shape: StadiumBorder(
-            side: BorderSide(color: isSelected ? c.accentSoft : c.outline),
+            side: BorderSide(color: isSelected ? c.secondary : c.outline),
           ),
         ),
         child: Material(

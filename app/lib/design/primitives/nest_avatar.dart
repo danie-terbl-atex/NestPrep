@@ -38,7 +38,7 @@ class NestAvatar extends StatelessWidget {
           color: swatch.fill,
           shape: BoxShape.circle,
           border: Border.all(
-            color: isHighlighted ? nest.colors.accent : nest.colors.surface,
+            color: isHighlighted ? nest.colors.secondary : nest.colors.surface,
             width: NestStroke.focus,
           ),
         ),

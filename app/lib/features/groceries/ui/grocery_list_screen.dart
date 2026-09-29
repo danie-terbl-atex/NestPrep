@@ -72,7 +72,6 @@ class GroceryListScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: AppCopy.groceriesEmptyTitle,
                 message: AppCopy.groceriesEmptyBody,
-                icon: Icons.shopping_basket_outlined,
               ),
               dataBuilder: (_, view) => _GroceryList(view: view),
             ),

@@ -23,6 +23,10 @@ double contrast(Color a, Color b) {
 const _aaText = 4.5;
 const _aaLarge = 3.0;
 
+/// Card-against-page and border-against-card floors (design-system ADR-0003).
+const _cardFromPage = 1.12;
+const _cardBorder = 1.4;
+
 void main() {
   for (final (name, colors, members) in [
     ('light', NestColors.light, NestMemberPalette.light),
@@ -34,6 +38,7 @@ void main() {
         'surface': colors.surface,
         'surfaceTint': colors.surfaceTint,
         'accentSoft': colors.accentSoft,
+        'secondarySoft': colors.secondarySoft,
         for (final (index, wash) in colors.canvasWash.indexed)
           'wash$index': wash,
       };
@@ -42,6 +47,7 @@ void main() {
         'inkSecondary': colors.inkSecondary,
         'inkTertiary': colors.inkTertiary,
         'accentInk': colors.accentInk,
+        'secondaryInk': colors.secondaryInk,
       };
 
       for (final bg in backgrounds.entries) {
@@ -57,6 +63,8 @@ void main() {
           ('success', colors.success),
           ('warning', colors.warning),
           ('danger', colors.danger),
+          // The selection teal draws rings and the selected tab's glyph.
+          ('secondary', colors.secondary),
         ]) {
           test('$label on ${bg.key} meets AA for body text', () {
             expect(contrast(tone, bg.value), greaterThanOrEqualTo(_aaText));
@@ -72,6 +80,52 @@ void main() {
         expect(
           contrast(colors.onDanger, colors.danger),
           greaterThanOrEqualTo(_aaText),
+        );
+        expect(
+          contrast(colors.onSecondary, colors.secondary),
+          greaterThanOrEqualTo(_aaText),
+        );
+        expect(
+          contrast(colors.onAccent, colors.accentPressed),
+          greaterThanOrEqualTo(_aaText),
+          reason: 'a pressed primary button',
+        );
+      });
+
+      // Design-system ADR-0003. The wordmark is tinted with the accent, and
+      // the tomato is a graphic (a caret, a heart): both are held to the 3:1
+      // WCAG asks of a graphic on everything they can sit on.
+      test('the wordmark and the tomato hold as graphics', () {
+        for (final bg in backgrounds.entries) {
+          expect(
+            contrast(colors.accent, bg.value),
+            greaterThanOrEqualTo(_aaLarge),
+            reason: 'wordmark on ${bg.key}',
+          );
+          expect(
+            contrast(colors.highlight, bg.value),
+            greaterThanOrEqualTo(_aaLarge),
+            reason: 'highlight on ${bg.key}',
+          );
+        }
+      });
+
+      // The second open question of the first design review: cards were
+      // 1.08:1 (light) and 1.11:1 (dark) against the page, with a border at
+      // 1.25:1. Not a WCAG failure — a card's content carries itself — but
+      // soft enough to read as no card at all. ADR-0003 sets the floor: the
+      // page is a shade warmer than the card, and the border does the work.
+      test('a card separates from every background it sits on', () {
+        final page = [colors.canvas, ...colors.canvasWash];
+        for (final background in page) {
+          expect(
+            contrast(colors.surface, background),
+            greaterThanOrEqualTo(_cardFromPage),
+          );
+        }
+        expect(
+          contrast(colors.outline, colors.surface),
+          greaterThanOrEqualTo(_cardBorder),
         );
       });
 
@@ -114,6 +168,11 @@ void main() {
         expect(
           contrast(colors.accentInk, colors.accentSoft),
           greaterThanOrEqualTo(_aaText),
+        );
+        expect(
+          contrast(colors.secondaryInk, colors.secondarySoft),
+          greaterThanOrEqualTo(_aaText),
+          reason: 'the selected day, a selected chip, an info badge',
         );
       });
 

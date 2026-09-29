@@ -47,6 +47,24 @@ Future<void> loadEveryFont() async {
   }
 }
 
+/// Decodes every image on screen for real, then repaints. A test's fake clock
+/// never lets an asset image finish decoding, so without this the brand's nest
+/// is a blank box in every picture it should be in (design-system ADR-0003).
+Future<void> decodeEveryImage(WidgetTester tester) async {
+  final images = find.byType(Image);
+  if (images.evaluate().isEmpty) return;
+  final context = tester.element(images.first);
+  final providers = [
+    for (final image in tester.widgetList<Image>(images)) image.image,
+  ];
+  await tester.runAsync(() async {
+    for (final provider in providers) {
+      await precacheImage(provider, context);
+    }
+  });
+  await tester.pumpAndSettle();
+}
+
 /// Renders one screen at phone size and writes it to `design-review/`.
 Future<void> captureScreen(
   WidgetTester tester,
@@ -76,6 +94,7 @@ Future<void> captureScreen(
   );
   await emit();
   await tester.pumpAndSettle();
+  await decodeEveryImage(tester);
 
   try {
     await expectLater(

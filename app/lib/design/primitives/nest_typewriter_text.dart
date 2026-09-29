@@ -121,7 +121,7 @@ class _TypedLine extends StatelessWidget {
               textAlign: textAlign,
               textDirection: Directionality.of(context),
               textScaler: MediaQuery.textScalerOf(context),
-              color: nest.colors.accent,
+              color: nest.colors.highlight,
             ),
       child: Text.rich(
         TextSpan(
