@@ -125,6 +125,8 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
     RecurrenceRule? recurrence,
     required List<String> assigneeIds,
     String? routineId,
+    int points = 0,
+    bool needsApproval = false,
   }) {
     final trimmed = title.trim();
     if (trimmed.isEmpty) return Future.value();
@@ -139,6 +141,8 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
         assigneeIds: assigneeIds,
         createdBy: memberId,
         routineId: routineId,
+        points: points,
+        needsApproval: needsApproval,
       ),
     );
   }

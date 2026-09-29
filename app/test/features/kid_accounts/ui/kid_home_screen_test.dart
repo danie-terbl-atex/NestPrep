@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
@@ -41,6 +42,7 @@ void main() {
       ChangeNotifierProvider<KidHomeController>.value(
         value: fixture.controller,
       ),
+      ChangeNotifierProvider<KidPointsController>.value(value: fixture.stars),
       if (session != null)
         ChangeNotifierProvider<SessionController>.value(value: session),
     ],

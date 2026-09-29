@@ -6,6 +6,7 @@ import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/ui/nest_date_field.dart';
 import '../../../shared/ui/recurrence_editor.dart';
+import '../../chore_points/ui/chore_stars_field.dart';
 import '../../household/model/member.dart';
 import '../../household/ui/member_picker.dart';
 import '../model/routine.dart';
@@ -26,6 +27,8 @@ final class TaskSaved extends TaskDraft {
     this.recurrence,
     required this.assigneeIds,
     this.routineId,
+    this.points = 0,
+    this.needsApproval = false,
   });
 
   final String title;
@@ -34,6 +37,12 @@ final class TaskSaved extends TaskDraft {
   final RecurrenceRule? recurrence;
   final List<String> assigneeIds;
   final String? routineId;
+
+  /// What the chore is worth, and whether a parent checks it first (todos
+  /// ADR-0003). Always what the task already had when the sheet did not offer
+  /// the choice.
+  final int points;
+  final bool needsApproval;
 }
 
 final class TaskDeleted extends TaskDraft {
@@ -46,6 +55,7 @@ Future<TaskDraft?> showTaskSheet({
   required List<Routine> routines,
   required CalendarDate today,
   Task? existing,
+  bool canSetStars = false,
 }) => showNestSheet<TaskDraft>(
   context: context,
   title: existing == null ? AppCopy.todosAddTask : AppCopy.todosEditTask,
@@ -54,6 +64,7 @@ Future<TaskDraft?> showTaskSheet({
     routines: routines,
     today: today,
     existing: existing,
+    canSetStars: canSetStars,
   ),
 );
 
@@ -63,12 +74,16 @@ class _TaskSheetBody extends StatefulWidget {
     required this.routines,
     required this.today,
     required this.existing,
+    required this.canSetStars,
   });
 
   final List<Member> members;
   final List<Routine> routines;
   final CalendarDate today;
   final Task? existing;
+
+  /// Family only: stars are a parent's to give (todos ADR-0003).
+  final bool canSetStars;
 
   @override
   State<_TaskSheetBody> createState() => _TaskSheetBodyState();
@@ -81,6 +96,8 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
   late RecurrenceRule? _recurrence = widget.existing?.recurrence;
   late List<String> _assigneeIds = [...?widget.existing?.assigneeIds];
   late String? _routineId = widget.existing?.routineId;
+  late int _points = widget.existing?.points ?? 0;
+  late bool _needsApproval = widget.existing?.needsApproval ?? false;
 
   @override
   void dispose() {
@@ -96,7 +113,11 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final canSave = _title.text.trim().isNotEmpty;
+    // A starred chore names who earns it — the rules refuse one that does
+    // not (todos ADR-0003).
+    final canSave =
+        _title.text.trim().isNotEmpty &&
+        (_points == 0 || _assigneeIds.isNotEmpty);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -165,6 +186,17 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
             selectedIds: _assigneeIds,
             onChanged: (ids) => setState(() => _assigneeIds = ids),
           ),
+          if (widget.canSetStars) ...[
+            const SizedBox(height: NestSpace.xl),
+            ChoreStarsField(
+              points: _points,
+              needsApproval: _needsApproval,
+              namesSomebody: _assigneeIds.isNotEmpty,
+              onPoints: (points) => setState(() => _points = points),
+              onNeedsApproval: (value) =>
+                  setState(() => _needsApproval = value),
+            ),
+          ],
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: AppCopy.householdSave,
@@ -194,6 +226,9 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
         recurrence: _followsARoutine ? null : _recurrence,
         assigneeIds: _assigneeIds,
         routineId: _routineId,
+        points: _points,
+        // A chore worth nothing has nothing to check.
+        needsApproval: _points > 0 && _needsApproval,
       ),
     );
   }

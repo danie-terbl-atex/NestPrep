@@ -33,9 +33,19 @@ abstract class Task with _$Task {
     /// The routine this belongs to, whose schedule it then follows.
     String? routineId,
     @ServerTimestampConverter() DateTime? createdAt,
+
+    /// The stars a child earns for doing it — 0 for none (todos ADR-0003).
+    /// Only family sets it, and a starred chore always names its children.
+    @Default(0) int points,
+
+    /// Whether a parent checks it before the stars land (todos ADR-0003).
+    @Default(false) bool needsApproval,
   }) = _Task;
 
   const Task._();
 
   factory Task.fromJson(Map<String, Object?> json) => _$TaskFromJson(json);
+
+  /// Whether ticking it earns a child anything.
+  bool get carriesStars => points > 0;
 }

@@ -21,6 +21,7 @@ import {
   resetKidSignInInput,
   revokeKidDeviceInput,
 } from '../../src/accounts/kid_schemas';
+import { reviewChoreInput, settleRewardInput } from '../../src/chore_points/schemas';
 import {
   connectCalendarLinkInput,
   connectionInput,
@@ -105,6 +106,16 @@ const validBodies = {
   openVaultDocument: {
     schema: openVaultDocumentInput,
     body: { householdId: 'h1', ownerMemberId: 'm-emma', documentId: 'doc-1' },
+  },
+  // Todos phase 2: a parent's review of a chore and of a reward request
+  // (todos ADR-0003).
+  reviewChore: {
+    schema: reviewChoreInput,
+    body: { householdId: 'h1', completionId: 't1_2026-09-29', decision: 'approve' },
+  },
+  settleReward: {
+    schema: settleRewardInput,
+    body: { householdId: 'h1', requestId: 'r1', decision: 'fulfil' },
   },
 } as const;
 

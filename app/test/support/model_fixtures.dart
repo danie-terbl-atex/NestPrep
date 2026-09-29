@@ -31,6 +31,7 @@ import 'package:nestprep/features/todos/model/task_completion.dart';
 import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
+import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
@@ -151,6 +152,8 @@ List<ModelFixture> modelFixtures() {
     createdBy: 'm1',
     routineId: 'r1',
     createdAt: at,
+    points: 5,
+    needsApproval: true,
   );
   final routine = Routine(
     id: 'r1',
@@ -375,6 +378,8 @@ List<ModelFixture> modelFixtures() {
         'createdBy',
         'routineId',
         'createdAt',
+        'points',
+        'needsApproval',
       },
     ),
     ModelFixture(
@@ -596,6 +601,8 @@ List<ModelFixture> modelFixtures() {
           'written only by openVaultDocument; the app reads it and never '
           'writes it (documents ADR-0003).',
     ),
+    // todos phase 2: a child's stars (todos ADR-0003).
+    ...chorePointsModelFixtures(),
   ];
 }
 

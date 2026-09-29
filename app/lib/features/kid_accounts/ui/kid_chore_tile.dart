@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/kid_copy.dart';
+import '../../../shared/copy/points_copy.dart';
+import '../../chore_points/model/kid_chore_note.dart';
+import '../../chore_points/ui/kid_chore_stars.dart';
 import '../../todos/model/task_occurrence.dart';
 
 /// One of a kid's jobs, as a big tile the whole of which is the button
@@ -15,17 +18,22 @@ import '../../todos/model/task_occurrence.dart';
 ///
 /// With [onToggle] null — a grant of `view` on to-dos, which looks and does not
 /// tick (accounts ADR-0004) — the tile is not a button and says no "tap".
+///
+/// A starred job also says what it is worth and where its stars are — earned,
+/// waiting for a grown-up, or sent back for another go (todos ADR-0003).
 class KidChoreTile extends StatelessWidget {
   const KidChoreTile({
     required this.chore,
     required this.isOverdue,
     required this.onToggle,
+    this.note = const NoStars(),
     super.key,
   });
 
   final TaskOccurrence chore;
   final bool isOverdue;
   final VoidCallback? onToggle;
+  final KidChoreNote note;
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +47,11 @@ class KidChoreTile extends StatelessWidget {
         : onToggle == null
         ? KidCopy.choreToDo
         : KidCopy.choreTapToFinish;
+    final stars = PointsCopy.kidNote(note);
     return Semantics(
       button: onToggle != null,
       checked: isDone,
-      label: '${chore.task.title}, $status',
+      label: [chore.task.title, status, ?stars].join(', '),
       excludeSemantics: true,
       child: Material(
         color: isDone ? c.successSoft : c.surface,
@@ -77,6 +86,10 @@ class KidChoreTile extends StatelessWidget {
                                 : c.inkSecondary,
                           ),
                         ),
+                        if (stars != null) ...[
+                          const SizedBox(height: NestSpace.xs),
+                          KidChoreStars(note: note),
+                        ],
                       ],
                     ),
                   ),

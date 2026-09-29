@@ -9,7 +9,8 @@ not have to wait for a working Android emulator.
 
 Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. The kids' eight
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
-the same shutter (`tool/design_review_press.dart`).
+the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
+`flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
 
 Five presses share one shutter: `design_review_test.dart` (the tabs and the way in),
 `kid_design_review_test.dart`, `family_design_review_test.dart`, `household_access_review_test.dart`
@@ -30,7 +31,8 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 | `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
 | `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
-| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, the jobs as big tiles, and today's food |
+| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, their stars (with the line a celebration leaves and a streak), the jobs as big tiles each saying what it is worth, then — below the fold — the treat shelf and today's food (todos ADR-0003) |
+| `stars-and-rewards-light.png` / `stars-and-rewards-dark.png` | a parent's stars and rewards: a chore waiting for a look, a treat to hand over, a child's stars and streak, and the shelf's header (todos ADR-0003) |
 | `kids-sign-in-light.png` / `kids-sign-in-dark.png` | the parent's side: each child, the devices they are signed in on, add one or sign them all out |
 | `kids-pairing-light.png` / `kids-pairing-dark.png` | the code a parent reads out, counting down its ten minutes |
 | `family-light.png` / `family-dark.png` | family profiles: children first, each with their allergies in their severity's tone and the nut-free rule, then everyone else and the household's schools |

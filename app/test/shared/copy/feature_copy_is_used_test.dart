@@ -18,6 +18,8 @@ void main() {
   for (final (className, path) in [
     ('CalendarSyncCopy', 'lib/shared/copy/calendar_sync_copy.dart'),
     ('QuickAddCopy', 'lib/shared/copy/quick_add_copy.dart'),
+    // todos phase 2: stars and rewards (todos ADR-0003).
+    ('PointsCopy', 'lib/shared/copy/points_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();

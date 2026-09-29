@@ -5,8 +5,14 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
+import '../../../shared/copy/points_copy.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../accounts/state/session_controller.dart';
+import '../../chore_points/model/kid_chore_note.dart';
+import '../../chore_points/model/reward.dart';
+import '../../chore_points/state/kid_points_controller.dart';
+import '../../chore_points/ui/kid_reward_shelf.dart';
+import '../../chore_points/ui/kid_stars_section.dart';
 import '../model/kid_day.dart';
 import '../state/kid_home_controller.dart';
 import 'kid_day_view.dart';
@@ -23,8 +29,14 @@ class KidHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<KidHomeController>();
+    final stars = context.watch<KidPointsController>();
     final session = context.read<SessionController>();
-    final failure = controller.actionFailure;
+    final failure = controller.actionFailure ?? stars.actionFailure;
+    final points = stars.points;
+    final loaded = switch (points) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
     final day = controller.day;
     if (day case AsyncFailure(
       failure: KidSignInFailure(problem: KidSignInProblem.deviceDisconnected),
@@ -59,7 +71,10 @@ class KidHomeScreen extends StatelessWidget {
                 message: AppCopy.failure(failure),
                 tone: NestBannerTone.danger,
                 actionLabel: AppCopy.back,
-                onAction: controller.dismissActionFailure,
+                onAction: () {
+                  controller.dismissActionFailure();
+                  stars.dismissActionFailure();
+                },
               ),
             ),
           Expanded(
@@ -73,12 +88,44 @@ class KidHomeScreen extends StatelessWidget {
               dataBuilder: (context, value) => KidDayView(
                 day: value,
                 onToggle: (index) => controller.toggle(value.chores[index]),
+                // Stars follow the jobs' grant (todos ADR-0003): hidden with
+                // them, and never in the way of the rest of the day.
+                stars: points == null
+                    ? null
+                    : KidStarsSection(points: points, onRetry: stars.retry),
+                shelf: loaded == null
+                    ? null
+                    : KidRewardShelf(
+                        points: loaded,
+                        isAsking: stars.isAsking,
+                        onAsk: (reward) => _ask(context, stars, reward),
+                      ),
+                noteFor: (chore) =>
+                    KidChoreNote.of(chore, loaded?.claimFor(chore.key)),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// Spending stars asks first — a treat is a big decision, and "not yet" is
+  /// an easy way back (todos ADR-0003).
+  static Future<void> _ask(
+    BuildContext context,
+    KidPointsController stars,
+    Reward reward,
+  ) async {
+    final confirmed = await showNestConfirm(
+      context: context,
+      title: PointsCopy.kidAskConfirm(reward.title, reward.cost),
+      message: PointsCopy.kidAskBody,
+      confirmLabel: PointsCopy.kidAskYes,
+      cancelLabel: PointsCopy.kidAskNotYet,
+    );
+    if (confirmed != true) return;
+    await stars.ask(reward);
   }
 
   /// Signing out means a grown-up has to make a new code, so it asks first —

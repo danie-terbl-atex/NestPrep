@@ -117,6 +117,8 @@ final class FirestoreTodoRepository implements TodoRepository {
     required List<String> assigneeIds,
     required String createdBy,
     String? routineId,
+    int points = 0,
+    bool needsApproval = false,
   }) {
     final tasks = _tasks(householdId);
     if (taskId == null) {
@@ -132,11 +134,15 @@ final class FirestoreTodoRepository implements TodoRepository {
             assigneeIds: assigneeIds,
             createdBy: createdBy,
             routineId: routineId,
+            points: points,
+            needsApproval: needsApproval,
           ),
         ),
       );
     }
     // An edit never rewrites who made it or when (the rules refuse that too).
+    // Stars are written back as they were unless family changed them, which
+    // the rules check (todos ADR-0003).
     return _guarded(
       () => tasks.doc(taskId).update({
         'title': title,
@@ -145,6 +151,8 @@ final class FirestoreTodoRepository implements TodoRepository {
         'recurrence': recurrence?.toJson(),
         'assigneeIds': assigneeIds,
         'routineId': routineId,
+        'points': points,
+        'needsApproval': needsApproval,
       }),
     );
   }
