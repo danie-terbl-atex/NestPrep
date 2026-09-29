@@ -109,7 +109,10 @@ describe('every callable declares what it may cost', () => {
     // name here should have cost somebody an ADR to justify. Six were the
     // household's; the two documents ones are the household claim Storage rules
     // need and the folder-is-empty check no rule can perform (documents
-    // ADR-0001).
+    // ADR-0001). Documents phase 2 added two: the one door to a vault
+    // document's bytes, which writes the view log a client could skip, and the
+    // daily expiry sweep, which no rule can schedule (documents ADR-0003,
+    // ADR-0005).
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
@@ -118,9 +121,11 @@ describe('every callable declares what it may cost', () => {
       'createInvite',
       'deleteDocumentFolder',
       'leaveHousehold',
+      'openVaultDocument',
       'redeemInvite',
       'removeMember',
       'setMemberRole',
+      'sweepExpiryReminders',
       'syncDocumentAccess',
     ]);
   });

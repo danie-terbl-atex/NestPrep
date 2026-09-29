@@ -10,7 +10,7 @@ import {
   removeMemberInput,
   setMemberRoleInput,
 } from '../../src/household/schemas';
-import { deleteDocumentFolderInput } from '../../src/documents/schemas';
+import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -50,6 +50,10 @@ const validBodies = {
   deleteDocumentFolder: {
     schema: deleteDocumentFolderInput,
     body: { householdId: 'h1', folderId: 'f-school' },
+  },
+  openVaultDocument: {
+    schema: openVaultDocumentInput,
+    body: { householdId: 'h1', ownerMemberId: 'm-emma', documentId: 'doc-1' },
   },
 } as const;
 

@@ -9,7 +9,13 @@ import {
   type RulesTestContext,
 } from '@firebase/rules-unit-testing';
 import type { Firestore } from 'firebase/firestore';
-import type { FirebaseStorage } from 'firebase/storage';
+import {
+  deleteObject,
+  listAll,
+  ref,
+  type FirebaseStorage,
+  type StorageReference,
+} from 'firebase/storage';
 
 export { assertFails, assertSucceeds };
 export type { Firestore, FirebaseStorage };
@@ -37,7 +43,20 @@ export async function rulesEnvironment(): Promise<RulesTestEnvironment> {
 export async function clearData(): Promise<void> {
   const active = await rulesEnvironment();
   await active.clearFirestore();
-  await active.clearStorage();
+  // Not `active.clearStorage()`: that lists the bucket's *root* and deletes
+  // only the objects sitting there, and every object this app keeps is under
+  // `households/…`. It cleared nothing, so each test inherited the objects the
+  // tests before it wrote — and a denied upload to a reused name passed on
+  // "the object already exists" rather than on the rule it was named for.
+  await active.withSecurityRulesDisabled(async (context) => {
+    await deleteEverythingUnder(ref(context.storage()));
+  });
+}
+
+async function deleteEverythingUnder(folder: StorageReference): Promise<void> {
+  const { items, prefixes } = await listAll(folder);
+  await Promise.all(items.map((item) => deleteObject(item)));
+  await Promise.all(prefixes.map((prefix) => deleteEverythingUnder(prefix)));
 }
 
 export async function closeRulesEnvironment(): Promise<void> {

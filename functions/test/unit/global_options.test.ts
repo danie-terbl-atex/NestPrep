@@ -20,6 +20,7 @@ import { FUNCTIONS_REGION } from '../../src/shared/region';
  */
 interface Endpoint {
   region?: string[];
+  scheduleTrigger?: unknown;
   maxInstances?: number | null;
   timeoutSeconds?: number | null;
   availableMemoryMb?: number | null;
@@ -32,10 +33,15 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
-describe('every callable', () => {
-  it('there are eight of them, so a new one cannot slip past these checks', () => {
+/** A scheduled job sets its own timeout; everything else is a callable. */
+function isScheduled(endpoint: Endpoint): boolean {
+  return endpoint.scheduleTrigger !== undefined;
+}
+
+describe('every exported function', () => {
+  it('there are ten of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    expect(endpoints()).toHaveLength(8);
+    expect(endpoints()).toHaveLength(10);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -54,8 +60,21 @@ describe('every callable', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
-      expect(endpoint.timeoutSeconds, name).toBe(30);
       expect(endpoint.availableMemoryMb, name).toBe(256);
+      if (isScheduled(endpoint)) continue;
+      expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('a scheduled job carries a timeout of its own, and a bounded one', () => {
+    // A sweep is longer work than one person's request, so it does not share
+    // the callables' thirty seconds — but it is never the platform's default
+    // either (documents ADR-0005, BE-15, BE-19).
+    const scheduled = endpoints().filter(([, endpoint]) => isScheduled(endpoint));
+    expect(scheduled.map(([name]) => name)).toContain('sweepExpiryReminders');
+    for (const [name, endpoint] of scheduled) {
+      expect(endpoint.timeoutSeconds, name).toBeGreaterThan(30);
+      expect(endpoint.timeoutSeconds, name).toBeLessThanOrEqual(300);
     }
   });
 });
