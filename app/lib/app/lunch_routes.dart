@@ -4,13 +4,19 @@ import 'package:provider/provider.dart';
 import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/state/family_controller.dart';
+import '../features/household/data/invite_sharer.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
+import '../features/lunch_box/data/platform_lunch_card_sharer.dart';
 import '../features/lunch_box/state/lunch_board_controller.dart';
+import '../features/lunch_box/state/lunch_share_controller.dart';
+import '../features/lunch_box/ui/card/offscreen_lunch_card_renderer.dart';
 import '../features/lunch_box/ui/lunch_library_screen.dart';
 import '../features/lunch_box/ui/lunch_prep_screen.dart';
 import '../features/lunch_box/ui/lunch_screen.dart';
+import '../features/lunch_box/ui/planner/pdf_lunch_planner_composer.dart';
+import '../features/lunch_box/ui/share/lunch_share_screen.dart';
 import '../shared/time/household_clock.dart';
 import 'app_router.dart';
 import 'household_route.dart';
@@ -66,6 +72,21 @@ ShellRoute lunchRoutes() => ShellRoute(
     GoRoute(
       path: LunchRoute.libraryPath,
       builder: (context, state) => const LunchLibraryScreen(),
+    ),
+    // Made fresh on every visit, so a first name is chosen each time and
+    // never remembered (lunch-box ADR-0005).
+    GoRoute(
+      path: LunchRoute.sharePath,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) => LunchShareController(
+          cardRenderer: const OffscreenLunchCardRenderer(),
+          cardSharer: PlatformLunchCardSharer(),
+          plannerComposer: PdfLunchPlannerComposer(),
+          initialChildId: context.read<LunchBoardController>().selectedChildId,
+          appLink: context.read<InviteSharer>().appLink,
+        ),
+        child: const LunchShareScreen(),
+      ),
     ),
   ],
 );

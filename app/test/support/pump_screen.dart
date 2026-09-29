@@ -45,7 +45,12 @@ Future<void> pumpScreen(
         builder: (context, state) => const Placeholder(),
       ),
       // Where the lunch screens link out to (lunch-box ADR-0004).
-      for (final place in ['family', 'lunch/prep', 'lunch/library'])
+      for (final place in [
+        'family',
+        'lunch/prep',
+        'lunch/library',
+        'lunch/share',
+      ])
         GoRoute(
           path: '/households/:householdId/$place',
           builder: (context, state) => const Placeholder(),

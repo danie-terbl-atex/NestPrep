@@ -55,6 +55,12 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `lunch-swap-light.png` | the one-tap swap: a compartment's library ranked for the child, each with why it ranks there |
 | `lunch-prep-light.png` / `lunch-prep-dark.png` | the Sunday prep list: what to make ahead, then what to have in the house, with ticks |
 | `lunch-library-light.png` / `lunch-library-dark.png` | the lunch library, slot by slot, saying what is in each thing |
+| `lunch-share-light.png` / `lunch-share-dark.png` | sharing the week (lunch-box ADR-0005): the card exactly as it will be sent, then *Share image*, then whose week, its shape and look |
+| `lunch-share-choices-light.png` | the same screen further down: the four looks, how children are named with the promise that allergies and schools never go on a card, the invite line, and the printable planner |
+| `lunch-share-dark-200-percent-text.png` | the share screen at the largest text a phone offers — the card itself does not scale, because it is the picture |
+| `lunch-card-story-cream.png`, `lunch-card-story-forest.png`, `lunch-card-post-leaf.png`, `lunch-card-chat-straw.png` | **the exported images themselves**, 1080 wide, straight from the offscreen renderer: a story (9:16) in cream with an initial and in forest with no names, a square post in leaf with a first name, a WhatsApp card (4:5) in straw with the invite line off (`flutter test tool/lunch_card_design_review_test.dart --update-goldens`) |
+| `lunch-card-family-story-cream.png`, `lunch-card-family-post-forest.png` | every child on one card: two columns of boxes with each day's main named, and the square with what is in the boxes listed under the grid |
+| `lunch-planner-blank.pdf` / `.png`, `lunch-planner-filled.pdf` / `.png` | the printable A4 planner — blank, the free printable, and this week filled in — as the PDFs themselves and a picture of each (`sips -s format png <pdf> --out <png>`) |
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |

@@ -97,6 +97,19 @@ void main() {
     expect(find.byType(Placeholder), findsOneWidget);
   });
 
+  testWidgets('the week is shared from the board (lunch-box ADR-0005)', (
+    tester,
+  ) async {
+    await pump(tester);
+    await arrive(
+      tester,
+      lwaziSlots: {key(1, LunchSlot.main): LunchPick.of(LunchFixtures.wrap)},
+    );
+    await tester.tap(find.text(LunchShareCopy.openShare));
+    await tester.pumpAndSettle();
+    expect(find.byType(Placeholder), findsOneWidget);
+  });
+
   testWidgets('shows human copy and a retry when a read fails', (tester) async {
     await pump(tester);
     harness.repository.failItemsWith(const UnavailableFailure());
@@ -242,6 +255,7 @@ void main() {
     expect(find.text(LunchCopy.fillWeek), findsNothing);
     expect(find.text(LunchCopy.ateIt), findsNothing);
     expect(find.text(LunchCopy.openLibrary), findsNothing);
+    expect(find.text(LunchShareCopy.openShare), findsNothing);
     await tester.tap(find.text('Chicken wrap').first);
     await tester.pumpAndSettle();
     expect(find.text(LunchCopy.suggestedFor('Lwazi')), findsNothing);

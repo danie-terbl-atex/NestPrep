@@ -73,7 +73,7 @@ class LunchBoardBody extends StatelessWidget {
                   path: LunchRoute.prepPathFor(householdId),
                 ),
               ),
-              if (canEdit)
+              if (canEdit) ...[
                 NestButton(
                   label: LunchCopy.openLibrary,
                   icon: Icons.menu_book_outlined,
@@ -83,6 +83,18 @@ class LunchBoardBody extends StatelessWidget {
                   onPressed: () =>
                       context.push(LunchRoute.libraryPathFor(householdId)),
                 ),
+                // Sharing the week is for the people who plan it
+                // (lunch-box ADR-0005).
+                NestButton(
+                  label: LunchShareCopy.openShare,
+                  icon: Icons.ios_share_rounded,
+                  variant: NestButtonVariant.tonal,
+                  size: NestButtonSize.small,
+                  isExpanded: false,
+                  onPressed: () =>
+                      context.push(LunchRoute.sharePathFor(householdId)),
+                ),
+              ],
             ],
           ),
         ),
