@@ -39,6 +39,14 @@
         { "fieldPath": "helperId", "order": "ASCENDING" },
         { "fieldPath": "dueDate", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "homeCareRoutineTicks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "helperId", "order": "ASCENDING" },
+        { "fieldPath": "occurrenceDate", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [

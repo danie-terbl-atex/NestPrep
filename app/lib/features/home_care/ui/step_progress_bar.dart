@@ -58,7 +58,9 @@ class StepProgressBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: NestSpace.sm),
-          Text(label, style: nest.text.caption),
+          // Flexible, so a long count at a large text size wraps under itself
+          // rather than pushing past a narrow card (`FE-13`).
+          Flexible(child: Text(label, style: nest.text.caption)),
         ],
       ),
     );

@@ -45,7 +45,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are forty-seven of them, so a new one cannot slip past these checks', () => {
+  it('there are forty-nine of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -60,8 +60,11 @@ describe('every function — callable, trigger or schedule', () => {
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
     // (subscriptions ADR-0001). Account data: five — preview and delete an
     // account, export its data, the hourly export sweep and the web deletion
-    // request (accounts ADR-0006). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(47);
+    // request (accounts ADR-0006). Home care V2: a Firestore trigger that puts
+    // a low product on the grocery list and a callable that translates for the
+    // helper (home-care ADR-0005, ADR-0006). A feature adds its count and its
+    // line.
+    expect(endpoints()).toHaveLength(49);
   });
 
   it('runs in the one region, which is the database region', () => {

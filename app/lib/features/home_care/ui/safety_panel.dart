@@ -6,54 +6,95 @@ import '../model/safety/job_safety.dart';
 import '../model/safety/precaution.dart';
 import 'safety_sources_sheet.dart';
 
+/// Draws one safety line. The default is the plain row; the helper's
+/// screens pass one that shows the line in her language with the English
+/// beneath and a read-aloud button (home-care ADR-0006).
+typedef SafetyRowBuilder = Widget Function({
+  required IconData icon,
+  required NestTagTone tone,
+  required String title,
+  String? why,
+});
+
+/// One line of a job's safety, in English, as the copy says it.
+typedef SafetyLine = ({
+  IconData icon,
+  NestTagTone tone,
+  String title,
+  String why,
+});
+
 /// A job's safety, first and loudest: the products that must never meet,
 /// then what to wear and open, then the two rules that always hold — and
 /// where every word of it comes from (home-care ADR-0002).
 class SafetyPanel extends StatelessWidget {
-  const SafetyPanel({required this.safety, super.key});
+  const SafetyPanel({required this.safety, this.rowBuilder, super.key});
 
   final JobSafety safety;
+  final SafetyRowBuilder? rowBuilder;
+
+  /// Every line the panel shows, in order.
+  static List<SafetyLine> linesOf(JobSafety safety) => [
+    for (final danger in safety.dangers)
+      (
+        icon: Icons.dangerous_outlined,
+        tone: NestTagTone.danger,
+        title: HomeCareSafetyCopy.neverTogether(
+          danger.first.name,
+          danger.second.name,
+        ),
+        why: HomeCareSafetyCopy.hazard(danger.hazard),
+      ),
+    for (final precaution in safety.precautions)
+      (
+        icon: _iconFor(precaution),
+        tone: _isSerious(precaution)
+            ? NestTagTone.warning
+            : NestTagTone.neutral,
+        title: HomeCareSafetyCopy.precaution(precaution),
+        why: HomeCareSafetyCopy.precautionWhy(precaution),
+      ),
+    (
+      icon: Icons.inventory_2_outlined,
+      tone: NestTagTone.neutral,
+      title: HomeCareSafetyCopy.originalBottles,
+      why: HomeCareSafetyCopy.originalBottlesWhy,
+    ),
+    (
+      icon: Icons.local_hospital_outlined,
+      tone: NestTagTone.neutral,
+      title: HomeCareSafetyCopy.accidentTitle,
+      why: HomeCareSafetyCopy.accidentBody,
+    ),
+  ];
+
+  /// The English the panel shows, for asking for a translation.
+  static List<String> textsOf(JobSafety safety) => [
+    for (final line in linesOf(safety)) ...[line.title, line.why],
+  ];
+
+  static Widget _plainRow({
+    required IconData icon,
+    required NestTagTone tone,
+    required String title,
+    String? why,
+  }) => NestToneRow(icon: icon, tone: tone, title: title, subtitle: why);
 
   @override
   Widget build(BuildContext context) {
+    final row = rowBuilder ?? _plainRow;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final danger in safety.dangers) ...[
-          NestToneRow(
-            icon: Icons.dangerous_outlined,
-            tone: NestTagTone.danger,
-            title: HomeCareSafetyCopy.neverTogether(
-              danger.first.name,
-              danger.second.name,
-            ),
-            subtitle: HomeCareSafetyCopy.hazard(danger.hazard),
+        for (final line in linesOf(safety)) ...[
+          row(
+            icon: line.icon,
+            tone: line.tone,
+            title: line.title,
+            why: line.why,
           ),
           const SizedBox(height: NestSpace.sm),
         ],
-        for (final precaution in safety.precautions) ...[
-          NestToneRow(
-            icon: _iconFor(precaution),
-            tone: _isSerious(precaution)
-                ? NestTagTone.warning
-                : NestTagTone.neutral,
-            title: HomeCareSafetyCopy.precaution(precaution),
-            subtitle: HomeCareSafetyCopy.precautionWhy(precaution),
-          ),
-          const SizedBox(height: NestSpace.sm),
-        ],
-        const NestToneRow(
-          icon: Icons.inventory_2_outlined,
-          title: HomeCareSafetyCopy.originalBottles,
-          subtitle: HomeCareSafetyCopy.originalBottlesWhy,
-        ),
-        const SizedBox(height: NestSpace.sm),
-        const NestToneRow(
-          icon: Icons.local_hospital_outlined,
-          title: HomeCareSafetyCopy.accidentTitle,
-          subtitle: HomeCareSafetyCopy.accidentBody,
-        ),
-        const SizedBox(height: NestSpace.xs),
         Align(
           alignment: Alignment.centerLeft,
           child: NestButton(

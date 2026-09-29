@@ -9,6 +9,7 @@ import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/home_care_board.dart';
 import '../state/home_care_controller.dart';
+import 'home_care_shortcuts.dart';
 import 'job_list.dart';
 
 /// Home care's front door: the jobs, in three piles — to do, to review,
@@ -82,6 +83,7 @@ class HomeCareScreen extends StatelessWidget {
               onRetry: controller.retry,
               emptyBuilder: (_) => const SizedBox.shrink(),
               dataBuilder: (context, board) => JobList(
+                header: const HomeCareShortcuts(),
                 board: board,
                 pile: pile,
                 access: access,

@@ -1,6 +1,7 @@
 import '../data/home_care_library_repository.dart';
 import '../model/home_care_product.dart';
 import '../model/room_kind.dart';
+import '../model/stock_level.dart';
 
 /// The writes a manager makes to the rooms and the product library, each
 /// through the controller's runner so a refusal reaches the screen's banner
@@ -59,5 +60,17 @@ final class HomeCareLibraryEdits {
   Future<void> deleteProduct(String productId) => _run(
     () =>
         _library.deleteProduct(householdId: householdId, productId: productId),
+  );
+
+  /// Marks how much is left, in the viewer's name — anybody who sees home
+  /// care may; a level crossing into low goes onto the grocery list by the
+  /// server (home-care ADR-0005).
+  Future<void> setStock(String productId, StockLevel level) => _run(
+    () => _library.setStock(
+      householdId: householdId,
+      productId: productId,
+      level: level,
+      by: _memberId(),
+    ),
   );
 }

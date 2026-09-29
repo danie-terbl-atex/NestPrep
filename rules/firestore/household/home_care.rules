@@ -40,6 +40,16 @@ match /homeCareProducts/{productId} {
          ['name', 'kind', 'whereKept', 'note', 'keepFromChildren', 'keepFromPets'])
     && homeCareIsProduct(request.resource.data);
 
+  // The stock level: anybody who sees home care marks what is running out,
+  // stamped with who and when, and changes nothing else. A level crossing
+  // into low puts the product on the grocery list (home-care ADR-0005).
+  allow update: if (canView(householdId, 'homeCare')
+                      || hasOwnOnly(householdId, 'homeCare'))
+    && onlyChanged(['stock', 'stockChangedBy', 'stockChangedAt'])
+    && request.resource.data.stock in ['full', 'half', 'low', 'out']
+    && isOwnMember(householdId, request.resource.data.stockChangedBy)
+    && isServerTime('stockChangedAt');
+
   allow delete: if canEdit(householdId, 'homeCare');
 }
 

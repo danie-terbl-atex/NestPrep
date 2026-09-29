@@ -1,0 +1,39 @@
+// ---- home care: the helper's language (home-care ADR-0006) ----
+
+// A member's home-care profile, keyed by her member id: the language her
+// jobs, safety and routines are shown and read aloud in. She sets her own;
+// family sets it for a helper who has no phone or cannot read the picker.
+match /homeCareHelpers/{memberId} {
+  allow read: if canView(householdId, 'homeCare')
+    || (hasOwnOnly(householdId, 'homeCare')
+          && memberId == ownMemberId(householdId));
+
+  allow create, update: if request.resource.data.keys().hasOnly(
+         ['language', 'updatedBy', 'updatedAt'])
+    && request.resource.data.language in
+         ['en', 'af', 'zu', 'xh', 'st', 'tn', 'nso', 'ts', 'sn', 'ny']
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt')
+    && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))
+    && (canEdit(householdId, 'homeCare')
+          || (isOwnMember(householdId, memberId)
+                && (hasOwnOnly(householdId, 'homeCare')
+                      || canView(householdId, 'homeCare'))));
+
+  allow delete: if canEdit(householdId, 'homeCare');
+}
+
+// Each text translated once per language, written only by
+// `translateHomeCareTexts`; read by anybody who sees home care, so a phone
+// with no signal still shows what it translated before.
+match /homeCareTranslations/{translationId} {
+  allow read: if canView(householdId, 'homeCare')
+    || hasOwnOnly(householdId, 'homeCare');
+  allow write: if false;
+}
+
+// What this household's translations cost this month — the Function's
+// ledger, never a client's.
+match /homeCareTranslationUsage/{month} {
+  allow read, write: if false;
+}

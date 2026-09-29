@@ -5,6 +5,7 @@ import '../../../shared/firestore/typed_collection.dart';
 import '../model/home_care_product.dart';
 import '../model/home_care_room.dart';
 import '../model/room_kind.dart';
+import '../model/stock_level.dart';
 import 'home_care_library_repository.dart';
 
 final class FirestoreHomeCareLibraryRepository
@@ -134,6 +135,20 @@ final class FirestoreHomeCareLibraryRepository
     required String householdId,
     required String productId,
   }) => _guarded(() => _products(householdId).doc(productId).delete());
+
+  @override
+  Future<void> setStock({
+    required String householdId,
+    required String productId,
+    required StockLevel level,
+    required String by,
+  }) => _guarded(
+    () => _raw(householdId, productsPath).doc(productId).update({
+      'stock': level.name,
+      'stockChangedBy': by,
+      'stockChangedAt': FieldValue.serverTimestamp(),
+    }),
+  );
 
   Future<void> _guarded(Future<void> Function() write) async {
     try {

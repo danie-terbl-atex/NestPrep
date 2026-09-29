@@ -1,6 +1,7 @@
 import '../model/home_care_product.dart';
 import '../model/home_care_room.dart';
 import '../model/room_kind.dart';
+import '../model/stock_level.dart';
 
 /// The household's rooms and its product library (home-care ADR-0001,
 /// ADR-0002). Everybody who sees home care reads both; only `edit` writes.
@@ -45,5 +46,15 @@ abstract interface class HomeCareLibraryRepository {
   Future<void> deleteProduct({
     required String householdId,
     required String productId,
+  });
+
+  /// Marks how much of a product is left, in [by]'s name — the one write
+  /// anybody who sees home care makes to the library. A level crossing into
+  /// low puts it on the grocery list, by the server (home-care ADR-0005).
+  Future<void> setStock({
+    required String householdId,
+    required String productId,
+    required StockLevel level,
+    required String by,
   });
 }

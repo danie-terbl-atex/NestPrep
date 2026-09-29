@@ -65,3 +65,7 @@ export { deleteAccount } from './account_data/delete_account';
 export { exportAccountData } from './account_data/export_account_data';
 export { sweepAccountExports } from './account_data/sweep_account_exports';
 export { requestAccountDeletion } from './account_data/request_account_deletion';
+
+// ---- home care V2: stock to groceries, the helper's language (home-care ADR-0005, ADR-0006) ----
+export { addLowStockToGroceries } from './home_care/add_low_stock_to_groceries';
+export { translateHomeCareTexts } from './home_care/translate_home_care_texts';

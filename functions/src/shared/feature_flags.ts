@@ -22,6 +22,10 @@ export const FEATURE_FLAGS = [
   'lunchPantry',
   'lunchBudget',
   'lunchKidPicks',
+  // ---- home care V2 (home-care ADR-0004 to ADR-0006) ----
+  'homeCareRoutines',
+  'homeCareStock',
+  'homeCareHelperLanguage',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

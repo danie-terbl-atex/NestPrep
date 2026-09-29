@@ -5,14 +5,19 @@ import 'package:nestprep/features/home_care/model/job_event.dart';
 import 'package:nestprep/features/home_care/model/job_photo.dart';
 import 'package:nestprep/features/home_care/model/job_status.dart';
 import 'package:nestprep/features/home_care/model/job_step.dart';
+import 'package:nestprep/features/home_care/model/language/helper_language.dart';
+import 'package:nestprep/features/home_care/model/language/helper_profile.dart';
 import 'package:nestprep/features/home_care/model/product_kind.dart';
 import 'package:nestprep/features/home_care/model/room_kind.dart';
+import 'package:nestprep/features/home_care/model/routine/room_routine.dart';
+import 'package:nestprep/features/home_care/model/routine/routine_cadence.dart';
+import 'package:nestprep/features/home_care/model/routine/routine_tick.dart';
 import 'package:nestprep/features/home_care/model/spot_mark.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'model_fixtures.dart';
 
-/// Home care's four stored models, each with every field filled — spread
+/// Home care's seven stored models (four from phase 1, three from V2), each with every field filled — spread
 /// into `modelFixtures()` so the round-trip and encodability tests reach
 /// them (home-care ADR-0001). The job nests steps, photos and marks, which is
 /// exactly what the nested-model lesson is about.
@@ -68,7 +73,80 @@ List<ModelFixture> homeCareModelFixtures() {
     note: 'The corner',
     at: at,
   );
+  final routine = RoomRoutine(
+    id: 'kitchen-daily',
+    name: 'Kitchen, every weekday',
+    roomId: 'kitchen',
+    cadence: RoutineCadence.daily,
+    items: const [JobStep(id: 'i1', text: 'Wipe the counters')],
+    helperId: 'm2',
+    firstDate: CalendarDate(2026, 9, 28),
+    recurrence: RoutineCadence.daily.ruleFrom(CalendarDate(2026, 9, 28)),
+    createdBy: 'm1',
+    createdAt: at,
+  );
+  final tick = RoutineTick(
+    id: RoutineTick.idFor('kitchen-daily', CalendarDate(2026, 9, 29)),
+    routineId: 'kitchen-daily',
+    occurrenceDate: CalendarDate(2026, 9, 29),
+    helperId: 'm2',
+    doneItemIds: const ['i1'],
+    updatedBy: 'm2',
+    updatedAt: at,
+  );
+  final profile = HelperProfile(
+    id: 'm2',
+    language: HelperLanguage.isiZulu,
+    updatedBy: 'm2',
+    updatedAt: at,
+  );
   return [
+    ModelFixture(
+      label: 'RoomRoutine',
+      id: routine.id,
+      value: routine,
+      toJson: routine.toJson,
+      fromJson: RoomRoutine.fromJson,
+      keys: const {
+        'name',
+        'roomId',
+        'cadence',
+        'items',
+        'helperId',
+        'firstDate',
+        'recurrence',
+        'createdBy',
+        'createdAt',
+      },
+      note:
+          'exactly what `home_care_routines.rules` lets a routine be made '
+          'with; the items and the rule are nested maps (home-care ADR-0004).',
+    ),
+    ModelFixture(
+      label: 'RoutineTick',
+      id: tick.id,
+      value: tick,
+      toJson: tick.toJson,
+      fromJson: RoutineTick.fromJson,
+      keys: const {
+        'routineId',
+        'occurrenceDate',
+        'helperId',
+        'doneItemIds',
+        'updatedBy',
+        'updatedAt',
+      },
+      note: 'the id is `{routineId}_{date}`, which the rules compare.',
+    ),
+    ModelFixture(
+      label: 'HelperProfile',
+      id: profile.id,
+      value: profile,
+      toJson: profile.toJson,
+      fromJson: HelperProfile.fromJson,
+      keys: const {'language', 'updatedBy', 'updatedAt'},
+      note: 'the language is stored by its code, which the rules list.',
+    ),
     ModelFixture(
       label: 'HomeCareRoom',
       id: room.id,

@@ -228,6 +228,23 @@ void main() {
     'lib/features/home_care/model/room_kind.dart': 'enum only',
     'lib/features/home_care/model/safety/precaution.dart': 'enum only',
     'lib/features/home_care/model/safety/safety_source.dart': 'enum only',
+    // Home care V2 (home-care ADR-0004 to ADR-0006): the Firebase edges, and
+    // interfaces and tables with no executable line. The V2 switches' edges
+    // are listed once, above.
+    'lib/features/home_care/data/firestore_routine_repository.dart':
+        'writes Firestore',
+    'lib/features/home_care/data/firestore_helper_profile_repository.dart':
+        'writes Firestore',
+    'lib/features/home_care/data/firebase_translation_repository.dart':
+        'reads Firestore and calls Functions',
+    'lib/features/home_care/data/routine_repository.dart': 'interface only',
+    'lib/features/home_care/data/helper_profile_repository.dart':
+        'interface only',
+    'lib/features/home_care/data/translation_repository.dart': 'interface only',
+    'lib/features/home_care/data/read_aloud.dart':
+        'an enum and an interface only',
+    'lib/features/home_care/model/language/reviewed_safety_translations.dart':
+        'const only',
   };
 
   final lcov = File('coverage/lcov.info');

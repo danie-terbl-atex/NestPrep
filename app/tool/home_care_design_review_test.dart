@@ -8,6 +8,7 @@ import 'package:nestprep/features/home_care/model/home_care_board.dart';
 import 'package:nestprep/features/home_care/model/job_event.dart';
 import 'package:nestprep/features/home_care/model/job_photo.dart';
 import 'package:nestprep/features/home_care/model/job_status.dart';
+import 'package:nestprep/features/home_care/model/language/helper_language.dart';
 import 'package:nestprep/features/home_care/state/home_care_controller.dart';
 import 'package:nestprep/features/home_care/state/job_actions.dart';
 import 'package:nestprep/features/home_care/state/job_controller.dart';
@@ -22,6 +23,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../test/support/fake_home_care.dart';
 import '../test/support/home_care_fixtures.dart';
 import '../test/support/household_fixtures.dart';
+import 'home_care_v2_press.dart';
 import 'review_press.dart';
 
 /// Home care in the design-review press: the job list, one job, the
@@ -92,6 +94,7 @@ void main() {
     required Brightness brightness,
     required CleaningJob job,
     HouseholdView? view,
+    HelperLanguage language = HelperLanguage.english,
   }) async {
     final jobRepository = FakeCleaningJobRepository();
     final library = FakeHomeCareLibraryRepository();
@@ -126,6 +129,8 @@ void main() {
       ),
     );
     addTearDown(one.dispose);
+    final v2 = HomeCareV2Press(home);
+    addTearDown(v2.close);
 
     await captureScreen(
       tester,
@@ -134,6 +139,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<HomeCareController>.value(value: home),
         ChangeNotifierProvider<JobController>.value(value: one),
+        ...v2.providers,
       ],
       brightness: brightness,
       view: householdView,
@@ -154,7 +160,9 @@ void main() {
           JobEvent(id: '0', status: JobStatus.assigned, by: 'm-sam'),
           JobEvent(id: '1', status: JobStatus.inProgress, by: 'm-thandi'),
         ]);
+        v2.speak(language);
         await tester.pump();
+        v2.listen();
         one.followBoard(home.board);
         // The photos decode off the test's clock.
         await tester.runAsync(
@@ -197,6 +205,7 @@ void main() {
         brightness: brightness,
         job: jobs.first,
         view: HomeCareFixtures.helperView(),
+        language: HelperLanguage.isiZulu,
       );
     });
 

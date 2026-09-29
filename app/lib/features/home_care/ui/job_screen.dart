@@ -8,6 +8,7 @@ import '../model/cleaning_job.dart';
 import '../model/home_care_board.dart';
 import '../model/job_status.dart';
 import '../model/safety/job_safety.dart';
+import '../state/helper_language_controller.dart';
 import '../state/job_controller.dart';
 import 'job_board_view.dart';
 import 'job_history.dart';
@@ -17,6 +18,7 @@ import 'job_products_list.dart';
 import 'job_steps_list.dart';
 import 'job_summary_card.dart';
 import 'safety_panel.dart';
+import 'translated_safety_row.dart';
 
 /// One cleaning job: the spot, circled; where, who and when; the send-back
 /// note if there is one; the safety first, then the products and the steps;
@@ -94,19 +96,38 @@ class _JobSections extends StatelessWidget {
   Widget build(BuildContext context) {
     final products = board.productsOf(job);
     final after = job.afterPhoto;
+    final safety = JobSafety.of(products);
+    // In the viewer's own language when she has chosen one (home-care
+    // ADR-0006); English, as before, for everybody else.
+    final language = context.watch<HelperLanguageController>();
+    final isTranslated = language.language.needsTranslation;
+    if (isTranslated) {
+      language.ensure([
+        ...SafetyPanel.textsOf(safety),
+        for (final step in job.steps) step.text,
+      ]);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: NestSpace.xxl),
         const NestSectionHeader(title: HomeCareSafetyCopy.title),
         const SizedBox(height: NestSpace.sm),
-        SafetyPanel(safety: JobSafety.of(products)),
+        SafetyPanel(
+          safety: safety,
+          rowBuilder: isTranslated ? translatedSafetyRow : null,
+        ),
         const SizedBox(height: NestSpace.xl),
         const NestSectionHeader(title: HomeCareCopy.productsToUse),
         JobProductsList(products: products),
         const SizedBox(height: NestSpace.xl),
         const NestSectionHeader(title: HomeCareCopy.steps),
-        JobStepsList(job: job),
+        JobStepsList(
+          job: job,
+          textFor: isTranslated
+              ? (english) => language.lineFor(english).text
+              : null,
+        ),
         if (after != null) ...[
           const SizedBox(height: NestSpace.xl),
           const NestSectionHeader(title: HomeCareCopy.afterPhoto),

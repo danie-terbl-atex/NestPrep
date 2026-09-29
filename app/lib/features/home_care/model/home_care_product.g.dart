@@ -21,6 +21,17 @@ _HomeCareProduct _$HomeCareProductFromJson(Map<String, dynamic> json) =>
       keepFromPets: json['keepFromPets'] as bool? ?? false,
       createdBy: json['createdBy'] as String,
       createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
+      stock:
+          $enumDecodeNullable(
+            _$StockLevelEnumMap,
+            json['stock'],
+            unknownValue: StockLevel.full,
+          ) ??
+          StockLevel.full,
+      stockChangedBy: json['stockChangedBy'] as String?,
+      stockChangedAt: const NullableTimestampConverter().fromJson(
+        json['stockChangedAt'],
+      ),
     );
 
 Map<String, dynamic> _$HomeCareProductToJson(_HomeCareProduct instance) =>
@@ -50,4 +61,11 @@ const _$ProductKindEnumMap = {
   ProductKind.polish: 'polish',
   ProductKind.floorCleaner: 'floorCleaner',
   ProductKind.other: 'other',
+};
+
+const _$StockLevelEnumMap = {
+  StockLevel.full: 'full',
+  StockLevel.half: 'half',
+  StockLevel.low: 'low',
+  StockLevel.out: 'out',
 };

@@ -29,7 +29,21 @@ enum FeatureFlag {
   /// A child choosing their own box from options a parent approved
   /// (lunch-box ADR-0007). The rules hold a kid to the approved options
   /// whatever this says; the switch only hides the screens.
-  lunchKidPicks('lunchKidPicks');
+  lunchKidPicks('lunchKidPicks'),
+
+  // ---- home care V2 (home-care ADR-0004 to ADR-0006) ----
+
+  /// Recurring checklists per room, and the helper's today's rooms
+  /// (home-care ADR-0004).
+  homeCareRoutines('homeCareRoutines'),
+
+  /// Each product's stock level, and a low one onto the grocery list
+  /// (home-care ADR-0005).
+  homeCareStock('homeCareStock'),
+
+  /// The helper's own language for her jobs, and read-aloud (home-care
+  /// ADR-0006).
+  homeCareHelperLanguage('homeCareHelperLanguage');
 
   const FeatureFlag(this.field);
 

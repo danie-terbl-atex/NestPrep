@@ -96,6 +96,13 @@ sandbox alike. Apple's signed transactions are verified against Apple Root CA - 
 `src/subscriptions/apple/apple_root_certificate.ts`; the test chain in `test/fixtures/apple/` is
 made for the tests and trusted by nothing else.
 
+Home care's translation (home-care ADR-0006 in the vault) reaches Google Cloud Translation v3 as
+**the Functions runtime service account** too — no key, no parameter. It works once the Cloud
+Translation API is enabled on the project and that account holds `roles/cloudtranslate.user`; until
+then Google answers 403, `translateHomeCareTexts` refunds the month's characters and refuses with
+`translationUnavailable`, and the helper reads English with the reason. Under the emulator the
+`EmulatorTranslator` answers `[zu] …` and nothing reaches Google.
+
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
 `<CALENDAR_FUNCTIONS_BASE_URL>/calendarOAuthCallback`).

@@ -7,7 +7,7 @@ the mark).
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
-Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. Home care's eight are `tool/home_care_design_review_test.dart`. The kids' eight
+Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. Home care's eight are `tool/home_care_design_review_test.dart`, and its V2 eight `tool/home_care_v2_design_review_test.dart` (the isiZulu in them is for the picture only, never shipped). The kids' eight
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
 `flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
@@ -47,9 +47,13 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `nanny-child-card-light.png` / `nanny-child-card-dark.png` | a child's card: allergies in their severity's tone first, then medication with its times, then the routine |
 | `nanny-emergency-light.png` / `nanny-emergency-dark.png` | the emergency sheet: 10111, 10177 and 112 as big buttons, the address to read out, the medical aid, and a call button on every contact |
 | `nanny-handover-light.png` / `nanny-handover-dark.png` | a finished shift's summary for the parents: the incident called out first, the counts, the carer's last word, the checklist, then the evening moment by moment |
-| `home-care-light.png` / `home-care-dark.png` | home care: the three piles, and each job with its room, its helper, when it is due and how far along it is (home-care ADR-0001) |
+| `home-care-light.png` / `home-care-dark.png` | home care: the ways into the routines, the stock and the languages (V2, each behind its switch), then the three piles, and each job with its room, its helper, when it is due and how far along it is (home-care ADR-0001) |
 | `home-care-job-light.png` / `home-care-job-dark.png` | one cleaning job: the spot circled on the photo, the never-mix warning above everything, the facts, and what this person can do next |
-| `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through: progress, the spot, and each step as a big tile she ticks |
+| `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through in her own language (isiZulu here): the language bar, progress, the spot, and each step as a big tile she ticks with its read-aloud button beside it (home-care ADR-0006) |
+| `home-care-routines-light.png` / `home-care-routines-dark.png` | the parent's room routines: this week per day, today per room, then every routine by room (home-care ADR-0004) |
+| `home-care-today-light.png` / `home-care-today-dark.png` | a helper's rooms today, in isiZulu: one big card per room, done in words and green, each item a tile to tick and a button to hear it |
+| `home-care-stock-light.png` / `home-care-stock-dark.png` | the stock tracker: what is running low first, *on the grocery list* and who marked it, four big levels per product (home-care ADR-0005) |
+| `home-care-languages-light.png` / `home-care-languages-dark.png` | everybody's languages: the viewer's own, a line to hear in it, then each helper's (home-care ADR-0006) |
 | `home-care-review-light.png` / `home-care-review-dark.png` | the parent's review: before and after side by side, the checklist, approve or send it back |
 | `lunch-light.png` / `lunch-dark.png` | the household's home (lunch-box ADR-0004): the child switcher, today's box drawn, *Fill the week*, and the child's food rules |
 | `lunch-week-light.png` | the same week further down: a day's five compartments, a per-item thumb, and what came home |

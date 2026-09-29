@@ -3,10 +3,14 @@ import '../../features/home_care/model/job_details.dart';
 import '../../features/home_care/model/job_status.dart';
 import '../failure/app_failure.dart';
 
-// The rooms and products, and the safety words, each have a file of their
-// own, reached through this one (home-care ADR-0002).
+// The rooms and products and the safety words (home-care ADR-0002), and the
+// routines, stock and language (ADR-0004 to ADR-0006), each have a file of
+// their own, reached through this one.
+export 'home_care_language_copy.dart';
 export 'home_care_library_copy.dart';
+export 'home_care_routine_copy.dart';
 export 'home_care_safety_copy.dart';
+export 'home_care_stock_copy.dart';
 
 /// Every word the home-care job screens say (`FE-19`) — exported from
 /// `app_copy.dart`, so a feature this size does not grow the one copy file,
@@ -22,6 +26,13 @@ abstract final class HomeCareCopy {
   static const openFromHouseholdHelperBody =
       'The cleaning jobs assigned to you.';
   static const newJob = 'New job';
+
+  // A V2 part reached by a link while its switch is off (foundation
+  // ADR-0014).
+  static const switchedOffTitle = 'Not switched on yet';
+  static const switchedOffBody =
+      'This part of home care is not on for your household yet. Everything '
+      'else works as it did.';
 
   static String status(JobStatus status) => switch (status) {
     JobStatus.assigned => 'New',
@@ -81,6 +92,17 @@ abstract final class HomeCareCopy {
       'That photo is too big, even made smaller. Try taking it again.',
     HomeCareProblem.stepsNotDone =>
       'Tick every step before you hand the job in.',
+    HomeCareProblem.homeCareNotShared =>
+      'Home care is not open to you in this household.',
+    HomeCareProblem.translationSwitchedOff =>
+      'Translation is switched off, so this is in English.',
+    HomeCareProblem.translationLimitReached =>
+      'This month’s translations are used up, so anything new shows in '
+          'English until next month.',
+    HomeCareProblem.languageUnsupported =>
+      'That language cannot be translated yet, so this is in English.',
+    HomeCareProblem.translationUnavailable =>
+      'Could not translate just now, so this is in English.',
   };
 
   static String missing(JobDetailsProblem problem) => switch (problem) {

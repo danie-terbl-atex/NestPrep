@@ -35,6 +35,11 @@ import {
   subscriptionOfferInput,
   verifyPurchaseInput,
 } from '../../src/subscriptions/schemas';
+import {
+  MAX_TEXTS_PER_CALL,
+  MAX_TEXT_LENGTH,
+  translateHomeCareTextsInput,
+} from '../../src/home_care/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -154,7 +159,34 @@ const validBodies = {
     // none — so it is not here; its shape is below (accounts ADR-0005).
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
   },
+  // Home care: a helper's words in her language (home-care ADR-0006).
+  translateHomeCareTexts: {
+    schema: translateHomeCareTextsInput,
+    body: { householdId: 'h1', language: 'zu', texts: ['Open a window'] },
+  },
 } as const;
+
+describe('translateHomeCareTexts refuses what is not a translation to make', () => {
+  const body = validBodies.translateHomeCareTexts.body;
+  it.each([
+    ['English, which every text is already in', { ...body, language: 'en' }],
+    ['a language the helper cannot choose', { ...body, language: 'fr' }],
+    ['no texts at all', { ...body, texts: [] }],
+    ['a blank text', { ...body, texts: ['   '] }],
+    ['a text longer than any step', { ...body, texts: ['x'.repeat(MAX_TEXT_LENGTH + 1)] }],
+    ['more texts than a job has', { ...body, texts: Array(MAX_TEXTS_PER_CALL + 1).fill('Mop') }],
+  ])('%s', (_, candidate) => {
+    expect(() => parseInput(translateHomeCareTextsInput, candidate)).toThrow(HttpsError);
+  });
+
+  it('asks for a repeated text once, trimmed', () => {
+    const parsed = parseInput(translateHomeCareTextsInput, {
+      ...body,
+      texts: [' Mop the floor ', 'Mop the floor'],
+    });
+    expect(parsed.texts).toEqual(['Mop the floor']);
+  });
+});
 
 describe('verifyPurchase refuses what is not a purchase to verify', () => {
   const body = validBodies.verifyPurchase.body;

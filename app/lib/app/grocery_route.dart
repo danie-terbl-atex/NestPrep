@@ -10,6 +10,8 @@ import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/state/grocery_plan_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
 import '../features/groceries/ui/grocery_plan_wording.dart';
+import '../features/home_care/data/home_care_library_repository.dart';
+import '../features/home_care/data/home_care_stock_grocery_source.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
@@ -31,6 +33,8 @@ import 'viewer_member.dart';
 List<GrocerySuggestionSource> groceryPlanSources(BuildContext context) => [
   MealPlanGrocerySource(context.read<MealRepository>()),
   LunchPlanGrocerySource(LunchWeekReader(context.read<LunchRepository>())),
+  // home-care V2: products running low (home-care ADR-0005).
+  HomeCareStockGrocerySource(context.read<HomeCareLibraryRepository>()),
 ];
 
 /// The grocery tab (groceries ADR-0002): the list, and beside it the week's

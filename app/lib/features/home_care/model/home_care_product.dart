@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import 'product_kind.dart';
+import 'stock_level.dart';
 
 part 'home_care_product.freezed.dart';
 part 'home_care_product.g.dart';
@@ -28,6 +30,18 @@ abstract class HomeCareProduct with _$HomeCareProduct {
     /// The member profile that added it, not the account.
     required String createdBy,
     @ServerTimestampConverter() DateTime? createdAt,
+
+    /// How much is left (home-care ADR-0005). Never written with the rest of
+    /// the product — only by its own update, so a parent's edit cannot put a
+    /// stale level back over the helper's. A product from before the tracker
+    /// has none, which reads as full (`BE-10`).
+    @JsonKey(includeToJson: false, unknownEnumValue: StockLevel.full)
+    @Default(StockLevel.full)
+    StockLevel stock,
+    @JsonKey(includeToJson: false) String? stockChangedBy,
+    @JsonKey(includeToJson: false)
+    @NullableTimestampConverter()
+    DateTime? stockChangedAt,
   }) = _HomeCareProduct;
 
   factory HomeCareProduct.fromJson(Map<String, Object?> json) =>

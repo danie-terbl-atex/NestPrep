@@ -20,6 +20,25 @@ abstract final class HomeCareRoute {
   static const stepsPath = '$jobPath/steps';
   static const reviewPath = '$jobPath/review';
 
+  // V2 (home-care ADR-0004 to ADR-0006): the routines overview, a helper's
+  // rooms for today, the stock tracker and everybody's language.
+  static const routinesPath = '$path/routines';
+  static const todayPath = '$path/today';
+  static const stockPath = '$path/stock';
+  static const languagesPath = '$path/languages';
+
+  static String routinesPathFor(String householdId) =>
+      '${pathFor(householdId)}/routines';
+
+  static String todayPathFor(String householdId) =>
+      '${pathFor(householdId)}/today';
+
+  static String stockPathFor(String householdId) =>
+      '${pathFor(householdId)}/stock';
+
+  static String languagesPathFor(String householdId) =>
+      '${pathFor(householdId)}/languages';
+
   static String pathFor(String householdId, {JobPile? pile}) {
     final base = '/households/$householdId/$segment';
     return pile == null || pile == JobPile.toDo
