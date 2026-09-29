@@ -75,6 +75,11 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `two-homes-join-light.png` / `two-homes-join-dark.png` | accepting a code: what the other home offers, the fortnight it proposes, this home's profile for the child, and what will be shared |
 | `two-homes-privacy-light.png` / `two-homes-privacy-dark.png` | what the other home can see, and what stays — the same two lists everywhere they appear |
 | `week-two-homes-light.png` / `week-two-homes-dark.png` | the week with a linked child: a small bar under each day in the home's colour, and the day's all-day band — *goes to Mum's home, at 17:00* |
+| `notifications-inbox-light.png` / `notifications-inbox-dark.png` | the inbox behind every tab's bell: today apart from before, each notification's kind, what it said and when, unread marked with a dot and in words (notifications ADR-0001; regenerate with `flutter test tool/notifications_design_review_test.dart --update-goldens`) |
+| `notifications-first-run-light.png` | the same inbox before notifications are on: the card that says what they would bring and asks the phone only on a tap (ADR-0003), above the empty state |
+| `notifications-digest-light.png` / `notifications-digest-dark.png` | a morning digest opened in full: the counts the lock screen showed, then each section — on today, what to pack, chores, documents, the hub, what waits for you — with its way into the app (ADR-0002) |
+| `notifications-digest-dark-200-percent-text.png` | the same digest at the largest text a phone offers |
+| `notifications-settings-light.png` / `notifications-settings-dark.png` | notification settings: this phone with its test push answered, the morning digest and its time, and what this person's digest holds in words |
 
 ## What to look at
 

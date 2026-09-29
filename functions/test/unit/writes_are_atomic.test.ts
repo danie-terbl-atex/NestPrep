@@ -218,6 +218,16 @@ describe('every callable declares what it may cost', () => {
         'ensureReferralCode',
         'recordPaywallOpened',
         'redeemReferralCode',
+        // Notifications (notifications ADR-0001 to ADR-0003): a push is sent
+        // from a server, never a rule; a digest reads every area a person may
+        // see and composes one message from them; a producer's record is
+        // fanned out to each person it concerns, at their time.
+        'composeMorningDigests',
+        'deliverNotifications',
+        'notifyChoreCheck',
+        'notifyRewardRequest',
+        'notifyShiftHandover',
+        'sendTestNotification',
       ].sort(),
     );
   });

@@ -20,6 +20,8 @@ void main() {
     ('QuickAddCopy', 'lib/shared/copy/quick_add_copy.dart'),
     // todos phase 2: stars and rewards (todos ADR-0003).
     ('PointsCopy', 'lib/shared/copy/points_copy.dart'),
+    // notifications (notifications ADR-0001 to ADR-0003).
+    ('NotificationsCopy', 'lib/shared/copy/notifications_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();

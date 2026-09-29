@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The tint Android gives the push's status-bar mark (notifications
+     ADR-0001): the logo's forest green, a copy of `accent` in
+     `lib/design/tokens/nest_colors.dart`. -->
+<resources>
+    <color name="notification_accent">#32533C</color>
+</resources>

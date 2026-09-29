@@ -46,6 +46,7 @@ import 'document_tools_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
+import 'notifications_model_fixtures.dart';
 import 'referral_model_fixtures.dart';
 import 'two_homes_model_fixtures.dart';
 
@@ -669,6 +670,8 @@ List<ModelFixture> modelFixtures() {
     ...documentToolsModelFixtures(),
     // co-parenting: a child in two homes (household ADR-0004).
     ...twoHomesModelFixtures(),
+    // notifications (notifications ADR-0001, ADR-0003).
+    ...notificationsModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
     // referrals: give a month, get a month (subscriptions ADR-0002).

@@ -29,7 +29,7 @@ void main() {
   final fixtures = modelFixtures();
 
   test('every model with a JSON boundary has a fixture', () {
-    // The count is the ratchet: a sixtieth stored model has to be added
+    // The count is the ratchet: a sixty-third stored model has to be added
     // here before this passes again. Todos phase 2 added five (todos
     // ADR-0003); nanny hub added nine (nanny-hub ADR-0003); home care added
     // four (home-care ADR-0001); lunch box added four (lunch-box ADR-0001);
@@ -37,8 +37,9 @@ void main() {
     // the shared link (documents ADR-0006); two homes added three (household
     // ADR-0004); nanny-hub pickups three (nanny-hub ADR-0005); photo updates,
     // bookings and house codes three (nanny-hub ADR-0004, ADR-0006);
-    // referrals three (subscriptions ADR-0002).
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 59);
+    // referrals three (subscriptions ADR-0002); notifications three
+    // (notifications ADR-0001, ADR-0003).
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 62);
   });
 
   for (final fixture in fixtures) {

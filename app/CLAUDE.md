@@ -134,6 +134,16 @@ so the on-screen copy cannot tell you the backend was unreachable.
 - iOS is registered in the Firebase project and `ios/Runner/GoogleService-Info.plist` is committed,
   but it is not yet added to the Xcode target: `flutterfire configure` cannot edit this Xcode
   project with the system Ruby's `xcodeproj`. Do that when iOS is first verified.
+- **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
+  `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
+  fetched from the real service on both targets (it is a way to reach the phone, not household
+  data). The four Android channels are created by `MainActivity.kt` over the method channel
+  `io.nullstate.nestprep/notifications`, with the app's own words; the status-bar mark is
+  `res/drawable/ic_notification.xml`. The permission prompt appears only from a tap on *Turn on
+  notifications*, never at launch. **iOS push is not wired**: `ios/Runner/Runner.entitlements`
+  exists but is not on the Runner target, because a free Apple team cannot sign
+  `aps-environment` — add the Push Notifications capability in Xcode once the Apple Developer
+  Program exists, and upload an APNs auth key to the Firebase project.
 - Fonts are bundled under `assets/fonts/` (Plus Jakarta Sans for body, Nunito for headings, both
   OFL). `flutter pub get` after changing the `fonts:` block or the family is silently absent.
 - The logo's pieces under `assets/brand/` are generated from the vault's logo by

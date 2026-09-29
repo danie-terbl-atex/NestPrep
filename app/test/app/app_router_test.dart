@@ -32,6 +32,7 @@ import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
@@ -62,6 +63,7 @@ import '../support/fake_invite_sharer.dart';
 import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
+import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/fake_two_homes.dart';
@@ -146,6 +148,10 @@ void main() {
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),
+          // Every tab's bell (notifications ADR-0001).
+          Provider<NotificationRepository>.value(
+            value: FakeNotificationRepository(),
+          ),
           Provider<ActivityHeartbeat>(
             create: (_) => ActivityHeartbeat(activityRecorder: activity),
           ),

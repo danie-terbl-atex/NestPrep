@@ -65,6 +65,7 @@ import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
+import 'notifications_providers.dart';
 import 'referral_providers.dart';
 import 'subscription_providers.dart';
 import 'two_homes_providers.dart';
@@ -226,4 +227,7 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // documents V2: shared links and offline copies (documents ADR-0006,
   // ADR-0007). After the session, which the offline janitor listens to.
   ...documentToolProviders(),
+  // notifications — after the session, which the phone's registration
+  // follows (notifications ADR-0001).
+  ...notificationsProviders(),
 ];

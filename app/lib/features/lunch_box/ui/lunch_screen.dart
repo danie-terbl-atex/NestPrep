@@ -13,6 +13,7 @@ import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../notifications/ui/notification_bell.dart';
 import '../model/lunch_board.dart';
 import '../state/lunch_board_controller.dart';
 import 'lunch_board_body.dart';
@@ -46,7 +47,11 @@ class LunchScreen extends StatelessWidget {
       subtitle: LunchCopy.weekOf(
         NestDates.schoolWeekRange(controller.week.monday),
       ),
-      trailing: const [HouseholdLinkButton(), AccountMenuButton()],
+      trailing: const [
+        NotificationBell(),
+        HouseholdLinkButton(),
+        AccountMenuButton(),
+      ],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.lunch,
         onSelect: onSelectTab,

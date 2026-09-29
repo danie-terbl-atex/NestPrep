@@ -84,3 +84,10 @@ export { setCarerShiftOnly } from './nanny_hub/set_carer_shift_only';
 export { ensureReferralCode } from './referrals/ensure_referral_code';
 export { redeemReferralCode } from './referrals/redeem_referral_code';
 export { recordPaywallOpened } from './product_analytics/record_paywall_opened';
+// ---- notifications: the morning digest and the one push channel (notifications ADR-0001 to ADR-0003) ----
+export { composeMorningDigests } from './notifications/compose_morning_digests';
+export { deliverNotifications } from './notifications/deliver_notifications';
+export { notifyShiftHandover } from './notifications/notify_shift_handover';
+export { notifyChoreCheck } from './notifications/notify_chore_check';
+export { notifyRewardRequest } from './notifications/notify_reward_request';
+export { sendTestNotification } from './notifications/send_test_notification';
