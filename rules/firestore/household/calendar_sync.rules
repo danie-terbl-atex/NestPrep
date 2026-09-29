@@ -1,0 +1,21 @@
+// ---- calendar sync (calendar ADR-0003) ----
+// What the household sees of its connected calendars, the events they
+// brought in, and its own feed link. They are the family week, so whoever
+// the `calendar` grant lets see the week sees them — a kid's tablet included,
+// through its profile's grant (household ADR-0003, accounts ADR-0004). Only
+// the calendar sync Functions write them, so an imported event cannot be
+// edited here and a connection cannot be pointed at somebody else.
+match /calendarConnections/{connectionId} {
+  allow read: if canView(householdId, 'calendar');
+  allow write: if false;
+}
+
+match /syncedEvents/{syncedEventId} {
+  allow read: if canView(householdId, 'calendar');
+  allow write: if false;
+}
+
+match /calendarFeed/{feedId} {
+  allow read: if canView(householdId, 'calendar');
+  allow write: if false;
+}

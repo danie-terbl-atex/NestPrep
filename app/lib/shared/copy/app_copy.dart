@@ -2,6 +2,7 @@ import '../../features/household/model/member_role.dart';
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
+import 'calendar_sync_copy.dart';
 import 'kid_copy.dart';
 import 'product_analytics_copy.dart';
 
@@ -377,6 +378,7 @@ abstract final class AppCopy {
     LocationFailure(:final problem) => locationProblem(problem),
     DocumentFailure(:final problem) => documentProblem(problem),
     KidSignInFailure(:final problem) => KidCopy.problem(problem),
+    CalendarSyncFailure(:final problem) => CalendarSyncCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

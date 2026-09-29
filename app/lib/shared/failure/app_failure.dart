@@ -228,6 +228,39 @@ final class KidSignInFailure extends AppFailure {
   final KidSignInProblem problem;
 }
 
+/// Why a connected-calendar action did not happen (calendar ADR-0003). The
+/// server's `CALENDAR_SYNC_REFUSALS` is the other half, and a test reads both.
+/// Membership refusals stay `HouseholdProblem`, as they do for documents.
+enum CalendarSyncProblem {
+  /// The household's `calendar` grant does not reach this far — a helper who
+  /// may look at the week asked to connect a calendar (household ADR-0003).
+  calendarNotShared,
+
+  /// Only the person who connected it, or an admin, may sync or remove it.
+  notYourConnection,
+
+  /// It was disconnected while somebody was looking at it.
+  connectionNotFound,
+
+  /// Google or Outlook is not set up on this deployment yet.
+  providerNotConfigured,
+
+  /// What was pasted is not a calendar link NestPrep can read.
+  notACalendarLink,
+
+  /// The link could not be reached just now.
+  calendarLinkUnreachable,
+
+  /// Nothing on the phone would open the provider's sign-in page.
+  couldNotOpenBrowser,
+}
+
+final class CalendarSyncFailure extends AppFailure {
+  const CalendarSyncFailure(this.problem);
+
+  final CalendarSyncProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

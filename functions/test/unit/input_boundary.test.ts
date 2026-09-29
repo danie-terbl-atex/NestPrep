@@ -21,6 +21,12 @@ import {
   resetKidSignInInput,
   revokeKidDeviceInput,
 } from '../../src/accounts/kid_schemas';
+import {
+  connectCalendarLinkInput,
+  connectionInput,
+  householdInput,
+  startCalendarConnectionInput,
+} from '../../src/calendar_sync/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -79,6 +85,21 @@ const validBodies = {
     body: { householdId: 'h1', deviceUid: 'kid_abc' },
   },
   resetKidSignIn: { schema: resetKidSignInInput, body: { householdId: 'h1', memberId: 'm-kid' } },
+  // Calendar sync (calendar ADR-0003): list, share and reset take the
+  // household alone; sync and disconnect name a connection too.
+  listCalendarProviders: { schema: householdInput, body: { householdId: 'h1' } },
+  startCalendarConnection: {
+    schema: startCalendarConnectionInput,
+    body: { householdId: 'h1', provider: 'google' },
+  },
+  connectCalendarLink: {
+    schema: connectCalendarLinkInput,
+    body: { householdId: 'h1', url: 'webcal://p01-caldav.icloud.com/published/2/abc' },
+  },
+  syncCalendarConnection: {
+    schema: connectionInput,
+    body: { householdId: 'h1', connectionId: 'c1' },
+  },
 } as const;
 
 describe('every callable accepts its own body', () => {
@@ -240,6 +261,16 @@ describe('a grant', () => {
       const access = { ...ROLE_DEFAULTS.helper, [area]: 'own' };
       expect(() => parseInput(schema, { ...body, access }), area).not.toThrow();
     }
+  });
+});
+
+describe('a calendar provider', () => {
+  const { schema, body } = validBodies.startCalendarConnection;
+
+  it('is one NestPrep connects through OAuth, and a link is not one', () => {
+    expect(() => parseInput(schema, { ...body, provider: 'microsoft' })).not.toThrow();
+    expect(() => parseInput(schema, { ...body, provider: 'ics' })).toThrow(HttpsError);
+    expect(() => parseInput(schema, { ...body, provider: 'apple' })).toThrow(HttpsError);
   });
 });
 

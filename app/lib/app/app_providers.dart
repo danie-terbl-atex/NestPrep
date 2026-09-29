@@ -12,6 +12,10 @@ import '../features/accounts/data/firestore_account_repository.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/data/firestore_calendar_repository.dart';
+import '../features/calendar_sync/data/calendar_sync_directory.dart';
+import '../features/calendar_sync/data/calendar_sync_repository.dart';
+import '../features/calendar_sync/data/callable_calendar_sync_directory.dart';
+import '../features/calendar_sync/data/firestore_calendar_sync_repository.dart';
 import '../features/documents/data/callable_document_directory.dart';
 import '../features/documents/data/document_directory.dart';
 import '../features/documents/data/document_opener.dart';
@@ -50,6 +54,8 @@ import '../features/product_analytics/data/firestore_beta_numbers_repository.dar
 import '../features/product_analytics/state/activity_heartbeat.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
+import '../shared/links/external_link_opener.dart';
+import '../shared/links/launcher_external_link_opener.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
 
@@ -90,6 +96,18 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<CalendarRepository>(
     create: (context) =>
         FirestoreCalendarRepository(context.read<FirebaseFirestore>()),
+  ),
+  // ---- calendar sync (calendar ADR-0003) ----
+  Provider<CalendarSyncRepository>(
+    create: (context) =>
+        FirestoreCalendarSyncRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<CalendarSyncDirectory>(
+    create: (context) =>
+        CallableCalendarSyncDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<ExternalLinkOpener>(
+    create: (context) => const LauncherExternalLinkOpener(),
   ),
   Provider<MealRepository>(
     create: (context) =>

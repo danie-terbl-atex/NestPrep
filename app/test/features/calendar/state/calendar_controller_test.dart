@@ -16,6 +16,7 @@ import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_calendar_repository.dart';
+import '../../../support/fake_calendar_sync.dart';
 import '../../../support/household_fixtures.dart';
 
 /// 22:30 UTC on Thursday the 17th is already Friday the 18th in Johannesburg.
@@ -51,6 +52,7 @@ void main() {
     repository = FakeCalendarRepository();
     controller = CalendarController(
       calendarRepository: repository,
+      calendarSyncRepository: FakeCalendarSyncRepository(),
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,

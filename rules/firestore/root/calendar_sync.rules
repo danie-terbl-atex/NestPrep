@@ -1,0 +1,15 @@
+// ---- calendar sync, the credentials (calendar ADR-0003) ----
+// A refresh token or a calendar link, a connection in flight, and a feed
+// token's hash. Only the calendar sync Functions touch these; a readable
+// one would be somebody's whole calendar.
+match /calendarConnectionSecrets/{connectionId} {
+  allow read, write: if false;
+}
+
+match /calendarOAuthStates/{state} {
+  allow read, write: if false;
+}
+
+match /calendarFeeds/{tokenHash} {
+  allow read, write: if false;
+}

@@ -33,14 +33,15 @@ function endpoints(): [string, Endpoint][] {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are nineteen of them, so a new one cannot slip past these checks', () => {
+  it('there are twenty-nine of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    // Fifteen callables (nine household and documents — `setMemberAccess` is
-    // household ADR-0003's — recordActivity, and five kid sign-in calls —
-    // accounts ADR-0003), three Firestore triggers and one schedule; the
-    // triggers must run in the database's region or they never fire
-    // (product-analytics ADR-0001).
-    expect(endpoints()).toHaveLength(19);
+    // Household and documents: nine callables (`setMemberAccess` is household
+    // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
+    // that must run in the database's region or never fire, and one schedule
+    // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
+    // ADR-0003). Calendar sync: ten — seven callables, two HTTP and one
+    // schedule (calendar ADR-0003). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(29);
   });
 
   it('runs in the one region, which is the database region', () => {

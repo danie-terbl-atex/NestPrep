@@ -13,9 +13,6 @@ import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
 import '../features/accounts/ui/verify_email_screen.dart';
-import '../features/calendar/data/calendar_repository.dart';
-import '../features/calendar/state/calendar_controller.dart';
-import '../features/calendar/ui/calendar_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -43,6 +40,7 @@ import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
+import 'calendar_routes.dart';
 import 'design_gallery_access.dart';
 import 'documents_routes.dart';
 import 'family_routes.dart';
@@ -141,22 +139,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             child: const LiveLocationScreen(),
           ),
         ),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
-          // The only route whose controller follows another provider: the week
-          // derives its birthdays from the household's profiles, so a rename or
-          // a recolour has to reach it (birthdays ADR-0001).
-          builder: (context, state) =>
-              ChangeNotifierProxyProvider<HouseholdView, CalendarController>(
-                create: (context) => _calendarController(context, state),
-                update: (context, view, controller) =>
-                    (controller ?? _calendarController(context, state))
-                      ..showBirthdaysOf(view.members),
-                child: CalendarScreen(
-                  onSelectTab: (tab) => _goToTab(context, state, tab),
-                ),
-              ),
-        ),
+        // The week, and calendar sync's connected calendars (calendar
+        // ADR-0001, ADR-0003).
+        ...calendarRoutes(session),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
           builder: (context, state) => ChangeNotifierProvider(
@@ -175,7 +160,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               ),
             ),
             child: TodoScreen(
-              onSelectTab: (tab) => _goToTab(context, state, tab),
+              onSelectTab: (tab) => goToTab(context, state, tab),
             ),
           ),
         ),
@@ -189,7 +174,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               memberId: viewerMemberIdOf(context),
             ),
             child: MealPlanScreen(
-              onSelectTab: (tab) => _goToTab(context, state, tab),
+              onSelectTab: (tab) => goToTab(context, state, tab),
             ),
           ),
         ),
@@ -202,7 +187,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               memberId: viewerMemberIdOf(context),
             ),
             child: GroceryListScreen(
-              onSelectTab: (tab) => _goToTab(context, state, tab),
+              onSelectTab: (tab) => goToTab(context, state, tab),
             ),
           ),
         ),
@@ -229,18 +214,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
   ],
 );
 
-CalendarController _calendarController(
-  BuildContext context,
-  GoRouterState state,
-) => CalendarController(
-  calendarRepository: context.read<CalendarRepository>(),
-  householdClock: context.read<HouseholdClock>(),
-  householdId: HouseholdRoute.idFrom(state),
-  memberId: viewerMemberIdOf(context),
-  householdMembers: context.read<HouseholdView>().members,
-);
-
-void _goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
+/// Moves between the four tabs of one household.
+void goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
   context.go(HouseholdRoute.pathFor(HouseholdRoute.idFrom(state), tab));
 }
 

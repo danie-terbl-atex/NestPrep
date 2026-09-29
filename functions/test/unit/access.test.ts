@@ -7,6 +7,7 @@ import {
   STORAGE_AREAS,
   effectiveGrant,
   isFamilyRole,
+  memberLevelIn,
   readGrant,
   storageGrant,
   uniformGrant,
@@ -102,5 +103,30 @@ describe('the role defaults', () => {
   it('show a helper no medical detail, and a carer the medical detail they need', () => {
     expect(ROLE_DEFAULTS.helper.medical).toBe('none');
     expect(ROLE_DEFAULTS.carer.medical).toBe('view');
+  });
+});
+
+describe('memberLevelIn — the Functions’ copy of the rules’ levelIn', () => {
+  it('gives family everything, the old `member` included', () => {
+    for (const role of ['admin', 'parent', 'member']) {
+      expect(memberLevelIn(role, undefined, 'calendar'), role).toBe('edit');
+    }
+  });
+
+  it('reads a kid, helper or carer’s recorded grant', () => {
+    expect(memberLevelIn('helper', ROLE_DEFAULTS.helper, 'calendar')).toBe('view');
+    expect(memberLevelIn('carer', ROLE_DEFAULTS.carer, 'documents')).toBe('none');
+  });
+
+  it('lets a helper claimed before household ADR-0003 keep everything, and nobody else', () => {
+    expect(memberLevelIn('helper', undefined, 'calendar')).toBe('edit');
+    expect(memberLevelIn('carer', undefined, 'calendar')).toBe('none');
+    expect(memberLevelIn('kid', undefined, 'calendar')).toBe('none');
+  });
+
+  it('narrows a level the area does not accept to none, never widens it', () => {
+    expect(memberLevelIn('helper', { ...ROLE_DEFAULTS.helper, calendar: 'own' }, 'calendar')).toBe(
+      'none',
+    );
   });
 });

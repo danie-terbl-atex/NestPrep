@@ -132,7 +132,7 @@ void main() {
     '_authSubscription?.cancel()',
     '_accountSubscription?.cancel()',
     // Cancel and re-listen; the new stream's errors go to its onError.
-    '_resubscribeToExceptions()',
+    '_resubscribeToWindow()',
     '_resubscribeToWeek()',
     // Handles its own failure — it goes through `bestEffort`.
     'CrashReporting.setMember(memberId)',
@@ -174,6 +174,11 @@ void main() {
     '_invite(context controller role)',
     'controller.shareAgain(invite)',
     'context.read<InviteSharer>().shareCode(',
+    // Which calendars this deployment can connect (calendar ADR-0003). It
+    // catches its own `AppFailure` and holds it as the availability's failed
+    // state, which the screen reads as "try it and see"; it is unawaited for
+    // the same reason as the one above.
+    '_loadAvailability()',
     // Closing the upload's own progress stream once it has ended. There is
     // nobody left to tell: the failure, if there was one, has already been
     // put on that stream and delivered.

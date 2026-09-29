@@ -119,28 +119,47 @@ describe('every callable declares what it may cost', () => {
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
-    // The five kid sign-in calls mint and revoke custom tokens and move a
-    // code, a device and a household map entry together (accounts ADR-0003).
-    expect([...exported].sort()).toEqual([
-      'cancelKidPairing',
-      'countHouseholdCreated',
-      'countInviteCreated',
-      'countLunchPlanCreated',
-      'createHousehold',
-      'createInvite',
-      'createKidPairing',
-      'deleteDocumentFolder',
-      'leaveHousehold',
-      'recordActivity',
-      'redeemInvite',
-      'redeemKidPairing',
-      'removeMember',
-      'resetKidSignIn',
-      'revokeKidDevice',
-      'rollupBetaNumbers',
-      'setMemberAccess',
-      'setMemberRole',
-      'syncDocumentAccess',
-    ]);
+    expect([...exported].sort()).toEqual(
+      [
+        // Household and documents (household ADR-0001–0003, documents ADR-0001).
+        'createHousehold',
+        'createInvite',
+        'deleteDocumentFolder',
+        'leaveHousehold',
+        'redeemInvite',
+        'removeMember',
+        'setMemberAccess',
+        'setMemberRole',
+        'syncDocumentAccess',
+        // Product analytics: counting the beta numbers, which no rule can do
+        // because a rule cannot write a second document (product-analytics
+        // ADR-0001).
+        'countHouseholdCreated',
+        'countInviteCreated',
+        'countLunchPlanCreated',
+        'recordActivity',
+        'rollupBetaNumbers',
+        // Kid sign-in: mint and revoke custom tokens and move a code, a device
+        // and a household map entry together (accounts ADR-0003).
+        'cancelKidPairing',
+        'createKidPairing',
+        'redeemKidPairing',
+        'resetKidSignIn',
+        'revokeKidDevice',
+        // Calendar sync (calendar ADR-0003): a provider's token exchange and
+        // refresh, a link fetched with an address check, a feed served by
+        // token, and a schedule — none of which a rule can do.
+        'calendarFeed',
+        'calendarOAuthCallback',
+        'connectCalendarLink',
+        'disconnectCalendar',
+        'listCalendarProviders',
+        'resetCalendarFeed',
+        'shareCalendarFeed',
+        'startCalendarConnection',
+        'syncCalendarConnection',
+        'syncCalendarsOnSchedule',
+      ].sort(),
+    );
   });
 });

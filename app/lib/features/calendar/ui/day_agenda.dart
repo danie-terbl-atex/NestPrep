@@ -8,9 +8,11 @@ import '../model/calendar_week.dart';
 import '../model/day_entry.dart';
 import 'birthday_row.dart';
 import 'event_row.dart';
+import 'synced_event_row.dart';
 
 /// One day: birthdays first, then the all-day events and then the rest by the
-/// time they start (calendar ADR-0001, birthdays ADR-0001). The empty state
+/// time they start, imported ones among them (calendar ADR-0001, ADR-0003,
+/// birthdays ADR-0001). The empty state
 /// names the day, so it never reads as a failure.
 class DayAgenda extends StatelessWidget {
   const DayAgenda({
@@ -61,6 +63,10 @@ class DayAgenda extends StatelessWidget {
                 key: ValueKey(entry.key),
                 occurrence: birthday,
                 householdId: householdId,
+              ),
+              SyncedEntry(:final event) => SyncedEventRow(
+                key: ValueKey(entry.key),
+                event: event,
               ),
             },
           ),

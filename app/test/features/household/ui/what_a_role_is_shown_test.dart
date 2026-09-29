@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_calendar_repository.dart';
+import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_grocery_repository.dart';
 import '../../../support/fake_todo_repository.dart';
 import '../../../support/household_fixtures.dart';
@@ -114,6 +115,7 @@ void main() {
       final repository = FakeCalendarRepository();
       final controller = CalendarController(
         calendarRepository: repository,
+        calendarSyncRepository: FakeCalendarSyncRepository(),
         householdClock: HouseholdClock('Africa/Johannesburg', now: () => now),
         householdId: Fixtures.householdId,
         memberId: Fixtures.thandiMemberId,

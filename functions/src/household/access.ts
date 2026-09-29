@@ -141,6 +141,19 @@ export function effectiveGrant(role: string, stored: unknown): Grant | null {
   return readGrant(stored) ?? { ...ROLE_DEFAULTS[role] };
 }
 
+/**
+ * What one member may do in one area — the Functions' copy of `levelIn` in the
+ * rules (`rules/firestore/shared/access.rules`): family `edit`; a kid, helper
+ * or carer what their recorded grant says; a helper with none recorded —
+ * claimed before household ADR-0003 — `edit`; anybody else `none`.
+ */
+export function memberLevelIn(role: string, storedGrant: unknown, area: Area): Level {
+  if (isFamilyRole(role)) return 'edit';
+  const grant = readGrant(storedGrant);
+  if (grant === null) return role === 'helper' ? 'edit' : 'none';
+  return grant[area];
+}
+
 /** Only the areas the bytes live under, and only where the level is not none. */
 export function storageGrant(grant: Grant): Partial<Record<Area, Level>> {
   const result: Partial<Record<Area, Level>> = {};

@@ -95,7 +95,10 @@ List<CalendarDate> _expandWeekly(
   while (!weekStart.isAfter(lastDay)) {
     for (final weekday in weekdays) {
       final day = weekStart.addDays(weekday - 1);
-      if (day.isBefore(firstDate) || day.isAfter(lastDay)) continue;
+      // [from] is the later of the first occurrence and the window's start, so
+      // this keeps both promises: nothing before the thing began, and nothing
+      // before the window a mid-week caller asked for.
+      if (day.isBefore(from) || day.isAfter(lastDay)) continue;
       occurrences.add(day);
     }
     weekStart = weekStart.addDays(rule.interval * 7);

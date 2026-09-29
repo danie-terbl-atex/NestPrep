@@ -3,6 +3,10 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/calendar_sync/model/calendar_connection.dart';
+import 'package:nestprep/features/calendar_sync/model/calendar_provider.dart';
+import 'package:nestprep/features/calendar_sync/model/connection_status.dart';
+import 'package:nestprep/features/calendar_sync/model/synced_event.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/family_profiles/model/family_profile.dart';
@@ -213,6 +217,29 @@ List<ModelFixture> modelFixtures() {
     name: 'Oakwood Primary',
     nutFree: true,
     createdAt: at,
+  );
+
+  final connection = CalendarConnection(
+    id: 'c1',
+    provider: CalendarProvider.microsoft,
+    memberId: 'm1',
+    ownerUid: 'uidA',
+    accountLabel: 'ada@example.com',
+    status: ConnectionStatus.unreachable,
+    eventCount: 12,
+    lastSyncedAt: at,
+  );
+  final synced = SyncedEvent(
+    id: 'c1_abc',
+    connectionId: 'c1',
+    provider: CalendarProvider.ics,
+    memberId: 'm1',
+    sourceLabel: 'p01-caldav.icloud.com',
+    title: 'Half term',
+    date: CalendarDate(2026, 10, 19),
+    endDate: CalendarDate(2026, 10, 23),
+    startMinute: 9 * 60,
+    endMinute: 10 * 60,
   );
 
   return [
@@ -458,6 +485,46 @@ List<ModelFixture> modelFixtures() {
       toJson: school.toJson,
       fromJson: School.fromJson,
       keys: const {'name', 'nutFree', 'createdAt'},
+    ),
+    // Calendar sync (calendar ADR-0003): only a Function writes these, so the
+    // round trip is the read the app makes of what the Function stored.
+    ModelFixture(
+      label: 'CalendarConnection',
+      id: 'c1',
+      value: connection,
+      toJson: connection.toJson,
+      fromJson: CalendarConnection.fromJson,
+      keys: const {
+        'provider',
+        'memberId',
+        'ownerUid',
+        'accountLabel',
+        'status',
+        'eventCount',
+        'lastSyncedAt',
+      },
+    ),
+    ModelFixture(
+      label: 'SyncedEvent',
+      id: 'c1_abc',
+      value: synced,
+      toJson: synced.toJson,
+      fromJson: SyncedEvent.fromJson,
+      keys: const {
+        'connectionId',
+        'provider',
+        'memberId',
+        'sourceLabel',
+        'title',
+        'date',
+        'endDate',
+        'startMinute',
+        'endMinute',
+      },
+      note:
+          'on the household wall clock already: the Function converted the '
+          "provider's instant, so a repeat keeps its time across a clocks "
+          'change (calendar ADR-0002).',
     ),
   ];
 }

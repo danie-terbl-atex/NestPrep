@@ -247,6 +247,23 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ==== rules/firestore/root/calendar_sync.rules ====
+    // ---- calendar sync, the credentials (calendar ADR-0003) ----
+    // A refresh token or a calendar link, a connection in flight, and a feed
+    // token's hash. Only the calendar sync Functions touch these; a readable
+    // one would be somebody's whole calendar.
+    match /calendarConnectionSecrets/{connectionId} {
+      allow read, write: if false;
+    }
+
+    match /calendarOAuthStates/{state} {
+      allow read, write: if false;
+    }
+
+    match /calendarFeeds/{tokenHash} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/invites.rules ====
     // ---- invites (household ADR-0002) ----
     // No client reads or writes these at all: a readable invite collection is a
@@ -349,6 +366,29 @@ service cloud.firestore {
           && isServerTime('skippedAt');
 
         allow delete: if canEdit(householdId, 'calendar');
+      }
+
+      // ==== rules/firestore/household/calendar_sync.rules ====
+      // ---- calendar sync (calendar ADR-0003) ----
+      // What the household sees of its connected calendars, the events they
+      // brought in, and its own feed link. They are the family week, so whoever
+      // the `calendar` grant lets see the week sees them — a kid's tablet included,
+      // through its profile's grant (household ADR-0003, accounts ADR-0004). Only
+      // the calendar sync Functions write them, so an imported event cannot be
+      // edited here and a connection cannot be pointed at somebody else.
+      match /calendarConnections/{connectionId} {
+        allow read: if canView(householdId, 'calendar');
+        allow write: if false;
+      }
+
+      match /syncedEvents/{syncedEventId} {
+        allow read: if canView(householdId, 'calendar');
+        allow write: if false;
+      }
+
+      match /calendarFeed/{feedId} {
+        allow read: if canView(householdId, 'calendar');
+        allow write: if false;
       }
 
       // ==== rules/firestore/household/documents.rules ====

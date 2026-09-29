@@ -12,6 +12,8 @@ import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
+import 'package:nestprep/features/calendar_sync/data/calendar_sync_directory.dart';
+import 'package:nestprep/features/calendar_sync/data/calendar_sync_repository.dart';
 import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
 import 'package:nestprep/features/family_profiles/ui/family_screen.dart';
@@ -27,11 +29,13 @@ import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dar
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
+import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
+import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
@@ -102,6 +106,13 @@ void main() {
           Provider<HouseholdRepository>.value(value: households),
           Provider<HouseholdDirectory>.value(value: directory),
           Provider<CalendarRepository>.value(value: calendar),
+          Provider<CalendarSyncRepository>.value(
+            value: FakeCalendarSyncRepository(),
+          ),
+          Provider<CalendarSyncDirectory>.value(
+            value: FakeCalendarSyncDirectory(),
+          ),
+          Provider<ExternalLinkOpener>.value(value: FakeLinkOpener()),
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),

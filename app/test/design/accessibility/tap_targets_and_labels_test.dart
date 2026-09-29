@@ -35,6 +35,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../support/accessibility_audit.dart';
 import '../../support/fake_auth.dart';
 import '../../support/fake_calendar_repository.dart';
+import '../../support/fake_calendar_sync.dart';
 import '../../support/fake_documents.dart';
 import '../../support/fake_grocery_repository.dart';
 import '../../support/fake_kid_sign_in.dart';
@@ -82,6 +83,7 @@ void main() {
     addTearDown(repository.close);
     final controller = CalendarController(
       calendarRepository: repository,
+      calendarSyncRepository: FakeCalendarSyncRepository(),
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => now),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
