@@ -41,6 +41,7 @@ import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'calendar_routes.dart';
+import 'chore_points_route.dart';
 import 'design_gallery_access.dart';
 import 'documents_shell.dart';
 import 'family_routes.dart';
@@ -140,6 +141,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             child: const LiveLocationScreen(),
           ),
         ),
+        // todos phase 2: a parent's stars and rewards (todos ADR-0003).
+        chorePointsRoute(),
         // The week, and calendar sync's connected calendars (calendar
         // ADR-0001, ADR-0003).
         ...calendarRoutes(session),

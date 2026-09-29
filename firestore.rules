@@ -391,6 +391,105 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // ==== rules/firestore/household/chore_points.rules ====
+      // ---- todos phase 2: chores that earn kids stars (todos ADR-0003) ----
+      //
+      // A child's stars are written by Functions and by nothing else: the claim a
+      // starred completion raises, the ledger, the balance beside it, and the status
+      // of a reward request. A kid device — or anybody — writing any of them is
+      // refused here, which is what "a kid cannot mint stars" rests on. Reading
+      // follows the `todos` grant: everything at `view` or `edit`, one's own at
+      // `own`, which is a kid device's default (accounts ADR-0004).
+      //
+      // What family may do that a grant never gives: put stars on a chore, write
+      // the reward shelf. Approving a chore and handing a reward over are callables
+      // that check the same thing (`reviewChore`, `settleReward`).
+
+      // A chore's stars: a whole number from 0 to 100, a yes/no for a parent's
+      // check, and a starred chore names the children who earn it — an "anyone"
+      // chore is invisible to a kid device reading `own` (todos ADR-0003).
+      function choreStarsAreValid(data) {
+        let points = data.get('points', 0);
+        return points is int && points >= 0 && points <= 100
+          && data.get('needsApproval', false) is bool
+          && (points == 0 || data.assigneeIds.size() > 0);
+      }
+
+      function choreCarriesStars(data) {
+        return data.get('points', 0) != 0 || data.get('needsApproval', false) != false;
+      }
+
+      function choreStarsUnchanged() {
+        return request.resource.data.get('points', 0) == resource.data.get('points', 0)
+          && request.resource.data.get('needsApproval', false)
+               == resource.data.get('needsApproval', false);
+      }
+
+      // Somebody's stars: anybody who sees the household's to-dos, or the child
+      // they belong to.
+      function choreStarsReadable(householdId, memberId) {
+        return canView(householdId, 'todos')
+          || (hasOwnOnly(householdId, 'todos') && memberId == ownMemberId(householdId));
+      }
+
+      function isRewardShape(data) {
+        return data.title is string && data.title.size() > 0 && data.title.size() <= 60
+          && data.cost is int && data.cost >= 1 && data.cost <= 10000
+          && data.icon is string && data.icon.size() > 0 && data.icon.size() <= 32;
+      }
+
+      match /pointBalances/{memberId} {
+        allow read: if choreStarsReadable(householdId, memberId);
+        allow write: if false;
+      }
+
+      match /pointEntries/{entryId} {
+        allow read: if choreStarsReadable(householdId, resource.data.memberId);
+        allow write: if false;
+      }
+
+      match /pointClaims/{claimId} {
+        allow read: if choreStarsReadable(householdId, resource.data.memberId);
+        allow write: if false;
+      }
+
+      // The household's shelf: every child sees the same one.
+      match /rewards/{rewardId} {
+        allow read: if canView(householdId, 'todos') || hasOwnOnly(householdId, 'todos');
+
+        allow create: if isFamily(householdId)
+          && request.resource.data.keys().hasOnly(
+               ['title', 'cost', 'icon', 'createdBy', 'createdAt'])
+          && isRewardShape(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if isFamily(householdId)
+          && onlyChanged(['title', 'cost', 'icon'])
+          && isRewardShape(request.resource.data);
+
+        allow delete: if isFamily(householdId);
+      }
+
+      // A child asks for a reward — or a parent asks on a child's behalf. Four
+      // fields and nothing else: the status, the cost taken and the refusal are
+      // the trigger's to write, never the asker's.
+      match /rewardRequests/{requestId} {
+        allow read: if choreStarsReadable(householdId, resource.data.memberId);
+
+        allow create: if (canEdit(householdId, 'todos') || hasOwnOnly(householdId, 'todos'))
+          && request.resource.data.keys().hasOnly(
+               ['rewardId', 'memberId', 'requestedBy', 'requestedAt'])
+          && isNonEmptyString(request.resource.data.rewardId)
+          && isOwnMember(householdId, request.resource.data.requestedBy)
+          && (isOwnMember(householdId, request.resource.data.memberId)
+                || isFamily(householdId))
+          && exists(/databases/$(database)/documents/households/$(householdId)/rewards/$(request.resource.data.rewardId))
+          && isServerTime('requestedAt');
+
+        allow update, delete: if false;
+      }
+
       // ==== rules/firestore/household/document_vaults.rules ====
       // ---- documents phase 2: tags, expiry, personal vaults ----
       // (documents ADR-0002, ADR-0003, ADR-0005)
@@ -992,21 +1091,27 @@ service cloud.firestore {
         allow create: if canEdit(householdId, 'todos')
           && request.resource.data.keys().hasOnly(
                ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
-                'createdBy', 'routineId', 'createdAt'])
+                'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval'])
           && isNonEmptyString(request.resource.data.title)
           && isNonEmptyString(request.resource.data.dueDate)
           && request.resource.data.assigneeIds is list
+          && choreStarsAreValid(request.resource.data)
+          && (isFamily(householdId) || !choreCarriesStars(request.resource.data))
           && isOwnMember(householdId, request.resource.data.createdBy)
           && isServerTime('createdAt');
 
         // Anybody may retitle, reschedule or reassign what they created; an
         // admin may do it to anything. Completing is not an edit — it is its
-        // own document (todos ADR-0002).
+        // own document (todos ADR-0002). What a chore is worth is family's alone
+        // to change (todos ADR-0003).
         allow update: if canEdit(householdId, 'todos')
           && onlyChanged(
-               ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId'])
+               ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId',
+                'points', 'needsApproval'])
           && isNonEmptyString(request.resource.data.title)
           && isNonEmptyString(request.resource.data.dueDate)
+          && choreStarsAreValid(request.resource.data)
+          && (isFamily(householdId) || choreStarsUnchanged())
           && (isAdmin(householdId)
                 || isOwnMember(householdId, resource.data.createdBy));
 

@@ -39,7 +39,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are thirty-one of them, so a new one cannot slip past these checks', () => {
+  it('there are thirty-five of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -47,9 +47,11 @@ describe('every function — callable, trigger or schedule', () => {
     // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
     // ADR-0003). Calendar sync: ten — seven callables, two HTTP and one
     // schedule (calendar ADR-0003). Documents phase 2: openVaultDocument and
-    // the daily expiry sweep (documents ADR-0003, ADR-0005). A feature adds its
-    // count and its line.
-    expect(endpoints()).toHaveLength(31);
+    // the daily expiry sweep (documents ADR-0003, ADR-0005). Todos phase 2:
+    // two Firestore triggers that write a child's stars and two callables a
+    // parent settles them with (todos ADR-0003). A feature adds its count and
+    // its line.
+    expect(endpoints()).toHaveLength(35);
   });
 
   it('runs in the one region, which is the database region', () => {

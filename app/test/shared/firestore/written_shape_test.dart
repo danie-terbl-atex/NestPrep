@@ -4,6 +4,8 @@ import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
+import 'package:nestprep/features/chore_points/model/reward.dart';
+import 'package:nestprep/features/chore_points/model/reward_request.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/document_limits.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
@@ -169,9 +171,53 @@ void main() {
         'createdBy',
         'routineId',
         'createdAt',
+        'points',
+        'needsApproval',
       });
       expect(shape.serverAssigned, {'createdAt'});
       expect(json['dueDate'], '2026-09-18');
+      // No stars and no check is what anybody but family may write (todos
+      // ADR-0003) — the rules refuse anything else from a helper.
+      expect((json['points'], json['needsApproval']), (0, false));
+    });
+  });
+
+  // ---- todos phase 2 (todos ADR-0003) ----
+  group('rewards/{rewardId}', () {
+    test('writes exactly the keys the rule names, the icon by name', () {
+      final json = const Reward(
+        id: 'r',
+        title: 'Ice cream',
+        cost: 10,
+        icon: RewardIcon.iceCream,
+        createdBy: 'm-sam',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {'title', 'cost', 'icon', 'createdBy', 'createdAt'});
+      expect(shape.serverAssigned, {'createdAt'});
+      expect(json['icon'], 'iceCream');
+    });
+  });
+
+  group('rewardRequests/{requestId}', () {
+    test('writes the four keys the rule takes, never a status or a cost', () {
+      final shape = shapeOf(
+        const RewardRequest(
+          id: 'q',
+          rewardId: 'r',
+          memberId: 'm-kid',
+          requestedBy: 'm-kid',
+          status: RequestStatus.fulfilled,
+          cost: 0,
+        ).toJson(),
+      );
+      expect(shape.keys, {
+        'rewardId',
+        'memberId',
+        'requestedBy',
+        'requestedAt',
+      });
+      expect(shape.serverAssigned, {'requestedAt'});
     });
   });
 

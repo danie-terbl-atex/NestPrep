@@ -194,6 +194,10 @@ void main() {
     // (accounts ADR-0004). Cancelling a listener has no failure to report:
     // anything it was going to say has already reached `_onError`.
     'subscription.cancel())',
+    // A child's stars following the kid home (todos ADR-0003): `_reopen`
+    // only cancels listeners and opens new ones, whose failures go to their
+    // own onError and onto the stars' state.
+    '_reopen(show: show))',
     // Family profiles re-reading when a changed grant moves which profiles
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.

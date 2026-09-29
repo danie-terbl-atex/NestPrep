@@ -164,6 +164,14 @@ describe('every callable declares what it may cost', () => {
         'startCalendarConnection',
         'syncCalendarConnection',
         'syncCalendarsOnSchedule',
+        // Todos phase 2: a child's stars, which only Functions write — a
+        // ledger line and its balance together, a date checked against the
+        // chore's schedule, and a parent's review in the same transaction as
+        // the stars (todos ADR-0003).
+        'awardChorePoints',
+        'reserveRewardPoints',
+        'reviewChore',
+        'settleReward',
       ].sort(),
     );
   });

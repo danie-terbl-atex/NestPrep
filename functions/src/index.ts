@@ -44,3 +44,9 @@ export { syncCalendarsOnSchedule } from './calendar_sync/sync_calendars_on_sched
 // documents phase 2 — personal vaults and expiry reminders (documents ADR-0003, ADR-0005)
 export { openVaultDocument } from './documents/open_vault_document';
 export { sweepExpiryReminders } from './documents/sweep_expiry_reminders';
+
+// ---- todos phase 2: chores that earn kids stars (todos ADR-0003) ----
+export { awardChorePoints } from './chore_points/award_chore_points';
+export { reserveRewardPoints } from './chore_points/reserve_reward_points';
+export { reviewChore } from './chore_points/review_chore';
+export { settleReward } from './chore_points/settle_reward';

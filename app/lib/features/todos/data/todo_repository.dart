@@ -52,6 +52,8 @@ abstract interface class TodoRepository {
     required List<String> assigneeIds,
     required String createdBy,
     String? routineId,
+    int points = 0,
+    bool needsApproval = false,
   });
 
   Future<void> deleteTask({

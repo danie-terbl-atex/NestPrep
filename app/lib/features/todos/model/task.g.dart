@@ -22,6 +22,8 @@ _Task _$TaskFromJson(Map<String, dynamic> json) => _Task(
   createdBy: json['createdBy'] as String,
   routineId: json['routineId'] as String?,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
+  points: (json['points'] as num?)?.toInt() ?? 0,
+  needsApproval: json['needsApproval'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
@@ -33,4 +35,6 @@ Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
   'createdBy': instance.createdBy,
   'routineId': instance.routineId,
   'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),
+  'points': instance.points,
+  'needsApproval': instance.needsApproval,
 };

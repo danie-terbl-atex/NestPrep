@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
+import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../accounts/model/kid_identity.dart';
 import '../../household/data/household_repository.dart';
@@ -58,6 +59,13 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
   AsyncState<KidDay> _day = const AsyncLoading();
 
   AsyncState<KidDay> get day => _day;
+
+  /// What the device's grant opens, once the household's today is known —
+  /// what the stars follow (todos ADR-0003). Null until then.
+  KidAreas? get areas => _reads.opened;
+
+  /// The household's today, once its zone has arrived.
+  CalendarDate? get today => _clock?.today;
 
   String get _householdId => identity.householdId;
   String get _memberId => identity.memberId;

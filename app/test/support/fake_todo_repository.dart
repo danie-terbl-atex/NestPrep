@@ -32,6 +32,8 @@ final class FakeTodoRepository implements TodoRepository {
           RecurrenceRule? recurrence,
           List<String> assigneeIds,
           String? routineId,
+          int points,
+          bool needsApproval,
         })
       >[];
   final deletedTasks = <String>[];
@@ -129,6 +131,8 @@ final class FakeTodoRepository implements TodoRepository {
     required List<String> assigneeIds,
     required String createdBy,
     String? routineId,
+    int points = 0,
+    bool needsApproval = false,
   }) async {
     _refuseIfAsked();
     savedTasks.add((
@@ -138,6 +142,8 @@ final class FakeTodoRepository implements TodoRepository {
       recurrence: recurrence,
       assigneeIds: assigneeIds,
       routineId: routineId,
+      points: points,
+      needsApproval: needsApproval,
     ));
   }
 

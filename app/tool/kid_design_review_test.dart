@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/chore_points/model/point_claim.dart';
+import 'package:nestprep/features/chore_points/model/reward.dart';
+import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
 import 'package:nestprep/features/kid_accounts/model/kid_device.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_code_controller.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/fake_auth.dart';
+import '../test/support/fake_chore_points.dart';
 import '../test/support/fake_kid_sign_in.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/kid_home_fixture.dart';
@@ -50,7 +54,9 @@ void main() {
   }
 
   Future<void> kidHome(WidgetTester tester, Brightness brightness) async {
-    final fixture = KidHomeFixture();
+    // Made outside the test's fake clock, so its listeners hear what the
+    // `runAsync` below emits — the stars open a moment after the day does.
+    final fixture = (await tester.runAsync(() async => KidHomeFixture()))!;
     addTearDown(fixture.close);
     await captureScreen(
       tester,
@@ -60,22 +66,68 @@ void main() {
         ChangeNotifierProvider<KidHomeController>.value(
           value: fixture.controller,
         ),
+        ChangeNotifierProvider<KidPointsController>.value(value: fixture.stars),
       ],
       brightness: brightness,
-      emit: () => tester.runAsync(
-        () => fixture.arrive(
+      emit: () => tester.runAsync(() async {
+        await fixture.arrive(
           tasks: [
-            KidHomeFixture.chore('bed', 'Make your bed'),
-            KidHomeFixture.chore('cat', 'Feed Biscuit the cat'),
+            KidHomeFixture.chore('bed', 'Make your bed', points: 2),
+            KidHomeFixture.chore('cat', 'Feed Biscuit the cat', points: 3),
+            KidHomeFixture.chore(
+              'room',
+              'Tidy your room',
+              points: 10,
+              needsApproval: true,
+            ),
             KidHomeFixture.chore('bag', 'Pack your school bag'),
           ],
-          completions: [KidHomeFixture.done('bed')],
+          completions: [
+            KidHomeFixture.done('bed'),
+            KidHomeFixture.done('room'),
+          ],
           slots: {
             WeekPlan.slotKey(KidHomeFixture.today.weekday, MealSlot.lunch):
                 'pasta',
           },
-        ),
-      ),
+        );
+        // Stars and treats (todos ADR-0003).
+        await fixture.starsArrive(
+          claims: [
+            PointsFixtures.claim(
+              'bed',
+              KidHomeFixture.today,
+              memberId: Fixtures.kidMemberId,
+              status: ClaimStatus.awarded,
+              points: 2,
+            ),
+            PointsFixtures.claim(
+              'room',
+              KidHomeFixture.today,
+              memberId: Fixtures.kidMemberId,
+              points: 10,
+            ),
+          ],
+          rewards: [
+            PointsFixtures.reward('ice-cream', 'Ice cream', 15),
+            PointsFixtures.reward(
+              'movie',
+              'Movie night',
+              40,
+              icon: RewardIcon.movie,
+            ),
+          ],
+        );
+        fixture.points.emitBalance(
+          PointsFixtures.balance(
+            Fixtures.kidMemberId,
+            18,
+            streak: 4,
+            lastDay: KidHomeFixture.today,
+          ),
+        );
+        await pumpEventQueue();
+      }),
     );
   }
 

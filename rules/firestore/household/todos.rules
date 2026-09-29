@@ -11,21 +11,27 @@ match /tasks/{taskId} {
   allow create: if canEdit(householdId, 'todos')
     && request.resource.data.keys().hasOnly(
          ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
-          'createdBy', 'routineId', 'createdAt'])
+          'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval'])
     && isNonEmptyString(request.resource.data.title)
     && isNonEmptyString(request.resource.data.dueDate)
     && request.resource.data.assigneeIds is list
+    && choreStarsAreValid(request.resource.data)
+    && (isFamily(householdId) || !choreCarriesStars(request.resource.data))
     && isOwnMember(householdId, request.resource.data.createdBy)
     && isServerTime('createdAt');
 
   // Anybody may retitle, reschedule or reassign what they created; an
   // admin may do it to anything. Completing is not an edit — it is its
-  // own document (todos ADR-0002).
+  // own document (todos ADR-0002). What a chore is worth is family's alone
+  // to change (todos ADR-0003).
   allow update: if canEdit(householdId, 'todos')
     && onlyChanged(
-         ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId'])
+         ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId',
+          'points', 'needsApproval'])
     && isNonEmptyString(request.resource.data.title)
     && isNonEmptyString(request.resource.data.dueDate)
+    && choreStarsAreValid(request.resource.data)
+    && (isFamily(householdId) || choreStarsUnchanged())
     && (isAdmin(householdId)
           || isOwnMember(householdId, resource.data.createdBy));
 

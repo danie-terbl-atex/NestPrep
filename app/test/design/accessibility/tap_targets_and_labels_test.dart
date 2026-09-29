@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
+import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/documents/state/document_library_controller.dart';
@@ -348,6 +349,7 @@ void main() {
         ChangeNotifierProvider<KidHomeController>.value(
           value: fixture.controller,
         ),
+        ChangeNotifierProvider<KidPointsController>.value(value: fixture.stars),
       ],
     );
     await tester.runAsync(

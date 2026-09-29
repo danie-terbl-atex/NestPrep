@@ -54,6 +54,7 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'chore_points_providers.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
@@ -182,6 +183,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ),
   // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
   ...documentVaultProviders(),
+  // todos phase 2: chores that earn kids stars (todos ADR-0003).
+  ...chorePointsProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

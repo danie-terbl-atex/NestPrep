@@ -276,6 +276,31 @@ final class CalendarSyncFailure extends AppFailure {
   final CalendarSyncProblem problem;
 }
 
+// ---- todos phase 2: chores that earn kids stars (todos ADR-0003) ----
+
+/// Why a parent's review of a chore or a reward did not happen. Each is a
+/// `reason` `reviewChore` or `settleReward` put in its error's details;
+/// "you are not in this household" stays the household's word for it.
+enum PointsProblem {
+  /// A helper, a carer or a claimed kid asked: stars are family's to give.
+  notFamily,
+
+  /// The chore is no longer waiting — it was unticked, or never needed a look.
+  claimNotFound,
+
+  /// The request is gone.
+  requestNotFound,
+
+  /// Somebody else already approved, sent back, handed over or declined it.
+  alreadySettled,
+}
+
+final class PointsFailure extends AppFailure {
+  const PointsFailure(this.problem);
+
+  final PointsProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

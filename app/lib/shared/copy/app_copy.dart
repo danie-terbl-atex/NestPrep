@@ -4,6 +4,7 @@ import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'kid_copy.dart';
+import 'points_copy.dart';
 import 'product_analytics_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
@@ -379,6 +380,8 @@ abstract final class AppCopy {
     DocumentFailure(:final problem) => documentProblem(problem),
     KidSignInFailure(:final problem) => KidCopy.problem(problem),
     CalendarSyncFailure(:final problem) => CalendarSyncCopy.problem(problem),
+    // todos phase 2 (todos ADR-0003).
+    PointsFailure(:final problem) => PointsCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

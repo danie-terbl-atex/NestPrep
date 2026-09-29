@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../chore_points/ui/chore_stars_tag.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../../household/ui/member_choice_sheet.dart';
@@ -85,6 +86,10 @@ class TaskOccurrenceRow extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: NestSpace.xxs),
+                    if (occurrence.task.carriesStars) ...[
+                      ChoreStarsTag(task: occurrence.task),
+                      const SizedBox(height: NestSpace.xxs),
+                    ],
                     Text(
                       _subtitle(view),
                       style: nest.text.caption.copyWith(
@@ -191,6 +196,7 @@ class TaskOccurrenceRow extends StatelessWidget {
       routines: board?.routines ?? const [],
       today: today,
       existing: occurrence.task,
+      canSetStars: view.permissions.isFamily,
     );
     switch (draft) {
       case null:
@@ -206,6 +212,8 @@ class TaskOccurrenceRow extends StatelessWidget {
           recurrence: draft.recurrence,
           assigneeIds: draft.assigneeIds,
           routineId: draft.routineId,
+          points: draft.points,
+          needsApproval: draft.needsApproval,
         );
     }
   }

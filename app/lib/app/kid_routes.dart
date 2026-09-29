@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
+import '../features/chore_points/data/points_repository.dart';
+import '../features/chore_points/data/reward_repository.dart';
+import '../features/chore_points/state/kid_points_controller.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household_view.dart';
 import '../features/kid_accounts/data/kid_device_repository.dart';
@@ -55,13 +58,28 @@ List<RouteBase> kidRoutes(SessionController session) => [
       // The redirect only lets a kid session here, so this is the moment
       // between a sign-out and the redirect that follows it.
       if (kid == null) return const SessionGateScreen();
-      return ChangeNotifierProvider(
-        create: (context) => KidHomeController(
-          householdRepository: context.read<HouseholdRepository>(),
-          todoRepository: context.read<TodoRepository>(),
-          mealRepository: context.read<MealRepository>(),
-          identity: kid,
-        ),
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => KidHomeController(
+              householdRepository: context.read<HouseholdRepository>(),
+              todoRepository: context.read<TodoRepository>(),
+              mealRepository: context.read<MealRepository>(),
+              identity: kid,
+            ),
+          ),
+          // The kid's stars follow the home: they open once it knows today
+          // and the grant shows jobs (todos ADR-0003, accounts ADR-0004).
+          ChangeNotifierProxyProvider<KidHomeController, KidPointsController>(
+            create: (context) => KidPointsController(
+              pointsRepository: context.read<PointsRepository>(),
+              rewardRepository: context.read<RewardRepository>(),
+              identity: kid,
+            ),
+            update: (context, home, stars) =>
+                stars!..follow(home.areas, home.today),
+          ),
+        ],
         child: const KidHomeScreen(),
       );
     },

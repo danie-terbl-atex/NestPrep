@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/chore_points_route.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/points_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
@@ -37,7 +40,18 @@ class _TodoScreenState extends State<TodoScreen> {
 
     return NestScaffold(
       title: AppCopy.todosTitle,
-      trailing: const [HouseholdLinkButton(), AccountMenuButton()],
+      trailing: [
+        // Stars and rewards are a parent's to run (todos ADR-0003).
+        if (view.permissions.isFamily)
+          NestIconButton(
+            icon: Icons.stars_rounded,
+            label: PointsCopy.screenTitle,
+            onPressed: () =>
+                context.push(ChorePointsRoute.pathFor(view.household.id)),
+          ),
+        const HouseholdLinkButton(),
+        const AccountMenuButton(),
+      ],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.todos,
         onSelect: widget.onSelectTab,
@@ -127,6 +141,7 @@ class _TodoScreenState extends State<TodoScreen> {
         _ => const [],
       },
       today: controller.today,
+      canSetStars: view.permissions.isFamily,
     );
     if (draft is! TaskSaved) return;
     await controller.saveTask(
@@ -136,6 +151,8 @@ class _TodoScreenState extends State<TodoScreen> {
       recurrence: draft.recurrence,
       assigneeIds: draft.assigneeIds,
       routineId: draft.routineId,
+      points: draft.points,
+      needsApproval: draft.needsApproval,
     );
   }
 }

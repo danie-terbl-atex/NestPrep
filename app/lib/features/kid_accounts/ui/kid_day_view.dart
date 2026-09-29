@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/kid_copy.dart';
+import '../../chore_points/model/kid_chore_note.dart';
+import '../../todos/model/task_occurrence.dart';
 import '../model/kid_day.dart';
 import 'kid_chore_tile.dart';
 import 'kid_food_card.dart';
@@ -15,11 +17,28 @@ import 'kid_moment_card.dart';
 /// "No jobs" is part of the view rather than a replacement for it: the food is
 /// still worth seeing on a day with nothing to do (`FE-08`). A grant that opens
 /// neither says so, kindly, rather than showing a blank page.
+///
+/// Stars (todos ADR-0003) arrive as two slots the home fills when the grant
+/// shows jobs — the stars card under the greeting and the reward shelf under
+/// the jobs — and a note per job saying what it is worth.
 class KidDayView extends StatelessWidget {
-  const KidDayView({required this.day, required this.onToggle, super.key});
+  const KidDayView({
+    required this.day,
+    required this.onToggle,
+    this.stars,
+    this.shelf,
+    this.noteFor = _noNote,
+    super.key,
+  });
 
   final KidDay day;
   final void Function(int index) onToggle;
+  final Widget? stars;
+  final Widget? shelf;
+  final KidChoreNote Function(TaskOccurrence chore) noteFor;
+
+  static KidChoreNote _noNote(TaskOccurrence chore) =>
+      KidChoreNote.of(chore, null);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +46,10 @@ class KidDayView extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
         NestRiseIn(child: KidHeroCard(day: day)),
+        if (stars case final stars?) ...[
+          const SizedBox(height: NestSpace.lg),
+          NestRiseIn(index: 1, child: stars),
+        ],
         if (day.areas.chores) ...[
           const SizedBox(height: NestSpace.xxl),
           const NestSectionHeader(title: KidCopy.choresTitle),
@@ -48,6 +71,7 @@ class KidDayView extends StatelessWidget {
                   chore: chore,
                   isOverdue: chore.isOverdue(day.today),
                   onToggle: day.areas.canTick ? () => onToggle(index) : null,
+                  note: noteFor(chore),
                 ),
               ),
             ),
@@ -58,6 +82,10 @@ class KidDayView extends StatelessWidget {
               title: KidCopy.choresAllDone,
               message: KidCopy.choresAllDoneBody,
             ),
+        ],
+        if (shelf case final shelf?) ...[
+          const SizedBox(height: NestSpace.xxl),
+          shelf,
         ],
         if (day.areas.food) ...[
           const SizedBox(height: NestSpace.xxl),
