@@ -120,6 +120,13 @@ void main() {
         'wraps FirebaseStorage',
     'lib/features/nanny_hub/data/image_picker_photo_picker.dart':
         'opens the platform camera and photo library',
+    // calendar V2 (calendar ADR-0005, ADR-0006).
+    'lib/app/calendar_v2_providers.dart':
+        'builds calendar V2 over live Functions and plugins',
+    'lib/features/school_letter/data/callable_school_letter_reader.dart':
+        'calls Functions',
+    'lib/features/mental_load/data/platform_card_image_sharer.dart':
+        'opens the platform share sheet',
 
     // Found absent on 2026-09-29 with a fresh report, from features built in
     // parallel: each wraps a platform or a live Firebase.
@@ -198,6 +205,11 @@ void main() {
     'lib/features/subscriptions/model/premium_feature.dart': 'one enum only',
     'lib/features/subscriptions/model/subscription_plan.dart': 'one enum only',
 
+    'lib/features/school_letter/data/school_letter_reader.dart':
+        'interface only',
+    'lib/features/school_letter/data/letter_picker.dart':
+        'an enum and an interface only',
+    'lib/features/mental_load/data/card_image_sharer.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

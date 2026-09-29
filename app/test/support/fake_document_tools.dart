@@ -15,38 +15,22 @@ import 'package:nestprep/features/documents/state/offline_copy_source.dart';
 import 'package:nestprep/features/documents/state/vault_lock_controller.dart';
 import 'package:nestprep/features/household/data/invite_sharer.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
-import 'package:nestprep/shared/flags/feature_flag_source.dart';
-import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'fake_documents.dart';
+import 'fake_feature_flag_source.dart';
 import 'fake_invite_sharer.dart';
 import 'fake_vault.dart';
 import 'household_fixtures.dart';
 
-/// Everything behind documents V2 (documents ADR-0006, ADR-0007) and the V2
-/// switches (foundation ADR-0014), faked: the switches, the shared-link
+export 'fake_feature_flag_source.dart' show FakeFeatureFlagSource;
+
+/// Everything behind documents V2 (documents ADR-0006, ADR-0007) faked, with
+/// the V2 switches from `fake_feature_flag_source.dart`: the shared-link
 /// callables and list, the phone's offline copies, the server's say on them
 /// and the keystore. One file because they are one substitution.
-
-final class FakeFeatureFlagSource implements FeatureFlagSource {
-  final _flags = StreamController<Map<String, Object?>>.broadcast();
-  bool? lastDefault;
-
-  @override
-  Stream<FeatureFlags> watch({required bool defaultOn}) {
-    lastDefault = defaultOn;
-    return _flags.stream.map(
-      (fields) => FeatureFlags.fromFields(fields, defaultOn: defaultOn),
-    );
-  }
-
-  void emit(Map<String, Object?> fields) => _flags.add(fields);
-  void fail(Object error) => _flags.addError(error);
-  Future<void> close() => _flags.close();
-}
 
 final class FakeDocumentShareDirectory implements DocumentShareDirectory {
   final created = <ShareRequest>[];

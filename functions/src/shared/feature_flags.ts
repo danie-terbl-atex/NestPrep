@@ -13,7 +13,14 @@ import type { Firestore } from 'firebase-admin/firestore';
 export const APP_CONFIG = 'appConfig';
 export const FLAGS_DOCUMENT = 'flags';
 
-export const FEATURE_FLAGS = ['documentShareLinks', 'documentOfflineCopies'] as const;
+export const FEATURE_FLAGS = [
+  // ---- documents V2 (documents ADR-0006, ADR-0007) ----
+  'documentShareLinks',
+  'documentOfflineCopies',
+  // ---- calendar V2 (calendar ADR-0005, ADR-0006) ----
+  'snapSchoolLetter',
+  'mentalLoadView',
+] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 
 /** Whether [flag] is on, given the stored document (or none) and where this runs. */

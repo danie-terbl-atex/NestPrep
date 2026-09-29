@@ -3,11 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/calendar_sync_route.dart';
+import '../../../app/calendar_v2_route.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
@@ -90,6 +93,21 @@ class CalendarScreen extends StatelessWidget {
                   onOpen: () => _quickAdd(context, controller, view),
                 ),
               ),
+              // calendar V2: snap a school letter (calendar ADR-0005) — for
+              // somebody who may add events, while its switch is on.
+              if (canEdit &&
+                  context.watch<FeatureFlagsController>().isOn(
+                    FeatureFlag.snapSchoolLetter,
+                  )) ...[
+                const SizedBox(width: NestSpace.sm),
+                NestIconButton(
+                  icon: Icons.document_scanner_outlined,
+                  label: SchoolLetterCopy.openFromWeek,
+                  onPressed: () => context.push(
+                    CalendarV2Route.letterPathFor(controller.householdId),
+                  ),
+                ),
+              ],
               const SizedBox(width: NestSpace.sm),
               NestIconButton(
                 icon: Icons.sync_alt,

@@ -193,6 +193,10 @@ describe('every callable declares what it may cost', () => {
         'documentShare',
         'endSharesWithShift',
         'revokeDocumentShare',
+        // Snap a school letter: the model is called only from a Function, as
+        // its service account, behind a monthly cap claimed in a transaction
+        // (calendar ADR-0005, foundation ADR-0015).
+        'readSchoolLetter',
       ].sort(),
     );
   });

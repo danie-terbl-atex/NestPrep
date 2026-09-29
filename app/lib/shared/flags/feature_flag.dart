@@ -14,7 +14,13 @@ enum FeatureFlag {
   documentShareLinks('documentShareLinks'),
 
   /// Keep chosen documents on the phone, encrypted (documents ADR-0007).
-  documentOfflineCopies('documentOfflineCopies');
+  documentOfflineCopies('documentOfflineCopies'),
+
+  /// Snap a school letter into proposed events (calendar ADR-0005).
+  snapSchoolLetter('snapSchoolLetter'),
+
+  /// The shared week: who is handling what (calendar ADR-0006).
+  mentalLoadView('mentalLoadView');
 
   const FeatureFlag(this.field);
 

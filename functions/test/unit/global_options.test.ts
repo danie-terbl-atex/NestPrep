@@ -36,13 +36,18 @@ function endpoints(): [string, Endpoint][] {
 /** The one HTTPS function allowed past thirty seconds, and by how much. */
 const LONGER_TIMEOUTS: Readonly<Record<string, number>> = { documentShare: 120 };
 
+/** The callables allowed more than the global limits, and exactly how much. */
+const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
+  readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
+};
+
 /** A scheduled job sets its own timeout; everything else is a callable. */
 function isScheduled(endpoint: Endpoint): boolean {
   return endpoint.scheduleTrigger !== undefined;
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are forty-two of them, so a new one cannot slip past these checks', () => {
+  it('there are forty-seven of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -57,8 +62,9 @@ describe('every function — callable, trigger or schedule', () => {
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
     // (subscriptions ADR-0001). Documents V2: two callables, the HTTPS
     // function a shared link opens and the trigger that ends a shift's links
-    // (documents ADR-0006). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(46);
+    // (documents ADR-0006). Snap a school letter: readSchoolLetter, the first
+    // AI call (calendar ADR-0005). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(47);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -77,6 +83,7 @@ describe('every function — callable, trigger or schedule', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
+      if (name in LARGER) continue;
       expect(endpoint.availableMemoryMb, name).toBe(256);
       if (isScheduled(endpoint) || name in LONGER_TIMEOUTS) continue;
       expect(endpoint.timeoutSeconds, name).toBe(30);
@@ -89,6 +96,17 @@ describe('every function — callable, trigger or schedule', () => {
     for (const [name, seconds] of Object.entries(LONGER_TIMEOUTS)) {
       const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
       expect(endpoint?.timeoutSeconds, name).toBe(seconds);
+    }
+  });
+
+  it('a callable that waits on a model says so, and is still bounded', () => {
+    // Reading a letter holds it in memory twice and waits seconds on Vertex,
+    // so it has its own limits — named here, never the platform's default
+    // (foundation ADR-0015, BE-19).
+    for (const [name, limits] of Object.entries(LARGER)) {
+      const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
+      expect(endpoint?.availableMemoryMb, name).toBe(limits.memoryMb);
+      expect(endpoint?.timeoutSeconds, name).toBe(limits.timeoutSeconds);
     }
   });
 

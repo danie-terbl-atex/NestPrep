@@ -56,6 +56,7 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'document_tools_providers.dart';
 import 'documents_providers.dart';
@@ -206,6 +207,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // subscriptions — the store, premium and the free tier's one child
   // (subscriptions ADR-0001)
   ...subscriptionProviders(),
+  // calendar V2: the school-letter reader and the card sharer (calendar
+  // ADR-0005, ADR-0006). The switches are provided above.
+  ...calendarV2Providers(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

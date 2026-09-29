@@ -49,6 +49,41 @@ async function seed({ email, displayName }) {
   throw new Error(`${email}: ${body?.error?.message ?? response.status}`);
 }
 
-const results = await Promise.all(ACCOUNTS.map(seed));
+/**
+ * What the emulator's model answers when a school letter is snapped (calendar
+ * ADR-0005, foundation ADR-0015): there is no Vertex under the emulator, so
+ * the canned reply is a Firestore document only Functions read. Two events a
+ * week and two weeks out, so a local run shows a review list.
+ */
+const FIRESTORE = process.env.NESTPREP_FIRESTORE_EMULATOR ?? 'http://127.0.0.1:8080';
+
+async function seedLetterReply() {
+  const day = (offset) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+  const reply = {
+    events: [
+      {
+        title: 'Spring market',
+        date: day(7),
+        allDay: false,
+        startTime: '14:00',
+        endTime: '16:00',
+        repeat: 'none',
+        children: [],
+        note: 'Bring cash for the stalls',
+      },
+      { title: 'Civvies day', date: day(14), allDay: true, repeat: 'none', children: ['child-1'] },
+    ],
+  };
+  const url = `${FIRESTORE}/v1/projects/${PROJECT}/databases/(default)/documents/aiEmulator/schoolLetter`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
+    body: JSON.stringify({ fields: { reply: { stringValue: JSON.stringify(reply) } } }),
+  });
+  if (!response.ok) throw new Error(`canned letter reply: ${response.status}`);
+  return 'canned school-letter reply for the emulator model';
+}
+
+const results = await Promise.all([...ACCOUNTS.map(seed), seedLetterReply()]);
 for (const line of results) console.log(line);
 console.log(`\npassword for all of them: ${PASSWORD}`);

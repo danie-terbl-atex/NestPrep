@@ -21,6 +21,9 @@ decodes every image for real before it fires; without that the nest is a blank b
 | File | What it shows |
 |---|---|
 | `week-light.png` / `week-dark.png` | the family week: the seven-day strip, today, and the day's agenda in member colours |
+| `school-letter-light.png` / `school-letter-dark.png` | calendar V2, snap a school letter: the three ways a letter comes in, and what leaves the phone — `tool/calendar_v2_design_review_test.dart` (calendar ADR-0005) |
+| `school-letter-review-light.png` / `school-letter-review-dark.png` | what a letter proposed, every event ticked, the chips the week will show, the one button that adds anything |
+| `shared-week-light.png` / `shared-week-dark.png` / `shared-week-dark-200-percent-text.png` | calendar V2, this week shared: the bar with names beside the colours, a card per parent, each shareable as a picture (calendar ADR-0006) |
 | `todos-mine-light.png` / `todos-mine-dark.png` | what one person is being asked to do, overdue first |
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked |

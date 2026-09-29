@@ -65,3 +65,6 @@ export { createDocumentShare } from './documents/share/create_document_share';
 export { revokeDocumentShare } from './documents/share/revoke_document_share';
 export { documentShare } from './documents/share/document_share';
 export { endSharesWithShift } from './documents/share/end_shares_with_shift';
+
+// ---- calendar V2: snap a school letter, the first AI call (calendar ADR-0005, foundation ADR-0015) ----
+export { readSchoolLetter } from './school_letter/read_school_letter';

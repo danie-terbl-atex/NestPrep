@@ -18,6 +18,7 @@ import {
   createDocumentShareInput,
   revokeDocumentShareInput,
 } from '../../src/documents/share/share_schemas';
+import { readSchoolLetterInput } from '../../src/school_letter/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -166,6 +167,12 @@ const validBodies = {
   revokeDocumentShare: {
     schema: revokeDocumentShareInput,
     body: { householdId: 'h1', shareId: 's1' },
+  },
+  // Snap a school letter: the letter travels in the call and is never stored
+  // (calendar ADR-0005).
+  readSchoolLetter: {
+    schema: readSchoolLetterInput,
+    body: { householdId: 'h1', mimeType: 'application/pdf', data: 'JVBERi0xLjc=' },
   },
 } as const;
 
@@ -439,5 +446,23 @@ describe('a caller who must have proved their address', () => {
       expect(refusal.code).toBe('unauthenticated');
       expect(refusal.details).toEqual({ reason: 'notSignedIn' });
     }
+  });
+});
+
+describe('a school letter', () => {
+  const { schema, body } = validBodies.readSchoolLetter;
+
+  it('is a photo or a PDF, and nothing else', () => {
+    for (const mimeType of ['image/jpeg', 'image/png', 'application/pdf']) {
+      expect(() => parseInput(schema, { ...body, mimeType })).not.toThrow();
+    }
+    for (const mimeType of ['image/gif', 'text/html', 'application/zip', '']) {
+      expect(() => parseInput(schema, { ...body, mimeType }), mimeType).toThrow(HttpsError);
+    }
+  });
+
+  it('is not empty, and not larger than a callable should carry', () => {
+    expect(() => parseInput(schema, { ...body, data: '' })).toThrow(HttpsError);
+    expect(() => parseInput(schema, { ...body, data: 'A'.repeat(12_000_000) })).toThrow(HttpsError);
   });
 });

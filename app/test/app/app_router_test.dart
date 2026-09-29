@@ -43,6 +43,7 @@ import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
+import '../support/fake_feature_flag_source.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_link_opener.dart';
@@ -139,6 +140,8 @@ void main() {
           Provider<ChildProfileDirectory>.value(value: familyProfiles),
           // The store, premium and the shell's entitlement listener.
           ...SubscriptionHarness().providers,
+          // V2 switches, as in a debug build (foundation ADR-0014).
+          featureFlagsProvider(),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(

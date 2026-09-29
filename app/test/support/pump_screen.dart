@@ -14,6 +14,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'fake_auth.dart';
+import 'fake_feature_flag_source.dart';
 import 'fake_subscriptions.dart';
 import 'household_fixtures.dart';
 
@@ -115,6 +116,9 @@ Future<void> pumpRouter(
             householdId: householdView.household.id,
           ),
         ),
+        // Every V2 way in shows, as in a debug build; a test of a switched-off
+        // capability passes its own (foundation ADR-0014).
+        featureFlagsProvider(),
         ...providers,
       ],
       child: MaterialApp.router(
