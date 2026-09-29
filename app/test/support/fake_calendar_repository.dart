@@ -17,9 +17,25 @@ final class FakeCalendarRepository implements CalendarRepository {
 
   AppFailure? failWritesWith;
 
+  /// Titles whose save is refused, the rest saved — one event of several
+  /// failing, the way a batch of separate writes can.
+  final refuseTitles = <String>{};
+
   final exceptionWindows = <({CalendarDate from, CalendarDate to})>[];
   final savedEvents = <({String? eventId, String title, int? startMinute})>[];
   final deletedEvents = <String>[];
+  final savedDetails =
+      <
+        ({
+          String title,
+          CalendarDate date,
+          int? endMinute,
+          RecurrenceRule? recurrence,
+          List<String> memberIds,
+          String? note,
+          String createdBy,
+        })
+      >[];
   final skipped = <({String eventId, CalendarDate date})>[];
   final unskipped = <({String eventId, CalendarDate date})>[];
 
@@ -64,7 +80,17 @@ final class FakeCalendarRepository implements CalendarRepository {
     required String createdBy,
   }) async {
     _refuseIfAsked();
+    if (refuseTitles.contains(title)) throw const PermissionDeniedFailure();
     savedEvents.add((eventId: eventId, title: title, startMinute: startMinute));
+    savedDetails.add((
+      title: title,
+      date: date,
+      endMinute: endMinute,
+      recurrence: recurrence,
+      memberIds: memberIds,
+      note: note,
+      createdBy: createdBy,
+    ));
   }
 
   @override

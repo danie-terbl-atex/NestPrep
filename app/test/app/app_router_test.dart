@@ -29,6 +29,7 @@ import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dar
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
+import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -122,6 +123,8 @@ void main() {
           ),
           Provider<BetaNumbersRepository>.value(value: betaNumbers),
           Provider<FamilyProfileRepository>.value(value: familyProfiles),
+          // V2 switches, as in a debug build (foundation ADR-0014).
+          Provider<FeatureFlags>.value(value: FeatureFlags.everythingOn),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(

@@ -75,10 +75,34 @@ cloud because the client redirects every service.
 | `CALENDAR_GOOGLE_CLIENT_SECRET`    | Secret Manager secret       | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured |
 | `CALENDAR_MICROSOFT_CLIENT_SECRET` | Secret Manager secret       | the same three                                                               | the same                                                        |
 | `CALENDAR_FUNCTIONS_BASE_URL`      | string param, default empty | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`   |
+| `AI_MODEL`                         | string param                | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                              |
+| `AI_LOCATION`                      | string param                | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)       |
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
 `<CALENDAR_FUNCTIONS_BASE_URL>/calendarOAuthCallback`).
+
+Runtime switches that are **documents, not parameters**, so they bite on the next call with no
+deploy (foundation ADR-0014, ADR-0015), both set by hand in the console and unreadable by clients:
+
+- `appConfig/flags` — one boolean per V2 capability (`snapSchoolLetter`, …). Absent means on under
+  the emulator and **off in the cloud**.
+- `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`,
+  `monthlyCalls.free` and `monthlyCalls.premium`. Absent means on, 10 calls a month free and 100
+  premium. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
+  costs anything.
+
+## AI (`src/ai/`, foundation ADR-0015)
+
+Every model call goes through `runAiCall` — never Vertex directly. It checks the kill switch, claims
+one of the household's monthly calls in a transaction (`households/{h}/aiUsage/{YYYY-MM}`, a line
+per call under `calls/`), asks the model with timeouts and retries, parses the JSON answer with zod,
+and refunds the call if it failed. A feature supplies only a `ModelRequest` (system text, parts,
+a `responseSchema`, a `feature` label) and a zod schema, and sends the model the minimum (the ADR's
+POPIA section). Vertex is reached as the Functions' service account — **no API key exists**; the
+runtime service account needs `roles/aiplatform.user`. Under the emulator the model is
+`EmulatorModel`, which answers from `aiEmulator/{feature}.reply` (or fails with `failWith`), so no
+test or local run reaches Vertex or bills anything.
 
 ## Things that bite on this codebase
 
@@ -99,6 +123,8 @@ The OAuth redirect URI to register with Google and Microsoft is
   emulator tests assert.
   To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset` and
   `CALENDAR_MICROSOFT_CLIENT_SECRET=unset` in `functions/.secret.local` (git-ignored).
+- **Vertex refused a `responseSchema` carrying `maxItems`** (400, _invalid argument_, 2026-09-29).
+  Bound lists where the answer is parsed instead.
 - **`writes_are_atomic.test.ts` reads every `.set(`, `.update(`, `.delete(` in `src/` as a
   Firestore write.** A `Map`, a `Hash` or a `URLSearchParams` written that way fails it; calendar
   sync uses records, `crypto.hash()` and `new URLSearchParams({...})` for that reason.

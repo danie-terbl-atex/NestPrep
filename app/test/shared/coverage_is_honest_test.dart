@@ -99,6 +99,17 @@ void main() {
         'wraps FirebaseStorage',
     'lib/features/nanny_hub/data/image_picker_photo_picker.dart':
         'opens the platform camera and photo library',
+    // V2 switches and calendar V2 (foundation ADR-0014, calendar ADR-0005,
+    // ADR-0006).
+    'lib/app/feature_flag_providers.dart':
+        'builds the flag source over live Firestore',
+    'lib/shared/flags/firestore_feature_flag_source.dart': 'reads Firestore',
+    'lib/app/calendar_v2_providers.dart':
+        'builds calendar V2 over live Functions and plugins',
+    'lib/features/school_letter/data/callable_school_letter_reader.dart':
+        'calls Functions',
+    'lib/features/mental_load/data/platform_card_image_sharer.dart':
+        'opens the platform share sheet',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -139,6 +150,12 @@ void main() {
     'lib/features/nanny_hub/model/contact_kind.dart': 'an enum only',
     'lib/features/nanny_hub/model/handover_kind.dart': 'an enum only',
     'lib/features/nanny_hub/model/handover_mood.dart': 'an enum only',
+    'lib/shared/flags/feature_flag_source.dart': 'interface only',
+    'lib/features/school_letter/data/school_letter_reader.dart':
+        'interface only',
+    'lib/features/school_letter/data/letter_picker.dart':
+        'an enum and an interface only',
+    'lib/features/mental_load/data/card_image_sharer.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

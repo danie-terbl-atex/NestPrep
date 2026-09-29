@@ -1,0 +1,13 @@
+// ---- AI usage ledger (foundation ADR-0015) ----
+// A household's monthly AI calls and one line per call, written only by
+// Functions inside the transaction that claims the call. No client reads
+// them — the callable tells the app how many calls are left — and none
+// writes them, or the cap would be the client's to lower.
+
+match /aiUsage/{month} {
+  allow read, write: if false;
+
+  match /calls/{callId} {
+    allow read, write: if false;
+  }
+}

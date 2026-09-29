@@ -33,6 +33,11 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
+/** The callables allowed more than the global limits, and exactly how much. */
+const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
+  readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
+};
+
 /** A scheduled job sets its own timeout; everything else is a callable. */
 function isScheduled(endpoint: Endpoint): boolean {
   return endpoint.scheduleTrigger !== undefined;
@@ -50,8 +55,9 @@ describe('every function — callable, trigger or schedule', () => {
     // the daily expiry sweep (documents ADR-0003, ADR-0005). Todos phase 2:
     // two Firestore triggers that write a child's stars and two callables a
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
-    // (nanny-hub ADR-0002). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(36);
+    // (nanny-hub ADR-0002). Snap a school letter: readSchoolLetter, the first
+    // AI call (calendar ADR-0005). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(37);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -70,9 +76,21 @@ describe('every function — callable, trigger or schedule', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
+      if (name in LARGER) continue;
       expect(endpoint.availableMemoryMb, name).toBe(256);
       if (isScheduled(endpoint)) continue;
       expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('a callable that waits on a model says so, and is still bounded', () => {
+    // Reading a letter holds it in memory twice and waits seconds on Vertex,
+    // so it has its own limits — named here, never the platform's default
+    // (foundation ADR-0015, BE-19).
+    for (const [name, limits] of Object.entries(LARGER)) {
+      const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
+      expect(endpoint?.availableMemoryMb, name).toBe(limits.memoryMb);
+      expect(endpoint?.timeoutSeconds, name).toBe(limits.timeoutSeconds);
     }
   });
 

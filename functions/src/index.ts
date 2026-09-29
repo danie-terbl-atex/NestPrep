@@ -52,3 +52,6 @@ export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
+
+// ---- calendar V2: snap a school letter, the first AI call (calendar ADR-0005, foundation ADR-0015) ----
+export { readSchoolLetter } from './school_letter/read_school_letter';

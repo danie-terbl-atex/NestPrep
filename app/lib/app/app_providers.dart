@@ -54,8 +54,10 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'documents_providers.dart';
+import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
@@ -188,6 +190,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...documentVaultProviders(),
   // todos phase 2: chores that earn kids stars (todos ADR-0003).
   ...chorePointsProviders(),
+  // V2 switches (foundation ADR-0014), and calendar V2's own (calendar
+  // ADR-0005, ADR-0006).
+  ...featureFlagProviders(),
+  ...calendarV2Providers(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

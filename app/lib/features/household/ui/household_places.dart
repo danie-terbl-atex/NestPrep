@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../../../app/calendar_v2_route.dart';
 import '../../../app/documents_route.dart';
 import '../../../app/family_route.dart';
 import '../../../app/household_route.dart';
 import '../../../app/nanny_hub_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
 import '../model/household_area.dart';
@@ -63,6 +67,28 @@ class HouseholdPlaces extends StatelessWidget {
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(FamilyRoute.pathFor(view.household.id)),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // calendar V2: who is handling what this week (calendar ADR-0006) —
+        // the family's adults only, while its switch is on.
+        if (view.permissions.isFamily &&
+            context.watch<FeatureFlags>().isOn(FeatureFlag.mentalLoadView)) ...[
+          NestCard(
+            variant: NestCardVariant.flat,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: MentalLoadCopy.openFromHousehold,
+              subtitle: MentalLoadCopy.openFromHouseholdBody,
+              leading: const NestIconTile(
+                icon: Icons.volunteer_activism_outlined,
+                tint: NestTileTint.peach,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(
+                CalendarV2Route.sharedWeekPathFor(view.household.id),
+              ),
             ),
           ),
           const SizedBox(height: NestSpace.lg),

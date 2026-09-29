@@ -6,6 +6,7 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -96,6 +97,9 @@ Future<void> pumpRouter(
         Provider<HouseholdClock>.value(
           value: HouseholdClock(householdView.household.timeZone),
         ),
+        // Every V2 way in shows, as in a debug build; a test of a switched-off
+        // capability passes its own (foundation ADR-0014).
+        Provider<FeatureFlags>.value(value: FeatureFlags.everythingOn),
         ...providers,
       ],
       child: MaterialApp.router(

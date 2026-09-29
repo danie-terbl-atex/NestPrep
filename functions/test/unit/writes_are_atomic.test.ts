@@ -176,6 +176,10 @@ describe('every callable declares what it may cost', () => {
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
         'endNannyShift',
+        // Snap a school letter: the model is called only from a Function, as
+        // its service account, behind a monthly cap claimed in a transaction
+        // (calendar ADR-0005, foundation ADR-0015).
+        'readSchoolLetter',
       ].sort(),
     );
   });

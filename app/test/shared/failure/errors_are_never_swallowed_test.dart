@@ -214,6 +214,12 @@ void main() {
     // Fetching one photo. It catches its own `AppFailure` and holds it as that
     // photo's state, which the tile renders with a retry.
     '_fetch(photoId))',
+    // ---- calendar V2: the shared week (calendar ADR-0006) ----
+    // Moving the week cancels two reads and opens two; the new reads send
+    // their failures to their own onError and onto the week's state.
+    '_listeners.moveWindow(from: _weekStart to: _weekEnd));',
+    // Closing the week's reads in dispose: there is no screen left to tell.
+    '_listeners.close());',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.
