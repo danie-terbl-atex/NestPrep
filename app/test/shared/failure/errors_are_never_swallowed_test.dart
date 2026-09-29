@@ -214,6 +214,17 @@ void main() {
     // Fetching one photo. It catches its own `AppFailure` and holds it as that
     // photo's state, which the tile renders with a retry.
     '_fetch(photoId))',
+    // ---- documents V2 (documents ADR-0006, ADR-0007, foundation ADR-0014) ----
+    // Reading the phone's offline copies when the vault unlocks. It catches
+    // its own `AppFailure` and holds it as the shelf's failed state, which
+    // the screen renders with a retry; it is unawaited because the lock's
+    // listener cannot wait.
+    '_load())',
+    // Cancelling the open-shifts, the live-links and the switches' listeners
+    // in dispose. There is no screen left to tell, as with `_cancel()`.
+    '_shiftSubscription?.cancel())',
+    '_subscription?.cancel())',
+    '_subscription.cancel())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

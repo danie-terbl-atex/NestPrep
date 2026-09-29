@@ -29,6 +29,7 @@ import '../features/documents/ui/vault_view_log_screen.dart';
 import '../features/household/model/household_view.dart';
 import '../shared/copy/vault_copy.dart';
 import '../shared/links/external_link_opener.dart';
+import 'document_tools_routes.dart';
 import 'documents_route.dart';
 import 'household_route.dart';
 
@@ -86,6 +87,11 @@ RouteBase documentsShellRoute(SessionController session) => ShellRoute(
             isFamily: view.permissions.isFamily,
           ),
         ),
+        // documents V2: offline copies follow the same lock (documents ADR-0007).
+        offlineCopiesProvider(
+          householdId: householdId,
+          uid: session.uidOrEmpty,
+        ),
       ],
       child: child,
     );
@@ -133,6 +139,8 @@ RouteBase documentsShellRoute(SessionController session) => ShellRoute(
         ),
       ),
     ),
+    // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
+    ...documentToolRoutes(viewerUid: session.uidOrEmpty),
     GoRoute(
       path: DocumentsRoute.folderPath,
       builder: (context, state) =>

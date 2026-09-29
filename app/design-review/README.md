@@ -45,6 +45,11 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `nanny-child-card-light.png` / `nanny-child-card-dark.png` | a child's card: allergies in their severity's tone first, then medication with its times, then the routine |
 | `nanny-emergency-light.png` / `nanny-emergency-dark.png` | the emergency sheet: 10111, 10177 and 112 as big buttons, the address to read out, the medical aid, and a call button on every contact |
 | `nanny-handover-light.png` / `nanny-handover-dark.png` | a finished shift's summary for the parents: the incident called out first, the counts, the carer's last word, the checklist, then the evening moment by moment |
+| `share-sheet-light.png` / `share-sheet-dark.png` | sharing one document by a link: until the shift that is on now ends, or a fixed length, and the PIN switch (documents ADR-0006) |
+| `share-link-ready-light.png` / `share-link-ready-dark.png` | the link, shown once, with when it stops working, send and copy |
+| `shared-links-light.png` / `shared-links-dark.png` | every live link: when it ends, how often it was opened, who shared it, a PIN tag, and the stop button |
+| `offline-copies-light.png` / `offline-copies-dark.png` | what this phone keeps behind the vaults' lock: the room it takes, each copy with its "Available offline" badge (documents ADR-0007) |
+| `share-page-{document,pdf,pin,expired}-{light,dark}.png` | the one page a person without NestPrep sees — served by the `documentShare` Function, shot at 390 px by headless Chrome with `tools/share_page_review.sh`, not by the press: a picture inline, a PDF behind a button, the PIN form after a wrong try, and an expired link |
 
 ## What to look at
 

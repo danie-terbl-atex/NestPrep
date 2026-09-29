@@ -21,6 +21,8 @@ abstract final class DocumentsRoute {
   static const vaultPersonPath = '$vaultPath/:$memberParameter';
   static const vaultLogPath = '$path/vault-log';
   static const searchPath = '$path/search';
+  static const sharesPath = '$path/shared-links';
+  static const offlinePath = '$path/offline';
 
   /// Search's query parameters: whose documents, and only the ones that need
   /// attention soon.
@@ -44,6 +46,15 @@ abstract final class DocumentsRoute {
 
   static String vaultLogPathFor(String householdId) =>
       '${pathFor(householdId)}/vault-log';
+
+  /// Every live link (documents ADR-0006).
+  static String sharesPathFor(String householdId) =>
+      '${pathFor(householdId)}/shared-links';
+
+  /// What this phone keeps offline, behind the vaults' lock (documents
+  /// ADR-0007).
+  static String offlinePathFor(String householdId) =>
+      '${pathFor(householdId)}/offline';
 
   static String searchPathFor(
     String householdId, {

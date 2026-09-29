@@ -32,6 +32,7 @@ import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'chore_points_model_fixtures.dart';
+import 'document_tools_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'nanny_model_fixtures.dart';
 
@@ -597,7 +598,13 @@ List<ModelFixture> modelFixtures() {
       value: vaultView,
       toJson: vaultView.toJson,
       fromJson: VaultView.fromJson,
-      keys: const {'documentId', 'documentName', 'viewerMemberId', 'viewedAt'},
+      keys: const {
+        'documentId',
+        'documentName',
+        'viewerMemberId',
+        'shareId',
+        'viewedAt',
+      },
       note:
           'written only by openVaultDocument; the app reads it and never '
           'writes it (documents ADR-0003).',
@@ -606,6 +613,8 @@ List<ModelFixture> modelFixtures() {
     ...chorePointsModelFixtures(),
     // nanny hub (nanny-hub ADR-0003).
     ...nannyModelFixtures(),
+    // documents V2: a shared link (documents ADR-0006).
+    ...documentToolsModelFixtures(),
   ];
 }
 

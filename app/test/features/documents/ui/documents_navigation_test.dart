@@ -12,6 +12,7 @@ import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_document_tools.dart';
 import '../../../support/fake_documents.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_link_opener.dart';
@@ -99,6 +100,7 @@ void main() {
           value: controller,
         ),
         vaultLockProvider(),
+        ...documentToolProviders(),
         ChangeNotifierProvider<HouseholdController>.value(
           value: householdController,
         ),

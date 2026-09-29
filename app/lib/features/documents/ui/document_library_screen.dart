@@ -6,12 +6,15 @@ import '../../../app/documents_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/document_library.dart';
 import '../state/document_library_controller.dart';
 import '../state/vault_lock_controller.dart';
 import 'document_folder_row.dart';
 import 'document_folder_sheet.dart';
+import 'document_tools_card.dart';
 import 'household_expiring_soon.dart';
 import 'vault_entry_card.dart';
 
@@ -182,12 +185,32 @@ class _VaultWayIn extends StatelessWidget {
       (lock) => lock.isUnlocked,
     );
     final householdId = context.read<DocumentLibraryController>().householdId;
+    final flags = context.watch<FeatureFlagsController>();
+    final showsShares = flags.isOn(FeatureFlag.documentShareLinks);
+    final showsOffline = flags.isOn(FeatureFlag.documentOfflineCopies);
     return Padding(
       padding: const EdgeInsets.only(bottom: NestSpace.xl),
-      child: VaultEntryCard(
-        isUnlocked: isUnlocked,
-        onOpenVaults: () =>
-            context.push(DocumentsRoute.vaultPathFor(householdId)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          VaultEntryCard(
+            isUnlocked: isUnlocked,
+            onOpenVaults: () =>
+                context.push(DocumentsRoute.vaultPathFor(householdId)),
+          ),
+          // documents V2 (documents ADR-0006, ADR-0007), each behind its switch.
+          if (showsShares || showsOffline) ...[
+            const SizedBox(height: NestSpace.sm),
+            DocumentToolsCard(
+              showsShares: showsShares,
+              showsOffline: showsOffline,
+              onOpenShares: () =>
+                  context.push(DocumentsRoute.sharesPathFor(householdId)),
+              onOpenOffline: () =>
+                  context.push(DocumentsRoute.offlinePathFor(householdId)),
+            ),
+          ],
+        ],
       ),
     );
   }

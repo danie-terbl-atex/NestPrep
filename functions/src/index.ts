@@ -52,3 +52,9 @@ export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
+
+// ---- documents V2: one document shared by an expiring link (documents ADR-0006) ----
+export { createDocumentShare } from './documents/share/create_document_share';
+export { revokeDocumentShare } from './documents/share/revoke_document_share';
+export { documentShare } from './documents/share/document_share';
+export { endSharesWithShift } from './documents/share/end_shares_with_shift';

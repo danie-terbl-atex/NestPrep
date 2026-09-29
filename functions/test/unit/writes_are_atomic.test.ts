@@ -176,6 +176,13 @@ describe('every callable declares what it may cost', () => {
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
         'endNannyShift',
+        // Documents V2: a link to one document, which a rule cannot mint,
+        // hash, count, serve to somebody with no account or end with a shift
+        // (documents ADR-0006).
+        'createDocumentShare',
+        'documentShare',
+        'endSharesWithShift',
+        'revokeDocumentShare',
       ].sort(),
     );
   });

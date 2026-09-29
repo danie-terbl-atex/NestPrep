@@ -4,6 +4,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/format/byte_size.dart';
 import '../../../shared/time/calendar_date.dart';
 import 'document_badges.dart';
+import 'offline_badge.dart';
 
 /// One document on a shelf — the household's or a vault's. Tapping opens it;
 /// the subtitle says how big it is and who it concerns, and the badges say
@@ -19,6 +20,7 @@ class DocumentRow extends StatelessWidget {
     this.byline,
     this.tags = const [],
     this.expiresOn,
+    this.isKeptOffline = false,
     super.key,
   });
 
@@ -35,6 +37,9 @@ class DocumentRow extends StatelessWidget {
   final CalendarDate today;
   final VoidCallback onOpen;
 
+  /// Kept on this phone (documents ADR-0007) — known only while unlocked.
+  final bool isKeptOffline;
+
   @override
   Widget build(BuildContext context) {
     return NestCard(
@@ -49,10 +54,22 @@ class DocumentRow extends StatelessWidget {
         ),
         onTap: onOpen,
         trailing: const Icon(Icons.chevron_right),
-        footer: DocumentBadges.hasAny(expiresOn: expiresOn, tags: tags)
-            ? DocumentBadges(expiresOn: expiresOn, tags: tags, today: today)
-            : null,
+        footer: _footer(),
       ),
+    );
+  }
+
+  Widget? _footer() {
+    final hasBadges = DocumentBadges.hasAny(expiresOn: expiresOn, tags: tags);
+    if (!hasBadges && !isKeptOffline) return null;
+    return Wrap(
+      spacing: NestSpace.xs,
+      runSpacing: NestSpace.xs,
+      children: [
+        if (isKeptOffline) const OfflineBadge(),
+        if (hasBadges)
+          DocumentBadges(expiresOn: expiresOn, tags: tags, today: today),
+      ],
     );
   }
 }

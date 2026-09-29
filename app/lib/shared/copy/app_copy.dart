@@ -5,8 +5,10 @@ import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'kid_copy.dart';
 import 'nanny_copy.dart';
+import 'offline_copies_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'share_link_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
@@ -17,6 +19,9 @@ export 'family_copy.dart';
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';
+// documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
+export 'offline_copies_copy.dart';
+export 'share_link_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -413,6 +418,16 @@ abstract final class AppCopy {
       'NestPrep needs the camera to scan. Allow it in your phone settings.',
     DocumentProblem.cannotRender =>
       'NestPrep cannot show this file. It may be damaged.',
+    DocumentProblem.featureOff ||
+    DocumentProblem.notAllowedToShare ||
+    DocumentProblem.shiftNotOpen ||
+    DocumentProblem.tooManyShares ||
+    DocumentProblem.shareNotFound => ShareLinkCopy.problem(problem),
+    DocumentProblem.offlineLimitReached ||
+    DocumentProblem.offlineCopyUnreadable ||
+    DocumentProblem.offlineStorageUnavailable => OfflineCopiesCopy.problem(
+      problem,
+    ),
   };
 
   static String householdProblem(HouseholdProblem problem) => switch (problem) {

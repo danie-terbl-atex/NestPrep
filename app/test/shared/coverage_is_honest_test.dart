@@ -86,6 +86,26 @@ void main() {
         'opens the platform document scanner',
     'lib/features/documents/data/printing_pdf_page_renderer.dart':
         'rasterises through the platform PDF engine',
+    // documents V2 and the switches (documents ADR-0006, ADR-0007,
+    // foundation ADR-0014).
+    'lib/app/document_tools_providers.dart':
+        'builds the shared-link and offline-copy providers over live plugins',
+    'lib/app/feature_flag_providers.dart':
+        'builds the switches over live Firestore',
+    'lib/features/documents/data/firestore_document_share_repository.dart':
+        'reads Firestore',
+    'lib/features/documents/data/firestore_offline_access_check.dart':
+        'reads Firestore from the server',
+    'lib/features/documents/data/secure_storage_offline_key_vault.dart':
+        'wraps the platform keystore',
+    'lib/features/documents/data/document_share_directory.dart':
+        'interface only',
+    'lib/features/documents/data/document_share_repository.dart':
+        'interface and a constant only',
+    'lib/features/documents/data/offline_access_check.dart':
+        'an enum and an interface only',
+    'lib/features/documents/data/offline_copy_store.dart': 'interface only',
+    'lib/features/documents/data/offline_key_vault.dart': 'interface only',
     // nanny hub (nanny-hub ADR-0002, ADR-0003).
     'lib/app/nanny_hub_providers.dart':
         'builds the nanny hub providers over live Firebase and plugins',

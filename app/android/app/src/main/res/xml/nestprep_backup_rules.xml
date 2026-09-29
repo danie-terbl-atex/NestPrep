@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and older. Offline copies of documents and the keystore-backed
+     store that holds their key never leave the phone (documents ADR-0007): a
+     backup restored elsewhere would carry ciphertext with no key to open it. -->
+<full-backup-content>
+    <exclude domain="file" path="offline_documents/" />
+    <exclude domain="sharedpref" path="FlutterSecureStorage.xml" />
+</full-backup-content>

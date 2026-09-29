@@ -7,12 +7,16 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/byte_size.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../household/model/household_view.dart';
 import '../model/document_folder.dart';
 import '../model/document_limits.dart';
 import '../model/household_document.dart';
+import '../model/share_target.dart';
 import '../state/document_library_controller.dart';
+import '../state/offline_copies_controller.dart';
 import 'document_badges.dart';
 import 'document_preview.dart';
+import 'document_share_and_keep.dart';
 import 'expiry_field.dart';
 import 'tag_field.dart';
 
@@ -30,17 +34,26 @@ Future<void> showDocumentSheet({
 }) {
   final controller = context.read<DocumentLibraryController>();
   final today = context.read<HouseholdClock>().today;
+  final offline = context.read<OfflineCopiesController>();
+  // Sending the household's papers out is the family's call (documents
+  // ADR-0006); `createDocumentShare` says the same.
+  final canShare = context.read<HouseholdView>().permissions.isFamily;
   return showNestSheet<void>(
     context: context,
     title: document.name,
-    builder: (sheetContext) => _DocumentSheetBody(
-      document: document,
-      folders: folders,
-      canManage: canManage,
-      controller: controller,
-      today: today,
-      tagSuggestions: tagSuggestions,
-    ),
+    builder: (sheetContext) =>
+        ChangeNotifierProvider<OfflineCopiesController>.value(
+          value: offline,
+          child: _DocumentSheetBody(
+            document: document,
+            folders: folders,
+            canManage: canManage,
+            canShare: canShare,
+            controller: controller,
+            today: today,
+            tagSuggestions: tagSuggestions,
+          ),
+        ),
   );
 }
 
@@ -49,6 +62,7 @@ class _DocumentSheetBody extends StatefulWidget {
     required this.document,
     required this.folders,
     required this.canManage,
+    required this.canShare,
     required this.controller,
     required this.today,
     required this.tagSuggestions,
@@ -57,6 +71,7 @@ class _DocumentSheetBody extends StatefulWidget {
   final HouseholdDocument document;
   final List<DocumentFolder> folders;
   final bool canManage;
+  final bool canShare;
   final DocumentLibraryController controller;
   final CalendarDate today;
   final List<String> tagSuggestions;
@@ -105,6 +120,20 @@ class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
           Text(
             NestBytes.format(document.sizeBytes),
             style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
+          ),
+          const SizedBox(height: NestSpace.md),
+          DocumentShareAndKeep(
+            target: ShareTarget(
+              householdId: widget.controller.householdId,
+              ownerMemberId: null,
+              documentId: document.id,
+              name: document.name,
+              tags: document.tags,
+            ),
+            canShare: widget.canShare,
+            onKeep: () => context
+                .read<OfflineCopiesController>()
+                .saveHouseholdDocument(document),
           ),
           const SizedBox(height: NestSpace.sm),
           if (!widget.canManage &&

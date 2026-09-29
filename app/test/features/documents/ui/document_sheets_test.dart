@@ -8,6 +8,7 @@ import 'package:nestprep/features/documents/ui/document_library_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_document_tools.dart';
 import '../../../support/fake_documents.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/fake_vault.dart';
@@ -84,6 +85,7 @@ void main() {
           value: controller,
         ),
         vaultLockProvider(),
+        ...documentToolProviders(),
       ],
     );
     repository.emitFolders([folder()]);
@@ -100,6 +102,7 @@ void main() {
           value: controller,
         ),
         vaultLockProvider(),
+        ...documentToolProviders(),
       ],
     );
     repository.emitFolders([folder()]);

@@ -7,11 +7,14 @@ import '../../../shared/copy/vault_copy.dart';
 import '../../../shared/format/byte_size.dart';
 import '../../../shared/time/household_clock.dart';
 import '../model/document_tags.dart';
+import '../model/share_target.dart';
 import '../model/vault_document.dart';
+import '../state/offline_copies_controller.dart';
 import '../state/vault_controller.dart';
 import 'document_badges.dart';
 import 'document_details_sheet.dart';
 import 'document_preview.dart';
+import 'document_share_and_keep.dart';
 
 /// Opening a vault document: its pages, drawn by the app from bytes read after
 /// the server logged the open (documents ADR-0003), and — for its owner or an
@@ -22,12 +25,14 @@ Future<void> showVaultDocumentSheet({
 }) {
   final controller = context.read<VaultController>();
   final clock = context.read<HouseholdClock>();
+  final offline = context.read<OfflineCopiesController>();
   return showNestSheet<void>(
     context: context,
     title: document.name,
     builder: (sheetContext) => MultiProvider(
       providers: [
         ChangeNotifierProvider<VaultController>.value(value: controller),
+        ChangeNotifierProvider<OfflineCopiesController>.value(value: offline),
         Provider<HouseholdClock>.value(value: clock),
       ],
       child: _VaultDocumentBody(document: document),
@@ -104,6 +109,22 @@ class _VaultDocumentBodyState extends State<_VaultDocumentBody> {
               today: today,
             ),
           ],
+          const SizedBox(height: NestSpace.xl),
+          DocumentShareAndKeep(
+            target: ShareTarget(
+              householdId: controller.householdId,
+              ownerMemberId: document.ownerMemberId,
+              documentId: document.id,
+              name: document.name,
+              tags: document.tags,
+            ),
+            // The owner or the family, never a grantee (documents ADR-0006)
+            // — exactly who manages the vault.
+            canShare: canManage,
+            onKeep: () => context
+                .read<OfflineCopiesController>()
+                .saveVaultDocument(document),
+          ),
           if (canManage) ...[
             const SizedBox(height: NestSpace.xxl),
             NestButton(

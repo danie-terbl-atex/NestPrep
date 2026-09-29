@@ -247,6 +247,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ==== rules/firestore/root/app_config.rules ====
+    // ---- app config: the V2 switches (foundation ADR-0014) ----
+    // One document, `appConfig/flags`: a boolean per V2 capability. Anybody may
+    // read it — it is a list of switches, not anybody's data — and nobody writes
+    // it from a client; Daniel sets it in the console. Any other id here is
+    // closed, so the collection cannot quietly grow into a place for data.
+    match /appConfig/{configId} {
+      allow get: if configId == 'flags';
+      allow list: if false;
+      allow write: if false;
+    }
+
     // ==== rules/firestore/root/calendar_sync.rules ====
     // ---- calendar sync, the credentials (calendar ADR-0003) ----
     // A refresh token or a calendar link, a connection in flight, and a feed
@@ -261,6 +273,15 @@ service cloud.firestore {
     }
 
     match /calendarFeeds/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/document_shares.rules ====
+    // ---- documents: a shared link's secrets (documents ADR-0006) ----
+    // Keyed by the hash of the link's token, holding the PIN's hash and how
+    // many wrong PINs it has seen. Only the shared-link Functions read or
+    // write these; a readable one would be a way to test PINs offline.
+    match /documentShareTokens/{tokenHash} {
       allow read, write: if false;
     }
 
@@ -488,6 +509,20 @@ service cloud.firestore {
           && isServerTime('requestedAt');
 
         allow update, delete: if false;
+      }
+
+      // ==== rules/firestore/household/document_shares.rules ====
+      // ---- documents: one document shared by an expiring link (documents ADR-0006) ----
+      // What the family sees of a link — which document, when it ends, whether it
+      // has a PIN, how often it was opened — never the link itself, which exists
+      // only on the phone that made it. The family reads every link; anybody else
+      // reads only a link they made, while they are still in the household. Only
+      // `createDocumentShare`, `revokeDocumentShare`, the link itself and the
+      // shift trigger write here, so a count or a status cannot be forged.
+      match /documentShares/{shareId} {
+        allow read: if isFamily(householdId)
+          || (isMember(householdId) && resource.data.createdByUid == uid());
+        allow write: if false;
       }
 
       // ==== rules/firestore/household/document_vaults.rules ====
