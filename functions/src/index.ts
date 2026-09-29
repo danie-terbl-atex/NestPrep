@@ -44,3 +44,6 @@ export { syncCalendarsOnSchedule } from './calendar_sync/sync_calendars_on_sched
 // documents phase 2 — personal vaults and expiry reminders (documents ADR-0003, ADR-0005)
 export { openVaultDocument } from './documents/open_vault_document';
 export { sweepExpiryReminders } from './documents/sweep_expiry_reminders';
+
+// ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
+export { endNannyShift } from './nanny_hub/end_nanny_shift';

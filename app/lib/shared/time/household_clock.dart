@@ -40,6 +40,10 @@ final class HouseholdClock {
   /// Today, where the household lives.
   CalendarDate get today => dateOf(_now());
 
+  /// This instant, in UTC — what a handover entry logged "now" is stamped
+  /// with, from the same clock a test controls (nanny-hub ADR-0002).
+  DateTime get now => _now().toUtc();
+
   /// The instant midnight of [date] begins at where the household lives — the
   /// lower bound of a query for that day.
   DateTime startOfDay(CalendarDate date) =>

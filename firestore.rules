@@ -978,6 +978,261 @@ service cloud.firestore {
         allow delete: if isAdmin(householdId);
       }
 
+      // ==== rules/firestore/household/nanny_hub.rules ====
+      // ---- nanny hub (nanny-hub ADR-0001, ADR-0002, ADR-0003) ----
+      //
+      // Everything a carer needs for one shift, gated on the `nannyHub` grant
+      // alone (household ADR-0003): `view` reads the hub, `edit` writes it — a
+      // parent authoring the cards, a carer keeping the shift's log. The child's
+      // allergies and medication are not here: they are read from family
+      // profiles, under that feature's own grants (family-profiles ADR-0002).
+      // Every record is stamped with the member who wrote it, never a name
+      // somebody typed (BE-03).
+
+      // One card per child, keyed by the child's member id, so there is no field
+      // to point at somebody else. Written a section at a time as a merge, so the
+      // whole document is judged as it will be after the write.
+      match /nannyChildCards/{memberId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create: if canEdit(householdId, 'nannyHub')
+          && nannyMemberExists(householdId, memberId)
+          && isNannyChildCard(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow update: if canEdit(householdId, 'nannyHub')
+          && isNannyChildCard(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow delete: if canEdit(householdId, 'nannyHub');
+      }
+
+      // The people to call: parents, backup adults, the doctor, the hospital. One
+      // document each, so two parents adding two numbers never overwrite each
+      // other.
+      match /nannyContacts/{contactId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create: if canEdit(householdId, 'nannyHub')
+          && request.resource.data.keys().hasOnly(
+               ['name', 'kind', 'phone', 'note', 'createdBy', 'createdAt'])
+          && isNannyContact(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if canEdit(householdId, 'nannyHub')
+          && onlyChanged(['name', 'kind', 'phone', 'note'])
+          && isNannyContact(request.resource.data);
+
+        allow delete: if canEdit(householdId, 'nannyHub');
+      }
+
+      // The home's own facts for the emergency sheet: where it is and the medical
+      // aid. One document, always called `sheet`.
+      match /nannyHome/{sheetId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create, update: if canEdit(householdId, 'nannyHub')
+          && sheetId == 'sheet'
+          && request.resource.data.keys().hasOnly(
+               ['address', 'medicalAidScheme', 'medicalAidPlan', 'medicalAidNumber',
+                'updatedBy', 'updatedAt'])
+          && isNannyOptionalText(request.resource.data.get('address', null), 300)
+          && isNannyOptionalText(request.resource.data.get('medicalAidScheme', null), 80)
+          && isNannyOptionalText(request.resource.data.get('medicalAidPlan', null), 80)
+          && isNannyOptionalText(request.resource.data.get('medicalAidNumber', null), 40)
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow delete: if false;
+      }
+
+      // Where things are, each with an optional photo whose bytes are in Storage
+      // at `households/{h}/nannyHub/{photoId}` (nanny-hub ADR-0003).
+      match /nannyGuide/{spotId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create: if canEdit(householdId, 'nannyHub')
+          && request.resource.data.keys().hasOnly(
+               ['title', 'note', 'photoId', 'createdBy', 'createdAt'])
+          && isNannyGuideSpot(request.resource.data)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if canEdit(householdId, 'nannyHub')
+          && onlyChanged(['title', 'note', 'photoId'])
+          && isNannyGuideSpot(request.resource.data);
+
+        allow delete: if canEdit(householdId, 'nannyHub');
+      }
+
+      match /nannyRules/{ruleId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create: if canEdit(householdId, 'nannyHub')
+          && request.resource.data.keys().hasOnly(['text', 'createdBy', 'createdAt'])
+          && isNannyText(request.resource.data.text, 300)
+          && isOwnMember(householdId, request.resource.data.createdBy)
+          && isServerTime('createdAt');
+
+        allow update: if canEdit(householdId, 'nannyHub')
+          && onlyChanged(['text'])
+          && isNannyText(request.resource.data.text, 300);
+
+        allow delete: if canEdit(householdId, 'nannyHub');
+      }
+
+      // One checklist per part of a shift, named by the moment it is for — the
+      // hub's own, not a todos routine, because it is ticked per shift rather than
+      // per date (nanny-hub ADR-0001).
+      match /nannyChecklists/{moment} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create, update: if canEdit(householdId, 'nannyHub')
+          && moment in ['arrival', 'afterSchool', 'dinner', 'bedtime', 'beforeLeaving']
+          && request.resource.data.keys().hasOnly(['items', 'updatedBy', 'updatedAt'])
+          && request.resource.data.items is list
+          && request.resource.data.items.size() <= 20
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow delete: if canEdit(householdId, 'nannyHub');
+      }
+
+      // A shift has an explicit start and end (nanny-hub ADR-0002). A client
+      // starts one — for themselves, or family for a carer — and ticks its
+      // checklists while it is open. Only `endNannyShift` ends one, because the
+      // end writes the summary the parents read in the same transaction.
+      match /nannyShifts/{shiftId} {
+        allow read: if canView(householdId, 'nannyHub');
+
+        allow create: if canEdit(householdId, 'nannyHub')
+          && request.resource.data.keys().hasOnly(
+               ['carerMemberId', 'startedBy', 'startedAt', 'endedAt', 'endedBy',
+                'status', 'ticks'])
+          && request.resource.data.status == 'open'
+          && request.resource.data.endedAt == null
+          && request.resource.data.endedBy == null
+          && request.resource.data.ticks == {}
+          && isOwnMember(householdId, request.resource.data.startedBy)
+          && (request.resource.data.carerMemberId == request.resource.data.startedBy
+                || isFamily(householdId))
+          && nannyMemberExists(householdId, request.resource.data.carerMemberId)
+          && isServerTime('startedAt');
+
+        allow update: if canEdit(householdId, 'nannyHub')
+          && resource.data.status == 'open'
+          && onlyChanged(['ticks'])
+          && request.resource.data.ticks is map
+          && request.resource.data.ticks.size() <= 100;
+
+        allow delete: if false;
+
+        // The handover log: what happened, when, to whom, with a photo. Written
+        // only while the shift is open, and changed only by whoever wrote it.
+        match /entries/{entryId} {
+          allow read: if canView(householdId, 'nannyHub');
+
+          allow create: if canEdit(householdId, 'nannyHub')
+            && isNannyShiftOpen(householdId, shiftId)
+            && request.resource.data.keys().hasOnly(
+                 ['kind', 'note', 'mood', 'childIds', 'photoId', 'at', 'byMemberId',
+                  'createdAt'])
+            && isNannyEntry(request.resource.data)
+            && isOwnMember(householdId, request.resource.data.byMemberId)
+            && isServerTime('createdAt');
+
+          allow update: if canEdit(householdId, 'nannyHub')
+            && isNannyShiftOpen(householdId, shiftId)
+            && isOwnMember(householdId, resource.data.byMemberId)
+            && onlyChanged(['kind', 'note', 'mood', 'childIds', 'photoId', 'at'])
+            && isNannyEntry(request.resource.data);
+
+          allow delete: if canEdit(householdId, 'nannyHub')
+            && isNannyShiftOpen(householdId, shiftId)
+            && isOwnMember(householdId, resource.data.byMemberId);
+        }
+      }
+
+      // Written by `endNannyShift` only, and read by whoever reads the hub. The
+      // notifications feature delivers it; no client writes one (nanny-hub
+      // ADR-0002).
+      match /nannyShiftSummaries/{shiftId} {
+        allow read: if canView(householdId, 'nannyHub');
+        allow write: if false;
+      }
+
+      function nannyMemberExists(householdId, memberId) {
+        return exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
+      }
+
+      function isNannyShiftOpen(householdId, shiftId) {
+        return get(/databases/$(database)/documents/households/$(householdId)/nannyShifts/$(shiftId)).data.status == 'open';
+      }
+
+      function isNannyText(value, longest) {
+        return isNonEmptyString(value) && value.size() <= longest;
+      }
+
+      function isNannyOptionalText(value, longest) {
+        return value == null || isNannyText(value, longest);
+      }
+
+      // A photo's object name in Storage. Generated by the app; bounded so a
+      // field cannot be used to smuggle a path.
+      function isNannyPhotoId(value) {
+        return value == null
+          || (value is string && value.matches('^[A-Za-z0-9_-]{8,64}$'));
+      }
+
+      // The limits are `NannyLimits` in the app; `nanny_limits_match_the_rules_test`
+      // reads this file and fails when the two drift apart.
+      function isNannyChildCard(data) {
+        return data.keys().hasOnly(
+             ['routines', 'comfortItems', 'settling', 'goodToKnow', 'photoId',
+              'updatedBy', 'updatedAt'])
+          && data.get('routines', []) is list
+          && data.get('routines', []).size() <= 12
+          && data.get('comfortItems', []) is list
+          && data.get('comfortItems', []).size() <= 12
+          && isNannyOptionalText(data.get('settling', null), 600)
+          && isNannyOptionalText(data.get('goodToKnow', null), 600)
+          && isNannyPhotoId(data.get('photoId', null));
+      }
+
+      function isNannyContact(data) {
+        return isNannyText(data.name, 60)
+          && data.kind in ['parent', 'backup', 'doctor', 'hospital', 'other']
+          && data.phone is string
+          && data.phone.matches('^[+0-9 ()-]{3,20}$')
+          && isNannyOptionalText(data.get('note', null), 200);
+      }
+
+      function isNannyGuideSpot(data) {
+        return isNannyText(data.title, 80)
+          && isNannyOptionalText(data.get('note', null), 400)
+          && isNannyPhotoId(data.get('photoId', null));
+      }
+
+      // An entry says something: a note, a mood or a photo. Its time may be set
+      // back — a nap logged when it ended — but never into the future.
+      function isNannyEntry(data) {
+        return data.kind in ['meal', 'nap', 'nappy', 'mood', 'incident', 'medicine', 'note']
+          && isNannyOptionalText(data.get('note', null), 500)
+          && (data.get('mood', null) == null
+                || data.mood in ['happy', 'calm', 'tired', 'upset', 'unwell'])
+          && data.childIds is list
+          && data.childIds.size() <= 10
+          && isNannyPhotoId(data.get('photoId', null))
+          && (data.get('note', null) != null
+                || data.get('mood', null) != null
+                || data.get('photoId', null) != null)
+          && data.at is timestamp
+          && data.at <= request.time + duration.value(5, 'm');
+      }
+
       // ==== rules/firestore/household/todos.rules ====
       // ---- todos (todos ADR-0001, ADR-0002) ----
 

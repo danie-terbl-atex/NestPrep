@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import '../../../app/documents_route.dart';
 import '../../../app/family_route.dart';
 import '../../../app/household_route.dart';
+import '../../../app/nanny_hub_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../family_profiles/model/family_access.dart';
+import '../../nanny_hub/model/nanny_access.dart';
 import '../model/household_area.dart';
 import '../model/household_view.dart';
 
@@ -24,6 +26,27 @@ class HouseholdPlaces extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // nanny hub (nanny-hub ADR-0003): first, because for a carer it is
+        // what the household screen is for, and for a parent it is where the
+        // latest handover waits.
+        if (NannyAccess.of(view).canView) ...[
+          NestCard(
+            variant: NestCardVariant.tinted,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: NannyCopy.openFromHousehold,
+              subtitle: NannyCopy.openFromHouseholdBody,
+              leading: const NestIconTile(
+                icon: Icons.child_care,
+                tint: NestTileTint.mint,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  context.push(NannyHubRoute.pathFor(view.household.id)),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
         // family-profiles: what each person eats, cannot eat and needs. It
         // hangs off the people it is about (family-profiles ADR-0001), for
         // whoever the `familyProfiles` grant lets see it (ADR-0002).

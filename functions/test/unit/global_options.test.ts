@@ -47,9 +47,10 @@ describe('every function — callable, trigger or schedule', () => {
     // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
     // ADR-0003). Calendar sync: ten — seven callables, two HTTP and one
     // schedule (calendar ADR-0003). Documents phase 2: openVaultDocument and
-    // the daily expiry sweep (documents ADR-0003, ADR-0005). A feature adds its
-    // count and its line.
-    expect(endpoints()).toHaveLength(31);
+    // the daily expiry sweep (documents ADR-0003, ADR-0005). Nanny hub:
+    // endNannyShift (nanny-hub ADR-0002). A feature adds its count and its
+    // line.
+    expect(endpoints()).toHaveLength(32);
   });
 
   it('runs in the one region, which is the database region', () => {
