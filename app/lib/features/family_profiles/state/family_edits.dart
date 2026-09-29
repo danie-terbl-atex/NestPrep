@@ -1,4 +1,5 @@
 import '../../../shared/text/normalised_name.dart';
+import '../data/child_profile_directory.dart';
 import '../data/family_profile_repository.dart';
 import '../model/allergy.dart';
 import '../model/allergy_draft.dart';
@@ -14,12 +15,20 @@ import '../model/dietary_flag.dart';
 final class FamilyEdits {
   FamilyEdits({
     required FamilyProfileRepository familyProfileRepository,
+    required ChildProfileDirectory childProfileDirectory,
     required this.householdId,
     required Future<void> Function(Future<void> Function() action) runAction,
   }) : _repository = familyProfileRepository,
+       _children = childProfileDirectory,
        _run = runAction;
 
   final FamilyProfileRepository _repository;
+
+  /// Who is a child goes through a Function, because the free tier counts
+  /// it (subscriptions ADR-0001); a second child on a free household comes
+  /// back as `PremiumRequiredFailure`, which the screen answers with the
+  /// paywall rather than a banner.
+  final ChildProfileDirectory _children;
   final String householdId;
   final Future<void> Function(Future<void> Function() action) _run;
 
@@ -28,7 +37,7 @@ final class FamilyEdits {
   static const listLimit = 30;
 
   Future<void> setIsChild(String memberId, {required bool isChild}) => _run(
-    () => _repository.setIsChild(
+    () => _children.setIsChild(
       householdId: householdId,
       memberId: memberId,
       isChild: isChild,

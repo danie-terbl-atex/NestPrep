@@ -42,12 +42,6 @@ abstract interface class FamilyProfileRepository {
     required String memberId,
   });
 
-  Future<void> setIsChild({
-    required String householdId,
-    required String memberId,
-    required bool isChild,
-  });
-
   Future<void> saveFood({
     required String householdId,
     required String memberId,

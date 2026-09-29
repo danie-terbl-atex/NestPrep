@@ -18,6 +18,7 @@ final class FamilyEditorHarness {
   FamilyEditorHarness() {
     family = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: Fixtures.view(),
     );

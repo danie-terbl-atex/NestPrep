@@ -1,6 +1,9 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:nestprep/app/firebase_bootstrap.dart';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
+import 'package:nestprep/features/family_profiles/data/callable_child_profile_directory.dart';
 import 'package:nestprep/features/family_profiles/data/firestore_family_profile_repository.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
 import 'package:nestprep/features/family_profiles/model/allergy_draft.dart';
@@ -53,12 +56,14 @@ void main() {
       color: MemberColor.sky,
       role: MemberRole.kid,
     );
+    // Who is a child is the `setChildProfile` callable's alone: the free
+    // tier counts it (subscriptions ADR-0001), so the rules refuse a client
+    // write of it. The same regional instance `bootstrapFirebase` pointed at
+    // the emulator.
+    await CallableChildProfileDirectory(
+      FirebaseFunctions.instanceFor(region: functionsRegion),
+    ).setIsChild(householdId: home.id, memberId: childId, isChild: true);
     final family = FirestoreFamilyProfileRepository(home.firestore);
-    await family.setIsChild(
-      householdId: home.id,
-      memberId: childId,
-      isChild: true,
-    );
     await family.saveAllergy(
       householdId: home.id,
       memberId: childId,

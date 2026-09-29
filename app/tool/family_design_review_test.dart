@@ -74,6 +74,7 @@ void main() {
     addTearDown(repository.close);
     final controller = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: familyView(),
     );
@@ -104,6 +105,7 @@ void main() {
     addTearDown(repository.close);
     final controller = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: familyView(),
     );

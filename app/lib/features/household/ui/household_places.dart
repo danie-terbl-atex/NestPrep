@@ -10,6 +10,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
+import '../../subscriptions/ui/plan_link.dart';
 import '../model/household_area.dart';
 import '../model/household_view.dart';
 
@@ -89,6 +90,12 @@ class HouseholdPlaces extends StatelessWidget {
                   context.push(HomeCareRoute.pathFor(view.household.id)),
             ),
           ),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // subscriptions: which plan the household is on, and the way to
+        // premium (subscriptions ADR-0001) — for family, who buy it.
+        if (view.permissions.isFamily) ...[
+          PlanLink(householdId: view.household.id),
           const SizedBox(height: NestSpace.lg),
         ],
         // The way to the live-location screen. It sits with the people rather

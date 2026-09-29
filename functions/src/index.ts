@@ -52,3 +52,10 @@ export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
+// ---- subscriptions: free and premium in both stores (subscriptions ADR-0001) ----
+export { getSubscriptionOffer } from './subscriptions/get_subscription_offer';
+export { verifyPurchase } from './subscriptions/verify_purchase';
+export { appStoreNotifications } from './subscriptions/app_store_notifications';
+export { playBillingNotifications } from './subscriptions/play_billing_notifications';
+export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
+export { setChildProfile } from './family_profiles/set_child_profile';

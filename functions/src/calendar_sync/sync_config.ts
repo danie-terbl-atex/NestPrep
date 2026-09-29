@@ -1,5 +1,6 @@
 import { defineSecret, defineString } from 'firebase-functions/params';
 
+import { configured } from '../shared/configured_value';
 import { FUNCTIONS_REGION } from '../shared/region';
 import type { OAuthProvider } from './sync_documents';
 
@@ -34,12 +35,6 @@ export interface OAuthClient {
 
 /** The OAuth clients that are configured; a provider missing here is not set up. */
 export type OAuthClients = Partial<Record<OAuthProvider, OAuthClient>>;
-
-/** Reads a value, treating empty and the deploy placeholder as absent. */
-export function configured(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed === '' || trimmed === 'unset' ? null : trimmed;
-}
 
 /**
  * The OAuth clients as this instance sees them. [withSecrets] is false in the

@@ -63,7 +63,7 @@ class FamilyMemberBody extends StatelessWidget {
         FamilyProfileHeader(
           entry: entry,
           age: entry.member.birthday?.ageOn(today),
-          onToggleChild: canEdit ? flows.toggleChild : null,
+          onToggleChild: canEdit ? () => flows.toggleChild(context) : null,
         ),
         gap,
         if (showsRules) ...[FoodRulesSummary(rules: entry.foodRules), gap],

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/state/family_controller.dart';
 import '../features/household/model/household_area.dart';
@@ -29,6 +30,7 @@ ShellRoute lunchRoutes() => ShellRoute(
       ChangeNotifierProxyProvider<HouseholdView, FamilyController>(
         create: (context) => FamilyController(
           familyProfileRepository: context.read<FamilyProfileRepository>(),
+          childProfileDirectory: context.read<ChildProfileDirectory>(),
           householdId: HouseholdRoute.idFrom(state),
           household: context.read<HouseholdView>(),
         ),

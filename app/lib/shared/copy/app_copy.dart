@@ -9,6 +9,7 @@ import 'lunch_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'subscription_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
@@ -402,6 +403,11 @@ abstract final class AppCopy {
     HomeCareFailure(:final problem) => HomeCareCopy.problem(problem),
     // lunch-box (lunch-box ADR-0001)
     LunchFailure(:final problem) => LunchCopy.problem(problem),
+    // subscriptions (subscriptions ADR-0001)
+    SubscriptionFailure(:final problem) => SubscriptionCopy.problem(problem),
+    PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
+      feature,
+    ),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

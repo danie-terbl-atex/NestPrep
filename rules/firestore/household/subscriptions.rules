@@ -1,0 +1,12 @@
+// ---- subscriptions (subscriptions ADR-0001) ----
+//
+// What the household may do. Everybody in it reads it — a helper who reaches
+// a premium feature is told why it is closed, and a kid's tablet shows what
+// the family has — because it says nothing about any one person beyond who
+// manages the plan. Nobody writes it: only a Function does, after a store
+// has vouched for a purchase, so no client can give itself premium.
+
+match /entitlement/{document} {
+  allow read: if isInHousehold(householdId);
+  allow write: if false;
+}

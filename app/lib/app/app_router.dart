@@ -52,6 +52,7 @@ import 'household_shell.dart';
 import 'kid_routes.dart';
 import 'lunch_routes.dart';
 import 'nanny_hub_routes.dart';
+import 'subscription_routes.dart';
 import 'viewer_member.dart';
 
 /// A route creates the controller its screen reads, so the controller's
@@ -140,6 +141,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // lunch-box (lunch-box ADR-0001, ADR-0004): the lunch tab, its prep
         // list and its library.
         lunchRoutes(),
+        // subscriptions: plan and billing (subscriptions ADR-0001).
+        subscriptionRoute(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

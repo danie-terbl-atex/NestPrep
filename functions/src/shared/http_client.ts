@@ -1,8 +1,9 @@
 /**
- * The one way calendar sync talks to the outside world (BE-09, BE-19): a
- * request with a timeout, a size cap, and no redirects followed silently.
- * Behind an interface so every provider adapter is tested against canned
- * responses and never the network.
+ * The one way a Function talks to the outside world (BE-09, BE-19): a request
+ * with a timeout, a size cap, and no redirects followed silently. Behind an
+ * interface so every adapter — calendar providers, the two app stores — is
+ * tested against canned responses and never the network. Calendar sync wrote
+ * it; subscriptions is its second user, which is why it lives here (`ENG-02`).
  */
 export interface HttpRequest {
   readonly method: 'GET' | 'POST';

@@ -83,14 +83,20 @@ describe('familyProfiles/{memberId}', () => {
 
   describe('who may create', () => {
     it('lets an admin create a child"s profile with every field', async () => {
+      // Every field but `isChild`, which only `setChildProfile` writes
+      // (subscriptions ADR-0001); `subscriptions.rules.test.ts` has that denial.
       await assertSucceeds(
-        setDoc(doc(await asUser(SAM), `${PROFILES}/${KID}`), aFullProfile(), merge),
+        setDoc(
+          doc(await asUser(SAM), `${PROFILES}/${KID}`),
+          { ...aFullProfile(), isChild: false },
+          merge,
+        ),
       );
     });
 
     it('lets a first edit be one field, which is how the app creates it', async () => {
       await assertSucceeds(
-        setDoc(doc(await asUser(SAM), `${PROFILES}/${KID}`), { isChild: true }, merge),
+        setDoc(doc(await asUser(SAM), `${PROFILES}/${KID}`), { likes: ['Pasta'] }, merge),
       );
     });
 
@@ -112,19 +118,19 @@ describe('familyProfiles/{memberId}', () => {
 
     it('denies a member who is not an admin writing a child"s profile', async () => {
       await assertFails(
-        setDoc(doc(await asUser(MIA), `${PROFILES}/${KID}`), { isChild: true }, merge),
+        setDoc(doc(await asUser(MIA), `${PROFILES}/${KID}`), { likes: ['Sweets'] }, merge),
       );
     });
 
     it('denies a profile for a member that does not exist', async () => {
       await assertFails(
-        setDoc(doc(await asUser(SAM), `${PROFILES}/m-nobody`), { isChild: true }, merge),
+        setDoc(doc(await asUser(SAM), `${PROFILES}/m-nobody`), { likes: ['Tea'] }, merge),
       );
     });
 
     it('denies the admin of another household', async () => {
       await assertFails(
-        setDoc(doc(await asUser(OLIVIA), `${PROFILES}/${KID}`), { isChild: true }, merge),
+        setDoc(doc(await asUser(OLIVIA), `${PROFILES}/${KID}`), { likes: ['Sweets'] }, merge),
       );
     });
 

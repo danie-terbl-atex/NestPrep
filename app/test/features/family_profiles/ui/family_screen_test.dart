@@ -21,6 +21,7 @@ void main() {
   void build(HouseholdView view) {
     controller = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: view,
     );

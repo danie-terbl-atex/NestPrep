@@ -55,6 +55,9 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `lunch-swap-light.png` | the one-tap swap: a compartment's library ranked for the child, each with why it ranks there |
 | `lunch-prep-light.png` / `lunch-prep-dark.png` | the Sunday prep list: what to make ahead, then what to have in the house, with ticks |
 | `lunch-library-light.png` / `lunch-library-dark.png` | the lunch library, slot by slot, saying what is in each thing |
+| `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
+| `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
+| `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
 
 ## What to look at
 

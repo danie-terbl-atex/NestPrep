@@ -62,6 +62,7 @@ import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
+import 'subscription_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -198,6 +199,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...chorePointsProviders(),
   // home-care (home-care ADR-0001 to ADR-0003).
   ...homeCareProviders(),
+  // subscriptions — the store, premium and the free tier's one child
+  // (subscriptions ADR-0001)
+  ...subscriptionProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

@@ -53,13 +53,19 @@ void main() {
       );
 
   test('a first edit of one field creates the profile', () async {
-    await family.setIsChild(
+    // Who is a child is the `setChildProfile` callable's alone now — the free
+    // tier counts it (subscriptions ADR-0001) — so the first edit here is a
+    // like, which any profile editor writes directly.
+    await family.saveFood(
       householdId: home.id,
       memberId: kidId,
-      isChild: true,
+      likes: const ['Pasta'],
+      dislikes: const [],
+      diet: const {},
     );
     final profile = await kid();
-    expect(profile.isChild, isTrue);
+    expect(profile.isChild, isFalse);
+    expect(profile.likes, ['Pasta']);
     expect(profile.allAllergies, isEmpty);
   });
 

@@ -176,6 +176,16 @@ describe('every callable declares what it may cost', () => {
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
         'endNannyShift',
+        // Subscriptions (subscriptions ADR-0001): a store receipt verified
+        // with the store's own server before the entitlement is written, the
+        // two stores' notifications and a daily reconcile — and marking a
+        // child, which the free tier counts and no rule can count.
+        'appStoreNotifications',
+        'getSubscriptionOffer',
+        'playBillingNotifications',
+        'reconcileSubscriptions',
+        'setChildProfile',
+        'verifyPurchase',
       ].sort(),
     );
   });

@@ -31,6 +31,10 @@ import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
+import 'package:nestprep/features/subscriptions/model/billing_store.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/model/subscription_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/model/task_completion.dart';
@@ -267,6 +271,15 @@ List<ModelFixture> modelFixtures() {
     status: ConnectionStatus.unreachable,
     eventCount: 12,
     lastSyncedAt: at,
+  );
+  final entitlement = Entitlement(
+    premiumUntil: at,
+    status: EntitlementStatus.inGracePeriod,
+    plan: SubscriptionPlan.yearly,
+    store: BillingStore.appStore,
+    willRenew: true,
+    managedByMemberId: 'm1',
+    isTest: true,
   );
   final synced = SyncedEvent(
     id: 'c1_abc',
@@ -608,6 +621,27 @@ List<ModelFixture> modelFixtures() {
       note:
           'written only by openVaultDocument; the app reads it and never '
           'writes it (documents ADR-0003).',
+    ),
+    // Subscriptions (subscriptions ADR-0001): only a Function writes it, so
+    // the round trip is the read the app makes of what the Function stored.
+    ModelFixture(
+      label: 'Entitlement',
+      id: 'current',
+      value: entitlement,
+      toJson: entitlement.toJson,
+      fromJson: Entitlement.fromJson,
+      keys: const {
+        'premiumUntil',
+        'status',
+        'plan',
+        'store',
+        'willRenew',
+        'managedByMemberId',
+        'isTest',
+      },
+      note:
+          'written only by the subscriptions Functions; the rules refuse '
+          'every client write (subscriptions ADR-0001).',
     ),
     // todos phase 2: a child's stars (todos ADR-0003).
     ...chorePointsModelFixtures(),

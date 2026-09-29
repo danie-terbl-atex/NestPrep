@@ -89,13 +89,6 @@ final class FirestoreFamilyProfileRepository
           .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
-  Future<void> setIsChild({
-    required String householdId,
-    required String memberId,
-    required bool isChild,
-  }) => _mergeProfile(householdId, memberId, {'isChild': isChild});
-
-  @override
   Future<void> saveFood({
     required String householdId,
     required String memberId,

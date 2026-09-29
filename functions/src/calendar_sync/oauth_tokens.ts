@@ -1,7 +1,13 @@
 import { z } from 'zod';
 
 import type { OAuthClient } from './sync_config';
-import { FORM_HEADERS, type HttpClient, HttpUnreachable, formBody, jsonOf } from './http_client';
+import {
+  FORM_HEADERS,
+  type HttpClient,
+  HttpUnreachable,
+  formBody,
+  jsonOf,
+} from '../shared/http_client';
 
 /**
  * The OAuth 2.0 token endpoint as Google and Microsoft both speak it: a code

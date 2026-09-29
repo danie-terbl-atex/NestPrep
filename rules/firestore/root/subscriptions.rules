@@ -1,0 +1,10 @@
+// ---- subscriptions (subscriptions ADR-0001) ----
+// One document per store subscription: its purchase token or original
+// transaction id, the household it gives premium to and who linked it.
+// Functions alone read and write it. A purchase token is the store's
+// credential for a payment, not something to hand to every phone in a
+// household, and the link is what stops one store account unlocking many.
+
+match /storePurchases/{purchaseKey} {
+  allow read, write: if false;
+}

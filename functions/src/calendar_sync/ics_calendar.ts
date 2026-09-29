@@ -1,6 +1,6 @@
 import type { CalendarSource, FetchOutcome } from './calendar_source';
 import type { SyncWindow } from './external_occurrence';
-import { type HttpClient, HttpUnreachable } from './http_client';
+import { type HttpClient, HttpUnreachable } from '../shared/http_client';
 import { icsOccurrences } from './ics_occurrences';
 import { parseIcs } from './ics_parser';
 import { type HostResolver, isPublicHost, normaliseCalendarLink } from './link_guard';

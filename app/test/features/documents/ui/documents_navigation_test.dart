@@ -117,13 +117,25 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// The way in sits below every other household place, and each feature
+  /// that adds a place moves it further down; it is scrolled to, not assumed.
+  Future<void> openDocuments(WidgetTester tester) async {
+    await tester.scrollUntilVisible(
+      find.text(AppCopy.documentsOpenLibrary),
+      200,
+    );
+    await tester.ensureVisible(find.text(AppCopy.documentsOpenLibrary));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppCopy.documentsOpenLibrary));
+  }
+
   testWidgets('the documents open over the household, not instead of it', (
     tester,
   ) async {
     await pump(tester, HouseholdRoute.householdPathFor(Fixtures.householdId));
     expect(find.text(AppCopy.householdTitle), findsOneWidget);
 
-    await tester.tap(find.text(AppCopy.documentsOpenLibrary));
+    await openDocuments(tester);
     await tester.pumpAndSettle();
 
     expect(find.text(AppCopy.documentsTitle), findsOneWidget);
@@ -134,7 +146,7 @@ void main() {
 
   testWidgets('and going back lands on the household again', (tester) async {
     await pump(tester, HouseholdRoute.householdPathFor(Fixtures.householdId));
-    await tester.tap(find.text(AppCopy.documentsOpenLibrary));
+    await openDocuments(tester);
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.arrow_back));
