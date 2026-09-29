@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
+import 'access_grant.dart';
+import 'access_grant_converter.dart';
 import 'birthday.dart';
 import 'birthday_converter.dart';
 import 'member_color_converter.dart';
@@ -27,6 +29,11 @@ abstract class Member with _$Member {
     /// Optional, and optional again inside: a household that does not know the
     /// year stores the day and the month alone (birthdays ADR-0001).
     @BirthdayConverter() Birthday? birthday,
+
+    /// What a parent chose for a kid, helper or carer (household ADR-0003).
+    /// Written with the profile, and afterwards only through
+    /// `setMemberAccess`; ignored for family.
+    @AccessGrantConverter() AccessGrant? access,
     String? claimedBy,
     @ServerTimestampConverter() DateTime? createdAt,
   }) = _Member;

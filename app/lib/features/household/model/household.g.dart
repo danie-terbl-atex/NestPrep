@@ -15,6 +15,15 @@ _Household _$HouseholdFromJson(Map<String, dynamic> json) => _Household(
         (k, e) => MapEntry(k, e as String),
       ) ??
       const <String, String>{},
+  access: json['access'] == null
+      ? const <String, AccessGrant>{}
+      : const GrantsByUidConverter().fromJson(json['access']),
+  profiles:
+      (json['profiles'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const <String, String>{},
+  pendingSetupStep: json['pendingSetupStep'] as String?,
   createdBy: json['createdBy'] as String?,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
 );

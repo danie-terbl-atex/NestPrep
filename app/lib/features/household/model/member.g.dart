@@ -12,6 +12,7 @@ _Member _$MemberFromJson(Map<String, dynamic> json) => _Member(
   color: const MemberColorConverter().fromJson(json['color']),
   roleName: json['role'] as String,
   birthday: const BirthdayConverter().fromJson(json['birthday']),
+  access: const AccessGrantConverter().fromJson(json['access']),
   claimedBy: json['claimedBy'] as String?,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
 );
@@ -21,6 +22,7 @@ Map<String, dynamic> _$MemberToJson(_Member instance) => <String, dynamic>{
   'color': const MemberColorConverter().toJson(instance.color),
   'role': instance.roleName,
   'birthday': const BirthdayConverter().toJson(instance.birthday),
+  'access': const AccessGrantConverter().toJson(instance.access),
   'claimedBy': instance.claimedBy,
   'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),
 };

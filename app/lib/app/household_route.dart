@@ -18,6 +18,13 @@ abstract final class HouseholdRoute {
   /// in than the tabs, because it is about the people rather than the week.
   static const whereSegment = 'where';
 
+  /// The invite step a new household opens with (household ADR-0003).
+  static const setupSegment = 'setup';
+
+  /// One kid's, helper's or carer's access, from the people screen.
+  static const memberParameter = 'memberId';
+  static const accessSegment = '$householdSegment/access/:$memberParameter';
+
   static String pathFor(String householdId, HouseholdTab tab) =>
       '/households/$householdId/${tab.segment}';
 
@@ -26,6 +33,21 @@ abstract final class HouseholdRoute {
 
   static String wherePathFor(String householdId) =>
       '/households/$householdId/$whereSegment';
+
+  static String setupPathFor(String householdId) =>
+      '/households/$householdId/$setupSegment';
+
+  static String accessPathFor(String householdId, String memberId) =>
+      '${householdPathFor(householdId)}/access/$memberId';
+
+  /// The member this access route was matched with.
+  static String memberIdFrom(GoRouterState state) {
+    final id = state.pathParameters[memberParameter];
+    if (id == null || id.isEmpty) {
+      throw StateError('an access route matched without a $memberParameter');
+    }
+    return id;
+  }
 
   /// Where a household opens: the week, because that is the question the app
   /// exists to answer.

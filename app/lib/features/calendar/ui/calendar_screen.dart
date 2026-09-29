@@ -8,6 +8,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
 import '../model/calendar_week.dart';
@@ -29,6 +30,11 @@ class CalendarScreen extends StatelessWidget {
     final controller = context.watch<CalendarController>();
     final view = context.read<HouseholdView>();
     final failure = controller.actionFailure;
+    // Somebody who may only look at the week is not offered the button the
+    // rules would refuse (household ADR-0003).
+    final canEdit = context.watch<HouseholdView>().permissions.canEdit(
+      HouseholdArea.calendar,
+    );
 
     return NestScaffold(
       title: AppCopy.calendarTitle,
@@ -38,15 +44,17 @@ class CalendarScreen extends StatelessWidget {
         current: HouseholdTab.week,
         onSelect: onSelectTab,
       ),
-      floatingAction: Padding(
-        padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
-        child: NestButton(
-          label: AppCopy.calendarAddEvent,
-          icon: Icons.add,
-          isExpanded: false,
-          onPressed: () => _addEvent(context, controller, view),
-        ),
-      ),
+      floatingAction: canEdit
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
+              child: NestButton(
+                label: AppCopy.calendarAddEvent,
+                icon: Icons.add,
+                isExpanded: false,
+                onPressed: () => _addEvent(context, controller, view),
+              ),
+            )
+          : null,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

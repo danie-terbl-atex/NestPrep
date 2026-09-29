@@ -30,6 +30,7 @@ import '../features/groceries/ui/grocery_list_screen.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household.dart';
+import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
@@ -49,6 +50,7 @@ import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'design_gallery_access.dart';
 import 'documents_route.dart';
+import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -109,13 +111,16 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
           householdId: HouseholdRoute.idFrom(state),
           viewerUid: session.uidOrEmpty,
         ),
-        child: HouseholdShell(child: child),
+        child: HouseholdShell(location: state.uri.path, child: child),
       ),
       routes: [
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
         ),
+        // household phase 2: the invite step and the access editor (household
+        // ADR-0003).
+        ...householdAccessRoutes(),
         // A shell of its own, so the folders screen and a folder share one
         // controller and one pair of listeners rather than opening a second
         // set on the way in (documents ADR-0001).
@@ -185,6 +190,13 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               householdId: HouseholdRoute.idFrom(state),
               memberId: _viewerMemberId(context),
               isAdmin: context.read<HouseholdView>().viewerIsAdmin,
+              // household phase 2 (household ADR-0003).
+              isOwnOnly: context.read<HouseholdView>().permissions.hasOwnOnly(
+                HouseholdArea.todos,
+              ),
+              canEdit: context.read<HouseholdView>().permissions.canEdit(
+                HouseholdArea.todos,
+              ),
             ),
             child: TodoScreen(
               onSelectTab: (tab) => _goToTab(context, state, tab),

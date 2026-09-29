@@ -7,6 +7,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../model/document_library.dart';
 import '../state/document_library_controller.dart';
@@ -32,6 +33,11 @@ class DocumentFolderScreen extends StatelessWidget {
       _ => null,
     };
     final folder = library?.folderById(folderId);
+    // A helper granted documents at view reads them and adds nothing
+    // (household ADR-0003); the rules refuse the upload either way.
+    final canEdit = context.watch<HouseholdView>().permissions.canEdit(
+      HouseholdArea.documents,
+    );
 
     return NestScaffold(
       title: folder?.name ?? AppCopy.documentsFolderFallbackTitle,
@@ -44,14 +50,15 @@ class DocumentFolderScreen extends StatelessWidget {
             )
           : null,
       trailing: [
-        NestIconButton(
-          icon: Icons.upload_file_outlined,
-          label: AppCopy.documentsAdd,
-          variant: NestIconButtonVariant.accent,
-          onPressed: controller.upload != null
-              ? null
-              : () => controller.addDocument(folderId),
-        ),
+        if (canEdit)
+          NestIconButton(
+            icon: Icons.upload_file_outlined,
+            label: AppCopy.documentsAdd,
+            variant: NestIconButtonVariant.accent,
+            onPressed: controller.upload != null
+                ? null
+                : () => controller.addDocument(folderId),
+          ),
         const AccountMenuButton(),
       ],
       body: Column(
@@ -145,7 +152,8 @@ class _DocumentList extends StatelessWidget {
                 folders: library.folders,
                 canManage:
                     controller.isAdmin ||
-                    document.uploadedBy == controller.memberId,
+                    (view.permissions.canEdit(HouseholdArea.documents) &&
+                        document.uploadedBy == controller.memberId),
               ),
             ),
           ),

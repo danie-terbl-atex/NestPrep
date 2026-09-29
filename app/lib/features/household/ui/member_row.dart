@@ -15,6 +15,8 @@ class MemberRow extends StatelessWidget {
     required this.onEdit,
     required this.onInvite,
     required this.onRemove,
+    this.accessSummary,
+    this.onAccess,
     super.key,
   });
 
@@ -30,10 +32,18 @@ class MemberRow extends StatelessWidget {
   /// Null when removing this profile makes no sense — it is the viewer's own.
   final VoidCallback? onRemove;
 
+  /// For a kid, helper or carer, what they can see — said on the row, so a
+  /// parent does not have to open anything to find out (household ADR-0003).
+  final String? accessSummary;
+
+  /// Opens the access editor. Null for family, and for anybody but an admin.
+  final VoidCallback? onAccess;
+
   @override
   Widget build(BuildContext context) {
     final invite = onInvite;
     final remove = onRemove;
+    final access = onAccess;
     return NestListRow(
       leading: NestAvatar(name: member.displayName, color: member.color),
       title: member.displayName,
@@ -44,6 +54,13 @@ class MemberRow extends StatelessWidget {
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (access != null)
+                  NestIconButton(
+                    icon: Icons.visibility_outlined,
+                    label: AccessCopy.peopleAccess,
+                    variant: NestIconButtonVariant.plain,
+                    onPressed: access,
+                  ),
                 if (invite != null)
                   NestIconButton(
                     icon: Icons.ios_share,
@@ -81,6 +98,9 @@ class MemberRow extends StatelessWidget {
           year: birthday.year,
         ),
     ];
-    return parts.join(' · ');
+    final summary = accessSummary;
+    return summary == null
+        ? parts.join(' · ')
+        : '${parts.join(' · ')}\n$summary';
   }
 }

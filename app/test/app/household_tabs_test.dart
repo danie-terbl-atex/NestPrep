@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:provider/provider.dart';
 
 import '../support/household_fixtures.dart';
 import '../support/pump_kit.dart';
@@ -78,9 +80,12 @@ void main() {
       var chosen = HouseholdTab.week;
       await pumpKit(
         tester,
-        HouseholdTabBar(
-          current: HouseholdTab.groceries,
-          onSelect: (tab) => chosen = tab,
+        Provider<HouseholdView>.value(
+          value: Fixtures.view(),
+          child: HouseholdTabBar(
+            current: HouseholdTab.groceries,
+            onSelect: (tab) => chosen = tab,
+          ),
         ),
       );
 
@@ -106,9 +111,12 @@ void main() {
       HouseholdTab? chosen;
       await pumpKit(
         tester,
-        HouseholdTabBar(
-          current: HouseholdTab.todos,
-          onSelect: (tab) => chosen = tab,
+        Provider<HouseholdView>.value(
+          value: Fixtures.view(),
+          child: HouseholdTabBar(
+            current: HouseholdTab.todos,
+            onSelect: (tab) => chosen = tab,
+          ),
         ),
       );
 

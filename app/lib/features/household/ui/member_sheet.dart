@@ -8,6 +8,7 @@ import '../model/member.dart';
 import '../model/member_role.dart';
 import 'member_birthday_field.dart';
 import 'member_colour_picker.dart';
+import 'role_picker.dart';
 
 /// What the member sheet collected. Null from `showMemberSheet` means the
 /// person closed it without saving.
@@ -58,7 +59,7 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
     text: widget.existing?.displayName ?? '',
   );
   late MemberColor _color = widget.existing?.color ?? MemberColor.violet;
-  late MemberRole _role = widget.existing?.role ?? MemberRole.member;
+  late MemberRole _role = widget.existing?.role ?? MemberRole.parent;
   late Birthday? _birthday = widget.existing?.birthday;
 
   @override
@@ -103,16 +104,9 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
             style: nest.text.label.copyWith(color: nest.colors.inkSecondary),
           ),
           const SizedBox(height: NestSpace.sm),
-          Wrap(
-            spacing: NestSpace.sm,
-            children: [
-              for (final role in MemberRole.values)
-                NestChip(
-                  label: AppCopy.roleName(role.name),
-                  isSelected: role == _role,
-                  onTap: () => setState(() => _role = role),
-                ),
-            ],
+          RolePicker(
+            selected: _role,
+            onSelect: (role) => setState(() => _role = role),
           ),
           const SizedBox(height: NestSpace.xl),
           MemberBirthdayField(

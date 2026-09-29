@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../model/grocery_item.dart';
@@ -23,14 +24,17 @@ class GroceryItemRow extends StatelessWidget {
     final controller = context.read<GroceryListController>();
     final view = context.read<HouseholdView>();
     final addedBy = view.memberById(item.addedBy);
+    final canEdit = view.permissions.canEdit(HouseholdArea.groceries);
 
     return NestCard(
       variant: NestCardVariant.flat,
       padding: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(NestRadius.lg),
-        onTap: () => controller.toggleBought(item),
-        onLongPress: () => showGroceryItemSheet(context: context, item: item),
+        onTap: canEdit ? () => controller.toggleBought(item) : null,
+        onLongPress: canEdit
+            ? () => showGroceryItemSheet(context: context, item: item)
+            : null,
         child: Padding(
           padding: const EdgeInsets.all(NestSpace.md),
           child: Row(
@@ -75,7 +79,7 @@ class GroceryItemRow extends StatelessWidget {
                   ],
                 ),
               ),
-              if (item.isBought)
+              if (item.isBought && canEdit)
                 NestButton(
                   label: AppCopy.groceriesUndo,
                   variant: NestButtonVariant.ghost,

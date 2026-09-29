@@ -44,8 +44,11 @@ final class FirestoreTodoRepository implements TodoRepository {
       );
 
   @override
-  Stream<List<Task>> watchTasks(String householdId) =>
-      _tasks(householdId)
+  Stream<List<Task>> watchTasks(String householdId, {String? assignedTo}) =>
+      (assignedTo == null
+              ? _tasks(householdId)
+              : _tasks(householdId)
+                    .where('assigneeIds', arrayContains: assignedTo))
           .limit(TodoRepository.taskLimit)
           .snapshots()
           .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
@@ -65,14 +68,19 @@ final class FirestoreTodoRepository implements TodoRepository {
     String householdId, {
     required CalendarDate from,
     required CalendarDate to,
-  }) => _completions(householdId)
-      // A range on the date string, which sorts the same way the calendar does
-      // because the format is YYYY-MM-DD (`ENG-21`).
-      .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
-      .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
-      .snapshots()
-      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-      .handleError((Object error) => throw failureFromFirebase(error));
+    String? completedFor,
+  }) =>
+      (completedFor == null
+              ? _completions(householdId)
+              : _completions(householdId)
+                    .where('completedFor', isEqualTo: completedFor))
+          // A range on the date string, which sorts the same way the calendar
+          // does because the format is YYYY-MM-DD (`ENG-21`).
+          .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
+          .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
+          .snapshots()
+          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+          .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> saveTask({

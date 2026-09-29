@@ -80,10 +80,14 @@ void main() {
         'color',
         'role',
         'birthday',
+        'access',
         'claimedBy',
         'createdAt',
       });
       expect(shape.serverAssigned, {'createdAt'});
+      // A grant is a map of strings or nothing — never a nested model, which
+      // Firestore would refuse (household ADR-0003).
+      expect(json['access'], isNull);
       // The rules refuse a create that claims a profile for somebody.
       expect(json['claimedBy'], isNull);
       expect(json['color'], 'mint');

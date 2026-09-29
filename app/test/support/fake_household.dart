@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
+import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -26,6 +27,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
           MemberColor color,
           MemberRole role,
           Birthday? birthday,
+          AccessGrant? access,
         })
       >[];
   final updated =
@@ -35,6 +37,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
           String displayName,
           MemberRole role,
           Birthday? birthday,
+          AccessGrant? access,
         })
       >[];
   final renamed = <({String name, String timeZone})>[];
@@ -63,13 +66,17 @@ final class FakeHouseholdRepository implements HouseholdRepository {
   @override
   Stream<List<Member>> watchMembers(String householdId) => _members.stream;
 
+  /// How many setup steps were closed.
+  var setupStepsFinished = 0;
+
   @override
-  Future<void> addMember({
+  Future<String> addMember({
     required String householdId,
     required String displayName,
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   }) async {
     _refuseIfAsked();
     added.add((
@@ -77,7 +84,15 @@ final class FakeHouseholdRepository implements HouseholdRepository {
       color: color,
       role: role,
       birthday: birthday,
+      access: access,
     ));
+    return 'm-new-${added.length}';
+  }
+
+  @override
+  Future<void> finishSetupStep(String householdId) async {
+    _refuseIfAsked();
+    setupStepsFinished += 1;
   }
 
   @override
@@ -88,6 +103,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   }) async {
     _refuseIfAsked();
     updated.add((
@@ -95,6 +111,7 @@ final class FakeHouseholdRepository implements HouseholdRepository {
       displayName: displayName,
       role: role,
       birthday: birthday,
+      access: access,
     ));
   }
 
@@ -130,6 +147,7 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
   final left = <String>[];
   final removed = <({String householdId, String memberId})>[];
   final rolesSet = <({String memberId, MemberRole role})>[];
+  final accessSet = <({String memberId, AccessGrant access})>[];
 
   void release() {
     gate?.complete();
@@ -192,6 +210,16 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
   }) async {
     await _checkpoint();
     rolesSet.add((memberId: memberId, role: role));
+  }
+
+  @override
+  Future<void> setMemberAccess({
+    required String householdId,
+    required String memberId,
+    required AccessGrant access,
+  }) async {
+    await _checkpoint();
+    accessSet.add((memberId: memberId, access: access));
   }
 
   Future<void> _checkpoint() async {

@@ -9,21 +9,31 @@ import '../model/member.dart';
 /// Shows a freshly made invite code so an admin can read it out or copy it. The
 /// code is single-use and expires in seven days (household ADR-0002), and the
 /// sheet says so rather than leaving somebody to find out.
+///
+/// The share sheet is the first way out, the copy button the second, because
+/// an invite usually leaves in a message (household ADR-0003).
 Future<void> showInviteSheet({
   required BuildContext context,
   required Member member,
   required InviteCode invite,
+  required VoidCallback onShare,
 }) => showNestSheet<void>(
   context: context,
   title: AppCopy.householdInviteTitle,
-  builder: (sheetContext) => _InviteSheetBody(member: member, invite: invite),
+  builder: (sheetContext) =>
+      _InviteSheetBody(member: member, invite: invite, onShare: onShare),
 );
 
 class _InviteSheetBody extends StatefulWidget {
-  const _InviteSheetBody({required this.member, required this.invite});
+  const _InviteSheetBody({
+    required this.member,
+    required this.invite,
+    required this.onShare,
+  });
 
   final Member member;
   final InviteCode invite;
+  final VoidCallback onShare;
 
   @override
   State<_InviteSheetBody> createState() => _InviteSheetBodyState();
@@ -68,6 +78,13 @@ class _InviteSheetBodyState extends State<_InviteSheetBody> {
         ),
         const SizedBox(height: NestSpace.xl),
         NestButton(
+          label: AccessCopy.inviteShare,
+          icon: Icons.ios_share,
+          onPressed: widget.onShare,
+        ),
+        const SizedBox(height: NestSpace.sm),
+        NestButton(
+          variant: NestButtonVariant.outline,
           label: _hasCopied
               ? AppCopy.householdCodeCopied
               : AppCopy.householdCopyCode,

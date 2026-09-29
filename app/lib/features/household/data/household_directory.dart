@@ -1,3 +1,4 @@
+import '../model/access_grant.dart';
 import '../model/member_role.dart';
 
 /// A new invite: the code to share and when it stops working.
@@ -38,10 +39,20 @@ abstract interface class HouseholdDirectory {
   });
 
   /// Changes a claimed member's role in both the profile and the household's
-  /// uid→role map.
+  /// uid→role map. A new role starts from its own default grant (household
+  /// ADR-0003).
   Future<void> setMemberRole({
     required String householdId,
     required String memberId,
     required MemberRole role,
+  });
+
+  /// What a kid, helper or carer may see and do, area by area. Admin only; on
+  /// the profile and, once claimed, in the household document every rule
+  /// reads (household ADR-0003).
+  Future<void> setMemberAccess({
+    required String householdId,
+    required String memberId,
+    required AccessGrant access,
   });
 }

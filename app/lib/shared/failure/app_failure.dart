@@ -110,6 +110,10 @@ enum HouseholdProblem {
   /// verified (accounts ADR-0002).
   emailNotVerified,
 
+  /// A grant asked for on a parent or an admin, who already see everything
+  /// (household ADR-0003).
+  familyHasFullAccess,
+
   /// The app sent something the Function would not accept — our bug.
   badRequest,
 

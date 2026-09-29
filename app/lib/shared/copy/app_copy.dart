@@ -1,5 +1,10 @@
+import '../../features/household/model/member_role.dart';
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
+import 'access_copy.dart';
+
+// Household phase 2's words live beside this file (household ADR-0003).
+export 'access_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -341,11 +346,10 @@ abstract final class AppCopy {
       'You are the only admin. Make somebody else an admin before you leave.';
   static const householdMemberNameHint = 'Their name';
 
-  static String roleName(String role) => switch (role) {
-    'admin' => 'Admin',
-    'helper' => 'Helper',
-    _ => 'Member',
-  };
+  /// A stored role, named — `member` reads as the parent it now means
+  /// (household ADR-0003).
+  static String roleName(String role) =>
+      AccessCopy.roleName(MemberRole.fromName(role));
 
   static const galleryTitle = 'Design kit';
   static const galleryToggleTheme = 'Switch light and dark';
@@ -401,6 +405,8 @@ abstract final class AppCopy {
       'To leave the household, use Leave household.',
     HouseholdProblem.emailNotVerified =>
       'Confirm your email address first — check your inbox for the link.',
+    HouseholdProblem.familyHasFullAccess =>
+      'Parents already see everything, so there is nothing to choose.',
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',

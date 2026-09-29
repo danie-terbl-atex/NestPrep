@@ -206,7 +206,7 @@ void main() {
       await emit(tester);
 
       await tester.scrollUntilVisible(
-        find.widgetWithText(NestButton, AppCopy.householdLeave),
+        find.text(AppCopy.householdProblemLastAdmin),
         120,
       );
       expect(find.text(AppCopy.householdProblemLastAdmin), findsOneWidget);
@@ -372,6 +372,10 @@ void main() {
       await pump(tester);
       await emit(tester);
 
+      await tester.scrollUntilVisible(
+        find.text(AppCopy.locationYoursBody),
+        120,
+      );
       expect(find.text(AppCopy.locationTitle), findsOneWidget);
       expect(
         find.text(AppCopy.locationYoursBody),
@@ -393,6 +397,9 @@ void main() {
       await pump(tester);
       await emit(tester);
 
+      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 120);
+      await tester.ensureVisible(find.text(AppCopy.locationYoursBody));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(AppCopy.locationTitle));
       await tester.pumpAndSettle();
       expect(find.byType(Placeholder), findsOneWidget);
@@ -411,6 +418,7 @@ void main() {
       await pump(tester, viewerUid: Fixtures.thandiUid);
       await emit(tester);
 
+      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 120);
       expect(find.text(AppCopy.locationTitle), findsOneWidget);
     });
   });
@@ -423,6 +431,10 @@ void main() {
     await pump(tester, brightness: Brightness.dark, scale: 2);
     await emit(tester);
 
+    expect(tester.takeException(), isNull);
+    // Scrolled through to the last group, so every row has been laid out at
+    // this size, not only the ones that fit on the first screen.
+    await tester.scrollUntilVisible(find.text('Thandi Helper'), 200);
     expect(tester.takeException(), isNull);
     expect(find.text('Thandi Helper'), findsOneWidget);
   });

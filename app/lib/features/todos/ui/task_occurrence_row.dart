@@ -39,8 +39,14 @@ class TaskOccurrenceRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(NestRadius.lg),
-        onTap: () => controller.setDone(occurrence, isDone: !occurrence.isDone),
-        onLongPress: () => _edit(context, controller, view),
+        // Hidden rather than refused: a helper who may only look is not
+        // offered a tick the rules would turn down (household ADR-0003).
+        onTap: controller.canTick
+            ? () => controller.setDone(occurrence, isDone: !occurrence.isDone)
+            : null,
+        onLongPress: controller.canEdit
+            ? () => _edit(context, controller, view)
+            : null,
         child: Padding(
           padding: const EdgeInsets.all(NestSpace.md),
           child: Row(

@@ -28,6 +28,8 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
     required this.householdId,
     required this.memberId,
     required this.isAdmin,
+    this.isOwnOnly = false,
+    this.canEdit = true,
   }) : _repository = todoRepository,
        _clock = householdClock {
     _subscribe();
@@ -41,6 +43,18 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
   final String householdId;
   final String memberId;
   final bool isAdmin;
+
+  /// A kid, helper or carer who may see only their own to-dos: the reads ask
+  /// for exactly those, and there are no routines, which schedule everybody
+  /// (household ADR-0003).
+  final bool isOwnOnly;
+
+  /// Whether this person may add and change tasks, rather than only tick
+  /// their own. The rules decide; this only hides what they would refuse.
+  final bool canEdit;
+
+  /// Ticking off is what `own` is for; `view` only looks.
+  bool get canTick => canEdit || isOwnOnly;
 
   StreamSubscription<List<Task>>? _taskSubscription;
   StreamSubscription<List<Routine>>? _routineSubscription;
@@ -165,18 +179,30 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
   );
 
   void _subscribe() {
-    _taskSubscription = _repository.watchTasks(householdId).listen((tasks) {
-      _tasks = tasks;
-      _publish();
-    }, onError: _onError);
-    _routineSubscription = _repository.watchRoutines(householdId).listen((
-      routines,
-    ) {
-      _routines = routines;
-      _publish();
-    }, onError: _onError);
+    final onlyMine = isOwnOnly ? memberId : null;
+    _taskSubscription = _repository
+        .watchTasks(householdId, assignedTo: onlyMine)
+        .listen((tasks) {
+          _tasks = tasks;
+          _publish();
+        }, onError: _onError);
+    if (isOwnOnly) {
+      _routines = const [];
+    } else {
+      _routineSubscription = _repository.watchRoutines(householdId).listen((
+        routines,
+      ) {
+        _routines = routines;
+        _publish();
+      }, onError: _onError);
+    }
     _completionSubscription = _repository
-        .watchCompletions(householdId, from: windowStart, to: windowEnd)
+        .watchCompletions(
+          householdId,
+          from: windowStart,
+          to: windowEnd,
+          completedFor: onlyMine,
+        )
         .listen((completions) {
           _completions = completions;
           _publish();

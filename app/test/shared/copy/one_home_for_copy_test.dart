@@ -102,23 +102,37 @@ void main() {
     // `AppCopy.loading` existed for a while used by nothing, while a widget
     // said the same word as a literal. An unused constant is the first half of
     // that mistake, so it is worth knowing about.
-    final copySource = File('lib/shared/copy/app_copy.dart').readAsStringSync();
-    final names = RegExp(r'static const (\w+) =')
-        .allMatches(copySource)
-        .map((match) => match.group(1)!)
-        .toSet();
+    // Every file in the copy folder, each read under its own class name —
+    // `AccessCopy` sits beside `AppCopy` so household phase 2 does not edit a
+    // file five features share (household ADR-0003).
+    final copyFiles = {
+      'lib/shared/copy/app_copy.dart': 'AppCopy',
+      'lib/shared/copy/access_copy.dart': 'AccessCopy',
+    };
+    final names = <String>{};
+    final owner = <String, String>{};
+    for (final MapEntry(key: path, value: className) in copyFiles.entries) {
+      final copySource = File(path).readAsStringSync();
+      for (final match in RegExp(
+        r'static const (\w+) =',
+      ).allMatches(copySource)) {
+        final name = '$className.${match.group(1)!}';
+        names.add(name);
+        owner[name] = path;
+      }
+    }
 
     final usedAnywhere = <String>{};
     for (final file in dartFiles) {
-      final isCopyFile = file.path.endsWith('app_copy.dart');
       final source = file.readAsStringSync();
       for (final name in names) {
-        // Inside the copy file a constant is referenced by its bare name:
+        final bare = name.split('.').last;
+        // Inside its own copy file a constant is referenced by its bare name:
         // `weekdayName()` indexes `weekdayNames`, `mealSlotName()` returns
         // `mealsBreakfast`. More than the declaration itself is a use.
-        final used = isCopyFile
-            ? RegExp('\\b$name\\b').allMatches(source).length > 1
-            : source.contains('AppCopy.$name');
+        final used = file.path == owner[name]
+            ? RegExp('\\b$bare\\b').allMatches(source).length > 1
+            : source.contains(name);
         if (used) usedAnywhere.add(name);
       }
     }

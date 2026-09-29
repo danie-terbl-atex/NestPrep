@@ -60,18 +60,31 @@ final class FakeTodoRepository implements TodoRepository {
     await _completions.close();
   }
 
-  @override
-  Stream<List<Task>> watchTasks(String householdId) => _tasks.stream;
+  /// What the last `watchTasks` and `watchCompletions` were narrowed to.
+  String? tasksAssignedTo;
+  String? completionsFor;
+  var routinesWatched = 0;
 
   @override
-  Stream<List<Routine>> watchRoutines(String householdId) => _routines.stream;
+  Stream<List<Task>> watchTasks(String householdId, {String? assignedTo}) {
+    tasksAssignedTo = assignedTo;
+    return _tasks.stream;
+  }
+
+  @override
+  Stream<List<Routine>> watchRoutines(String householdId) {
+    routinesWatched += 1;
+    return _routines.stream;
+  }
 
   @override
   Stream<List<TaskCompletion>> watchCompletions(
     String householdId, {
     required CalendarDate from,
     required CalendarDate to,
+    String? completedFor,
   }) {
+    completionsFor = completedFor;
     completionsFrom = from;
     completionsTo = to;
     return _completions.stream;

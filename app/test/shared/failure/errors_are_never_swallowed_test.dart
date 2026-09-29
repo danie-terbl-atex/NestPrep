@@ -162,6 +162,14 @@ void main() {
     // the screen's banner, so nothing escapes; it is unawaited because a
     // controller's constructor cannot wait and the listeners must open now.
     '_openStorageAccess()',
+    // household phase 2 (household ADR-0003). Each keeps its own outcome:
+    // `save` and `invite` hold an AppFailure for the screen's banner through
+    // their runners, and the share sheet turns a PlatformException into
+    // `InviteShareOutcome.unavailable`, which the screen says in words.
+    'controller.save()',
+    '_invite(context controller role)',
+    'controller.shareAgain(invite)',
+    'context.read<InviteSharer>().shareCode(',
     // Closing the upload's own progress stream once it has ended. There is
     // nobody left to tell: the failure, if there was one, has already been
     // put on that stream and delivered.
