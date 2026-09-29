@@ -2,19 +2,24 @@ import '../../features/household/model/member_role.dart';
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
+import 'ai_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'home_care_copy.dart';
 import 'kid_copy.dart';
 import 'lunch_copy.dart';
 import 'lunch_planning_copy.dart';
+import 'mental_load_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'school_letter_copy.dart';
 import 'subscription_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
-
+// calendar V2 — AI, snap a school letter, the mental-load view: their words
+// live in their own files, reached through this one.
+export 'ai_copy.dart';
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
 
@@ -33,9 +38,11 @@ export 'lunch_planning_copy.dart';
 // lunch-box phase 2: the shareable card and the printable planner (ADR-0005).
 export 'lunch_share_copy.dart';
 
+export 'mental_load_copy.dart';
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';
+export 'school_letter_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -420,6 +427,10 @@ abstract final class AppCopy {
     PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
       feature,
     ),
+    // AI and snap a school letter (foundation ADR-0015, calendar ADR-0005).
+    AiFailure(:final problem) => AiCopy.problem(problem),
+    SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
+    MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

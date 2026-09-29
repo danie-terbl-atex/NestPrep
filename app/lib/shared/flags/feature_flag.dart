@@ -29,7 +29,22 @@ enum FeatureFlag {
   /// A child choosing their own box from options a parent approved
   /// (lunch-box ADR-0007). The rules hold a kid to the approved options
   /// whatever this says; the switch only hides the screens.
-  lunchKidPicks('lunchKidPicks');
+  lunchKidPicks('lunchKidPicks'),
+
+  // ---- calendar V2 (calendar ADR-0005, ADR-0006) ----
+
+  /// Snap a school letter: the model reads it into events a parent confirms
+  /// (calendar ADR-0005).
+  snapSchoolLetter('snapSchoolLetter'),
+
+  /// Who is handling what this week (calendar ADR-0006).
+  mentalLoadView('mentalLoadView'),
+
+  // ---- plan my week with AI (lunch-box ADR-0011) ----
+
+  /// One tap plans the week's lunches, dinners and the shopping list —
+  /// premium as well, and counted against the AI cap.
+  planMyWeek('planMyWeek');
 
   const FeatureFlag(this.field);
 

@@ -270,11 +270,15 @@ service cloud.firestore {
     }
 
     // ==== rules/firestore/root/app_config.rules ====
-    // ---- app config: the V2 switches (foundation ADR-0014) ----
+    // ---- app config: the V2 switches and the AI switch (foundation ADR-0014, ADR-0015) ----
     // One document, `appConfig/flags`: a boolean per V2 capability. Anybody may
     // read it — it is a list of switches, not anybody's data — and nobody writes
-    // it from a client; Daniel sets it in the console. Any other id here is
-    // closed, so the collection cannot quietly grow into a place for data.
+    // it from a client; Daniel sets it in the console. `appConfig/ai` is the AI
+    // kill switch and the monthly caps, read only by Functions; a client has no
+    // reason to know the caps, and must never be able to raise them. Any other id
+    // here is closed, so the collection cannot quietly grow into a place for data.
+    // `aiEmulator/{feature}` holds the canned model answers the Functions emulator
+    // uses; it has no rule, so no client reads or writes it.
     match /appConfig/{configId} {
       allow get: if configId == 'flags';
       allow list: if false;
@@ -356,6 +360,21 @@ service cloud.firestore {
     // ---- households (household ADR-0001, ADR-0002) ----
 
     match /households/{householdId} {
+      // ==== rules/firestore/household/ai_usage.rules ====
+      // ---- AI usage ledger (foundation ADR-0015) ----
+      // A household's monthly AI calls and one line per call, written only by
+      // Functions inside the transaction that claims the call. No client reads
+      // them — the callable tells the app how many calls are left — and none
+      // writes them, or the cap would be the client's to lower.
+
+      match /aiUsage/{month} {
+        allow read, write: if false;
+
+        match /calls/{callId} {
+          allow read, write: if false;
+        }
+      }
+
       // ==== rules/firestore/household/calendar.rules ====
       // ---- calendar (calendar ADR-0001, ADR-0002) ----
 

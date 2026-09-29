@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../shared/flags/feature_flag_source.dart';
+import '../shared/flags/feature_flags.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import '../shared/flags/firestore_feature_flag_source.dart';
 
@@ -17,5 +18,10 @@ List<SingleChildWidget> featureFlagProviders() => [
   ChangeNotifierProvider<FeatureFlagsController>(
     create: (context) =>
         FeatureFlagsController(source: context.read<FeatureFlagSource>()),
+  ),
+  // The same switches as a plain value, for the screens that read
+  // `context.watch<FeatureFlags>()` (calendar V2) — one source either way.
+  ProxyProvider<FeatureFlagsController, FeatureFlags>(
+    update: (_, controller, _) => controller.flags,
   ),
 ];

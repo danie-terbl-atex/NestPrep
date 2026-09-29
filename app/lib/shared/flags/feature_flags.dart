@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'feature_flag.dart';
 
 /// Which V2 capabilities are switched on (foundation ADR-0014).
@@ -11,6 +13,12 @@ class FeatureFlags {
 
   /// Nothing stored yet: every flag at its default.
   const FeatureFlags.defaults({required this.defaultOn}) : stored = const {};
+
+  /// Every flag on, as a debug build sees them before anything is set.
+  static const everythingOn = FeatureFlags.defaults(defaultOn: true);
+
+  /// Every flag off, as a release build ships before anything is set.
+  static const everythingOff = FeatureFlags.defaults(defaultOn: false);
 
   /// Reads the stored switches from the document's fields, keeping only
   /// booleans under a known name — anything else is as if it were absent.
@@ -29,4 +37,18 @@ class FeatureFlags {
   final Map<FeatureFlag, bool> stored;
 
   bool isOn(FeatureFlag flag) => stored[flag] ?? defaultOn;
+
+  @override
+  bool operator ==(Object other) =>
+      other is FeatureFlags &&
+      other.defaultOn == defaultOn &&
+      mapEquals(other.stored, stored);
+
+  @override
+  int get hashCode => Object.hash(
+    defaultOn,
+    Object.hashAllUnordered([
+      for (final entry in stored.entries) (entry.key, entry.value),
+    ]),
+  );
 }

@@ -22,6 +22,12 @@ export const FEATURE_FLAGS = [
   'lunchPantry',
   'lunchBudget',
   'lunchKidPicks',
+  // ---- calendar V2: snap a school letter (calendar ADR-0005) ----
+  'snapSchoolLetter',
+  // calendar V2: the mental-load view (calendar ADR-0006) — client-side only.
+  'mentalLoadView',
+  // ---- plan my week with AI (lunch-box ADR-0011) ----
+  'planMyWeek',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

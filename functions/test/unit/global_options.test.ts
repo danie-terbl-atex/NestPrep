@@ -33,6 +33,11 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
+/** The callables allowed more than the global limits, and exactly how much. */
+const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
+  readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
+};
+
 /** A scheduled job sets its own timeout; everything else is a callable. */
 function isScheduled(endpoint: Endpoint): boolean {
   return endpoint.scheduleTrigger !== undefined;
@@ -52,8 +57,10 @@ describe('every function — callable, trigger or schedule', () => {
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
     // (nanny-hub ADR-0002). Subscriptions: six — three callables, the App
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
-    // (subscriptions ADR-0001). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(42);
+    // (subscriptions ADR-0001). Snap a school letter: readSchoolLetter, the
+    // first AI call (calendar ADR-0005). Plan my week: planMyWeek (lunch-box
+    // ADR-0011). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(44);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -72,9 +79,21 @@ describe('every function — callable, trigger or schedule', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
+      if (name in LARGER) continue;
       expect(endpoint.availableMemoryMb, name).toBe(256);
       if (isScheduled(endpoint)) continue;
       expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('a callable that waits on a model says so, and is still bounded', () => {
+    // Reading a letter holds it in memory twice and waits seconds on Vertex,
+    // so it has its own limits — named here, never the platform's default
+    // (foundation ADR-0015, BE-19).
+    for (const [name, limits] of Object.entries(LARGER)) {
+      const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
+      expect(endpoint?.availableMemoryMb, name).toBe(limits.memoryMb);
+      expect(endpoint?.timeoutSeconds, name).toBe(limits.timeoutSeconds);
     }
   });
 

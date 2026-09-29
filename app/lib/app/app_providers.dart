@@ -56,6 +56,7 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'documents_providers.dart';
 import 'feature_flag_providers.dart';
@@ -208,6 +209,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...subscriptionProviders(),
   // lunch-box V2 — pantry, budget, kid picks (lunch-box ADR-0005 to ADR-0007)
   ...lunchPlanningProviders(),
+  // calendar V2's own (calendar ADR-0005, ADR-0006); the V2 switches are
+  // provided once, above (foundation ADR-0014).
+  ...calendarV2Providers(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

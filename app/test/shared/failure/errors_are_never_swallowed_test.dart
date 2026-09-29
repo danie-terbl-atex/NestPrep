@@ -239,6 +239,12 @@ void main() {
     // Either one's failures went to its own onError already.
     '_packedSubscription?.cancel())',
     '_todaySubscription?.cancel())',
+    // ---- calendar V2: the shared week (calendar ADR-0006) ----
+    // Moving the week cancels two reads and opens two; the new reads send
+    // their failures to their own onError and onto the week's state.
+    '_listeners.moveWindow(from: _weekStart to: _weekEnd));',
+    // Closing the week's reads in dispose: there is no screen left to tell.
+    '_listeners.close());',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.
