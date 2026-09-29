@@ -198,6 +198,11 @@ void main() {
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.
     'retry())',
+    // home-care (home-care ADR-0003): reading a job's photo when the board
+    // first names it. `_load` catches its own AppFailure and holds it as that
+    // photo's failed state, which the screen shows with a retry; it is
+    // unawaited because the board is followed while the shell builds.
+    '_load(photoId)',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

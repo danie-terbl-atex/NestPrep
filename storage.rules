@@ -179,6 +179,68 @@ service firebase.storage {
       allow delete: if isVaultFamily() || isVaultOwner();
     }
 
+    // ---- home care photos (home-care ADR-0003) ----
+    //
+    // A job's before photo and each after photo it was handed in with:
+    // `households/{h}/homeCareJobs/{jobId}/before` and `…/after-{revision}`.
+    // Authorised **live from Firestore**, like the vaults: `own` means "the
+    // jobs whose helper is my profile", which only the job document knows,
+    // and a grant a parent narrows is refused on the next request. At most
+    // two Firestore documents are read per request — the household and the
+    // job.
+    match /households/{householdId}/homeCareJobs/{jobId}/{photoId} {
+      function homeCareHousehold() {
+        return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
+      }
+
+      function homeCareJob() {
+        return firestore.get(/databases/(default)/documents/households/$(householdId)/homeCareJobs/$(jobId)).data;
+      }
+
+      // household ADR-0003's level in `homeCare`, as `access.rules` works it
+      // out: family edits; a grant says what it says; a helper claimed
+      // before grants existed keeps `edit`; anybody else has nothing.
+      function homeCareLevel() {
+        let household = homeCareHousehold();
+        let role = household.members.get(request.auth.uid, '');
+        let grant = household.get('access', {}).get(request.auth.uid, null);
+        return role in ['admin', 'parent', 'member'] ? 'edit'
+          : role == '' ? 'none'
+          : grant != null ? grant.get('homeCare', 'none')
+          : (role == 'helper' ? 'edit' : 'none');
+      }
+
+      function isTheJobsHelper() {
+        return homeCareJob().helperId
+          == homeCareHousehold().get('profiles', {}).get(request.auth.uid, '');
+      }
+
+      function isAJobPhoto() {
+        return request.resource.contentType == 'image/jpeg'
+          && request.resource.size <= 5 * 1024 * 1024
+          && isStampedWithTheCaller();
+      }
+
+      allow read: if request.auth != null
+        && (homeCareLevel() in ['view', 'edit']
+              || (homeCareLevel() == 'own' && isTheJobsHelper()));
+
+      // The before photo goes up first; the job that names it is written
+      // after the bytes are there.
+      allow create: if request.auth != null
+        && resource == null
+        && isAJobPhoto()
+        && ((photoId == 'before' && homeCareLevel() == 'edit')
+              || (photoId.matches('after-[0-9]+')
+                    && homeCareJob().status in ['assigned', 'inProgress', 'sentBack']
+                    && (homeCareLevel() == 'edit'
+                          || (homeCareLevel() in ['own', 'view'] && isTheJobsHelper()))));
+
+      allow update: if false;
+
+      allow delete: if request.auth != null && homeCareLevel() == 'edit';
+    }
+
     // Everything not named above (BE-05).
     match /{allPaths=**} {
       allow read, write: if false;

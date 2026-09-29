@@ -2,6 +2,7 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import 'documents_route.dart';
 import 'family_route.dart';
+import 'home_care_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -61,6 +62,10 @@ HouseholdArea? _areaAt(String location, String householdId) {
   // a grant of `none`.
   if (location.startsWith(FamilyRoute.pathFor(householdId))) {
     return HouseholdArea.familyProfiles;
+  }
+  // Home care (home-care ADR-0001): the same for a helper with no cleaning.
+  if (location.startsWith(HomeCareRoute.pathFor(householdId))) {
+    return HouseholdArea.homeCare;
   }
   return null;
 }

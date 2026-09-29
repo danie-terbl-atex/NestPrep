@@ -56,6 +56,7 @@ import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
+import 'home_care_providers.dart';
 import 'location_reporting.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
@@ -182,6 +183,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ),
   // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
   ...documentVaultProviders(),
+  // home-care (home-care ADR-0001 to ADR-0003).
+  ...homeCareProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

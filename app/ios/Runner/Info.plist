@@ -27,7 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To scan a document — the front and back of an ID card, a passport page — into your family's vault.</string>
+	<string>To scan a document into your family's vault, and to photograph a spot that needs cleaning or show that it is clean.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To choose a photo of a spot that needs cleaning, or of the job once it is done.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

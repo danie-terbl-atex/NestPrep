@@ -96,6 +96,6 @@ in name order, which does not change what the rules mean. To add a feature's rul
    `rules:build`, `git add firestore.rules`. Conflicts belong in the partials, and two features that
    each add their own file have none.
 
-`storage.rules` is still one hand-written file (132 lines); split it the same way when it nears 300.
+`storage.rules` is still one hand-written file (249 lines once home care's block joined it); split it the same way before it passes 300 — the next Storage feature is the one that must.
 
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

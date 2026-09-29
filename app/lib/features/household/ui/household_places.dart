@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/documents_route.dart';
 import '../../../app/family_route.dart';
+import '../../../app/home_care_route.dart';
 import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -40,6 +41,29 @@ class HouseholdPlaces extends StatelessWidget {
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push(FamilyRoute.pathFor(view.household.id)),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // home-care: cleaning jobs, for whoever the `homeCare` grant lets
+        // see them — a helper's own jobs, or all of them (home-care
+        // ADR-0001).
+        if (view.permissions.canUse(HouseholdArea.homeCare)) ...[
+          NestCard(
+            variant: NestCardVariant.flat,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: HomeCareCopy.openFromHousehold,
+              subtitle: view.permissions.canEdit(HouseholdArea.homeCare)
+                  ? HomeCareCopy.openFromHouseholdBody
+                  : HomeCareCopy.openFromHouseholdHelperBody,
+              leading: const NestIconTile(
+                icon: Icons.cleaning_services_outlined,
+                tint: NestTileTint.mint,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  context.push(HomeCareRoute.pathFor(view.household.id)),
             ),
           ),
           const SizedBox(height: NestSpace.lg),

@@ -4,7 +4,7 @@ Twenty pictures of NestPrep, taken from the real widgets with the real theme and
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
-Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. The kids' eight
+Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. Home care's eight are `tool/home_care_design_review_test.dart`. The kids' eight
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`).
 
@@ -30,6 +30,10 @@ was left alone rather than retaken on a branch that did not change that screen.
 | `family-light.png` / `family-dark.png` | family profiles: children first, each with their allergies in their severity's tone and the nut-free rule, then everyone else and the household's schools |
 | `family-profile-light.png` / `family-profile-dark.png` | one child's profile: the severe-allergy banner, the nut-free rule with its reasons, then allergies, food and the rest below the fold |
 | `family-profile-dark-200-percent-text.png` | the same profile at the largest text a phone offers |
+| `home-care-light.png` / `home-care-dark.png` | home care: the three piles, and each job with its room, its helper, when it is due and how far along it is (home-care ADR-0001) |
+| `home-care-job-light.png` / `home-care-job-dark.png` | one cleaning job: the spot circled on the photo, the never-mix warning above everything, the facts, and what this person can do next |
+| `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through: progress, the spot, and each step as a big tile she ticks |
+| `home-care-review-light.png` / `home-care-review-dark.png` | the parent's review: before and after side by side, the checklist, approve or send it back |
 
 ## What to look at
 

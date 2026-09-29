@@ -7,6 +7,14 @@
         { "fieldPath": "completedFor", "order": "ASCENDING" },
         { "fieldPath": "occurrenceDate", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "homeCareJobs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "helperId", "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [

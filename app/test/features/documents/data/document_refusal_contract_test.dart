@@ -4,9 +4,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/documents/data/document_failure_mapper.dart';
-import 'package:nestprep/features/documents/data/storage_failure_mapper.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/failure/storage_failure_mapper.dart';
 
 /// `BE-04`, across the two languages that share it, for the documents
 /// callables — the same contract the household one already holds, and the same

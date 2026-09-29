@@ -44,6 +44,7 @@ import 'calendar_routes.dart';
 import 'design_gallery_access.dart';
 import 'documents_shell.dart';
 import 'family_routes.dart';
+import 'home_care_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
@@ -127,6 +128,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // family-profiles (family-profiles ADR-0001): the family and one
         // person's profile.
         familyRoutes(),
+        // home-care (home-care ADR-0001): jobs, rooms, products.
+        homeCareRoutes(session),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

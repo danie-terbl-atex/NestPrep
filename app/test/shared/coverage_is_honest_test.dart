@@ -124,6 +124,28 @@ void main() {
     // every screen test renders `NestSpace`.
     'lib/design/tokens/nest_spacing.dart': 'const only',
     'lib/app/design_gallery_access.dart': 'const only',
+
+    // home-care (home-care ADR-0001 to ADR-0003). The Firebase and plugin
+    // edges, reached by the rules suites from the other side; the rest are
+    // interfaces and enums with no executable line.
+    'lib/app/home_care_providers.dart':
+        'builds the home-care providers over live Firebase and plugins',
+    'lib/features/home_care/data/firestore_cleaning_job_repository.dart':
+        'writes Firestore',
+    'lib/features/home_care/data/firestore_home_care_library_repository.dart':
+        'writes Firestore',
+    'lib/features/home_care/data/image_picker_photo_source.dart':
+        'opens the platform camera and photo library',
+    'lib/features/home_care/data/cleaning_job_repository.dart':
+        'interface only',
+    'lib/features/home_care/data/home_care_library_repository.dart':
+        'interface only',
+    'lib/features/home_care/data/job_photo_store.dart': 'interface only',
+    'lib/features/home_care/data/photo_source.dart': 'interface only',
+    'lib/features/home_care/model/product_kind.dart': 'enum only',
+    'lib/features/home_care/model/room_kind.dart': 'enum only',
+    'lib/features/home_care/model/safety/precaution.dart': 'enum only',
+    'lib/features/home_care/model/safety/safety_source.dart': 'enum only',
   };
 
   final lcov = File('coverage/lcov.info');

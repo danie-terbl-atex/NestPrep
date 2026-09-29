@@ -3,6 +3,7 @@ import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
+import 'home_care_copy.dart';
 import 'kid_copy.dart';
 import 'product_analytics_copy.dart';
 
@@ -11,6 +12,9 @@ export 'access_copy.dart';
 
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
+
+// home-care: its words live in their own file (home-care ADR-0001).
+export 'home_care_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -379,6 +383,8 @@ abstract final class AppCopy {
     DocumentFailure(:final problem) => documentProblem(problem),
     KidSignInFailure(:final problem) => KidCopy.problem(problem),
     CalendarSyncFailure(:final problem) => CalendarSyncCopy.problem(problem),
+    // home-care (home-care ADR-0001, ADR-0003).
+    HomeCareFailure(:final problem) => HomeCareCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
