@@ -1,5 +1,11 @@
 import '../../features/subscriptions/model/premium_feature.dart';
 
+// Later features' members of the sealed family, in parts of this library so
+// the switch over it stays exhaustive (`ENG-05`).
+part 'nanny_hub_failure.dart';
+part 'calendar_v2_failures.dart';
+part 'co_parent_failure.dart';
+
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message
 /// (`FE-09`, `ENG-09`).
@@ -471,156 +477,4 @@ final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);
 
   final Object cause;
-}
-
-// ---- nanny hub (nanny-hub ADR-0002, ADR-0003) ----
-
-/// Why something in the nanny hub did not happen. The first four are a
-/// `reason` `endNannyShift` puts in its error's details — the server's
-/// `NANNY_REFUSALS` is the other half, and a test reads both. The rest are the
-/// phone's own: a photo that could not be taken or read, a call that nothing
-/// on the phone would place. Membership refusals stay `HouseholdProblem`.
-enum NannyHubProblem {
-  /// The household's `nannyHub` grant is not `edit` for this person.
-  hubNotShared,
-
-  /// The shift was never there, or is gone.
-  shiftNotFound,
-
-  /// Somebody else ended the shift a moment ago.
-  shiftAlreadyEnded,
-
-  /// A carer ends their own shift; this one is somebody else's.
-  notYourShift,
-
-  /// The picked photo is not a picture the app can read.
-  photoUnreadable,
-
-  /// Even compressed, the photo is past what the rules keep.
-  photoTooLarge,
-
-  /// The camera or the photo library would not open.
-  cameraUnavailable,
-
-  /// Nothing on the phone would place the call.
-  cannotCall,
-
-  /// Only a carer can be kept to their booked shifts (nanny-hub ADR-0006).
-  notACarer,
-
-  /// The phone would not keep the hub's photos for offline — out of space,
-  /// or its own folder refused (nanny-hub ADR-0007).
-  cannotSaveOffline,
-
-  /// A house code is only shown while a shift the viewer is booked on is
-  /// open (nanny-hub ADR-0006).
-  codesClosed,
-}
-
-final class NannyHubFailure extends AppFailure {
-  const NannyHubFailure(this.problem);
-
-  final NannyHubProblem problem;
-}
-
-// ---- AI, shared by every AI feature (foundation ADR-0015) ----
-
-/// Why an AI call did not happen. Each is a `reason` the server's
-/// `AI_REFUSALS` puts in its error's details, and
-/// `calendar_v2_contract_test.dart` reads both. Plan-my-week and every later
-/// AI feature reuse these.
-enum AiProblem {
-  /// The AI kill switch, or this feature's own switch, is off.
-  aiSwitchedOff,
-
-  /// The household has used this month's AI calls.
-  aiLimitReached,
-
-  /// The model could not be reached, or kept failing.
-  aiUnavailable,
-
-  /// The model answered, twice, in a shape that could not be read.
-  aiUnreadable,
-
-  /// The model declined the content.
-  aiDeclined,
-}
-
-final class AiFailure extends AppFailure {
-  const AiFailure(this.problem);
-
-  final AiProblem problem;
-}
-
-// ---- calendar V2: snap a school letter (calendar ADR-0005) ----
-
-/// Why a school letter could not be read or its events added. The first
-/// three are the server's `SCHOOL_LETTER_REFUSALS`; the rest are the phone's.
-enum SchoolLetterProblem {
-  /// The `snapSchoolLetter` switch is off.
-  letterFeatureOff,
-
-  /// Past the size a letter needs to be.
-  letterTooLarge,
-
-  /// Not a photo or a PDF, whatever it claimed.
-  letterNotSupported,
-
-  /// The camera, the photo library or the file picker would not open.
-  pickerUnavailable,
-
-  /// Some of the ticked events could not be added; the rest were.
-  someNotAdded,
-}
-
-final class SchoolLetterFailure extends AppFailure {
-  const SchoolLetterFailure(this.problem);
-
-  final SchoolLetterProblem problem;
-}
-
-// ---- calendar V2: the mental-load split view (calendar ADR-0006) ----
-
-/// Why a week's card could not be shared. Both are the phone's own.
-enum MentalLoadProblem {
-  /// The card could not be turned into a picture.
-  cardUnreadable,
-
-  /// The share sheet would not open.
-  shareUnavailable,
-}
-
-final class MentalLoadFailure extends AppFailure {
-  const MentalLoadFailure(this.problem);
-
-  final MentalLoadProblem problem;
-}
-
-// ---- co-parenting: a child in two homes (household ADR-0004) ----
-
-/// Why something between two homes did not happen. Each is a `reason` a
-/// co-parenting callable puts in its error's details — the server's
-/// `COPARENT_REFUSALS` is the other half, and a test reads both. "You are not
-/// in this household" and "only an admin" stay the household's words.
-enum CoParentProblem {
-  notFamily,
-  linkInviteNotFound,
-  linkInviteExpired,
-  linkInviteUsed,
-  sameHousehold,
-  childNotFound,
-  childAlreadyLinked,
-  linkNotFound,
-  linkNotActive,
-  notYourTurn,
-  requestNotFound,
-  requestAlreadyAnswered,
-  tooManyRequests,
-  dateOutOfRange,
-}
-
-final class CoParentFailure extends AppFailure {
-  const CoParentFailure(this.problem);
-
-  final CoParentProblem problem;
 }
