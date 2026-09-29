@@ -1,5 +1,8 @@
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/member.dart';
+import '../../lunch_box/model/lunch_box.dart';
+import '../../lunch_box/model/lunch_plan.dart';
+import '../../lunch_box/model/lunch_week.dart';
 import '../../meal_planning/model/meal.dart';
 import '../../meal_planning/model/week_plan.dart';
 import '../../todos/model/occurrence_selector.dart';
@@ -24,6 +27,7 @@ class KidDay {
     required this.areas,
     required this.chores,
     required this.meals,
+    this.lunchBox,
   });
 
   /// [tasks], [routines] and [completions] are empty when [areas] shows no
@@ -37,6 +41,7 @@ class KidDay {
     required List<TaskCompletion> completions,
     required WeekPlan plan,
     required List<Meal> library,
+    LunchPlan? lunchPlan,
   }) {
     final occurrences = selectOccurrences(
       tasks: tasks,
@@ -60,6 +65,9 @@ class KidDay {
         for (final slot in MealSlot.values)
           slot: byId[plan.mealIdAt(today.weekday, slot) ?? ''],
       },
+      lunchBox: areas.lunch && today.weekday <= LunchWeek.schoolDayCount
+          ? lunchPlan?.boxOn(today.weekday)
+          : null,
     );
   }
 
@@ -79,6 +87,10 @@ class KidDay {
 
   /// What is planned for each meal today, or null for an empty slot.
   final Map<MealSlot, Meal?> meals;
+
+  /// Their own lunch box today (lunch-box ADR-0004); null on a weekend, or
+  /// when the grant does not show lunch.
+  final LunchBox? lunchBox;
 
   int get doneCount => chores.where((chore) => chore.isDone).length;
 

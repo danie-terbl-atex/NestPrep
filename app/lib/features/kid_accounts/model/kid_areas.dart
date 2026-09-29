@@ -12,6 +12,7 @@ final class KidAreas {
     required this.chores,
     required this.canTick,
     required this.food,
+    this.lunch = false,
   });
 
   factory KidAreas.of(HouseholdPermissions permissions) => KidAreas(
@@ -20,6 +21,7 @@ final class KidAreas {
         permissions.canEdit(HouseholdArea.todos) ||
         permissions.hasOwnOnly(HouseholdArea.todos),
     food: permissions.canView(HouseholdArea.meals),
+    lunch: permissions.canUse(HouseholdArea.lunch),
   );
 
   /// Nothing at all — a profile with no grant, or one that is no longer a kid.
@@ -34,15 +36,20 @@ final class KidAreas {
   /// Today's food is shown — `view` or `edit` on meals.
   final bool food;
 
-  bool get showsAnything => chores || food;
+  /// Their own lunch box today is shown — anything but `none` on lunch; the
+  /// kid defaults hold `own` (lunch-box ADR-0004).
+  final bool lunch;
+
+  bool get showsAnything => chores || food || lunch;
 
   @override
   bool operator ==(Object other) =>
       other is KidAreas &&
       other.chores == chores &&
       other.canTick == canTick &&
-      other.food == food;
+      other.food == food &&
+      other.lunch == lunch;
 
   @override
-  int get hashCode => Object.hash(chores, canTick, food);
+  int get hashCode => Object.hash(chores, canTick, food, lunch);
 }

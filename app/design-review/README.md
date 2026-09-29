@@ -24,12 +24,18 @@ was left alone rather than retaken on a branch that did not change that screen.
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 | `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
 | `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
-| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, the jobs as big tiles, and today's food |
+| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, the jobs as big tiles, their own lunch box, and today's food |
 | `kids-sign-in-light.png` / `kids-sign-in-dark.png` | the parent's side: each child, the devices they are signed in on, add one or sign them all out |
 | `kids-pairing-light.png` / `kids-pairing-dark.png` | the code a parent reads out, counting down its ten minutes |
 | `family-light.png` / `family-dark.png` | family profiles: children first, each with their allergies in their severity's tone and the nut-free rule, then everyone else and the household's schools |
 | `family-profile-light.png` / `family-profile-dark.png` | one child's profile: the severe-allergy banner, the nut-free rule with its reasons, then allergies, food and the rest below the fold |
 | `family-profile-dark-200-percent-text.png` | the same profile at the largest text a phone offers |
+| `lunch-light.png` / `lunch-dark.png` | the household's home (lunch-box ADR-0004): the child switcher, today's box drawn, *Fill the week*, and the child's food rules |
+| `lunch-week-light.png` | the same week further down: a day's five compartments, a per-item thumb, and what came home |
+| `lunch-dark-200-percent-text.png` | the lunch screen at the largest text a phone offers |
+| `lunch-swap-light.png` | the one-tap swap: a compartment's library ranked for the child, each with why it ranks there |
+| `lunch-prep-light.png` / `lunch-prep-dark.png` | the Sunday prep list: what to make ahead, then what to have in the house, with ticks |
+| `lunch-library-light.png` / `lunch-library-dark.png` | the lunch library, slot by slot, saying what is in each thing |
 
 ## What to look at
 
@@ -73,6 +79,7 @@ numbers are.
 
 ```sh
 flutter test tool/design_review_test.dart --update-goldens
+flutter test tool/lunch_design_review_test.dart --update-goldens   # the lunch screens
 ```
 
 `tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.

@@ -48,6 +48,7 @@ import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'kid_routes.dart';
+import 'lunch_routes.dart';
 import 'viewer_member.dart';
 
 /// A route creates the controller its screen reads, so the controller's
@@ -127,6 +128,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // family-profiles (family-profiles ADR-0001): the family and one
         // person's profile.
         familyRoutes(),
+        // lunch-box (lunch-box ADR-0001, ADR-0004): the lunch tab, its prep
+        // list and its library.
+        lunchRoutes(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

@@ -5,6 +5,7 @@ import 'package:nestprep/app/app_router.dart';
 import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/app/lunch_route.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
@@ -22,6 +23,10 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
+import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
+import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
+import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
@@ -40,6 +45,7 @@ import '../support/fake_family_profiles.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_link_opener.dart';
+import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
@@ -67,6 +73,7 @@ void main() {
   late FakeActivityRecorder activity;
   late FakeBetaNumbersRepository betaNumbers;
   late FakeFamilyProfileRepository familyProfiles;
+  late FakeLunchRepository lunches;
 
   setUp(() {
     activity = FakeActivityRecorder();
@@ -81,6 +88,7 @@ void main() {
     meals = FakeMealRepository();
     groceries = FakeGroceryRepository();
     familyProfiles = FakeFamilyProfileRepository();
+    lunches = FakeLunchRepository();
   });
 
   tearDown(() async {
@@ -94,6 +102,7 @@ void main() {
     await groceries.close();
     await betaNumbers.close();
     await familyProfiles.close();
+    await lunches.close();
   });
 
   late GoRouter router;
@@ -122,6 +131,7 @@ void main() {
           ),
           Provider<BetaNumbersRepository>.value(value: betaNumbers),
           Provider<FamilyProfileRepository>.value(value: familyProfiles),
+          Provider<LunchRepository>.value(value: lunches),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(
@@ -171,6 +181,7 @@ void main() {
 
   group('every tab builds, with the controller it asks for', () {
     for (final (tab, screen) in [
+      (HouseholdTab.lunch, LunchScreen),
       (HouseholdTab.week, CalendarScreen),
       (HouseholdTab.todos, TodoScreen),
       (HouseholdTab.groceries, GroceryListScreen),
@@ -255,5 +266,32 @@ void main() {
     expect(familyProfiles.healthWatched, [
       Fixtures.kidMemberId,
     ], reason: 'an admin reads the medication of the person the route names');
+  });
+
+  // lunch-box: the household opens on lunch, and its two pages build.
+  testWidgets('a household opens on lunch, the launch feature', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(LunchScreen), findsOneWidget);
+  });
+
+  testWidgets('the prep list and the library build under the lunch shell', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(LunchRoute.prepPathFor(Fixtures.householdId));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(LunchPrepScreen), findsOneWidget);
+
+    router.go(LunchRoute.libraryPathFor(Fixtures.householdId));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(LunchLibraryScreen), findsOneWidget);
   });
 }

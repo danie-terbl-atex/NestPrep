@@ -4,6 +4,7 @@ import 'documents_route.dart';
 import 'family_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'lunch_route.dart';
 
 /// Where somebody belongs inside a household, given who they are there, or
 /// null to leave them where they are (household ADR-0003).
@@ -61,6 +62,10 @@ HouseholdArea? _areaAt(String location, String householdId) {
   // a grant of `none`.
   if (location.startsWith(FamilyRoute.pathFor(householdId))) {
     return HouseholdArea.familyProfiles;
+  }
+  // Lunch's prep list and library (lunch-box ADR-0004).
+  if (location.startsWith(LunchRoute.pathFor(householdId))) {
+    return HouseholdArea.lunch;
   }
   return null;
 }

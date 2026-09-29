@@ -198,6 +198,10 @@ void main() {
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.
     'retry())',
+    // Writing a new household's starter lunch library (lunch-box ADR-0001).
+    // It runs through `runAction`, which holds an AppFailure for the screen's
+    // banner; it is unawaited because it starts from a listener.
+    '_seedLibrary()',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

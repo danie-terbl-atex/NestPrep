@@ -4,6 +4,9 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../accounts/model/kid_identity.dart';
 import '../../household/model/member.dart';
+import '../../lunch_box/data/lunch_repository.dart';
+import '../../lunch_box/model/lunch_plan.dart';
+import '../../lunch_box/model/lunch_week.dart';
 import '../../meal_planning/data/meal_repository.dart';
 import '../../meal_planning/model/meal.dart';
 import '../../meal_planning/model/week_plan.dart';
@@ -14,8 +17,12 @@ import '../../todos/model/task_completion.dart';
 import '../model/kid_areas.dart';
 import '../model/kid_day.dart';
 
+/// The parts of a kid's day a grant opens or closes on its own.
+enum KidPart { chores, food, lunch }
+
 /// The reads a kid device's grant opens, and only those (accounts ADR-0004):
-/// its own chores — tasks, routines, completions — and the day's food.
+/// its own chores — tasks, routines, completions — the day's food, and its
+/// own lunch box (lunch-box ADR-0004).
 ///
 /// [want] is told what the kid profile's grant allows every time the profile
 /// emits; [start] is told the household's today once. Between them the open
@@ -30,14 +37,17 @@ final class KidAreaReads {
   KidAreaReads({
     required TodoRepository todoRepository,
     required MealRepository mealRepository,
+    required LunchRepository lunchRepository,
     required this.identity,
     required this.onChange,
     required this.onFailure,
   }) : _todos = todoRepository,
-       _meals = mealRepository;
+       _meals = mealRepository,
+       _lunches = lunchRepository;
 
   final TodoRepository _todos;
   final MealRepository _meals;
+  final LunchRepository _lunches;
   final KidIdentity identity;
 
   /// Something arrived, or a part opened or closed.
@@ -48,6 +58,7 @@ final class KidAreaReads {
 
   final _chores = <StreamSubscription<Object?>>[];
   final _food = <StreamSubscription<Object?>>[];
+  final _lunch = <StreamSubscription<Object?>>[];
   KidAreas? _wanted;
   KidAreas? _opened;
   CalendarDate? _today;
@@ -57,6 +68,10 @@ final class KidAreaReads {
   List<TaskCompletion>? completions;
   WeekPlan? plan;
   List<Meal>? library;
+
+  /// This kid's plan for this week — only ever the one document the `own`
+  /// grant opens.
+  LunchPlan? lunchPlan;
 
   /// What the open reads reflect — null until both [want] and [start] have
   /// been told.
@@ -71,12 +86,14 @@ final class KidAreaReads {
       this.plan,
       this.library,
     );
+    final lunchPlan = this.lunchPlan;
     if (areas == null ||
         tasks == null ||
         routines == null ||
         completions == null ||
         plan == null ||
-        library == null) {
+        library == null ||
+        lunchPlan == null) {
       return null;
     }
     return KidDay.from(
@@ -88,6 +105,7 @@ final class KidAreaReads {
       completions: completions,
       plan: plan,
       library: library,
+      lunchPlan: lunchPlan,
     );
   }
 
@@ -106,9 +124,10 @@ final class KidAreaReads {
   }
 
   Future<void> close() async {
-    final open = [..._chores, ..._food];
+    final open = [..._chores, ..._food, ..._lunch];
     _chores.clear();
     _food.clear();
+    _lunch.clear();
     for (final subscription in open) {
       await subscription.cancel();
     }
@@ -141,11 +160,31 @@ final class KidAreaReads {
         library = const <Meal>[];
       }
     }
+    if (opened?.lunch != areas.lunch) {
+      _drop(_lunch);
+      final week = LunchWeek.of(today);
+      if (areas.lunch) {
+        lunchPlan = null;
+        _openLunch(week);
+      } else {
+        lunchPlan = LunchPlan.empty(childId: identity.memberId, week: week);
+      }
+    }
+  }
+
+  void _openLunch(LunchWeek week) {
+    final id = identity;
+    _listen(
+      _lunch,
+      () => _closeRefused(KidPart.lunch),
+      _lunches.watchPlan(id.householdId, childId: id.memberId, week: week),
+      (value) => lunchPlan = value,
+    );
   }
 
   void _openChores(CalendarDate today) {
     final id = identity;
-    void refused() => _closeRefused(chores: true);
+    void refused() => _closeRefused(KidPart.chores);
     _listen(
       _chores,
       refused,
@@ -172,7 +211,7 @@ final class KidAreaReads {
 
   void _openFood(CalendarDate today) {
     final id = identity;
-    void refused() => _closeRefused(chores: false);
+    void refused() => _closeRefused(KidPart.food);
     _listen(_food, refused, _meals.watchWeek(id.householdId, today.weekStart), (
       value,
     ) {
@@ -204,7 +243,7 @@ final class KidAreaReads {
     );
   }
 
-  void _closeRefused({required bool chores}) {
+  void _closeRefused(KidPart part) {
     final (opened, today) = (_opened, _today);
     if (opened == null || today == null) return;
     // Forget what was wanted, so the profile's next emission — even the same
@@ -212,9 +251,10 @@ final class KidAreaReads {
     _wanted = null;
     _apply(
       KidAreas(
-        chores: !chores && opened.chores,
-        canTick: !chores && opened.canTick,
-        food: chores && opened.food,
+        chores: part != KidPart.chores && opened.chores,
+        canTick: part != KidPart.chores && opened.canTick,
+        food: part != KidPart.food && opened.food,
+        lunch: part != KidPart.lunch && opened.lunch,
       ),
       today,
     );

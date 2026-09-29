@@ -23,6 +23,12 @@ import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/kid_accounts/model/kid_device.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/live_location/model/member_location.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_favourite.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_feedback.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_item.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -595,6 +601,104 @@ List<ModelFixture> modelFixtures() {
       note:
           'written only by openVaultDocument; the app reads it and never '
           'writes it (documents ADR-0003).',
+    ),
+    // ---- lunch-box (lunch-box ADR-0001) ----
+    ..._lunchFixtures(fixtureInstant),
+  ];
+}
+
+List<ModelFixture> _lunchFixtures(DateTime at) {
+  final lunchItem = const LunchItem(
+    id: 'seed-muffin',
+    name: 'Banana muffin',
+    nameKey: 'banana muffin',
+    slotName: 'treat',
+    allergens: ['milk', 'egg', 'wheat'],
+    prepAhead: true,
+    prepNote: 'Bake a dozen on Sunday',
+    archived: true,
+    seedKey: 'muffin',
+    addedBy: 'm1',
+  ).copyWith(createdAt: at);
+  const pick = LunchPick(
+    itemId: 'seed-muffin',
+    name: 'Banana muffin',
+    allergens: ['milk', 'egg', 'wheat'],
+  );
+  final lunchPlan = LunchPlan(
+    id: 'm-kid_2026-W40',
+    childId: 'm-kid',
+    week: '2026-W40',
+    weekStart: '2026-09-28',
+    slots: const {'5_treat': pick},
+    feedback: {
+      '5': LunchFeedback(
+        verdict: 'ate',
+        items: const {'treat': 'left'},
+        by: 'm1',
+        at: at,
+      ),
+    },
+  );
+  final favourite = LunchFavourite(
+    id: 'f1',
+    childId: 'm-kid',
+    name: 'Friday special',
+    picks: const {'treat': pick},
+    createdBy: 'm1',
+    createdAt: at,
+  );
+  const prep = LunchPrep(id: '2026-W40', done: ['seed-muffin']);
+  return [
+    ModelFixture(
+      label: 'LunchItem',
+      id: lunchItem.id,
+      value: lunchItem,
+      toJson: lunchItem.toJson,
+      fromJson: LunchItem.fromJson,
+      keys: const {
+        'name',
+        'nameKey',
+        'slot',
+        'allergens',
+        'prepAhead',
+        'prepNote',
+        'archived',
+        'seedKey',
+        'addedBy',
+        'createdAt',
+      },
+      note:
+          '`slotName` is stored as `slot`, the name the rules check; '
+          '`allergens` are the codes a plan copies (lunch-box ADR-0001).',
+    ),
+    ModelFixture(
+      label: 'LunchPlan',
+      id: lunchPlan.id,
+      value: lunchPlan,
+      toJson: lunchPlan.toJson,
+      fromJson: LunchPlan.fromJson,
+      keys: const {'childId', 'week', 'weekStart', 'slots', 'feedback'},
+      note:
+          'the id is `{childId}_{week}`, which product-analytics counts a '
+          'plan by; picks and marks nest as maps, never as models.',
+    ),
+    ModelFixture(
+      label: 'LunchFavourite',
+      id: favourite.id,
+      value: favourite,
+      toJson: favourite.toJson,
+      fromJson: LunchFavourite.fromJson,
+      keys: const {'childId', 'name', 'picks', 'createdBy', 'createdAt'},
+    ),
+    ModelFixture(
+      label: 'LunchPrep',
+      id: prep.id,
+      value: prep,
+      toJson: prep.toJson,
+      fromJson: LunchPrep.fromJson,
+      keys: const {'done'},
+      note: 'the week is the document id; the rules refuse anything else.',
     ),
   ];
 }

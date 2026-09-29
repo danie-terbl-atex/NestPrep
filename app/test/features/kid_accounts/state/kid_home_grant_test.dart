@@ -6,6 +6,8 @@ import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/kid_accounts/model/kid_areas.dart';
 import 'package:nestprep/features/kid_accounts/model/kid_day.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -36,8 +38,49 @@ void main() {
   AccessGrant kidDefaultsWith(HouseholdArea area, AccessLevel level) =>
       AccessDefaults.kid.withLevel(area, level);
 
-  test('the kid defaults open the jobs, the ticking and the food', () async {
+  test('the kid defaults open the jobs, the ticking, the food and their own '
+      'lunch box', () async {
     await fixture.arrive();
+    expect(
+      dayOf().areas,
+      const KidAreas(chores: true, canTick: true, food: true, lunch: true),
+    );
+    // Only the one plan the `own` grant opens — theirs, this week.
+    expect(fixture.lunches.watchedPlans, ['${Fixtures.kidMemberId}_2026-W40']);
+  });
+
+  test('their lunch box today is the one a grown-up packed', () async {
+    await fixture.arrive(
+      lunchSlots: {
+        // Tuesday 29 September is weekday 2.
+        '2_main': const LunchPick(itemId: 'wrap', name: 'Chicken wrap'),
+        '3_main': const LunchPick(itemId: 'pie', name: 'Tomorrow’s pie'),
+      },
+    );
+    final box = dayOf().lunchBox!;
+    expect(box[LunchSlot.main]?.name, 'Chicken wrap');
+    expect(box.filledCount, 1);
+  });
+
+  test(
+    'a grant with no lunch closes the lunch box and keeps the rest',
+    () async {
+      await fixture.arrive();
+      fixture.households.emitMember(
+        kidWith(kidDefaultsWith(HouseholdArea.lunch, AccessLevel.none)),
+      );
+      await pumpEventQueue();
+      final day = dayOf();
+      expect(day.areas.lunch, isFalse);
+      expect(day.lunchBox, isNull);
+      expect(day.areas.food, isTrue);
+    },
+  );
+
+  test('a lunch read the rules refuse closes only the lunch box', () async {
+    await fixture.arrive();
+    fixture.lunches.failPlanWith(const PermissionDeniedFailure());
+    await pumpEventQueue();
     expect(
       dayOf().areas,
       const KidAreas(chores: true, canTick: true, food: true),
@@ -109,7 +152,7 @@ void main() {
     // "signed out".
     expect(
       dayOf().areas,
-      const KidAreas(chores: false, canTick: false, food: true),
+      const KidAreas(chores: false, canTick: false, food: true, lunch: true),
     );
     expect(dayOf().hasFoodPlanned, isFalse);
 

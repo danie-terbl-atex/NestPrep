@@ -7,6 +7,7 @@ import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
 import 'package:nestprep/features/kid_accounts/ui/kid_home_screen.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/kid_copy.dart';
@@ -109,6 +110,35 @@ void main() {
     expect(find.text(KidCopy.foodTitle), findsOneWidget);
   });
 
+  // lunch-box ADR-0004: the kid sees the box a grown-up packed for today.
+  testWidgets('shows their own lunch box, drawn and named', (tester) async {
+    await pump(tester);
+    await tester.runAsync(
+      () => fixture.arrive(
+        lunchSlots: const {
+          '2_main': LunchPick(itemId: 'wrap', name: 'Chicken wrap'),
+          '2_fruit': LunchPick(itemId: 'apple', name: 'Apple slices'),
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Apple slices'), 200);
+    expect(find.text(LunchCopy.kidLunchTitle), findsOneWidget);
+    expect(find.text('Chicken wrap'), findsOneWidget);
+  });
+
+  testWidgets('an empty lunch box says a grown-up has not packed it yet', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.runAsync(fixture.arrive);
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text(LunchCopy.kidLunchNothing), 200);
+    expect(find.text(LunchCopy.kidLunchNothing), findsOneWidget);
+  });
+
   testWidgets('every job done is a celebration', (tester) async {
     await pump(tester);
     await tester.runAsync(
@@ -185,10 +215,16 @@ void main() {
         ],
         completions: [KidHomeFixture.done('teeth')],
         slots: lunch,
+        lunchSlots: const {
+          '2_main': LunchPick(itemId: 'wrap', name: 'Chicken mayo wrap'),
+          '2_treat': LunchPick(itemId: 'muffin', name: 'Banana muffin'),
+        },
       ),
     );
     await tester.pumpAndSettle();
 
+    expect(tester.takeException(), isNull);
+    await tester.scrollUntilVisible(find.text('Banana muffin'), 200);
     expect(tester.takeException(), isNull);
     await tester.scrollUntilVisible(find.text('Pasta bake'), 200);
     expect(tester.takeException(), isNull);

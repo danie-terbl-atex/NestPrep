@@ -4,6 +4,8 @@ import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_place_redirect.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/app/lunch_route.dart';
+import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household.dart';
@@ -160,6 +162,37 @@ void main() {
             view: view(),
           ),
           isNull,
+        );
+      }
+    });
+
+    // lunch-box ADR-0004: lunch is home, and a grant without it moves on.
+    test('opens a household on lunch, and a helper without lunch on the '
+        'week', () {
+      expect(HouseholdRoute.homeFor(id), LunchRoute.pathFor(id));
+      expect(
+        householdPlaceRedirect(
+          location: HouseholdRoute.homeFor(id),
+          view: view(
+            viewer: Fixtures.thandiUid,
+            access: {Fixtures.thandiUid: AccessDefaults.helper},
+          ),
+        ),
+        HouseholdRoute.pathFor(id, HouseholdTab.week),
+      );
+    });
+
+    test('keeps a grant without lunch out of its prep list and library', () {
+      for (final location in [
+        LunchRoute.prepPathFor(id),
+        LunchRoute.libraryPathFor(id),
+      ]) {
+        expect(
+          householdPlaceRedirect(
+            location: location,
+            view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
+          ),
+          HouseholdRoute.householdPathFor(id),
         );
       }
     });

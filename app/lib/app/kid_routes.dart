@@ -14,6 +14,7 @@ import '../features/kid_accounts/state/kid_sign_in_controller.dart';
 import '../features/kid_accounts/ui/kid_code_screen.dart';
 import '../features/kid_accounts/ui/kid_home_screen.dart';
 import '../features/kid_accounts/ui/kid_sign_in_screen.dart';
+import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import 'household_route.dart';
@@ -60,6 +61,7 @@ List<RouteBase> kidRoutes(SessionController session) => [
           householdRepository: context.read<HouseholdRepository>(),
           todoRepository: context.read<TodoRepository>(),
           mealRepository: context.read<MealRepository>(),
+          lunchRepository: context.read<LunchRepository>(),
           identity: kid,
         ),
         child: const KidHomeScreen(),

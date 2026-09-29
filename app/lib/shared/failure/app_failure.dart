@@ -276,6 +276,33 @@ final class CalendarSyncFailure extends AppFailure {
   final CalendarSyncProblem problem;
 }
 
+// ---- lunch-box (lunch-box ADR-0001) ----
+
+/// Why a lunch box change did not happen. The rules are what refuse an
+/// unsafe box; the app checks first so the person hears why, in words about
+/// the child rather than about permissions.
+enum LunchProblem {
+  /// Something in it is not safe for this child — an allergen, or a nut when
+  /// nuts are ruled out for them. Caught before anything is written.
+  unsafeForChild,
+
+  /// The rules refused a box change the app thought was safe: the child's
+  /// rules most likely changed on another phone a moment ago.
+  refusedByRules,
+
+  /// A child already has as many go-to boxes as they may keep.
+  tooManyFavourites,
+
+  /// A go-to box's name is longer than the rules keep.
+  nameTooLong,
+}
+
+final class LunchFailure extends AppFailure {
+  const LunchFailure(this.problem);
+
+  final LunchProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);
