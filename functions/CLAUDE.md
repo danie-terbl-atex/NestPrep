@@ -20,7 +20,15 @@ npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order
 npm run seed           # three signed-in users, against a running Auth emulator
 npm run serve          # build, then the functions emulator alone
+npm run beta-numbers   # print the weekly beta numbers (after `npm run build`; `-- --recount` recounts first)
+npm run grant-analytics-reader -- <email> [--revoke]   # who may open the Beta numbers screen
 ```
+
+The two analytics tools (product-analytics ADR-0001) read `lib/`, so build first. Against the
+real project they use Google application-default credentials (`gcloud auth
+application-default login`); against the emulator set `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080`
+(and `FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099` for the grant). `NESTPREP_PROJECT` overrides the
+project id; nothing else is configurable. They print counts and account uids only.
 
 `firebase emulators:start --project nestprep-643b7` from the repo root runs Functions together
 with Auth and Firestore. The project id is the real one (foundation ADR-0008); nothing reaches the
@@ -38,6 +46,9 @@ cloud because the client redirects every service.
   `details`, because three different refusals share the gRPC code `already-exists` and the client
   has to tell them apart to choose copy (`BE-04`).
 - Anything touching more than one document is a transaction (`BE-06`).
+- `src/product_analytics/` holds the only non-callables: three Firestore triggers and one daily
+  schedule. They take their region and limits from the same global options, and a Firestore
+  trigger must run in the database's region or it never fires.
 - Secrets are Functions parameters or secret bindings, never `.env` in git (`ENG-18`). None exist yet.
 - `tsconfig.json` covers `src/`, `test/` and the config files for the editor and ESLint;
   `tsconfig.build.json` is what `tsc` emits from, and it includes `src/` only.

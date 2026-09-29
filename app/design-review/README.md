@@ -16,6 +16,7 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 | `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the nest mark in a two-ring orbit of the four tabs and five member marks, the name, the tagline, and the way in |
 | `household-gate-light.png` / `household-gate-dark.png` | the screen after it, where a household is made or joined |
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
+| `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
 
 ## What to look at
 

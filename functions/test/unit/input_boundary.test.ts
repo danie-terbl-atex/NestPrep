@@ -11,6 +11,7 @@ import {
   setMemberRoleInput,
 } from '../../src/household/schemas';
 import { deleteDocumentFolderInput } from '../../src/documents/schemas';
+import { recordActivityInput } from '../../src/product_analytics/record_activity';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -51,6 +52,7 @@ const validBodies = {
     schema: deleteDocumentFolderInput,
     body: { householdId: 'h1', folderId: 'f-school' },
   },
+  recordActivity: { schema: recordActivityInput, body: { householdId: 'h1' } },
 } as const;
 
 describe('every callable accepts its own body', () => {

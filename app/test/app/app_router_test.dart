@@ -18,6 +18,9 @@ import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
+import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
+import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +31,7 @@ import '../support/fake_calendar_repository.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_meal_repository.dart';
+import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
 
@@ -50,8 +54,12 @@ void main() {
   late FakeTodoRepository todos;
   late FakeMealRepository meals;
   late FakeGroceryRepository groceries;
+  late FakeActivityRecorder activity;
+  late FakeBetaNumbersRepository betaNumbers;
 
   setUp(() {
+    activity = FakeActivityRecorder();
+    betaNumbers = FakeBetaNumbersRepository(isReader: true);
     auth = FakeAuthGateway();
     accounts = FakeAccountRepository();
     session = SessionController(authGateway: auth, accountRepository: accounts);
@@ -72,6 +80,7 @@ void main() {
     await todos.close();
     await meals.close();
     await groceries.close();
+    await betaNumbers.close();
   });
 
   late GoRouter router;
@@ -88,6 +97,10 @@ void main() {
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),
+          Provider<ActivityHeartbeat>(
+            create: (_) => ActivityHeartbeat(activityRecorder: activity),
+          ),
+          Provider<BetaNumbersRepository>.value(value: betaNumbers),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(
@@ -176,4 +189,27 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(HouseholdScreen), findsOneWidget);
   });
+
+  testWidgets('opening a household counts it as used today', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+    router.go(HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.week));
+    await settle(tester);
+
+    expect(activity.recorded, [Fixtures.householdId]);
+  });
+
+  testWidgets(
+    'the Beta numbers screen builds, with the controller it asks for',
+    (tester) async {
+      await pumpApp(tester);
+      await signInWithAHousehold(tester);
+
+      router.go(BetaNumbersScreen.path);
+      await settle(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(BetaNumbersScreen), findsOneWidget);
+    },
+  );
 }

@@ -7,11 +7,13 @@ import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/account_menu_button.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/model/household.dart';
+import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_auth.dart';
 import '../../../support/fake_household.dart';
+import '../../../support/fake_product_analytics.dart';
 import '../../../support/household_fixtures.dart';
 
 /// Moving between the households an account belongs to.
@@ -59,6 +61,10 @@ void main() {
       MultiProvider(
         providers: [
           Provider<HouseholdRepository>.value(value: households),
+          // The account sheet asks whether to offer the Beta numbers.
+          Provider<BetaNumbersRepository>.value(
+            value: FakeBetaNumbersRepository(),
+          ),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp(

@@ -32,10 +32,13 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
-describe('every callable', () => {
-  it('there are eight of them, so a new one cannot slip past these checks', () => {
+describe('every function — callable, trigger or schedule', () => {
+  it('there are thirteen of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    expect(endpoints()).toHaveLength(8);
+    // Nine callables, three Firestore triggers and one schedule; the triggers
+    // must run in the database's region or they never fire (product-analytics
+    // ADR-0001).
+    expect(endpoints()).toHaveLength(13);
   });
 
   it('runs in the one region, which is the database region', () => {

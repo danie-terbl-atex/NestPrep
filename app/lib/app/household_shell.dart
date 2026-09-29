@@ -7,6 +7,7 @@ import '../design/nest_kit.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/observability/crash_reporting.dart';
+import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
 
@@ -70,7 +71,12 @@ class _HouseholdShellState extends State<HouseholdShell> {
               value: _clockFor(view.household.timeZone),
             ),
           ],
-          child: widget.child,
+          // Counts this household as opened today (product-analytics
+          // ADR-0001) — here, where it is known the account is really in it.
+          child: HouseholdActivityScope(
+            householdId: view.household.id,
+            child: widget.child,
+          ),
         );
       },
     );

@@ -5,6 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../household/ui/switch_household_sheet.dart';
+import '../../product_analytics/ui/beta_numbers_link.dart';
 import '../model/session.dart';
 import '../state/session_controller.dart';
 
@@ -65,6 +66,9 @@ class AccountMenuButton extends StatelessWidget {
               },
             ),
           ],
+          // Offered only to a holder of the reader claim (product-analytics
+          // ADR-0001); for everybody else it takes no space.
+          BetaNumbersLink(onOpen: () => Navigator.of(sheetContext).pop()),
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: AppCopy.signOut,

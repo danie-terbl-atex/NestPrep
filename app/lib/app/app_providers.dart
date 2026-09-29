@@ -35,6 +35,11 @@ import '../features/live_location/data/location_reporter.dart';
 import '../features/live_location/data/location_source.dart';
 import '../features/meal_planning/data/firestore_meal_repository.dart';
 import '../features/meal_planning/data/meal_repository.dart';
+import '../features/product_analytics/data/activity_recorder.dart';
+import '../features/product_analytics/data/beta_numbers_repository.dart';
+import '../features/product_analytics/data/callable_activity_recorder.dart';
+import '../features/product_analytics/data/firestore_beta_numbers_repository.dart';
+import '../features/product_analytics/state/activity_heartbeat.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import 'firebase_bootstrap.dart';
@@ -117,6 +122,23 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) => const FileSelectorDocumentPicker(),
   ),
   Provider<DocumentOpener>(create: (context) => const LauncherDocumentOpener()),
+  // ---- product analytics (product-analytics ADR-0001) ----
+  // The heartbeat is app-wide so its once-a-day memory outlives any one
+  // household shell; the shell's scope only tells it when to beat.
+  Provider<ActivityRecorder>(
+    create: (context) =>
+        CallableActivityRecorder(context.read<FirebaseFunctions>()),
+  ),
+  Provider<ActivityHeartbeat>(
+    create: (context) =>
+        ActivityHeartbeat(activityRecorder: context.read<ActivityRecorder>()),
+  ),
+  Provider<BetaNumbersRepository>(
+    create: (context) => FirestoreBetaNumbersRepository(
+      context.read<FirebaseFirestore>(),
+      context.read<FirebaseAuth>(),
+    ),
+  ),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),
