@@ -348,6 +348,15 @@ enum LunchProblem {
 
   /// A go-to box's name is longer than the rules keep.
   nameTooLong,
+
+  /// A shared card could not be drawn on this phone (lunch-box ADR-0005).
+  cardNotDrawn,
+
+  /// The share sheet would not open.
+  shareUnavailable,
+
+  /// This phone has no way to print, or printing would not start.
+  printUnavailable,
 }
 
 final class LunchFailure extends AppFailure {

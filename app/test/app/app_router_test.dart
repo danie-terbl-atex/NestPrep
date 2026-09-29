@@ -23,11 +23,13 @@ import 'package:nestprep/features/groceries/data/grocery_repository.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
+import 'package:nestprep/features/household/data/invite_sharer.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
+import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
@@ -45,6 +47,7 @@ import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
+import '../support/fake_invite_sharer.dart';
 import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
@@ -134,6 +137,8 @@ void main() {
           Provider<BetaNumbersRepository>.value(value: betaNumbers),
           Provider<FamilyProfileRepository>.value(value: familyProfiles),
           Provider<LunchRepository>.value(value: lunches),
+          // The share screen's invite line reads the invite link.
+          Provider<InviteSharer>.value(value: FakeInviteSharer()),
           // Marking a child is the `setChildProfile` callable
           // (subscriptions ADR-0001); the fake answers for both.
           Provider<ChildProfileDirectory>.value(value: familyProfiles),
@@ -285,20 +290,26 @@ void main() {
     expect(find.byType(LunchScreen), findsOneWidget);
   });
 
-  testWidgets('the prep list and the library build under the lunch shell', (
-    tester,
-  ) async {
-    await pumpApp(tester);
-    await signInWithAHousehold(tester);
+  testWidgets(
+    'the prep list, the library and sharing build under the lunch shell',
+    (tester) async {
+      await pumpApp(tester);
+      await signInWithAHousehold(tester);
 
-    router.go(LunchRoute.prepPathFor(Fixtures.householdId));
-    await settle(tester);
-    expect(tester.takeException(), isNull);
-    expect(find.byType(LunchPrepScreen), findsOneWidget);
+      router.go(LunchRoute.prepPathFor(Fixtures.householdId));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(LunchPrepScreen), findsOneWidget);
 
-    router.go(LunchRoute.libraryPathFor(Fixtures.householdId));
-    await settle(tester);
-    expect(tester.takeException(), isNull);
-    expect(find.byType(LunchLibraryScreen), findsOneWidget);
-  });
+      router.go(LunchRoute.libraryPathFor(Fixtures.householdId));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(LunchLibraryScreen), findsOneWidget);
+
+      router.go(LunchRoute.sharePathFor(Fixtures.householdId));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(LunchShareScreen), findsOneWidget);
+    },
+  );
 }

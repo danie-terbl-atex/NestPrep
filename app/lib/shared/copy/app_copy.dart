@@ -23,6 +23,9 @@ export 'home_care_copy.dart';
 // lunch-box: its words live in their own file, reached through this one.
 export 'lunch_copy.dart';
 
+// lunch-box phase 2: the shareable card and the printable planner (ADR-0005).
+export 'lunch_share_copy.dart';
+
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';

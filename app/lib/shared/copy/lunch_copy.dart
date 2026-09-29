@@ -198,5 +198,12 @@ abstract final class LunchCopy {
       'That is as many go-to boxes as one child can keep. Remove one first.',
     LunchProblem.nameTooLong =>
       'That name is too long for a go-to box. Keep it under 40 letters.',
+    LunchProblem.cardNotDrawn =>
+      'The card could not be made on this phone. Try again in a moment.',
+    LunchProblem.shareUnavailable =>
+      'The share sheet would not open. Try again in a moment.',
+    LunchProblem.printUnavailable =>
+      'This phone cannot print from here. Send the PDF instead and print it '
+          'from there.',
   };
 }

@@ -7,20 +7,23 @@ import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/state/lunch_board_controller.dart';
+import 'package:nestprep/features/lunch_box/state/lunch_share_controller.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
+import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
+import '../test/support/fake_lunch_share.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
 import '../test/support/lunch_harness.dart';
 import 'review_press.dart';
 
 /// Lunch boxes in the design-review press — the board, the one-tap swap, the
-/// Sunday prep list and the library, light and dark, and the board at 200%
-/// text. Pictures to look at, not assertions: regenerate with
+/// Sunday prep list, the library and sharing the week, light and dark, and
+/// the board and the share screen at 200% text. Pictures to look at, not assertions: regenerate with
 ///
 ///     flutter test tool/lunch_design_review_test.dart --update-goldens
 void main() {
@@ -89,6 +92,14 @@ void main() {
     Future<void> Function()? act,
   }) async {
     final harness = await packed(tester);
+    final share = LunchShareController(
+      cardRenderer: FakeLunchCardRenderer(),
+      cardSharer: FakeLunchCardSharer(),
+      plannerComposer: FakeLunchPlannerComposer(),
+      initialChildId: LunchFixtures.lwaziId,
+      appLink: Uri.parse('https://nestprep.app'),
+    );
+    addTearDown(share.dispose);
     await captureScreen(
       tester,
       name,
@@ -97,6 +108,7 @@ void main() {
         ChangeNotifierProvider<LunchBoardController>.value(
           value: harness.controller,
         ),
+        ChangeNotifierProvider<LunchShareController>.value(value: share),
       ],
       emit: () => emitWeek(harness),
       brightness: brightness,
@@ -194,6 +206,43 @@ void main() {
       'lunch-library-dark',
       const LunchLibraryScreen(),
       brightness: Brightness.dark,
+    ),
+  );
+
+  testWidgets(
+    'sharing the week, light',
+    (tester) => capture(tester, 'lunch-share-light', const LunchShareScreen()),
+  );
+
+  testWidgets(
+    'sharing the week, dark',
+    (tester) => capture(
+      tester,
+      'lunch-share-dark',
+      const LunchShareScreen(),
+      brightness: Brightness.dark,
+    ),
+  );
+
+  testWidgets(
+    'sharing the week, the choices further down',
+    (tester) => capture(
+      tester,
+      'lunch-share-choices-light',
+      const LunchShareScreen(),
+      act: () =>
+          tester.drag(find.byType(Scrollable).last, const Offset(0, -560)),
+    ),
+  );
+
+  testWidgets(
+    'sharing the week, dark at 200% text',
+    (tester) => capture(
+      tester,
+      'lunch-share-dark-200-percent-text',
+      const LunchShareScreen(),
+      brightness: Brightness.dark,
+      textScale: 2,
     ),
   );
 }

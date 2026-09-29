@@ -77,3 +77,24 @@ These are renders, not a phone in your hand. Colour on an OLED at low brightness
 feels, and whether the touch targets land under a thumb are things a picture cannot tell you. If your
 verdict is "I need to hold it", that is a fair answer and the app is installable — the device run on
 2026-09-18 worked end to end.
+
+## The shareable lunch card (lunch-box phase 2, 2026-09-29)
+
+The `lunch-card-*.png` pictures are the renderer's own output, not a screenshot of the preview. I went
+round the loop six times; what I changed, and what I would still flag:
+
+- **Fixed:** the first story wrapped "Lunches this / week" beside the nest and left each day's row
+  36 points tall, so the drawn box was a smudge and every side dish overflowed. The logo now sits as a
+  lockup above a one-line headline, the rows take what is left, and a row shows as many lines of
+  sides as it has room for.
+- **Fixed:** on the family card, names squeezed beside each box broke mid-word ("Hummu / s and").
+  Names now sit under the boxes on a tall card, and the square lists everything under the grid.
+- **Fixed:** a list of sides broke a line before its separator ("· Biltong"); the separator is now
+  held to the word before it.
+- **Still flagged — every box looks alike.** The drawn box shows a slot's glyph (a sandwich, an
+  apple…), not the item, so Monday's and Friday's boxes differ only by what is empty. Item-level
+  drawings would make the card far more delightful and are a design-system job, not this phase's.
+- **Still flagged — a long main is cut** ("Chicken mayo w…") on the story, where the sides take the
+  second line. Worth a look once real families' item names are known.
+- **Your call:** the square post shows each day's main only; the story and WhatsApp shapes show the
+  sides too. The square has no height for both at a legible size.

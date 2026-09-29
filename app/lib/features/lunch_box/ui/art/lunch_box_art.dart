@@ -14,18 +14,37 @@ import 'lunch_glyph.dart';
 /// When something lands in a compartment it pops in once, with the
 /// celebrate curve; under reduce-motion it is simply there (`FE-15`). To a
 /// screen reader the whole picture is one sentence naming what is packed.
+///
+/// Its insets and corners scale with [height] from the kit's tokens, so the
+/// same box reads at the hero's size and at a shared card's row
+/// (lunch-box ADR-0005).
 class LunchBoxArt extends StatelessWidget {
-  const LunchBoxArt({required this.box, this.height = 132, super.key});
+  const LunchBoxArt({
+    required this.box,
+    this.height = referenceHeight,
+    this.isRaised = true,
+    super.key,
+  });
 
   final LunchBox box;
   final double height;
 
-  static const _aspect = 1.55;
+  /// Lifted off the page by the card shadow; a flat box sits inside
+  /// something that is already a card.
+  final bool isRaised;
+
+  /// The height the kit's spacing tokens are drawn at, unscaled.
+  static const referenceHeight = 132.0;
+
+  /// Width over height.
+  static const aspect = 1.55;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final c = nest.colors;
+    final scale = height / referenceHeight;
+    final gap = NestSpace.sm * scale;
     final names = [for (final (_, pick) in box.filled) pick.name].join(', ');
     return Semantics(
       container: true,
@@ -34,26 +53,30 @@ class LunchBoxArt extends StatelessWidget {
       child: ExcludeSemantics(
         child: SizedBox(
           height: height,
-          width: height * _aspect,
+          width: height * aspect,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: c.surface,
-              borderRadius: BorderRadius.circular(NestRadius.xl),
+              borderRadius: BorderRadius.circular(NestRadius.xl * scale),
               border: Border.all(
                 color: c.outlineStrong,
-                width: NestStroke.focus,
+                width: NestStroke.focus * scale.clamp(0.5, 1),
               ),
-              boxShadow: nest.shadows.card,
+              boxShadow: isRaised ? nest.shadows.card : null,
             ),
             child: Padding(
-              padding: const EdgeInsets.all(NestSpace.sm),
+              padding: EdgeInsets.all(gap),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: _Compartment(slot: LunchSlot.main, box: box),
+                    child: _Compartment(
+                      slot: LunchSlot.main,
+                      box: box,
+                      scale: scale,
+                    ),
                   ),
-                  const SizedBox(width: NestSpace.sm),
+                  SizedBox(width: gap),
                   Expanded(
                     child: Column(
                       children: [
@@ -61,12 +84,14 @@ class LunchBoxArt extends StatelessWidget {
                           first: LunchSlot.fruit,
                           second: LunchSlot.veg,
                           box: box,
+                          scale: scale,
                         ),
-                        const SizedBox(height: NestSpace.sm),
+                        SizedBox(height: gap),
                         _CompartmentPair(
                           first: LunchSlot.snack,
                           second: LunchSlot.treat,
                           box: box,
+                          scale: scale,
                         ),
                       ],
                     ),
@@ -87,11 +112,13 @@ class _CompartmentPair extends StatelessWidget {
     required this.first,
     required this.second,
     required this.box,
+    required this.scale,
   });
 
   final LunchSlot first;
   final LunchSlot second;
   final LunchBox box;
+  final double scale;
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -99,11 +126,11 @@ class _CompartmentPair extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: _Compartment(slot: first, box: box),
+          child: _Compartment(slot: first, box: box, scale: scale),
         ),
-        const SizedBox(width: NestSpace.sm),
+        SizedBox(width: NestSpace.sm * scale),
         Expanded(
-          child: _Compartment(slot: second, box: box),
+          child: _Compartment(slot: second, box: box, scale: scale),
         ),
       ],
     ),
@@ -111,10 +138,15 @@ class _CompartmentPair extends StatelessWidget {
 }
 
 class _Compartment extends StatelessWidget {
-  const _Compartment({required this.slot, required this.box});
+  const _Compartment({
+    required this.slot,
+    required this.box,
+    required this.scale,
+  });
 
   final LunchSlot slot;
   final LunchBox box;
+  final double scale;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +158,7 @@ class _Compartment extends StatelessWidget {
       curve: NestMotion.standardCurve,
       decoration: BoxDecoration(
         color: pick == null ? c.surfaceTint : slotFill(c, slot),
-        borderRadius: BorderRadius.circular(NestRadius.sm),
+        borderRadius: BorderRadius.circular(NestRadius.sm * scale),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) => AnimatedSwitcher(
