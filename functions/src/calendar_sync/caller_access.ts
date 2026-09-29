@@ -1,8 +1,9 @@
 import type { Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
-import { memberLevelIn, type Level } from '../household/access';
+import { type Level } from '../household/access';
 import { HOUSEHOLDS, MEMBERS, ROLES, type Role, householdRef } from '../household/documents';
+import { levelNow } from '../household/shift_window';
 import { refuseCalendarSync } from './errors';
 
 /**
@@ -50,7 +51,16 @@ export async function callerIn(
   if (!snapshot.exists || !household.success) throw refuseCalendarSync('notAMember');
   const role = household.data.members[uid];
   if (role === undefined) throw refuseCalendarSync('notAMember');
-  const level = memberLevelIn(role, household.data.access?.[uid], 'calendar');
+  // A shift-only carer off shift holds nothing, as in the rules (nanny-hub
+  // ADR-0006).
+  const level = await levelNow(store, {
+    householdId,
+    householdData: snapshot.data(),
+    uid,
+    role,
+    storedGrant: household.data.access?.[uid],
+    area: 'calendar',
+  });
   if (!allows(level, need)) throw refuseCalendarSync('calendarNotShared');
 
   const claimed = await store

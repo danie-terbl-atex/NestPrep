@@ -9,6 +9,7 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
@@ -123,8 +124,12 @@ describe('booking a shift', () => {
     const carer = await asUser(CARER.uid);
     await assertFails(deleteDoc(doc(carer, bookingPath('tonight'))));
     const parent = await asUser(PEOPLE.parent.uid);
-    await assertSucceeds(deleteDoc(doc(parent, bookingPath('tonight'))));
-    await assertSucceeds(deleteDoc(doc(parent, passPath(CARER.member))));
+    // Alone, the booking stays: its pass would keep Storage open.
+    await assertFails(deleteDoc(doc(parent, bookingPath('tonight'))));
+    const cancel = writeBatch(parent);
+    cancel.delete(doc(parent, bookingPath('tonight')));
+    cancel.delete(doc(parent, passPath(CARER.member)));
+    await assertSucceeds(cancel.commit());
   });
 });
 

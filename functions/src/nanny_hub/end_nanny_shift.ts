@@ -7,6 +7,7 @@ import { householdRef } from '../household/documents';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { refuseNanny } from './errors';
+import { isOffShift } from '../household/shift_window';
 import { hubEditorFrom, mayEndShift } from './hub_caller';
 import { MOMENTS, checklistRef, entriesOf, shiftRef, summaryRef } from './nanny_refs';
 import { endNannyShiftInput } from './schemas';
@@ -43,6 +44,11 @@ export const endNannyShift = onCall(async (request) => {
     const household = await transaction.get(householdRef(store, input.householdId));
     if (!household.exists) throw refuseNanny('notAMember');
     const caller = hubEditorFrom(household.data(), uid);
+    // A shift-only carer ends a shift only inside its booked window; family
+    // ends it any time (nanny-hub ADR-0006).
+    if (await isOffShift(store, input.householdId, household.data(), uid, new Date())) {
+      throw refuseNanny('hubNotShared');
+    }
 
     const shiftSnapshot = await transaction.get(shiftRef(store, input.householdId, input.shiftId));
     const shift = storedShift.safeParse(shiftSnapshot.data());

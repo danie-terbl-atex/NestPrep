@@ -2,6 +2,7 @@ import type { Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
 import { householdRef } from '../../household/documents';
+import { isOffShift } from '../../household/shift_window';
 import { claimedMemberId } from '../vault_refs';
 import { mayShare, type Sharer, type ShareScope } from './share_policy';
 
@@ -17,7 +18,9 @@ export type SharingHousehold = z.infer<typeof householdShape>;
  * Who [uid] is in a household, re-derived from its membership map and the
  * profile they claimed — never from the request (`BE-03`). Read when a link
  * is made and again every time it is served, so a parent removed from the
- * household stops being able to share, and their links stop working.
+ * household stops being able to share, and their links stop working. A
+ * shift-only carer off shift is nobody here (nanny-hub ADR-0006): they cannot
+ * share, and a link they made answers only while a booked shift is on.
  */
 export async function sharerIn(
   store: Firestore,
@@ -27,7 +30,8 @@ export async function sharerIn(
   const snapshot = await householdRef(store, householdId).get();
   const parsed = householdShape.safeParse(snapshot.data());
   if (!parsed.success) return { household: null, sharer: { role: undefined, memberId: undefined } };
-  const role = parsed.data.members[uid];
+  const offShift = await isOffShift(store, householdId, snapshot.data(), uid, new Date());
+  const role = offShift ? undefined : parsed.data.members[uid];
   const memberId = role === undefined ? undefined : await claimedMemberId(store, householdId, uid);
   return { household: parsed.data, sharer: { role, memberId } };
 }

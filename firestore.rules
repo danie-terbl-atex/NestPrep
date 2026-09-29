@@ -2896,7 +2896,17 @@ service cloud.firestore {
 
         allow update: if false;
 
-        allow delete: if isFamily(householdId);
+        // Cancelling a booking lets go of the carer's pass in the same batch: the
+        // pass carries copies of the booking's times, which Storage reads without
+        // the booking, so a pass left behind would keep Storage open for a shift
+        // that no longer exists.
+        allow delete: if isFamily(householdId)
+          && nannyPassLetGoOf(householdId, resource.data.carerMemberId, bookingId);
+      }
+
+      function nannyPassLetGoOf(householdId, memberId, bookingId) {
+        let pass = /databases/$(database)/documents/households/$(householdId)/nannyShiftPasses/$(memberId);
+        return !existsAfter(pass) || getAfter(pass).data.get('bookingId', '') != bookingId;
       }
 
       // Which booking a carer is on, or next on — named by the carer, because the

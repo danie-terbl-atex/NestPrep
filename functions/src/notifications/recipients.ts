@@ -39,6 +39,7 @@ export const storedHousehold = z.object({
   members: z.record(z.string(), z.string()).default({}),
   access: z.record(z.string(), z.unknown()).optional(),
   kids: z.record(z.string(), z.string()).optional(),
+  shiftOnly: z.record(z.string(), z.unknown()).optional(),
 });
 export type StoredHousehold = z.infer<typeof storedHousehold>;
 
@@ -75,12 +76,16 @@ export function recipientOf(household: StoredHousehold, member: MemberRecord): R
   if (claimed !== null) {
     const role = household.members[claimed] ?? member.role;
     const grant = household.access?.[claimed];
+    // A shift-only carer (nanny-hub ADR-0006) is told nothing about the
+    // household: a digest or a push is read later, off shift, and would carry
+    // what the rules keep from them then.
+    const shiftOnly = household.shiftOnly?.[member.id] === true;
     return {
       memberId: member.id,
       displayName: member.displayName,
       role,
       isFamily: isFamilyRole(role),
-      levels: levelsFor((area) => memberLevelIn(role, grant, area)),
+      levels: levelsFor((area) => (shiftOnly ? 'none' : memberLevelIn(role, grant, area))),
       uids,
       hasAccount: true,
     };

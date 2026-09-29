@@ -10,6 +10,7 @@ import { db } from '../shared/firestore';
 import { ApplicationDefaultTranslationToken, CloudTranslator } from './cloud_translator';
 import { EmulatorTranslator } from './emulator_translator';
 import { refuseHomeCare } from './errors';
+import { isOffShift } from '../household/shift_window';
 import { homeCareReaderFrom } from './home_care_caller';
 import type { TargetLanguage } from './languages';
 import { translateHomeCareTextsInput } from './schemas';
@@ -81,6 +82,10 @@ export const translateHomeCareTexts = onCall(async (request) => {
   const household = await householdRef(store, input.householdId).get();
   if (!household.exists) throw refuseHomeCare('notAMember');
   homeCareReaderFrom(household.data(), uid);
+  // A shift-only carer off shift holds no home care (nanny-hub ADR-0006).
+  if (await isOffShift(store, input.householdId, household.data(), uid, new Date())) {
+    throw refuseHomeCare('homeCareNotShared');
+  }
   if (!(await readFlag(store, 'homeCareHelperLanguage'))) {
     throw refuseHomeCare('translationSwitchedOff');
   }

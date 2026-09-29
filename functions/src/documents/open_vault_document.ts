@@ -4,6 +4,7 @@ import { onCall } from 'firebase-functions/v2/https';
 
 import { db } from '../shared/firestore';
 import { householdRef, roleOf, type HouseholdDocument } from '../household/documents';
+import { isOffShift } from '../household/shift_window';
 import { parseInput, requireUid } from '../household/parse_input';
 import { refuseDocument } from './errors';
 import { openVaultDocumentInput } from './schemas';
@@ -32,6 +33,10 @@ export const openVaultDocument = onCall(async (request) => {
   const data = household.data() as HouseholdDocument | undefined;
   const role = data === undefined ? undefined : roleOf(data, uid);
   if (role === undefined) throw refuseDocument('notAMember');
+  // A shift-only carer off shift opens nothing (nanny-hub ADR-0006).
+  if (await isOffShift(store, input.householdId, data, uid, new Date())) {
+    throw refuseDocument('vaultNotShared');
+  }
 
   const [viewerMemberId, grant] = await Promise.all([
     claimedMemberId(store, input.householdId, uid),
