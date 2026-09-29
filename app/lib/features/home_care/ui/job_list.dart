@@ -17,8 +17,12 @@ class JobList extends StatelessWidget {
     required this.access,
     required this.onSelectPile,
     required this.onOpen,
+    this.header,
     super.key,
   });
+
+  /// Above the piles — the ways into routines, stock and languages.
+  final Widget? header;
 
   final HomeCareBoard board;
   final JobPile pile;
@@ -31,6 +35,7 @@ class JobList extends StatelessWidget {
     final jobs = board.jobsIn(pile);
     return CustomScrollView(
       slivers: [
+        if (header case final Widget top) SliverToBoxAdapter(child: top),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(bottom: NestSpace.lg),

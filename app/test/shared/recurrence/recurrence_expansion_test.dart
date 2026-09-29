@@ -197,6 +197,31 @@ void main() {
       );
     });
 
+    // Found by home care's room routines (home-care ADR-0004): a deep clean on
+    // the 29th was "on" the 30th, because the month's occurrence before the
+    // window's first day was kept. A week's view starting mid-month showed an
+    // occurrence from the week before.
+    test('nothing before the window, even in the window’s own month', () {
+      expect(
+        expand(
+          first: '2026-09-29',
+          rule: const RecurrenceRule(frequency: RecurrenceFrequency.monthly),
+          from: '2026-09-30',
+          to: '2026-10-06',
+        ),
+        isEmpty,
+      );
+      expect(
+        expand(
+          first: '2026-08-10',
+          rule: const RecurrenceRule(frequency: RecurrenceFrequency.monthly),
+          from: '2026-09-14',
+          to: '2026-10-12',
+        ),
+        ['2026-10-10'],
+      );
+    });
+
     test('an interval steps whole months', () {
       expect(
         expand(

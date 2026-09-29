@@ -59,3 +59,7 @@ export { appStoreNotifications } from './subscriptions/app_store_notifications';
 export { playBillingNotifications } from './subscriptions/play_billing_notifications';
 export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
 export { setChildProfile } from './family_profiles/set_child_profile';
+
+// ---- home care V2: stock to groceries, the helper's language (home-care ADR-0005, ADR-0006) ----
+export { addLowStockToGroceries } from './home_care/add_low_stock_to_groceries';
+export { translateHomeCareTexts } from './home_care/translate_home_care_texts';

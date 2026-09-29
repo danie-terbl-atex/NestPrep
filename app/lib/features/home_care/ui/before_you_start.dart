@@ -12,11 +12,21 @@ class BeforeYouStart extends StatelessWidget {
   const BeforeYouStart({
     required this.safety,
     required this.onReady,
+    this.rowBuilder,
+    this.isTranslated = false,
     super.key,
   });
 
   final JobSafety safety;
   final VoidCallback onReady;
+
+  /// How each line is drawn — in the helper's language on her screens
+  /// (home-care ADR-0006).
+  final SafetyRowBuilder? rowBuilder;
+
+  /// Whether the lines are shown translated, which says why the English
+  /// stays beside them.
+  final bool isTranslated;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +65,14 @@ class BeforeYouStart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: NestSpace.xl),
-        NestRiseIn(index: 1, child: SafetyPanel(safety: safety)),
+        if (isTranslated) ...[
+          const NestBanner(message: HomeCareLanguageCopy.safetyStaysInEnglish),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        NestRiseIn(
+          index: 1,
+          child: SafetyPanel(safety: safety, rowBuilder: rowBuilder),
+        ),
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: HomeCareSafetyCopy.readIt,

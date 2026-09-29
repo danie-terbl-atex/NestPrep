@@ -16,6 +16,9 @@ class StepsEditor extends StatefulWidget {
     required this.onAdd,
     required this.onRemove,
     this.errorText,
+    this.suggestions = HomeCareCopy.suggestedSteps,
+    this.addLabel = HomeCareCopy.addStep,
+    this.addHint = HomeCareCopy.addStepHint,
     super.key,
   });
 
@@ -24,6 +27,13 @@ class StepsEditor extends StatefulWidget {
   final ValueChanged<String> onAdd;
   final ValueChanged<String> onRemove;
   final String? errorText;
+
+  /// Common lines offered as one tap each — a job's steps by default; a
+  /// room routine offers what is usually done in that room (home-care
+  /// ADR-0004).
+  final List<String> suggestions;
+  final String addLabel;
+  final String addHint;
 
   @override
   State<StepsEditor> createState() => _StepsEditorState();
@@ -67,8 +77,8 @@ class _StepsEditorState extends State<StepsEditor> {
         if (widget.canAdd) ...[
           const SizedBox(height: NestSpace.sm),
           NestTextField(
-            label: HomeCareCopy.addStep,
-            hint: HomeCareCopy.addStepHint,
+            label: widget.addLabel,
+            hint: widget.addHint,
             controller: _next,
             errorText: error,
             textInputAction: TextInputAction.done,
@@ -77,7 +87,7 @@ class _StepsEditorState extends State<StepsEditor> {
             onSubmitted: _add,
             suffix: NestIconButton(
               icon: Icons.add,
-              label: HomeCareCopy.addStep,
+              label: widget.addLabel,
               variant: NestIconButtonVariant.plain,
               onPressed: _next.text.trim().isEmpty
                   ? null
@@ -89,7 +99,7 @@ class _StepsEditorState extends State<StepsEditor> {
             spacing: NestSpace.sm,
             runSpacing: NestSpace.sm,
             children: [
-              for (final suggestion in HomeCareCopy.suggestedSteps)
+              for (final suggestion in widget.suggestions)
                 if (!written.contains(suggestion))
                   NestChip(
                     label: suggestion,

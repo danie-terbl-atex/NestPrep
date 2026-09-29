@@ -13,6 +13,7 @@ import 'package:nestprep/features/home_care/model/job_event.dart';
 import 'package:nestprep/features/home_care/model/job_photo.dart';
 import 'package:nestprep/features/home_care/model/room_kind.dart';
 import 'package:nestprep/features/home_care/model/spot_mark.dart';
+import 'package:nestprep/features/home_care/model/stock_level.dart';
 import 'package:nestprep/features/home_care/state/photo_intake.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/photos/compressed_photo.dart';
@@ -22,7 +23,7 @@ import 'package:nestprep/shared/photos/photo_compressor.dart';
 /// so a test asserts what a tap asked the backend for (`FE-20`).
 typedef Recorded = (String, Map<String, Object?>);
 
-mixin _Recorder {
+mixin RecordsWrites {
   final writes = <Recorded>[];
 
   /// Set to make the next write fail the way a rules denial does.
@@ -42,7 +43,7 @@ mixin _Recorder {
 
 /// The jobs and their history, driven by hand.
 final class FakeCleaningJobRepository
-    with _Recorder
+    with RecordsWrites
     implements CleaningJobRepository {
   final _jobs = StreamController<List<CleaningJob>>.broadcast();
   final _events = StreamController<List<JobEvent>>.broadcast();
@@ -144,7 +145,7 @@ final class FakeCleaningJobRepository
 
 /// The rooms and the product library, driven by hand.
 final class FakeHomeCareLibraryRepository
-    with _Recorder
+    with RecordsWrites
     implements HomeCareLibraryRepository {
   final _rooms = StreamController<List<HomeCareRoom>>.broadcast();
   final _products = StreamController<List<HomeCareProduct>>.broadcast();
@@ -203,11 +204,19 @@ final class FakeHomeCareLibraryRepository
     required String householdId,
     required String productId,
   }) => record('deleteProduct', {'productId': productId});
+
+  @override
+  Future<void> setStock({
+    required String householdId,
+    required String productId,
+    required StockLevel level,
+    required String by,
+  }) => record('setStock', {'productId': productId, 'level': level, 'by': by});
 }
 
 /// The photos' bytes: what is stored, what was read, and a failure to hand
 /// out on demand.
-final class FakeJobPhotoStore with _Recorder implements JobPhotoStore {
+final class FakeJobPhotoStore with RecordsWrites implements JobPhotoStore {
   final stored = <String, Uint8List>{};
 
   /// Reads that fail, by photo id.

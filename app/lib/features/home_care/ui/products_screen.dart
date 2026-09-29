@@ -7,10 +7,13 @@ import '../../../shared/ui/back_leading.dart';
 import '../model/home_care_board.dart';
 import '../model/home_care_product.dart';
 import '../model/safety/job_safety.dart';
+import '../state/helper_language_controller.dart';
 import '../state/home_care_controller.dart';
+import '../state/read_aloud_controller.dart';
 import 'product_row.dart';
 import 'product_sheet.dart';
 import 'safety_panel.dart';
+import 'translated_safety_row.dart';
 
 /// The household's product library (home-care ADR-0002): what is in the
 /// cupboard, what kind each is, and where it is kept. A parent keeps it; a
@@ -113,16 +116,34 @@ class ProductsScreen extends StatelessWidget {
     }
   }
 
-  /// A helper's view of one product: how to use it safely.
+  /// A helper's view of one product: how to use it safely — in her own
+  /// language when she has chosen one, the English always beside it
+  /// (home-care ADR-0006).
   static Future<void> _readSafety(
     BuildContext context,
     HomeCareProduct product,
-  ) => showNestSheet<void>(
-    context: context,
-    title: product.name,
-    builder: (context) => SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: NestSpace.xl),
-      child: SafetyPanel(safety: JobSafety.of([product])),
-    ),
-  );
+  ) {
+    final language = context.read<HelperLanguageController>();
+    final reader = context.read<ReadAloudController>();
+    final safety = JobSafety.of([product]);
+    final isTranslated = language.language.needsTranslation;
+    if (isTranslated) language.ensure(SafetyPanel.textsOf(safety));
+    return showNestSheet<void>(
+      context: context,
+      title: product.name,
+      builder: (context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: language),
+          ChangeNotifierProvider.value(value: reader),
+        ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: NestSpace.xl),
+          child: SafetyPanel(
+            safety: safety,
+            rowBuilder: isTranslated ? translatedSafetyRow : null,
+          ),
+        ),
+      ),
+    );
+  }
 }

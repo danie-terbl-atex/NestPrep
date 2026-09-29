@@ -186,6 +186,13 @@ describe('every callable declares what it may cost', () => {
         'reconcileSubscriptions',
         'setChildProfile',
         'verifyPurchase',
+        // Home care V2: a low product's grocery line written on the
+        // household's behalf, whatever the marker's groceries grant, once
+        // (home-care ADR-0005); and a translation paid for from a monthly cap
+        // only a server can hold, as the Functions' own service account
+        // (home-care ADR-0006).
+        'addLowStockToGroceries',
+        'translateHomeCareTexts',
       ].sort(),
     );
   });

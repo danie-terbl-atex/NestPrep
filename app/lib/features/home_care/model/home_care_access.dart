@@ -5,6 +5,7 @@ import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import 'cleaning_job.dart';
+import 'routine/room_routine.dart';
 
 /// What the viewer may do in home care — the client's mirror of
 /// `home_care.rules`, used only so nobody is offered what the rules would
@@ -48,6 +49,19 @@ final class HomeCareAccess {
 
   bool canChangeDetails(CleaningJob job) =>
       canManage && job.status.isWithHelper;
+
+  /// Tick a room routine's items: family any, a helper only hers
+  /// (home-care ADR-0004).
+  bool canTickRoutine(RoomRoutine routine) =>
+      canManage ||
+      (isVisible &&
+          viewerMemberId != null &&
+          routine.helperId == viewerMemberId);
+
+  /// Set a member's language: her own, or anybody's for family (home-care
+  /// ADR-0006).
+  bool canSetLanguageOf(String memberId) =>
+      canManage || (isVisible && memberId == viewerMemberId);
 
   /// Who a job can be given to: anybody the household's grant lets see home
   /// care — helpers first, because that is who it is usually for.

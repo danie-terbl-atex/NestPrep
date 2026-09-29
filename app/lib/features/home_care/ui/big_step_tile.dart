@@ -13,12 +13,17 @@ class BigStepTile extends StatelessWidget {
     required this.text,
     required this.isDone,
     required this.onToggle,
+    this.english,
     super.key,
   });
 
   final int number;
   final String text;
   final bool isDone;
+
+  /// The English beneath a translated step, when she asked to see both
+  /// (home-care ADR-0006).
+  final String? english;
 
   /// Null while the job cannot be worked — handed in, or not hers.
   final VoidCallback? onToggle;
@@ -58,14 +63,25 @@ class BigStepTile extends StatelessWidget {
                 ),
                 const SizedBox(width: NestSpace.lg),
                 Expanded(
-                  child: Text(
-                    text,
-                    style: nest.text.title.copyWith(
-                      color: isDone
-                          ? nest.colors.inkSecondary
-                          : nest.colors.ink,
-                      decoration: isDone ? TextDecoration.lineThrough : null,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        text,
+                        style: nest.text.title.copyWith(
+                          color: isDone
+                              ? nest.colors.inkSecondary
+                              : nest.colors.ink,
+                          decoration: isDone
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                      if (english case final String original) ...[
+                        const SizedBox(height: NestSpace.xxs),
+                        Text(original, style: nest.text.caption),
+                      ],
+                    ],
                   ),
                 ),
                 const SizedBox(width: NestSpace.sm),

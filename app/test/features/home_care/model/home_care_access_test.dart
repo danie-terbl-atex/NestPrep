@@ -4,6 +4,7 @@ import 'package:nestprep/features/home_care/model/home_care_board.dart';
 import 'package:nestprep/features/home_care/model/job_status.dart';
 
 import '../../../support/home_care_fixtures.dart';
+import '../../../support/home_care_routine_fixtures.dart';
 import '../../../support/household_fixtures.dart';
 
 /// The client's mirror of `home_care.rules` (home-care ADR-0001). It decides
@@ -18,6 +19,14 @@ void main() {
       expect(access.jobScope, isNull);
     });
 
+    test('ticks anybody’s routine and sets anybody’s language', () {
+      expect(
+        access.canTickRoutine(RoutineFixtures.everyDay(helperId: 'm-gogo')),
+        isTrue,
+      );
+      expect(access.canSetLanguageOf(Fixtures.thandiMemberId), isTrue);
+    });
+
     test('reviews what was handed in, and changes what was not', () {
       expect(access.canReview(HomeCareFixtures.handedIn()), isTrue);
       expect(access.canChangeDetails(HomeCareFixtures.job()), isTrue);
@@ -27,6 +36,16 @@ void main() {
 
   group('a helper on her defaults (`own`)', () {
     final access = HomeCareAccess.of(HomeCareFixtures.helperView());
+
+    test('ticks her own room routines and sets her own language only', () {
+      expect(access.canTickRoutine(RoutineFixtures.everyDay()), isTrue);
+      expect(
+        access.canTickRoutine(RoutineFixtures.everyDay(helperId: 'm-gogo')),
+        isFalse,
+      );
+      expect(access.canSetLanguageOf(Fixtures.thandiMemberId), isTrue);
+      expect(access.canSetLanguageOf(Fixtures.samMemberId), isFalse);
+    });
 
     test('asks for exactly her own jobs, because a rule is not a filter', () {
       expect(access.jobScope, Fixtures.thandiMemberId);

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../features/accounts/state/session_controller.dart';
 import '../features/home_care/data/cleaning_job_repository.dart';
-import '../features/home_care/data/home_care_library_repository.dart';
 import '../features/home_care/data/job_photo_store.dart';
 import '../features/home_care/state/home_care_controller.dart';
 import '../features/home_care/state/job_actions.dart';
@@ -18,33 +17,24 @@ import '../features/home_care/ui/products_screen.dart';
 import '../features/home_care/ui/review_screen.dart';
 import '../features/home_care/ui/rooms_screen.dart';
 import '../features/home_care/ui/step_through_screen.dart';
-import '../features/household/model/household_view.dart';
 import '../shared/time/household_clock.dart';
 import 'home_care_route.dart';
+import 'home_care_scope.dart';
+import 'home_care_v2_routes.dart';
 import 'household_route.dart';
 import 'viewer_member.dart';
 
 /// Home care's routes under the household shell (home-care ADR-0001), in
 /// their own file so the route table gains one line.
 ///
-/// Every screen shares one controller and one set of listeners, which follows
+/// Every screen shares one set of listeners (`homeCareScope`), which follows
 /// the household view — a changed grant can move which jobs the viewer may
 /// ask for (household ADR-0003). One job's three screens share a second
 /// controller of their own, for its history and its photos.
 ShellRoute homeCareRoutes(SessionController session) => ShellRoute(
-  builder: (context, state, child) =>
-      ChangeNotifierProxyProvider<HouseholdView, HomeCareController>(
-        create: (context) => HomeCareController(
-          jobRepository: context.read<CleaningJobRepository>(),
-          libraryRepository: context.read<HomeCareLibraryRepository>(),
-          householdId: HouseholdRoute.idFrom(state),
-          household: context.read<HouseholdView>(),
-        ),
-        update: (context, view, controller) =>
-            controller!..followHousehold(view),
-        child: child,
-      ),
+  builder: homeCareScope,
   routes: [
+    ...homeCareV2Routes(),
     GoRoute(
       path: HomeCareRoute.path,
       builder: (context, state) =>

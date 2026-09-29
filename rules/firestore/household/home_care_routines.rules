@@ -1,0 +1,90 @@
+// ---- home care: room routines (home-care ADR-0004) ----
+
+// A recurring checklist for one room and one helper. `own` reads only the
+// routines whose helper is the caller's profile and asks for exactly those
+// (`helperId ==`), because a rule is not a filter (household ADR-0003).
+match /homeCareRoutines/{routineId} {
+  allow read: if homeCareCanSeeRoutine(householdId, resource.data);
+
+  allow create: if canEdit(householdId, 'homeCare')
+    && request.resource.data.keys().hasOnly(
+         ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
+          'recurrence', 'createdBy', 'createdAt'])
+    && homeCareIsRoutine(householdId, request.resource.data)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if canEdit(householdId, 'homeCare')
+    && onlyChanged(
+         ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
+          'recurrence'])
+    && homeCareIsRoutine(householdId, request.resource.data);
+
+  allow delete: if canEdit(householdId, 'homeCare');
+}
+
+// One occurrence of one routine: the items ticked that day. The id is
+// `{routineId}_{YYYY-MM-DD}`, so ticking the same day twice is the same
+// write, and the helper on it is the routine's — read, not trusted — so an
+// `own` helper can neither tick somebody else's day nor file one under
+// somebody else (home-care ADR-0004, todos ADR-0002).
+match /homeCareRoutineTicks/{tickId} {
+  allow read: if canView(householdId, 'homeCare')
+    || (hasOwnOnly(householdId, 'homeCare')
+          && resource.data.helperId == ownMemberId(householdId));
+
+  allow create, update: if request.resource.data.keys().hasOnly(
+         ['routineId', 'occurrenceDate', 'helperId', 'doneItemIds',
+          'updatedBy', 'updatedAt'])
+    && request.resource.data.occurrenceDate is string
+    && request.resource.data.occurrenceDate.matches(
+         '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+    && tickId == request.resource.data.routineId + '_'
+         + request.resource.data.occurrenceDate
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt')
+    && homeCareMayTickRoutine(
+         householdId,
+         homeCareRoutineData(householdId, request.resource.data.routineId),
+         request.resource.data);
+
+  allow delete: if canEdit(householdId, 'homeCare');
+
+  // Family ticks any routine; a helper with `own` or `view` only hers. The
+  // done list names no more items than the routine has.
+  function homeCareMayTickRoutine(householdId, routine, tick) {
+    return tick.helperId == routine.helperId
+      && tick.doneItemIds is list
+      && tick.doneItemIds.size() <= routine.items.size()
+      && (canEdit(householdId, 'homeCare')
+            || (routine.helperId == ownMemberId(householdId)
+                  && (hasOwnOnly(householdId, 'homeCare')
+                        || canView(householdId, 'homeCare'))));
+  }
+}
+
+function homeCareRoutineData(householdId, routineId) {
+  return get(
+    /databases/$(database)/documents/households/$(householdId)/homeCareRoutines/$(routineId)
+  ).data;
+}
+
+function homeCareCanSeeRoutine(householdId, routine) {
+  return canView(householdId, 'homeCare')
+    || (hasOwnOnly(householdId, 'homeCare')
+          && routine.helperId == ownMemberId(householdId));
+}
+
+function homeCareIsRoutine(householdId, routine) {
+  return homeCareIsName(routine.name, 60)
+    && isNonEmptyString(routine.roomId)
+    && routine.cadence in ['daily', 'weekly', 'deepClean']
+    && routine.items is list
+    && routine.items.size() > 0
+    && routine.items.size() <= 30
+    && isNonEmptyString(routine.helperId)
+    && exists(/databases/$(database)/documents/households/$(householdId)/members/$(routine.helperId))
+    && routine.firstDate is string
+    && routine.firstDate.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+    && (routine.recurrence == null || routine.recurrence is map);
+}

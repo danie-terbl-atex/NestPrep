@@ -234,6 +234,14 @@ void main() {
     'showPaywall(context',
     '_subscription.cancel())',
     '_subscription?.cancel())',
+    // Home care V2 (home-care ADR-0006). Asking the phone which voices it has
+    // and stopping it both catch the engine's own refusals in the adapter;
+    // re-listening for the languages sends its errors to its onError; and a
+    // translation's fetch keeps its AppFailure as the language bar's failure.
+    '_ask(language))',
+    '_readAloud.stop())',
+    '_listen())',
+    'Future.microtask(() => _fetch(language wanted)))',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

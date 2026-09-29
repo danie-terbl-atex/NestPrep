@@ -129,7 +129,7 @@ List<CalendarDate> _expandMonthly(
       continue;
     }
     if (day.isAfter(lastDay)) break;
-    if (day.isBefore(firstDate)) continue;
+    if (day.isBefore(from)) continue;
     occurrences.add(day);
   }
   return occurrences;

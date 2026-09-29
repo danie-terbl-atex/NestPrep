@@ -321,6 +321,25 @@ enum HomeCareProblem {
   /// A job handed in with a step not ticked. The rules refuse it too; this
   /// is the same answer before the upload rather than after.
   stepsNotDone,
+
+  // `translateHomeCareTexts`'s refusals (home-care ADR-0006), named as the
+  // Function names them in `functions/src/home_care/errors.ts`.
+
+  /// The household's `homeCare` grant gives this person nothing.
+  homeCareNotShared,
+
+  /// The `homeCareHelperLanguage` switch is off.
+  translationSwitchedOff,
+
+  /// This month's translations are spent; what was translated before still
+  /// shows.
+  translationLimitReached,
+
+  /// Google does not translate into this language.
+  languageUnsupported,
+
+  /// Google could not be reached; nothing was charged.
+  translationUnavailable,
 }
 
 final class HomeCareFailure extends AppFailure {
