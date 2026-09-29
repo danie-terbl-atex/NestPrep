@@ -46,11 +46,15 @@ import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'chore_points_model_fixtures.dart';
+import 'document_tools_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'grocery_plan_model_fixtures.dart';
 import 'home_care_model_fixtures.dart';
 import 'lunch_planning_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
+import 'notifications_model_fixtures.dart';
+import 'referral_model_fixtures.dart';
+import 'two_homes_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -306,6 +310,9 @@ List<ModelFixture> modelFixtures() {
     willRenew: true,
     managedByMemberId: 'm1',
     isTest: true,
+    storeUntil: at,
+    referralUntil: at,
+    referralDaysWaiting: 30,
   );
   final synced = SyncedEvent(
     id: 'c1_abc',
@@ -665,7 +672,13 @@ List<ModelFixture> modelFixtures() {
       value: vaultView,
       toJson: vaultView.toJson,
       fromJson: VaultView.fromJson,
-      keys: const {'documentId', 'documentName', 'viewerMemberId', 'viewedAt'},
+      keys: const {
+        'documentId',
+        'documentName',
+        'viewerMemberId',
+        'shareId',
+        'viewedAt',
+      },
       note:
           'written only by openVaultDocument; the app reads it and never '
           'writes it (documents ADR-0003).',
@@ -686,6 +699,10 @@ List<ModelFixture> modelFixtures() {
         'willRenew',
         'managedByMemberId',
         'isTest',
+        // Given months (subscriptions ADR-0002).
+        'storeUntil',
+        'referralUntil',
+        'referralDaysWaiting',
       },
       note:
           'written only by the subscriptions Functions; the rules refuse '
@@ -697,12 +714,20 @@ List<ModelFixture> modelFixtures() {
     ...nannyModelFixtures(),
     // home-care (home-care ADR-0001).
     ...homeCareModelFixtures(),
+    // documents V2: a shared link (documents ADR-0006).
+    ...documentToolsModelFixtures(),
+    // co-parenting: a child in two homes (household ADR-0004).
+    ...twoHomesModelFixtures(),
+    // notifications (notifications ADR-0001, ADR-0003).
+    ...notificationsModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
     // lunch-box V2 — pantry, budget, kid picks (lunch-box ADR-0006 to 0008).
     ...lunchPlanningModelFixtures(fixtureInstant),
     // ---- groceries phase 2 (groceries ADR-0002) ----
     ...groceryPlanModelFixtures(fixtureInstant),
+    // referrals: give a month, get a month (subscriptions ADR-0002).
+    ...referralModelFixtures(fixtureInstant),
   ];
 }
 

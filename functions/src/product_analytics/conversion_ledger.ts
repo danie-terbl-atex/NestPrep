@@ -4,7 +4,7 @@ import { Timestamp, type Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
 import { householdRef } from '../household/documents';
-import { conversionRef, expiryFor, stringField } from './analytics_documents';
+import { conversionRef, expiryFor, householdCohortRef, stringField } from './analytics_documents';
 import { countingZoneFor, weekKeyOf } from './iso_week';
 
 /**
@@ -53,8 +53,46 @@ export const premiumConversionInput = z.object({
 export type PremiumConversion = z.infer<typeof premiumConversionInput>;
 
 /**
- * Records one conversion, once. Returns false when this purchase was already
- * recorded or its household no longer exists, true when it was new.
+ * How long a paywall opening keeps the credit for a purchase that follows it
+ * (product-analytics ADR-0002).
+ */
+export const ATTRIBUTION_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Which answer decided a conversion's trigger. */
+export const ATTRIBUTIONS = ['lastPaywall', 'purchase'] as const;
+export type Attribution = (typeof ATTRIBUTIONS)[number];
+
+export interface AttributedTrigger {
+  readonly trigger: ConversionTrigger;
+  readonly attribution: Attribution;
+}
+
+/**
+ * The trigger a conversion counts against: the household's last paywall
+ * opening, when there was one within the window before the purchase;
+ * otherwise what the purchase itself said opened it (product-analytics
+ * ADR-0002). Pure, so the window's edges are tested without a clock.
+ */
+export function attributeConversion(
+  purchaseTrigger: ConversionTrigger,
+  lastPaywall: { readonly trigger: unknown; readonly openedAt: Date | null },
+  convertedAt: Date,
+): AttributedTrigger {
+  const { trigger, openedAt } = lastPaywall;
+  const known = CONVERSION_TRIGGERS.find((candidate) => candidate === trigger);
+  if (known !== undefined && openedAt !== null) {
+    const elapsed = convertedAt.getTime() - openedAt.getTime();
+    if (elapsed >= 0 && elapsed <= ATTRIBUTION_WINDOW_MS) {
+      return { trigger: known, attribution: 'lastPaywall' };
+    }
+  }
+  return { trigger: purchaseTrigger, attribution: 'purchase' };
+}
+
+/**
+ * Records one conversion, once, against the trigger [attributeConversion]
+ * picks. Returns false when this purchase was already recorded or its
+ * household no longer exists, true when it was new.
  */
 export async function recordPremiumConversion(
   store: Firestore,
@@ -66,12 +104,23 @@ export async function recordPremiumConversion(
     if (!household.exists) return false;
     const ref = conversionRef(store, hashedId(conversion.conversionId));
     if ((await transaction.get(ref)).exists) return false;
+    const cohort = await transaction.get(householdCohortRef(store, conversion.householdId));
+    const openedAt: unknown = cohort.get('lastPaywallOpenedAt');
+    const { trigger, attribution } = attributeConversion(
+      conversion.trigger,
+      {
+        trigger: cohort.get('lastPaywallTrigger'),
+        openedAt: openedAt instanceof Timestamp ? openedAt.toDate() : null,
+      },
+      conversion.convertedAt,
+    );
 
     const zone = countingZoneFor(stringField(household.get('timeZone')));
     transaction.create(ref, {
       householdId: conversion.householdId,
       week: weekKeyOf(conversion.convertedAt, zone),
-      trigger: conversion.trigger,
+      trigger,
+      attribution,
       convertedAt: Timestamp.fromDate(conversion.convertedAt),
       expireAt: expiryFor(conversion.convertedAt),
     });

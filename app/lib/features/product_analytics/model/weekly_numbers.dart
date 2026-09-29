@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/recurrence/calendar_date_converter.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../subscriptions/model/premium_feature.dart';
+import 'trigger_conversion.dart';
 
 part 'weekly_numbers.freezed.dart';
 part 'weekly_numbers.g.dart';
@@ -38,6 +40,22 @@ abstract class WeeklyNumbers with _$WeeklyNumbers {
 
     /// False until every family in the cohort has had its first seven days.
     @Default(false) bool isInviteCohortComplete,
+
+    /// Families shown the paywall at all this week (product-analytics
+    /// ADR-0002) — what conversion is read against.
+    @Default(0) int paywallFamilies,
+
+    /// The same by trigger — the server's `CONVERSION_TRIGGERS`, which are
+    /// `PremiumFeature`'s names. A family counts once for each it met.
+    @Default(<String, int>{}) Map<String, int> paywallFamiliesByTrigger,
+    @Default(0) int premiumConversions,
+    @Default(<String, int>{}) Map<String, int> premiumConversionsByTrigger,
+
+    /// Give a month, get a month (subscriptions ADR-0002): codes entered,
+    /// referrals that became a family, and the free months that gave.
+    @Default(0) int referralsRedeemed,
+    @Default(0) int referralsQualified,
+    @Default(0) int referralMonthsGiven,
     @NullableTimestampConverter() DateTime? computedAt,
   }) = _WeeklyNumbers;
 
@@ -51,4 +69,30 @@ abstract class WeeklyNumbers with _$WeeklyNumbers {
   int? get inviteRatePercent => newFamilies == 0
       ? null
       : (newFamiliesInvitingAnAdult * 100 / newFamilies).round();
+
+  /// Conversion as a whole percentage of the families shown premium, or null
+  /// when nobody was — never a 0% that never happened.
+  int? get conversionRatePercent => paywallFamilies == 0
+      ? null
+      : (premiumConversions * 100 / paywallFamilies).round();
+
+  /// Conversion by the feature that opened the paywall, for every trigger
+  /// somebody met or bought through this week, in the order the triggers are
+  /// declared.
+  List<TriggerConversion> get byTrigger => [
+    for (final feature in PremiumFeature.values)
+      if ((paywallFamiliesByTrigger[feature.name] ?? 0) > 0 ||
+          (premiumConversionsByTrigger[feature.name] ?? 0) > 0)
+        TriggerConversion(
+          feature: feature,
+          families: paywallFamiliesByTrigger[feature.name] ?? 0,
+          conversions: premiumConversionsByTrigger[feature.name] ?? 0,
+        ),
+  ];
+
+  bool get hasPremiumActivity =>
+      paywallFamilies > 0 ||
+      premiumConversions > 0 ||
+      referralsRedeemed > 0 ||
+      referralsQualified > 0;
 }

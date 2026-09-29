@@ -1,0 +1,22 @@
+// ---- notifications: the phones an account's pushes go to (notifications ADR-0001) ----
+//
+// One document per phone an account — or a kid device — is signed in on,
+// keyed by the push token itself, so registering the same phone twice is the
+// same write. Only its own account reads or writes it: a token is how to
+// reach one person's phone, and nobody else needs it. Functions forget a
+// token when FCM says it belongs to no phone any more.
+
+match /users/{userId}/pushTokens/{token} {
+  function isOwnPushToken() {
+    return isSignedIn() && userId == uid();
+  }
+
+  allow read, delete: if isOwnPushToken();
+
+  allow create, update: if isOwnPushToken()
+    && request.resource.data.keys().hasOnly(['token', 'platform', 'updatedAt'])
+    && request.resource.data.token == token
+    && token.size() <= 4096
+    && request.resource.data.platform in ['android', 'ios']
+    && isServerTime('updatedAt');
+}

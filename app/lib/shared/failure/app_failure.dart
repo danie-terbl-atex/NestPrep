@@ -1,8 +1,12 @@
 import '../../features/subscriptions/model/premium_feature.dart';
 
-// A feature's failures may live in a part of this library, so the sealed
-// family stays one library without this file passing `ENG-05`'s cap.
+// Later features' members of the sealed family, in parts of this library so
+// the switch over it stays exhaustive (`ENG-05`).
 part 'account_data_failure.dart';
+part 'nanny_hub_failure.dart';
+part 'calendar_v2_failures.dart';
+part 'co_parent_failure.dart';
+part 'lunch_planning_failure.dart';
 
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message
@@ -205,6 +209,36 @@ enum DocumentProblem {
 
   /// The bytes arrived but are not a PDF or picture the app can draw.
   cannotRender,
+
+  // ---- documents V2: shared links and offline copies (documents ADR-0006,
+  // ADR-0007). The first five are reasons `createDocumentShare` and
+  // `revokeDocumentShare` give; the last three are the phone's own.
+
+  /// The capability is switched off (foundation ADR-0014).
+  featureOff,
+
+  /// Only the family, or a vault's owner, sends a document outside the
+  /// household.
+  notAllowedToShare,
+
+  /// The shift a link was to end with has already ended.
+  shiftNotOpen,
+
+  /// The household already has as many live links as it may.
+  tooManyShares,
+
+  /// The link was removed while somebody was stopping it.
+  shareNotFound,
+
+  /// This phone already keeps as many offline copies as it may.
+  offlineLimitReached,
+
+  /// An offline copy could not be read back — changed on disk, or its key
+  /// is gone. It is removed rather than shown.
+  offlineCopyUnreadable,
+
+  /// This phone would not give NestPrep a safe place for its key.
+  offlineStorageUnavailable,
 }
 
 final class DocumentFailure extends AppFailure {
@@ -449,78 +483,37 @@ final class PremiumRequiredFailure extends AppFailure {
   final PremiumFeature feature;
 }
 
+// ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
+
+/// Why sharing or entering a referral code did not happen. The server's
+/// `REFERRAL_REFUSALS` is the other half, and `referral_contract_test.dart`
+/// reads both; membership refusals stay `HouseholdProblem`.
+enum ReferralProblem {
+  /// Switched off in `appConfig/flags` (foundation ADR-0014).
+  referralsOff,
+
+  /// A helper, carer or kid asked. Referring is the family's.
+  onlyFamilyCanRefer,
+  referralCodeNotFound,
+
+  /// The household's own code, or one from a household somebody here is in.
+  ownReferralCode,
+  alreadyRedeemed,
+
+  /// A code is entered in the household's first seven days.
+  tooLateToRedeem,
+  tooManyRedemptions,
+}
+
+final class ReferralFailure extends AppFailure {
+  const ReferralFailure(this.problem);
+
+  final ReferralProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);
 
   final Object cause;
-}
-
-// ---- nanny hub (nanny-hub ADR-0002, ADR-0003) ----
-
-/// Why something in the nanny hub did not happen. The first four are a
-/// `reason` `endNannyShift` puts in its error's details — the server's
-/// `NANNY_REFUSALS` is the other half, and a test reads both. The rest are the
-/// phone's own: a photo that could not be taken or read, a call that nothing
-/// on the phone would place. Membership refusals stay `HouseholdProblem`.
-enum NannyHubProblem {
-  /// The household's `nannyHub` grant is not `edit` for this person.
-  hubNotShared,
-
-  /// The shift was never there, or is gone.
-  shiftNotFound,
-
-  /// Somebody else ended the shift a moment ago.
-  shiftAlreadyEnded,
-
-  /// A carer ends their own shift; this one is somebody else's.
-  notYourShift,
-
-  /// The picked photo is not a picture the app can read.
-  photoUnreadable,
-
-  /// Even compressed, the photo is past what the rules keep.
-  photoTooLarge,
-
-  /// The camera or the photo library would not open.
-  cameraUnavailable,
-
-  /// Nothing on the phone would place the call.
-  cannotCall,
-}
-
-final class NannyHubFailure extends AppFailure {
-  const NannyHubFailure(this.problem);
-
-  final NannyHubProblem problem;
-}
-
-// ---- lunch-box V2: pantry, budget, kid picks (lunch-box ADR-0006 to 0008) ----
-
-/// Why planning from the pantry, a price or a kid's pick did not happen.
-enum LunchPlanningProblem {
-  /// That box was marked packed already — on this phone or another.
-  alreadyPacked,
-
-  /// The pantry did not have what the box took, or had more than it keeps:
-  /// another phone changed it a moment ago.
-  pantryChanged,
-
-  /// A child is offered two or three things, not one and not a menu.
-  wrongNumberOfOptions,
-
-  /// An option was refused by the rules: not safe for the child now.
-  optionNotSafe,
-
-  /// A kid's pick was refused: it is no longer one of the options.
-  notAnOption,
-
-  /// A price or a budget the rules would not keep.
-  amountOutOfRange,
-}
-
-final class LunchPlanningFailure extends AppFailure {
-  const LunchPlanningFailure(this.problem);
-
-  final LunchPlanningProblem problem;
 }

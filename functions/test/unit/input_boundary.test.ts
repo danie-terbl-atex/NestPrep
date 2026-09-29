@@ -15,7 +15,26 @@ import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
 import { deleteAccountInput } from '../../src/account_data/schemas';
+import { endNannyShiftInput, setCarerShiftOnlyInput } from '../../src/nanny_hub/schemas';
+import {
+  createDocumentShareInput,
+  revokeDocumentShareInput,
+} from '../../src/documents/share/share_schemas';
+import { readSchoolLetterInput } from '../../src/school_letter/schemas';
+import {
+  acceptCoParentInviteInput,
+  answerCoParentChangeInput,
+  confirmCoParentLinkInput,
+  createCoParentInviteInput,
+  endCoParentLinkInput,
+  previewCoParentInviteInput,
+  proposeCoParentChangeInput,
+  saveCoParentHandoverInput,
+} from '../../src/coparent/schemas';
+import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
+import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
+import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../src/referrals/schemas';
 import {
   cancelKidPairingInput,
   createKidPairingInput,
@@ -40,6 +59,7 @@ import {
   MAX_TEXT_LENGTH,
   translateHomeCareTextsInput,
 } from '../../src/home_care/schemas';
+import { sendTestNotificationInput } from '../../src/notifications/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -164,6 +184,94 @@ const validBodies = {
     schema: translateHomeCareTextsInput,
     body: { householdId: 'h1', language: 'zu', texts: ['Open a window'] },
   },
+  // Documents V2: a shared link (documents ADR-0006). The owner, the shift and
+  // the PIN are required-and-nullable, so the app always says which it means.
+  createDocumentShare: {
+    schema: createDocumentShareInput,
+    body: {
+      householdId: 'h1',
+      ownerMemberId: 'm-emma',
+      documentId: 'doc-1',
+      lifetimeHours: 24,
+      shiftId: null,
+      pin: '2468',
+    },
+  },
+  revokeDocumentShare: {
+    schema: revokeDocumentShareInput,
+    body: { householdId: 'h1', shareId: 's1' },
+  },
+  // Snap a school letter: the letter travels in the call and is never stored
+  // (calendar ADR-0005).
+  readSchoolLetter: {
+    schema: readSchoolLetterInput,
+    body: { householdId: 'h1', mimeType: 'application/pdf', data: 'JVBERi0xLjc=' },
+  },
+  // Co-parenting (household ADR-0004): every optional text is
+  // required-and-nullable, so the app always says whether there is one.
+  createCoParentInvite: {
+    schema: createCoParentInviteInput,
+    body: { householdId: 'h1', childMemberId: 'm-sam', home: MUMS_HOME, schedule: ALTERNATING },
+  },
+  previewCoParentInvite: { schema: previewCoParentInviteInput, body: { code: 'ABCD2345' } },
+  acceptCoParentInvite: {
+    schema: acceptCoParentInviteInput,
+    body: {
+      householdId: 'h2',
+      code: 'ABCD2345',
+      childMemberId: 'm-sam',
+      newChildName: null,
+      home: DADS_HOME,
+    },
+  },
+  confirmCoParentLink: {
+    schema: confirmCoParentLinkInput,
+    body: { householdId: 'h1', linkId: 'l1', accept: true },
+  },
+  endCoParentLink: { schema: endCoParentLinkInput, body: { householdId: 'h1', linkId: 'l1' } },
+  proposeCoParentChange: {
+    schema: proposeCoParentChangeInput,
+    body: {
+      householdId: 'h1',
+      linkId: 'l1',
+      change: { kind: 'swap', from: '2026-10-02', to: '2026-10-04', toSide: 'a' },
+      note: null,
+    },
+  },
+  answerCoParentChange: {
+    schema: answerCoParentChangeInput,
+    body: { householdId: 'h1', linkId: 'l1', requestId: 'r1', answer: 'accept', note: null },
+  },
+  saveCoParentHandover: {
+    schema: saveCoParentHandoverInput,
+    body: {
+      householdId: 'h1',
+      linkId: 'l1',
+      date: '2026-10-05',
+      items: [{ text: 'School bag', packed: true }],
+      medicine: null,
+      homework: null,
+      clothes: null,
+      note: null,
+    },
+  },
+  // Nanny hub V2: marking a carer shift-only (nanny-hub ADR-0006).
+  setCarerShiftOnly: {
+    schema: setCarerShiftOnlyInput,
+    body: { householdId: 'h1', memberId: 'm-nomsa', shiftOnly: true },
+  },
+  // Referrals and conversion by trigger (subscriptions ADR-0002,
+  // product-analytics ADR-0002).
+  ensureReferralCode: { schema: ensureReferralCodeInput, body: { householdId: 'h1' } },
+  redeemReferralCode: {
+    schema: redeemReferralCodeInput,
+    body: { householdId: 'h1', code: 'ABCD2345' },
+  },
+  recordPaywallOpened: {
+    schema: recordPaywallOpenedInput,
+    body: { householdId: 'h1', trigger: 'prepList' },
+  },
+  sendTestNotification: { schema: sendTestNotificationInput, body: { householdId: 'h1' } },
 } as const;
 
 describe('translateHomeCareTexts refuses what is not a translation to make', () => {
@@ -226,6 +334,24 @@ describe('setChildProfile’s parental consent (accounts ADR-0005)', () => {
     expect(() => parseInput(setChildProfileInput, { ...body, guardianConsent })).toThrow(
       HttpsError,
     );
+  });
+});
+
+describe('a referral code as a person types it (subscriptions ADR-0002)', () => {
+  const body = validBodies.redeemReferralCode.body;
+
+  it('forgives spaces and lower case, and hands on the code as it is stored', () => {
+    const parsed = parseInput(redeemReferralCodeInput, { ...body, code: ' abcd 2345 ' });
+    expect(parsed.code).toBe('ABCD2345');
+  });
+
+  it.each([
+    ['a letter people confuse with a digit', 'ABCD0123'],
+    ['a code one short', 'ABCD234'],
+    ['a code one long', 'ABCD23456'],
+    ['something that is not a code at all', 'sam@example.com'],
+  ])('refuses %s', (_, code) => {
+    expect(() => parseInput(redeemReferralCodeInput, { ...body, code })).toThrow(HttpsError);
   });
 });
 
@@ -480,5 +606,69 @@ describe('a caller who must have proved their address', () => {
       expect(refusal.code).toBe('unauthenticated');
       expect(refusal.details).toEqual({ reason: 'notSignedIn' });
     }
+  });
+});
+
+describe('a school letter', () => {
+  const { schema, body } = validBodies.readSchoolLetter;
+
+  it('is a photo or a PDF, and nothing else', () => {
+    for (const mimeType of ['image/jpeg', 'image/png', 'application/pdf']) {
+      expect(() => parseInput(schema, { ...body, mimeType })).not.toThrow();
+    }
+    for (const mimeType of ['image/gif', 'text/html', 'application/zip', '']) {
+      expect(() => parseInput(schema, { ...body, mimeType }), mimeType).toThrow(HttpsError);
+    }
+  });
+
+  it('is not empty, and not larger than a callable should carry', () => {
+    expect(() => parseInput(schema, { ...body, data: '' })).toThrow(HttpsError);
+    expect(() => parseInput(schema, { ...body, data: 'A'.repeat(12_000_000) })).toThrow(HttpsError);
+  });
+});
+
+describe('co-parenting inputs (household ADR-0004)', () => {
+  const accept = validBodies.acceptCoParentInvite;
+
+  it('a child is an existing profile or a new name, never both and never neither', () => {
+    expect(() =>
+      parseInput(accept.schema, { ...accept.body, childMemberId: null, newChildName: 'Sam' }),
+    ).not.toThrow();
+    expect(() => parseInput(accept.schema, { ...accept.body, newChildName: 'Sam' })).toThrow(
+      HttpsError,
+    );
+    expect(() => parseInput(accept.schema, { ...accept.body, childMemberId: null })).toThrow(
+      HttpsError,
+    );
+  });
+
+  it('a home is drawn in a palette colour, not any string', () => {
+    expect(() =>
+      parseInput(accept.schema, { ...accept.body, home: { name: 'Dad', color: '#ff0000' } }),
+    ).toThrow(HttpsError);
+  });
+
+  it('a blank note is no note', () => {
+    const { schema, body } = validBodies.answerCoParentChange;
+    expect(parseInput(schema, { ...body, note: '   ' }).note).toBeNull();
+  });
+
+  it('a change is a swap or a schedule, and nothing else', () => {
+    const { schema, body } = validBodies.proposeCoParentChange;
+    expect(() =>
+      parseInput(schema, { ...body, change: { kind: 'schedule', schedule: ALTERNATING } }),
+    ).not.toThrow();
+    expect(() => parseInput(schema, { ...body, change: { kind: 'forever' } })).toThrow(HttpsError);
+  });
+
+  it('an answer is accept, decline or withdraw', () => {
+    const { schema, body } = validBodies.answerCoParentChange;
+    expect(() => parseInput(schema, { ...body, answer: 'insist' })).toThrow(HttpsError);
+  });
+
+  it('a handover holds at most thirty bag items', () => {
+    const { schema, body } = validBodies.saveCoParentHandover;
+    const items = Array.from({ length: 31 }, () => ({ text: 'Sock', packed: false }));
+    expect(() => parseInput(schema, { ...body, items })).toThrow(HttpsError);
   });
 });

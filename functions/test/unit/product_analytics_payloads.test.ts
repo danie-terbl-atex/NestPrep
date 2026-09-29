@@ -7,6 +7,8 @@ import {
 } from '../../src/product_analytics/analytics_documents';
 import { premiumConversionInput } from '../../src/product_analytics/conversion_ledger';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
+import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
+import { NO_REFERRALS } from '../../src/product_analytics/referral_counts';
 import { summariseWeek } from '../../src/product_analytics/weekly_summary';
 import { ALLOWED_FIELDS, FORBIDDEN_FIELD_WORDS } from '../product_analytics_fields';
 
@@ -33,10 +35,17 @@ describe('what the beta numbers are allowed to hold', () => {
     const numbers = summariseWeek({
       week: '2026-W40',
       householdWeeks: [
-        { householdId: 'h1', week: '2026-W40', activeMemberIds: ['m1', 'm2'], lunchPlanIds: [] },
+        {
+          householdId: 'h1',
+          week: '2026-W40',
+          activeMemberIds: ['m1', 'm2'],
+          lunchPlanIds: [],
+          paywallTriggers: ['prepList'],
+        },
       ],
       cohort: [],
       conversions: [],
+      referrals: NO_REFERRALS,
       isInviteCohortComplete: false,
     });
     const allowed = ALLOWED_FIELDS['analyticsWeeks'] ?? [];
@@ -88,6 +97,24 @@ describe('what a client can send', () => {
     expect(recordActivityInput.safeParse({}).success).toBe(false);
     expect(recordActivityInput.safeParse({ householdId: '' }).success).toBe(false);
     expect(recordActivityInput.safeParse({ householdId: 'x'.repeat(65) }).success).toBe(false);
+  });
+});
+
+describe('a paywall opening (product-analytics ADR-0002)', () => {
+  it('takes a household and a trigger from the closed list, and drops anything else', () => {
+    expect(
+      recordPaywallOpenedInput.parse({
+        householdId: 'h1',
+        trigger: 'prepList',
+        childName: 'Mia',
+      }),
+    ).toEqual({ householdId: 'h1', trigger: 'prepList' });
+  });
+
+  it('refuses a trigger that is free text', () => {
+    expect(
+      recordPaywallOpenedInput.safeParse({ householdId: 'h1', trigger: 'Mia"s lunches' }).success,
+    ).toBe(false);
   });
 });
 

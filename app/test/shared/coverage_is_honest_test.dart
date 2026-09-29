@@ -99,6 +99,24 @@ void main() {
         'opens the platform document scanner',
     'lib/features/documents/data/printing_pdf_page_renderer.dart':
         'rasterises through the platform PDF engine',
+    // documents V2 and the switches (documents ADR-0006, ADR-0007,
+    // foundation ADR-0014).
+    'lib/app/document_tools_providers.dart':
+        'builds the shared-link and offline-copy providers over live plugins',
+    'lib/features/documents/data/firestore_document_share_repository.dart':
+        'reads Firestore',
+    'lib/features/documents/data/firestore_offline_access_check.dart':
+        'reads Firestore from the server',
+    'lib/features/documents/data/secure_storage_offline_key_vault.dart':
+        'wraps the platform keystore',
+    'lib/features/documents/data/document_share_directory.dart':
+        'interface only',
+    'lib/features/documents/data/document_share_repository.dart':
+        'interface and a constant only',
+    'lib/features/documents/data/offline_access_check.dart':
+        'an enum and an interface only',
+    'lib/features/documents/data/offline_copy_store.dart': 'interface only',
+    'lib/features/documents/data/offline_key_vault.dart': 'interface only',
     // nanny hub (nanny-hub ADR-0002, ADR-0003).
     'lib/app/nanny_hub_providers.dart':
         'builds the nanny hub providers over live Firebase and plugins',
@@ -112,6 +130,13 @@ void main() {
         'wraps FirebaseStorage',
     'lib/features/nanny_hub/data/image_picker_photo_picker.dart':
         'opens the platform camera and photo library',
+    // calendar V2 (calendar ADR-0005, ADR-0006).
+    'lib/app/calendar_v2_providers.dart':
+        'builds calendar V2 over live Functions and plugins',
+    'lib/features/school_letter/data/callable_school_letter_reader.dart':
+        'calls Functions',
+    'lib/features/mental_load/data/platform_card_image_sharer.dart':
+        'opens the platform share sheet',
 
     // Found absent on 2026-09-29 with a fresh report, from features built in
     // parallel: each wraps a platform or a live Firebase.
@@ -128,6 +153,21 @@ void main() {
         'builds the subscription providers over live Firebase and the store',
     'lib/features/subscriptions/data/in_app_purchase_store_billing.dart':
         'wraps the platform store plugin',
+    // co-parenting (household ADR-0004).
+    'lib/app/two_homes_providers.dart':
+        'builds the two-homes providers over live Firebase',
+    'lib/features/two_homes/data/callable_two_homes_directory.dart':
+        'calls Functions',
+    // Referrals and conversion by trigger (subscriptions ADR-0002,
+    // product-analytics ADR-0002).
+    'lib/app/referral_providers.dart':
+        'builds the referral providers over live Firebase',
+    'lib/features/referrals/data/firestore_referral_repository.dart':
+        'reads Firestore',
+    'lib/features/referrals/data/callable_referral_directory.dart':
+        'calls Functions',
+    'lib/features/product_analytics/data/callable_paywall_open_recorder.dart':
+        'calls Functions',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -198,6 +238,14 @@ void main() {
     'lib/features/subscriptions/model/premium_feature.dart': 'one enum only',
     'lib/features/subscriptions/model/subscription_plan.dart': 'one enum only',
 
+    'lib/features/school_letter/data/school_letter_reader.dart':
+        'interface only',
+    'lib/features/school_letter/data/letter_picker.dart':
+        'an enum and an interface only',
+    'lib/features/mental_load/data/card_image_sharer.dart': 'interface only',
+    'lib/features/two_homes/data/two_homes_repository.dart': 'interface only',
+    'lib/features/two_homes/data/two_homes_directory.dart':
+        'an enum and an interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their
@@ -224,6 +272,10 @@ void main() {
         'interface only',
     'lib/features/home_care/data/job_photo_store.dart': 'interface only',
     'lib/features/home_care/data/photo_source.dart': 'interface only',
+    'lib/features/referrals/data/referral_repository.dart': 'interface only',
+    'lib/features/referrals/data/referral_directory.dart': 'interface only',
+    'lib/features/product_analytics/data/paywall_open_recorder.dart':
+        'interface only',
     'lib/features/home_care/model/product_kind.dart': 'enum only',
     'lib/features/home_care/model/room_kind.dart': 'enum only',
     'lib/features/home_care/model/safety/precaution.dart': 'enum only',

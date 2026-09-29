@@ -29,6 +29,8 @@ void main() {
     ('LunchKidPicksCopy', 'lib/shared/copy/lunch_kid_picks_copy.dart'),
     // account data (accounts ADR-0006).
     ('AccountDataCopy', 'lib/shared/copy/account_data_copy.dart'),
+    // notifications (notifications ADR-0001 to ADR-0003).
+    ('NotificationsCopy', 'lib/shared/copy/notifications_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();

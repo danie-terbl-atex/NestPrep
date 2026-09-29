@@ -10,6 +10,7 @@ import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:provider/provider.dart';
 
+import '../support/fake_feature_flag_source.dart';
 import '../support/fake_household.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/household_fixtures.dart';
@@ -60,6 +61,10 @@ void main() {
       ),
       // The shell counts a household as opened (product-analytics ADR-0001).
       providers: [
+        // The nanny hub's carer scope reads the switches (nanny-hub ADR-0006).
+        ChangeNotifierProvider(
+          create: (_) => testFlagsController(TestFlags.on),
+        ),
         Provider<ActivityHeartbeat>(
           create: (_) =>
               ActivityHeartbeat(activityRecorder: FakeActivityRecorder()),

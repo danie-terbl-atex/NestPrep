@@ -6,11 +6,15 @@
 // is small on purpose: a photo past it was not made by the app. Whoever
 // may read the hub sees them; whoever may write it adds them; a photo is
 // removed by whoever added it, or by family.
+//
+// A carer a parent marked shift-only (nanny-hub ADR-0006) is refused outside
+// their booked window (`shared/shift_window.rules`).
 match /households/{householdId}/nannyHub/{photoId} {
-  allow read: if canView(householdId, 'nannyHub');
+  allow read: if canView(householdId, 'nannyHub') && isOnShiftIfShiftOnly(householdId);
 
   allow create: if resource == null
     && canEdit(householdId, 'nannyHub')
+    && isOnShiftIfShiftOnly(householdId)
     && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
     // 2 MiB, written as bytes — the number `nanny_contract_test.dart` reads.
     && request.resource.size <= 2097152
@@ -21,5 +25,6 @@ match /households/{householdId}/nannyHub/{photoId} {
 
   allow delete: if isFamily(householdId)
     || (canEdit(householdId, 'nannyHub')
+          && isOnShiftIfShiftOnly(householdId)
           && resource.metadata.uploadedByUid == request.auth.uid);
 }

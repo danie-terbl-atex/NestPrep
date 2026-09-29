@@ -1,7 +1,7 @@
 import { deleteApp, getApps, initializeApp, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
-import { getStorage } from 'firebase-admin/storage';
+import { getStorage, type Storage } from 'firebase-admin/storage';
 import { FUNCTIONS_REGION } from '../../src/shared/region';
 
 /**
@@ -178,6 +178,15 @@ export function adminAuth(): Auth {
  */
 export function adminBucket(): Bucket {
   return getStorage(testApp()).bucket(`${PROJECT_ID}.firebasestorage.app`);
+}
+
+/**
+ * Storage as the server sees it, for the one feature whose Function reads
+ * bytes: a shared link streams a document to somebody with no account
+ * (documents ADR-0006).
+ */
+export function adminStorage(): Storage {
+  return getStorage(testApp());
 }
 
 /** Where an HTTP (not callable) Function is served in the emulator. */

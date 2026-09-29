@@ -15,8 +15,10 @@ import {
   storedHouseholdWeek,
   weeklyTotalsRef,
 } from './analytics_documents';
+import { REFERRALS } from '../referrals/referral_documents';
 import { storedConversion } from './conversion_ledger';
 import { LAUNCH_TIME_ZONE, shiftWeek, weekKeyOf } from './iso_week';
+import { countedReferral, countReferrals } from './referral_counts';
 import { summariseWeek, type WeeklyNumbers } from './weekly_summary';
 
 /**
@@ -53,7 +55,7 @@ export async function rollupWeek(
   week: string,
   now: Date,
 ): Promise<WeeklyNumbers> {
-  const [householdWeeks, cohort, conversions] = await Promise.all([
+  const [householdWeeks, cohort, conversions, redeemed, qualified] = await Promise.all([
     readWhere(store, { collection: HOUSEHOLD_WEEKS, field: 'week', week }, storedHouseholdWeek),
     readWhere(
       store,
@@ -61,12 +63,15 @@ export async function rollupWeek(
       storedHouseholdCohort,
     ),
     readWhere(store, { collection: CONVERSIONS, field: 'week', week }, storedConversion),
+    readWhere(store, { collection: REFERRALS, field: 'redeemedWeek', week }, countedReferral),
+    readWhere(store, { collection: REFERRALS, field: 'qualifiedWeek', week }, countedReferral),
   ]);
   const numbers = summariseWeek({
     week,
     householdWeeks,
     cohort,
     conversions,
+    referrals: countReferrals(redeemed, qualified),
     isInviteCohortComplete: isInviteCohortComplete(week, now),
   });
 
@@ -82,6 +87,9 @@ export async function rollupWeek(
     activeFamilies: numbers.activeFamilies,
     lunchPlansCreated: numbers.lunchPlansCreated,
     newFamilies: numbers.newFamilies,
+    paywallFamilies: numbers.paywallFamilies,
+    premiumConversions: numbers.premiumConversions,
+    referralsQualified: numbers.referralsQualified,
   });
   return numbers;
 }

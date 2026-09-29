@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Push notifications on iOS (notifications ADR-0001). NOT yet wired into the
+  Runner target: a personal (free) Apple team cannot sign the
+  `aps-environment` entitlement, and wiring it now would stop the iOS build
+  from signing at all. When the Apple Developer Program membership exists:
+  set CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements on the Runner
+  target (Xcode: Signing & Capabilities → + Push Notifications does both),
+  change the value to `production` for a release build, and upload an APNs
+  auth key to the Firebase project (Project settings → Cloud Messaging).
+-->
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

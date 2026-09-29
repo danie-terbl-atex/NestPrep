@@ -202,6 +202,53 @@ describe('every callable declares what it may cost', () => {
         // (home-care ADR-0006).
         'addLowStockToGroceries',
         'translateHomeCareTexts',
+        // Documents V2: a link to one document, which a rule cannot mint,
+        // hash, count, serve to somebody with no account or end with a shift
+        // (documents ADR-0006).
+        'createDocumentShare',
+        'documentShare',
+        'endSharesWithShift',
+        'revokeDocumentShare',
+        // Snap a school letter: the model is called only from a Function, as
+        // its service account, behind a monthly cap claimed in a transaction
+        // (calendar ADR-0005, foundation ADR-0015).
+        'readSchoolLetter',
+        // Co-parenting: a child in two homes. Every write goes to both
+        // households' mirrors of the link in one transaction, which no client
+        // may do because no client is in both (household ADR-0004).
+        'acceptCoParentInvite',
+        'answerCoParentChange',
+        'confirmCoParentLink',
+        'createCoParentInvite',
+        'endCoParentLink',
+        'previewCoParentInvite',
+        'proposeCoParentChange',
+        'saveCoParentHandover',
+        // Nanny hub V2: the shift-only mark lives in the household document,
+        // which only Functions write (nanny-hub ADR-0006).
+        'setCarerShiftOnly',
+        // Referrals and conversion by trigger (subscriptions ADR-0002,
+        // product-analytics ADR-0002): a code no phone may pick, a redemption
+        // checked against two households at once, and a paywall opening that
+        // is counted where no client can move the number.
+        'ensureReferralCode',
+        'recordPaywallOpened',
+        'redeemReferralCode',
+        // Notifications (notifications ADR-0001 to ADR-0003): a push is sent
+        // from a server, never a rule; a digest reads every area a person may
+        // see and composes one message from them; a producer's record is
+        // fanned out to each person it concerns, at their time.
+        'composeMorningDigests',
+        'deliverNotifications',
+        'notifyChoreCheck',
+        'notifyRewardRequest',
+        'notifyShiftHandover',
+        'sendTestNotification',
+        // The V2 producers on the same channel (nanny-hub ADR-0004, household
+        // ADR-0004): each fans a record out to the people it concerns.
+        'notifyCoParentHandover',
+        'notifyCoParentRequest',
+        'notifyPhotoUpdate',
       ].sort(),
     );
   });

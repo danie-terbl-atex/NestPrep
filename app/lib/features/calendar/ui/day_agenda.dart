@@ -19,6 +19,7 @@ class DayAgenda extends StatelessWidget {
     required this.week,
     required this.day,
     required this.householdId,
+    this.lead,
     super.key,
   });
 
@@ -29,24 +30,33 @@ class DayAgenda extends StatelessWidget {
   /// which is the only place a birthday can be changed.
   final String householdId;
 
+  /// Something another feature puts at the top of the day, scrolling with it
+  /// — the two-homes bands (household ADR-0004). Inside the list rather than
+  /// above it, so at 200% text it scrolls instead of pushing the day off the
+  /// screen (`FE-14`).
+  final Widget? lead;
+
   @override
   Widget build(BuildContext context) {
     final entries = week.on(day);
 
+    final lead = this.lead;
     if (entries.isEmpty) {
       // No action here: the screen's own "Add an event" button is a thumb's
       // reach away, and two identical calls to action read as a mistake.
-      return NestEmptyView(
+      final empty = NestEmptyView(
         title:
             '${AppCopy.calendarDayEmpty} '
             '${NestDates.relative(day, week.today).toLowerCase()}',
         message: AppCopy.calendarEmptyBody,
       );
+      return lead == null ? empty : ListView(children: [lead, empty]);
     }
 
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
       children: [
+        ?lead,
         NestSectionHeader(title: NestDates.relative(day, week.today)),
         const SizedBox(height: NestSpace.sm),
         for (final entry in entries)

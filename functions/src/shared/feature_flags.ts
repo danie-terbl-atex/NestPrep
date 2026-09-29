@@ -14,8 +14,21 @@ export const APP_CONFIG = 'appConfig';
 export const FLAGS_DOCUMENT = 'flags';
 
 export const FEATURE_FLAGS = [
+  // ---- documents V2 (documents ADR-0006, ADR-0007) ----
   'documentShareLinks',
   'documentOfflineCopies',
+  // ---- calendar V2 (calendar ADR-0005, ADR-0006) ----
+  'snapSchoolLetter',
+  'mentalLoadView',
+  // ---- two homes (household ADR-0004) ----
+  'coParenting',
+  // ---- nanny hub V2 (nanny-hub ADR-0004 to ADR-0007) ----
+  'nannyPhotoUpdates',
+  'nannyPickups',
+  'nannyShiftOnly',
+  'nannyOffline',
+  // ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
+  'referralRewards',
   // lunch-box V2 (lunch-box ADR-0005 to ADR-0007) — client-side switches; the
   // rules hold a kid to approved options and budget writes to premium
   // whatever they say.

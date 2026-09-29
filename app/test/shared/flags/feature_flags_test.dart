@@ -3,7 +3,7 @@ import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 
-import '../../support/fake_feature_flag_source.dart';
+import '../../support/fake_document_tools.dart';
 
 /// The V2 switches (foundation ADR-0014): the document wins when it says
 /// anything; otherwise on in debug, off in release; and a read that fails
@@ -53,9 +53,6 @@ void main() {
       expect(FeatureFlag.values.map((flag) => flag.field).toSet(), {
         'documentShareLinks',
         'documentOfflineCopies',
-        'homeCareRoutines',
-        'homeCareStock',
-        'homeCareHelperLanguage',
       });
     });
   });

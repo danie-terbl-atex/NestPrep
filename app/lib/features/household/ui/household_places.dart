@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../../../app/calendar_v2_route.dart';
 import '../../../app/documents_route.dart';
 import '../../../app/family_route.dart';
 import '../../../app/home_care_route.dart';
 import '../../../app/household_route.dart';
 import '../../../app/nanny_hub_route.dart';
+import '../../../app/two_homes_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
+import '../../referrals/ui/referral_link.dart';
+import '../../referrals/ui/referrals_offered.dart';
 import '../../subscriptions/ui/plan_link.dart';
+import '../../two_homes/model/two_homes_access.dart';
 import '../model/household_area.dart';
 import '../model/household_view.dart';
 
@@ -45,6 +53,29 @@ class HouseholdPlaces extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () =>
                   context.push(NannyHubRoute.pathFor(view.household.id)),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // co-parenting: a child in two homes (household ADR-0004), for the
+        // family, behind its flag.
+        if (context.watch<FeatureFlagsController>().isOn(
+              FeatureFlag.coParenting,
+            ) &&
+            TwoHomesAccess.of(view).showsWayIn) ...[
+          NestCard(
+            variant: NestCardVariant.flat,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: TwoHomesCopy.openFromHousehold,
+              subtitle: TwoHomesCopy.openFromHouseholdBody,
+              leading: const NestIconTile(
+                icon: Icons.cottage_outlined,
+                tint: NestTileTint.peach,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  context.push(TwoHomesRoute.pathFor(view.household.id)),
             ),
           ),
           const SizedBox(height: NestSpace.lg),
@@ -92,10 +123,40 @@ class HouseholdPlaces extends StatelessWidget {
           ),
           const SizedBox(height: NestSpace.lg),
         ],
+        // calendar V2: who is handling what this week (calendar ADR-0006) —
+        // the family's adults only, while its switch is on.
+        if (view.permissions.isFamily &&
+            context.watch<FeatureFlagsController>().isOn(
+              FeatureFlag.mentalLoadView,
+            )) ...[
+          NestCard(
+            variant: NestCardVariant.flat,
+            padding: EdgeInsets.zero,
+            child: NestListRow(
+              title: MentalLoadCopy.openFromHousehold,
+              subtitle: MentalLoadCopy.openFromHouseholdBody,
+              leading: const NestIconTile(
+                icon: Icons.volunteer_activism_outlined,
+                tint: NestTileTint.peach,
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(
+                CalendarV2Route.sharedWeekPathFor(view.household.id),
+              ),
+            ),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
         // subscriptions: which plan the household is on, and the way to
         // premium (subscriptions ADR-0001) — for family, who buy it.
         if (view.permissions.isFamily) ...[
           PlanLink(householdId: view.household.id),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // referrals: give a month, get a month, beside the plan
+        // (subscriptions ADR-0002) — for family, while switched on.
+        if (referralsOffered(context)) ...[
+          ReferralLink(householdId: view.household.id),
           const SizedBox(height: NestSpace.lg),
         ],
         // The way to the live-location screen. It sits with the people rather

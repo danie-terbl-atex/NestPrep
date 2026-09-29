@@ -5,9 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/household_place_redirect.dart';
+import '../../../app/referral_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/ui/back_leading.dart';
+import '../../referrals/ui/referral_mention.dart';
+import '../../referrals/ui/referrals_offered.dart';
 import '../model/household_view.dart';
 import '../model/member_role.dart';
 import '../state/invite_step_controller.dart';
@@ -105,6 +108,15 @@ class InviteStepScreen extends StatelessWidget {
           InviteOptionList(
             onChoose: (role) => unawaited(_invite(context, controller, role)),
           ),
+          // Give a month, get a month: another family is the next person to
+          // tell (subscriptions ADR-0002).
+          if (referralsOffered(context)) ...[
+            const SizedBox(height: NestSpace.xl),
+            ReferralMention(
+              onTap: () =>
+                  context.push(ReferralRoute.pathFor(view.household.id)),
+            ),
+          ],
         ],
       ),
     );

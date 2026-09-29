@@ -21,16 +21,28 @@ import 'photo_compressor.dart';
 ///
 /// The work runs in a background isolate, because decoding a large photo on
 /// the UI thread is a frozen screen. What each feature brings is its own cap
-/// — its rule's — and its own words for the two ways a photo is refused.
+/// — its rule's — and its own words for the two ways a photo is refused; a
+/// feature that must read small print (a snapped school letter, calendar
+/// ADR-0005) also brings a longer edge and a higher quality.
 final class JpegCompressor implements PhotoCompressor {
   const JpegCompressor({
     required this.maxBytes,
     required this.unreadable,
     required this.tooLarge,
+    this.maxEdge = longEdge,
+    this.jpegQuality = quality,
   });
 
+  /// The long edge and JPEG quality of a household photo, unless a feature
+  /// says otherwise.
   static const longEdge = 1600;
   static const quality = 78;
+
+  /// The longest side this compressor leaves a photo with.
+  final int maxEdge;
+
+  /// The JPEG quality this compressor encodes at.
+  final int jpegQuality;
 
   /// The most the feature's storage rule keeps of one photo.
   final int maxBytes;
@@ -45,7 +57,11 @@ final class JpegCompressor implements PhotoCompressor {
   /// [tooLarge] when it cannot be kept.
   @override
   Future<CompressedPhoto> compress(Uint8List original) async {
-    final photo = await Isolate.run(() => compressNow(original));
+    final edge = maxEdge;
+    final level = jpegQuality;
+    final photo = await Isolate.run(
+      () => compressNow(original, maxEdge: edge, jpegQuality: level),
+    );
     if (photo == null) throw unreadable;
     if (photo.bytes.length > maxBytes) throw tooLarge;
     return photo;
@@ -54,7 +70,11 @@ final class JpegCompressor implements PhotoCompressor {
   /// The pipeline itself, on whatever isolate calls it — what the background
   /// isolate runs, and what a test calls directly. Null when the bytes are not
   /// a picture; the caller turns that into its feature's words.
-  static CompressedPhoto? compressNow(Uint8List original) {
+  static CompressedPhoto? compressNow(
+    Uint8List original, {
+    int maxEdge = longEdge,
+    int jpegQuality = quality,
+  }) {
     final decoded = _decode(original);
     if (decoded == null) return null;
     // A phone stores "which way up" as a tag rather than turning the pixels;
@@ -62,17 +82,17 @@ final class JpegCompressor implements PhotoCompressor {
     var upright = img.bakeOrientation(decoded);
     final isWide = upright.width >= upright.height;
     final longest = isWide ? upright.width : upright.height;
-    if (longest > longEdge) {
+    if (longest > maxEdge) {
       upright = img.copyResize(
         upright,
-        width: isWide ? longEdge : null,
-        height: isWide ? null : longEdge,
+        width: isWide ? maxEdge : null,
+        height: isWide ? null : maxEdge,
         interpolation: img.Interpolation.average,
       );
     }
     upright.exif = img.ExifData();
     return CompressedPhoto(
-      bytes: img.encodeJpg(upright, quality: quality),
+      bytes: img.encodeJpg(upright, quality: jpegQuality),
       width: upright.width,
       height: upright.height,
     );

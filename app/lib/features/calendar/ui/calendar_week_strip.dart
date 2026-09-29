@@ -18,6 +18,7 @@ class CalendarWeekStrip extends StatelessWidget {
     required this.onSelect,
     required this.onPrevious,
     required this.onNext,
+    this.dayFooter,
     super.key,
   });
 
@@ -31,6 +32,10 @@ class CalendarWeekStrip extends StatelessWidget {
   final ValueChanged<CalendarDate> onSelect;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+
+  /// Something another feature draws under each day — the two-homes colour
+  /// bar (household ADR-0004). The strip does not know what it is.
+  final Widget Function(CalendarDate day)? dayFooter;
 
   List<CalendarDate> get _days => [
     for (var offset = 0; offset < CalendarWeek.daysInAWeek; offset++)
@@ -73,6 +78,13 @@ class CalendarWeekStrip extends StatelessWidget {
               ),
           ],
         ),
+        if (dayFooter case final footer?)
+          Row(
+            children: [
+              for (final day in _days)
+                Expanded(child: Center(child: footer(day))),
+            ],
+          ),
       ],
     );
   }

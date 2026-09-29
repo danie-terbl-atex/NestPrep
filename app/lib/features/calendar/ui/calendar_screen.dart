@@ -3,17 +3,23 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/calendar_sync_route.dart';
+import '../../../app/calendar_v2_route.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../notifications/ui/notification_bell.dart';
+import '../../two_homes/ui/custody_day_bands.dart';
+import '../../two_homes/ui/custody_day_mark.dart';
 import '../model/calendar_week.dart';
 import '../model/quick_add/quick_add_result.dart';
 import '../state/calendar_controller.dart';
@@ -52,7 +58,11 @@ class CalendarScreen extends StatelessWidget {
       leading: const NestBrandMark(width: NestSize.brandMarkSmall),
       title: AppCopy.calendarTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
-      trailing: const [HouseholdLinkButton(), AccountMenuButton()],
+      trailing: const [
+        NotificationBell(),
+        HouseholdLinkButton(),
+        AccountMenuButton(),
+      ],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.week,
         onSelect: onSelectTab,
@@ -90,6 +100,21 @@ class CalendarScreen extends StatelessWidget {
                   onOpen: () => _quickAdd(context, controller, view),
                 ),
               ),
+              // calendar V2: snap a school letter (calendar ADR-0005) — for
+              // somebody who may add events, while its switch is on.
+              if (canEdit &&
+                  context.watch<FeatureFlagsController>().isOn(
+                    FeatureFlag.snapSchoolLetter,
+                  )) ...[
+                const SizedBox(width: NestSpace.sm),
+                NestIconButton(
+                  icon: Icons.document_scanner_outlined,
+                  label: SchoolLetterCopy.openFromWeek,
+                  onPressed: () => context.push(
+                    CalendarV2Route.letterPathFor(controller.householdId),
+                  ),
+                ),
+              ],
               const SizedBox(width: NestSpace.sm),
               NestIconButton(
                 icon: Icons.sync_alt,
@@ -119,6 +144,9 @@ class CalendarScreen extends StatelessWidget {
             onSelect: controller.selectDay,
             onPrevious: controller.goToPreviousWeek,
             onNext: controller.goToNextWeek,
+            // co-parenting: which home each linked child is with (household
+            // ADR-0004). Draws nothing when two homes is off.
+            dayFooter: (day) => CustodyDayMark(day: day),
           ),
           const SizedBox(height: NestSpace.md),
           Row(
@@ -158,10 +186,16 @@ class CalendarScreen extends StatelessWidget {
               isEmpty: (_) => false,
               onRetry: controller.retry,
               emptyBuilder: (_) => const SizedBox.shrink(),
-              dataBuilder: (_, week) => DayAgenda(
+              dataBuilder: (context, week) => DayAgenda(
                 week: week,
                 day: controller.selectedDay,
                 householdId: controller.householdId,
+                // co-parenting: the linked children's all-day bands, at the
+                // top of the day (household ADR-0004). None when there are
+                // none, or when two homes is off.
+                lead: CustodyDayBands.showsOn(context, controller.selectedDay)
+                    ? CustodyDayBands(day: controller.selectedDay)
+                    : null,
               ),
             ),
           ),

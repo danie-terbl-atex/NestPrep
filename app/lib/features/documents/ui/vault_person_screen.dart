@@ -10,6 +10,7 @@ import '../../../shared/time/household_clock.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
 import '../model/vault_shelf.dart';
+import '../state/offline_copies_controller.dart';
 import '../state/vault_controller.dart';
 import 'add_to_vault.dart';
 import 'document_row.dart';
@@ -153,6 +154,7 @@ class _VaultDocuments extends StatelessWidget {
     final nest = NestTheme.of(context);
     final today = context.read<HouseholdClock>().today;
     final view = context.read<HouseholdView>();
+    final offline = context.watch<OfflineCopiesController>();
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -175,6 +177,10 @@ class _VaultDocuments extends StatelessWidget {
               tags: document.tags,
               expiresOn: document.expiresOn,
               today: today,
+              isKeptOffline: offline.holds(
+                ownerMemberId: memberId,
+                documentId: document.id,
+              ),
               onOpen: () =>
                   showVaultDocumentSheet(context: context, document: document),
             ),

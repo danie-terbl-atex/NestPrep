@@ -76,6 +76,29 @@ void main() {
       expect(find.text(VaultCopy.logBody), findsOneWidget);
     });
 
+    testWidgets('an open through a shared link says so, with nobody named', (
+      tester,
+    ) async {
+      await pumpDocuments(tester, fakes: fakes, location: log);
+      await letItOpen(tester);
+      fakes.vaults.emitViews('m-sam', []);
+      fakes.vaults.emitViews('m-thandi', []);
+      fakes.vaults.emitViews('m-kid', [
+        opened('v1').copyWith(viewerMemberId: null, shareId: 'share-1'),
+      ]);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining(
+          VaultCopy.logLine(
+            VaultCopy.logThroughLink,
+            VaultCopy.vaultOf('Kid Parker'),
+          ),
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('says so when nothing has been opened', (tester) async {
       await pumpDocuments(tester, fakes: fakes, location: log);
       await letItOpen(tester);

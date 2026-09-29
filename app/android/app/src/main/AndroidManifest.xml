@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Live location, phase 1: while the app is in front of somebody, and no
          further. ACCESS_BACKGROUND_LOCATION and FOREGROUND_SERVICE_LOCATION are
          deliberately absent — adding either is what makes this app subject to
@@ -14,10 +15,21 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
 
+    <!-- Notifications (notifications ADR-0001, ADR-0003): Android 13 and up
+         asks the person, and the app asks only when they tap "Turn on
+         notifications" — never at launch. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Our backup rules win over the document scanner plugin's own: they keep
+         the offline document copies and their key out of every backup
+         (documents ADR-0007). -->
     <application
         android:label="NestPrep"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="@xml/nestprep_backup_rules"
+        android:dataExtractionRules="@xml/nestprep_data_extraction_rules"
+        tools:replace="android:fullBackupContent,android:dataExtractionRules">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -40,6 +52,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- A push that names no channel, and the status-bar mark and tint every
+             push uses (notifications ADR-0001). The channels themselves are
+             created by MainActivity, with the app's own words. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="nestprep_digest" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_accent" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

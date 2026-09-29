@@ -1,0 +1,7 @@
+// ---- documents: a shared link's secrets (documents ADR-0006) ----
+// Keyed by the hash of the link's token, holding the PIN's hash and how
+// many wrong PINs it has seen. Only the shared-link Functions read or
+// write these; a readable one would be a way to test PINs offline.
+match /documentShareTokens/{tokenHash} {
+  allow read, write: if false;
+}

@@ -8,6 +8,7 @@ import '../design/nest_kit.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
+import '../features/nanny_hub/ui/carer_scope.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../features/subscriptions/ui/entitlement_scope.dart';
@@ -110,11 +111,12 @@ class _HouseholdShellState extends State<HouseholdShell> {
           child: HouseholdActivityScope(
             householdId: view.household.id,
             // The household's entitlement, read once for every screen under
-            // it (subscriptions ADR-0001).
+            // it (subscriptions ADR-0001), then the booked-shift window and
+            // offline saving (nanny-hub ADR-0006, ADR-0007).
             child: EntitlementScope(
               householdId: view.household.id,
               canBuy: view.permissions.isFamily,
-              child: widget.child,
+              child: CarerScope(child: widget.child),
             ),
           ),
         );

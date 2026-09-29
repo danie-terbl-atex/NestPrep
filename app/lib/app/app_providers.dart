@@ -57,7 +57,9 @@ import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'account_routes.dart';
+import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
+import 'document_tools_providers.dart';
 import 'documents_providers.dart';
 import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
@@ -65,7 +67,10 @@ import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
+import 'notifications_providers.dart';
+import 'referral_providers.dart';
 import 'subscription_providers.dart';
+import 'two_homes_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -211,10 +216,24 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...lunchPlanningProviders(),
   // account data: delete my account, download my data (accounts ADR-0006)
   ...accountDataProviders(),
+  // calendar V2: the school-letter reader and the card sharer (calendar
+  // ADR-0005, ADR-0006). The switches are provided above.
+  ...calendarV2Providers(),
+  // co-parenting: two homes (household ADR-0004).
+  ...twoHomesProviders(),
+  // referrals and conversion by trigger (subscriptions ADR-0002,
+  // product-analytics ADR-0002)
+  ...referralProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),
       accountRepository: context.read<AccountRepository>(),
     ),
   ),
+  // documents V2: shared links and offline copies (documents ADR-0006,
+  // ADR-0007). After the session, which the offline janitor listens to.
+  ...documentToolProviders(),
+  // notifications — after the session, which the phone's registration
+  // follows (notifications ADR-0001).
+  ...notificationsProviders(),
 ];

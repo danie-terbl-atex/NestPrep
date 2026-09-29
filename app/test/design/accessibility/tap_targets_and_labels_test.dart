@@ -37,6 +37,7 @@ import '../../support/accessibility_audit.dart';
 import '../../support/fake_auth.dart';
 import '../../support/fake_calendar_repository.dart';
 import '../../support/fake_calendar_sync.dart';
+import '../../support/fake_document_tools.dart';
 import '../../support/fake_documents.dart';
 import '../../support/fake_grocery_repository.dart';
 import '../../support/fake_kid_sign_in.dart';
@@ -243,6 +244,7 @@ void main() {
           value: controller,
         ),
         vaultLockProvider(),
+        ...documentToolProviders(),
       ],
     );
     repository.emitFolders([
@@ -272,6 +274,7 @@ void main() {
           value: controller,
         ),
         vaultLockProvider(),
+        ...documentToolProviders(),
       ],
     );
     repository.emitFolders([

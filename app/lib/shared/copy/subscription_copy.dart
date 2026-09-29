@@ -12,6 +12,11 @@ import 'legal_copy.dart';
 /// No price is ever written here: the store formats it (`ENG-20`).
 abstract final class SubscriptionCopy {
   static const premium = 'Premium';
+
+  /// Premium no store sold: a month from give a month, get a month
+  /// (subscriptions ADR-0002).
+  static String givenUntil(String date) =>
+      'A free month from a referral, until $date.';
   static const free = 'Free';
 
   // ---- the paywall ----

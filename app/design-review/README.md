@@ -11,7 +11,8 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
 `flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
-The nanny hub's eleven are `tool/nanny_design_review_test.dart`.
+The nanny hub's eleven are `tool/nanny_design_review_test.dart`. Two homes' fourteen are
+`tool/two_homes_design_review_test.dart` (household ADR-0004).
 
 Five presses share one shutter: `design_review_test.dart` (the tabs and the way in),
 `kid_design_review_test.dart`, `family_design_review_test.dart`, `household_access_review_test.dart`
@@ -21,6 +22,9 @@ decodes every image for real before it fires; without that the nest is a blank b
 | File | What it shows |
 |---|---|
 | `week-light.png` / `week-dark.png` | the family week: the seven-day strip, today, and the day's agenda in member colours |
+| `school-letter-light.png` / `school-letter-dark.png` | calendar V2, snap a school letter: the three ways a letter comes in, and what leaves the phone — `tool/calendar_v2_design_review_test.dart` (calendar ADR-0005) |
+| `school-letter-review-light.png` / `school-letter-review-dark.png` | what a letter proposed, every event ticked, the chips the week will show, the one button that adds anything |
+| `shared-week-light.png` / `shared-week-dark.png` / `shared-week-dark-200-percent-text.png` | calendar V2, this week shared: the bar with names beside the colours, a card per parent, each shareable as a picture (calendar ADR-0006) |
 | `todos-mine-light.png` / `todos-mine-dark.png` | what one person is being asked to do, overdue first |
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked, and the week's plans offering three things above it (groceries phase 2) |
@@ -32,7 +36,7 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `household-gate-light.png` / `household-gate-dark.png` | the screen after it: the nest and wordmark, the question, then making or joining a household |
 | `groceries-empty-light.png` / `groceries-empty-dark.png` | a new household's first list — a first-run empty state drawn with the nest |
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
-| `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
+| `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001); this week's card also carries premium conversion by what opened the paywall and the referral counts (ADR-0002) |
 | `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
 | `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, their stars (with the line a celebration leaves and a streak), the jobs as big tiles each saying what it is worth, their own lunch box (lunch-box ADR-0004), then — below the fold — the treat shelf and today's food (todos ADR-0003) |
 | `stars-and-rewards-light.png` / `stars-and-rewards-dark.png` | a parent's stars and rewards: a chore waiting for a look, a treat to hand over, a child's stars and streak, and the shelf's header (todos ADR-0003) |
@@ -75,8 +79,26 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `lunch-kid-picks-light.png` / `lunch-kid-picks-dark.png` | a parent's kid picks: *Suggest options*, *Let Lwazi choose now*, and each day's compartments with their options and what the child chose |
 | `lunch-choose-light.png` / `lunch-choose-dark.png` / `lunch-choose-dark-200-percent-text.png` | the chooser a child sees, on their tablet or a parent's phone: big drawn cards, a tick and stars; at large text one card to a row |
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
+| `referrals-light.png` / `referrals-dark.png` / `referrals-history-light.png` / `referrals-history-dark.png` / `referrals-dark-200-percent-text.png` | give a month, get a month: two homes and a gift, the family's code to share or copy, the free months against the year's six, the first-week code card, how it works and the history of referrals (subscriptions ADR-0002; regenerate with `flutter test tool/referrals_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
+| `share-sheet-light.png` / `share-sheet-dark.png` | sharing one document by a link: until the shift that is on now ends, or a fixed length, and the PIN switch (documents ADR-0006) |
+| `share-link-ready-light.png` / `share-link-ready-dark.png` | the link, shown once, with when it stops working, send and copy |
+| `shared-links-light.png` / `shared-links-dark.png` | every live link: when it ends, how often it was opened, who shared it, a PIN tag, and the stop button |
+| `offline-copies-light.png` / `offline-copies-dark.png` | what this phone keeps behind the vaults' lock: the room it takes, each copy with its "Available offline" badge (documents ADR-0007) |
+| `share-page-{document,pdf,pin,expired}-{light,dark}.png` | the one page a person without NestPrep sees — served by the `documentShare` Function, shot at 390 px by headless Chrome with `tools/share_page_review.sh`, not by the press: a picture inline, a PDF behind a button, the PIN form after a wrong try, and an expired link |
+| `two-homes-light.png` / `two-homes-dark.png` | two homes: a link waiting for this home to confirm, and a live one — where the child is today, the coming week in each home's colour, the next handover — then the ways in and the privacy boundary (household ADR-0004) |
+| `two-homes-link-light.png` / `two-homes-link-dark.png` | one link: the next two weeks, the coming handovers with how far the bag has got, and a swap the other home has asked for |
+| `two-homes-handover-light.png` / `two-homes-handover-dark.png` | a handover: who goes where, the bag half packed, the usual things a tap away, and the notes both homes read |
+| `two-homes-setup-light.png` / `two-homes-setup-dark.png` | making a code: the child, this home's name and colour, then the schedule chosen from four patterns |
+| `two-homes-join-light.png` / `two-homes-join-dark.png` | accepting a code: what the other home offers, the fortnight it proposes, this home's profile for the child, and what will be shared |
+| `two-homes-privacy-light.png` / `two-homes-privacy-dark.png` | what the other home can see, and what stays — the same two lists everywhere they appear |
+| `week-two-homes-light.png` / `week-two-homes-dark.png` | the week with a linked child: a small bar under each day in the home's colour, and the day's all-day band — *goes to Mum's home, at 17:00* |
+| `notifications-inbox-light.png` / `notifications-inbox-dark.png` | the inbox behind every tab's bell: today apart from before, each notification's kind, what it said and when, unread marked with a dot and in words (notifications ADR-0001; regenerate with `flutter test tool/notifications_design_review_test.dart --update-goldens`) |
+| `notifications-first-run-light.png` | the same inbox before notifications are on: the card that says what they would bring and asks the phone only on a tap (ADR-0003), above the empty state |
+| `notifications-digest-light.png` / `notifications-digest-dark.png` | a morning digest opened in full: the counts the lock screen showed, then each section — on today, what to pack, chores, documents, the hub, what waits for you — with its way into the app (ADR-0002) |
+| `notifications-digest-dark-200-percent-text.png` | the same digest at the largest text a phone offers |
+| `notifications-settings-light.png` / `notifications-settings-dark.png` | notification settings: this phone with its test push answered, the morning digest and its time, and what this person's digest holds in words |
 
 ## What to look at
 

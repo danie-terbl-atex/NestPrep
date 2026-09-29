@@ -7,6 +7,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_document_tools.dart';
 import '../../../support/fake_documents.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/fake_vault.dart';
@@ -65,6 +66,7 @@ void main() {
         value: controller,
       ),
       vaultLockProvider(),
+      ...documentToolProviders(),
     ],
     brightness: brightness ?? Brightness.light,
     textScale: scale,

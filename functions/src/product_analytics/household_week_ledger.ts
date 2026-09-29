@@ -3,6 +3,7 @@ import { logger } from 'firebase-functions/v2';
 
 import { householdRef } from '../household/documents';
 import { expiryFor, householdWeekRef, stringField } from './analytics_documents';
+import type { ConversionTrigger } from './conversion_ledger';
 import { countingZoneFor, mondayOf, weekKeyOf } from './iso_week';
 
 /**
@@ -38,6 +39,23 @@ export function stageMemberActive(
   transaction.set(
     householdWeekRef(store, entry.week, entry.householdId),
     { ...identity(entry), activeMemberIds: FieldValue.arrayUnion(entry.memberId) },
+    { merge: true },
+  );
+}
+
+/**
+ * Stages "somebody in this household met the paywall on [trigger] this week"
+ * on the caller's transaction — a set, so the household counts once per
+ * trigger however often it looks (product-analytics ADR-0002).
+ */
+export function stagePaywallOpened(
+  transaction: Transaction,
+  store: Firestore,
+  entry: HouseholdWeekEntry & { readonly trigger: ConversionTrigger },
+): void {
+  transaction.set(
+    householdWeekRef(store, entry.week, entry.householdId),
+    { ...identity(entry), paywallTriggers: FieldValue.arrayUnion(entry.trigger) },
     { merge: true },
   );
 }

@@ -1,0 +1,12 @@
+// ---- documents: one document shared by an expiring link (documents ADR-0006) ----
+// What the family sees of a link — which document, when it ends, whether it
+// has a PIN, how often it was opened — never the link itself, which exists
+// only on the phone that made it. The family reads every link; anybody else
+// reads only a link they made, while they are still in the household. Only
+// `createDocumentShare`, `revokeDocumentShare`, the link itself and the
+// shift trigger write here, so a count or a status cannot be forged.
+match /documentShares/{shareId} {
+  allow read: if isFamily(householdId)
+    || (isMember(householdId) && resource.data.createdByUid == uid());
+  allow write: if false;
+}

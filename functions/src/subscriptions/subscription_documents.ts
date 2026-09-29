@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 import { householdRef } from '../household/documents';
 import type { Entitlement } from './entitlement';
+import type { ComposedPremium } from './premium_composition';
 import { BILLING_STORES, type BillingStore, PLANS, PURCHASE_STATUSES } from './purchase_state';
 
 /**
@@ -73,11 +74,23 @@ export const storedPurchase = z.object({
 });
 export type StoredPurchase = z.infer<typeof storedPurchase>;
 
-/** The entitlement as it is written: instants as Timestamps, nothing undefined. */
-export function entitlementFields(entitlement: Entitlement): Record<string, unknown> {
+/**
+ * The entitlement as it is written: the stores' answer, composed with what
+ * the household was given (subscriptions ADR-0002). Instants as Timestamps,
+ * nothing undefined. `premiumUntil` is the whole truth the rules read; the
+ * rest is for the plan screen to say, and `referralFrom` is where the next
+ * restatement measures a waiting month from.
+ */
+export function entitlementFields(
+  entitlement: Entitlement,
+  composed: ComposedPremium,
+): Record<string, unknown> {
   return {
-    premiumUntil:
-      entitlement.premiumUntil === null ? null : Timestamp.fromDate(entitlement.premiumUntil),
+    premiumUntil: timestampOrNull(composed.premiumUntil),
+    storeUntil: timestampOrNull(composed.storeUntil),
+    referralUntil: timestampOrNull(composed.referralUntil),
+    referralDaysWaiting: composed.referralDaysWaiting,
+    referralFrom: Timestamp.fromDate(composed.referralFrom),
     status: entitlement.status,
     plan: entitlement.plan,
     store: entitlement.store,
@@ -86,6 +99,10 @@ export function entitlementFields(entitlement: Entitlement): Record<string, unkn
     isTest: entitlement.isTest,
     updatedAt: Timestamp.now(),
   };
+}
+
+function timestampOrNull(instant: Date | null): Timestamp | null {
+  return instant === null ? null : Timestamp.fromDate(instant);
 }
 
 /**
@@ -100,6 +117,15 @@ export async function householdHasPremium(
   now: Date,
 ): Promise<boolean> {
   const snapshot = await transaction.get(entitlementRef(store, householdId));
-  const until: unknown = snapshot.get('premiumUntil');
-  return until instanceof Timestamp && until.toMillis() > now.getTime();
+  return isPremiumAt(snapshot.get('premiumUntil'), now);
+}
+
+/**
+ * The one reading of premium (subscriptions ADR-0001, ADR-0002): the stored
+ * `premiumUntil` — the stores' answer composed with any months the household
+ * was given — is a Timestamp after [now]. Anything else is free. Every
+ * server-side premium check (the free tier's limits, the AI cap) asks this.
+ */
+export function isPremiumAt(premiumUntil: unknown, now: Date): boolean {
+  return premiumUntil instanceof Timestamp && premiumUntil.toMillis() > now.getTime();
 }

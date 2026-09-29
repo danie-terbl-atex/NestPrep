@@ -61,13 +61,17 @@ void main() {
     final indexes = (json['indexes'] as List<Object?>? ?? const [])
         .cast<Map<String, Object?>>();
     return [
+      // A collection-group index is a Function's: the app never runs a
+      // collection-group query (`BE-08`), so nothing here could ask for one
+      // (notifications ADR-0001's delivery job is the first to need one).
       for (final index in indexes)
-        {
-          for (final entry
-              in (index['fields'] as List<Object?>? ?? const [])
-                  .cast<Map<String, Object?>>())
-            entry['fieldPath']! as String,
-        },
+        if (index['queryScope'] != 'COLLECTION_GROUP')
+          {
+            for (final entry
+                in (index['fields'] as List<Object?>? ?? const [])
+                    .cast<Map<String, Object?>>())
+              entry['fieldPath']! as String,
+          },
     ];
   }
 

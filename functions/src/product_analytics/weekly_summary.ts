@@ -1,5 +1,6 @@
 import type { HouseholdCohort, HouseholdWeek } from './analytics_documents';
-import type { ConversionTrigger } from './conversion_ledger';
+import { CONVERSION_TRIGGERS, type ConversionTrigger } from './conversion_ledger';
+import type { ReferralCounts } from './referral_counts';
 import { weekStartDate } from './iso_week';
 import {
   DEFINITION_VERSION,
@@ -34,8 +35,18 @@ export interface WeeklyNumbers {
   readonly adultInvitesByRole: Readonly<Record<string, number>>;
   /** False until every household in the cohort has had its whole first week. */
   readonly isInviteCohortComplete: boolean;
+  /** Households that met the paywall at all this week — conversion's denominator. */
+  readonly paywallFamilies: number;
+  /** The same, per trigger: a household counts once for each trigger it met. */
+  readonly paywallFamiliesByTrigger: Readonly<Record<ConversionTrigger, number>>;
   readonly premiumConversions: number;
   readonly premiumConversionsByTrigger: Readonly<Record<ConversionTrigger, number>>;
+  /** Households that entered another's referral code this week (subscriptions ADR-0002). */
+  readonly referralsRedeemed: number;
+  /** Referrals that became a real family this week, whenever they were redeemed. */
+  readonly referralsQualified: number;
+  /** Free months those referrals gave, both sides together, less any past the cap. */
+  readonly referralMonthsGiven: number;
   readonly definitionVersion: number;
 }
 
@@ -44,6 +55,7 @@ export interface WeekLedgers {
   readonly householdWeeks: readonly HouseholdWeek[];
   readonly cohort: readonly HouseholdCohort[];
   readonly conversions: readonly { readonly trigger: ConversionTrigger }[];
+  readonly referrals: ReferralCounts;
   readonly isInviteCohortComplete: boolean;
 }
 
@@ -65,8 +77,17 @@ export function summariseWeek(ledgers: WeekLedgers): WeeklyNumbers {
     newFamiliesInvitingAnAdult: inviting.length,
     adultInvitesByRole: tally(inviting.map((entry) => entry.firstAdultInviteRole ?? 'unknown')),
     isInviteCohortComplete: ledgers.isInviteCohortComplete,
+    paywallFamilies: householdWeeks.filter((entry) => entry.paywallTriggers.length > 0).length,
+    paywallFamiliesByTrigger: byTrigger(
+      householdWeeks.flatMap((entry) => [...new Set(entry.paywallTriggers)]),
+    ),
     premiumConversions: ledgers.conversions.length,
-    premiumConversionsByTrigger: conversionsByTrigger(ledgers.conversions),
+    premiumConversionsByTrigger: byTrigger(
+      ledgers.conversions.map((conversion) => conversion.trigger),
+    ),
+    referralsRedeemed: ledgers.referrals.redeemed,
+    referralsQualified: ledgers.referrals.qualified,
+    referralMonthsGiven: ledgers.referrals.monthsGiven,
     definitionVersion: DEFINITION_VERSION,
   };
 }
@@ -77,17 +98,15 @@ function tally(values: readonly string[]): Record<string, number> {
   return counts;
 }
 
-function conversionsByTrigger(
-  conversions: readonly { readonly trigger: ConversionTrigger }[],
-): Record<ConversionTrigger, number> {
-  const count = (trigger: ConversionTrigger): number =>
-    conversions.filter((conversion) => conversion.trigger === trigger).length;
-  return {
-    additionalChild: count('additionalChild'),
-    lunchLearning: count('lunchLearning'),
-    prepList: count('prepList'),
-    aiPlanning: count('aiPlanning'),
-    budgetMode: count('budgetMode'),
-    direct: count('direct'),
-  };
+/** How many of [triggers] are each trigger; one outside the closed list is not counted. */
+function byTrigger(triggers: readonly string[]): Record<ConversionTrigger, number> {
+  const counts = Object.fromEntries(CONVERSION_TRIGGERS.map((trigger) => [trigger, 0])) as Record<
+    ConversionTrigger,
+    number
+  >;
+  for (const trigger of triggers) {
+    const known = CONVERSION_TRIGGERS.find((candidate) => candidate === trigger);
+    if (known !== undefined) counts[known] += 1;
+  }
+  return counts;
 }

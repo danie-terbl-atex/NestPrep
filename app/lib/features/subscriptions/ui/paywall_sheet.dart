@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/referral_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../../household/model/household_view.dart';
+import '../../product_analytics/data/paywall_open_recorder.dart';
+import '../../referrals/ui/referral_mention.dart';
+import '../../referrals/ui/referrals_offered.dart';
 import '../data/store_billing.dart';
 import '../data/subscription_directory.dart';
 import '../model/premium_feature.dart';
@@ -28,6 +33,14 @@ Future<bool> showPaywall(
   final directory = context.read<SubscriptionDirectory>();
   final billing = context.read<StoreBilling>();
   final coordinator = context.read<PurchaseCoordinator>();
+  final recorder = context.read<PaywallOpenRecorder>();
+  // Read here, under the household shell: the sheet opens above it. Give a
+  // month, get a month is mentioned to family while it is switched on
+  // (subscriptions ADR-0002).
+  final router = GoRouter.maybeOf(context);
+  final onReferral = router != null && referralsOffered(context, listen: false)
+      ? () => router.push(ReferralRoute.pathFor(householdId))
+      : null;
   final upgraded = await showNestSheet<bool>(
     context: context,
     builder: (_) => ChangeNotifierProvider(
@@ -35,17 +48,22 @@ Future<bool> showPaywall(
         subscriptionDirectory: directory,
         storeBilling: billing,
         purchaseCoordinator: coordinator,
+        paywallOpenRecorder: recorder,
         householdId: householdId,
         feature: feature,
       ),
-      child: const PaywallSheet(),
+      child: PaywallSheet(onReferral: onReferral),
     ),
   );
   return upgraded ?? false;
 }
 
 class PaywallSheet extends StatelessWidget {
-  const PaywallSheet({super.key});
+  const PaywallSheet({this.onReferral, super.key});
+
+  /// Opens *give a month, get a month* once the sheet has closed; null when it
+  /// is not offered to this person.
+  final VoidCallback? onReferral;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +111,18 @@ class PaywallSheet extends StatelessWidget {
           const NestRiseIn(index: 2, child: PremiumBenefits()),
           const SizedBox(height: NestSpace.lg),
           NestRiseIn(index: 3, child: PaywallOfferView(controller: controller)),
+          if (onReferral case final open?) ...[
+            const SizedBox(height: NestSpace.lg),
+            NestRiseIn(
+              index: 4,
+              child: ReferralMention(
+                onTap: () {
+                  Navigator.of(context).pop(false);
+                  open();
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

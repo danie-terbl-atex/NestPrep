@@ -114,4 +114,19 @@ final class FakeShiftDirectory implements ShiftDirectory {
     if (failure != null) throw failure;
     ended.add((shiftId: shiftId, closingNote: closingNote));
   }
+
+  /// Every shift-only choice asked for, as `memberId → isShiftOnly`.
+  final shiftOnly = <String, bool>{};
+
+  @override
+  Future<void> setCarerShiftOnly({
+    required String householdId,
+    required String memberId,
+    required bool isShiftOnly,
+  }) async {
+    await gate?.future;
+    final failure = failWith;
+    if (failure != null) throw failure;
+    shiftOnly[memberId] = isShiftOnly;
+  }
 }

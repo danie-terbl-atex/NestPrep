@@ -1,0 +1,13 @@
+// ---- referrals (subscriptions ADR-0002) ----
+// Which household a code is, and the ledger of every referral. Functions
+// alone read and write them: a readable code index could be walked to find
+// every household's code, and the ledger pairs two households that must
+// never learn each other's ids.
+
+match /referralCodes/{code} {
+  allow read, write: if false;
+}
+
+match /referrals/{referredHouseholdId} {
+  allow read, write: if false;
+}

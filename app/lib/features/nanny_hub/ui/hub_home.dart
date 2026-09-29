@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../../app/nanny_hub_route.dart';
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
+import '../../../shared/time/household_clock.dart';
+import '../../household/model/household_view.dart';
 import '../../household/ui/member_choice_sheet.dart';
 import '../model/nanny_hub_view.dart';
+import '../model/shift_window.dart';
 import '../state/nanny_hub_controller.dart';
+import '../state/shift_pass_controller.dart';
 import 'children_list.dart';
+import 'hub_clock.dart';
 import 'hub_places.dart';
 import 'latest_handover_card.dart';
+import 'live_photos_card.dart';
 import 'past_shifts.dart';
 import 'shift_hero_card.dart';
 
@@ -47,7 +57,36 @@ class HubHome extends StatelessWidget {
     final access = controller.access;
     final hub = view.hub;
     final latest = hub.latestSummary;
+    final flags = context.watch<FeatureFlagsController>();
+    // Somebody else's shift, live: the parents' way into its photos
+    // (nanny-hub ADR-0004). A carer sends from shift mode instead.
+    final liveShifts = [
+      if (flags.isOn(FeatureFlag.nannyPhotoUpdates))
+        for (final shift in hub.openShifts)
+          if (shift.carerMemberId != access.viewerMemberId)
+            (
+              shiftId: shift.id,
+              carer:
+                  controller.memberById(shift.carerMemberId)?.displayName ??
+                  NannyPhotoCopy.somebody,
+            ),
+    ];
+    // A carer kept to their booked shifts is told when the household closes
+    // for them again (nanny-hub ADR-0006).
+    final openUntil = context.watch<HouseholdView>().viewerIsShiftOnly
+        ? switch (context.watch<ShiftPassController>().window) {
+            AsyncData(value: OnBookedShift(:final booking)) => booking.closesAt,
+            _ => null,
+          }
+        : null;
     final sections = <Widget>[
+      if (openUntil != null)
+        NestBanner(
+          message: NannyBookingCopy.openUntil(
+            context.read<HouseholdClock>().timeOf(openUntil),
+          ),
+          tone: NestBannerTone.success,
+        ),
       ShiftHeroCard(
         hub: hub,
         access: access,
@@ -59,6 +98,12 @@ class HubHome extends StatelessWidget {
         onOpenShift: (shiftId) =>
             context.push(NannyHubRoute.shiftPathFor(_householdId, shiftId)),
       ),
+      if (liveShifts.isNotEmpty)
+        LivePhotosCard(
+          shifts: liveShifts,
+          onOpen: (shiftId) =>
+              context.push(NannyHubRoute.photosPathFor(_householdId, shiftId)),
+        ),
       if (latest != null)
         LatestHandoverCard(
           summary: latest,

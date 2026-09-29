@@ -13,6 +13,7 @@ import '../../chore_points/model/reward.dart';
 import '../../chore_points/state/kid_points_controller.dart';
 import '../../chore_points/ui/kid_reward_shelf.dart';
 import '../../chore_points/ui/kid_stars_section.dart';
+import '../../notifications/ui/kid_notifications_button.dart';
 import '../model/kid_day.dart';
 import '../state/kid_home_controller.dart';
 import 'kid_day_view.dart';
@@ -55,6 +56,9 @@ class KidHomeScreen extends StatelessWidget {
     return NestScaffold(
       title: KidCopy.homeTitle,
       trailing: [
+        // notifications: the tablet's reminders, behind a tap (notifications
+        // ADR-0003).
+        const KidNotificationsButton(),
         NestIconButton(
           icon: Icons.logout_rounded,
           label: KidCopy.signOut,

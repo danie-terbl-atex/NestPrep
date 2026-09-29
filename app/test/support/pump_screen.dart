@@ -6,6 +6,8 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
+import 'package:nestprep/features/notifications/state/push_registrar.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -14,6 +16,8 @@ import 'package:provider/single_child_widget.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'fake_auth.dart';
+import 'fake_feature_flag_source.dart';
+import 'fake_notifications.dart';
 import 'fake_subscriptions.dart';
 import 'household_fixtures.dart';
 
@@ -44,12 +48,14 @@ Future<void> pumpScreen(
         path: '/households/:householdId/kids',
         builder: (context, state) => const Placeholder(),
       ),
-      // Where the lunch screens link out to (lunch-box ADR-0004).
+      // Where the lunch screens link out to (lunch-box ADR-0004), and where
+      // every tab's bell goes (notifications ADR-0001).
       for (final place in [
         'family',
         'lunch/prep',
         'lunch/library',
         'lunch/share',
+        'notifications',
       ])
         GoRoute(
           path: '/households/:householdId/$place',
@@ -118,6 +124,23 @@ Future<void> pumpRouter(
               initial: Entitlement.free,
             ),
             householdId: householdView.household.id,
+          ),
+        ),
+        // Every V2 way in shows, as in a debug build; a test of a switched-off
+        // capability passes its own (foundation ADR-0014).
+        featureFlagsProvider(),
+        // Every tab's header carries the bell (notifications ADR-0001): an
+        // empty inbox unless a test provides its own below.
+        Provider<NotificationRepository>(
+          create: (_) => FakeNotificationRepository(),
+        ),
+        // The phone's registration, never started here, so nothing is asked.
+        ChangeNotifierProvider<PushRegistrar>(
+          create: (_) => PushRegistrar(
+            gateway: FakePushGateway(),
+            tokens: FakePushTokenRepository(),
+            session: session,
+            signedInUid: () => session.uidOrEmpty,
           ),
         ),
         ...providers,

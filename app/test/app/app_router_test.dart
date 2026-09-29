@@ -6,6 +6,7 @@ import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/lunch_route.dart';
+import 'package:nestprep/app/two_homes_route.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
@@ -32,12 +33,23 @@ import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
+import 'package:nestprep/features/two_homes/data/two_homes_directory.dart';
+import 'package:nestprep/features/two_homes/data/two_homes_repository.dart';
+import 'package:nestprep/features/two_homes/ui/handover_screen.dart';
+import 'package:nestprep/features/two_homes/ui/join_link_screen.dart';
+import 'package:nestprep/features/two_homes/ui/link_screen.dart';
+import 'package:nestprep/features/two_homes/ui/link_setup_screen.dart';
+import 'package:nestprep/features/two_homes/ui/privacy_screen.dart';
+import 'package:nestprep/features/two_homes/ui/schedule_request_screen.dart';
+import 'package:nestprep/features/two_homes/ui/two_homes_screen.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
+import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
@@ -45,14 +57,17 @@ import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
+import '../support/fake_feature_flag_source.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_invite_sharer.dart';
 import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
+import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
+import '../support/fake_two_homes.dart';
 import '../support/household_fixtures.dart';
 import '../support/pump_subscriptions.dart';
 
@@ -79,8 +94,10 @@ void main() {
   late FakeBetaNumbersRepository betaNumbers;
   late FakeFamilyProfileRepository familyProfiles;
   late FakeLunchRepository lunches;
+  late FakeTwoHomesRepository twoHomes;
 
   setUp(() {
+    twoHomes = FakeTwoHomesRepository();
     activity = FakeActivityRecorder();
     betaNumbers = FakeBetaNumbersRepository(isReader: true);
     auth = FakeAuthGateway();
@@ -108,6 +125,7 @@ void main() {
     await betaNumbers.close();
     await familyProfiles.close();
     await lunches.close();
+    await twoHomes.close();
   });
 
   late GoRouter router;
@@ -131,6 +149,10 @@ void main() {
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),
+          // Every tab's bell (notifications ADR-0001).
+          Provider<NotificationRepository>.value(
+            value: FakeNotificationRepository(),
+          ),
           Provider<ActivityHeartbeat>(
             create: (_) => ActivityHeartbeat(activityRecorder: activity),
           ),
@@ -144,6 +166,13 @@ void main() {
           Provider<ChildProfileDirectory>.value(value: familyProfiles),
           // The store, premium and the shell's entitlement listener.
           ...SubscriptionHarness().providers,
+          // V2 switches, as in a debug build (foundation ADR-0014).
+          featureFlagsProvider(),
+          // co-parenting (household ADR-0004): the week reads the linked
+          // children's days, and two homes has screens of its own.
+          Provider<TwoHomesRepository>.value(value: twoHomes),
+          Provider<TwoHomesDirectory>.value(value: FakeTwoHomesDirectory()),
+          Provider<InviteSharer>.value(value: FakeInviteSharer()),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(
@@ -312,4 +341,36 @@ void main() {
       expect(find.byType(LunchShareScreen), findsOneWidget);
     },
   );
+
+  // co-parenting (household ADR-0004): every two-homes screen builds from
+  // the route table, each with the controller it asks for.
+  testWidgets('the two-homes screens build, with their controllers', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    const id = Fixtures.householdId;
+    for (final (path, screen) in [
+      (TwoHomesRoute.pathFor(id), TwoHomesScreen),
+      (TwoHomesRoute.setupPathFor(id), LinkSetupScreen),
+      (TwoHomesRoute.joinPathFor(id), JoinLinkScreen),
+      (TwoHomesRoute.privacyPathFor(id), PrivacyScreen),
+      (TwoHomesRoute.linkPathFor(id, 'link-sam'), LinkScreen),
+      (TwoHomesRoute.schedulePathFor(id, 'link-sam'), ScheduleRequestScreen),
+      (
+        TwoHomesRoute.handoverPathFor(
+          id,
+          'link-sam',
+          CalendarDate(2026, 10, 2),
+        ),
+        HandoverScreen,
+      ),
+    ]) {
+      router.go(path);
+      await settle(tester);
+      expect(tester.takeException(), isNull, reason: path);
+      expect(find.byType(screen), findsOneWidget, reason: path);
+    }
+  });
 }

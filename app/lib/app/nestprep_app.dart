@@ -8,6 +8,7 @@ import '../shared/copy/app_copy.dart';
 import 'app_providers.dart';
 import 'app_router.dart';
 import 'firebase_bootstrap.dart';
+import 'notification_host.dart';
 
 class NestPrepApp extends StatelessWidget {
   const NestPrepApp({required this.services, super.key});
@@ -51,6 +52,9 @@ class _NestPrepRouterHostState extends State<_NestPrepRouterHost> {
       theme: nestThemeData(NestTheme.light()),
       darkTheme: nestThemeData(NestTheme.dark()),
       routerConfig: _router,
+      // Where a push meets the running app (notifications ADR-0001).
+      builder: (context, child) =>
+          NotificationHost(router: _router, child: child ?? const SizedBox()),
     );
   }
 }

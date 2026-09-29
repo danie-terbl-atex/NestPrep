@@ -22,6 +22,12 @@ export const DOCUMENT_REFUSALS = {
   // granted (documents ADR-0002).
   vaultNotShared: ['permission-denied', 'That vault has not been shared with you.'],
   documentNotFound: ['not-found', 'That document no longer exists.'],
+  // Shared links (documents ADR-0006).
+  featureOff: ['failed-precondition', 'That is switched off for now.'],
+  notAllowedToShare: ['permission-denied', 'Only the family or its owner can share that.'],
+  shiftNotOpen: ['failed-precondition', 'That shift has already ended.'],
+  tooManyShares: ['resource-exhausted', 'Too many links are live at once.'],
+  shareNotFound: ['not-found', 'That link no longer exists.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type DocumentRefusal = keyof typeof DOCUMENT_REFUSALS;

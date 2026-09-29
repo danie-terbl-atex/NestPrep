@@ -20,8 +20,9 @@ match /memberLocations/{memberId} {
   // query against every document in its result and a listener's bounds
   // are fixed when it opens. The window is enforced on write instead, and
   // the client reads a closed one as *not sharing* (live-location
-  // ADR-0001).
-  allow read: if isMember(householdId);
+  // ADR-0001). A carer marked shift-only reads nobody's position off shift
+  // (nanny-hub ADR-0006).
+  allow read: if isMember(householdId) && !isShiftOnlyOffShiftNow(householdId);
 
   allow create, update: if hasClaimed(householdId, memberId)
     && request.resource.data.keys().hasOnly(

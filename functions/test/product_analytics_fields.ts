@@ -8,16 +8,34 @@
  * anything about a child — and the answer has to be no.
  */
 export const ALLOWED_FIELDS: Readonly<Record<string, readonly string[]>> = {
-  analyticsHouseholdWeeks: ['householdId', 'week', 'activeMemberIds', 'lunchPlanIds', 'expireAt'],
+  analyticsHouseholdWeeks: [
+    'householdId',
+    'week',
+    'activeMemberIds',
+    'lunchPlanIds',
+    // The triggers the household met the paywall on (product-analytics ADR-0002).
+    'paywallTriggers',
+    'expireAt',
+  ],
   analyticsHouseholds: [
     'householdId',
     'createdAt',
     'cohortWeek',
     'firstAdultInviteAt',
     'firstAdultInviteRole',
+    // What a purchase that follows is attributed to (product-analytics ADR-0002).
+    'lastPaywallTrigger',
+    'lastPaywallOpenedAt',
     'expireAt',
   ],
-  analyticsConversions: ['householdId', 'week', 'trigger', 'convertedAt', 'expireAt'],
+  analyticsConversions: [
+    'householdId',
+    'week',
+    'trigger',
+    'attribution',
+    'convertedAt',
+    'expireAt',
+  ],
   analyticsWeeks: [
     'week',
     'weekStart',
@@ -29,8 +47,13 @@ export const ALLOWED_FIELDS: Readonly<Record<string, readonly string[]>> = {
     'newFamiliesInvitingAnAdult',
     'adultInvitesByRole',
     'isInviteCohortComplete',
+    'paywallFamilies',
+    'paywallFamiliesByTrigger',
     'premiumConversions',
     'premiumConversionsByTrigger',
+    'referralsRedeemed',
+    'referralsQualified',
+    'referralMonthsGiven',
     'definitionVersion',
     'computedAt',
   ],

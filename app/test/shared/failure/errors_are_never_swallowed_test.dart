@@ -253,6 +253,49 @@ void main() {
     '_readAloud.stop())',
     '_listen())',
     'Future.microtask(() => _fetch(language wanted)))',
+    // ---- documents V2 (documents ADR-0006, ADR-0007, foundation ADR-0014) ----
+    // Reading the phone's offline copies when the vault unlocks. It catches
+    // its own `AppFailure` and holds it as the shelf's failed state, which
+    // the screen renders with a retry; it is unawaited because the lock's
+    // listener cannot wait.
+    '_load())',
+    // Cancelling the open-shifts, the live-links and the switches' listeners
+    // in dispose. There is no screen left to tell, as with `_cancel()` (the
+    // plain `_subscription` cancels are allowed above, for subscriptions).
+    '_shiftSubscription?.cancel())',
+    // ---- calendar V2: the shared week (calendar ADR-0006) ----
+    // Moving the week cancels two reads and opens two; the new reads send
+    // their failures to their own onError and onto the week's state.
+    '_listeners.moveWindow(from: _weekStart to: _weekEnd));',
+    // Closing the week's reads in dispose: there is no screen left to tell.
+    '_listeners.close());',
+    // ---- nanny hub V2 (nanny-hub ADR-0006, ADR-0007) ----
+    // The offline keeper's three moves each catch their own `AppFailure` and
+    // hold it as the keeper's status, which the "saved for offline" line
+    // shows with a way to try again.
+    'context.read<OfflineKeeper>().open())',
+    'keeper.open())',
+    'keeper.saveNow())',
+    'keeper.forget())',
+    // Naming the booked shift on the pass runs through `bestEffort`, which
+    // logs a failure and never throws; the pass is written again at the next
+    // edge of the window.
+    '_savePass(named))',
+    // Fetching the house codes catches its own `AppFailure` into the codes'
+    // state, which the screen renders with a retry.
+    '_fetch())',
+    // Closing a listener in dispose is allowed above (subscriptions): nobody
+    // is left to tell — here and in the V2 switches' controller.
+    // referrals and conversion by trigger (subscriptions ADR-0002,
+    // product-analytics ADR-0002). Sharing and entering a code keep their
+    // AppFailure for the screen (the action banner, the field); making the
+    // code keeps it as the code card's failure with a retry; a paywall
+    // opening is counted through `bestEffort`, which never throws.
+    'controller.share()',
+    'controller.retryCode()',
+    'controller.redeem(code)',
+    '_makeCode()',
+    '_recordOpening()',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

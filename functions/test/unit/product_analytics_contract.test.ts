@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { READER_CLAIM, WEEKLY_TOTALS } from '../../src/product_analytics/analytics_documents';
+import { NO_REFERRALS } from '../../src/product_analytics/referral_counts';
 import { summariseWeek } from '../../src/product_analytics/weekly_summary';
 
 /**
@@ -39,7 +40,7 @@ describe('the client and the server agree on', () => {
     const model = dart('model/weekly_numbers.dart');
     const declared = [
       ...model.matchAll(
-        /^\s*(?:@\w+\(\)\s*)?(?:@Default\([^)]*\)\s*)?(?:required\s+)?[\w<>?]+\??\s+(\w+),$/gm,
+        /^\s*(?:@\w+\(\)\s*)?(?:@Default\([^)]*\)\s*)?(?:required\s+)?[\w<>?, ]+?\??\s+(\w+),$/gm,
       ),
     ].flatMap((match) => (match[1] === undefined ? [] : [match[1]]));
     const written = Object.keys(
@@ -48,6 +49,7 @@ describe('the client and the server agree on', () => {
         householdWeeks: [],
         cohort: [],
         conversions: [],
+        referrals: NO_REFERRALS,
         isInviteCohortComplete: false,
       }),
     );

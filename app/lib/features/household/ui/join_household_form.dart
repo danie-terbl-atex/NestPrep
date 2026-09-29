@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/ui/upper_case_formatter.dart';
 import '../state/household_gate_controller.dart';
 
 /// Types the code somebody shared. Codes are shown in upper case and contain no
@@ -42,7 +42,7 @@ class _JoinHouseholdFormState extends State<JoinHouseholdForm> {
           controller: _code,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
-          inputFormatters: const [_UpperCaseFormatter()],
+          inputFormatters: const [UpperCaseFormatter()],
           onChanged: (_) => setState(() {}),
           onSubmitted: (_) => canSubmit ? _submit(controller) : null,
         ),
@@ -59,19 +59,4 @@ class _JoinHouseholdFormState extends State<JoinHouseholdForm> {
   void _submit(HouseholdGateController controller) {
     unawaited(controller.joinWithCode(_code.text.trim()));
   }
-}
-
-/// Upper-cases as the person types. Showing them what was stored is the point —
-/// nothing is silently changed behind the cursor (`FE-10`).
-class _UpperCaseFormatter extends TextInputFormatter {
-  const _UpperCaseFormatter();
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) => TextEditingValue(
-    text: newValue.text.toUpperCase(),
-    selection: newValue.selection,
-  );
 }

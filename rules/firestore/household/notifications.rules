@@ -1,0 +1,92 @@
+// ---- notifications (notifications ADR-0001, ADR-0003) ----
+//
+// Two collections under the household, both about one person at a time.
+//
+// `notificationSettings/{memberId}` is that person's choices: the digest and
+// its time, which kinds of notification they want, and their quiet hours.
+// The document id is the member, so there is no field to put somebody else's
+// id into. A person manages their own — a kid device its kid's — and family
+// may also manage a kid's, which is who may turn a child's notifications off
+// (ADR-0003). `digestSlot` is what the digest job asks for; it is the minute
+// over fifteen while the digest is on and null while it is off, and the rules
+// hold the two together so a client cannot ask for a digest at a time it did
+// not choose.
+//
+// `notificationInbox/{id}` is every notification one person was sent. Only
+// Functions write one; its person reads it, marks it read, or clears it —
+// nobody else sees another person's inbox, family included.
+
+function notificationsMayManage(householdId, memberId) {
+  return isInHousehold(householdId)
+    && (isOwnMember(householdId, memberId)
+        || (isFamily(householdId) && memberData(householdId, memberId).role == 'kid'));
+}
+
+function notificationsIsMinute(value) {
+  return value is int && value >= 0 && value < 1440;
+}
+
+function notificationsDigestIsValid(data) {
+  return data.digest is map
+    && data.digest.keys().hasOnly(['enabled', 'minute'])
+    && data.digest.keys().hasAll(['enabled', 'minute'])
+    && data.digest.enabled is bool
+    && notificationsIsMinute(data.digest.minute)
+    && data.digest.minute % 15 == 0
+    && (data.digest.enabled
+          ? (data.digestSlot is int && data.digestSlot * 15 == data.digest.minute)
+          : data.digestSlot == null);
+}
+
+function notificationsQuietIsValid(value) {
+  return value is map
+    && value.keys().hasOnly(['enabled', 'startMinute', 'endMinute'])
+    && value.keys().hasAll(['enabled', 'startMinute', 'endMinute'])
+    && value.enabled is bool
+    && notificationsIsMinute(value.startMinute)
+    && notificationsIsMinute(value.endMinute);
+}
+
+function notificationsCategoriesAreValid(value) {
+  return value is map
+    // `photos` and `coParenting` are the V2 producers' switches (nanny-hub
+    // ADR-0004, household ADR-0004).
+    && value.keys().hasOnly(['documents', 'handover', 'chores', 'photos', 'coParenting'])
+    && value.values().hasOnly([true, false]);
+}
+
+function isNotificationSettings(householdId, data) {
+  return data.keys().hasOnly(
+           ['digest', 'digestSlot', 'categories', 'quietHours', 'updatedBy', 'updatedAt'])
+    && data.keys().hasAll(['digest', 'digestSlot', 'categories', 'quietHours', 'updatedBy'])
+    && notificationsDigestIsValid(data)
+    && notificationsCategoriesAreValid(data.categories)
+    && notificationsQuietIsValid(data.quietHours)
+    && isOwnMember(householdId, data.updatedBy)
+    && isServerTime('updatedAt');
+}
+
+match /notificationSettings/{memberId} {
+  allow read: if notificationsMayManage(householdId, memberId);
+
+  allow create, update: if notificationsMayManage(householdId, memberId)
+    && isNotificationSettings(householdId, request.resource.data);
+
+  allow delete: if false;
+}
+
+match /notificationInbox/{itemId} {
+  allow read: if isInHousehold(householdId)
+    && isOwnMember(householdId, resource.data.memberId);
+
+  // Read is the one thing a person changes, and it is stamped by the server.
+  allow update: if isInHousehold(householdId)
+    && isOwnMember(householdId, resource.data.memberId)
+    && onlyChanged(['readAt'])
+    && request.resource.data.readAt == request.time;
+
+  allow delete: if isInHousehold(householdId)
+    && isOwnMember(householdId, resource.data.memberId);
+
+  allow create: if false;
+}

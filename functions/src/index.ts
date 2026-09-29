@@ -69,3 +69,39 @@ export { requestAccountDeletion } from './account_data/request_account_deletion'
 // ---- home care V2: stock to groceries, the helper's language (home-care ADR-0005, ADR-0006) ----
 export { addLowStockToGroceries } from './home_care/add_low_stock_to_groceries';
 export { translateHomeCareTexts } from './home_care/translate_home_care_texts';
+
+// ---- documents V2: one document shared by an expiring link (documents ADR-0006) ----
+export { createDocumentShare } from './documents/share/create_document_share';
+export { revokeDocumentShare } from './documents/share/revoke_document_share';
+export { documentShare } from './documents/share/document_share';
+export { endSharesWithShift } from './documents/share/end_shares_with_shift';
+
+// ---- calendar V2: snap a school letter, the first AI call (calendar ADR-0005, foundation ADR-0015) ----
+export { readSchoolLetter } from './school_letter/read_school_letter';
+
+// ---- co-parenting: a child in two homes (household ADR-0004) ----
+export { createCoParentInvite } from './coparent/create_coparent_invite';
+export { previewCoParentInvite } from './coparent/preview_coparent_invite';
+export { acceptCoParentInvite } from './coparent/accept_coparent_invite';
+export { confirmCoParentLink } from './coparent/confirm_coparent_link';
+export { endCoParentLink } from './coparent/end_coparent_link';
+export { proposeCoParentChange } from './coparent/propose_coparent_change';
+export { answerCoParentChange } from './coparent/answer_coparent_change';
+export { saveCoParentHandover } from './coparent/save_coparent_handover';
+// nanny hub V2: a carer who sees the household only on a booked shift (nanny-hub ADR-0006)
+export { setCarerShiftOnly } from './nanny_hub/set_carer_shift_only';
+// ---- referrals and conversion by trigger (subscriptions ADR-0002, product-analytics ADR-0002) ----
+export { ensureReferralCode } from './referrals/ensure_referral_code';
+export { redeemReferralCode } from './referrals/redeem_referral_code';
+export { recordPaywallOpened } from './product_analytics/record_paywall_opened';
+// ---- notifications: the morning digest and the one push channel (notifications ADR-0001 to ADR-0003) ----
+export { composeMorningDigests } from './notifications/compose_morning_digests';
+export { deliverNotifications } from './notifications/deliver_notifications';
+export { notifyShiftHandover } from './notifications/notify_shift_handover';
+export { notifyChoreCheck } from './notifications/notify_chore_check';
+export { notifyRewardRequest } from './notifications/notify_reward_request';
+export { sendTestNotification } from './notifications/send_test_notification';
+// the V2 producers on the same channel: a carer's photo (nanny-hub ADR-0004) and
+// the other home's requests and handover notes (household ADR-0004)
+export { notifyPhotoUpdate } from './notifications/notify_photo_update';
+export { notifyCoParentRequest, notifyCoParentHandover } from './notifications/notify_coparent';

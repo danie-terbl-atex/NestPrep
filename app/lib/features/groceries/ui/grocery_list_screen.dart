@@ -10,6 +10,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../notifications/ui/notification_bell.dart';
 import '../model/grocery_list_view.dart';
 import '../state/grocery_list_controller.dart';
 import '../state/grocery_plan_controller.dart';
@@ -58,6 +59,7 @@ class GroceryListScreen extends StatelessWidget {
             label: GroceryPlanCopy.open,
             onPressed: () => _openPlans(context),
           ),
+        const NotificationBell(),
         const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],

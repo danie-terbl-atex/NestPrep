@@ -63,3 +63,11 @@ export function objectStore(): ObjectStore {
     },
   };
 }
+
+/**
+ * The same bucket, for documents' shared links (documents ADR-0006), which
+ * stream a document to somebody with no account.
+ */
+export function documentsBucket(): ReturnType<ReturnType<typeof getStorage>['bucket']> {
+  return getStorage(adminApp()).bucket(bucketName());
+}

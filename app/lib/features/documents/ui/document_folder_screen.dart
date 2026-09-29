@@ -14,6 +14,7 @@ import '../../household/model/household_view.dart';
 import '../model/document_library.dart';
 import '../model/document_tags.dart';
 import '../state/document_library_controller.dart';
+import '../state/offline_copies_controller.dart';
 import 'add_to_folder.dart';
 import 'document_row.dart';
 import 'document_sheet.dart';
@@ -146,6 +147,7 @@ class _DocumentList extends StatelessWidget {
     final view = context.read<HouseholdView>();
     final controller = context.read<DocumentLibraryController>();
     final today = context.read<HouseholdClock>().today;
+    final offline = context.watch<OfflineCopiesController>();
     final vocabulary = DocumentTags.vocabulary(
       library.folders
           .expand((folder) => library.inFolder(folder.id))
@@ -166,6 +168,10 @@ class _DocumentList extends StatelessWidget {
               tags: document.tags,
               expiresOn: document.expiresOn,
               today: today,
+              isKeptOffline: offline.holds(
+                ownerMemberId: null,
+                documentId: document.id,
+              ),
               onOpen: () => showDocumentSheet(
                 context: context,
                 document: document,

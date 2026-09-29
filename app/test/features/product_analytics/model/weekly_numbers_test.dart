@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/product_analytics/model/weekly_numbers.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 /// One week's totals as the rollup writes them (product-analytics ADR-0001).
@@ -74,6 +75,48 @@ void main() {
 
     test('is nothing at all when nobody started that week — not 0%', () {
       expect(cohort(0, 0).inviteRatePercent, isNull);
+    });
+  });
+
+  group('conversion by trigger (product-analytics ADR-0002)', () {
+    final week = WeeklyNumbers(
+      week: '2026-W40',
+      weekStart: CalendarDate(2026, 9, 28),
+      paywallFamilies: 3,
+      paywallFamiliesByTrigger: const {'prepList': 3, 'aiPlanning': 0},
+      premiumConversions: 1,
+      premiumConversionsByTrigger: const {'prepList': 1, 'unknownOne': 2},
+    );
+
+    test('is a whole percentage of the families shown premium', () {
+      expect(week.conversionRatePercent, 33);
+      expect(
+        WeeklyNumbers(
+          week: '2026-W40',
+          weekStart: CalendarDate(2026, 9, 28),
+        ).conversionRatePercent,
+        isNull,
+      );
+    });
+
+    test('lists only the triggers somebody met, in their own order, and '
+        'ignores one this build does not know', () {
+      final [only] = week.byTrigger;
+      expect(only.feature, PremiumFeature.prepList);
+      expect(only.families, 3);
+      expect(only.conversions, 1);
+      expect(only.ratePercent, 33);
+      expect(week.hasPremiumActivity, isTrue);
+    });
+
+    test('reads a week rolled up before these counts as none', () {
+      final older = WeeklyNumbers.fromJson({
+        'week': '2026-W39',
+        'weekStart': '2026-09-21',
+      });
+      expect(older.paywallFamilies, 0);
+      expect(older.byTrigger, isEmpty);
+      expect(older.hasPremiumActivity, isFalse);
     });
   });
 }

@@ -25,8 +25,13 @@ abstract class VaultView with _$VaultView {
     /// The name when it was opened; a later rename does not rewrite history.
     required String documentName,
 
-    /// Who opened it, or null for an account with no profile of its own.
+    /// Who opened it, or null for an account with no profile of its own —
+    /// and for somebody who opened it through a shared link.
     String? viewerMemberId,
+
+    /// The shared link it was opened through, if it was (documents
+    /// ADR-0006). Absent on every entry written before links (`BE-10`).
+    String? shareId,
     @ServerTimestampConverter() DateTime? viewedAt,
   }) = _VaultView;
 
@@ -34,4 +39,6 @@ abstract class VaultView with _$VaultView {
 
   factory VaultView.fromJson(Map<String, Object?> json) =>
       _$VaultViewFromJson(json);
+
+  bool get isThroughSharedLink => shareId != null;
 }

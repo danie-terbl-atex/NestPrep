@@ -7,6 +7,7 @@ import { readHousehold, roleOf } from '../household/documents';
 import { refuse } from '../household/errors';
 import { findClaimedMember } from '../household/membership';
 import { parseInput, requireUid } from '../household/parse_input';
+import { settleReferralAfter } from '../referrals/referral_settlement';
 import { stageMemberActive } from './household_week_ledger';
 import { countingZoneFor, weekKeyOf } from './iso_week';
 
@@ -46,5 +47,8 @@ export const recordActivity = onCall(async (request) => {
   });
 
   logger.info('activity recorded', { householdId, week });
+  // Opening the app is also how a referred household shows it is a family
+  // (subscriptions ADR-0002). Asked after, and never failing, the count.
+  await settleReferralAfter(store, householdId, { kind: 'opened', uid }, new Date());
   return { week };
 });

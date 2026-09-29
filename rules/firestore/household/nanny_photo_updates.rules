@@ -1,0 +1,37 @@
+// ---- nanny hub: photo updates during a shift (nanny-hub ADR-0004) ----
+//
+// A quick photo, with an optional caption, that a carer sends the parents
+// while a shift is open. It lives under the shift, so the parents' feed for
+// that shift is one listener. Each is created `delivery: {state: 'pending'}`
+// for notifications to push — the Admin SDK sets it to `sent` or `failed`;
+// no client ever changes an update, only takes one back.
+
+match /nannyShifts/{shiftId}/photoUpdates/{updateId} {
+  allow read: if canView(householdId, 'nannyHub');
+
+  allow create: if canEdit(householdId, 'nannyHub')
+    && isNannyShiftOpen(householdId, shiftId)
+    && request.resource.data.keys().hasOnly(
+         ['photoId', 'caption', 'childIds', 'byMemberId', 'createdAt', 'delivery'])
+    && isNannyPhotoUpdate(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.byMemberId)
+    && isServerTime('createdAt');
+
+  allow update: if false;
+
+  // The sender takes one back; family removes any.
+  allow delete: if isFamily(householdId)
+    || (canEdit(householdId, 'nannyHub')
+          && isOwnMember(householdId, resource.data.byMemberId));
+}
+
+// The limits are `NannyLimits.photoCaption` and `photoUpdateChildren` in the
+// app; `nanny_v2_contract_test.dart` reads this file.
+function isNannyPhotoUpdate(data) {
+  return data.photoId is string
+    && data.photoId.matches('^[A-Za-z0-9_-]{8,64}$')
+    && isNannyOptionalText(data.get('caption', null), 200)
+    && data.childIds is list
+    && data.childIds.size() <= 10
+    && data.delivery == {'state': 'pending'};
+}
