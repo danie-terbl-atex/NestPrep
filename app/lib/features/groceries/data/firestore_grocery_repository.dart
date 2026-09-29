@@ -75,7 +75,7 @@ final class FirestoreGroceryRepository implements GroceryRepository {
     required String householdId,
     required String itemId,
     required String name,
-    String? quantity,
+    required String? quantity,
   }) => _guarded(
     () =>
         _items(householdId)

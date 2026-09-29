@@ -15,7 +15,7 @@ import {
 } from './documents';
 import { refuse } from './errors';
 import { looksLikeInviteCode } from './invite_code';
-import { parseInput, requireUid } from './parse_input';
+import { parseInput, requireVerifiedUid } from './parse_input';
 import { redeemInviteInput } from './schemas';
 
 /**
@@ -25,7 +25,7 @@ import { redeemInviteInput } from './schemas';
  * (household ADR-0002). Any refusal leaves nothing half-done (BE-07).
  */
 export const redeemInvite = onCall(async (request) => {
-  const uid = requireUid(request.auth);
+  const uid = requireVerifiedUid(request.auth);
   const { code } = parseInput(redeemInviteInput, request.data);
   const store = db();
 

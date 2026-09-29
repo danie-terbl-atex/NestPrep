@@ -1,6 +1,7 @@
 import { deleteApp, getApps, initializeApp, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { FUNCTIONS_REGION } from '../../src/shared/region';
 
 /**
  * Drives the callables the way the app does — over HTTP, with a real ID token
@@ -8,7 +9,7 @@ import { getFirestore, type Firestore } from 'firebase-admin/firestore';
  * not just the function body (BE-14).
  */
 export const PROJECT_ID = 'nestprep-643b7';
-export const REGION = 'us-central1';
+export const REGION = FUNCTIONS_REGION;
 
 const AUTH_HOST = process.env['FIREBASE_AUTH_EMULATOR_HOST'] ?? '127.0.0.1:9099';
 const FIRESTORE_HOST = process.env['FIRESTORE_EMULATOR_HOST'] ?? '127.0.0.1:8080';
@@ -33,22 +34,62 @@ export class CallFailed extends Error {
 
 let nextUser = 0;
 
+const IDENTITY = `http://${AUTH_HOST}/identitytoolkit.googleapis.com/v1`;
+const PASSWORD = 'nestprep';
+
+/**
+ * A signed-up user whose address is **verified**, which is what almost every
+ * test wants: createHousehold and redeemInvite refuse an unverified caller
+ * (accounts ADR-0002), and a Google credential — how people really arrive —
+ * always carries the claim. Use `signUpUnverified` for the gate's own tests.
+ */
 export async function signUp(): Promise<TestUser> {
+  const user = await signUpUnverified();
+  await markVerified(user.uid);
+  // The claim lives in the token, so a token minted before the flag was set
+  // still says false. Signing in again is what picks it up.
+  return { ...user, idToken: await signInAgain(user.email) };
+}
+
+/** A user who has not proved their address — the state the gate exists for. */
+export async function signUpUnverified(): Promise<TestUser> {
   nextUser += 1;
   const email = `test-${Date.now().toString()}-${nextUser.toString()}@nestprep.test`;
-  const response = await fetch(
-    `http://${AUTH_HOST}/identitytoolkit.googleapis.com/v1/accounts:signUp?key=fake-api-key`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: 'nestprep', returnSecureToken: true }),
-    },
-  );
+  const response = await fetch(`${IDENTITY}/accounts:signUp?key=fake-api-key`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password: PASSWORD, returnSecureToken: true }),
+  });
   const body = (await response.json()) as { idToken?: string; localId?: string };
   if (body.idToken === undefined || body.localId === undefined) {
     throw new Error(`could not seed a test user: ${JSON.stringify(body)}`);
   }
   return { uid: body.localId, idToken: body.idToken, email };
+}
+
+/** Sets the flag the way the emulator's admin API allows, with no inbox involved. */
+async function markVerified(uid: string): Promise<void> {
+  const response = await fetch(`${IDENTITY}/accounts:update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
+    body: JSON.stringify({ localId: uid, emailVerified: true, targetProjectId: PROJECT_ID }),
+  });
+  if (!response.ok) {
+    throw new Error(`could not verify a test user: ${await response.text()}`);
+  }
+}
+
+async function signInAgain(email: string): Promise<string> {
+  const response = await fetch(`${IDENTITY}/accounts:signInWithPassword?key=fake-api-key`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password: PASSWORD, returnSecureToken: true }),
+  });
+  const body = (await response.json()) as { idToken?: string };
+  if (body.idToken === undefined) {
+    throw new Error(`could not re-sign a test user: ${JSON.stringify(body)}`);
+  }
+  return body.idToken;
 }
 
 export async function callAs<T>(user: TestUser | null, name: string, data: unknown): Promise<T> {

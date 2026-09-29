@@ -145,6 +145,10 @@ void main() {
     // Controllers that keep a refusal instead of throwing it.
     'controller.joinWithCode(_code.text.trim())',
     'controller.createHousehold(',
+    // The same shape for the two ways in that are not Google: both keep their
+    // AppFailure for the screen's banner (accounts ADR-0002).
+    'controller.register(',
+    'controller.send(_email.text)',
     // Goes through `runAction`, which keeps an AppFailure for the banner.
     '_resumeReporting(',
     // The window closing is nobody's request at that moment, so it has nowhere

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 
@@ -36,13 +35,15 @@ class NestButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final look = _NestButtonLook.resolve(nest, variant);
+    final look = _isEnabled
+        ? _NestButtonLook.resolve(nest, variant)
+        : _NestButtonLook.disabled(nest, variant);
     final height = switch (size) {
       NestButtonSize.small => NestSize.controlSmall,
       NestButtonSize.medium => NestSize.controlMedium,
       NestButtonSize.large => NestSize.controlLarge,
     };
-    final foreground = _isEnabled ? look.foreground : nest.colors.inkTertiary;
+    final foreground = look.foreground;
     final child = Row(
       mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -76,27 +77,23 @@ class NestButton extends StatelessWidget {
       button: true,
       enabled: _isEnabled,
       label: label,
-      child: AnimatedOpacity(
-        duration: NestMotion.of(context).quick,
-        opacity: _isEnabled ? 1 : 0.6,
-        child: Material(
-          color: look.background,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(NestRadius.pill),
-            side: look.border ?? BorderSide.none,
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: _isEnabled ? onPressed : null,
-            splashColor: look.pressed,
-            highlightColor: look.pressed,
-            child: SizedBox(
-              height: height,
-              width: isExpanded ? double.infinity : null,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: NestSpace.xxl),
-                child: child,
-              ),
+      child: Material(
+        color: look.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(NestRadius.pill),
+          side: look.border ?? BorderSide.none,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: _isEnabled ? onPressed : null,
+          splashColor: look.pressed,
+          highlightColor: look.pressed,
+          child: SizedBox(
+            height: height,
+            width: isExpanded ? double.infinity : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: NestSpace.xxl),
+              child: child,
             ),
           ),
         ),
@@ -117,6 +114,38 @@ class _NestButtonLook {
   final Color foreground;
   final Color pressed;
   final BorderSide? border;
+
+  /// What a button looks like when it cannot be pressed.
+  ///
+  /// This is a *pair*, not a fade. Fading the whole button moved its fill and
+  /// its label toward the page together and left the label at 1.17:1 on the
+  /// sign-in screen — violet on grey, and unreadable (`FE-13`). A filled button
+  /// says "disabled" by losing its colour instead; the flat variants keep their
+  /// surface and mute only the ink. Every pair below is proven AA in
+  /// `test/design/tokens/nest_contrast_test.dart`.
+  static _NestButtonLook disabled(NestTheme nest, NestButtonVariant variant) {
+    final c = nest.colors;
+    return switch (variant) {
+      NestButtonVariant.primary ||
+      NestButtonVariant.tonal ||
+      NestButtonVariant.danger => _NestButtonLook(
+        background: c.outlineStrong,
+        foreground: c.ink,
+        pressed: c.outlineStrong,
+      ),
+      NestButtonVariant.outline => _NestButtonLook(
+        background: c.surface,
+        foreground: c.inkTertiary,
+        pressed: c.surface,
+        border: BorderSide(color: c.outline),
+      ),
+      NestButtonVariant.ghost => _NestButtonLook(
+        background: Colors.transparent,
+        foreground: c.inkTertiary,
+        pressed: Colors.transparent,
+      ),
+    };
+  }
 
   static _NestButtonLook resolve(NestTheme nest, NestButtonVariant variant) {
     final c = nest.colors;

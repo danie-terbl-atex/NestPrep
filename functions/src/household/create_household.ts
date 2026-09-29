@@ -4,7 +4,7 @@ import { logger } from 'firebase-functions/v2';
 
 import { db } from '../shared/firestore';
 import { householdRef, memberRef, userRef } from './documents';
-import { parseInput, requireUid } from './parse_input';
+import { parseInput, requireVerifiedUid } from './parse_input';
 import { createHouseholdInput } from './schemas';
 
 /**
@@ -15,7 +15,7 @@ import { createHouseholdInput } from './schemas';
  * (BE-07).
  */
 export const createHousehold = onCall(async (request) => {
-  const uid = requireUid(request.auth);
+  const uid = requireVerifiedUid(request.auth);
   const input = parseInput(createHouseholdInput, request.data);
   const store = db();
 

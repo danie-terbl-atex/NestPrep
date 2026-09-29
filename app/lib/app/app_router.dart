@@ -3,10 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../design/gallery/design_gallery_screen.dart';
+import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/model/session.dart';
+import '../features/accounts/state/password_reset_controller.dart';
+import '../features/accounts/state/register_controller.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/accounts/ui/forgot_password_screen.dart';
+import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
+import '../features/accounts/ui/verify_email_screen.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
@@ -63,6 +69,26 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
     GoRoute(
       path: SignInScreen.path,
       builder: (context, state) => const SignInScreen(),
+    ),
+    GoRoute(
+      path: RegisterScreen.path,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) =>
+            RegisterController(authGateway: context.read<AuthGateway>()),
+        child: const RegisterScreen(),
+      ),
+    ),
+    GoRoute(
+      path: ForgotPasswordScreen.path,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) =>
+            PasswordResetController(authGateway: context.read<AuthGateway>()),
+        child: const ForgotPasswordScreen(),
+      ),
+    ),
+    GoRoute(
+      path: VerifyEmailScreen.path,
+      builder: (context, state) => const VerifyEmailScreen(),
     ),
     GoRoute(
       path: HouseholdGateScreen.path,
@@ -225,9 +251,11 @@ String _viewerMemberId(BuildContext context) =>
 
 /// Where a caller in this session belongs, or null to leave them where they are.
 ///
-/// Signed out, only the sign-in screen exists; signed in with no household, only
-/// the gate; signed in with one, everything under it. The design gallery is
-/// exempt because it renders no data and debug builds use it before sign-in.
+/// Signed out, only the three ways in exist; signed in with an address nobody
+/// has proved and no household, only the confirm screen; signed in with no
+/// household, only the gate; signed in with one, everything under it. The design
+/// gallery is exempt because it renders no data and debug builds use it before
+/// sign-in.
 @visibleForTesting
 String? redirectForSession(SessionController session, String location) {
   if (DesignGalleryAccess.isAvailable && location == DesignGalleryScreen.path) {
@@ -239,10 +267,24 @@ String? redirectForSession(SessionController session, String location) {
     return location == SessionGateScreen.path ? null : SessionGateScreen.path;
   }
   if (state.value is SignedOut) {
-    return location == SignInScreen.path ? null : SignInScreen.path;
+    const waysIn = [
+      SignInScreen.path,
+      RegisterScreen.path,
+      ForgotPasswordScreen.path,
+    ];
+    return waysIn.contains(location) ? null : SignInScreen.path;
   }
 
   final householdId = session.activeHouseholdId;
+
+  // An unproved address cannot create or join a household — the callables
+  // refuse it (accounts ADR-0002) — so the gate would be a dead end. Somebody
+  // who is already in a household is left alone: they got in before the rule
+  // existed, or through Google, and locking them out of the app they are using
+  // would punish them for our change.
+  if (!session.emailVerified && householdId == null) {
+    return location == VerifyEmailScreen.path ? null : VerifyEmailScreen.path;
+  }
   if (householdId == null) {
     return location == HouseholdGateScreen.path
         ? null
@@ -252,6 +294,9 @@ String? redirectForSession(SessionController session, String location) {
   const waitingRooms = [
     SessionGateScreen.path,
     SignInScreen.path,
+    RegisterScreen.path,
+    ForgotPasswordScreen.path,
+    VerifyEmailScreen.path,
     HouseholdGateScreen.path,
   ];
   if (waitingRooms.contains(location)) {

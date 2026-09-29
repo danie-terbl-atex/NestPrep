@@ -8,6 +8,17 @@ import 'backend_target.dart';
 import 'emulator_endpoint.dart';
 import 'firebase_options.dart';
 
+/// The region every callable is deployed to, and therefore the region the
+/// client must address them in (foundation ADR-0003).
+///
+/// This is a **contract with the Functions codebase**, whose half is
+/// `functions/src/shared/region.ts`; `functions/test/unit/region_contract.test.ts`
+/// reads both files and fails if they drift. Getting it wrong is not a visible
+/// error at build time: `FirebaseFunctions.instance` defaults to `us-central1`,
+/// which resolves to a URL where nothing is deployed, so every household action
+/// fails with NOT_FOUND at runtime and looks like a broken backend.
+const functionsRegion = 'africa-south1';
+
 /// The Firebase services the app injects, initialised for the chosen target.
 class FirebaseServices {
   const FirebaseServices({
@@ -41,7 +52,7 @@ Future<FirebaseServices> bootstrapFirebase(BackendTarget target) async {
 
   final firestore = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
-  final functions = FirebaseFunctions.instance;
+  final functions = FirebaseFunctions.instanceFor(region: functionsRegion);
   final storage = FirebaseStorage.instance;
 
   if (target == BackendTarget.emulator) {

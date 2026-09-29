@@ -4,16 +4,22 @@ import 'package:nestprep/app/backend_target.dart';
 /// Which backend a build talks to, and the parse that decides it.
 ///
 /// `fromEnvironment` reads a `String.fromEnvironment` constant, so under
-/// `flutter test` it is always `'emulator'` and the `'cloud'` branch is
-/// unreachable — which means the branch every real cloud build takes had never
-/// been executed by anything, and neither had the refusal. A typo in either
-/// shows up as an app that throws on launch, on the one build nobody runs
-/// locally. So the parse is its own function and this exercises all three ways
-/// out of it.
+/// `flutter test` it is always the default and the other branch is unreachable
+/// — which means one of the two branches a real build takes had never been
+/// executed by anything, and neither had the refusal. A typo in either shows up
+/// as an app that throws on launch, on the one build nobody runs locally. So the
+/// parse is its own function and this exercises all three ways out of it.
 void main() {
-  test('emulator is the default, so a clone needs no cloud project', () {
-    expect(BackendTarget.fromEnvironment(), BackendTarget.emulator);
-  });
+  // Foundation ADR-0011 reversed this default, so it is worth an assertion of
+  // its own: a build that passes no define talks to the real project, and
+  // flipping it back by accident would point every such build at a backend that
+  // is usually not running.
+  test(
+    'cloud is the default, so a build with no define talks to the real project',
+    () {
+      expect(BackendTarget.fromEnvironment(), BackendTarget.cloud);
+    },
+  );
 
   group('the parse', () {
     test('reads emulator', () {

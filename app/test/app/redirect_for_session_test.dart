@@ -8,6 +8,7 @@ import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/session_gate_screen.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
+import 'package:nestprep/features/accounts/ui/verify_email_screen.dart';
 import 'package:nestprep/features/household/ui/household_gate_screen.dart';
 
 import '../support/fake_auth.dart';
@@ -44,8 +45,20 @@ void main() {
   /// account document *after* `ensureAccount` resolves, and both fakes are
   /// broadcast streams, so an account emitted before that subscription exists is
   /// simply lost and the session sits on loading for ever.
-  Future<void> signIn({List<String> households = const []}) async {
-    auth.emit(const AuthUser(uid: Fixtures.samUid, email: 'sam@nestprep.test'));
+  ///
+  /// [emailVerified] defaults to true because a Google credential always is,
+  /// and Google is how most people arrive (accounts ADR-0002).
+  Future<void> signIn({
+    List<String> households = const [],
+    bool emailVerified = true,
+  }) async {
+    auth.emit(
+      AuthUser(
+        uid: Fixtures.samUid,
+        email: 'sam@nestprep.test',
+        emailVerified: emailVerified,
+      ),
+    );
     await pumpEventQueue();
     accounts.emit(
       Account(
@@ -90,6 +103,34 @@ void main() {
       HouseholdGateScreen.path,
     );
     expect(redirectForSession(session, HouseholdGateScreen.path), isNull);
+  });
+
+  test('signed in with an unproved address and no household, only the confirm '
+      'screen', () async {
+    await signIn(emailVerified: false);
+    // The household gate is the dead end this replaces: createHousehold and
+    // redeemInvite both refuse an unverified caller, so sending them there
+    // would be sending them somewhere nothing works.
+    expect(
+      redirectForSession(session, HouseholdGateScreen.path),
+      VerifyEmailScreen.path,
+    );
+    expect(
+      redirectForSession(session, somewhereInside),
+      VerifyEmailScreen.path,
+    );
+    expect(redirectForSession(session, VerifyEmailScreen.path), isNull);
+  });
+
+  test('an unproved address already in a household is left alone', () async {
+    // They joined through Google, or before the rule existed. Locking them out
+    // of a household they are already in would punish them for our change, so
+    // the gate only stands between an account and its first household.
+    await signIn(
+      households: const [Fixtures.householdId],
+      emailVerified: false,
+    );
+    expect(redirectForSession(session, somewhereInside), isNull);
   });
 
   test(

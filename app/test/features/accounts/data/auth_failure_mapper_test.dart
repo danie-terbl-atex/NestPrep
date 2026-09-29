@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:nestprep/features/accounts/data/google_sign_in_failure_mapper.dart';
+import 'package:nestprep/features/accounts/data/auth_failure_mapper.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 /// Which copy a person sees when sign-in fails (`FE-09`, `BE-04`).
@@ -136,6 +136,59 @@ void main() {
     test('anything unrecognised is unknown rather than a guess', () {
       expect(fromFirebase('some-new-code'), SignInProblem.unknown);
       expect(fromFirebase(''), SignInProblem.unknown);
+    });
+
+    test('the registration codes each get their own sentence', () {
+      // All three are things the person can act on, and `unknown` tells them
+      // none of it (accounts ADR-0002).
+      expect(
+        fromFirebase('email-already-in-use'),
+        SignInProblem.emailAlreadyRegistered,
+      );
+      expect(fromFirebase('weak-password'), SignInProblem.weakPassword);
+      expect(fromFirebase('too-many-requests'), SignInProblem.tooManyAttempts);
+    });
+
+    test('an address that belongs to the other provider asks to be linked', () {
+      // The one refusal that is not the person's fault and not ours: they have
+      // an account, under the button they did not press.
+      expect(
+        fromFirebase('account-exists-with-different-credential'),
+        SignInProblem.needsLinking,
+      );
+      expect(
+        fromFirebase('credential-already-in-use'),
+        SignInProblem.needsLinking,
+      );
+    });
+
+    test('a spent reset link reads as bad credentials, not as a mystery', () {
+      expect(
+        fromFirebase('expired-action-code'),
+        SignInProblem.wrongCredentials,
+      );
+      expect(
+        fromFirebase('invalid-action-code'),
+        SignInProblem.wrongCredentials,
+      );
+    });
+
+    test('enumeration protection keeps the three wrong-credential codes apart '
+        'from nothing', () {
+      // Firebase returns these almost interchangeably once enumeration
+      // protection is on, so telling them apart on screen is both impossible
+      // and the thing we do not want (accounts ADR-0002).
+      for (final code in [
+        'wrong-password',
+        'user-not-found',
+        'invalid-credential',
+      ]) {
+        expect(
+          fromFirebase(code),
+          SignInProblem.wrongCredentials,
+          reason: code,
+        );
+      }
     });
 
     test('a code is matched exactly, not by prefix or case', () {

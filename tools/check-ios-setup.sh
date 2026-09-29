@@ -93,7 +93,7 @@ echo
 if [ "$blocked" = 0 ]; then
   echo "Nothing is blocking an iOS build. Verify it for the first time with:"
   note "cd app && flutter build ios --simulator --no-codesign"
-  note "then: flutter run -d <simulator>  (NESTPREP_BACKEND defaults to emulator)"
+  note "then: flutter run -d <simulator>  (NESTPREP_BACKEND defaults to cloud)"
   note "A device build or TestFlight additionally needs the paid Apple Developer"
   note "Program, which the verdict puts outside v1."
 else

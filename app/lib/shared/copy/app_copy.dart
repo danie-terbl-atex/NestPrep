@@ -25,6 +25,49 @@ abstract final class AppCopy {
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';
+
+  // Signing in with an address and a password (accounts ADR-0002).
+  static const signInOr = 'or';
+  static const signInEmailLabel = 'Email';
+  static const signInPasswordLabel = 'Password';
+  static const signInWithEmail = 'Sign in';
+  static const signInForgotPassword = 'Forgotten your password?';
+  static const signInNoAccount = 'New here?';
+  static const signInCreateAccount = 'Create an account';
+
+  static const registerTitle = 'Create your account';
+  static const registerNameLabel = 'Your name';
+  static const registerNameHint = 'What the household will call you';
+  static const registerPasswordHint = 'At least 8 characters';
+  static const registerSubmit = 'Create account';
+  static const registerHasAccount = 'Already have an account?';
+  static const registerSignInInstead = 'Sign in';
+
+  static const forgotPasswordTitle = 'Reset your password';
+  static const forgotPasswordBlurb =
+      'Type the address you signed up with and we will send you a link to set '
+      'a new password.';
+  static const forgotPasswordSubmit = 'Send the link';
+
+  /// Said whether or not the address had an account. Confirming which addresses
+  /// are registered is exactly what enumeration protection prevents
+  /// (accounts ADR-0002).
+  static const forgotPasswordSent =
+      'If that address has a NestPrep account, the link is on its way. It is '
+      'worth checking the spam folder.';
+
+  static const verifyEmailTitle = 'Confirm your email';
+  static const verifyEmailSubmit = 'I have confirmed it';
+  static const verifyEmailResend = 'Send it again';
+  static const verifyEmailResent = 'Sent. Check your inbox again.';
+  static const verifyEmailStillWaiting =
+      'That address is not confirmed yet. Open the link in the email first.';
+  static const verifyEmailWrongAddress =
+      'Wrong address? Sign out and start again.';
+
+  static String verifyEmailBlurb(String email) =>
+      'We sent a link to $email. Open it, then come back — a household holds '
+      'your family\'s things, so we confirm the address before you join one.';
   static const signOut = 'Sign out';
   static const account = 'Account';
   static const sessionStarting = 'Getting things ready';
@@ -356,6 +399,8 @@ abstract final class AppCopy {
       'A household needs an admin. Make somebody else an admin first.',
     HouseholdProblem.cannotRemoveSelf =>
       'To leave the household, use Leave household.',
+    HouseholdProblem.emailNotVerified =>
+      'Confirm your email address first — check your inbox for the link.',
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',
@@ -381,6 +426,15 @@ abstract final class AppCopy {
     SignInProblem.networkUnavailable =>
       'NestPrep cannot reach Google right now. Check your connection.',
     SignInProblem.wrongCredentials => 'Those sign-in details are not right.',
+    SignInProblem.emailAlreadyRegistered =>
+      'That address already has an account. Try signing in instead.',
+    SignInProblem.weakPassword =>
+      'That password is too easy to guess. Use at least 8 characters.',
+    SignInProblem.tooManyAttempts =>
+      'Too many tries. Wait a few minutes and try again.',
+    SignInProblem.needsLinking =>
+      'You already have an account for that address. Sign in the way you did '
+          'last time and we will join the two together.',
     SignInProblem.accountDisabled =>
       'This account has been turned off. Ask whoever set it up.',
     SignInProblem.notConfigured =>

@@ -27,9 +27,14 @@ final class SessionExpiredFailure extends AppFailure {
   const SessionExpiredFailure();
 }
 
-/// Why a sign-in did not happen. Kept apart from the Firestore failures because
-/// the person can act on most of these, and because `cancelled` is not a
-/// failure at all — it is what backing out of the Google sheet looks like.
+/// Why a sign-in, a registration or a password reset did not happen. Kept apart
+/// from the Firestore failures because the person can act on most of these, and
+/// because `cancelled` is not a failure at all — it is what backing out of the
+/// Google sheet looks like.
+///
+/// One enum covers all three because registering is signing in for the first
+/// time and a reset is how somebody gets back to signing in; splitting them
+/// would mean three copies of `networkUnavailable` (accounts ADR-0002).
 enum SignInProblem {
   /// The person closed the Google sheet. Say nothing.
   cancelled,
@@ -40,8 +45,27 @@ enum SignInProblem {
   /// The device could not reach Google or Firebase.
   networkUnavailable,
 
-  /// The seeded emulator user's email or password is not what was typed.
+  /// The email or password is not what was typed. Firebase's email-enumeration
+  /// protection is on, so `wrong-password` and `user-not-found` are
+  /// indistinguishable here on purpose — telling somebody which half was wrong
+  /// tells a stranger which addresses have accounts (accounts ADR-0002).
   wrongCredentials,
+
+  /// Registering an address that already has an account. Not fatal: the way
+  /// out is the other button, or a reset.
+  emailAlreadyRegistered,
+
+  /// The password is shorter or simpler than the project's policy allows.
+  weakPassword,
+
+  /// Firebase is rate-limiting this address or device after repeated attempts.
+  /// Waiting is the only cure, so the copy says so rather than inviting a retry.
+  tooManyAttempts,
+
+  /// This address already has an account under the *other* provider. The person
+  /// signs in the way they did last time, and the new credential is linked onto
+  /// that uid rather than forking a second one (accounts ADR-0002).
+  needsLinking,
 
   /// The account exists and has been turned off.
   accountDisabled,
@@ -80,6 +104,11 @@ enum HouseholdProblem {
   alreadyInHousehold,
   lastAdmin,
   cannotRemoveSelf,
+
+  /// Creating or joining a household with an address nobody has proved. Only a
+  /// password account can be in this state — a Google credential arrives
+  /// verified (accounts ADR-0002).
+  emailNotVerified,
 
   /// The app sent something the Function would not accept — our bug.
   badRequest,

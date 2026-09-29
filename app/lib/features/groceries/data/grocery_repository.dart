@@ -29,11 +29,18 @@ abstract interface class GroceryRepository {
     required String memberId,
   });
 
+  /// Edits an item's name **and** its quantity — both are written, so this is
+  /// an edit rather than only a rename.
+  ///
+  /// [quantity] is `required` while still nullable on purpose. Writing it
+  /// unconditionally is right — clearing a quantity has to be possible — but
+  /// when it was merely optional, omitting it silently erased whatever was
+  /// there. Nullable-and-required makes a caller say which it means.
   Future<void> rename({
     required String householdId,
     required String itemId,
     required String name,
-    String? quantity,
+    required String? quantity,
   });
 
   Future<void> remove({required String householdId, required String itemId});

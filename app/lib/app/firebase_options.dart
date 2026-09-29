@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -58,5 +55,15 @@ class DefaultFirebaseOptions {
     messagingSenderId: '388847987716',
     projectId: 'nestprep-643b7',
     storageBucket: 'nestprep-643b7.firebasestorage.app',
+  );
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDHTJQGg7UN4rC2p3aypOD0Wiv5rcvXYDk',
+    appId: '1:388847987716:ios:38fce2c74d9cd9427c5951',
+    messagingSenderId: '388847987716',
+    projectId: 'nestprep-643b7',
+    storageBucket: 'nestprep-643b7.firebasestorage.app',
+    androidClientId: '388847987716-2p4eaga9c540g16l2i8i7fsv85c839af.apps.googleusercontent.com',
+    iosClientId: '388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o.apps.googleusercontent.com',
+    iosBundleId: 'io.nullstate.nestprep',
   );
 }

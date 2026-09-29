@@ -75,6 +75,29 @@ void main() {
         );
       });
 
+      // The pair this file did not have. A disabled button kept the accent
+      // fill, swapped its label to `inkTertiary` and faded the whole thing to
+      // 60%, which left the label at 1.17:1 — violet on grey, and invisible on
+      // the sign-in screen. WCAG exempts an inactive control; a person who
+      // cannot read the button does not care, so it is held to AA here.
+      test('a disabled button carries its label at AA', () {
+        expect(
+          contrast(colors.ink, colors.outlineStrong),
+          greaterThanOrEqualTo(_aaText),
+          reason: 'filled variants when disabled',
+        );
+        expect(
+          contrast(colors.inkTertiary, colors.surface),
+          greaterThanOrEqualTo(_aaText),
+          reason: 'the outline variant when disabled',
+        );
+        expect(
+          contrast(colors.inkTertiary, colors.canvas),
+          greaterThanOrEqualTo(_aaText),
+          reason: 'the ghost variant when disabled',
+        );
+      });
+
       test('soft tones carry their ink at AA', () {
         expect(
           contrast(colors.success, colors.successSoft),

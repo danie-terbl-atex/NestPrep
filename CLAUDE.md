@@ -33,8 +33,18 @@ This folder is the NestPrep monorepo: one Firebase project, three parts. Each pa
 
 `DesignsInsp/` is design inspiration, not source; it is gitignored on purpose.
 
-Development runs on the Local Emulator Suite. It needs no cloud *access* — the client
-configuration is committed — but it does run under the real project id (foundation ADR-0008):
+**A build with no define talks to the real project** (foundation ADR-0011, which reversed
+ADR-0003's provisional default on 2026-09-18). That means a plain `flutter run` reads and writes the
+one real household's data, and there is no second project behind it. Opt into the Local Emulator
+Suite for anything destructive, and for the seeded sign-in shortcut, which exists on that target
+only:
+
+```sh
+flutter run --dart-define=NESTPREP_BACKEND=emulator
+```
+
+The suite needs no cloud *access* — the client configuration is committed — but it does run under
+the real project id (foundation ADR-0008):
 
 ```sh
 firebase emulators:start --project nestprep-643b7     # Auth 9099, Firestore 8080, Functions 5001, Storage 9199, UI 4000
@@ -46,8 +56,14 @@ vault. A `demo-` project id no longer works: the Android Cloud Functions SDK val
 configuration before every callable, and only a real project has any — foundation ADR-0008 and the
 vault lesson on what Auth and Functions need that Firestore does not.
 
-What keeps a development build off the cloud is `bootstrapFirebase`, which points Firestore, Auth,
+What keeps an emulator build off the cloud is `bootstrapFirebase`, which points Firestore, Auth,
 Functions and Storage at the emulator in one place before anything uses them. **A Firebase service added
 later is redirected there or not at all.**
+
+The suite is still the environment for the rules suite, the Functions tests and
+`app/integration_test/`; those name their target explicitly and are unaffected by the default. Start
+it before an emulator run, because a Firestore **write** against a backend that is not listening
+never completes and never throws — the app sits on "Getting things ready" for ever with no error.
+That is a vault lesson, not a bug to rediscover.
 
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

@@ -1,0 +1,17 @@
+/**
+ * The one region every callable runs in, chosen 2026-09-18 to match the
+ * Firestore database (foundation ADR-0003).
+ *
+ * This is a **contract with the Flutter client**, not a server detail. A
+ * callable is addressed by region: the SDK's default is `us-central1`, so a
+ * client that does not name this one calls a URL where nothing is deployed and
+ * gets NOT_FOUND on every household action. The Dart half is
+ * `app/lib/app/firebase_bootstrap.dart`, and
+ * `test/unit/region_contract.test.ts` reads both files and fails if they drift
+ * (the vault's lesson on contracts between two languages).
+ *
+ * It cannot be changed by editing this line alone: a deployed function's region
+ * is fixed, so moving it means deploying to the new region and deleting the old
+ * functions, with a window where the client can reach neither.
+ */
+export const FUNCTIONS_REGION = 'africa-south1';

@@ -18,8 +18,23 @@ final class FakeAuthGateway implements AuthGateway {
   /// Set to make the next sign-in fail the way Google or Firebase would.
   AppFailure? failSignInWith;
 
+  /// What [refreshEmailVerified] will report, so a test can play out somebody
+  /// opening the link in another app (accounts ADR-0002).
+  bool emailIsVerified = false;
+
+  /// Set to make a reset or a verification send fail.
+  AppFailure? failSendWith;
+
   int signOutCount = 0;
   final googleSignIns = <int>[];
+  final registrations = <String>[];
+  final emailSignIns = <String>[];
+  final passwordResetsSentTo = <String>[];
+  int verificationEmailsSent = 0;
+  int emailVerifiedChecks = 0;
+
+  @override
+  String? pendingLinkEmail;
 
   void emit(AuthUser? user) => _users.add(user);
   void failStreamWith(Object error) => _users.addError(error);
@@ -41,14 +56,64 @@ final class FakeAuthGateway implements AuthGateway {
   }
 
   @override
+  Future<AuthUser> signInWithEmail({
+    required String email,
+    required String password,
+  }) {
+    emailSignIns.add(email);
+    return _signIn(
+      AuthUser(uid: 'uid-$email', email: email, emailVerified: emailIsVerified),
+    );
+  }
+
+  @override
+  Future<AuthUser> registerWithEmail({
+    required String email,
+    required String password,
+    required String displayName,
+  }) {
+    registrations.add(email);
+    // Registering never lands verified: that is the whole reason the verify
+    // screen exists.
+    return _signIn(
+      AuthUser(uid: 'uid-$email', email: email, displayName: displayName),
+    );
+  }
+
+  @override
+  Future<void> sendPasswordReset(String email) async {
+    final failure = failSendWith;
+    if (failure != null) throw failure;
+    passwordResetsSentTo.add(email);
+  }
+
+  @override
+  Future<void> sendEmailVerification() async {
+    final failure = failSendWith;
+    if (failure != null) throw failure;
+    verificationEmailsSent += 1;
+  }
+
+  @override
+  Future<bool> refreshEmailVerified() async {
+    emailVerifiedChecks += 1;
+    final failure = failSendWith;
+    if (failure != null) throw failure;
+    return emailIsVerified;
+  }
+
+  @override
   Future<AuthUser> signInWithSeededUser({
     required String email,
     required String password,
-  }) => _signIn(AuthUser(uid: 'uid-$email', email: email));
+  }) => _signIn(
+    AuthUser(uid: 'uid-$email', email: email, emailVerified: emailIsVerified),
+  );
 
   @override
   Future<void> signOut() async {
     signOutCount += 1;
+    pendingLinkEmail = null;
     _users.add(null);
   }
 

@@ -1,7 +1,7 @@
 import { HttpsError } from 'firebase-functions/v2/https';
 import { describe, expect, it } from 'vitest';
 
-import { parseInput, requireUid } from '../../src/household/parse_input';
+import { parseInput, requireUid, requireVerifiedUid } from '../../src/household/parse_input';
 import {
   createHouseholdInput,
   createInviteInput,
@@ -195,6 +195,55 @@ describe('the caller', () => {
   it('is refused when there is no token at all', () => {
     try {
       requireUid(undefined);
+      expect.unreachable('an unsigned call should not get a uid');
+    } catch (error) {
+      const refusal = error as HttpsError;
+      expect(refusal.code).toBe('unauthenticated');
+      expect(refusal.details).toEqual({ reason: 'notSignedIn' });
+    }
+  });
+});
+
+/**
+ * The gate between an account and its first household (accounts ADR-0002).
+ *
+ * This is the enforcement, not the screen: the app has a verify screen that
+ * explains it, and it would go on being enforced here if that screen were
+ * deleted (`BE-01`). A Google credential arrives verified, so every case below
+ * is about a password one.
+ */
+describe('a caller who must have proved their address', () => {
+  it('is let through when the token says the address is verified', () => {
+    expect(requireVerifiedUid({ uid: 'uid-sam', token: { email_verified: true } })).toBe('uid-sam');
+  });
+
+  it('is refused when the token says it is not', () => {
+    try {
+      requireVerifiedUid({ uid: 'uid-sam', token: { email_verified: false } });
+      expect.unreachable('an unverified caller should not create membership');
+    } catch (error) {
+      const refusal = error as HttpsError;
+      expect(refusal.code).toBe('failed-precondition');
+      expect(refusal.details).toEqual({ reason: 'emailNotVerified' });
+    }
+  });
+
+  it('is refused when the claim is missing entirely', () => {
+    // Fails closed. A token shape we do not recognise is not a licence, and a
+    // claim that is absent is not the same as a claim that is true.
+    try {
+      requireVerifiedUid({ uid: 'uid-sam', token: {} });
+      expect.unreachable('an absent claim is not a verified address');
+    } catch (error) {
+      expect((error as HttpsError).details).toEqual({ reason: 'emailNotVerified' });
+    }
+  });
+
+  it('refuses an unsigned call before it looks at the claim', () => {
+    // The order matters: "verify your email" to somebody who is not signed in
+    // at all is the wrong sentence and the wrong thing to fix.
+    try {
+      requireVerifiedUid(undefined);
       expect.unreachable('an unsigned call should not get a uid');
     } catch (error) {
       const refusal = error as HttpsError;

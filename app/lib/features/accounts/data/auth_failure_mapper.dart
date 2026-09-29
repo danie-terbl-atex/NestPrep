@@ -4,9 +4,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
 
-/// Translates the two sign-in SDKs' errors into one `SignInFailure` at the
-/// gateway edge, so nothing above it knows either SDK exists and no SDK message
-/// can reach a screen (`FE-09`, `BE-04`).
+/// Translates the two auth SDKs' errors into one `SignInFailure` at the gateway
+/// edge, so nothing above it knows either SDK exists and no SDK message can
+/// reach a screen (`FE-09`, `BE-04`).
+///
+/// Covers signing in, registering and resetting a password, which is why this
+/// is no longer named after Google alone (accounts ADR-0002).
 AppFailure failureFromGoogleSignIn(GoogleSignInException error) {
   AppLog.failure('google sign-in', code: error.code.name, error: error);
   return SignInFailure(switch (error.code) {
@@ -26,10 +29,22 @@ AppFailure failureFromFirebaseAuth(FirebaseAuthException error) {
   return SignInFailure(switch (error.code) {
     'network-request-failed' => SignInProblem.networkUnavailable,
     'user-disabled' => SignInProblem.accountDisabled,
+    // Enumeration protection is on, so Firebase returns these three almost
+    // interchangeably and the app must not try to tell them apart.
     'wrong-password' ||
     'user-not-found' ||
     'invalid-credential' ||
     'invalid-email' => SignInProblem.wrongCredentials,
+    'email-already-in-use' => SignInProblem.emailAlreadyRegistered,
+    'weak-password' => SignInProblem.weakPassword,
+    'too-many-requests' => SignInProblem.tooManyAttempts,
+    // The address has an account under the other provider. Not an error the
+    // person caused, and the screen turns it into an offer to link.
+    'account-exists-with-different-credential' ||
+    'credential-already-in-use' => SignInProblem.needsLinking,
+    // A reset or verification link that has already been used or has aged out.
+    'expired-action-code' ||
+    'invalid-action-code' => SignInProblem.wrongCredentials,
     'operation-not-allowed' ||
     'invalid-api-key' ||
     'app-not-authorized' => SignInProblem.notConfigured,

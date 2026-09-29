@@ -80,14 +80,28 @@ describe('every write a callable makes is atomic', () => {
 describe('every callable declares what it may cost', () => {
   const index = sources.find((file) => file.name === 'index.ts');
 
-  it('sets a timeout, a memory size and an instance cap', () => {
-    const options = /setGlobalOptions\(\{([^}]*)\}\)/.exec(index?.source ?? '');
-    expect(options, 'BE-19 asks for explicit limits').not.toBeNull();
+  // The limits themselves are asserted in `global_options.test.ts`, against the
+  // endpoints the build actually produces.
+  //
+  // They used to be asserted *here*, by matching `setGlobalOptions({...})` in
+  // this file's text — and that assertion passed for the life of the project
+  // while every limit was `null` at runtime, because the call sat below the
+  // `export ... from` lines and ES modules evaluate imports first. A test that
+  // reads the source can only ever prove somebody typed the words. This one is
+  // gone rather than moved, so there is one home for the fact (`ENG-01`).
 
-    const declared = options?.[1] ?? '';
-    for (const setting of ['timeoutSeconds', 'memory', 'maxInstances']) {
-      expect(declared).toContain(setting);
-    }
+  it('imports the module that sets the global options before anything else', () => {
+    // What this file *can* still check is the ordering the runtime depends on:
+    // the side-effect import has to come before the first callable export, or
+    // the options are built too late again.
+    const source = index?.source ?? '';
+    const optionsAt = source.indexOf("import './shared/global_options'");
+    const firstExportAt = source.indexOf('export {');
+    expect(optionsAt, 'index.ts imports ./shared/global_options').toBeGreaterThanOrEqual(0);
+    expect(
+      optionsAt,
+      'the options import must precede every callable export, or it sets nothing',
+    ).toBeLessThan(firstExportAt);
   });
 
   it('and every exported callable is one we meant to ship', () => {

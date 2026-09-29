@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 /**
  * Creates the users the emulator's Auth is expected to have, so a local run can
- * sign in without Google (accounts ADR-0001). They exist only in the emulator,
+ * sign in without Google (accounts ADR-0001, ADR-0002).
+ *
+ * They are created **already verified**, because createHousehold and redeemInvite
+ * refuse a caller whose address is unproved (accounts ADR-0002) and a seeded user
+ * has no inbox to prove one from. An unverified seeded user is a local run that
+ * cannot make a household — which reads as a broken callable, not as the gate
+ * working. The unverified path has tests of its own; it does not need the seed. They exist only in the emulator,
  * which is thrown away; nothing here is a secret (ENG-18).
  *
  * The same list is in `app/lib/app/emulator_accounts.dart` — keep them equal.
@@ -32,6 +38,7 @@ async function seed({ email, displayName }) {
       email,
       password: PASSWORD,
       displayName,
+      emailVerified: true,
       returnSecureToken: false,
       targetProjectId: PROJECT,
     }),
