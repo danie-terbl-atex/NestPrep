@@ -172,9 +172,16 @@ describe('a personal vault in Cloud Storage', () => {
       );
     });
 
-    it('denies a member adding to somebody else"s vault', async () => {
+    it('lets a family member who is not an admin file a child"s papers', async () => {
+      // `member` is read as `parent` (household ADR-0003): family.
+      await assertSucceeds(
+        upload(await storageAs(ALEX, {}), vaultObject('m-emma', 'member-adds'), ALEX),
+      );
+    });
+
+    it('denies a helper adding to an adult"s vault', async () => {
       await assertFails(
-        upload(await storageAs(ALEX, {}), vaultObject('m-thandi', 'member-adds'), ALEX),
+        upload(await storageAs(THANDI, {}), vaultObject('m-alex', 'helper-adds-adult'), THANDI),
       );
     });
 

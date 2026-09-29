@@ -567,16 +567,26 @@ service cloud.firestore {
       }
 
       // A member's own vault. The owner is the path, never a field, so no
-      // query has to prove it. Readable by its owner, by an admin, and by
-      // anybody the owner or an admin granted it to; changed only by the
-      // first two. A helper reads no ID copy unless granted it.
+      // query has to prove it. Readable and changed by its owner and by the
+      // family — household ADR-0003 keeps per-item privacy between family
+      // members out of v1 — and readable by anybody else only once the owner
+      // or a family member grants it. A helper reads no ID copy unless
+      // granted it.
       match /vaults/{ownerMemberId} {
         function isVaultOwner() {
           return isMember(householdId) && isOwnMember(householdId, ownerMemberId);
         }
 
+        // Family: `admin`, `parent`, and `member`, which household ADR-0003
+        // reads as `parent`. Named for the vault so it cannot collide with a
+        // household-wide helper of the same meaning.
+        function isVaultFamily() {
+          return isMember(householdId)
+            && householdData(householdId).members[uid()] in ['admin', 'parent', 'member'];
+        }
+
         function mayManageVault() {
-          return isAdmin(householdId) || isVaultOwner();
+          return isVaultFamily() || isVaultOwner();
         }
 
         function isGrantedVault() {
@@ -630,7 +640,7 @@ service cloud.firestore {
         // ticket the bytes need — so the log cannot be skipped, and nobody
         // edits it (documents ADR-0003).
         match /views/{viewId} {
-          allow read: if isAdmin(householdId) || isVaultOwner();
+          allow read: if isVaultFamily() || isVaultOwner();
           allow write: if false;
         }
       }

@@ -33,7 +33,7 @@ void main() {
   VaultController build({
     String memberId = Fixtures.samMemberId,
     String viewerUid = Fixtures.samUid,
-    bool isAdmin = true,
+    bool isFamily = true,
   }) => VaultController(
     vaultRepository: repository,
     vaultStore: store,
@@ -46,7 +46,7 @@ void main() {
     members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
     memberId: memberId,
     viewerUid: viewerUid,
-    isAdmin: isAdmin,
+    isFamily: isFamily,
   );
 
   setUp(() {
@@ -115,7 +115,7 @@ void main() {
       controller = build(
         memberId: Fixtures.thandiMemberId,
         viewerUid: Fixtures.thandiUid,
-        isAdmin: false,
+        isFamily: false,
       );
     });
 

@@ -126,9 +126,18 @@ describe('vaults/{memberId}/vaultDocuments — reading', () => {
     await assertFails(getDocs(collection(thandi, `${EMMA_VAULT}/vaultDocuments`)));
   });
 
-  it('denies a member who is not an admin reading somebody else"s vault', async () => {
+  it('lets a family member who is not an admin read every vault (household ADR-0003)', async () => {
+    // `member` is read as `parent`: family, and per-item privacy between
+    // family members is out of v1.
     const alex = await asUser(ALEX);
-    await assertFails(getDoc(doc(alex, `${THANDI_VAULT}/vaultDocuments/id-card`)));
+    await assertSucceeds(getDoc(doc(alex, `${THANDI_VAULT}/vaultDocuments/id-card`)));
+    await assertSucceeds(getDocs(collection(alex, `${EMMA_VAULT}/vaultDocuments`)));
+  });
+
+  it('denies a helper reading an adult"s vault nobody shared with her', async () => {
+    await assertFails(
+      getDocs(collection(await asUser(THANDI), `${H}/vaults/m-alex/vaultDocuments`)),
+    );
   });
 
   it('lets a helper read it once granted — and only read', async () => {
@@ -231,8 +240,16 @@ describe('vaults/{memberId}/vaultDocuments — writing', () => {
     await assertFails(updateDoc(doc(thandi, path), { contentType: 'image/png' }));
   });
 
-  it('lets an owner or an admin delete, and denies a member who is neither', async () => {
-    await assertFails(deleteDoc(doc(await asUser(ALEX), `${THANDI_VAULT}/vaultDocuments/id-card`)));
+  it('lets an owner or the family delete, and denies a helper who is neither', async () => {
+    await assertFails(
+      deleteDoc(doc(await asUser(THANDI), `${EMMA_VAULT}/vaultDocuments/passport`)),
+    );
+    await assertSucceeds(
+      deleteDoc(doc(await asUser(ALEX), `${EMMA_VAULT}/vaultDocuments/passport`)),
+    );
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, `${EMMA_VAULT}/vaultDocuments/passport`), vaultRow('m-sam'));
+    });
     await assertSucceeds(
       deleteDoc(doc(await asUser(SAM), `${THANDI_VAULT}/vaultDocuments/id-card`)),
     );
@@ -312,8 +329,9 @@ describe('vaults/{memberId}/grants/{granteeUid}', () => {
 });
 
 describe('vaults/{memberId}/views — the view log', () => {
-  it('lets an admin read every vault"s log', async () => {
+  it('lets the family read every vault"s log', async () => {
     await assertSucceeds(getDocs(collection(await asUser(SAM), `${EMMA_VAULT}/views`)));
+    await assertSucceeds(getDocs(collection(await asUser(ALEX), `${THANDI_VAULT}/views`)));
   });
 
   it('lets an owner read their own vault"s log', async () => {

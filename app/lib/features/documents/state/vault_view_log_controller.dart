@@ -9,7 +9,7 @@ import '../data/vault_repository.dart';
 import '../model/vault_view.dart';
 
 /// Who opened what, newest first, across the vaults whose log this person may
-/// read — every vault for an admin, their own for anybody else (documents
+/// read — every vault for the family, their own for anybody else (documents
 /// ADR-0003). The rules say the same; this only avoids asking for what they
 /// would refuse.
 ///
@@ -20,11 +20,11 @@ final class VaultViewLogController extends ChangeNotifier {
     required this.householdId,
     required List<Member> members,
     required String viewerMemberId,
-    required bool isAdmin,
+    required bool isFamily,
   }) : _repository = vaultRepository,
        owners = [
          for (final member in members)
-           if (isAdmin || member.id == viewerMemberId) member.id,
+           if (isFamily || member.id == viewerMemberId) member.id,
        ] {
     _start();
   }

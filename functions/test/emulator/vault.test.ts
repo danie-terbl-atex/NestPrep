@@ -136,9 +136,12 @@ describe('openVaultDocument', () => {
     expect(await ticketOf(householdId, thandi.uid)).toBeDefined();
   });
 
-  it('refuses a member who is neither owner, admin nor granted', async () => {
+  it('lets a family member who is not an admin open it, and names them in the log', async () => {
+    // `member` is read as `parent` (household ADR-0003): family.
     const { householdId, alex } = await givenTheParkers();
-    await expectRefusal(openPassport(alex, householdId), 'vaultNotShared');
+    await openPassport(alex, householdId);
+    const views = await viewsOfEmma(householdId);
+    expect(views.map((view) => view['viewerMemberId'])).toEqual(['m-alex']);
   });
 
   it('refuses somebody outside the household before looking at anything else', async () => {

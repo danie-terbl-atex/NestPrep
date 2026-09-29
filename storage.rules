@@ -106,9 +106,12 @@ service firebase.storage {
         return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
       }
 
-      function isVaultAdmin() {
+      // Family — `admin`, `parent`, and `member`, read as `parent` (household
+      // ADR-0003) — manages every vault; per-item privacy between family
+      // members is out of v1.
+      function isVaultFamily() {
         return request.auth != null
-          && householdDoc().members.get(request.auth.uid, '') == 'admin';
+          && householdDoc().members.get(request.auth.uid, '') in ['admin', 'parent', 'member'];
       }
 
       // The account that claimed the vault's profile, while still a member.
@@ -135,11 +138,11 @@ service firebase.storage {
         && isSmallEnough()
         && isAKeptType()
         && isStampedWithTheCaller()
-        && (isVaultAdmin() || isVaultOwner());
+        && (isVaultFamily() || isVaultOwner());
 
       allow update: if false;
 
-      allow delete: if isVaultAdmin() || isVaultOwner();
+      allow delete: if isVaultFamily() || isVaultOwner();
     }
 
     // Everything not named above (BE-05).

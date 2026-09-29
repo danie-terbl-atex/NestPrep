@@ -6,6 +6,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
+import '../model/vault_family.dart';
 import '../state/vault_controller.dart';
 
 /// Who besides its owner and the admins can read a vault, and the switch for
@@ -56,7 +57,7 @@ class _VaultAccessBody extends StatelessWidget {
             _AccessRow(
               key: ValueKey(member.id),
               member: member,
-              isAdmin: member.role.isAdmin,
+              isFamily: isVaultFamily(member.role),
               isGranted: grantedUids.contains(member.claimedBy),
               onChanged: (grant) => grant
                   ? controller.share(ownerMemberId, member)
@@ -70,14 +71,14 @@ class _VaultAccessBody extends StatelessWidget {
 class _AccessRow extends StatelessWidget {
   const _AccessRow({
     required this.member,
-    required this.isAdmin,
+    required this.isFamily,
     required this.isGranted,
     required this.onChanged,
     super.key,
   });
 
   final Member member;
-  final bool isAdmin;
+  final bool isFamily;
   final bool isGranted;
   final ValueChanged<bool> onChanged;
 
@@ -88,11 +89,11 @@ class _AccessRow extends StatelessWidget {
     return MergeSemantics(
       child: NestListRow(
         title: member.displayName,
-        subtitle: isAdmin
+        subtitle: isFamily
             ? VaultCopy.accessAlways
             : AppCopy.roleName(member.roleName),
         leading: NestAvatar(name: member.displayName, color: member.color),
-        trailing: isAdmin
+        trailing: isFamily
             ? const Icon(Icons.verified_user_outlined)
             : Switch(value: isGranted, onChanged: onChanged),
       ),

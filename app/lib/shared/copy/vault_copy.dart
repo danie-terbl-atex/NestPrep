@@ -62,14 +62,14 @@ abstract final class VaultCopy {
   // ---- sharing a vault (documents ADR-0002) ----
   static const accessTitle = 'Who can see this vault';
   static const accessBody =
-      'Admins always can. Anybody you switch on here can read this vault, but '
-      'not change it.';
+      'The family always can. Anybody else you switch on here can read this '
+      'vault, but not change it.';
   static const accessNobodyElse =
       'Nobody else in the household has joined yet.';
-  static const accessAlways = 'Admin — always';
+  static const accessAlways = 'Family — always';
 
   static String sharedWith(int count) => switch (count) {
-    0 => 'Only its owner and the admins',
+    0 => 'Only its owner and the family',
     1 => 'Shared with 1 more person',
     _ => 'Shared with $count more people',
   };

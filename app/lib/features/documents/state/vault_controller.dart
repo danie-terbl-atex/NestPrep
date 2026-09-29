@@ -44,7 +44,7 @@ final class VaultController extends ChangeNotifier with ActionFailureHolder {
     required List<Member> members,
     required this.memberId,
     required this.viewerUid,
-    required this.isAdmin,
+    required this.isFamily,
   }) : _repository = vaultRepository,
        _store = vaultStore,
        _directory = documentDirectory,
@@ -56,7 +56,7 @@ final class VaultController extends ChangeNotifier with ActionFailureHolder {
       members: members,
       viewerMemberId: memberId,
       viewerUid: viewerUid,
-      isAdmin: isAdmin,
+      isFamily: isFamily,
       onShelf: _onShelf,
       onError: _onError,
     );
@@ -85,7 +85,7 @@ final class VaultController extends ChangeNotifier with ActionFailureHolder {
   final String householdId;
   final String memberId;
   final String viewerUid;
-  final bool isAdmin;
+  final bool isFamily;
   late final VaultListeners _listeners;
   late final DocumentUploadRunner<VaultUploadDetails> _uploads;
 

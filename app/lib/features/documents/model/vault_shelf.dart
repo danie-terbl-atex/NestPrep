@@ -6,7 +6,7 @@ import 'vault_grant.dart';
 /// each, and who else each one is shared with (documents ADR-0002).
 ///
 /// Which vaults appear is the same table the rules enforce — the viewer's own,
-/// every one for an admin, and those granted to them — worked out on the phone
+/// every one for the family, and those granted to them — worked out on the phone
 /// only to know which listeners to open. A vault the rules would refuse is
 /// never listened to, so nothing here is a copy of a decision the server makes
 /// (`FE-04`).
@@ -26,7 +26,7 @@ class VaultShelf {
   final Map<String, List<VaultGrant>> grants;
 
   /// The vaults this viewer may add to, change and share: their own, and
-  /// every one for an admin.
+  /// every one for the family.
   final Set<String> managed;
 
   bool get isEmpty => owners.isEmpty;

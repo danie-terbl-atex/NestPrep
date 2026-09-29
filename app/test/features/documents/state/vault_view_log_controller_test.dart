@@ -16,14 +16,14 @@ void main() {
   tearDown(() => repository.close());
 
   VaultViewLogController build({
-    required bool isAdmin,
+    required bool isFamily,
     String viewer = 'm-sam',
   }) => VaultViewLogController(
     vaultRepository: repository,
     householdId: Fixtures.householdId,
     members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
     viewerMemberId: viewer,
-    isAdmin: isAdmin,
+    isFamily: isFamily,
   );
 
   VaultView view(String id, DateTime? at) => VaultView(
@@ -35,7 +35,7 @@ void main() {
   );
 
   test('an admin reads every vault\'s log, newest first', () async {
-    final controller = build(isAdmin: true);
+    final controller = build(isFamily: true);
     expect(controller.owners, ['m-sam', 'm-thandi', 'm-kid']);
 
     repository.emitViews('m-sam', [view('a', DateTime.utc(2027, 6, 1, 9))]);
@@ -53,20 +53,20 @@ void main() {
   });
 
   test('anybody else reads only who opened their own vault', () {
-    final controller = build(isAdmin: false, viewer: 'm-thandi');
+    final controller = build(isFamily: false, viewer: 'm-thandi');
     expect(controller.owners, ['m-thandi']);
     controller.dispose();
   });
 
   test('somebody with no profile of their own has an empty log, not a '
       'spinner', () {
-    final controller = build(isAdmin: false, viewer: '');
+    final controller = build(isFamily: false, viewer: '');
     expect(controller.log, isA<AsyncData<List<VaultView>>>());
     controller.dispose();
   });
 
   test('a refusal is shown as one, with a way to try again', () async {
-    final controller = build(isAdmin: false, viewer: 'm-thandi');
+    final controller = build(isFamily: false, viewer: 'm-thandi');
     repository.failViews('m-thandi', const PermissionDeniedFailure());
     await pumpEventQueue();
     expect(controller.log, isA<AsyncFailure<List<VaultView>>>());

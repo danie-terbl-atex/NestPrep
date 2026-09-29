@@ -1,4 +1,18 @@
-import type { Role } from '../household/documents';
+/**
+ * Family, whose members read and manage every vault: household ADR-0003 keeps
+ * per-item privacy between family members out of v1. `member` is read as
+ * `parent` there, so it is family here too.
+ */
+export const FAMILY_ROLES: readonly string[] = ['admin', 'parent', 'member'];
+
+export interface VaultCaller {
+  /** The caller's role in the household, re-derived from the membership map. */
+  readonly role: string;
+  /** The profile the caller claimed here, if they claimed one. */
+  readonly viewerMemberId: string | undefined;
+  /** Whether a grant addressed to the caller exists on this vault. */
+  readonly hasGrant: boolean;
+}
 
 /**
  * Who may open a personal vault (documents ADR-0002), as one decision with no
@@ -9,17 +23,8 @@ import type { Role } from '../household/documents';
  * because the bytes are read through a ticket only this Function writes, and
  * the ticket must not be issued to anybody the rules would refuse.
  */
-export interface VaultCaller {
-  /** The caller's role in the household, re-derived from the membership map. */
-  readonly role: Role;
-  /** The profile the caller claimed here, if they claimed one. */
-  readonly viewerMemberId: string | undefined;
-  /** Whether a grant addressed to the caller exists on this vault. */
-  readonly hasGrant: boolean;
-}
-
 export function mayOpenVault(caller: VaultCaller, ownerMemberId: string): boolean {
-  if (caller.role === 'admin') return true;
+  if (FAMILY_ROLES.includes(caller.role)) return true;
   if (caller.viewerMemberId !== undefined && caller.viewerMemberId === ownerMemberId) return true;
   return caller.hasGrant;
 }

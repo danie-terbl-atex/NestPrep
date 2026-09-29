@@ -11,7 +11,7 @@ import '../model/vault_shelf.dart';
 /// (documents ADR-0002).
 ///
 /// Which vaults to listen to mirrors the rules only so as not to ask for what
-/// they would refuse: the viewer's own, every one for an admin, and the ones
+/// they would refuse: the viewer's own, every one for the family, and the ones
 /// whose grant to this viewer exists. A separate class from the controller
 /// because a changing set of subscriptions is its own thing to get wrong.
 final class VaultListeners {
@@ -21,7 +21,7 @@ final class VaultListeners {
     required this.members,
     required this.viewerMemberId,
     required this.viewerUid,
-    required this.isAdmin,
+    required this.isFamily,
     required this._onShelf,
     required this._onError,
   });
@@ -31,7 +31,7 @@ final class VaultListeners {
   final List<Member> members;
   final String viewerMemberId;
   final String viewerUid;
-  final bool isAdmin;
+  final bool isFamily;
   final void Function(VaultShelf shelf) _onShelf;
   final void Function(Object error) _onError;
 
@@ -45,7 +45,7 @@ final class VaultListeners {
 
   Set<String> get _managed => {
     for (final member in members)
-      if (isAdmin || member.id == viewerMemberId) member.id,
+      if (isFamily || member.id == viewerMemberId) member.id,
   };
 
   Set<String> get _readable => {..._managed, ..._grantedToMe};
@@ -54,7 +54,7 @@ final class VaultListeners {
     for (final id in _managed) {
       _listen('grants:$id', _grantsOf(id), (grants) => _grants[id] = grants);
     }
-    if (!isAdmin) {
+    if (!isFamily) {
       for (final member in members) {
         if (member.id == viewerMemberId) continue;
         _listen(
@@ -129,7 +129,7 @@ final class VaultListeners {
     final ready =
         readable.every(_documents.containsKey) &&
         _managed.every(_grants.containsKey) &&
-        (isAdmin ||
+        (isFamily ||
             members
                 .where((member) => member.id != viewerMemberId)
                 .every((member) => _answered.contains(member.id)));

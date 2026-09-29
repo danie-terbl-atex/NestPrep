@@ -14,6 +14,7 @@ import '../features/documents/data/scan_composer.dart';
 import '../features/documents/data/vault_repository.dart';
 import '../features/documents/data/vault_store.dart';
 import '../features/documents/model/document_search.dart';
+import '../features/documents/model/vault_family.dart';
 import '../features/documents/state/document_library_controller.dart';
 import '../features/documents/state/document_search_controller.dart';
 import '../features/documents/state/scan_intake.dart';
@@ -83,7 +84,7 @@ RouteBase documentsShellRoute(SessionController session) => ShellRoute(
             members: view.members,
             memberId: memberId,
             viewerUid: session.uidOrEmpty,
-            isAdmin: view.viewerIsAdmin,
+            isFamily: isVaultFamily(view.viewerRole),
           ),
         ),
       ],
@@ -126,7 +127,7 @@ RouteBase documentsShellRoute(SessionController session) => ShellRoute(
               householdId: HouseholdRoute.idFrom(state),
               members: view.members,
               viewerMemberId: view.viewerMember?.id ?? '',
-              isAdmin: view.viewerIsAdmin,
+              isFamily: isVaultFamily(view.viewerRole),
             );
           },
           child: const VaultViewLogScreen(),
