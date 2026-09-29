@@ -111,10 +111,21 @@ describe('setChildProfile', () => {
     await addKid(householdId, 'm-emma');
     await addKid(householdId, 'm-leo');
 
-    await callAs(sam, 'setChildProfile', { householdId, memberId: 'm-emma', isChild: true });
+    const consent = { version: 1 };
+    await callAs(sam, 'setChildProfile', {
+      householdId,
+      memberId: 'm-emma',
+      isChild: true,
+      guardianConsent: consent,
+    });
     expect(
       await reasonOf(
-        callAs(sam, 'setChildProfile', { householdId, memberId: 'm-leo', isChild: true }),
+        callAs(sam, 'setChildProfile', {
+          householdId,
+          memberId: 'm-leo',
+          isChild: true,
+          guardianConsent: consent,
+        }),
       ),
     ).toBe('premiumRequired');
 
@@ -123,6 +134,27 @@ describe('setChildProfile', () => {
       .where('isChild', '==', true)
       .get();
     expect(children.docs.map((doc) => doc.id)).toEqual(['m-emma']);
+  });
+
+  it('refuses a child without a parent’s consent, over the wire', async () => {
+    const sam = await signUp();
+    const householdId = await householdOf(sam);
+    await addKid(householdId, 'm-emma');
+    expect(
+      await reasonOf(
+        callAs(sam, 'setChildProfile', { householdId, memberId: 'm-emma', isChild: true }),
+      ),
+    ).toBe('guardianConsentRequired');
+    expect(
+      await reasonOf(
+        callAs(sam, 'setChildProfile', {
+          householdId,
+          memberId: 'm-emma',
+          isChild: true,
+          guardianConsent: { version: 0 },
+        }),
+      ),
+    ).toBe('badRequest');
   });
 
   it('refuses somebody outside the household', async () => {

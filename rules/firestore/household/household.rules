@@ -20,6 +20,38 @@ function isFinishingSetup() {
     && request.resource.data.pendingSetupStep == null;
 }
 
+// ---- a parent's consent on a child's profile (accounts ADR-0005) ----
+// Given by the adult writing it, as their own claimed profile, against a
+// privacy-policy version, at the server's time. Never on an adult.
+function isMemberGuardianConsentGiven(consent) {
+  return consent is map
+    && consent.keys().hasOnly(['byMemberId', 'version', 'at'])
+    && consent.keys().hasAll(['byMemberId', 'version', 'at'])
+    && consent.byMemberId is string
+    && hasClaimed(householdId, consent.byMemberId)
+    && consent.version is int && consent.version >= 1
+    && consent.at == request.time;
+}
+
+function hasMemberGuardianConsentForRole() {
+  return request.resource.data.role == 'kid'
+    ? isMemberGuardianConsentGiven(request.resource.data.get('guardianConsent', null))
+    : request.resource.data.get('guardianConsent', null) == null;
+}
+
+// Once given it stays as it was; it can be given where there was none,
+// never taken away or rewritten. A profile moving to kid must carry one;
+// a kid profile made before consent was asked keeps working as it is.
+function keepsMemberGuardianConsent() {
+  return (request.resource.data.get('guardianConsent', null)
+            == resource.data.get('guardianConsent', null)
+          || (resource.data.get('guardianConsent', null) == null
+              && isMemberGuardianConsentGiven(request.resource.data.get('guardianConsent', null))))
+    && (request.resource.data.role != 'kid'
+        || resource.data.role == 'kid'
+        || request.resource.data.get('guardianConsent', null) != null);
+}
+
 match /members/{memberId} {
   // A kid device reads its own profile and nobody else's — not the list
   // (accounts ADR-0003).
@@ -30,14 +62,15 @@ match /members/{memberId} {
   allow create: if isAdmin(householdId)
     && request.resource.data.keys().hasOnly(
          ['displayName', 'color', 'role', 'birthday', 'access', 'claimedBy',
-          'createdAt'])
+          'createdAt', 'guardianConsent'])
     && isNonEmptyString(request.resource.data.displayName)
     && isNonEmptyString(request.resource.data.color)
     && isRole(request.resource.data.role)
     && isBirthday(request.resource.data.get('birthday', null))
     && isGrant(request.resource.data.get('access', null))
     && request.resource.data.claimedBy == null
-    && isServerTime('createdAt');
+    && isServerTime('createdAt')
+    && hasMemberGuardianConsentForRole();
 
   // A claimed member's role also lives in the household's uid→role map,
   // and one write cannot touch two documents — so changing it is
@@ -50,14 +83,16 @@ match /members/{memberId} {
   // claimed member's lives in the household document too, so changing
   // it is `setMemberAccess` (household ADR-0003).
   allow update: if isAdmin(householdId)
-    && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access'])
+    && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access',
+                    'guardianConsent'])
     && isNonEmptyString(request.resource.data.displayName)
     && isNonEmptyString(request.resource.data.color)
     && isRole(request.resource.data.role)
     && isBirthday(request.resource.data.get('birthday', null))
     && isGrant(request.resource.data.get('access', null))
     && (resource.data.claimedBy == null
-          || (didNotChange('role') && !changedKeys().hasAny(['access'])));
+          || (didNotChange('role') && !changedKeys().hasAny(['access'])))
+    && keepsMemberGuardianConsent();
 
   // Removing a profile detaches whoever claimed it: `removeMember`.
   allow delete: if false;

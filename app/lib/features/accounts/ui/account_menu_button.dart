@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../account_data/ui/account_centre_screen.dart';
 import '../../household/ui/switch_household_sheet.dart';
 import '../../product_analytics/ui/beta_numbers_link.dart';
 import '../model/session.dart';
@@ -66,6 +68,20 @@ class AccountMenuButton extends StatelessWidget {
               },
             ),
           ],
+          const SizedBox(height: NestSpace.lg),
+          // Download, delete and the legal pages (accounts ADR-0006).
+          NestButton(
+            label: AccountDataCopy.centreEntry,
+            variant: NestButtonVariant.outline,
+            icon: Icons.shield_outlined,
+            onPressed: () {
+              // Taken before the sheet closes, while this context still has
+              // a router above it — the same as the Beta numbers link.
+              final router = GoRouter.of(context);
+              Navigator.of(sheetContext).pop();
+              router.push<void>(AccountCentreScreen.path);
+            },
+          ),
           // Offered only to a holder of the reader claim (product-analytics
           // ADR-0001); for everybody else it takes no space.
           BetaNumbersLink(onOpen: () => Navigator.of(sheetContext).pop()),

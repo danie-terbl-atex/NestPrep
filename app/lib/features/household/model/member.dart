@@ -6,6 +6,7 @@ import 'access_grant.dart';
 import 'access_grant_converter.dart';
 import 'birthday.dart';
 import 'birthday_converter.dart';
+import 'guardian_consent.dart';
 import 'member_color_converter.dart';
 import 'member_role.dart';
 
@@ -36,6 +37,10 @@ abstract class Member with _$Member {
     @AccessGrantConverter() AccessGrant? access,
     String? claimedBy,
     @ServerTimestampConverter() DateTime? createdAt,
+
+    /// A parent's consent, on a child's profile (accounts ADR-0005). Absent
+    /// on every adult, and on every child profile made before it existed.
+    @JsonKey(includeIfNull: false) GuardianConsent? guardianConsent,
   }) = _Member;
 
   const Member._();
@@ -45,6 +50,9 @@ abstract class Member with _$Member {
   MemberRole get role => MemberRole.fromName(roleName);
 
   bool get isClaimed => claimedBy != null;
+
+  /// Whether a parent has consented to this child's information being kept.
+  bool get hasGuardianConsent => guardianConsent != null;
 
   bool isClaimedBy(String uid) => claimedBy == uid;
 

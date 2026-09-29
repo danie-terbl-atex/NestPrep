@@ -18,12 +18,15 @@ final class CallableChildProfileDirectory implements ChildProfileDirectory {
     required String householdId,
     required String memberId,
     required bool isChild,
+    int? guardianConsentVersion,
   }) async {
     try {
       await _functions.httpsCallable(callableName).call<Object?>({
         'householdId': householdId,
         'memberId': memberId,
         'isChild': isChild,
+        if (guardianConsentVersion != null)
+          'guardianConsent': {'version': guardianConsentVersion},
       });
     } on FirebaseFunctionsException catch (error) {
       throw failureFromSubscriptionCallable(error);

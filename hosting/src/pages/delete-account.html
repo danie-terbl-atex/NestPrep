@@ -1,0 +1,125 @@
+      <div class="wrap wrap--prose">
+        <h1>Delete your NestPrep account</h1>
+        <p class="lead">
+          You can delete your account at any time. The quickest way is in the app; if you no longer
+          have it, ask us below.
+        </p>
+
+        <h2>In the app</h2>
+        <ul>
+          <li>Open NestPrep and tap <strong>Account</strong> at the top of any screen.</li>
+          <li>Choose <strong>Privacy and your data</strong>, then <strong>Delete my account</strong>.</li>
+          <li>
+            The app shows exactly what will happen to each of your households before you confirm.
+            Deletion happens straight away.
+          </li>
+        </ul>
+        <p>
+          Want a copy first? On the same screen, <strong>Download my data</strong> gives you a file
+          of everything we hold about you.
+        </p>
+
+        <h2>What is deleted, and what stays</h2>
+        <ul>
+          <li>
+            <strong>Deleted:</strong> your account and sign-in, your private vault and its files,
+            your personal details in each household (such as your allergies, medication and
+            location), and your notification tokens.
+          </li>
+          <li>
+            <strong>Households where you are the last adult</strong> are deleted completely, with
+            everything in them, including children's profiles, files and signed-in kid devices.
+          </li>
+          <li>
+            <strong>Households that carry on</strong> keep their shared records, such as events,
+            lists and household documents. Your profile stays in their history but is no longer
+            linked to you, and if you were their only admin, another adult becomes admin.
+          </li>
+          <li>
+            <strong>A premium subscription is not cancelled</strong> by deleting your account. Cancel
+            it in Google Play or the App Store as well.
+          </li>
+          <li>
+            Copies in our backups are overwritten within
+            <mark class="placeholder">[backup retention period]</mark>. The full detail is in our
+            <a href="/privacy">Privacy Policy</a>.
+          </li>
+        </ul>
+
+        <h2 id="request-title">Ask us to delete it</h2>
+        <p>
+          Use this if you cannot get into the app. Give us the email address you sign in to NestPrep
+          with. We will email you from
+          <mark class="placeholder">[privacy email address]</mark> to confirm that the address is
+          yours, and then delete the account within 30 days.
+        </p>
+
+        <noscript>
+          <div class="notice notice--info">
+            <p>
+              This form needs JavaScript. You can also email
+              <mark class="placeholder">[privacy email address]</mark> from the address you sign in
+              with, asking us to delete your NestPrep account.
+            </p>
+          </div>
+        </noscript>
+
+        <div id="deletion-status" role="status" aria-live="polite" tabindex="-1">
+          <div class="notice notice--success" data-state="received" hidden>
+            <h2>We have your request</h2>
+            <p>
+              We will email you from <mark class="placeholder">[privacy email address]</mark> to
+              confirm the address is yours, and delete the account within 30 days. If you do not
+              hear from us, check your spam folder.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="invalid" hidden>
+            <p>That email address does not look right. Check it and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="tooMany" hidden>
+            <p>
+              We have had a lot of requests from here just now. Please wait an hour and try again,
+              or email <mark class="placeholder">[privacy email address]</mark>.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="unavailable" hidden>
+            <p>
+              We could not send your request just now. Please try again in a few minutes, or email
+              <mark class="placeholder">[privacy email address]</mark>.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="offline" hidden>
+            <p>You seem to be offline. Connect to the internet and try again.</p>
+          </div>
+        </div>
+
+        <form id="deletion-form" class="panel" aria-labelledby="request-title" novalidate hidden>
+          <div class="field">
+            <label for="deletion-email">Your NestPrep email address</label>
+            <input
+              id="deletion-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              maxlength="254"
+              required
+              aria-describedby="deletion-email-hint"
+            />
+            <span class="hint" id="deletion-email-hint">
+              The address you sign in with, with Google or with a password.
+            </span>
+          </div>
+          <div class="field">
+            <label for="deletion-message">Anything we should know (optional)</label>
+            <textarea id="deletion-message" name="message" maxlength="1000"></textarea>
+          </div>
+          <div class="check">
+            <input id="deletion-understood" name="understood" type="checkbox" required />
+            <label for="deletion-understood">
+              I understand that deleting my account cannot be undone, and that a household where I
+              am the last adult will be deleted with everything in it.
+            </label>
+          </div>
+          <button class="button" type="submit" data-sending-label="Sending your request…">Ask us to delete my account</button>
+        </form>
+      </div>

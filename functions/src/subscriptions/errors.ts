@@ -28,6 +28,9 @@ export const SUBSCRIPTION_REFUSALS = {
   purchaseNotValid: ['invalid-argument', 'That purchase could not be verified.'],
   // The store subscription is already another household's premium.
   purchaseInUseElsewhere: ['already-exists', 'That subscription belongs to another household.'],
+  // A child marked with no parent's consent on record and none given now
+  // (accounts ADR-0005).
+  guardianConsentRequired: ['failed-precondition', 'A parent has to consent first.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type SubscriptionRefusal = keyof typeof SUBSCRIPTION_REFUSALS;

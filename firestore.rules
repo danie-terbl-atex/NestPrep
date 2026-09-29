@@ -232,6 +232,26 @@ service cloud.firestore {
                 || value.matches('^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')));
     }
 
+    // ==== rules/firestore/root/account_data.rules ====
+    // ---- account data: erasure, web deletion requests, rate limits (accounts ADR-0006) ----
+    // Written and read by Functions alone. The erasure ledger says which
+    // accounts were erased and when; a deletion request holds an address until
+    // it is dealt with; a rate-limit window holds a count under a hashed key.
+    // None of them is anything a client needs, and a readable request list
+    // would be a list of people.
+
+    match /accountDeletions/{uid} {
+      allow read, write: if false;
+    }
+
+    match /accountDeletionRequests/{requestId} {
+      allow read, write: if false;
+    }
+
+    match /rateLimits/{windowId} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/accounts.rules ====
     // ---- accounts (accounts ADR-0001) ----
 
@@ -259,11 +279,29 @@ service cloud.firestore {
       // What Google tells us about the person, and which household is showing.
       // `householdIds` and `createdAt` are not in the list, so they cannot move.
       allow update: if isSelf()
-        && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt'])
+        && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt',
+                        'legalConsent'])
         && isNonEmptyString(request.resource.data.displayName)
         && (request.resource.data.activeHouseholdId == null
             || request.resource.data.activeHouseholdId in resource.data.householdIds)
-        && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'));
+        && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'))
+        && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent());
+
+      // What this person agreed to (accounts ADR-0005): the two versions, whole
+      // numbers from 1, never lower than what they agreed to before, stamped
+      // with the server's time. Nothing else may ride along in it.
+      function isAccountConsent() {
+        let consent = request.resource.data.legalConsent;
+        let before = resource.data.get('legalConsent', {'termsVersion': 0, 'privacyVersion': 0});
+        return consent is map
+          && consent.keys().hasOnly(['termsVersion', 'privacyVersion', 'acceptedAt'])
+          && consent.keys().hasAll(['termsVersion', 'privacyVersion', 'acceptedAt'])
+          && consent.termsVersion is int && consent.termsVersion >= 1
+          && consent.privacyVersion is int && consent.privacyVersion >= 1
+          && consent.termsVersion >= before.termsVersion
+          && consent.privacyVersion >= before.privacyVersion
+          && consent.acceptedAt == request.time;
+      }
 
       // Deleting an account is a Function, in the phase that ships to a store.
       allow delete: if false;
@@ -1215,6 +1253,38 @@ service cloud.firestore {
           && request.resource.data.pendingSetupStep == null;
       }
 
+      // ---- a parent's consent on a child's profile (accounts ADR-0005) ----
+      // Given by the adult writing it, as their own claimed profile, against a
+      // privacy-policy version, at the server's time. Never on an adult.
+      function isMemberGuardianConsentGiven(consent) {
+        return consent is map
+          && consent.keys().hasOnly(['byMemberId', 'version', 'at'])
+          && consent.keys().hasAll(['byMemberId', 'version', 'at'])
+          && consent.byMemberId is string
+          && hasClaimed(householdId, consent.byMemberId)
+          && consent.version is int && consent.version >= 1
+          && consent.at == request.time;
+      }
+
+      function hasMemberGuardianConsentForRole() {
+        return request.resource.data.role == 'kid'
+          ? isMemberGuardianConsentGiven(request.resource.data.get('guardianConsent', null))
+          : request.resource.data.get('guardianConsent', null) == null;
+      }
+
+      // Once given it stays as it was; it can be given where there was none,
+      // never taken away or rewritten. A profile moving to kid must carry one;
+      // a kid profile made before consent was asked keeps working as it is.
+      function keepsMemberGuardianConsent() {
+        return (request.resource.data.get('guardianConsent', null)
+                  == resource.data.get('guardianConsent', null)
+                || (resource.data.get('guardianConsent', null) == null
+                    && isMemberGuardianConsentGiven(request.resource.data.get('guardianConsent', null))))
+          && (request.resource.data.role != 'kid'
+              || resource.data.role == 'kid'
+              || request.resource.data.get('guardianConsent', null) != null);
+      }
+
       match /members/{memberId} {
         // A kid device reads its own profile and nobody else's — not the list
         // (accounts ADR-0003).
@@ -1225,14 +1295,15 @@ service cloud.firestore {
         allow create: if isAdmin(householdId)
           && request.resource.data.keys().hasOnly(
                ['displayName', 'color', 'role', 'birthday', 'access', 'claimedBy',
-                'createdAt'])
+                'createdAt', 'guardianConsent'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
           && isBirthday(request.resource.data.get('birthday', null))
           && isGrant(request.resource.data.get('access', null))
           && request.resource.data.claimedBy == null
-          && isServerTime('createdAt');
+          && isServerTime('createdAt')
+          && hasMemberGuardianConsentForRole();
 
         // A claimed member's role also lives in the household's uid→role map,
         // and one write cannot touch two documents — so changing it is
@@ -1245,14 +1316,16 @@ service cloud.firestore {
         // claimed member's lives in the household document too, so changing
         // it is `setMemberAccess` (household ADR-0003).
         allow update: if isAdmin(householdId)
-          && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access'])
+          && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access',
+                          'guardianConsent'])
           && isNonEmptyString(request.resource.data.displayName)
           && isNonEmptyString(request.resource.data.color)
           && isRole(request.resource.data.role)
           && isBirthday(request.resource.data.get('birthday', null))
           && isGrant(request.resource.data.get('access', null))
           && (resource.data.claimedBy == null
-                || (didNotChange('role') && !changedKeys().hasAny(['access'])));
+                || (didNotChange('role') && !changedKeys().hasAny(['access'])))
+          && keepsMemberGuardianConsent();
 
         // Removing a profile detaches whoever claimed it: `removeMember`.
         allow delete: if false;

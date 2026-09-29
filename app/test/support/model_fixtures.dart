@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
+import 'package:nestprep/features/accounts/model/legal_consent.dart';
 import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_connection.dart';
@@ -18,6 +19,7 @@ import 'package:nestprep/features/family_profiles/model/member_health.dart';
 import 'package:nestprep/features/family_profiles/model/school.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
+import 'package:nestprep/features/household/model/guardian_consent.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/kid_accounts/model/kid_device.dart';
@@ -125,6 +127,12 @@ List<ModelFixture> modelFixtures() {
     birthday: Birthday(year: 1985, month: 12, day: 10),
     claimedBy: 'uidA',
     createdAt: at,
+    guardianConsent: GuardianConsent(byMemberId: 'm0', version: 1, at: at),
+  );
+  final legalConsent = LegalConsent(
+    termsVersion: 2,
+    privacyVersion: 3,
+    acceptedAt: at,
   );
   final item = GroceryItem(
     id: 'g1',
@@ -336,12 +344,27 @@ List<ModelFixture> modelFixtures() {
         'access',
         'claimedBy',
         'createdAt',
+        'guardianConsent',
       },
       note:
           '`roleName` is stored as `role`, which is the name the rules read. '
           '`birthday` is a string in one of two shapes, never a nested model '
           '(birthdays ADR-0001). `access` is a map of area to level, or null '
-          '(household ADR-0003).',
+          '(household ADR-0003). `guardianConsent` is a map, written only '
+          'when there is one — the rules require it on a kid (accounts '
+          'ADR-0005).',
+    ),
+    ModelFixture(
+      label: 'LegalConsent',
+      id: 'acct',
+      value: legalConsent,
+      toJson: legalConsent.toJson,
+      fromJson: LegalConsent.fromJson,
+      keys: const {'termsVersion', 'privacyVersion', 'acceptedAt'},
+      note:
+          '`users/{uid}.legalConsent`, the only shape the rules accept '
+          '(accounts ADR-0005); it is never written with the rest of the '
+          'account.',
     ),
     ModelFixture(
       label: 'GroceryItem',

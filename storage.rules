@@ -103,6 +103,23 @@ service firebase.storage {
       ];
     }
 
+    // ==== rules/storage/paths/account_exports.rules ====
+    // ---- an account's data export (accounts ADR-0006) ----
+    //
+    // Written only by `exportAccountData`, under the account's own uid, and
+    // readable by that account alone for one hour after it was written — the
+    // short-lived link POPIA's right of access is delivered by. The hour is
+    // `EXPORT_LIFETIME_MS` in `functions/src/account_data/export_files.ts`;
+    // keep the two equal. An hourly sweep deletes what is past it.
+    match /accountExports/{uid}/{exportId} {
+      allow get: if request.auth != null
+        && request.auth.uid == uid
+        && request.time < resource.timeCreated + duration.value(1, 'h');
+
+      allow list: if false;
+      allow write: if false;
+    }
+
     // ==== rules/storage/paths/document_vaults.rules ====
     // ---- personal vaults (documents ADR-0002, ADR-0003) ----
     //

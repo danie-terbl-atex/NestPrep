@@ -59,3 +59,9 @@ export { appStoreNotifications } from './subscriptions/app_store_notifications';
 export { playBillingNotifications } from './subscriptions/play_billing_notifications';
 export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
 export { setChildProfile } from './family_profiles/set_child_profile';
+// ---- account data: delete my account, download my data, the web request (accounts ADR-0006) ----
+export { previewAccountDeletion } from './account_data/preview_account_deletion';
+export { deleteAccount } from './account_data/delete_account';
+export { exportAccountData } from './account_data/export_account_data';
+export { sweepAccountExports } from './account_data/sweep_account_exports';
+export { requestAccountDeletion } from './account_data/request_account_deletion';

@@ -10,6 +10,7 @@ import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../model/access_defaults.dart';
 import '../model/birthday.dart';
+import '../model/guardian_consent.dart';
 import '../model/household.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
@@ -68,11 +69,15 @@ final class HouseholdController extends ChangeNotifier
 
   /// A kid, helper or carer starts from its role's grant, which a parent
   /// then adjusts (household ADR-0003).
+  ///
+  /// A kid is made with the consent the adult adding them gave, which the
+  /// rules require (accounts ADR-0005).
   Future<void> addMember({
     required String displayName,
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    bool guardianConsent = false,
   }) => _run(
     () => _repository.addMember(
       householdId: householdId,
@@ -81,6 +86,7 @@ final class HouseholdController extends ChangeNotifier
       role: role,
       birthday: birthday,
       access: AccessDefaults.forRole(role),
+      guardianConsent: _consentFor(role, given: guardianConsent),
     ),
   );
 
@@ -90,6 +96,7 @@ final class HouseholdController extends ChangeNotifier
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    bool guardianConsent = false,
   }) async {
     final member = _members?.where((value) => value.id == memberId).firstOrNull;
     // A claimed member's role also lives in the household's uid→role map, so it
@@ -112,6 +119,11 @@ final class HouseholdController extends ChangeNotifier
         access: roleMovedOnAnUnclaimedMember
             ? AccessDefaults.forRole(role)
             : null,
+        // A profile becoming a kid carries the consent with it; one that has
+        // it already keeps the one it has (accounts ADR-0005).
+        guardianConsent: member?.hasGuardianConsent ?? false
+            ? null
+            : _consentFor(role, given: guardianConsent),
       );
       if (roleMovedOnAClaimedMember) {
         await _directory.setMemberRole(
@@ -121,6 +133,16 @@ final class HouseholdController extends ChangeNotifier
         );
       }
     });
+  }
+
+  /// The consent to record for a profile given [role], or none: only a kid
+  /// carries one, and only an adult with a profile here can give it.
+  GuardianConsent? _consentFor(MemberRole role, {required bool given}) {
+    final viewer = _members
+        ?.where((member) => member.isClaimedBy(viewerUid))
+        .firstOrNull;
+    if (role != MemberRole.kid || !given || viewer == null) return null;
+    return GuardianConsent.givenBy(viewer.id);
   }
 
   Future<void> removeMember(String memberId) => _run(

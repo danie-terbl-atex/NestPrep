@@ -11,6 +11,7 @@ import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
@@ -251,6 +252,40 @@ void main() {
       await tapLabelled(tester, FamilyCopy.markAsChild);
       expect(repository.writes.single.$1, 'setIsChild');
       expect(repository.writes.single.$2['isChild'], isFalse);
+    });
+
+    group('a parent consents before somebody is marked a child', () {
+      Future<void> markAsChild(WidgetTester tester) async {
+        tallPhone(tester);
+        await pump(tester);
+        await loaded(tester);
+        repository.emitProfiles([FamilyFixtures.kid.copyWith(isChild: false)]);
+        await tester.pumpAndSettle();
+        await tapLabelled(tester, FamilyCopy.markAsChild);
+      }
+
+      testWidgets('and it is sent with the policy version agreed to', (
+        tester,
+      ) async {
+        await markAsChild(tester);
+        expect(repository.writes, isEmpty, reason: 'asked before anything');
+        expect(find.text(LegalCopy.guardianConsentLabel), findsOneWidget);
+
+        await tester.tap(find.text(LegalCopy.guardianConsentConfirm));
+        await tester.pumpAndSettle();
+        expect(repository.writes.single.$2, {
+          'memberId': Fixtures.kidMemberId,
+          'isChild': true,
+          'guardianConsentVersion': LegalVersions.privacy,
+        });
+      });
+
+      testWidgets('and "not now" leaves them as they were', (tester) async {
+        await markAsChild(tester);
+        await tester.tap(find.text(LegalCopy.guardianConsentCancel));
+        await tester.pumpAndSettle();
+        expect(repository.writes, isEmpty);
+      });
     });
 
     testWidgets('a refused edit is said in words, and can be dismissed', (

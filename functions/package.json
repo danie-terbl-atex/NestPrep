@@ -16,12 +16,15 @@
     "serve": "npm run build && firebase emulators:start --only functions --project nestprep-643b7 --config ../firebase.json",
     "rules:build": "node tools/build-rules.mjs",
     "rules:check": "node tools/build-rules.mjs --check",
+    "site:build": "node ../hosting/tools/build-site.mjs",
+    "site:check": "node ../hosting/tools/build-site.mjs --check",
     "test:rules": "npm run rules:build && firebase emulators:exec --only firestore,storage --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.rules.config.ts\"",
     "test:all": "npm run test && npm run test:rules && npm run test:emulator",
     "seed": "node tools/seed-emulator.mjs",
     "beta-numbers": "node tools/beta-numbers.mjs",
     "grant-analytics-reader": "node tools/grant-analytics-reader.mjs",
-    "test:emulator": "npm run build && firebase emulators:exec --only firestore,auth,functions --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.emulator.config.ts\""
+    "deletion-requests": "node tools/deletion-requests.mjs",
+    "test:emulator": "npm run build && firebase emulators:exec --only firestore,auth,functions,storage --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.emulator.config.ts\""
   },
   "dependencies": {
     "firebase-admin": "^14.4.0",

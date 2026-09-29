@@ -216,12 +216,20 @@ describe('verifyAndLinkPurchase', () => {
 describe('markChild — the free tier’s one child', () => {
   beforeEach(clearFirestore);
 
+  // Every mark carries a parent's consent unless a test says otherwise
+  // (accounts ADR-0005).
   const mark = (
     householdId: string,
     uid: string,
     memberId: string,
     isChild = true,
-  ): Promise<void> => markChild(adminDb(), uid, { householdId, memberId, isChild }, NOW);
+  ): Promise<void> =>
+    markChild(
+      adminDb(),
+      uid,
+      { householdId, memberId, isChild, guardianConsent: { version: 1 } },
+      NOW,
+    );
 
   it('lets a free household mark its first child', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
@@ -275,6 +283,62 @@ describe('markChild — the free tier’s one child', () => {
   it('refuses a parent who is not an admin marking somebody else, as the profile rules do', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
     expect(await refusal(mark(home.id, home.parent, 'm-emma'))).toBe('notAnAdmin');
+  });
+
+  it('records the parent’s consent on the child, as the caller’s own profile', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    await markChild(
+      adminDb(),
+      home.admin,
+      { householdId: home.id, memberId: 'm-emma', isChild: true, guardianConsent: { version: 3 } },
+      NOW,
+    );
+    const consent = (await adminDb().doc(`households/${home.id}/members/m-emma`).get()).get(
+      'guardianConsent',
+    ) as Record<string, unknown>;
+    expect(consent['byMemberId']).toBe('m-sam');
+    expect(consent['version']).toBe(3);
+    expect(consent['at']).toBeInstanceOf(Timestamp);
+  });
+
+  it('refuses a child with no consent on record and none given, writing nothing', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    const without = markChild(
+      adminDb(),
+      home.admin,
+      { householdId: home.id, memberId: 'm-emma', isChild: true },
+      NOW,
+    );
+    expect(await refusal(without)).toBe('guardianConsentRequired');
+    const profile = await adminDb().doc(`households/${home.id}/familyProfiles/m-emma`).get();
+    expect(profile.exists).toBe(false);
+  });
+
+  it('needs no new consent where one is on record, and never replaces it', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    const emma = adminDb().doc(`households/${home.id}/members/m-emma`);
+    const onRecord = { byMemberId: 'm-mia', version: 1, at: Timestamp.fromDate(NOW) };
+    await emma.update({ guardianConsent: onRecord });
+
+    await markChild(
+      adminDb(),
+      home.admin,
+      { householdId: home.id, memberId: 'm-emma', isChild: true },
+      NOW,
+    );
+    await mark(home.id, home.admin, 'm-emma');
+    expect((await emma.get()).get('guardianConsent')).toEqual(onRecord);
+  });
+
+  it('unmarking asks for no consent', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    await givenAChild(home.id, 'm-emma');
+    await markChild(
+      adminDb(),
+      home.admin,
+      { householdId: home.id, memberId: 'm-emma', isChild: false },
+      NOW,
+    );
   });
 
   it('refuses a member who is not there, and somebody outside the household', async () => {

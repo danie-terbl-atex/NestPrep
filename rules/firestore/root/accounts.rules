@@ -24,11 +24,29 @@ match /users/{userId} {
   // What Google tells us about the person, and which household is showing.
   // `householdIds` and `createdAt` are not in the list, so they cannot move.
   allow update: if isSelf()
-    && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt'])
+    && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt',
+                    'legalConsent'])
     && isNonEmptyString(request.resource.data.displayName)
     && (request.resource.data.activeHouseholdId == null
         || request.resource.data.activeHouseholdId in resource.data.householdIds)
-    && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'));
+    && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'))
+    && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent());
+
+  // What this person agreed to (accounts ADR-0005): the two versions, whole
+  // numbers from 1, never lower than what they agreed to before, stamped
+  // with the server's time. Nothing else may ride along in it.
+  function isAccountConsent() {
+    let consent = request.resource.data.legalConsent;
+    let before = resource.data.get('legalConsent', {'termsVersion': 0, 'privacyVersion': 0});
+    return consent is map
+      && consent.keys().hasOnly(['termsVersion', 'privacyVersion', 'acceptedAt'])
+      && consent.keys().hasAll(['termsVersion', 'privacyVersion', 'acceptedAt'])
+      && consent.termsVersion is int && consent.termsVersion >= 1
+      && consent.privacyVersion is int && consent.privacyVersion >= 1
+      && consent.termsVersion >= before.termsVersion
+      && consent.privacyVersion >= before.privacyVersion
+      && consent.acceptedAt == request.time;
+  }
 
   // Deleting an account is a Function, in the phase that ships to a store.
   allow delete: if false;

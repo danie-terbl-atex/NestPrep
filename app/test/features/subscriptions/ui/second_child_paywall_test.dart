@@ -4,6 +4,7 @@ import 'package:nestprep/features/family_profiles/model/member_health.dart';
 import 'package:nestprep/features/family_profiles/state/family_controller.dart';
 import 'package:nestprep/features/family_profiles/state/member_health_controller.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
+import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
@@ -68,6 +69,9 @@ void main() {
     );
     await tester.tap(find.bySemanticsLabel(FamilyCopy.markAsChild));
     await tester.pumpAndSettle();
+    // A parent's consent comes first (accounts ADR-0005).
+    await tester.tap(find.text(LegalCopy.guardianConsentConfirm));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('opens premium on it, and marks the child once it is bought', (
@@ -101,7 +105,11 @@ void main() {
 
     final (method, arguments) = repository.writes.single;
     expect(method, 'setIsChild');
-    expect(arguments, {'memberId': Fixtures.kidMemberId, 'isChild': true});
+    expect(arguments, {
+      'memberId': Fixtures.kidMemberId,
+      'isChild': true,
+      'guardianConsentVersion': LegalVersions.privacy,
+    });
   });
 
   testWidgets('closing premium leaves the profile as it was', (tester) async {

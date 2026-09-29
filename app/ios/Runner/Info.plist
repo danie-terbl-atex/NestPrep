@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nestprep</string>
+	<string>NestPrep</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -32,6 +32,8 @@
 	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>So a picture you share from NestPrep — a lunchbox card, a scanned page — can be saved to your photos when you choose Save Image.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>So your household can see where you are while you choose to share it. Sharing is always yours to start and stop, and every share ends on its own.</string>
 	<key>UIApplicationSceneManifest</key>

@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/firestore/server_timestamp_converter.dart';
+import '../../legal/model/legal_versions.dart';
+import 'legal_consent.dart';
 
 part 'account.freezed.dart';
 part 'account.g.dart';
@@ -23,6 +25,11 @@ abstract class Account with _$Account {
     String? activeHouseholdId,
     @ServerTimestampConverter() DateTime? createdAt,
     @ServerTimestampConverter() DateTime? lastSignedInAt,
+
+    /// What this person agreed to (accounts ADR-0005). Read here, never
+    /// written with the rest of the document: the create rule does not allow
+    /// it, and `acceptLegal` writes it on its own with the server's time.
+    @JsonKey(includeToJson: false) LegalConsent? legalConsent,
   }) = _Account;
 
   const Account._();
@@ -31,6 +38,19 @@ abstract class Account with _$Account {
       _$AccountFromJson(json);
 
   bool get belongsToAHousehold => householdIds.isNotEmpty;
+
+  /// Whether this person has agreed to the documents this build ships. The
+  /// router asks for consent until they have (accounts ADR-0005).
+  bool get hasAcceptedCurrentLegal =>
+      legalConsent?.covers(
+        terms: LegalVersions.terms,
+        privacy: LegalVersions.privacy,
+      ) ??
+      false;
+
+  /// Whether this person agreed to an earlier version — the consent screen
+  /// says "we have updated" rather than "before you start".
+  bool get hasAcceptedEarlierLegal => legalConsent != null;
 
   /// The household the app should show: the chosen one while it is still one of
   /// ours, otherwise the first we belong to. A stale `activeHouseholdId` — the

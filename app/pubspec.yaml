@@ -1,7 +1,7 @@
 name: nestprep
 description: "NestPrep — one household on one app. NullState app `nestprep`."
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.9.0+2
 
 environment:
   sdk: ^3.13.3
@@ -11,6 +11,7 @@ dependencies:
   cloud_functions: ^6.5.0
   cunning_document_scanner: ^3.0.3
   file_selector: ^1.0.3
+  firebase_app_check: ^0.4.8
   firebase_auth: ^6.7.0
   firebase_core: ^4.15.0
   firebase_crashlytics: ^5.4.0
@@ -68,3 +69,7 @@ flutter:
           weight: 800
   assets:
     - assets/brand/
+    - assets/legal/
+    # The fonts' own licences, shown on the Licences screen (accounts ADR-0005).
+    - assets/fonts/Nunito-OFL.txt
+    - assets/fonts/PlusJakartaSans-OFL.txt

@@ -14,6 +14,7 @@ import {
 import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
+import { deleteAccountInput } from '../../src/account_data/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -142,8 +143,15 @@ const validBodies = {
       trigger: 'additionalChild',
     },
   },
+  // Account data (accounts ADR-0006). Previewing and exporting take no body.
+  deleteAccount: {
+    schema: deleteAccountInput,
+    body: { confirmation: 'DELETE', endingHouseholdIds: ['h1'] },
+  },
   setChildProfile: {
     schema: setChildProfileInput,
+    // `guardianConsent` is optional — a child with consent on record needs
+    // none — so it is not here; its shape is below (accounts ADR-0005).
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
   },
 } as const;
@@ -164,6 +172,28 @@ describe('verifyPurchase refuses what is not a purchase to verify', () => {
 
   it('accepts a restore, which names no trigger', () => {
     expect(() => parseInput(verifyPurchaseInput, { ...body, trigger: null })).not.toThrow();
+  });
+});
+
+describe('setChildProfile’s parental consent (accounts ADR-0005)', () => {
+  const body = { householdId: 'h1', memberId: 'm-kid', isChild: true };
+
+  it('is a policy version, given as the child is marked', () => {
+    expect(() =>
+      parseInput(setChildProfileInput, { ...body, guardianConsent: { version: 1 } }),
+    ).not.toThrow();
+  });
+
+  it.each([
+    ['a version below 1', { version: 0 }],
+    ['a version that is not whole', { version: 1.5 }],
+    ['a version as text', { version: '1' }],
+    ['a member id of the caller’s choosing', { version: 1, byMemberId: 'm-other' }],
+    ['a bare yes', true],
+  ])('refuses %s', (_, guardianConsent) => {
+    expect(() => parseInput(setChildProfileInput, { ...body, guardianConsent })).toThrow(
+      HttpsError,
+    );
   });
 });
 

@@ -1,5 +1,9 @@
 import '../../features/subscriptions/model/premium_feature.dart';
 
+// A feature's failures may live in a part of this library, so the sealed
+// family stays one library without this file passing `ENG-05`'s cap.
+part 'account_data_failure.dart';
+
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message
 /// (`FE-09`, `ENG-09`).
@@ -235,6 +239,10 @@ enum KidSignInProblem {
   /// The server cannot mint a sign-in right now. Ours, not the child's.
   signInUnavailable,
 
+  /// Too many codes were tried from this network in a few minutes — the
+  /// server's guard against guessing (accounts ADR-0006).
+  tooManyAttempts,
+
   /// A parent signed this device out, or removed the profile it was.
   deviceDisconnected,
 }
@@ -378,6 +386,11 @@ enum SubscriptionProblem {
 
   /// That store subscription is already another household's premium.
   purchaseInUseElsewhere,
+
+  /// A profile was marked a child without a parent's consent on record, and
+  /// none came with the request (accounts ADR-0005). The client asks first,
+  /// so meeting this means another device raced it.
+  guardianConsentRequired,
 
   /// This phone has no store to buy through — an emulator without Play, a
   /// region without billing.

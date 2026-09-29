@@ -2,6 +2,7 @@ import '../../features/household/model/member_role.dart';
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
+import 'account_data_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'home_care_copy.dart';
 import 'kid_copy.dart';
@@ -14,11 +15,17 @@ import 'subscription_copy.dart';
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
 
+// account data: the account centre, download and delete (accounts ADR-0006).
+export 'account_data_copy.dart';
+
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
 
 // home-care: its words live in their own file (home-care ADR-0001).
 export 'home_care_copy.dart';
+
+// legal and consent (accounts ADR-0005): their words live in their own file.
+export 'legal_copy.dart';
 
 // lunch-box: its words live in their own file, reached through this one.
 export 'lunch_copy.dart';
@@ -408,6 +415,8 @@ abstract final class AppCopy {
     PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
       feature,
     ),
+    // account data (accounts ADR-0006).
+    AccountDataFailure(:final problem) => AccountDataCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

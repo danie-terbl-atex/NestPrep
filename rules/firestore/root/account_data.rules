@@ -1,0 +1,18 @@
+// ---- account data: erasure, web deletion requests, rate limits (accounts ADR-0006) ----
+// Written and read by Functions alone. The erasure ledger says which
+// accounts were erased and when; a deletion request holds an address until
+// it is dealt with; a rate-limit window holds a count under a hashed key.
+// None of them is anything a client needs, and a readable request list
+// would be a list of people.
+
+match /accountDeletions/{uid} {
+  allow read, write: if false;
+}
+
+match /accountDeletionRequests/{requestId} {
+  allow read, write: if false;
+}
+
+match /rateLimits/{windowId} {
+  allow read, write: if false;
+}

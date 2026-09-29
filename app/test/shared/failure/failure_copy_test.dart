@@ -24,6 +24,9 @@ void main() {
     for (final problem in DocumentProblem.values) DocumentFailure(problem),
     for (final problem in KidSignInProblem.values) KidSignInFailure(problem),
     for (final problem in HomeCareProblem.values) HomeCareFailure(problem),
+    // account data (accounts ADR-0006).
+    for (final problem in AccountDataProblem.values)
+      AccountDataFailure(problem),
   ];
 
   /// Words that mean something to us and nothing to a person holding a phone.
@@ -49,6 +52,7 @@ void main() {
         DocumentFailure(:final problem) => '$name.${problem.name}',
         KidSignInFailure(:final problem) => '$name.${problem.name}',
         HomeCareFailure(:final problem) => '$name.${problem.name}',
+        AccountDataFailure(:final problem) => '$name.${problem.name}',
         _ => name,
       };
 

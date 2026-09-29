@@ -18,6 +18,7 @@ class MemberDraft {
     required this.color,
     required this.role,
     this.birthday,
+    this.guardianConsent = false,
   });
 
   final String displayName;
@@ -27,6 +28,10 @@ class MemberDraft {
   /// Null means no birthday, which is an answer and not a gap (birthdays
   /// ADR-0001).
   final Birthday? birthday;
+
+  /// The adult saving this consented to a child's information being kept
+  /// (accounts ADR-0005). Asked only when the profile is becoming a kid.
+  final bool guardianConsent;
 }
 
 Future<MemberDraft?> showMemberSheet({
@@ -61,6 +66,18 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
   late MemberColor _color = widget.existing?.color ?? MemberColor.violet;
   late MemberRole _role = widget.existing?.role ?? MemberRole.parent;
   late Birthday? _birthday = widget.existing?.birthday;
+  bool _guardianConsent = false;
+
+  /// A profile becoming a kid asks for a parent's consent first — a new one,
+  /// or one moving to kid without it (accounts ADR-0005). A kid profile made
+  /// before consent was asked is not held up at every edit; the rules ask
+  /// for it on the same two moments.
+  bool get _asksForConsent {
+    final existing = widget.existing;
+    if (_role != MemberRole.kid) return false;
+    return existing == null ||
+        (existing.role != MemberRole.kid && !existing.hasGuardianConsent);
+  }
 
   @override
   void dispose() {
@@ -71,7 +88,8 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final canSave = _name.text.trim().isNotEmpty;
+    final canSave =
+        _name.text.trim().isNotEmpty && (!_asksForConsent || _guardianConsent);
     // Scrollable like the event sheet: the birthday field made this the
     // tallest sheet in the app, and at 200% text it is taller than a phone.
     return SingleChildScrollView(
@@ -114,6 +132,14 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
             today: widget.today,
             onChanged: (birthday) => setState(() => _birthday = birthday),
           ),
+          if (_asksForConsent) ...[
+            const SizedBox(height: NestSpace.xl),
+            NestCheckRow(
+              label: LegalCopy.guardianConsentLabel,
+              value: _guardianConsent,
+              onChanged: (value) => setState(() => _guardianConsent = value),
+            ),
+          ],
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: AppCopy.householdSave,
@@ -124,6 +150,7 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
                       color: _color,
                       role: _role,
                       birthday: _birthday,
+                      guardianConsent: _asksForConsent && _guardianConsent,
                     ),
                   )
                 : null,

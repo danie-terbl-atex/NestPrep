@@ -111,4 +111,22 @@ bite on the next request rather than within the hour — read Firestore live the
 `npm --prefix functions run rules:build` and commit the partial with `storage.rules`; the same
 check test and the same never-by-hand rule for conflicts apply.
 
+## Hosting
+
+The public site — a landing page, the privacy policy, the terms, and the account-deletion page the
+Play Store links to — is Firebase Hosting, served from `hosting/public/`. That folder is
+**generated and committed**, like the rules files; never edit it:
+
+    app/assets/legal/*.md         the privacy policy and terms — one source, bundled by the app too
+    hosting/src/                  the layout, the other pages, site.css (the only place a colour is), delete-account.js
+    hosting/tools/build-site.mjs  renders the documents, fills the layout, copies the logo and fonts from app/assets
+
+Edit a source, then `npm --prefix functions run site:build` and commit it with `hosting/public/`.
+`functions/test/unit/site_is_generated.test.ts` fails when the two differ, when a page loads
+anything from another origin or carries inline script, and when `site.css` drifts from
+`nest_colors.dart`. `/api/account-deletion-request` is rewritten to the `requestAccountDeletion`
+Function. Changing a legal document's text means raising its `version`, which makes the app ask
+everybody to accept it again. Deploying is `firebase deploy --only hosting --project nestprep-643b7`
+(it runs `site:check` first), done by Daniel or the orchestrator — never from a feature branch.
+
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

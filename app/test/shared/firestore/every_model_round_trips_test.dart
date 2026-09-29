@@ -33,8 +33,9 @@ void main() {
     // here before this passes again. Todos phase 2 added five (todos
     // ADR-0003); nanny hub added nine (nanny-hub ADR-0003); home care added
     // four (home-care ADR-0001); lunch box added four (lunch-box ADR-0001);
-    // subscriptions added one (subscriptions ADR-0001).
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 46);
+    // subscriptions added one (subscriptions ADR-0001); consent added one
+    // (accounts ADR-0005).
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 47);
   });
 
   for (final fixture in fixtures) {

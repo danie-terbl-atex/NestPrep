@@ -16,7 +16,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Account {
 
-@JsonKey(includeToJson: false) String get id; String get displayName; String? get photoUrl; List<String> get householdIds; String? get activeHouseholdId;@ServerTimestampConverter() DateTime? get createdAt;@ServerTimestampConverter() DateTime? get lastSignedInAt;
+@JsonKey(includeToJson: false) String get id; String get displayName; String? get photoUrl; List<String> get householdIds; String? get activeHouseholdId;@ServerTimestampConverter() DateTime? get createdAt;@ServerTimestampConverter() DateTime? get lastSignedInAt;/// What this person agreed to (accounts ADR-0005). Read here, never
+/// written with the rest of the document: the create rule does not allow
+/// it, and `acceptLegal` writes it on its own with the server's time.
+@JsonKey(includeToJson: false) LegalConsent? get legalConsent;
 /// Create a copy of Account
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +33,20 @@ $AccountCopyWith<Account> get copyWith => _$AccountCopyWithImpl<Account>(this as
 @override
 bool operator ==(Object other) {
   final _this = this as Account;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Account&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&const DeepCollectionEquality().equals(other.householdIds, _this.householdIds)&&(identical(other.activeHouseholdId, _this.activeHouseholdId) || other.activeHouseholdId == _this.activeHouseholdId)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.lastSignedInAt, _this.lastSignedInAt) || other.lastSignedInAt == _this.lastSignedInAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Account&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&const DeepCollectionEquality().equals(other.householdIds, _this.householdIds)&&(identical(other.activeHouseholdId, _this.activeHouseholdId) || other.activeHouseholdId == _this.activeHouseholdId)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.lastSignedInAt, _this.lastSignedInAt) || other.lastSignedInAt == _this.lastSignedInAt)&&(identical(other.legalConsent, _this.legalConsent) || other.legalConsent == _this.legalConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Account;
-  return Object.hash(runtimeType,_this.id,_this.displayName,_this.photoUrl,const DeepCollectionEquality().hash(_this.householdIds),_this.activeHouseholdId,_this.createdAt,_this.lastSignedInAt);
+  return Object.hash(runtimeType,_this.id,_this.displayName,_this.photoUrl,const DeepCollectionEquality().hash(_this.householdIds),_this.activeHouseholdId,_this.createdAt,_this.lastSignedInAt,_this.legalConsent);
 }
 
 @override
 String toString() {
   final _this = this as Account;
-  return 'Account(id: ${_this.id}, displayName: ${_this.displayName}, photoUrl: ${_this.photoUrl}, householdIds: ${_this.householdIds}, activeHouseholdId: ${_this.activeHouseholdId}, createdAt: ${_this.createdAt}, lastSignedInAt: ${_this.lastSignedInAt})';
+  return 'Account(id: ${_this.id}, displayName: ${_this.displayName}, photoUrl: ${_this.photoUrl}, householdIds: ${_this.householdIds}, activeHouseholdId: ${_this.activeHouseholdId}, createdAt: ${_this.createdAt}, lastSignedInAt: ${_this.lastSignedInAt}, legalConsent: ${_this.legalConsent})';
 }
 
 
@@ -54,11 +57,11 @@ abstract mixin class $AccountCopyWith<$Res>  {
   factory $AccountCopyWith(Account value, $Res Function(Account) _then) = _$AccountCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String displayName, String? photoUrl, List<String> householdIds, String? activeHouseholdId,@ServerTimestampConverter() DateTime? createdAt,@ServerTimestampConverter() DateTime? lastSignedInAt
+@JsonKey(includeToJson: false) String id, String displayName, String? photoUrl, List<String> householdIds, String? activeHouseholdId,@ServerTimestampConverter() DateTime? createdAt,@ServerTimestampConverter() DateTime? lastSignedInAt,@JsonKey(includeToJson: false) LegalConsent? legalConsent
 });
 
 
-
+$LegalConsentCopyWith<$Res>? get legalConsent;
 
 }
 /// @nodoc
@@ -71,7 +74,7 @@ class _$AccountCopyWithImpl<$Res>
 
 /// Create a copy of Account
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? photoUrl = freezed,Object? householdIds = null,Object? activeHouseholdId = freezed,Object? createdAt = freezed,Object? lastSignedInAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? photoUrl = freezed,Object? householdIds = null,Object? activeHouseholdId = freezed,Object? createdAt = freezed,Object? lastSignedInAt = freezed,Object? legalConsent = freezed,}) {
   return _then(Account(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -80,10 +83,23 @@ as String?,householdIds: null == householdIds ? _self.householdIds : householdId
 as List<String>,activeHouseholdId: freezed == activeHouseholdId ? _self.activeHouseholdId : activeHouseholdId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,lastSignedInAt: freezed == lastSignedInAt ? _self.lastSignedInAt : lastSignedInAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,legalConsent: freezed == legalConsent ? _self.legalConsent : legalConsent // ignore: cast_nullable_to_non_nullable
+as LegalConsent?,
   ));
 }
+/// Create a copy of Account
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$LegalConsentCopyWith<$Res>? get legalConsent {
+    if (_self.legalConsent == null) {
+    return null;
+  }
 
+  return $LegalConsentCopyWith<$Res>(_self.legalConsent!, (value) {
+    return _then(_self.copyWith(legalConsent: value));
+  });
+}
 }
 
 
@@ -165,10 +181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt, @JsonKey(includeToJson: false)  LegalConsent? legalConsent)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Account() when $default != null:
-return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt);case _:
+return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt,_that.legalConsent);case _:
   return orElse();
 
 }
@@ -186,10 +202,10 @@ return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt, @JsonKey(includeToJson: false)  LegalConsent? legalConsent)  $default,) {final _that = this;
 switch (_that) {
 case _Account():
-return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt);case _:
+return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt,_that.legalConsent);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +222,10 @@ return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String displayName,  String? photoUrl,  List<String> householdIds,  String? activeHouseholdId, @ServerTimestampConverter()  DateTime? createdAt, @ServerTimestampConverter()  DateTime? lastSignedInAt, @JsonKey(includeToJson: false)  LegalConsent? legalConsent)?  $default,) {final _that = this;
 switch (_that) {
 case _Account() when $default != null:
-return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt);case _:
+return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_that.activeHouseholdId,_that.createdAt,_that.lastSignedInAt,_that.legalConsent);case _:
   return null;
 
 }
@@ -221,7 +237,7 @@ return $default(_that.id,_that.displayName,_that.photoUrl,_that.householdIds,_th
 @JsonSerializable()
 
 class _Account extends Account {
-  const _Account({@JsonKey(includeToJson: false) required this.id, required this.displayName, this.photoUrl,  List<String> householdIds = const <String>[], this.activeHouseholdId, @ServerTimestampConverter() this.createdAt, @ServerTimestampConverter() this.lastSignedInAt}): _householdIds = householdIds,super._();
+  const _Account({@JsonKey(includeToJson: false) required this.id, required this.displayName, this.photoUrl,  List<String> householdIds = const <String>[], this.activeHouseholdId, @ServerTimestampConverter() this.createdAt, @ServerTimestampConverter() this.lastSignedInAt, @JsonKey(includeToJson: false) this.legalConsent}): _householdIds = householdIds,super._();
   factory _Account.fromJson(Map<String, dynamic> json) => _$AccountFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -237,6 +253,10 @@ class _Account extends Account {
 @override final  String? activeHouseholdId;
 @override@ServerTimestampConverter() final  DateTime? createdAt;
 @override@ServerTimestampConverter() final  DateTime? lastSignedInAt;
+/// What this person agreed to (accounts ADR-0005). Read here, never
+/// written with the rest of the document: the create rule does not allow
+/// it, and `acceptLegal` writes it on its own with the server's time.
+@override@JsonKey(includeToJson: false) final  LegalConsent? legalConsent;
 
 /// Create a copy of Account
 /// with the given fields replaced by the non-null parameter values.
@@ -251,18 +271,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Account&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.householdIds, _householdIds)&&(identical(other.activeHouseholdId, activeHouseholdId) || other.activeHouseholdId == activeHouseholdId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastSignedInAt, lastSignedInAt) || other.lastSignedInAt == lastSignedInAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Account&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.householdIds, _householdIds)&&(identical(other.activeHouseholdId, activeHouseholdId) || other.activeHouseholdId == activeHouseholdId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastSignedInAt, lastSignedInAt) || other.lastSignedInAt == lastSignedInAt)&&(identical(other.legalConsent, legalConsent) || other.legalConsent == legalConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,displayName,photoUrl,const DeepCollectionEquality().hash(_householdIds),activeHouseholdId,createdAt,lastSignedInAt);
+    return Object.hash(runtimeType,id,displayName,photoUrl,const DeepCollectionEquality().hash(_householdIds),activeHouseholdId,createdAt,lastSignedInAt,legalConsent);
 }
 
 @override
 String toString() {
-    return 'Account(id: $id, displayName: $displayName, photoUrl: $photoUrl, householdIds: $householdIds, activeHouseholdId: $activeHouseholdId, createdAt: $createdAt, lastSignedInAt: $lastSignedInAt)';
+    return 'Account(id: $id, displayName: $displayName, photoUrl: $photoUrl, householdIds: $householdIds, activeHouseholdId: $activeHouseholdId, createdAt: $createdAt, lastSignedInAt: $lastSignedInAt, legalConsent: $legalConsent)';
 }
 
 
@@ -273,11 +293,11 @@ abstract mixin class _$AccountCopyWith<$Res> implements $AccountCopyWith<$Res> {
   factory _$AccountCopyWith(_Account value, $Res Function(_Account) _then) = __$AccountCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String displayName, String? photoUrl, List<String> householdIds, String? activeHouseholdId,@ServerTimestampConverter() DateTime? createdAt,@ServerTimestampConverter() DateTime? lastSignedInAt
+@JsonKey(includeToJson: false) String id, String displayName, String? photoUrl, List<String> householdIds, String? activeHouseholdId,@ServerTimestampConverter() DateTime? createdAt,@ServerTimestampConverter() DateTime? lastSignedInAt,@JsonKey(includeToJson: false) LegalConsent? legalConsent
 });
 
 
-
+@override $LegalConsentCopyWith<$Res>? get legalConsent;
 
 }
 /// @nodoc
@@ -290,7 +310,7 @@ class __$AccountCopyWithImpl<$Res>
 
 /// Create a copy of Account
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? photoUrl = freezed,Object? householdIds = null,Object? activeHouseholdId = freezed,Object? createdAt = freezed,Object? lastSignedInAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? photoUrl = freezed,Object? householdIds = null,Object? activeHouseholdId = freezed,Object? createdAt = freezed,Object? lastSignedInAt = freezed,Object? legalConsent = freezed,}) {
   return _then(_Account(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -299,11 +319,24 @@ as String?,householdIds: null == householdIds ? _self._householdIds : householdI
 as List<String>,activeHouseholdId: freezed == activeHouseholdId ? _self.activeHouseholdId : activeHouseholdId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,lastSignedInAt: freezed == lastSignedInAt ? _self.lastSignedInAt : lastSignedInAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,legalConsent: freezed == legalConsent ? _self.legalConsent : legalConsent // ignore: cast_nullable_to_non_nullable
+as LegalConsent?,
   ));
 }
 
+/// Create a copy of Account
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$LegalConsentCopyWith<$Res>? get legalConsent {
+    if (_self.legalConsent == null) {
+    return null;
+  }
 
+  return $LegalConsentCopyWith<$Res>(_self.legalConsent!, (value) {
+    return _then(_self.copyWith(legalConsent: value));
+  });
+}
 }
 
 // dart format on

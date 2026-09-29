@@ -2,6 +2,7 @@ import '../../features/subscriptions/model/billing_store.dart';
 import '../../features/subscriptions/model/premium_feature.dart';
 import '../../features/subscriptions/model/subscription_plan.dart';
 import '../failure/app_failure.dart';
+import 'legal_copy.dart';
 
 /// Every word premium says (`FE-19`, subscriptions ADR-0001) — beside
 /// `AppCopy` rather than inside it, because it is one feature's vocabulary
@@ -161,6 +162,8 @@ abstract final class SubscriptionCopy {
           'purchases; if it still fails, the store can refund it.',
     SubscriptionProblem.purchaseInUseElsewhere =>
       'That subscription already gives another household premium.',
+    SubscriptionProblem.guardianConsentRequired =>
+      LegalCopy.guardianConsentNeeded,
     SubscriptionProblem.storeNotAvailable =>
       'This phone can’t reach a store to buy from. Try again on a phone '
           'signed in to its store.',

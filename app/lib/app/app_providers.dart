@@ -56,6 +56,7 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'account_routes.dart';
 import 'chore_points_providers.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
@@ -202,6 +203,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // subscriptions — the store, premium and the free tier's one child
   // (subscriptions ADR-0001)
   ...subscriptionProviders(),
+  // account data: delete my account, download my data (accounts ADR-0006)
+  ...accountDataProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

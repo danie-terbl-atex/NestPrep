@@ -2,7 +2,9 @@ import { FieldValue, type Firestore } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 
+import { clientAddress } from '../shared/client_address';
 import { db } from '../shared/firestore';
+import { consumeRateLimit } from '../shared/rate_limit';
 import { isReadableCode } from '../shared/readable_code';
 import { householdRef, readHousehold } from '../household/documents';
 import { refuse } from '../household/errors';
@@ -22,6 +24,8 @@ import { redeemKidPairingInput } from './kid_schemas';
 import {
   KID_CODE_LENGTH,
   KID_DEVICE_LIMIT,
+  KID_REDEEM_OVERALL,
+  KID_REDEEM_PER_ADDRESS,
   isEligibleForKidSignIn,
   newKidUid,
   pairingRefusal,
@@ -42,8 +46,14 @@ import {
  */
 export const redeemKidPairing = onCall(async (request) => {
   const { code } = parseInput(redeemKidPairingInput, request.data);
-  if (!isReadableCode(code, KID_CODE_LENGTH)) throw refuseKid('codeNotFound');
   const store = db();
+  // Counted before the code is even checked for shape, so a guesser pays for
+  // every attempt, well-formed or not.
+  const allowed =
+    (await consumeRateLimit(store, KID_REDEEM_OVERALL, 'all')) &&
+    (await consumeRateLimit(store, KID_REDEEM_PER_ADDRESS, clientAddress(request.rawRequest)));
+  if (!allowed) throw refuseKid('tooManyAttempts');
+  if (!isReadableCode(code, KID_CODE_LENGTH)) throw refuseKid('codeNotFound');
 
   const pairing = await readRedeemablePairing(store, code);
   const uid = newKidUid();

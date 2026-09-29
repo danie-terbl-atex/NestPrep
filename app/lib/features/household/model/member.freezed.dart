@@ -21,7 +21,9 @@ mixin _$Member {
 @BirthdayConverter() Birthday? get birthday;/// What a parent chose for a kid, helper or carer (household ADR-0003).
 /// Written with the profile, and afterwards only through
 /// `setMemberAccess`; ignored for family.
-@AccessGrantConverter() AccessGrant? get access; String? get claimedBy;@ServerTimestampConverter() DateTime? get createdAt;
+@AccessGrantConverter() AccessGrant? get access; String? get claimedBy;@ServerTimestampConverter() DateTime? get createdAt;/// A parent's consent, on a child's profile (accounts ADR-0005). Absent
+/// on every adult, and on every child profile made before it existed.
+@JsonKey(includeIfNull: false) GuardianConsent? get guardianConsent;
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,20 +37,20 @@ $MemberCopyWith<Member> get copyWith => _$MemberCopyWithImpl<Member>(this as Mem
 @override
 bool operator ==(Object other) {
   final _this = this as Member;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Member&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.roleName, _this.roleName) || other.roleName == _this.roleName)&&(identical(other.birthday, _this.birthday) || other.birthday == _this.birthday)&&(identical(other.access, _this.access) || other.access == _this.access)&&(identical(other.claimedBy, _this.claimedBy) || other.claimedBy == _this.claimedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Member&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.roleName, _this.roleName) || other.roleName == _this.roleName)&&(identical(other.birthday, _this.birthday) || other.birthday == _this.birthday)&&(identical(other.access, _this.access) || other.access == _this.access)&&(identical(other.claimedBy, _this.claimedBy) || other.claimedBy == _this.claimedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.guardianConsent, _this.guardianConsent) || other.guardianConsent == _this.guardianConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Member;
-  return Object.hash(runtimeType,_this.id,_this.displayName,_this.color,_this.roleName,_this.birthday,_this.access,_this.claimedBy,_this.createdAt);
+  return Object.hash(runtimeType,_this.id,_this.displayName,_this.color,_this.roleName,_this.birthday,_this.access,_this.claimedBy,_this.createdAt,_this.guardianConsent);
 }
 
 @override
 String toString() {
   final _this = this as Member;
-  return 'Member(id: ${_this.id}, displayName: ${_this.displayName}, color: ${_this.color}, roleName: ${_this.roleName}, birthday: ${_this.birthday}, access: ${_this.access}, claimedBy: ${_this.claimedBy}, createdAt: ${_this.createdAt})';
+  return 'Member(id: ${_this.id}, displayName: ${_this.displayName}, color: ${_this.color}, roleName: ${_this.roleName}, birthday: ${_this.birthday}, access: ${_this.access}, claimedBy: ${_this.claimedBy}, createdAt: ${_this.createdAt}, guardianConsent: ${_this.guardianConsent})';
 }
 
 
@@ -59,11 +61,11 @@ abstract mixin class $MemberCopyWith<$Res>  {
   factory $MemberCopyWith(Member value, $Res Function(Member) _then) = _$MemberCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String displayName,@MemberColorConverter() MemberColor color,@JsonKey(name: 'role') String roleName,@BirthdayConverter() Birthday? birthday,@AccessGrantConverter() AccessGrant? access, String? claimedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String displayName,@MemberColorConverter() MemberColor color,@JsonKey(name: 'role') String roleName,@BirthdayConverter() Birthday? birthday,@AccessGrantConverter() AccessGrant? access, String? claimedBy,@ServerTimestampConverter() DateTime? createdAt,@JsonKey(includeIfNull: false) GuardianConsent? guardianConsent
 });
 
 
-
+$GuardianConsentCopyWith<$Res>? get guardianConsent;
 
 }
 /// @nodoc
@@ -76,7 +78,7 @@ class _$MemberCopyWithImpl<$Res>
 
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? color = null,Object? roleName = null,Object? birthday = freezed,Object? access = freezed,Object? claimedBy = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? color = null,Object? roleName = null,Object? birthday = freezed,Object? access = freezed,Object? claimedBy = freezed,Object? createdAt = freezed,Object? guardianConsent = freezed,}) {
   return _then(Member(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -86,10 +88,23 @@ as String,birthday: freezed == birthday ? _self.birthday : birthday // ignore: c
 as Birthday?,access: freezed == access ? _self.access : access // ignore: cast_nullable_to_non_nullable
 as AccessGrant?,claimedBy: freezed == claimedBy ? _self.claimedBy : claimedBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,guardianConsent: freezed == guardianConsent ? _self.guardianConsent : guardianConsent // ignore: cast_nullable_to_non_nullable
+as GuardianConsent?,
   ));
 }
+/// Create a copy of Member
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GuardianConsentCopyWith<$Res>? get guardianConsent {
+    if (_self.guardianConsent == null) {
+    return null;
+  }
 
+  return $GuardianConsentCopyWith<$Res>(_self.guardianConsent!, (value) {
+    return _then(_self.copyWith(guardianConsent: value));
+  });
+}
 }
 
 
@@ -171,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeIfNull: false)  GuardianConsent? guardianConsent)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
-return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt);case _:
+return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt,_that.guardianConsent);case _:
   return orElse();
 
 }
@@ -192,10 +207,10 @@ return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birt
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeIfNull: false)  GuardianConsent? guardianConsent)  $default,) {final _that = this;
 switch (_that) {
 case _Member():
-return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt);case _:
+return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt,_that.guardianConsent);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -212,10 +227,10 @@ return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birt
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String displayName, @MemberColorConverter()  MemberColor color, @JsonKey(name: 'role')  String roleName, @BirthdayConverter()  Birthday? birthday, @AccessGrantConverter()  AccessGrant? access,  String? claimedBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeIfNull: false)  GuardianConsent? guardianConsent)?  $default,) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
-return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt);case _:
+return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birthday,_that.access,_that.claimedBy,_that.createdAt,_that.guardianConsent);case _:
   return null;
 
 }
@@ -227,7 +242,7 @@ return $default(_that.id,_that.displayName,_that.color,_that.roleName,_that.birt
 @JsonSerializable()
 
 class _Member extends Member {
-  const _Member({@JsonKey(includeToJson: false) required this.id, required this.displayName, @MemberColorConverter() required this.color, @JsonKey(name: 'role') required this.roleName, @BirthdayConverter() this.birthday, @AccessGrantConverter() this.access, this.claimedBy, @ServerTimestampConverter() this.createdAt}): super._();
+  const _Member({@JsonKey(includeToJson: false) required this.id, required this.displayName, @MemberColorConverter() required this.color, @JsonKey(name: 'role') required this.roleName, @BirthdayConverter() this.birthday, @AccessGrantConverter() this.access, this.claimedBy, @ServerTimestampConverter() this.createdAt, @JsonKey(includeIfNull: false) this.guardianConsent}): super._();
   factory _Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -243,6 +258,9 @@ class _Member extends Member {
 @override@AccessGrantConverter() final  AccessGrant? access;
 @override final  String? claimedBy;
 @override@ServerTimestampConverter() final  DateTime? createdAt;
+/// A parent's consent, on a child's profile (accounts ADR-0005). Absent
+/// on every adult, and on every child profile made before it existed.
+@override@JsonKey(includeIfNull: false) final  GuardianConsent? guardianConsent;
 
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
@@ -257,18 +275,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Member&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.color, color) || other.color == color)&&(identical(other.roleName, roleName) || other.roleName == roleName)&&(identical(other.birthday, birthday) || other.birthday == birthday)&&(identical(other.access, access) || other.access == access)&&(identical(other.claimedBy, claimedBy) || other.claimedBy == claimedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Member&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.color, color) || other.color == color)&&(identical(other.roleName, roleName) || other.roleName == roleName)&&(identical(other.birthday, birthday) || other.birthday == birthday)&&(identical(other.access, access) || other.access == access)&&(identical(other.claimedBy, claimedBy) || other.claimedBy == claimedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.guardianConsent, guardianConsent) || other.guardianConsent == guardianConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,displayName,color,roleName,birthday,access,claimedBy,createdAt);
+    return Object.hash(runtimeType,id,displayName,color,roleName,birthday,access,claimedBy,createdAt,guardianConsent);
 }
 
 @override
 String toString() {
-    return 'Member(id: $id, displayName: $displayName, color: $color, roleName: $roleName, birthday: $birthday, access: $access, claimedBy: $claimedBy, createdAt: $createdAt)';
+    return 'Member(id: $id, displayName: $displayName, color: $color, roleName: $roleName, birthday: $birthday, access: $access, claimedBy: $claimedBy, createdAt: $createdAt, guardianConsent: $guardianConsent)';
 }
 
 
@@ -279,11 +297,11 @@ abstract mixin class _$MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
   factory _$MemberCopyWith(_Member value, $Res Function(_Member) _then) = __$MemberCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String displayName,@MemberColorConverter() MemberColor color,@JsonKey(name: 'role') String roleName,@BirthdayConverter() Birthday? birthday,@AccessGrantConverter() AccessGrant? access, String? claimedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String displayName,@MemberColorConverter() MemberColor color,@JsonKey(name: 'role') String roleName,@BirthdayConverter() Birthday? birthday,@AccessGrantConverter() AccessGrant? access, String? claimedBy,@ServerTimestampConverter() DateTime? createdAt,@JsonKey(includeIfNull: false) GuardianConsent? guardianConsent
 });
 
 
-
+@override $GuardianConsentCopyWith<$Res>? get guardianConsent;
 
 }
 /// @nodoc
@@ -296,7 +314,7 @@ class __$MemberCopyWithImpl<$Res>
 
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? color = null,Object? roleName = null,Object? birthday = freezed,Object? access = freezed,Object? claimedBy = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? color = null,Object? roleName = null,Object? birthday = freezed,Object? access = freezed,Object? claimedBy = freezed,Object? createdAt = freezed,Object? guardianConsent = freezed,}) {
   return _then(_Member(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -306,11 +324,24 @@ as String,birthday: freezed == birthday ? _self.birthday : birthday // ignore: c
 as Birthday?,access: freezed == access ? _self.access : access // ignore: cast_nullable_to_non_nullable
 as AccessGrant?,claimedBy: freezed == claimedBy ? _self.claimedBy : claimedBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,guardianConsent: freezed == guardianConsent ? _self.guardianConsent : guardianConsent // ignore: cast_nullable_to_non_nullable
+as GuardianConsent?,
   ));
 }
 
+/// Create a copy of Member
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GuardianConsentCopyWith<$Res>? get guardianConsent {
+    if (_self.guardianConsent == null) {
+    return null;
+  }
 
+  return $GuardianConsentCopyWith<$Res>(_self.guardianConsent!, (value) {
+    return _then(_self.copyWith(guardianConsent: value));
+  });
+}
 }
 
 // dart format on

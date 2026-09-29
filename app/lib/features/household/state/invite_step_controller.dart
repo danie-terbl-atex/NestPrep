@@ -7,6 +7,7 @@ import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../data/invite_sharer.dart';
 import '../model/access_defaults.dart';
+import '../model/guardian_consent.dart';
 import '../model/member_role.dart';
 
 /// Somebody invited from this screen: who, as what, and the code they join
@@ -42,6 +43,7 @@ final class InviteStepController extends ChangeNotifier
     required this.householdId,
     required this.householdName,
     required Iterable<MemberColor> coloursInUse,
+    this.viewerMemberId,
   }) : _repository = householdRepository,
        _directory = householdDirectory,
        _sharer = inviteSharer,
@@ -52,6 +54,9 @@ final class InviteStepController extends ChangeNotifier
   final InviteSharer _sharer;
   final String householdId;
   final String householdName;
+
+  /// The inviting adult's own profile, who gives a kid's consent.
+  final String? viewerMemberId;
   final Set<MemberColor> _coloursInUse;
 
   final _sent = <SentInvite>[];
@@ -66,17 +71,26 @@ final class InviteStepController extends ChangeNotifier
 
   /// Makes the profile and its code, then opens the share sheet. Answers
   /// whether the invite exists — a dismissed sheet is still an invite.
+  ///
+  /// Inviting a kid records the consent the inviting adult gave (accounts
+  /// ADR-0005); the rules refuse a kid profile without it.
   Future<bool> invite({
     required String displayName,
     required MemberRole role,
+    bool guardianConsent = false,
   }) => _run(() async {
     final colour = _nextColour();
+    final byMemberId = viewerMemberId;
     final memberId = await _repository.addMember(
       householdId: householdId,
       displayName: displayName,
       color: colour,
       role: role,
       access: AccessDefaults.forRole(role),
+      guardianConsent:
+          role == MemberRole.kid && guardianConsent && byMemberId != null
+          ? GuardianConsent.givenBy(byMemberId)
+          : null,
     );
     _coloursInUse.add(colour);
     final invite = await _directory.createInvite(
