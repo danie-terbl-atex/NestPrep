@@ -6,12 +6,15 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'fake_auth.dart';
+import 'fake_subscriptions.dart';
 import 'household_fixtures.dart';
 
 /// Pumps a feature screen the way its route does: the household and its clock
@@ -95,6 +98,16 @@ Future<void> pumpRouter(
         Provider<HouseholdView>.value(value: householdView),
         Provider<HouseholdClock>.value(
           value: HouseholdClock(householdView.household.timeZone),
+        ),
+        // The household shell's entitlement listener (subscriptions
+        // ADR-0001): free unless a test provides its own below.
+        ChangeNotifierProvider<HouseholdEntitlement>(
+          create: (_) => HouseholdEntitlement(
+            entitlementRepository: FakeEntitlementRepository(
+              initial: Entitlement.free,
+            ),
+            householdId: householdView.household.id,
+          ),
         ),
         ...providers,
       ],

@@ -44,3 +44,11 @@ export { syncCalendarsOnSchedule } from './calendar_sync/sync_calendars_on_sched
 // documents phase 2 — personal vaults and expiry reminders (documents ADR-0003, ADR-0005)
 export { openVaultDocument } from './documents/open_vault_document';
 export { sweepExpiryReminders } from './documents/sweep_expiry_reminders';
+
+// ---- subscriptions: free and premium in both stores (subscriptions ADR-0001) ----
+export { getSubscriptionOffer } from './subscriptions/get_subscription_offer';
+export { verifyPurchase } from './subscriptions/verify_purchase';
+export { appStoreNotifications } from './subscriptions/app_store_notifications';
+export { playBillingNotifications } from './subscriptions/play_billing_notifications';
+export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
+export { setChildProfile } from './family_profiles/set_child_profile';

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/model/family_access.dart';
 import '../features/family_profiles/state/family_controller.dart';
@@ -23,6 +24,8 @@ ShellRoute familyRoutes() => ShellRoute(
       ChangeNotifierProxyProvider<HouseholdView, FamilyController>(
         create: (context) => FamilyController(
           familyProfileRepository: context.read<FamilyProfileRepository>(),
+          // subscriptions ADR-0001: who is a child is the free tier's count.
+          childProfileDirectory: context.read<ChildProfileDirectory>(),
           householdId: HouseholdRoute.idFrom(state),
           household: context.read<HouseholdView>(),
         ),

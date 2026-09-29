@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/failure/app_failure.dart';
+import '../../subscriptions/ui/paywall_sheet.dart';
 import '../model/allergy.dart';
 import '../model/family_entry.dart';
 import '../model/family_roster.dart';
@@ -34,8 +36,20 @@ final class ProfileEditFlows {
 
   String get _memberId => entry.memberId;
 
-  Future<void> toggleChild() =>
-      family.edit.setIsChild(_memberId, isChild: !entry.isChild);
+  /// Marks or unmarks a child. A second child on the free tier is refused by
+  /// the server, and the answer to that is premium, not an apology: the
+  /// paywall opens on it, and once premium is bought the child is marked
+  /// after all (subscriptions ADR-0001).
+  Future<void> toggleChild(BuildContext context) async {
+    final isChild = !entry.isChild;
+    await family.edit.setIsChild(_memberId, isChild: isChild);
+    final failure = family.actionFailure;
+    if (failure is! PremiumRequiredFailure || !context.mounted) return;
+    family.dismissActionFailure();
+    final upgraded = await showPaywall(context, feature: failure.feature);
+    if (!upgraded) return;
+    await family.edit.setIsChild(_memberId, isChild: isChild);
+  }
 
   Future<void> addAllergy(BuildContext context) => editAllergy(context, null);
 

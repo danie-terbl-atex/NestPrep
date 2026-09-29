@@ -137,6 +137,28 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId)).data;
     }
 
+    // ==== rules/firestore/shared/entitlement.rules ====
+    // ---- premium (subscriptions ADR-0001) ----
+    //
+    // Whether a household has premium right now. The entitlement document is
+    // written only by Functions, after a store has vouched for a purchase; its
+    // `premiumUntil` is compared with the request's own time, so premium ends at
+    // its instant without anything having to notice. A missing document, a
+    // missing field or anything that is not a timestamp is free.
+    //
+    // A feature gates a premium write with `&& hasPremium(householdId)` beside
+    // its area grant — lunch-box's learning loop and prep list are the first
+    // (subscriptions overview, *Contracts*). Gate writes, not reads: a household
+    // that lapses keeps reading everything it made (subscriptions ADR-0001).
+    // `functions/src/subscriptions/subscription_documents.ts` holds the
+    // Functions' copy, `householdHasPremium`.
+
+    function hasPremium(householdId) {
+      let path = /databases/$(database)/documents/households/$(householdId)/entitlement/current;
+      let until = exists(path) ? get(path).data.get('premiumUntil', null) : null;
+      return until is timestamp && until > request.time;
+    }
+
     // ==== rules/firestore/shared/kid_devices.rules ====
     // ---- kid devices (accounts ADR-0003, ADR-0004) ----
     //
@@ -305,6 +327,18 @@ service cloud.firestore {
     match /analyticsWeeks/{week} {
       allow read: if isSignedIn() && request.auth.token.get('analyticsReader', false) == true;
       allow write: if false;
+    }
+
+    // ==== rules/firestore/root/subscriptions.rules ====
+    // ---- subscriptions (subscriptions ADR-0001) ----
+    // One document per store subscription: its purchase token or original
+    // transaction id, the household it gives premium to and who linked it.
+    // Functions alone read and write it. A purchase token is the store's
+    // credential for a payment, not something to hand to every phone in a
+    // household, and the link is what stops one store account unlocking many.
+
+    match /storePurchases/{purchaseKey} {
+      allow read, write: if false;
     }
 
     // ---- households (household ADR-0001, ADR-0002) ----
@@ -608,12 +642,17 @@ service cloud.firestore {
         allow create: if mayEditProfile(householdId, memberId)
           && memberExists(householdId, memberId)
           && isFamilyProfile(request.resource.data)
+          && !request.resource.data.get('isChild', false)
           && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
 
+        // Who is a child is what the free tier counts, and rules cannot count:
+        // `isChild` is written only by `setChildProfile`, which counts in a
+        // transaction (subscriptions ADR-0001). A client write leaves it as it is.
         // The school is checked only when it moves: a school deleted after a
         // child pointed at it must not lock the rest of that child's profile.
         allow update: if mayEditProfile(householdId, memberId)
           && isFamilyProfile(request.resource.data)
+          && request.resource.data.get('isChild', false) == resource.data.get('isChild', false)
           && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
               || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
 
@@ -976,6 +1015,20 @@ service cloud.firestore {
           && request.resource.data.slots.size() <= 21;
 
         allow delete: if isAdmin(householdId);
+      }
+
+      // ==== rules/firestore/household/subscriptions.rules ====
+      // ---- subscriptions (subscriptions ADR-0001) ----
+      //
+      // What the household may do. Everybody in it reads it — a helper who reaches
+      // a premium feature is told why it is closed, and a kid's tablet shows what
+      // the family has — because it says nothing about any one person beyond who
+      // manages the plan. Nobody writes it: only a Function does, after a store
+      // has vouched for a purchase, so no client can give itself premium.
+
+      match /entitlement/{document} {
+        allow read: if isInHousehold(householdId);
+        allow write: if false;
       }
 
       // ==== rules/firestore/household/todos.rules ====

@@ -1,3 +1,5 @@
+import '../../features/subscriptions/model/premium_feature.dart';
+
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message
 /// (`FE-09`, `ENG-09`).
@@ -274,6 +276,58 @@ final class CalendarSyncFailure extends AppFailure {
   const CalendarSyncFailure(this.problem);
 
   final CalendarSyncProblem problem;
+}
+
+// ---- subscriptions (subscriptions ADR-0001) ----
+
+/// Why buying or restoring premium did not happen. The server's
+/// `SUBSCRIPTION_REFUSALS` is the other half, and a test reads both;
+/// membership refusals stay `HouseholdProblem`. The last four are the phone's
+/// own, never a Function's.
+enum SubscriptionProblem {
+  /// A kid, helper or carer asked to buy. Family pays.
+  onlyFamilyCanBuy,
+
+  /// No store products are configured yet: premium is not on sale.
+  premiumUnavailable,
+
+  /// The store's own server could not be asked. The purchase is kept on the
+  /// phone and verified again later — nothing is lost.
+  storeUnreachable,
+
+  /// What the store handed over did not verify.
+  purchaseNotValid,
+
+  /// That store subscription is already another household's premium.
+  purchaseInUseElsewhere,
+
+  /// This phone has no store to buy through — an emulator without Play, a
+  /// region without billing.
+  storeNotAvailable,
+
+  /// The store does not know the products yet (not created, or not live).
+  productsNotFound,
+
+  /// The store could not take the payment. Its own words are never shown.
+  purchaseFailed,
+
+  /// Restoring found nothing this store account bought.
+  nothingToRestore,
+}
+
+final class SubscriptionFailure extends AppFailure {
+  const SubscriptionFailure(this.problem);
+
+  final SubscriptionProblem problem;
+}
+
+/// The free tier's limit, reached — a second child on a free household. Not
+/// an error to apologise for: the screen that meets it offers premium, opened
+/// on [feature].
+final class PremiumRequiredFailure extends AppFailure {
+  const PremiumRequiredFailure(this.feature);
+
+  final PremiumFeature feature;
 }
 
 /// Anything not recognised. The cause is kept for logging, never for display.

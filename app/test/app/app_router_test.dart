@@ -14,6 +14,7 @@ import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_directory.dart';
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_repository.dart';
+import 'package:nestprep/features/family_profiles/data/child_profile_directory.dart';
 import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
 import 'package:nestprep/features/family_profiles/ui/family_screen.dart';
@@ -44,6 +45,7 @@ import '../support/fake_meal_repository.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
+import '../support/pump_subscriptions.dart';
 
 /// The wiring every screen arrives through.
 ///
@@ -122,6 +124,11 @@ void main() {
           ),
           Provider<BetaNumbersRepository>.value(value: betaNumbers),
           Provider<FamilyProfileRepository>.value(value: familyProfiles),
+          // Marking a child is the `setChildProfile` callable
+          // (subscriptions ADR-0001); the fake answers for both.
+          Provider<ChildProfileDirectory>.value(value: familyProfiles),
+          // The store, premium and the shell's entitlement listener.
+          ...SubscriptionHarness().providers,
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(

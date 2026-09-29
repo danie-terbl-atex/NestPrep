@@ -10,6 +10,7 @@ import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
+import '../features/subscriptions/ui/entitlement_scope.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'household_place_redirect.dart';
@@ -108,7 +109,13 @@ class _HouseholdShellState extends State<HouseholdShell> {
           // ADR-0001) — here, where it is known the account is really in it.
           child: HouseholdActivityScope(
             householdId: view.household.id,
-            child: widget.child,
+            // The household's entitlement, read once for every screen under
+            // it (subscriptions ADR-0001).
+            child: EntitlementScope(
+              householdId: view.household.id,
+              canBuy: view.permissions.isFamily,
+              child: widget.child,
+            ),
           ),
         );
       },

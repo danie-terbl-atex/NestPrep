@@ -1,0 +1,20 @@
+// ---- premium (subscriptions ADR-0001) ----
+//
+// Whether a household has premium right now. The entitlement document is
+// written only by Functions, after a store has vouched for a purchase; its
+// `premiumUntil` is compared with the request's own time, so premium ends at
+// its instant without anything having to notice. A missing document, a
+// missing field or anything that is not a timestamp is free.
+//
+// A feature gates a premium write with `&& hasPremium(householdId)` beside
+// its area grant — lunch-box's learning loop and prep list are the first
+// (subscriptions overview, *Contracts*). Gate writes, not reads: a household
+// that lapses keeps reading everything it made (subscriptions ADR-0001).
+// `functions/src/subscriptions/subscription_documents.ts` holds the
+// Functions' copy, `householdHasPremium`.
+
+function hasPremium(householdId) {
+  let path = /databases/$(database)/documents/households/$(householdId)/entitlement/current;
+  let until = exists(path) ? get(path).data.get('premiumUntil', null) : null;
+  return until is timestamp && until > request.time;
+}

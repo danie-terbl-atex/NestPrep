@@ -164,6 +164,16 @@ describe('every callable declares what it may cost', () => {
         'startCalendarConnection',
         'syncCalendarConnection',
         'syncCalendarsOnSchedule',
+        // Subscriptions (subscriptions ADR-0001): a store receipt verified
+        // with the store's own server before the entitlement is written, the
+        // two stores' notifications and a daily reconcile — and marking a
+        // child, which the free tier counts and no rule can count.
+        'appStoreNotifications',
+        'getSubscriptionOffer',
+        'playBillingNotifications',
+        'reconcileSubscriptions',
+        'setChildProfile',
+        'verifyPurchase',
       ].sort(),
     );
   });

@@ -27,6 +27,11 @@ import {
   householdInput,
   startCalendarConnectionInput,
 } from '../../src/calendar_sync/schemas';
+import {
+  setChildProfileInput,
+  subscriptionOfferInput,
+  verifyPurchaseInput,
+} from '../../src/subscriptions/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -106,7 +111,43 @@ const validBodies = {
     schema: openVaultDocumentInput,
     body: { householdId: 'h1', ownerMemberId: 'm-emma', documentId: 'doc-1' },
   },
+  // Subscriptions (subscriptions ADR-0001). `trigger` is nullable rather than
+  // optional — a restore says so — so it is in the body every field of which
+  // must be present.
+  getSubscriptionOffer: { schema: subscriptionOfferInput, body: { householdId: 'h1' } },
+  verifyPurchase: {
+    schema: verifyPurchaseInput,
+    body: {
+      householdId: 'h1',
+      store: 'playStore',
+      verificationData: 'purchase-token',
+      trigger: 'additionalChild',
+    },
+  },
+  setChildProfile: {
+    schema: setChildProfileInput,
+    body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
+  },
 } as const;
+
+describe('verifyPurchase refuses what is not a purchase to verify', () => {
+  const body = validBodies.verifyPurchase.body;
+  it.each([
+    ['a store that is not one of the two', { ...body, store: 'webStore' }],
+    ['a trigger the analytics do not know', { ...body, trigger: 'somethingElse' }],
+    [
+      'a receipt longer than any signed transaction',
+      { ...body, verificationData: 'x'.repeat(60_001) },
+    ],
+    ['an empty receipt', { ...body, verificationData: '   ' }],
+  ])('%s', (_, candidate) => {
+    expect(() => parseInput(verifyPurchaseInput, candidate)).toThrow(HttpsError);
+  });
+
+  it('accepts a restore, which names no trigger', () => {
+    expect(() => parseInput(verifyPurchaseInput, { ...body, trigger: null })).not.toThrow();
+  });
+});
 
 describe('every callable accepts its own body', () => {
   for (const [name, { schema, body }] of Object.entries(validBodies)) {

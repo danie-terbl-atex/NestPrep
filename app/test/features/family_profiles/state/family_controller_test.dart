@@ -21,6 +21,7 @@ void main() {
     repository = FakeFamilyProfileRepository();
     controller = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: Fixtures.view(),
     );

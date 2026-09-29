@@ -1,6 +1,6 @@
 import type { CalendarSource, OAuthCalendar } from './calendar_source';
 import { GoogleCalendar } from './google_calendar';
-import { type HttpClient, fetchHttpClient } from './http_client';
+import { type HttpClient, fetchHttpClient } from '../shared/http_client';
 import { IcsCalendar } from './ics_calendar';
 import { dnsResolver } from './link_guard';
 import { MicrosoftCalendar } from './microsoft_calendar';

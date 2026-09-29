@@ -32,7 +32,6 @@ void main() {
     'lib/app/app_providers.dart':
         'builds the provider graph over live repositories',
     'lib/app/nestprep_app.dart': 'the root widget, which boots the graph',
-    'lib/shared/firestore/typed_collection.dart': 'wraps a CollectionReference',
     'lib/features/accounts/data/firebase_auth_gateway.dart':
         'wraps FirebaseAuth',
     'lib/features/accounts/data/firestore_account_repository.dart':
@@ -87,6 +86,22 @@ void main() {
     'lib/features/documents/data/printing_pdf_page_renderer.dart':
         'rasterises through the platform PDF engine',
 
+    // Found absent on 2026-09-29 with a fresh report, from features built in
+    // parallel: each wraps a platform or a live Firebase.
+    'lib/features/calendar_sync/data/callable_calendar_sync_directory.dart':
+        'calls Functions',
+    'lib/features/calendar_sync/data/firestore_calendar_sync_repository.dart':
+        'reads Firestore',
+    'lib/features/household/data/platform_invite_sharer.dart':
+        'opens the platform share sheet',
+    'lib/shared/links/launcher_external_link_opener.dart':
+        'opens the platform browser',
+    // Subscriptions (subscriptions ADR-0001).
+    'lib/app/subscription_providers.dart':
+        'builds the subscription providers over live Firebase and the store',
+    'lib/features/subscriptions/data/in_app_purchase_store_billing.dart':
+        'wraps the platform store plugin',
+
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
     'lib/features/accounts/data/account_repository.dart': 'interface only',
@@ -117,6 +132,27 @@ void main() {
     'lib/features/documents/data/vault_store.dart': 'interface only',
     'lib/features/documents/state/upload_destination.dart': 'interface only',
     'lib/features/documents/model/vault_lock_state.dart': 'two enums only',
+    'lib/features/calendar_sync/data/calendar_sync_directory.dart':
+        'interface only',
+    'lib/features/calendar_sync/data/calendar_sync_repository.dart':
+        'interface only',
+    'lib/features/product_analytics/data/activity_recorder.dart':
+        'interface only',
+    'lib/features/product_analytics/data/beta_numbers_repository.dart':
+        'interface only',
+    'lib/shared/links/external_link_opener.dart': 'interface only',
+    'lib/features/family_profiles/data/child_profile_directory.dart':
+        'interface only',
+    'lib/features/subscriptions/data/entitlement_repository.dart':
+        'interface only',
+    'lib/features/subscriptions/data/store_billing.dart': 'interface only',
+    'lib/features/subscriptions/data/subscription_directory.dart':
+        'interface only',
+    'lib/features/subscriptions/model/billing_store.dart': 'one enum only',
+    'lib/features/subscriptions/model/entitlement_status.dart': 'one enum only',
+    'lib/features/subscriptions/model/premium_feature.dart': 'one enum only',
+    'lib/features/subscriptions/model/subscription_plan.dart': 'one enum only',
+
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

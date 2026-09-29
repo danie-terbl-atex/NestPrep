@@ -1,4 +1,4 @@
-import type { HttpClient, HttpRequest, HttpResponse } from '../../../src/calendar_sync/http_client';
+import type { HttpClient, HttpRequest, HttpResponse } from '../../../src/shared/http_client';
 import { syncWindow, type SyncWindow } from '../../../src/calendar_sync/external_occurrence';
 
 /**

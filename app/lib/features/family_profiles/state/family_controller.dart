@@ -7,6 +7,7 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
+import '../data/child_profile_directory.dart';
 import '../data/family_profile_repository.dart';
 import '../model/family_access.dart';
 import '../model/family_profile.dart';
@@ -27,15 +28,18 @@ import 'family_edits.dart';
 final class FamilyController extends ChangeNotifier with ActionFailureHolder {
   FamilyController({
     required FamilyProfileRepository familyProfileRepository,
+    required ChildProfileDirectory childProfileDirectory,
     required this.householdId,
     required HouseholdView household,
   }) : _repository = familyProfileRepository,
+       _children = childProfileDirectory,
        _members = household.members,
        _access = FamilyAccess.of(household) {
     _start();
   }
 
   final FamilyProfileRepository _repository;
+  final ChildProfileDirectory _children;
   final String householdId;
 
   List<Member> _members;
@@ -56,6 +60,7 @@ final class FamilyController extends ChangeNotifier with ActionFailureHolder {
   /// file stays about reading (`ENG-05`).
   late final FamilyEdits edit = FamilyEdits(
     familyProfileRepository: _repository,
+    childProfileDirectory: _children,
     householdId: householdId,
     runAction: runAction,
   );

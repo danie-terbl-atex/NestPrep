@@ -8,7 +8,7 @@ import type {
   OAuthCalendar,
 } from './calendar_source';
 import type { ExternalOccurrence, OccurrenceTime, SyncWindow } from './external_occurrence';
-import { type HttpClient, HttpUnreachable, jsonOf } from './http_client';
+import { type HttpClient, HttpUnreachable, jsonOf } from '../shared/http_client';
 import {
   type TokenEndpoint,
   addressOnIdToken,

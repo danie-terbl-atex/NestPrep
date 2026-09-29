@@ -27,12 +27,17 @@ match /familyProfiles/{memberId} {
   allow create: if mayEditProfile(householdId, memberId)
     && memberExists(householdId, memberId)
     && isFamilyProfile(request.resource.data)
+    && !request.resource.data.get('isChild', false)
     && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
 
+  // Who is a child is what the free tier counts, and rules cannot count:
+  // `isChild` is written only by `setChildProfile`, which counts in a
+  // transaction (subscriptions ADR-0001). A client write leaves it as it is.
   // The school is checked only when it moves: a school deleted after a
   // child pointed at it must not lock the rest of that child's profile.
   allow update: if mayEditProfile(householdId, memberId)
     && isFamilyProfile(request.resource.data)
+    && request.resource.data.get('isChild', false) == resource.data.get('isChild', false)
     && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
         || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
 

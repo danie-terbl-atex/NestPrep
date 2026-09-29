@@ -5,6 +5,7 @@ import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'kid_copy.dart';
 import 'product_analytics_copy.dart';
+import 'subscription_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
@@ -379,6 +380,11 @@ abstract final class AppCopy {
     DocumentFailure(:final problem) => documentProblem(problem),
     KidSignInFailure(:final problem) => KidCopy.problem(problem),
     CalendarSyncFailure(:final problem) => CalendarSyncCopy.problem(problem),
+    // subscriptions (subscriptions ADR-0001)
+    SubscriptionFailure(:final problem) => SubscriptionCopy.problem(problem),
+    PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
+      feature,
+    ),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

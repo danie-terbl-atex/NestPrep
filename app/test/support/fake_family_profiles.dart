@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:nestprep/features/family_profiles/data/child_profile_directory.dart';
 import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
 import 'package:nestprep/features/family_profiles/model/allergy.dart';
@@ -18,8 +19,11 @@ import 'household_fixtures.dart';
 
 /// Family profiles driven by hand: three live reads a test can make arrive in
 /// any order, and a record of every write, so a test asserts what a person's
-/// tap asked the backend to do (`FE-20`).
-final class FakeFamilyProfileRepository implements FamilyProfileRepository {
+/// tap asked the backend to do (`FE-20`). It stands in for the
+/// `setChildProfile` callable too (subscriptions ADR-0001), so marking a
+/// child lands in the same record as every other edit.
+final class FakeFamilyProfileRepository
+    implements FamilyProfileRepository, ChildProfileDirectory {
   final _profiles = StreamController<List<FamilyProfile>>.broadcast();
   final _schools = StreamController<List<School>>.broadcast();
   final _health = StreamController<MemberHealth>.broadcast();

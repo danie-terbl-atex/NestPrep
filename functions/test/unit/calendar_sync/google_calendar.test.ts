@@ -7,7 +7,7 @@ import {
   occurrenceFromGoogle,
 } from '../../../src/calendar_sync/google_calendar';
 import { toSyncedEvent } from '../../../src/calendar_sync/external_occurrence';
-import { HttpUnreachable } from '../../../src/calendar_sync/http_client';
+import { HttpUnreachable } from '../../../src/shared/http_client';
 import { CLIENT, ScriptedHttp, formFields, json, windowIn } from './fakes';
 
 /**

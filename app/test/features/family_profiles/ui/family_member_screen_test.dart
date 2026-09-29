@@ -29,6 +29,7 @@ void main() {
   void build(HouseholdView view, {String memberId = Fixtures.kidMemberId}) {
     family = FamilyController(
       familyProfileRepository: repository,
+      childProfileDirectory: repository,
       householdId: Fixtures.householdId,
       household: view,
     );

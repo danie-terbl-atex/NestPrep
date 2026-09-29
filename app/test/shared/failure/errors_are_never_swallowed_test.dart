@@ -198,6 +198,17 @@ void main() {
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.
     'retry())',
+    // subscriptions (subscriptions ADR-0001). Verifying a purchase the store
+    // reported catches its own AppFailure and holds it on the coordinator's
+    // progress — and an unverified purchase is simply left unfinished for
+    // the store to redeliver. Loading the paywall's offer keeps its failure
+    // as the offer's failed state. The paywall is a sheet that shows its own
+    // failures. Cancelling a listener in dispose has nobody left to tell.
+    '_verify(',
+    'load())',
+    'showPaywall(context',
+    '_subscription.cancel())',
+    '_subscription?.cancel())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

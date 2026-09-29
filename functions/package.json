@@ -1,7 +1,7 @@
 {
   "name": "nestprep-functions",
   "private": true,
-  "description": "NestPrep Cloud Functions \u2014 only what Firestore Security Rules cannot express (foundation ADR-0002).",
+  "description": "NestPrep Cloud Functions — only what Firestore Security Rules cannot express (foundation ADR-0002).",
   "engines": {
     "node": "22"
   },
@@ -26,6 +26,7 @@
   "dependencies": {
     "firebase-admin": "^14.4.0",
     "firebase-functions": "^7.4.0",
+    "google-auth-library": "^10.9.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {

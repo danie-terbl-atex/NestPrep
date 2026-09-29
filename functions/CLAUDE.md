@@ -59,7 +59,7 @@ cloud because the client redirects every service.
   (`src/calendar_sync/`, calendar ADR-0003 in the vault) is the first to have any; the names are
   below and the values live nowhere in the repo or the vault.
 - Calendar sync talks to Google, Microsoft Graph and pasted ICS links only through
-  `calendar_sync/http_client.ts` — a timeout, a size cap, no silent redirects — and every provider
+  `shared/http_client.ts` — a timeout, a size cap, no silent redirects — and every provider
   is an adapter tested against canned responses (`BE-09`). A pasted link is checked against
   private and loopback addresses on every hop (`link_guard.ts`); loopback is allowed only when
   `FUNCTIONS_EMULATOR` is `true`, which is how the emulator tests serve a calendar from this machine.
@@ -68,13 +68,32 @@ cloud because the client redirects every service.
 
 ## Configuration (`BE-16`)
 
-| Name                               | Kind                        | Used by                                                                      | Unset means                                                     |
-| ---------------------------------- | --------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `CALENDAR_GOOGLE_CLIENT_ID`        | string param, default empty | calendar sync                                                                | Google Calendar says _not set up yet_                           |
-| `CALENDAR_MICROSOFT_CLIENT_ID`     | string param, default empty | calendar sync                                                                | Outlook says _not set up yet_                                   |
-| `CALENDAR_GOOGLE_CLIENT_SECRET`    | Secret Manager secret       | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured |
-| `CALENDAR_MICROSOFT_CLIENT_SECRET` | Secret Manager secret       | the same three                                                               | the same                                                        |
-| `CALENDAR_FUNCTIONS_BASE_URL`      | string param, default empty | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`   |
+| Name                                                                            | Kind                                           | Used by                                                                      | Unset means                                                      |
+| ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `CALENDAR_GOOGLE_CLIENT_ID`                                                     | string param, default empty                    | calendar sync                                                                | Google Calendar says _not set up yet_                            |
+| `CALENDAR_MICROSOFT_CLIENT_ID`                                                  | string param, default empty                    | calendar sync                                                                | Outlook says _not set up yet_                                    |
+| `CALENDAR_GOOGLE_CLIENT_SECRET`                                                 | Secret Manager secret                          | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured  |
+| `CALENDAR_MICROSOFT_CLIENT_SECRET`                                              | Secret Manager secret                          | the same three                                                               | the same                                                         |
+| `CALENDAR_FUNCTIONS_BASE_URL`                                                   | string param, default empty                    | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`    |
+| `SUBSCRIPTIONS_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_YEARLY_PRODUCT_ID`           | string params, default empty                   | subscriptions                                                                | premium says _isn't available yet_                               |
+| `SUBSCRIPTIONS_PRICING_TEST`                                                    | string param, default `off`                    | the paywall's offer                                                          | everybody in cohort `a` (yearly first); `on` splits by household |
+| `SUBSCRIPTIONS_TEST_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_TEST_YEARLY_PRODUCT_ID` | string params, default empty                   | cohort `b` of the pricing test                                               | cohort `b` is offered cohort `a`'s products                      |
+| `SUBSCRIPTIONS_ANDROID_PACKAGE`, `SUBSCRIPTIONS_IOS_BUNDLE_ID`                  | string params, default `io.nullstate.nestprep` | verification                                                                 | the app's own ids                                                |
+| `SUBSCRIPTIONS_APPLE_APP_ID`                                                    | string param, default empty                    | App Store notifications                                                      | a production notification's app id is not checked                |
+| `SUBSCRIPTIONS_APPLE_ISSUER_ID`, `SUBSCRIPTIONS_APPLE_KEY_ID`                   | string params, default empty                   | the App Store Server API                                                     | renewal status comes only from notifications                     |
+| `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured  |
+
+Subscriptions (subscriptions ADR-0001 in the vault) reach Google Play as **the Functions runtime
+service account**, through application-default credentials — there is no key file. It works once
+that account is invited into the Play Console with _View financial data_ and _Manage orders and
+subscriptions_; until then the Play API answers 401/403, `verifyPurchase` refuses with
+`storeUnreachable`, and the phone keeps the purchase to verify again. Real-time Developer
+Notifications arrive on the Pub/Sub topic `play-billing` (deploying `playBillingNotifications`
+creates it). App Store Server Notifications v2 go to
+`https://africa-south1-nestprep-643b7.cloudfunctions.net/appStoreNotifications`, for production and
+sandbox alike. Apple's signed transactions are verified against Apple Root CA - G3, pinned in
+`src/subscriptions/apple/apple_root_certificate.ts`; the test chain in `test/fixtures/apple/` is
+made for the tests and trusted by nothing else.
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
@@ -97,8 +116,9 @@ The OAuth redirect URI to register with Google and Microsoft is
   environment variables from Google Cloud Secret Manager_ until the API is enabled. It is noise,
   not a failure: the value reads as empty and the provider as not set up, which is what the
   emulator tests assert.
-  To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset` and
-  `CALENDAR_MICROSOFT_CLIENT_SECRET=unset` in `functions/.secret.local` (git-ignored).
+  To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset`,
+  `CALENDAR_MICROSOFT_CLIENT_SECRET=unset` and `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` in
+  `functions/.secret.local` (git-ignored).
 - **`writes_are_atomic.test.ts` reads every `.set(`, `.update(`, `.delete(` in `src/` as a
   Firestore write.** A `Map`, a `Hash` or a `URLSearchParams` written that way fails it; calendar
   sync uses records, `crypto.hash()` and `new URLSearchParams({...})` for that reason.

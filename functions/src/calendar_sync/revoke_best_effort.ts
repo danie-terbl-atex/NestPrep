@@ -1,7 +1,7 @@
 import { logger } from 'firebase-functions/v2';
 
 import type { CalendarSource } from './calendar_source';
-import { HttpUnreachable } from './http_client';
+import { HttpUnreachable } from '../shared/http_client';
 
 /**
  * Tells the provider NestPrep has let go of a credential, without letting a

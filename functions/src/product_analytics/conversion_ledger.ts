@@ -9,9 +9,9 @@ import { countingZoneFor, weekKeyOf } from './iso_week';
 
 /**
  * Free-to-premium conversion by the feature that prompted it — V2 on the plan
- * map, so nothing calls this in V1 because nothing is sold in V1. The shape is
- * fixed now so that subscriptions has one call to make and the weekly totals
- * already have a column for it (product-analytics ADR-0001).
+ * map, fixed early so that subscriptions had one call to make and the weekly
+ * totals already had a column for it (product-analytics ADR-0001). Its caller
+ * is `verifyPurchase`, from the first sale (subscriptions ADR-0001).
  *
  * **The contract for subscriptions:** once a store receipt is verified on the
  * server, call `recordPremiumConversion` with the household, the store's own

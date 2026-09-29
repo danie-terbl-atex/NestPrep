@@ -57,6 +57,7 @@ import '../shared/links/launcher_external_link_opener.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
+import 'subscription_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -182,6 +183,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ),
   // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
   ...documentVaultProviders(),
+  // subscriptions — the store, premium and the free tier's one child
+  // (subscriptions ADR-0001)
+  ...subscriptionProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),
