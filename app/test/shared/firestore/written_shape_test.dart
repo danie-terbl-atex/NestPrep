@@ -7,6 +7,7 @@ import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/document_limits.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
+import 'package:nestprep/features/family_profiles/model/school.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -387,6 +388,18 @@ void main() {
 
     test('never writes more slots than a week has', () {
       expect(WeekPlan.slotCount, 21);
+    });
+  });
+
+  // family-profiles (family-profiles ADR-0001).
+  group('schools/{schoolId}', () {
+    test('writes the keys the rule names, with the server"s creation time', () {
+      final shape = shapeOf(
+        const School(id: 's', name: 'Oakwood Primary').toJson(),
+      );
+      expect(shape.keys, {'name', 'nutFree', 'createdAt'});
+      expect(shape.serverAssigned, {'createdAt'});
+      expect(shape.nulls, isEmpty, reason: 'nut-free is a yes or a no');
     });
   });
 }

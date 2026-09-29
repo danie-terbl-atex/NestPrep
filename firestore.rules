@@ -533,6 +533,165 @@ service cloud.firestore {
       function isSmallEnough(value) {
         return value is int && value > 0 && value <= 20 * 1024 * 1024;
       }
+
+      // ---- family profiles (family-profiles ADR-0001) ----
+      //
+      // What the household knows about each person, beside the member rather
+      // than on it, because rules can hide a document and never a field. The
+      // document id is the member id, so there is no field to put somebody
+      // else's id into. An admin writes anybody's; everybody else writes only
+      // their own. Nobody deletes one: it goes with its member, inside
+      // `removeMember`, so a removed child's health data does not outlive them.
+      // Every client write is a merge, so these rules judge the document as it
+      // will be after the write.
+
+      match /familyProfiles/{memberId} {
+        // Every member, helpers included: whoever feeds a child must be able
+        // to see what the child is allergic to.
+        allow read: if isMember(householdId);
+
+        allow create: if mayEditProfile(householdId, memberId)
+          && memberExists(householdId, memberId)
+          && isFamilyProfile(request.resource.data)
+          && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
+
+        // The school is checked only when it moves: a school deleted after a
+        // child pointed at it must not lock the rest of that child's profile.
+        allow update: if mayEditProfile(householdId, memberId)
+          && isFamilyProfile(request.resource.data)
+          && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
+              || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
+
+        allow delete: if false;
+      }
+
+      // Medication, in a document of its own so that fewer people read it.
+      match /memberHealth/{memberId} {
+        allow read: if mayReadHealth(householdId, memberId);
+
+        allow create: if mayEditProfile(householdId, memberId)
+          && memberExists(householdId, memberId)
+          && isMemberHealth(request.resource.data);
+
+        allow update: if mayEditProfile(householdId, memberId)
+          && isMemberHealth(request.resource.data);
+
+        allow delete: if false;
+      }
+
+      // A school is shared by every child at it — marking one nut-free is a
+      // rule for all of them — so only an admin changes one.
+      match /schools/{schoolId} {
+        allow read: if isMember(householdId);
+
+        allow create: if isAdmin(householdId)
+          && request.resource.data.keys().hasOnly(['name', 'nutFree', 'createdAt'])
+          && isBoundedText(request.resource.data.name, 80)
+          && request.resource.data.nutFree is bool
+          && isServerTime('createdAt');
+
+        allow update: if isAdmin(householdId)
+          && onlyChanged(['name', 'nutFree'])
+          && isBoundedText(request.resource.data.name, 80)
+          && request.resource.data.nutFree is bool;
+
+        allow delete: if isAdmin(householdId);
+      }
+
+      function mayEditProfile(householdId, memberId) {
+        return isAdmin(householdId) || isOwnMember(householdId, memberId);
+      }
+
+      // Who may read a person's medication: an admin, a `member`, and the
+      // person themselves — not a helper. THIS IS THE SEAM household phase 2
+      // widens: a helper or carer the household grants health access joins
+      // here and nowhere else. Mirrored by `FamilyAccess.canSeeHealth`.
+      function mayReadHealth(householdId, memberId) {
+        return isAdmin(householdId)
+          || (isMember(householdId) && householdData(householdId).members[uid()] == 'member')
+          || isOwnMember(householdId, memberId);
+      }
+
+      function memberExists(householdId, memberId) {
+        return exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
+      }
+
+      function isKnownSchool(householdId, schoolId) {
+        return schoolId == null
+          || (schoolId is string
+              && exists(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)));
+      }
+
+      function isBoundedText(value, longest) {
+        return isNonEmptyString(value) && value.size() <= longest;
+      }
+
+      function isOptionalText(value, longest) {
+        return value == null || isBoundedText(value, longest);
+      }
+
+      // Likes and dislikes. The number is `FamilyEdits.listLimit`.
+      function isShortList(value) {
+        return value is list && value.size() <= 30;
+      }
+
+      // The allergen and diet vocabularies are `Allergen` and `DietaryFlag`
+      // in the app; `family_vocabulary_matches_the_rules_test.dart` keeps the
+      // three lists the same.
+      function isFamilyProfile(data) {
+        return data.keys().hasOnly(
+             ['isChild', 'likes', 'dislikes', 'diet', 'allergies', 'otherAllergies',
+              'schoolId', 'grade', 'clothingSize', 'shoeSize'])
+          && data.get('isChild', false) is bool
+          && isShortList(data.get('likes', []))
+          && isShortList(data.get('dislikes', []))
+          && data.get('diet', []) is list
+          && data.get('diet', []).hasOnly(
+               ['nutFree', 'vegetarian', 'vegan', 'halal', 'kosher', 'noPork',
+                'glutenFree', 'dairyFree'])
+          && isAllergyMap(data.get('allergies', {}))
+          && data.get('otherAllergies', {}) is map
+          && data.get('otherAllergies', {}).size() <= 10
+          && isOptionalText(data.get('schoolId', null), 128)
+          && isOptionalText(data.get('grade', null), 40)
+          && isOptionalText(data.get('clothingSize', null), 40)
+          && isOptionalText(data.get('shoeSize', null), 40);
+      }
+
+      // Keyed by allergen, so the vocabulary is one `hasOnly` — and so a rule
+      // elsewhere (lunch-box) can ask `allergies.keys().hasAny(...)` with one
+      // read. Every value's shape is checked by name, because rules cannot loop.
+      function isAllergyMap(allergies) {
+        return allergies is map
+          && allergies.keys().hasOnly(
+               ['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish',
+                'shellfish', 'sesame'])
+          && isAllergyAt(allergies, 'peanut')
+          && isAllergyAt(allergies, 'treeNut')
+          && isAllergyAt(allergies, 'milk')
+          && isAllergyAt(allergies, 'egg')
+          && isAllergyAt(allergies, 'wheat')
+          && isAllergyAt(allergies, 'soy')
+          && isAllergyAt(allergies, 'fish')
+          && isAllergyAt(allergies, 'shellfish')
+          && isAllergyAt(allergies, 'sesame');
+      }
+
+      function isAllergyAt(allergies, code) {
+        return !(code in allergies)
+          || (allergies[code] is map
+              && allergies[code].keys().hasOnly(['severity', 'note'])
+              && allergies[code].get('severity', '') in ['mild', 'moderate', 'severe']
+              && isOptionalText(allergies[code].get('note', null), 300));
+      }
+
+      // Medicines are keyed by a generated id, and rules cannot loop over a
+      // map's values, so only their number is bounded here.
+      function isMemberHealth(data) {
+        return data.keys().hasOnly(['medications'])
+          && data.get('medications', {}) is map
+          && data.get('medications', {}).size() <= 12;
+      }
     }
 
     // Everything not named above (BE-05).

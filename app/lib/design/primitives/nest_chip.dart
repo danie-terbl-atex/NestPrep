@@ -11,6 +11,8 @@ class NestChip extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
     this.icon,
+    this.trailingIcon,
+    this.semanticLabel,
     super.key,
   });
 
@@ -19,15 +21,27 @@ class NestChip extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? icon;
 
+  /// After the label — the cross on a chip that removes itself when tapped.
+  final IconData? trailingIcon;
+
+  /// What a screen reader says in place of [label], when tapping does
+  /// something the label alone would not tell a listener: "Remove pasta"
+  /// rather than "pasta" (`FE-13`).
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final c = nest.colors;
     final foreground = isSelected ? c.accentInk : c.inkSecondary;
+    // Its own node: a chip beside a name or a heading must not merge into
+    // them, or a screen reader announces the heading as the button and a tap
+    // anywhere on it toggles the chip (`FE-13`).
     return Semantics(
+      container: true,
       button: onTap != null,
       selected: isSelected,
-      label: label,
+      label: semanticLabel ?? label,
       onTap: onTap,
       excludeSemantics: true,
       child: AnimatedContainer(
@@ -68,6 +82,14 @@ class NestChip extends StatelessWidget {
                         style: nest.text.label.copyWith(color: foreground),
                       ),
                     ),
+                    if (trailingIcon != null) ...[
+                      const SizedBox(width: NestSpace.xs),
+                      Icon(
+                        trailingIcon,
+                        size: NestSize.iconSmall,
+                        color: foreground,
+                      ),
+                    ],
                   ],
                 ),
               ),

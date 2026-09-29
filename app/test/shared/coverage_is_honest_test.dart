@@ -55,6 +55,8 @@ void main() {
         'wraps the platform location plugin',
     'lib/features/documents/data/firestore_document_repository.dart':
         'writes Firestore',
+    'lib/features/family_profiles/data/firestore_family_profile_repository.dart':
+        'writes Firestore',
     'lib/features/documents/data/storage_document_store.dart':
         'wraps FirebaseStorage',
     'lib/features/documents/data/callable_document_directory.dart':
@@ -82,6 +84,8 @@ void main() {
     'lib/features/documents/data/document_directory.dart': 'interface only',
     'lib/features/documents/data/document_picker.dart': 'interface only',
     'lib/features/documents/data/document_opener.dart': 'interface only',
+    'lib/features/family_profiles/data/family_profile_repository.dart':
+        'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

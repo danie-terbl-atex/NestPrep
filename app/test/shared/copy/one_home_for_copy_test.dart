@@ -148,4 +148,42 @@ void main() {
           'either wire it up or do not add the words yet',
     );
   });
+
+  // A feature's words may live in a file of their own beside `app_copy.dart`,
+  // exported from it (family-profiles was the first). The same ratchet holds
+  // for each: every word in it is said by something.
+  test('and no feature copy file is carrying words nothing says', () {
+    final featureCopy = Directory('lib/shared/copy')
+        .listSync()
+        .whereType<File>()
+        .where((file) => file.path.endsWith('_copy.dart'))
+        .where((file) => !file.path.endsWith('app_copy.dart'))
+        .toList();
+    expect(
+      File('lib/shared/copy/app_copy.dart').readAsStringSync(),
+      contains("export 'family_copy.dart';"),
+      reason: 'a feature copy file is reached through AppCopy\'s file',
+    );
+
+    final unused = <String>[];
+    for (final copyFile in featureCopy) {
+      final source = copyFile.readAsStringSync();
+      final owner = RegExp(r'abstract final class (\w+)')
+          .firstMatch(source)!
+          .group(1)!;
+      final names = RegExp(r'static (?:const|String) (\w+)')
+          .allMatches(source)
+          .map((match) => match.group(1)!)
+          .toSet();
+      for (final name in names) {
+        final used =
+            RegExp('\\b$name\\b').allMatches(source).length > 1 ||
+            dartFiles.any(
+              (file) => file.readAsStringSync().contains('$owner.$name'),
+            );
+        if (!used) unused.add('$owner.$name');
+      }
+    }
+    expect(unused, isEmpty, reason: 'copy nothing uses is copy nobody keeps');
+  });
 }

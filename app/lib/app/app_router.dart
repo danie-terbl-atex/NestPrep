@@ -24,6 +24,12 @@ import '../features/documents/data/document_store.dart';
 import '../features/documents/state/document_library_controller.dart';
 import '../features/documents/ui/document_folder_screen.dart';
 import '../features/documents/ui/document_library_screen.dart';
+import '../features/family_profiles/data/family_profile_repository.dart';
+import '../features/family_profiles/model/family_access.dart';
+import '../features/family_profiles/state/family_controller.dart';
+import '../features/family_profiles/state/member_health_controller.dart';
+import '../features/family_profiles/ui/family_member_screen.dart';
+import '../features/family_profiles/ui/family_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -49,6 +55,7 @@ import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'design_gallery_access.dart';
 import 'documents_route.dart';
+import 'family_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -144,6 +151,47 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
               builder: (context, state) => DocumentFolderScreen(
                 folderId: DocumentsRoute.folderIdFrom(state),
               ),
+            ),
+          ],
+        ),
+        // family-profiles (family-profiles ADR-0001): the family and one
+        // person's profile share a shell, so they share one controller and one
+        // pair of listeners. It follows the household view because a rename,
+        // a new member or a change of role has to reach it.
+        ShellRoute(
+          builder: (context, state, child) =>
+              ChangeNotifierProxyProvider<HouseholdView, FamilyController>(
+                create: (context) => FamilyController(
+                  familyProfileRepository: context
+                      .read<FamilyProfileRepository>(),
+                  householdId: HouseholdRoute.idFrom(state),
+                  household: context.read<HouseholdView>(),
+                ),
+                update: (context, view, controller) =>
+                    controller!..followHousehold(view),
+                child: child,
+              ),
+          routes: [
+            GoRoute(
+              path: FamilyRoute.path,
+              builder: (context, state) => const FamilyScreen(),
+            ),
+            GoRoute(
+              path: FamilyRoute.memberPath,
+              builder: (context, state) {
+                final memberId = FamilyRoute.memberIdFrom(state);
+                return ChangeNotifierProvider(
+                  create: (context) => MemberHealthController(
+                    familyProfileRepository: context
+                        .read<FamilyProfileRepository>(),
+                    householdId: HouseholdRoute.idFrom(state),
+                    memberId: memberId,
+                    isVisible: FamilyAccess.of(context.read<HouseholdView>())
+                        .canSeeHealth(memberId),
+                  ),
+                  child: FamilyMemberScreen(memberId: memberId),
+                );
+              },
             ),
           ],
         ),

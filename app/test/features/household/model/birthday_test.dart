@@ -160,4 +160,28 @@ void main() {
     ]..sort();
     expect(byDayOfYear.map((b) => b.iso), ['--01-02', '1990-01-04', '--12-10']);
   });
+
+  // family-profiles shows the age under a name.
+  group('how old somebody is on a day', () {
+    final born = Birthday(year: 2018, month: 9, day: 29);
+
+    test('turns a year older on the birthday itself, not the day after', () {
+      expect(born.ageOn(CalendarDate(2026, 9, 28)), 7);
+      expect(born.ageOn(CalendarDate(2026, 9, 29)), 8);
+    });
+
+    test('a 29 February birthday counts from the 28th in other years', () {
+      final leapling = Birthday(year: 2016, month: 2, day: 29);
+      expect(leapling.ageOn(CalendarDate(2025, 2, 27)), 8);
+      expect(leapling.ageOn(CalendarDate(2025, 2, 28)), 9);
+    });
+
+    test('no year, or a day before they were born, is no age', () {
+      expect(
+        Birthday(month: 9, day: 29).ageOn(CalendarDate(2026, 1, 1)),
+        isNull,
+      );
+      expect(born.ageOn(CalendarDate(2018, 1, 1)), isNull);
+    });
+  });
 }

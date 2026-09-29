@@ -1,6 +1,9 @@
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 
+// family-profiles: its words live in their own file, reached through this one.
+export 'family_copy.dart';
+
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
 abstract final class AppCopy {

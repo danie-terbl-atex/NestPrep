@@ -221,6 +221,46 @@ describe('removeMember', () => {
     expect(account.get('householdIds')).toEqual([]);
   });
 
+  it('deletes what the household knew about them — profile and medication (family-profiles ADR-0001)', async () => {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const kidId = await addMember(householdId, 'Kid');
+    const siblingId = await addMember(householdId, 'Sibling');
+    const household = adminDb().collection('households').doc(householdId);
+    for (const id of [kidId, siblingId]) {
+      await household
+        .collection('familyProfiles')
+        .doc(id)
+        .set({ allergies: { peanut: { severity: 'severe', note: null } } });
+      await household
+        .collection('memberHealth')
+        .doc(id)
+        .set({ medications: { a: { name: 'Inhaler', dose: null, times: [], note: null } } });
+    }
+
+    await callAs(sam, 'removeMember', { householdId, memberId: kidId });
+
+    expect((await household.collection('familyProfiles').doc(kidId).get()).exists).toBe(false);
+    expect((await household.collection('memberHealth').doc(kidId).get()).exists).toBe(false);
+    // Only theirs: a sibling's allergies are not collateral.
+    expect((await household.collection('familyProfiles').doc(siblingId).get()).exists).toBe(true);
+    expect((await household.collection('memberHealth').doc(siblingId).get()).exists).toBe(true);
+  });
+
+  it('removes a member who never had a profile, as before', async () => {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const kidId = await addMember(householdId, 'Kid');
+    await callAs(sam, 'removeMember', { householdId, memberId: kidId });
+    const member = await adminDb()
+      .collection('households')
+      .doc(householdId)
+      .collection('members')
+      .doc(kidId)
+      .get();
+    expect(member.exists).toBe(false);
+  });
+
   it('refuses an admin removing themselves — that is leaving', async () => {
     const sam = await signUp();
     const { householdId, memberId } = await createHousehold(sam);

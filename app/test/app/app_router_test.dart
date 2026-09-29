@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/app_router.dart';
+import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/design/nest_kit.dart';
@@ -11,6 +12,9 @@ import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
+import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
+import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
+import 'package:nestprep/features/family_profiles/ui/family_screen.dart';
 import 'package:nestprep/features/groceries/data/grocery_repository.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
@@ -25,6 +29,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
+import '../support/fake_family_profiles.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_meal_repository.dart';
@@ -50,6 +55,7 @@ void main() {
   late FakeTodoRepository todos;
   late FakeMealRepository meals;
   late FakeGroceryRepository groceries;
+  late FakeFamilyProfileRepository familyProfiles;
 
   setUp(() {
     auth = FakeAuthGateway();
@@ -61,6 +67,7 @@ void main() {
     todos = FakeTodoRepository();
     meals = FakeMealRepository();
     groceries = FakeGroceryRepository();
+    familyProfiles = FakeFamilyProfileRepository();
   });
 
   tearDown(() async {
@@ -72,6 +79,7 @@ void main() {
     await todos.close();
     await meals.close();
     await groceries.close();
+    await familyProfiles.close();
   });
 
   late GoRouter router;
@@ -88,6 +96,7 @@ void main() {
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),
+          Provider<FamilyProfileRepository>.value(value: familyProfiles),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(
@@ -175,5 +184,28 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(HouseholdScreen), findsOneWidget);
+  });
+
+  // family-profiles: the family and a profile under their own shell.
+  testWidgets('the family and a profile build, with both controllers', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(FamilyRoute.pathFor(Fixtures.householdId));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(FamilyScreen), findsOneWidget);
+
+    router.go(
+      FamilyRoute.memberPathFor(Fixtures.householdId, Fixtures.kidMemberId),
+    );
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(FamilyMemberScreen), findsOneWidget);
+    expect(familyProfiles.healthWatched, [
+      Fixtures.kidMemberId,
+    ], reason: 'an admin reads the medication of the person the route names');
   });
 }

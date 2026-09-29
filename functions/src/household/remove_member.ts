@@ -1,6 +1,7 @@
 import { onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 
+import { memberDetailRefs } from '../family_profiles/member_details';
 import { db } from '../shared/firestore';
 import { adminCount, memberRef, readHousehold, roleOf } from './documents';
 import { refuse } from './errors';
@@ -13,6 +14,8 @@ import { removeMemberInput } from './schemas';
  * from its account first, which is the same work leaving does — so the account
  * stops seeing the household either way (household ADR-0002). An admin removing
  * themselves is refused: that is leaving, and leaving has the last-admin check.
+ * What the household knew about the person — their family profile and their
+ * medication — is deleted with them (family-profiles ADR-0001).
  */
 export const removeMember = onCall(async (request) => {
   const uid = requireUid(request.auth);
@@ -40,6 +43,10 @@ export const removeMember = onCall(async (request) => {
       });
     }
     transaction.delete(memberRef(store, input.householdId, input.memberId));
+    // family-profiles: their allergies, medication and the rest go with them.
+    for (const detail of memberDetailRefs(store, input.householdId, input.memberId)) {
+      transaction.delete(detail);
+    }
   });
 
   logger.info('member removed', { householdId: input.householdId });

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/documents_route.dart';
+import '../../../app/family_route.dart';
 import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -144,6 +145,23 @@ class _HouseholdBody extends StatelessWidget {
                   : () => _remove(context, member),
             ),
           ),
+        const SizedBox(height: NestSpace.lg),
+        // family-profiles: what each person eats, cannot eat and needs. It
+        // hangs off the people it is about (family-profiles ADR-0001).
+        NestCard(
+          variant: NestCardVariant.flat,
+          padding: EdgeInsets.zero,
+          child: NestListRow(
+            title: FamilyCopy.openFromHousehold,
+            subtitle: FamilyCopy.openFromHouseholdBody,
+            leading: const NestIconTile(
+              icon: Icons.family_restroom_outlined,
+              tint: NestTileTint.pink,
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(FamilyRoute.pathFor(view.household.id)),
+          ),
+        ),
         const SizedBox(height: NestSpace.lg),
         // The way to the live-location screen. It sits with the people rather
         // than in the bottom bar, and says what it is before it is tapped —
