@@ -124,6 +124,22 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ---- calendar sync, the credentials (calendar ADR-0003) ----
+    // A refresh token or a calendar link, a connection in flight, and a feed
+    // token's hash. Only the calendar sync Functions touch these; a readable
+    // one would be somebody's whole calendar.
+    match /calendarConnectionSecrets/{connectionId} {
+      allow read, write: if false;
+    }
+
+    match /calendarOAuthStates/{state} {
+      allow read, write: if false;
+    }
+
+    match /calendarFeeds/{tokenHash} {
+      allow read, write: if false;
+    }
+
     // ---- households (household ADR-0001, ADR-0002) ----
 
     match /households/{householdId} {
@@ -453,6 +469,26 @@ service cloud.firestore {
           && isServerTime('skippedAt');
 
         allow delete: if isMember(householdId);
+      }
+
+      // ---- calendar sync (calendar ADR-0003) ----
+      // What the household sees of its connected calendars, the events they
+      // brought in, and its own feed link. Every member reads them; only the
+      // calendar sync Functions write them, so an imported event cannot be
+      // edited here and a connection cannot be pointed at somebody else.
+      match /calendarConnections/{connectionId} {
+        allow read: if isMember(householdId);
+        allow write: if false;
+      }
+
+      match /syncedEvents/{syncedEventId} {
+        allow read: if isMember(householdId);
+        allow write: if false;
+      }
+
+      match /calendarFeed/{feedId} {
+        allow read: if isMember(householdId);
+        allow write: if false;
       }
 
       // ---- documents (documents ADR-0001) ----

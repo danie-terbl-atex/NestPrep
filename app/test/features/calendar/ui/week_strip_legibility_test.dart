@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_calendar_repository.dart';
+import '../../../support/fake_calendar_sync.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -28,6 +29,7 @@ void main() {
     repository = FakeCalendarRepository();
     controller = CalendarController(
       calendarRepository: repository,
+      calendarSyncRepository: FakeCalendarSyncRepository(),
       householdClock: HouseholdClock(
         'Africa/Johannesburg',
         now: () => DateTime.utc(2026, 9, 18, 9),

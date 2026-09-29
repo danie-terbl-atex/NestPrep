@@ -38,9 +38,30 @@ cloud because the client redirects every service.
   `details`, because three different refusals share the gRPC code `already-exists` and the client
   has to tell them apart to choose copy (`BE-04`).
 - Anything touching more than one document is a transaction (`BE-06`).
-- Secrets are Functions parameters or secret bindings, never `.env` in git (`ENG-18`). None exist yet.
+- Secrets are Functions parameters or secret bindings, never `.env` in git (`ENG-18`). Calendar sync
+  (`src/calendar_sync/`, calendar ADR-0003 in the vault) is the first to have any; the names are
+  below and the values live nowhere in the repo or the vault.
+- Calendar sync talks to Google, Microsoft Graph and pasted ICS links only through
+  `calendar_sync/http_client.ts` — a timeout, a size cap, no silent redirects — and every provider
+  is an adapter tested against canned responses (`BE-09`). A pasted link is checked against
+  private and loopback addresses on every hop (`link_guard.ts`); loopback is allowed only when
+  `FUNCTIONS_EMULATOR` is `true`, which is how the emulator tests serve a calendar from this machine.
 - `tsconfig.json` covers `src/`, `test/` and the config files for the editor and ESLint;
   `tsconfig.build.json` is what `tsc` emits from, and it includes `src/` only.
+
+## Configuration (`BE-16`)
+
+| Name                               | Kind                        | Used by                                                                      | Unset means                                                     |
+| ---------------------------------- | --------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `CALENDAR_GOOGLE_CLIENT_ID`        | string param, default empty | calendar sync                                                                | Google Calendar says _not set up yet_                           |
+| `CALENDAR_MICROSOFT_CLIENT_ID`     | string param, default empty | calendar sync                                                                | Outlook says _not set up yet_                                   |
+| `CALENDAR_GOOGLE_CLIENT_SECRET`    | Secret Manager secret       | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured |
+| `CALENDAR_MICROSOFT_CLIENT_SECRET` | Secret Manager secret       | the same three                                                               | the same                                                        |
+| `CALENDAR_FUNCTIONS_BASE_URL`      | string param, default empty | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`   |
+
+The OAuth redirect URI to register with Google and Microsoft is
+`https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
+`<CALENDAR_FUNCTIONS_BASE_URL>/calendarOAuthCallback`).
 
 ## Things that bite on this codebase
 
@@ -54,3 +75,13 @@ cloud because the client redirects every service.
   them.
 - `tools/` is plain Node, not part of the TypeScript program, so ESLint's type-aware rules are off
   for it — see `eslint.config.mjs`.
+- **The emulator asks the real Secret Manager for a bound secret it has no local value for.** The
+  calendar sync Functions bind two, so every emulator run logs _Unable to access secret
+  environment variables from Google Cloud Secret Manager_ until the API is enabled. It is noise,
+  not a failure: the value reads as empty and the provider as not set up, which is what the
+  emulator tests assert.
+  To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset` and
+  `CALENDAR_MICROSOFT_CLIENT_SECRET=unset` in `functions/.secret.local` (git-ignored).
+- **`writes_are_atomic.test.ts` reads every `.set(`, `.update(`, `.delete(` in `src/` as a
+  Firestore write.** A `Map`, a `Hash` or a `URLSearchParams` written that way fails it; calendar
+  sync uses records, `crypto.hash()` and `new URLSearchParams({...})` for that reason.

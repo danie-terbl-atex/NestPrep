@@ -11,6 +11,12 @@ import {
   setMemberRoleInput,
 } from '../../src/household/schemas';
 import { deleteDocumentFolderInput } from '../../src/documents/schemas';
+import {
+  connectCalendarLinkInput,
+  connectionInput,
+  householdInput,
+  startCalendarConnectionInput,
+} from '../../src/calendar_sync/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -50,6 +56,21 @@ const validBodies = {
   deleteDocumentFolder: {
     schema: deleteDocumentFolderInput,
     body: { householdId: 'h1', folderId: 'f-school' },
+  },
+  // Calendar sync (calendar ADR-0003): list, share and reset take the
+  // household alone; sync and disconnect name a connection too.
+  listCalendarProviders: { schema: householdInput, body: { householdId: 'h1' } },
+  startCalendarConnection: {
+    schema: startCalendarConnectionInput,
+    body: { householdId: 'h1', provider: 'google' },
+  },
+  connectCalendarLink: {
+    schema: connectCalendarLinkInput,
+    body: { householdId: 'h1', url: 'webcal://p01-caldav.icloud.com/published/2/abc' },
+  },
+  syncCalendarConnection: {
+    schema: connectionInput,
+    body: { householdId: 'h1', connectionId: 'c1' },
   },
 } as const;
 
@@ -169,6 +190,16 @@ describe('a role', () => {
       expect(() => parseInput(schema, { ...body, role })).toThrow(HttpsError);
     });
   }
+});
+
+describe('a calendar provider', () => {
+  const { schema, body } = validBodies.startCalendarConnection;
+
+  it('is one NestPrep connects through OAuth, and a link is not one', () => {
+    expect(() => parseInput(schema, { ...body, provider: 'microsoft' })).not.toThrow();
+    expect(() => parseInput(schema, { ...body, provider: 'ics' })).toThrow(HttpsError);
+    expect(() => parseInput(schema, { ...body, provider: 'apple' })).toThrow(HttpsError);
+  });
 });
 
 describe('what a refusal tells the client', () => {

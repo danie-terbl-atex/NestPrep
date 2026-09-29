@@ -28,6 +28,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/fake_calendar_repository.dart';
+import '../test/support/fake_calendar_sync.dart';
 import '../test/support/fake_grocery_repository.dart';
 import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
@@ -278,6 +279,7 @@ void main() {
     addTearDown(repository.close);
     final controller = CalendarController(
       calendarRepository: repository,
+      calendarSyncRepository: FakeCalendarSyncRepository(),
       householdClock: _clock,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
@@ -452,6 +454,7 @@ void main() {
     addTearDown(repository.close);
     final controller = CalendarController(
       calendarRepository: repository,
+      calendarSyncRepository: FakeCalendarSyncRepository(),
       householdClock: _clock,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,

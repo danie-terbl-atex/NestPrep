@@ -16,6 +16,10 @@ import '../features/accounts/ui/verify_email_screen.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
+import '../features/calendar_sync/data/calendar_sync_directory.dart';
+import '../features/calendar_sync/data/calendar_sync_repository.dart';
+import '../features/calendar_sync/state/connected_calendars_controller.dart';
+import '../features/calendar_sync/ui/connected_calendars_screen.dart';
 import '../features/documents/data/document_directory.dart';
 import '../features/documents/data/document_opener.dart';
 import '../features/documents/data/document_picker.dart';
@@ -46,7 +50,9 @@ import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
+import '../shared/links/external_link_opener.dart';
 import '../shared/time/household_clock.dart';
+import 'calendar_sync_route.dart';
 import 'design_gallery_access.dart';
 import 'documents_route.dart';
 import 'household_route.dart';
@@ -176,6 +182,21 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
                 ),
               ),
         ),
+        // ---- calendar sync (calendar ADR-0003) ----
+        GoRoute(
+          path: CalendarSyncRoute.path,
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => ConnectedCalendarsController(
+              calendarSyncRepository: context.read<CalendarSyncRepository>(),
+              calendarSyncDirectory: context.read<CalendarSyncDirectory>(),
+              linkOpener: context.read<ExternalLinkOpener>(),
+              householdId: HouseholdRoute.idFrom(state),
+              viewerUid: session.uidOrEmpty,
+              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
+            ),
+            child: const ConnectedCalendarsScreen(),
+          ),
+        ),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
           builder: (context, state) => ChangeNotifierProvider(
@@ -233,6 +254,7 @@ CalendarController _calendarController(
   GoRouterState state,
 ) => CalendarController(
   calendarRepository: context.read<CalendarRepository>(),
+  calendarSyncRepository: context.read<CalendarSyncRepository>(),
   householdClock: context.read<HouseholdClock>(),
   householdId: HouseholdRoute.idFrom(state),
   memberId: _viewerMemberId(context),

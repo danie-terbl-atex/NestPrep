@@ -294,6 +294,25 @@ void main() {
       );
     });
 
+    test('a window opening mid-week holds nothing from before it', () {
+      // Found by quick add (calendar ADR-0004), the first caller whose window
+      // does not open on a Monday: a Tuesday rule asked for Thursday onwards
+      // returned the Tuesday before the window, because the weekly walk
+      // checked each day against the first occurrence and not the window.
+      expect(
+        expand(
+          first: '2026-09-29',
+          rule: const RecurrenceRule(
+            frequency: RecurrenceFrequency.weekly,
+            weekdays: [2, 5],
+          ),
+          from: '2026-10-01',
+          to: '2026-10-09',
+        ),
+        ['2026-10-02', '2026-10-06', '2026-10-09'],
+      );
+    });
+
     test('a long-running daily rule costs only the window it is asked for', () {
       final occurrences = expand(
         first: '2000-01-01',

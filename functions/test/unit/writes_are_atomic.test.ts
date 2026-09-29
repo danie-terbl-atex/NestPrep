@@ -113,15 +113,30 @@ describe('every callable declares what it may cost', () => {
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
-    expect([...exported].sort()).toEqual([
-      'createHousehold',
-      'createInvite',
-      'deleteDocumentFolder',
-      'leaveHousehold',
-      'redeemInvite',
-      'removeMember',
-      'setMemberRole',
-      'syncDocumentAccess',
-    ]);
+    expect([...exported].sort()).toEqual(
+      [
+        'createHousehold',
+        'createInvite',
+        'deleteDocumentFolder',
+        'leaveHousehold',
+        'redeemInvite',
+        'removeMember',
+        'setMemberRole',
+        'syncDocumentAccess',
+        // Calendar sync (calendar ADR-0003): a provider's token exchange and
+        // refresh, a link fetched with an address check, a feed served by
+        // token, and a schedule — none of which a rule can do.
+        'calendarFeed',
+        'calendarOAuthCallback',
+        'connectCalendarLink',
+        'disconnectCalendar',
+        'listCalendarProviders',
+        'resetCalendarFeed',
+        'shareCalendarFeed',
+        'startCalendarConnection',
+        'syncCalendarConnection',
+        'syncCalendarsOnSchedule',
+      ].sort(),
+    );
   });
 });

@@ -52,6 +52,7 @@ Future<EventDraft?> showEventSheet({
   required CalendarDate today,
   required CalendarDate initialDate,
   HouseholdEvent? existing,
+  EventSaved? draft,
   bool canSkip = false,
 }) => showNestSheet<EventDraft>(
   context: context,
@@ -63,6 +64,7 @@ Future<EventDraft?> showEventSheet({
     today: today,
     initialDate: initialDate,
     existing: existing,
+    draft: draft,
     canSkip: canSkip,
   ),
 );
@@ -73,6 +75,7 @@ class _EventSheetBody extends StatefulWidget {
     required this.today,
     required this.initialDate,
     required this.existing,
+    required this.draft,
     required this.canSkip,
   });
 
@@ -80,6 +83,10 @@ class _EventSheetBody extends StatefulWidget {
   final CalendarDate today;
   final CalendarDate initialDate;
   final HouseholdEvent? existing;
+
+  /// A new event already filled in — what quick add understood, opened for
+  /// the member to change before it is saved (calendar ADR-0004).
+  final EventSaved? draft;
   final bool canSkip;
 
   @override
@@ -91,15 +98,27 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
   static const _defaultStartMinute = 9 * 60;
   static const _defaultDurationMinutes = 60;
 
-  late final _title = TextEditingController(text: widget.existing?.title ?? '');
-  late CalendarDate _date = widget.existing?.date ?? widget.initialDate;
-  late bool _isAllDay = widget.existing?.isAllDay ?? false;
-  late int _startMinute = widget.existing?.startMinute ?? _defaultStartMinute;
+  late final _title = TextEditingController(
+    text: widget.existing?.title ?? widget.draft?.title ?? '',
+  );
+  late CalendarDate _date =
+      widget.existing?.date ?? widget.draft?.date ?? widget.initialDate;
+  late bool _isAllDay =
+      widget.existing?.isAllDay ??
+      (widget.draft == null ? false : widget.draft!.startMinute == null);
+  late int _startMinute =
+      widget.existing?.startMinute ??
+      widget.draft?.startMinute ??
+      _defaultStartMinute;
   late int _endMinute =
       widget.existing?.endMinute ??
-      _defaultStartMinute + _defaultDurationMinutes;
-  late RecurrenceRule? _recurrence = widget.existing?.recurrence;
-  late List<String> _memberIds = [...?widget.existing?.memberIds];
+      widget.draft?.endMinute ??
+      (_startMinute + _defaultDurationMinutes) % HouseholdEvent.minutesInADay;
+  late RecurrenceRule? _recurrence =
+      widget.existing?.recurrence ?? widget.draft?.recurrence;
+  late List<String> _memberIds = [
+    ...?widget.existing?.memberIds ?? widget.draft?.memberIds,
+  ];
 
   @override
   void dispose() {
