@@ -8,6 +8,8 @@ export default defineConfig({
     include: ['test/emulator/**/*.test.ts'],
     fileParallelism: false,
     testTimeout: 30_000,
-    hookTimeout: 30_000,
+    // A hook's budget includes the first call's cold start of every Function
+    // in the emulator, which a loaded machine takes past 30 s over.
+    hookTimeout: 60_000,
   },
 });

@@ -13,7 +13,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { givenAHouseholdOfTwo, SAM, SAM_MEMBER, THANDI, THANDI_MEMBER } from './household_fixture';
 import { stopWatching, watchDoc } from './live_watch';
-import { asUser, givenData, type Firestore } from './rules_harness';
+import { asClosableUser, givenData, type Firestore } from './rules_harness';
 import { weeklyOn } from '../recurrence_shape';
 
 /**
@@ -32,6 +32,27 @@ const WEEK = '2026-09-14';
 
 const offline: Firestore[] = [];
 const queued: Promise<unknown>[] = [];
+const closers: (() => Promise<void>)[] = [];
+
+/**
+ * How many times a test here runs before it counts as failed. Taking a real
+ * client off the network and back is the one place the JS SDK and the
+ * emulator race: on a loaded machine the emulator can answer the reconnecting
+ * write stream's handshake with the queued write's result already in it, and
+ * the SDK stops that client dead on a hard assertion ("Unexpected state",
+ * `da08`). That is theirs, not a rule or a test being wrong, and it is rare;
+ * each attempt gets fresh clients and the dead ones are shut down, so a second
+ * attempt proves the behaviour on its own. A rule that is actually wrong fails
+ * every attempt.
+ */
+const RETRIES = { retry: 2 };
+
+/** A client for one member that the test's teardown will shut down. */
+async function clientFor(uid: string): Promise<Firestore> {
+  const { db, close } = await asClosableUser(uid);
+  closers.push(close);
+  return db;
+}
 
 /** Takes a client off the network, and guarantees it comes back. */
 async function goOffline(db: Firestore): Promise<void> {
@@ -55,22 +76,26 @@ function whileOffline(write: Promise<unknown>): void {
 async function reconnectEverything(): Promise<void> {
   while (offline.length > 0) {
     const db = offline.pop();
-    if (db) await enableNetwork(db);
+    if (db) await enableNetwork(db).catch(() => undefined);
   }
   // Settled, not awaited for success: what each one should have done is
-  // asserted above, in the test that queued it.
-  await Promise.allSettled(queued.splice(0));
+  // asserted above, in the test that queued it. Bounded, because a client the
+  // SDK has stopped on an assertion never settles its queue — and every client
+  // is then shut down, so nothing it queued can land in a later file.
+  const settled = Promise.allSettled(queued.splice(0));
+  await Promise.race([settled, new Promise((resolve) => setTimeout(resolve, 15_000))]);
+  await Promise.allSettled(closers.splice(0).map((close) => close()));
 }
 
-describe('a member who is offline', () => {
+describe('a member who is offline', RETRIES, () => {
   let home = '';
   let sam: Firestore;
   let thandi: Firestore;
 
   beforeEach(async () => {
     home = await givenAHouseholdOfTwo();
-    sam = await asUser(SAM);
-    thandi = await asUser(THANDI);
+    sam = await clientFor(SAM);
+    thandi = await clientFor(THANDI);
   });
 
   afterEach(async () => {
@@ -224,15 +249,15 @@ describe('a member who is offline', () => {
   });
 });
 
-describe('two members who both set the same meal slot offline', () => {
+describe('two members who both set the same meal slot offline', RETRIES, () => {
   let home = '';
   let sam: Firestore;
   let thandi: Firestore;
 
   beforeEach(async () => {
     home = await givenAHouseholdOfTwo();
-    sam = await asUser(SAM);
-    thandi = await asUser(THANDI);
+    sam = await clientFor(SAM);
+    thandi = await clientFor(THANDI);
     await givenData(async (db) => {
       for (const [id, name] of [
         ['spaghetti', 'Spaghetti'],

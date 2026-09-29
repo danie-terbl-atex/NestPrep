@@ -24,18 +24,29 @@ const PROJECT_ID = 'nestprep-643b7';
 const RULES_PATH = resolve(import.meta.dirname, '../../../firestore.rules');
 const STORAGE_RULES_PATH = resolve(import.meta.dirname, '../../../storage.rules');
 
-let environment: RulesTestEnvironment | undefined;
+let environment: Promise<RulesTestEnvironment> | undefined;
 
 /**
  * The one emulator pair every rules test shares — Firestore for the metadata,
  * Storage for the bytes. Starting them per file would cost more than the tests
  * do.
+ *
+ * The *promise* is what is kept, not the environment it resolves to. Loading
+ * both rulesets into a cold emulator on a busy machine can outlast a hook's
+ * timeout; when it did and only the resolved value was kept, the next hook saw
+ * nothing and started a second load over the first, and the tests in between
+ * ran against a Storage emulator with no ruleset at all — every one of them
+ * "unauthorized". Everybody now waits on the one load. A load that fails is
+ * forgotten, so the next caller tries again rather than inheriting it.
  */
-export async function rulesEnvironment(): Promise<RulesTestEnvironment> {
-  environment ??= await initializeTestEnvironment({
+export function rulesEnvironment(): Promise<RulesTestEnvironment> {
+  environment ??= initializeTestEnvironment({
     projectId: PROJECT_ID,
     firestore: { rules: readFileSync(RULES_PATH, 'utf8'), host: '127.0.0.1', port: 8080 },
     storage: { rules: readFileSync(STORAGE_RULES_PATH, 'utf8'), host: '127.0.0.1', port: 9199 },
+  }).catch((error: unknown) => {
+    environment = undefined;
+    throw error;
   });
   return environment;
 }
@@ -60,14 +71,27 @@ async function deleteEverythingUnder(folder: StorageReference): Promise<void> {
 }
 
 export async function closeRulesEnvironment(): Promise<void> {
-  await environment?.cleanup();
+  const active = environment;
   environment = undefined;
+  await (await active)?.cleanup();
 }
 
 /** Firestore as a signed-in account sees it — the rules apply. */
 export async function asUser(uid: string): Promise<Firestore> {
   const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid);
   return context.firestore() as unknown as Firestore;
+}
+
+/**
+ * [asUser], with the way to shut that client down again — for a test that
+ * takes clients off the network and must not leave one behind for a later
+ * file. The context hands out the compat instance, which terminates itself.
+ */
+export async function asClosableUser(
+  uid: string,
+): Promise<{ db: Firestore; close: () => Promise<void> }> {
+  const compat = (await rulesEnvironment()).authenticatedContext(uid).firestore();
+  return { db: compat as unknown as Firestore, close: () => compat.terminate() };
 }
 
 /**

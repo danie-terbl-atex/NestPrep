@@ -92,11 +92,17 @@ describe('createKidPairing', () => {
     const { sam, householdId, mia } = await aFamily();
     const before = Date.now();
     const pairing = await pairingFor(sam, householdId, mia, ' Tablet ');
+    const after = Date.now();
 
     expect(pairing.code).toMatch(/^[2-9A-HJKMNP-Z]{6}$/);
-    const lifetime = Date.parse(pairing.expiresAt) - before;
-    expect(lifetime).toBeGreaterThan(9 * 60 * 1000);
-    expect(lifetime).toBeLessThanOrEqual(10 * 60 * 1000 + 5000);
+    // The Function stamps "now + ten minutes" somewhere inside the call, so the
+    // expiry sits between ten minutes after it was asked for and ten minutes
+    // after it answered — however long a loaded machine took over the call.
+    // The same clock on both sides; the second of slack is ISO rounding.
+    const tenMinutes = 10 * 60 * 1000;
+    const expiresAt = Date.parse(pairing.expiresAt);
+    expect(expiresAt).toBeGreaterThanOrEqual(before + tenMinutes - 1000);
+    expect(expiresAt).toBeLessThanOrEqual(after + tenMinutes + 1000);
 
     const stored = await adminDb().collection('kidPairings').doc(pairing.code).get();
     expect(stored.get('memberId')).toBe(mia);
