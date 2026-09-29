@@ -41,7 +41,10 @@ enum FeatureFlag {
 
   /// The emergency sheet and child cards saved for no signal (nanny-hub
   /// ADR-0007).
-  nannyOffline('nannyOffline');
+  nannyOffline('nannyOffline'),
+
+  /// Give a month, get a month (subscriptions ADR-0002).
+  referralRewards('referralRewards');
 
   const FeatureFlag(this.field);
 

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { isPremiumAt } from '../subscriptions/subscription_documents';
 import type { MonthlyCalls } from './ai_settings';
 
 /**
@@ -34,29 +35,19 @@ export function monthKeyIn(timeZone: string, now: Date): string {
     : now.toISOString().slice(0, 7);
 }
 
-/** Anything with an instant, the way an admin `Timestamp` has one. */
-const instant = z.custom<{ toMillis(): number }>(
-  (value) =>
-    typeof value === 'object' &&
-    value !== null &&
-    'toMillis' in value &&
-    typeof value.toMillis === 'function',
-);
-
-const entitlementShape = z.object({ premiumUntil: instant.nullable().optional() });
+const entitlementShape = z.object({ premiumUntil: z.unknown() });
 
 /**
  * Premium while `households/{h}/entitlement/current.premiumUntil` is in the
- * future — the one field subscriptions ADR-0001 makes the whole truth, and
- * what its rule `hasPremium` reads. A missing document, a missing field or
- * anything that is not an instant is free.
+ * future — read by subscriptions' own `isPremiumAt`, the same test the free
+ * tier's limits make and the rule `hasPremium` makes, so a referral month
+ * (subscriptions ADR-0002) raises the AI cap exactly when it unlocks
+ * everything else. A missing document, a missing field or anything that is
+ * not a Timestamp is free.
  */
 export function tierFrom(entitlement: unknown, now: Date): AiTier {
   const parsed = entitlementShape.safeParse(entitlement);
-  const until = parsed.success ? parsed.data.premiumUntil : undefined;
-  return until !== undefined && until !== null && until.toMillis() > now.getTime()
-    ? 'premium'
-    : 'free';
+  return parsed.success && isPremiumAt(parsed.data.premiumUntil, now) ? 'premium' : 'free';
 }
 
 export function capFor(tier: AiTier, monthlyCalls: MonthlyCalls): number {

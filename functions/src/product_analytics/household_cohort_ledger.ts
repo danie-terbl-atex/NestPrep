@@ -4,6 +4,7 @@ import { logger } from 'firebase-functions/v2';
 import { householdRef, memberRef } from '../household/documents';
 import { expiryFor, householdCohortRef, stringField } from './analytics_documents';
 import { countingZoneFor, weekKeyOf } from './iso_week';
+import type { ConversionTrigger } from './conversion_ledger';
 import { isChildRole } from './metric_definitions';
 
 /**
@@ -85,6 +86,40 @@ export async function recordInviteCreated(
     );
     return 'firstAdultInvite';
   });
+}
+
+export interface PaywallOpening {
+  readonly householdId: string;
+  readonly createdAt: unknown;
+  readonly timeZone: string | undefined;
+  readonly trigger: ConversionTrigger;
+  readonly openedAt: Date;
+}
+
+/**
+ * Remembers the household's last paywall opening, which a purchase that
+ * follows is attributed to (product-analytics ADR-0002). Seeds the cohort
+ * entry first when the household predates it, exactly as an invite does, so a
+ * half-written entry never stops the cohort being counted.
+ */
+export async function stageLastPaywall(
+  transaction: Transaction,
+  store: Firestore,
+  opening: PaywallOpening,
+): Promise<void> {
+  await existingOrSeeded(transaction, store, {
+    householdId: opening.householdId,
+    createdAt: createdAtOf(opening.createdAt, opening.openedAt),
+    timeZone: opening.timeZone,
+  });
+  transaction.set(
+    householdCohortRef(store, opening.householdId),
+    {
+      lastPaywallTrigger: opening.trigger,
+      lastPaywallOpenedAt: Timestamp.fromDate(opening.openedAt),
+    },
+    { merge: true },
+  );
 }
 
 /**

@@ -15,6 +15,8 @@ import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
+import '../../referrals/ui/referral_link.dart';
+import '../../referrals/ui/referrals_offered.dart';
 import '../../subscriptions/ui/plan_link.dart';
 import '../../two_homes/model/two_homes_access.dart';
 import '../model/household_area.dart';
@@ -149,6 +151,12 @@ class HouseholdPlaces extends StatelessWidget {
         // premium (subscriptions ADR-0001) — for family, who buy it.
         if (view.permissions.isFamily) ...[
           PlanLink(householdId: view.household.id),
+          const SizedBox(height: NestSpace.lg),
+        ],
+        // referrals: give a month, get a month, beside the plan
+        // (subscriptions ADR-0002) — for family, while switched on.
+        if (referralsOffered(context)) ...[
+          ReferralLink(householdId: view.household.id),
           const SizedBox(height: NestSpace.lg),
         ],
         // The way to the live-location screen. It sits with the people rather

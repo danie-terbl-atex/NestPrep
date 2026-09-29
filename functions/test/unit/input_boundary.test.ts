@@ -31,6 +31,8 @@ import {
 } from '../../src/coparent/schemas';
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
+import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
+import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../src/referrals/schemas';
 import {
   cancelKidPairingInput,
   createKidPairingInput,
@@ -238,6 +240,17 @@ const validBodies = {
     schema: setCarerShiftOnlyInput,
     body: { householdId: 'h1', memberId: 'm-nomsa', shiftOnly: true },
   },
+  // Referrals and conversion by trigger (subscriptions ADR-0002,
+  // product-analytics ADR-0002).
+  ensureReferralCode: { schema: ensureReferralCodeInput, body: { householdId: 'h1' } },
+  redeemReferralCode: {
+    schema: redeemReferralCodeInput,
+    body: { householdId: 'h1', code: 'ABCD2345' },
+  },
+  recordPaywallOpened: {
+    schema: recordPaywallOpenedInput,
+    body: { householdId: 'h1', trigger: 'prepList' },
+  },
 } as const;
 
 describe('verifyPurchase refuses what is not a purchase to verify', () => {
@@ -256,6 +269,24 @@ describe('verifyPurchase refuses what is not a purchase to verify', () => {
 
   it('accepts a restore, which names no trigger', () => {
     expect(() => parseInput(verifyPurchaseInput, { ...body, trigger: null })).not.toThrow();
+  });
+});
+
+describe('a referral code as a person types it (subscriptions ADR-0002)', () => {
+  const body = validBodies.redeemReferralCode.body;
+
+  it('forgives spaces and lower case, and hands on the code as it is stored', () => {
+    const parsed = parseInput(redeemReferralCodeInput, { ...body, code: ' abcd 2345 ' });
+    expect(parsed.code).toBe('ABCD2345');
+  });
+
+  it.each([
+    ['a letter people confuse with a digit', 'ABCD0123'],
+    ['a code one short', 'ABCD234'],
+    ['a code one long', 'ABCD23456'],
+    ['something that is not a code at all', 'sam@example.com'],
+  ])('refuses %s', (_, code) => {
+    expect(() => parseInput(redeemReferralCodeInput, { ...body, code })).toThrow(HttpsError);
   });
 });
 

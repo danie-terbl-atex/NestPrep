@@ -12,6 +12,7 @@ import 'nanny_copy.dart';
 import 'offline_copies_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'referral_copy.dart';
 import 'school_letter_copy.dart';
 import 'share_link_copy.dart';
 import 'subscription_copy.dart';
@@ -43,6 +44,8 @@ export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
+// referrals: give a month, get a month (subscriptions ADR-0002).
+export 'referral_copy.dart';
 // calendar V2: snap a school letter (calendar ADR-0005).
 export 'school_letter_copy.dart';
 export 'share_link_copy.dart';
@@ -436,6 +439,8 @@ abstract final class AppCopy {
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
     // co-parenting (household ADR-0004).
     CoParentFailure(:final problem) => TwoHomesCopy.problem(problem),
+    // referrals (subscriptions ADR-0002)
+    ReferralFailure(:final problem) => ReferralCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

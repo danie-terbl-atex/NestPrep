@@ -148,6 +148,16 @@ void main() {
         'builds the two-homes providers over live Firebase',
     'lib/features/two_homes/data/callable_two_homes_directory.dart':
         'calls Functions',
+    // Referrals and conversion by trigger (subscriptions ADR-0002,
+    // product-analytics ADR-0002).
+    'lib/app/referral_providers.dart':
+        'builds the referral providers over live Firebase',
+    'lib/features/referrals/data/firestore_referral_repository.dart':
+        'reads Firestore',
+    'lib/features/referrals/data/callable_referral_directory.dart':
+        'calls Functions',
+    'lib/features/product_analytics/data/callable_paywall_open_recorder.dart':
+        'calls Functions',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -244,6 +254,11 @@ void main() {
         'interface only',
     'lib/features/home_care/data/job_photo_store.dart': 'interface only',
     'lib/features/home_care/data/photo_source.dart': 'interface only',
+    'lib/features/referrals/data/referral_repository.dart': 'interface only',
+    'lib/features/referrals/data/referral_directory.dart': 'interface only',
+    'lib/features/product_analytics/data/paywall_open_recorder.dart':
+        'interface only',
+    'lib/shared/flags/feature_flag_source.dart': 'interface only',
     'lib/features/home_care/model/product_kind.dart': 'enum only',
     'lib/features/home_care/model/room_kind.dart': 'enum only',
     'lib/features/home_care/model/safety/precaution.dart': 'enum only',

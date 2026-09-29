@@ -78,6 +78,8 @@ export const storedHouseholdWeek = z.object({
   week: z.string(),
   activeMemberIds: ids,
   lunchPlanIds: ids,
+  /** The triggers this household met the paywall on this week (product-analytics ADR-0002). */
+  paywallTriggers: ids,
 });
 export type HouseholdWeek = z.infer<typeof storedHouseholdWeek>;
 

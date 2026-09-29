@@ -11,6 +11,7 @@ import {
   isChildRole,
 } from '../../src/product_analytics/metric_definitions';
 import { isInviteCohortComplete, weeksToRollUp } from '../../src/product_analytics/weekly_rollup';
+import { NO_REFERRALS } from '../../src/product_analytics/referral_counts';
 import { summariseWeek } from '../../src/product_analytics/weekly_summary';
 
 /**
@@ -27,8 +28,9 @@ function householdWeek(
   householdId: string,
   activeMemberIds: string[],
   lunchPlanIds: string[] = [],
+  paywallTriggers: string[] = [],
 ): HouseholdWeek {
-  return { householdId, week: WEEK, activeMemberIds, lunchPlanIds };
+  return { householdId, week: WEEK, activeMemberIds, lunchPlanIds, paywallTriggers };
 }
 
 function cohortEntry(
@@ -93,8 +95,14 @@ describe('a week summarised from its ledgers', () => {
     week: WEEK,
     householdWeeks: [
       householdWeek('h-alone', ['m-1']), // seen, not active
-      householdWeek('h-pair', ['m-2', 'm-3'], ['plan-a', 'plan-b']), // active, 2 plans
-      householdWeek('h-trio', ['m-4', 'm-5', 'm-6'], ['plan-c']), // active, 1 plan
+      // active, 2 plans; met the paywall on a second child twice and on the prep list
+      householdWeek(
+        'h-pair',
+        ['m-2', 'm-3'],
+        ['plan-a', 'plan-b'],
+        ['additionalChild', 'additionalChild', 'prepList'],
+      ),
+      householdWeek('h-trio', ['m-4', 'm-5', 'm-6'], ['plan-c'], ['additionalChild']), // active, 1 plan
       householdWeek('h-echo', ['m-7', 'm-7']), // one member twice: not active
       householdWeek('h-quiet', [], ['plan-d', 'plan-d']), // a plan counted twice is one
     ],
@@ -105,6 +113,7 @@ describe('a week summarised from its ledgers', () => {
       cohortEntry('h-helper', 1, 'helper'), // a helper is an adult
     ],
     conversions: [{ trigger: 'additionalChild' as const }, { trigger: 'direct' as const }],
+    referrals: { redeemed: 3, qualified: 2, monthsGiven: 3 },
     isInviteCohortComplete: true,
   };
   const numbers = summariseWeek(ledgers);
@@ -137,10 +146,29 @@ describe('a week summarised from its ledgers', () => {
     });
   });
 
+  it('counts the families shown the paywall, once per trigger however often they looked', () => {
+    expect(numbers.paywallFamilies).toBe(2);
+    expect(numbers.paywallFamiliesByTrigger).toEqual({
+      additionalChild: 2,
+      lunchLearning: 0,
+      prepList: 1,
+      aiPlanning: 0,
+      budgetMode: 0,
+      direct: 0,
+    });
+  });
+
+  it('carries the week"s referral counts through untouched', () => {
+    expect(numbers.referralsRedeemed).toBe(3);
+    expect(numbers.referralsQualified).toBe(2);
+    expect(numbers.referralMonthsGiven).toBe(3);
+  });
+
   it('names its week and its Monday, and the definition it was counted under', () => {
     expect(numbers.week).toBe(WEEK);
     expect(numbers.weekStart).toBe('2026-09-28');
-    expect(numbers.definitionVersion).toBe(1);
+    // 2 since conversions are attributed to the last paywall (product-analytics ADR-0002).
+    expect(numbers.definitionVersion).toBe(2);
     expect(numbers.isInviteCohortComplete).toBe(true);
   });
 
@@ -150,9 +178,12 @@ describe('a week summarised from its ledgers', () => {
       householdWeeks: [],
       cohort: [],
       conversions: [],
+      referrals: NO_REFERRALS,
       isInviteCohortComplete: false,
     });
     expect(empty.activeFamilies).toBe(0);
+    expect(empty.paywallFamilies).toBe(0);
+    expect(empty.referralMonthsGiven).toBe(0);
     expect(empty.newFamilies).toBe(0);
     expect(empty.newFamiliesInvitingAnAdult).toBe(0);
     expect(empty.adultInvitesByRole).toEqual({});

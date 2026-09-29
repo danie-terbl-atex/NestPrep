@@ -2,6 +2,7 @@ import type { Firestore } from 'firebase-admin/firestore';
 import { logger } from 'firebase-functions/v2';
 
 import { recordPremiumConversion } from '../product_analytics/conversion_ledger';
+import { settleReferralAfter } from '../referrals/referral_settlement';
 import { billingCallerIn } from './billing_caller';
 import type { Entitlement } from './entitlement';
 import { refuseSubscription } from './errors';
@@ -65,15 +66,21 @@ export async function verifyAndLinkPurchase(
     },
     now,
   );
-  if (input.trigger !== null && grantsPremiumAt(purchase.state, now)) {
+  const isNewSale = input.trigger !== null && grantsPremiumAt(purchase.state, now);
+  if (isNewSale) {
     // Keyed by the store's own id, so a retried verification, a second
     // phone or a restore later never counts the same purchase twice.
     await recordPremiumConversion(deps.store, {
       householdId: input.householdId,
       conversionId: `${purchase.store}.${purchaseKey(purchase.store, purchase.storeRef)}`,
-      trigger: input.trigger,
+      trigger: input.trigger ?? 'direct',
       convertedAt: now,
     });
+  }
+  if (isNewSale && outcome.isFirstSighting) {
+    // A first sale qualifies a household that joined through a referral —
+    // never a restore, never a subscription seen before (subscriptions ADR-0002).
+    await settleReferralAfter(deps.store, input.householdId, { kind: 'purchased' }, now);
   }
   logger.info('purchase verified', {
     householdId: input.householdId,

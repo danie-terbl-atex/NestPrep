@@ -267,6 +267,16 @@ void main() {
     '_fetch())',
     // Closing a listener in dispose is allowed above (subscriptions): nobody
     // is left to tell — here and in the V2 switches' controller.
+    // referrals and conversion by trigger (subscriptions ADR-0002,
+    // product-analytics ADR-0002). Sharing and entering a code keep their
+    // AppFailure for the screen (the action banner, the field); making the
+    // code keeps it as the code card's failure with a retry; a paywall
+    // opening is counted through `bestEffort`, which never throws.
+    'controller.share()',
+    'controller.retryCode()',
+    'controller.redeem(code)',
+    '_makeCode()',
+    '_recordOpening()',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

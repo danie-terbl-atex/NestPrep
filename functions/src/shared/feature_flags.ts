@@ -27,6 +27,8 @@ export const FEATURE_FLAGS = [
   'nannyPickups',
   'nannyShiftOnly',
   'nannyOffline',
+  // ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
+  'referralRewards',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

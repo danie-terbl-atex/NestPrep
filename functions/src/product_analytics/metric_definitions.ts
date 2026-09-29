@@ -29,7 +29,9 @@ export const LEDGER_RETENTION_MS = 400 * 24 * 60 * 60 * 1000;
  * total, so a number computed under an old definition is never compared with a
  * new one without somebody noticing.
  */
-export const DEFINITION_VERSION = 1;
+// 2 (product-analytics ADR-0002): a conversion's trigger is the household's
+// last paywall opening within seven days, no longer the phone's word alone.
+export const DEFINITION_VERSION = 2;
 
 /** Whether one household's week of activity makes it an active family. */
 export function isActiveFamily(activeMemberIds: readonly string[]): boolean {

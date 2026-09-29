@@ -80,3 +80,7 @@ export { answerCoParentChange } from './coparent/answer_coparent_change';
 export { saveCoParentHandover } from './coparent/save_coparent_handover';
 // nanny hub V2: a carer who sees the household only on a booked shift (nanny-hub ADR-0006)
 export { setCarerShiftOnly } from './nanny_hub/set_carer_shift_only';
+// ---- referrals and conversion by trigger (subscriptions ADR-0002, product-analytics ADR-0002) ----
+export { ensureReferralCode } from './referrals/ensure_referral_code';
+export { redeemReferralCode } from './referrals/redeem_referral_code';
+export { recordPaywallOpened } from './product_analytics/record_paywall_opened';

@@ -65,6 +65,7 @@ import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
+import 'referral_providers.dart';
 import 'subscription_providers.dart';
 import 'two_homes_providers.dart';
 
@@ -213,6 +214,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...calendarV2Providers(),
   // co-parenting: two homes (household ADR-0004).
   ...twoHomesProviders(),
+  // referrals and conversion by trigger (subscriptions ADR-0002,
+  // product-analytics ADR-0002)
+  ...referralProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

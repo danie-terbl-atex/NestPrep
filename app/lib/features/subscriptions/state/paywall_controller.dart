@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/log/best_effort.dart';
+import '../../product_analytics/data/paywall_open_recorder.dart';
 import '../data/store_billing.dart';
 import '../data/subscription_directory.dart';
 import '../model/billing_store.dart';
@@ -24,19 +26,23 @@ final class PaywallController extends ChangeNotifier {
     required SubscriptionDirectory subscriptionDirectory,
     required StoreBilling storeBilling,
     required PurchaseCoordinator purchaseCoordinator,
+    required PaywallOpenRecorder paywallOpenRecorder,
     required this.householdId,
     required this.feature,
   }) : _directory = subscriptionDirectory,
        _billing = storeBilling,
-       _coordinator = purchaseCoordinator {
+       _coordinator = purchaseCoordinator,
+       _openRecorder = paywallOpenRecorder {
     _openedAt = _coordinator.generation;
     _coordinator.addListener(notifyListeners);
     unawaited(load());
+    unawaited(_recordOpening());
   }
 
   final SubscriptionDirectory _directory;
   final StoreBilling _billing;
   final PurchaseCoordinator _coordinator;
+  final PaywallOpenRecorder _openRecorder;
   final String householdId;
   final PremiumFeature feature;
 
@@ -84,6 +90,18 @@ final class PaywallController extends ChangeNotifier {
       featured: offer.featuredPlan,
     );
   }
+
+  /// Counts this opening against [feature] on the server — the denominator
+  /// of conversion by trigger (product-analytics ADR-0002). Best-effort:
+  /// nobody waits on it, and the paywall works whether or not it arrives.
+  Future<void> _recordOpening() => bestEffort(
+    'record paywall opened',
+    code: 'functions',
+    run: () => _openRecorder.recordPaywallOpened(
+      householdId: householdId,
+      trigger: feature,
+    ),
+  );
 
   void select(SubscriptionPlan plan) {
     if (_coordinator.progress.isBusy || _selected == plan) return;

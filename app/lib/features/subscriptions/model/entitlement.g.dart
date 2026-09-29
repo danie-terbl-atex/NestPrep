@@ -30,20 +30,31 @@ _Entitlement _$EntitlementFromJson(Map<String, dynamic> json) => _Entitlement(
   willRenew: json['willRenew'] as bool?,
   managedByMemberId: json['managedByMemberId'] as String?,
   isTest: json['isTest'] as bool? ?? false,
+  storeUntil: const NullableTimestampConverter().fromJson(json['storeUntil']),
+  referralUntil: const NullableTimestampConverter().fromJson(
+    json['referralUntil'],
+  ),
+  referralDaysWaiting: (json['referralDaysWaiting'] as num?)?.toInt() ?? 0,
 );
 
-Map<String, dynamic> _$EntitlementToJson(_Entitlement instance) =>
-    <String, dynamic>{
-      'premiumUntil': const NullableTimestampConverter().toJson(
-        instance.premiumUntil,
-      ),
-      'status': _$EntitlementStatusEnumMap[instance.status]!,
-      'plan': _$SubscriptionPlanEnumMap[instance.plan],
-      'store': _$BillingStoreEnumMap[instance.store],
-      'willRenew': instance.willRenew,
-      'managedByMemberId': instance.managedByMemberId,
-      'isTest': instance.isTest,
-    };
+Map<String, dynamic> _$EntitlementToJson(
+  _Entitlement instance,
+) => <String, dynamic>{
+  'premiumUntil': const NullableTimestampConverter().toJson(
+    instance.premiumUntil,
+  ),
+  'status': _$EntitlementStatusEnumMap[instance.status]!,
+  'plan': _$SubscriptionPlanEnumMap[instance.plan],
+  'store': _$BillingStoreEnumMap[instance.store],
+  'willRenew': instance.willRenew,
+  'managedByMemberId': instance.managedByMemberId,
+  'isTest': instance.isTest,
+  'storeUntil': const NullableTimestampConverter().toJson(instance.storeUntil),
+  'referralUntil': const NullableTimestampConverter().toJson(
+    instance.referralUntil,
+  ),
+  'referralDaysWaiting': instance.referralDaysWaiting,
+};
 
 const _$EntitlementStatusEnumMap = {
   EntitlementStatus.none: 'none',
