@@ -18,7 +18,11 @@ void main() {
   final storageRules = File('${repoRoot.path}/storage.rules');
   final firestoreRules = File('${repoRoot.path}/firestore.rules');
 
-  String read(File file) => file.readAsStringSync();
+  /// The documents' part of a rules file. Home care keeps its photos in the
+  /// same bucket under caps of its own (home-care ADR-0003), which
+  /// `home_care_limits_match_the_rules_test.dart` holds to its own numbers.
+  String read(File file) =>
+      file.readAsStringSync().split('// ---- home care photos').first;
 
   /// Every `'type/subtype'` in a rules file, which is how both spell the list.
   Set<String> contentTypesIn(String source) => {

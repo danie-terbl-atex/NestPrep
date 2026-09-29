@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/failure/storage_failure_mapper.dart';
 import '../model/picked_document.dart';
 import 'document_store.dart';
 import 'storage_document_store.dart';
-import 'storage_failure_mapper.dart';
 import 'storage_upload.dart';
 import 'vault_store.dart';
 

@@ -45,6 +45,7 @@ import 'chore_points_route.dart';
 import 'design_gallery_access.dart';
 import 'documents_shell.dart';
 import 'family_routes.dart';
+import 'home_care_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
@@ -133,6 +134,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // the emergency sheet, the guide, rules, checklists, shift mode and
         // a shift's summary.
         nannyHubRoutes(),
+        // home-care (home-care ADR-0001): jobs, rooms, products.
+        homeCareRoutes(session),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

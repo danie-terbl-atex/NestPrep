@@ -23,6 +23,7 @@ void main() {
     for (final problem in LocationProblem.values) LocationFailure(problem),
     for (final problem in DocumentProblem.values) DocumentFailure(problem),
     for (final problem in KidSignInProblem.values) KidSignInFailure(problem),
+    for (final problem in HomeCareProblem.values) HomeCareFailure(problem),
   ];
 
   /// Words that mean something to us and nothing to a person holding a phone.
@@ -47,6 +48,7 @@ void main() {
         LocationFailure(:final problem) => '$name.${problem.name}',
         DocumentFailure(:final problem) => '$name.${problem.name}',
         KidSignInFailure(:final problem) => '$name.${problem.name}',
+        HomeCareFailure(:final problem) => '$name.${problem.name}',
         _ => name,
       };
 

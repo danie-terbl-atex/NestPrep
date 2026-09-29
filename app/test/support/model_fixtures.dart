@@ -33,6 +33,7 @@ import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
+import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
@@ -606,6 +607,8 @@ List<ModelFixture> modelFixtures() {
     ...chorePointsModelFixtures(),
     // nanny hub (nanny-hub ADR-0003).
     ...nannyModelFixtures(),
+    // home-care (home-care ADR-0001).
+    ...homeCareModelFixtures(),
   ];
 }
 

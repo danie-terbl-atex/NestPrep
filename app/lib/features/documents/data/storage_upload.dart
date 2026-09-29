@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../../shared/failure/storage_failure_mapper.dart';
 import 'document_store.dart';
-import 'storage_failure_mapper.dart';
 
 /// One `UploadTask`, as fractions of the file stored — shared by the
 /// household's documents and the personal vaults, which upload the same way to

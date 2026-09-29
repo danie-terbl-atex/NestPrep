@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../shared/failure/app_failure.dart';
-import '../../documents/data/storage_failure_mapper.dart';
+import '../../../shared/failure/storage_failure_mapper.dart';
 import '../model/nanny_limits.dart';
 import 'photo_store.dart';
 

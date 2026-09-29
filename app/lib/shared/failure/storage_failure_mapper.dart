@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 
-import '../../../shared/failure/app_failure.dart';
-import '../../../shared/log/app_log.dart';
+import '../log/app_log.dart';
+import 'app_failure.dart';
 
 /// Translates a Cloud Storage error into an `AppFailure` at the store's edge.
 ///

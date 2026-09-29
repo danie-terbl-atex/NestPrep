@@ -27,11 +27,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To scan a document into your family's vault, and to take photos for the nanny hub — where things are in the house, and moments from a shift.</string>
+	<string>To scan a document into your family's vault, to take photos for the nanny hub — where things are in the house, and moments from a shift — and to photograph a spot that needs cleaning or show that it is clean.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add photos from your library to the nanny hub's house guide and handover log.</string>
+	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>So your household can see where you are while you choose to share it. Sharing is always yours to start and stop, and every share ends on its own.</string>
 	<key>UIApplicationSceneManifest</key>

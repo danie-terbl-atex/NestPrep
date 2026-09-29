@@ -301,6 +301,32 @@ final class PointsFailure extends AppFailure {
   final PointsProblem problem;
 }
 
+// ---- home-care (home-care ADR-0001, ADR-0003) ----
+
+/// Why a cleaning job's photo or hand-in did not happen (home-care
+/// ADR-0001, ADR-0003) — each one something the person holding the phone can
+/// act on. Refusals by the rules stay `PermissionDeniedFailure`.
+enum HomeCareProblem {
+  /// The person refused the camera, or the photo library.
+  cameraRefused,
+
+  /// The picture chosen is not one the app can read.
+  photoUnreadable,
+
+  /// Even compressed, the photo is past what the rules keep.
+  photoTooLarge,
+
+  /// A job handed in with a step not ticked. The rules refuse it too; this
+  /// is the same answer before the upload rather than after.
+  stepsNotDone,
+}
+
+final class HomeCareFailure extends AppFailure {
+  const HomeCareFailure(this.problem);
+
+  final HomeCareProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

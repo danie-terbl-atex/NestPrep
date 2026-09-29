@@ -7,7 +7,7 @@ the mark).
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
-Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. The kids' eight
+Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. Home care's eight are `tool/home_care_design_review_test.dart`. The kids' eight
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
 `flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
@@ -45,6 +45,10 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `nanny-child-card-light.png` / `nanny-child-card-dark.png` | a child's card: allergies in their severity's tone first, then medication with its times, then the routine |
 | `nanny-emergency-light.png` / `nanny-emergency-dark.png` | the emergency sheet: 10111, 10177 and 112 as big buttons, the address to read out, the medical aid, and a call button on every contact |
 | `nanny-handover-light.png` / `nanny-handover-dark.png` | a finished shift's summary for the parents: the incident called out first, the counts, the carer's last word, the checklist, then the evening moment by moment |
+| `home-care-light.png` / `home-care-dark.png` | home care: the three piles, and each job with its room, its helper, when it is due and how far along it is (home-care ADR-0001) |
+| `home-care-job-light.png` / `home-care-job-dark.png` | one cleaning job: the spot circled on the photo, the never-mix warning above everything, the facts, and what this person can do next |
+| `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through: progress, the spot, and each step as a big tile she ticks |
+| `home-care-review-light.png` / `home-care-review-dark.png` | the parent's review: before and after side by side, the checklist, approve or send it back |
 
 ## What to look at
 

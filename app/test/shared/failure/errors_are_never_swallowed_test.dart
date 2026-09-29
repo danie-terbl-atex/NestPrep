@@ -214,6 +214,11 @@ void main() {
     // Fetching one photo. It catches its own `AppFailure` and holds it as that
     // photo's state, which the tile renders with a retry.
     '_fetch(photoId))',
+    // home-care (home-care ADR-0003): reading a job's photo when the board
+    // first names it. `_load` catches its own AppFailure and holds it as that
+    // photo's failed state, which the screen shows with a retry; it is
+    // unawaited because the board is followed while the shell builds.
+    '_load(photoId)',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

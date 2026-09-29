@@ -1,0 +1,254 @@
+// ---- home care (home-care ADR-0001, ADR-0002) ----
+
+// Rooms and the product library: anybody with any `homeCare` level reads
+// them, because an `own` helper needs the room's name and the product
+// guide on every job; only `edit` changes them.
+match /homeCareRooms/{roomId} {
+  allow read: if canView(householdId, 'homeCare')
+    || hasOwnOnly(householdId, 'homeCare');
+
+  allow create: if canEdit(householdId, 'homeCare')
+    && request.resource.data.keys().hasOnly(
+         ['name', 'kind', 'createdBy', 'createdAt'])
+    && homeCareIsName(request.resource.data.name, 60)
+    && homeCareIsRoomKind(request.resource.data.kind)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if canEdit(householdId, 'homeCare')
+    && onlyChanged(['name', 'kind'])
+    && homeCareIsName(request.resource.data.name, 60)
+    && homeCareIsRoomKind(request.resource.data.kind);
+
+  allow delete: if canEdit(householdId, 'homeCare');
+}
+
+match /homeCareProducts/{productId} {
+  allow read: if canView(householdId, 'homeCare')
+    || hasOwnOnly(householdId, 'homeCare');
+
+  allow create: if canEdit(householdId, 'homeCare')
+    && request.resource.data.keys().hasOnly(
+         ['name', 'kind', 'whereKept', 'note', 'keepFromChildren',
+          'keepFromPets', 'createdBy', 'createdAt'])
+    && homeCareIsProduct(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if canEdit(householdId, 'homeCare')
+    && onlyChanged(
+         ['name', 'kind', 'whereKept', 'note', 'keepFromChildren', 'keepFromPets'])
+    && homeCareIsProduct(request.resource.data);
+
+  allow delete: if canEdit(householdId, 'homeCare');
+}
+
+// A cleaning job. `own` reads only the jobs whose helper is the caller's
+// profile, and the client asks for exactly those (`helperId ==`), because
+// a rule is not a filter (household ADR-0003).
+//
+// Five statuses, moved along the edges below and no others. Every status
+// change bumps `revision` and writes `events/{revision}` in the same
+// batch, which `homeCareLogsTheChange` requires and the event rule
+// mirrors — so neither is ever written without the other.
+match /homeCareJobs/{jobId} {
+  allow read: if homeCareCanSeeJob(householdId, resource.data);
+
+  allow create: if canEdit(householdId, 'homeCare')
+    && request.resource.data.keys().hasOnly(
+         ['title', 'roomId', 'helperId', 'dueDate', 'note', 'productIds',
+          'steps', 'doneStepIds', 'beforePhoto', 'marks', 'afterPhoto',
+          'status', 'reviewNote', 'revision', 'createdBy', 'createdAt',
+          'updatedAt'])
+    && homeCareHasJobDetails(householdId, request.resource.data)
+    && request.resource.data.status == 'assigned'
+    && request.resource.data.revision == 0
+    && request.resource.data.doneStepIds == []
+    && request.resource.data.afterPhoto == null
+    && request.resource.data.reviewNote == null
+    && homeCareIsPhoto(request.resource.data.beforePhoto, 'before')
+    && request.resource.data.marks is list
+    && request.resource.data.marks.size() <= 20
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt')
+    && isServerTime('updatedAt')
+    && homeCareEventExistsAfter(householdId, jobId, 0);
+
+  // Who the caller is to this job is worked out once, and each kind of
+  // change is then only a question about the fields — the rules stop at a
+  // thousand expressions, and asking for the grant four times reaches it.
+  allow update: if isServerTime('updatedAt')
+    && homeCareMayChangeJob(householdId, jobId, resource.data,
+         request.resource.data, changedKeys());
+
+  allow delete: if canEdit(householdId, 'homeCare');
+
+  function homeCareMayChangeJob(householdId, jobId, before, after, changed) {
+    let edits = canEdit(householdId, 'homeCare');
+    let works = edits
+      || (before.helperId == ownMemberId(householdId)
+            && (hasOwnOnly(householdId, 'homeCare')
+                  || canView(householdId, 'homeCare')));
+    return (edits && homeCareIsDetailsEdit(householdId, before, after, changed))
+      || (works && homeCareIsWork(householdId, jobId, before, after, changed))
+      || (works && homeCareIsHandIn(householdId, jobId, before, after, changed))
+      || (edits && homeCareIsReview(householdId, jobId, before, after, changed));
+  }
+
+  // What family changes while the job is still with the helper: its
+  // details, never its status or its photos.
+  function homeCareIsDetailsEdit(householdId, before, after, changed) {
+    return before.status in ['assigned', 'inProgress', 'sentBack']
+      && changed.hasOnly(
+           ['title', 'roomId', 'helperId', 'dueDate', 'note', 'productIds',
+            'steps', 'doneStepIds', 'updatedAt'])
+      && homeCareHasJobDetails(householdId, after)
+      && homeCareHasSomeStepsDone(after);
+  }
+
+  // Ticking steps, and starting (again) with the first tick.
+  function homeCareIsWork(householdId, jobId, before, after, changed) {
+    return changed.hasOnly(['doneStepIds', 'status', 'revision', 'updatedAt'])
+      && homeCareHasSomeStepsDone(after)
+      && ((after.status == before.status
+             && before.status in ['assigned', 'inProgress', 'sentBack']
+             && after.revision == before.revision)
+          || (before.status in ['assigned', 'sentBack']
+                && after.status == 'inProgress'
+                && homeCareLogsTheChange(householdId, jobId, before, after)));
+  }
+
+  // Handing in: every step ticked and an after photo named for this
+  // revision, so a second hand-in never reuses the first one's object.
+  function homeCareIsHandIn(householdId, jobId, before, after, changed) {
+    return changed.hasOnly(
+             ['doneStepIds', 'status', 'revision', 'afterPhoto', 'updatedAt'])
+      && before.status in ['assigned', 'inProgress', 'sentBack']
+      && after.status == 'submitted'
+      && after.doneStepIds is list
+      && after.doneStepIds.size() == before.steps.size()
+      && homeCareIsPhoto(after.afterPhoto, 'after-' + string(after.revision))
+      && homeCareLogsTheChange(householdId, jobId, before, after);
+  }
+
+  // Approving, or sending back with a note the helper will read.
+  function homeCareIsReview(householdId, jobId, before, after, changed) {
+    return before.status == 'submitted'
+      && homeCareLogsTheChange(householdId, jobId, before, after)
+      && ((after.status == 'approved'
+             && changed.hasOnly(['status', 'revision', 'updatedAt']))
+          || (after.status == 'sentBack'
+                && changed.hasOnly(['status', 'revision', 'reviewNote', 'updatedAt'])
+                && homeCareIsName(after.reviewNote, 500)));
+  }
+
+  function homeCareHasSomeStepsDone(after) {
+    return after.doneStepIds is list
+      && after.doneStepIds.size() <= after.steps.size();
+  }
+
+  function homeCareLogsTheChange(householdId, jobId, before, after) {
+    return after.revision == before.revision + 1
+      && homeCareEventExistsAfter(householdId, jobId, after.revision);
+  }
+}
+
+// The job's history: one event per status change, named by the revision
+// it moved the job to, written in the same batch as that change and never
+// rewritten (home-care ADR-0001).
+match /homeCareJobs/{jobId}/events/{eventId} {
+  allow read: if homeCareCanSeeJob(householdId, homeCareJobData(householdId, jobId));
+
+  allow create: if request.resource.data.keys().hasOnly(['status', 'by', 'note', 'at'])
+    && isOwnMember(householdId, request.resource.data.by)
+    && isServerTime('at')
+    && homeCareMatchesTheJobAfter(householdId, jobId, eventId);
+
+  allow update: if false;
+
+  allow delete: if canEdit(householdId, 'homeCare');
+
+  // Who may write the change is the job rule's to say, in the same batch;
+  // this only holds the event to the change. An event for a revision the
+  // job is not at, or a status it does not have, has no job write that
+  // could have allowed it.
+  function homeCareMatchesTheJobAfter(householdId, jobId, eventId) {
+    let job = getAfter(
+      /databases/$(database)/documents/households/$(householdId)/homeCareJobs/$(jobId)
+    ).data;
+    return job.revision == int(eventId)
+      && job.status == request.resource.data.status
+      && request.resource.data.note == (job.status == 'sentBack' ? job.reviewNote : null);
+  }
+}
+
+function homeCareJobData(householdId, jobId) {
+  return get(
+    /databases/$(database)/documents/households/$(householdId)/homeCareJobs/$(jobId)
+  ).data;
+}
+
+function homeCareEventExistsAfter(householdId, jobId, revision) {
+  return existsAfter(
+    /databases/$(database)/documents/households/$(householdId)/homeCareJobs/$(jobId)/events/$(string(revision))
+  );
+}
+
+function homeCareCanSeeJob(householdId, job) {
+  return canView(householdId, 'homeCare')
+    || (hasOwnOnly(householdId, 'homeCare')
+          && job.helperId == ownMemberId(householdId));
+}
+
+// Family ticks and hands in too; otherwise only the job's own helper,
+// whether they hold `own` or `view`.
+function homeCareMayWorkJob(householdId, job) {
+  return canEdit(householdId, 'homeCare')
+    || ((hasOwnOnly(householdId, 'homeCare') || canView(householdId, 'homeCare'))
+          && job.helperId == ownMemberId(householdId));
+}
+
+function homeCareHasJobDetails(householdId, job) {
+  return homeCareIsName(job.title, 80)
+    && isNonEmptyString(job.roomId)
+    && isNonEmptyString(job.helperId)
+    && exists(/databases/$(database)/documents/households/$(householdId)/members/$(job.helperId))
+    && job.dueDate is string
+    && job.dueDate.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+    && (job.note == null || homeCareIsName(job.note, 500))
+    && job.productIds is list && job.productIds.size() <= 20
+    && job.steps is list && job.steps.size() > 0 && job.steps.size() <= 30;
+}
+
+function homeCareIsPhoto(photo, photoId) {
+  return photo is map
+    && photo.keys().hasOnly(['photoId', 'width', 'height'])
+    && photo.photoId == photoId
+    && photo.width is int && photo.width > 0
+    && photo.height is int && photo.height > 0;
+}
+
+function homeCareIsName(value, longest) {
+  return value is string && value.size() > 0 && value.size() <= longest;
+}
+
+function homeCareIsOptionalText(value) {
+  return value == null || homeCareIsName(value, 200);
+}
+
+function homeCareIsRoomKind(kind) {
+  return kind in ['kitchen', 'lounge', 'dining', 'bedroom', 'kidsRoom',
+                  'bathroom', 'laundry', 'office', 'outside', 'garage', 'other'];
+}
+
+function homeCareIsProduct(product) {
+  return homeCareIsName(product.name, 60)
+    && product.kind in ['bleach', 'ammonia', 'acidic', 'alcohol', 'peroxide',
+                        'ovenCleaner', 'drainCleaner', 'disinfectant',
+                        'allPurpose', 'dishSoap', 'bicarbonate', 'polish',
+                        'floorCleaner', 'other']
+    && homeCareIsOptionalText(product.whereKept)
+    && homeCareIsOptionalText(product.note)
+    && product.keepFromChildren is bool
+    && product.keepFromPets is bool;
+}

@@ -57,6 +57,7 @@ import '../shared/links/launcher_external_link_opener.dart';
 import 'chore_points_providers.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
+import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
 
@@ -188,6 +189,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...documentVaultProviders(),
   // todos phase 2: chores that earn kids stars (todos ADR-0003).
   ...chorePointsProviders(),
+  // home-care (home-care ADR-0001 to ADR-0003).
+  ...homeCareProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

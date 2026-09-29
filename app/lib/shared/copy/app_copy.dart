@@ -3,6 +3,7 @@ import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
+import 'home_care_copy.dart';
 import 'kid_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
@@ -13,6 +14,9 @@ export 'access_copy.dart';
 
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
+
+// home-care: its words live in their own file (home-care ADR-0001).
+export 'home_care_copy.dart';
 
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
@@ -390,6 +394,8 @@ abstract final class AppCopy {
     PointsFailure(:final problem) => PointsCopy.problem(problem),
     // nanny hub (nanny-hub ADR-0002).
     NannyHubFailure(:final problem) => NannyCopy.problem(problem),
+    // home-care (home-care ADR-0001, ADR-0003).
+    HomeCareFailure(:final problem) => HomeCareCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
