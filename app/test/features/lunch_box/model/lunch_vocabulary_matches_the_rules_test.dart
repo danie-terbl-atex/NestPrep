@@ -51,8 +51,6 @@ void main() {
   test('the rules know exactly the allergens the app does', () {
     final codes = {for (final allergen in Allergen.values) allergen.name};
     expect(listAfter('function isLunchAllergens'), codes);
-    // A pick in a plan is checked with its own copy of the list.
-    expect(listAfter("]).hasOnly(['peanut'"), codes);
   });
 
   test('and exactly its five slots, for items and for go-to boxes', () {

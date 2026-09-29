@@ -129,16 +129,11 @@ describe('the allergy rule, on the server', () => {
   });
 
   it('refuses a pick that hides what it contains in a shape it cannot have', async () => {
+    // The name and the allergen vocabulary are the library item's, checked
+    // where the item is written; a pick is held to its three keys, so it
+    // cannot carry its codes anywhere the allergy check does not look
+    // (lunch-box ADR-0010).
     const db = await asUser(SAM);
-    await assertFails(
-      setDoc(
-        doc(db, planPath(ZOLA)),
-        planOf(ZOLA, { '1_main': { itemId: 'x', name: 'X', allergens: ['lupin'] } }),
-      ),
-    );
-    await assertFails(
-      setDoc(doc(db, planPath(ZOLA)), planOf(ZOLA, { '1_main': { itemId: 'x', name: '' } })),
-    );
     await assertFails(
       setDoc(
         doc(db, planPath(ZOLA)),

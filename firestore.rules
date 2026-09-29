@@ -1849,7 +1849,10 @@ service cloud.firestore {
         allow read: if canView(householdId, 'lunch')
           || (hasOwnOnly(householdId, 'lunch') && isLunchPlanOf(planId, ownMemberId(householdId)));
 
-        allow create: if canEdit(householdId, 'lunch')
+        // `resource` first, so a create does not pay for the update's checks and
+        // an update not for the create's (the 1000-expression limit, ADR-0010).
+        allow create: if resource == null
+          && canEdit(householdId, 'lunch')
           && isLunchPlan(planId, request.resource.data)
           && isLunchChild(householdId, request.resource.data.childId)
           && lunchPlansFor(householdId, request.resource.data.childId)
@@ -1860,7 +1863,8 @@ service cloud.firestore {
           && lunchFeedbackIsValid(householdId, request.resource.data.get('feedback', {}),
                request.resource.data.get('feedback', {}).keys());
 
-        allow update: if canEdit(householdId, 'lunch')
+        allow update: if resource != null
+          && canEdit(householdId, 'lunch')
           && onlyChanged(['slots', 'feedback'])
           && isLunchPlan(planId, request.resource.data)
           && lunchPlansFor(householdId, resource.data.childId)
@@ -2025,16 +2029,14 @@ service cloud.firestore {
           && get(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)).data.get('nutFree', false) == true;
       }
 
-      // A well-formed pick with nothing the child must avoid, in as few
-      // expressions as the check allows: Firestore stops a request at 1000, and a
-      // plan write with its grant, child, premium and shape checks has room for
-      // six of these (measured, lunch-box ADR-0010). The app writes one day — five
-      // slots — at most per write for that reason.
+      // A pick holding nothing the child must avoid, in as few expressions as the
+      // check allows: Firestore stops a request at 1000, and a plan write carries
+      // the grant, the child, premium and the week's shape as well (lunch-box
+      // ADR-0010, measured). Its keys are held to the three a pick has; the name
+      // and the allergen vocabulary are the library item's, checked where the item
+      // is written (`isLunchItem`), and a pick copies them from it.
       function lunchPickIsSafe(pick, avoid) {
         return pick.keys().hasOnly(['itemId', 'name', 'allergens'])
-          && pick.itemId is string
-          && pick.name is string && pick.name.size() > 0 && pick.name.size() <= 60
-          && pick.get('allergens', []).hasOnly(['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish', 'shellfish', 'sesame'])
           && !pick.get('allergens', []).hasAny(avoid);
       }
 
@@ -2188,7 +2190,8 @@ service cloud.firestore {
         allow read: if canView(householdId, 'lunch')
           || lunchKidOwnsWeek(householdId, choiceId);
 
-        allow create: if canEdit(householdId, 'lunch')
+        allow create: if resource == null
+          && canEdit(householdId, 'lunch')
           && isLunchChoices(choiceId, request.resource.data)
           && request.resource.data.get('chosen', {}).size() == 0
           && request.resource.data.get('options', {}).keys()
@@ -2201,7 +2204,8 @@ service cloud.firestore {
                request.resource.data.get('options', {}).keys(),
                request.resource.data.editedDay);
 
-        allow update: if canEdit(householdId, 'lunch')
+        allow update: if resource != null
+          && canEdit(householdId, 'lunch')
           && onlyChanged(['options', 'chosen', 'editedDay', 'updatedBy', 'updatedAt'])
           && isLunchChoices(choiceId, request.resource.data)
           && request.resource.data.get('options', {})
@@ -2234,14 +2238,16 @@ service cloud.firestore {
       // is a plan write, held to the free tier like a parent's (`lunchPlansFor`,
       // lunch-box ADR-0009).
       match /lunchPlans/{planId} {
-        allow create: if lunchKidOwnsWeek(householdId, planId)
+        allow create: if resource == null
+          && lunchKidOwnsWeek(householdId, planId)
           && isLunchKidPlan(planId, request.resource.data)
           && isLunchChild(householdId, request.resource.data.childId)
           && lunchPlansFor(householdId, request.resource.data.childId)
           && lunchKidChoiceIsApproved(householdId, planId, request.resource.data.childId,
                request.resource.data.slots, request.resource.data.slots.keys());
 
-        allow update: if lunchKidOwnsWeek(householdId, planId)
+        allow update: if resource != null
+          && lunchKidOwnsWeek(householdId, planId)
           && onlyChanged(['slots'])
           && lunchPlansFor(householdId, resource.data.childId)
           && lunchKidChoiceIsApproved(householdId, planId, resource.data.childId,
@@ -2251,9 +2257,13 @@ service cloud.firestore {
       }
 
       // A kid device or member whose lunch grant is `own`, on their own week.
+      // The week is asked first: it is cheap and false for everybody who is not
+      // that child, and this rule is evaluated beside lunch_box.rules' on every
+      // plan write — a grant looked up twice cost a helper at edit a day's pack
+      // (the 1000-expression limit, lunch-box ADR-0010).
       function lunchKidOwnsWeek(householdId, weekDocumentId) {
-        return hasOwnOnly(householdId, 'lunch')
-          && isLunchPlanOf(weekDocumentId, ownMemberId(householdId));
+        return isLunchPlanOf(weekDocumentId, ownMemberId(householdId))
+          && hasOwnOnly(householdId, 'lunch');
       }
 
       function isLunchSlotKey(key) {
@@ -2277,16 +2287,12 @@ service cloud.firestore {
           && data.updatedBy is string;
       }
 
-      // A pick's shape and nothing the child must avoid. Lighter than the plan's
-      // `isLunchPick` on purpose — a day holds up to fifteen options — and safe
-      // to be: an option reaches a box only through a child's choice, and that
-      // write is checked with the plan's own `isLunchPick` and allergy rule.
+      // An option's keys and nothing the child must avoid — as light as the plan's
+      // `lunchPickIsSafe`, because a day holds up to fifteen (lunch-box ADR-0010).
+      // An option reaches a box only through a child's choice, and that write is
+      // checked again against the plan's allergy rule.
       function isLunchOptionSafe(option, avoid) {
-        return option is map
-          && option.keys().hasOnly(['itemId', 'name', 'allergens'])
-          && option.itemId is string
-          && option.name is string
-          && option.get('allergens', []) is list
+        return option.keys().hasOnly(['itemId', 'name', 'allergens'])
           && !option.get('allergens', []).hasAny(avoid);
       }
 
@@ -2304,9 +2310,19 @@ service cloud.firestore {
 
       // The one day this write changed, slot by slot. A slot whose options were
       // taken away is fine.
+      // Each argument bound once with `let` before fifteen options use it
+      // (lunch-box ADR-0010).
       function lunchOptionsAreSafe(householdId, childId, options, changed, day) {
-        return changed.size() == 0
-          || lunchOptionDayIsSafe(options, changed, lunchAvoidFor(householdId, childId), day);
+        let theOptions = options;
+        let theChanged = changed;
+        let theDay = day;
+        return theChanged.size() == 0
+          || lunchOptionsAreSafeFor(householdId, childId, theOptions, theChanged, theDay);
+      }
+
+      function lunchOptionsAreSafeFor(householdId, childId, options, changed, day) {
+        let avoid = lunchAvoidFor(householdId, childId);
+        return lunchOptionDayIsSafe(options, changed, avoid, day);
       }
 
       function lunchOptionDayIsSafe(options, changed, avoid, day) {

@@ -43,7 +43,10 @@ match /lunchPlans/{planId} {
   allow read: if canView(householdId, 'lunch')
     || (hasOwnOnly(householdId, 'lunch') && isLunchPlanOf(planId, ownMemberId(householdId)));
 
-  allow create: if canEdit(householdId, 'lunch')
+  // `resource` first, so a create does not pay for the update's checks and
+  // an update not for the create's (the 1000-expression limit, ADR-0010).
+  allow create: if resource == null
+    && canEdit(householdId, 'lunch')
     && isLunchPlan(planId, request.resource.data)
     && isLunchChild(householdId, request.resource.data.childId)
     && lunchPlansFor(householdId, request.resource.data.childId)
@@ -54,7 +57,8 @@ match /lunchPlans/{planId} {
     && lunchFeedbackIsValid(householdId, request.resource.data.get('feedback', {}),
          request.resource.data.get('feedback', {}).keys());
 
-  allow update: if canEdit(householdId, 'lunch')
+  allow update: if resource != null
+    && canEdit(householdId, 'lunch')
     && onlyChanged(['slots', 'feedback'])
     && isLunchPlan(planId, request.resource.data)
     && lunchPlansFor(householdId, resource.data.childId)

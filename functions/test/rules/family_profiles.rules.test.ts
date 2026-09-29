@@ -431,7 +431,7 @@ describe('schools/{schoolId}', () => {
 
   it('denies moving its creation time', async () => {
     await assertFails(
-      updateDoc(doc(await asUser(SAM), `${SCHOOLS}/oakwood`), { createdAt: new Date() }),
+      updateDoc(doc(await asUser(SAM), `${SCHOOLS}/oakwood`), { createdAt: new Date(2020, 0, 1) }),
     );
   });
 

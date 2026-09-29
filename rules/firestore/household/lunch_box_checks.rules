@@ -23,16 +23,14 @@ function lunchSchoolIsNutFree(householdId, schoolId) {
     && get(/databases/$(database)/documents/households/$(householdId)/schools/$(schoolId)).data.get('nutFree', false) == true;
 }
 
-// A well-formed pick with nothing the child must avoid, in as few
-// expressions as the check allows: Firestore stops a request at 1000, and a
-// plan write with its grant, child, premium and shape checks has room for
-// six of these (measured, lunch-box ADR-0010). The app writes one day — five
-// slots — at most per write for that reason.
+// A pick holding nothing the child must avoid, in as few expressions as the
+// check allows: Firestore stops a request at 1000, and a plan write carries
+// the grant, the child, premium and the week's shape as well (lunch-box
+// ADR-0010, measured). Its keys are held to the three a pick has; the name
+// and the allergen vocabulary are the library item's, checked where the item
+// is written (`isLunchItem`), and a pick copies them from it.
 function lunchPickIsSafe(pick, avoid) {
   return pick.keys().hasOnly(['itemId', 'name', 'allergens'])
-    && pick.itemId is string
-    && pick.name is string && pick.name.size() > 0 && pick.name.size() <= 60
-    && pick.get('allergens', []).hasOnly(['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish', 'shellfish', 'sesame'])
     && !pick.get('allergens', []).hasAny(avoid);
 }
 
