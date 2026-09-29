@@ -115,17 +115,24 @@ describe('every callable declares what it may cost', () => {
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
+    // The five kid sign-in calls mint and revoke custom tokens and move a
+    // code, a device and a household map entry together (accounts ADR-0003).
     expect([...exported].sort()).toEqual([
+      'cancelKidPairing',
       'countHouseholdCreated',
       'countInviteCreated',
       'countLunchPlanCreated',
       'createHousehold',
       'createInvite',
+      'createKidPairing',
       'deleteDocumentFolder',
       'leaveHousehold',
       'recordActivity',
       'redeemInvite',
+      'redeemKidPairing',
       'removeMember',
+      'resetKidSignIn',
+      'revokeKidDevice',
       'rollupBetaNumbers',
       'setMemberRole',
       'syncDocumentAccess',

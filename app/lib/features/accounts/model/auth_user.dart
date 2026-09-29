@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'kid_identity.dart';
+
 part 'auth_user.freezed.dart';
 
 /// Who Firebase Auth says the caller is. It is not stored: the account document
@@ -19,6 +21,11 @@ abstract class AuthUser with _$AuthUser {
     String? displayName,
     String? photoUrl,
     @Default(false) bool emailVerified,
+
+    /// Set only on a kid device, from its token's claim (accounts ADR-0003).
+    /// A kid device has no email, no account document and no household list;
+    /// the session routes it to the kid's home instead.
+    KidIdentity? kid,
   }) = _AuthUser;
 
   const AuthUser._();

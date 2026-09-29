@@ -54,6 +54,11 @@ class NestMotion {
   static const Curve exit = Curves.easeInCubic;
   static const Curve standardCurve = Curves.easeInOutCubic;
 
+  /// Something landing with a little overshoot — a job ticked off on a kid's
+  /// screen. Only for a moment worth celebrating, and gated like every other
+  /// duration.
+  static const Curve celebrate = Curves.easeOutBack;
+
   static NestMotion of(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context) ? _reduced : _full;
 }

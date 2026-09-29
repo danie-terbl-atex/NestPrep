@@ -4,7 +4,13 @@ Fifteen pictures of NestPrep v1, taken from the real widgets with the real theme
 They exist so the one thing v1 still needs — **an opinion on whether this direction is right** — does
 not have to wait for a working Android emulator.
 
-Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp.
+Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. The kids' eight
+are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
+the same shutter (`tool/design_review_press.dart`).
+
+`sign-in-*` was retaken on 2026-09-29 when the kids' way in joined it. `household-gate-*` is
+**stale**: it no longer matches the screen (a 5% pixel difference, from before kid sign-in), and it
+was left alone rather than retaken on a branch that did not change that screen.
 
 | File | What it shows |
 |---|---|
@@ -17,6 +23,10 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 | `household-gate-light.png` / `household-gate-dark.png` | the screen after it, where a household is made or joined |
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 | `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
+| `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
+| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, the jobs as big tiles, and today's food |
+| `kids-sign-in-light.png` / `kids-sign-in-dark.png` | the parent's side: each child, the devices they are signed in on, add one or sign them all out |
+| `kids-pairing-light.png` / `kids-pairing-dark.png` | the code a parent reads out, counting down its ten minutes |
 
 ## What to look at
 

@@ -6,6 +6,7 @@ import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/kid_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
@@ -412,6 +413,44 @@ void main() {
       await emit(tester);
 
       expect(find.text(AppCopy.locationTitle), findsOneWidget);
+    });
+  });
+
+  group('the way to kids\u2019 sign-in (accounts ADR-0003)', () {
+    testWidgets('an admin is offered it, and it says what it is', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester);
+
+      await tester.scrollUntilVisible(find.text(KidCopy.manageEntry), 200);
+      expect(find.text(KidCopy.manageEntryBody), findsOneWidget);
+    });
+
+    testWidgets('it pushes, so back comes back here', (tester) async {
+      await pump(tester);
+      await emit(tester);
+
+      await tester.scrollUntilVisible(find.text(KidCopy.manageEntry), 200);
+      await tester.tap(find.text(KidCopy.manageEntry));
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    });
+
+    testWidgets('a helper is not — only an admin can make a code', (
+      tester,
+    ) async {
+      await pump(tester, viewerUid: Fixtures.thandiUid);
+      await emit(tester);
+
+      // Scrolled to the row that sits just below it, so "not found" means
+      // not there rather than not built yet.
+      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 200);
+      expect(find.text(KidCopy.manageEntry), findsNothing);
     });
   });
 

@@ -37,6 +37,10 @@ Future<void> pumpScreen(
         path: '/households/:householdId/where',
         builder: (context, state) => const Placeholder(),
       ),
+      GoRoute(
+        path: '/households/:householdId/kids',
+        builder: (context, state) => const Placeholder(),
+      ),
     ],
   ),
   providers: providers,

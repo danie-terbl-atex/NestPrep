@@ -9,6 +9,7 @@ import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/kid_accounts/model/kid_device.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
@@ -185,6 +186,13 @@ List<ModelFixture> modelFixtures() {
     sizeBytes: 120000,
     uploadedBy: 'm1',
     uploadedAt: at,
+  );
+  final kidDevice = KidDevice(
+    id: 'kid_tablet',
+    memberId: 'm2',
+    label: 'Tablet',
+    pairedBy: 'uid-sam',
+    pairedAt: at,
   );
 
   return [
@@ -378,6 +386,17 @@ List<ModelFixture> modelFixtures() {
       note:
           'the document id is also the name of its Cloud Storage object, so a '
           'row and its bytes are found from each other (documents ADR-0001).',
+    ),
+    ModelFixture(
+      label: 'KidDevice',
+      id: 'kid_tablet',
+      value: kidDevice,
+      toJson: kidDevice.toJson,
+      fromJson: KidDevice.fromJson,
+      keys: const {'memberId', 'label', 'pairedBy', 'pairedAt'},
+      note:
+          'only the kid sign-in callables write it; the client reads it, and '
+          'the document id is the device\'s own Auth uid (accounts ADR-0003).',
     ),
   ];
 }

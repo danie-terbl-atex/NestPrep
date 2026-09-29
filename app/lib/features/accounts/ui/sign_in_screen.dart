@@ -6,6 +6,8 @@ import '../../../app/backend_target.dart';
 import '../../../app/emulator_accounts.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/kid_copy.dart';
+import '../../kid_accounts/ui/kid_code_screen.dart';
 import '../state/session_controller.dart';
 import 'email_sign_in_form.dart';
 import 'forgot_password_screen.dart';
@@ -87,6 +89,25 @@ class SignInScreen extends StatelessWidget {
                     onPressed: session.isSigningIn
                         ? null
                         : () => context.go(RegisterScreen.path),
+                  ),
+                ),
+                // A child has no email and no password: a grown-up makes a
+                // code (accounts ADR-0003).
+                const SizedBox(height: NestSpace.xxl),
+                const NestRiseIn(
+                  index: _waysInStep + 4,
+                  child: _WayInPrompt(label: KidCopy.signInPrompt),
+                ),
+                const SizedBox(height: NestSpace.sm),
+                NestRiseIn(
+                  index: _waysInStep + 4,
+                  child: NestButton(
+                    label: KidCopy.signInWithCode,
+                    icon: Icons.child_care_rounded,
+                    variant: NestButtonVariant.tonal,
+                    onPressed: session.isSigningIn
+                        ? null
+                        : () => context.go(KidCodeScreen.path),
                   ),
                 ),
                 if (BackendTarget.fromEnvironment() ==

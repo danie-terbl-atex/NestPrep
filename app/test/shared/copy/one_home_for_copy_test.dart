@@ -102,24 +102,32 @@ void main() {
     // `AppCopy.loading` existed for a while used by nothing, while a widget
     // said the same word as a literal. An unused constant is the first half of
     // that mistake, so it is worth knowing about.
-    final copySource = File('lib/shared/copy/app_copy.dart').readAsStringSync();
-    final names = RegExp(r'static const (\w+) =')
-        .allMatches(copySource)
-        .map((match) => match.group(1)!)
-        .toSet();
+    // `KidCopy` sits beside `AppCopy` (accounts ADR-0003) and is held to the
+    // same rule, each name qualified by the class a screen reads it through.
+    const copyFiles = {'app_copy.dart': 'AppCopy', 'kid_copy.dart': 'KidCopy'};
+    final names = <String>{
+      for (final MapEntry(key: fileName, value: className) in copyFiles.entries)
+        ...RegExp(r'static const (\w+) =')
+            .allMatches(File('lib/shared/copy/$fileName').readAsStringSync())
+            .map((match) => '$className.${match.group(1)!}'),
+    };
 
     final usedAnywhere = <String>{};
     for (final file in dartFiles) {
-      final isCopyFile = file.path.endsWith('app_copy.dart');
+      final copyClass = copyFiles.entries
+          .where((entry) => file.path.endsWith(entry.key))
+          .map((entry) => entry.value)
+          .firstOrNull;
       final source = file.readAsStringSync();
-      for (final name in names) {
+      for (final qualified in names) {
+        final bare = qualified.split('.').last;
         // Inside the copy file a constant is referenced by its bare name:
         // `weekdayName()` indexes `weekdayNames`, `mealSlotName()` returns
         // `mealsBreakfast`. More than the declaration itself is a use.
-        final used = isCopyFile
-            ? RegExp('\\b$name\\b').allMatches(source).length > 1
-            : source.contains('AppCopy.$name');
-        if (used) usedAnywhere.add(name);
+        final used = copyClass != null && qualified.startsWith('$copyClass.')
+            ? RegExp('\\b$bare\\b').allMatches(source).length > 1
+            : source.contains(qualified);
+        if (used) usedAnywhere.add(qualified);
       }
     }
 

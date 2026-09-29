@@ -77,6 +77,29 @@ final class FakeTodoRepository implements TodoRepository {
     return _completions.stream;
   }
 
+  /// Whose tasks and completions a kid's read asked for (accounts ADR-0003).
+  String? tasksForMemberId;
+  String? completionsForMemberId;
+
+  @override
+  Stream<List<Task>> watchTasksFor(String householdId, String memberId) {
+    tasksForMemberId = memberId;
+    return _tasks.stream;
+  }
+
+  @override
+  Stream<List<TaskCompletion>> watchCompletionsFor(
+    String householdId,
+    String memberId, {
+    required CalendarDate from,
+    required CalendarDate to,
+  }) {
+    completionsForMemberId = memberId;
+    completionsFrom = from;
+    completionsTo = to;
+    return _completions.stream;
+  }
+
   @override
   Future<void> saveTask({
     required String householdId,

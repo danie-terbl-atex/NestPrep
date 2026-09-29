@@ -12,6 +12,13 @@ import {
 } from '../../src/household/schemas';
 import { deleteDocumentFolderInput } from '../../src/documents/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
+import {
+  cancelKidPairingInput,
+  createKidPairingInput,
+  redeemKidPairingInput,
+  resetKidSignInInput,
+  revokeKidDeviceInput,
+} from '../../src/accounts/kid_schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -53,6 +60,19 @@ const validBodies = {
     body: { householdId: 'h1', folderId: 'f-school' },
   },
   recordActivity: { schema: recordActivityInput, body: { householdId: 'h1' } },
+  // Kid sign-in (accounts ADR-0003). `label` is optional, so it is not in the
+  // body every field of which must be required; its own cases are below.
+  createKidPairing: {
+    schema: createKidPairingInput,
+    body: { householdId: 'h1', memberId: 'm-kid' },
+  },
+  cancelKidPairing: { schema: cancelKidPairingInput, body: { householdId: 'h1', code: 'ABC234' } },
+  redeemKidPairing: { schema: redeemKidPairingInput, body: { code: 'ABC234' } },
+  revokeKidDevice: {
+    schema: revokeKidDeviceInput,
+    body: { householdId: 'h1', deviceUid: 'kid_abc' },
+  },
+  resetKidSignIn: { schema: resetKidSignInInput, body: { householdId: 'h1', memberId: 'm-kid' } },
 } as const;
 
 describe('every callable accepts its own body', () => {

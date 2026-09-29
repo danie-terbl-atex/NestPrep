@@ -28,6 +28,10 @@ import '../features/household/data/callable_household_directory.dart';
 import '../features/household/data/firestore_household_repository.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
+import '../features/kid_accounts/data/callable_kid_sign_in_directory.dart';
+import '../features/kid_accounts/data/firestore_kid_device_repository.dart';
+import '../features/kid_accounts/data/kid_device_repository.dart';
+import '../features/kid_accounts/data/kid_sign_in_directory.dart';
 import '../features/live_location/data/firestore_live_location_repository.dart';
 import '../features/live_location/data/geolocator_location_source.dart';
 import '../features/live_location/data/live_location_repository.dart';
@@ -138,6 +142,15 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
       context.read<FirebaseFirestore>(),
       context.read<FirebaseAuth>(),
     ),
+  ),
+  // Kid sign-in (accounts ADR-0003).
+  Provider<KidSignInDirectory>(
+    create: (context) =>
+        CallableKidSignInDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<KidDeviceRepository>(
+    create: (context) =>
+        FirestoreKidDeviceRepository(context.read<FirebaseFirestore>()),
   ),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(

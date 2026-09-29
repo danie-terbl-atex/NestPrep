@@ -52,6 +52,14 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
   }
 
   @override
+  Stream<Member?> watchMember(String householdId, String memberId) =>
+      _members(householdId)
+          .doc(memberId)
+          .snapshots()
+          .map((snapshot) => snapshot.data())
+          .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
   Stream<List<Member>> watchMembers(String householdId) =>
       _members(householdId)
           .orderBy('displayName')

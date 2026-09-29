@@ -11,6 +11,13 @@ import 'package:nestprep/features/documents/ui/document_library_screen.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/kid_accounts/model/kid_device.dart';
+import 'package:nestprep/features/kid_accounts/state/kid_code_controller.dart';
+import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
+import 'package:nestprep/features/kid_accounts/state/kid_sign_in_controller.dart';
+import 'package:nestprep/features/kid_accounts/ui/kid_code_screen.dart';
+import 'package:nestprep/features/kid_accounts/ui/kid_home_screen.dart';
+import 'package:nestprep/features/kid_accounts/ui/kid_sign_in_screen.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/live_location/state/live_location_controller.dart';
@@ -26,13 +33,16 @@ import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
+import '../../support/fake_auth.dart';
 import '../../support/fake_calendar_repository.dart';
 import '../../support/fake_documents.dart';
 import '../../support/fake_grocery_repository.dart';
+import '../../support/fake_kid_sign_in.dart';
 import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
 import '../../support/fake_todo_repository.dart';
 import '../../support/household_fixtures.dart';
+import '../../support/kid_home_fixture.dart';
 import '../../support/pump_screen.dart';
 
 /// `FE-13`, the two halves of it that nothing checked: **every control has an
@@ -388,5 +398,83 @@ void main() {
     repository.emitWeek(WeekPlan.empty(controller.weekStart));
 
     await expectAccessible(tester, 'meals');
+  });
+
+  // Kid sign-in (accounts ADR-0003). The kid's own screens are held to the
+  // same floor as everybody else's — a child's thumb is not more accurate.
+  testWidgets('a kid\u2019s way in', (tester) async {
+    phone(tester);
+    final auth = FakeAuthGateway();
+    addTearDown(auth.close);
+    final controller = KidCodeController(
+      kidSignInDirectory: FakeKidSignInDirectory(),
+      authGateway: auth,
+    );
+    addTearDown(controller.dispose);
+
+    await pumpScreen(
+      tester,
+      const KidCodeScreen(),
+      providers: [
+        ChangeNotifierProvider<KidCodeController>.value(value: controller),
+      ],
+    );
+    controller.setCode('ABC234');
+
+    await expectAccessible(tester, 'a kid\u2019s way in');
+  });
+
+  testWidgets('a kid\u2019s home', (tester) async {
+    phone(tester);
+    final fixture = KidHomeFixture();
+    addTearDown(fixture.close);
+
+    await pumpScreen(
+      tester,
+      const KidHomeScreen(),
+      providers: [
+        ChangeNotifierProvider<KidHomeController>.value(
+          value: fixture.controller,
+        ),
+      ],
+    );
+    await tester.runAsync(
+      () =>
+          fixture.arrive(tasks: [KidHomeFixture.chore('bed', 'Make your bed')]),
+    );
+
+    await expectAccessible(tester, 'a kid\u2019s home');
+  });
+
+  testWidgets('kids\u2019 sign-in, for a parent', (tester) async {
+    phone(tester);
+    final devices = FakeKidDeviceRepository();
+    addTearDown(devices.close);
+    final controller = KidSignInController(
+      kidSignInDirectory: FakeKidSignInDirectory(),
+      kidDeviceRepository: devices,
+      householdId: Fixtures.householdId,
+      members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
+    );
+    addTearDown(controller.dispose);
+
+    await pumpScreen(
+      tester,
+      const KidSignInScreen(),
+      providers: [
+        ChangeNotifierProvider<KidSignInController>.value(value: controller),
+      ],
+    );
+    devices.emit([
+      KidDevice(
+        id: 'kid_tablet',
+        memberId: Fixtures.kidMemberId,
+        label: 'Tablet',
+        pairedBy: Fixtures.samUid,
+        pairedAt: now,
+      ),
+    ]);
+
+    await expectAccessible(tester, 'kids\u2019 sign-in');
   });
 }

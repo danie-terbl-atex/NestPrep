@@ -27,6 +27,10 @@ abstract interface class HouseholdRepository {
   /// Every profile in the household, live, ordered by name.
   Stream<List<Member>> watchMembers(String householdId);
 
+  /// One profile, live. Null when it has gone. The one member read a kid
+  /// device may make — its own (accounts ADR-0003).
+  Stream<Member?> watchMember(String householdId, String memberId);
+
   /// Adds an unclaimed profile. Admin only, and the rules say so too. A null
   /// birthday is the ordinary case, not a missing one (birthdays ADR-0001).
   Future<void> addMember({

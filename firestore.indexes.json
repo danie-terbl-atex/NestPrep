@@ -1,5 +1,14 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "taskCompletions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "completedFor", "order": "ASCENDING" },
+        { "fieldPath": "occurrenceDate", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": [
     {
       "collectionGroup": "memberLocations",

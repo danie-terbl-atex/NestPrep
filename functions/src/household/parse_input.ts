@@ -1,6 +1,7 @@
 import { HttpsError } from 'firebase-functions/v2/https';
 import type { z } from 'zod';
 
+import { carriesKidClaim } from '../accounts/kid_identity';
 import { refuse } from './errors';
 
 /**
@@ -18,18 +19,31 @@ export function parseInput<T extends z.ZodType>(schema: T, data: unknown): z.inf
   return result.data;
 }
 
-/** The caller's uid, or the refusal that says they have none. */
-export function requireUid(auth: { uid: string } | undefined): string {
+/** Who a callable is being called by: the uid, and the token's claims when there are any. */
+export interface Caller {
+  uid: string;
+  token?: Readonly<Record<string, unknown>>;
+}
+
+/**
+ * The caller's uid, or the refusal that says they have none.
+ *
+ * A kid device is refused here, before any callable looks at what it asked
+ * for: a kid creates no household, redeems no invite and changes no membership
+ * (accounts ADR-0003). Every household and documents callable goes through
+ * this, so none of them has to remember kids exist.
+ */
+export function requireUid(auth: Caller | undefined): string {
   if (auth === undefined) {
     throw new HttpsError('unauthenticated', 'Sign in first.', { reason: 'notSignedIn' });
   }
+  if (carriesKidClaim(auth.token)) throw refuse('kidAccount');
   return auth.uid;
 }
 
 /** What the two membership calls need off the caller's token, and nothing more. */
-export interface VerifiedCaller {
-  uid: string;
-  token: { email_verified?: boolean };
+export interface VerifiedCaller extends Caller {
+  token: Readonly<Record<string, unknown>> & { email_verified?: boolean };
 }
 
 /**

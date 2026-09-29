@@ -51,6 +51,22 @@ export async function asUser(uid: string): Promise<Firestore> {
   return context.firestore() as unknown as Firestore;
 }
 
+/**
+ * Firestore as a kid device sees it: its own uid, carrying the `kidProfile`
+ * claim a real one has (accounts ADR-0003). The rules authorise it through the
+ * household's `kids` map, not the claim — the claim is here so a rule that
+ * reads it (the account document's) is tested against a real kid token.
+ */
+export async function asKid(
+  uid: string,
+  kidProfile: { householdId: string; memberId: string },
+): Promise<Firestore> {
+  const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid, {
+    kidProfile,
+  });
+  return context.firestore() as unknown as Firestore;
+}
+
 /** Firestore as nobody sees it: no token at all. */
 export async function asSignedOut(): Promise<Firestore> {
   const context: RulesTestContext = (await rulesEnvironment()).unauthenticatedContext();

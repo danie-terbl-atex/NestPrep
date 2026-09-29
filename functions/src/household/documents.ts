@@ -23,6 +23,13 @@ export interface HouseholdDocument extends DocumentData {
   readonly name: string;
   readonly timeZone: string;
   readonly members: Record<string, Role>;
+
+  /**
+   * Kid devices: uid → the member profile each is signed in as. Not members —
+   * a separate map so no `isMember()` ever matches one (accounts ADR-0003).
+   * Absent on every household that has never paired a device.
+   */
+  readonly kids?: Record<string, string>;
 }
 
 export interface MemberDocument extends DocumentData {

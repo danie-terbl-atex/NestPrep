@@ -20,3 +20,9 @@ export { countHouseholdCreated } from './product_analytics/count_household_creat
 export { countInviteCreated } from './product_analytics/count_invite_created';
 export { countLunchPlanCreated } from './product_analytics/count_lunch_plan_created';
 export { rollupBetaNumbers } from './product_analytics/rollup_beta_numbers';
+// Kid sign-in (accounts ADR-0003).
+export { createKidPairing } from './accounts/create_kid_pairing';
+export { cancelKidPairing } from './accounts/cancel_kid_pairing';
+export { redeemKidPairing } from './accounts/redeem_kid_pairing';
+export { revokeKidDevice } from './accounts/revoke_kid_device';
+export { resetKidSignIn } from './accounts/reset_kid_sign_in';

@@ -17,4 +17,9 @@ enum MemberRole {
 
   /// Everything an admin may do that nobody else may (household ADR-0001).
   bool get canManageHousehold => isAdmin;
+
+  /// Whether a profile with this role may sign in on a kid device, while
+  /// nobody has claimed it. Mirrors the Functions' `KID_SIGN_IN_ROLES`, which
+  /// is what enforces it (accounts ADR-0003).
+  bool get canHaveKidSignIn => this == MemberRole.member;
 }

@@ -92,6 +92,33 @@ async function signInAgain(email: string): Promise<string> {
   return body.idToken;
 }
 
+/**
+ * What a kid device does with the token `redeemKidPairing` hands it: signs in
+ * with it, exactly as the app's `signInWithCustomToken` does, and gets back the
+ * ID token every later call carries (accounts ADR-0003).
+ */
+export async function signInWithCustomToken(token: string): Promise<TestUser> {
+  const response = await fetch(`${IDENTITY}/accounts:signInWithCustomToken?key=fake-api-key`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, returnSecureToken: true }),
+  });
+  const body = (await response.json()) as { idToken?: string };
+  if (body.idToken === undefined) {
+    throw new Error(`could not sign in with a custom token: ${JSON.stringify(body)}`);
+  }
+  const claims = claimsOf(body.idToken);
+  const uid = claims['user_id'];
+  if (typeof uid !== 'string') throw new Error('the ID token named nobody');
+  return { uid, idToken: body.idToken, email: '' };
+}
+
+/** The claims an ID token carries — what the rules and the callables see. */
+export function claimsOf(idToken: string): Record<string, unknown> {
+  const payload = idToken.split('.')[1] ?? '';
+  return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as Record<string, unknown>;
+}
+
 export async function callAs<T>(user: TestUser | null, name: string, data: unknown): Promise<T> {
   const response = await fetch(`http://${FUNCTIONS_HOST}/${PROJECT_ID}/${REGION}/${name}`, {
     method: 'POST',

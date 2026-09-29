@@ -8,6 +8,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../kid_accounts/ui/kid_sign_in_link.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
 import '../state/household_controller.dart';
@@ -144,6 +145,13 @@ class _HouseholdBody extends StatelessWidget {
                   : () => _remove(context, member),
             ),
           ),
+        // Kid sign-in: a child on their own tablet (accounts ADR-0003). Only
+        // an admin can make a code or read the devices, so only an admin sees
+        // the way in.
+        if (view.viewerIsAdmin) ...[
+          const SizedBox(height: NestSpace.lg),
+          KidSignInLink(householdId: view.household.id),
+        ],
         const SizedBox(height: NestSpace.lg),
         // The way to the live-location screen. It sits with the people rather
         // than in the bottom bar, and says what it is before it is tapped —

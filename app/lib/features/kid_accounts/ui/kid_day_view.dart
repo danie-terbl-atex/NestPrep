@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+
+import '../../../design/nest_kit.dart';
+import '../../../shared/copy/kid_copy.dart';
+import '../model/kid_day.dart';
+import 'kid_chore_tile.dart';
+import 'kid_food_card.dart';
+import 'kid_hero_card.dart';
+import 'kid_moment_card.dart';
+
+/// A kid's day, top to bottom: who they are and how far along they are, their
+/// jobs, and today's food (accounts ADR-0003).
+///
+/// "No jobs" is part of the view rather than a replacement for it: the food is
+/// still worth seeing on a day with nothing to do (`FE-08`).
+class KidDayView extends StatelessWidget {
+  const KidDayView({required this.day, required this.onToggle, super.key});
+
+  final KidDay day;
+  final void Function(int index) onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.only(bottom: NestSpace.huge),
+      children: [
+        NestRiseIn(child: KidHeroCard(day: day)),
+        const SizedBox(height: NestSpace.xxl),
+        const NestSectionHeader(title: KidCopy.choresTitle),
+        const SizedBox(height: NestSpace.sm),
+        if (!day.hasChores)
+          const KidMomentCard(
+            icon: Icons.wb_sunny_rounded,
+            tint: NestTileTint.sky,
+            title: KidCopy.choresNone,
+            message: KidCopy.choresNoneBody,
+          ),
+        for (final (index, chore) in day.chores.indexed)
+          Padding(
+            padding: const EdgeInsets.only(bottom: NestSpace.md),
+            child: NestRiseIn(
+              index: index + 1,
+              child: KidChoreTile(
+                key: ValueKey(chore.key),
+                chore: chore,
+                isOverdue: chore.isOverdue(day.today),
+                onToggle: () => onToggle(index),
+              ),
+            ),
+          ),
+        if (day.isAllDone)
+          const KidMomentCard(
+            icon: Icons.emoji_events_rounded,
+            tint: NestTileTint.peach,
+            title: KidCopy.choresAllDone,
+            message: KidCopy.choresAllDoneBody,
+          ),
+        const SizedBox(height: NestSpace.xxl),
+        KidFoodCard(meals: day.meals),
+      ],
+    );
+  }
+}

@@ -15,6 +15,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 final class FakeHouseholdRepository implements HouseholdRepository {
   final _households = StreamController<Household?>.broadcast();
   final _members = StreamController<List<Member>>.broadcast();
+  final _member = StreamController<Member?>.broadcast();
 
   /// Set to make the next write fail the way a rules denial does.
   AppFailure? failWritesWith;
@@ -41,11 +42,14 @@ final class FakeHouseholdRepository implements HouseholdRepository {
 
   void emitHousehold(Household? household) => _households.add(household);
   void emitMembers(List<Member> members) => _members.add(members);
+  void emitMember(Member? member) => _member.add(member);
+  void failMemberWith(Object error) => _member.addError(error);
   void failHouseholdWith(Object error) => _households.addError(error);
 
   Future<void> close() async {
     await _households.close();
     await _members.close();
+    await _member.close();
   }
 
   @override
@@ -62,6 +66,15 @@ final class FakeHouseholdRepository implements HouseholdRepository {
 
   @override
   Stream<List<Member>> watchMembers(String householdId) => _members.stream;
+
+  /// Which profile a single-member read asked for — a kid device's own.
+  String? watchedMemberId;
+
+  @override
+  Stream<Member?> watchMember(String householdId, String memberId) {
+    watchedMemberId = memberId;
+    return _member.stream;
+  }
 
   @override
   Future<void> addMember({

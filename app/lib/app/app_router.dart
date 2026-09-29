@@ -54,6 +54,7 @@ import 'design_gallery_access.dart';
 import 'documents_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'kid_routes.dart';
 
 /// A route creates the controller its screen reads, so the controller's
 /// lifetime is the screen's (foundation ADR-0006). The household shell is the
@@ -93,6 +94,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
       path: VerifyEmailScreen.path,
       builder: (context, state) => const VerifyEmailScreen(),
     ),
+    // Kid sign-in: the kid's way in and the kid's home (accounts ADR-0003).
+    ...kidRoutes(session),
     GoRoute(
       path: HouseholdGateScreen.path,
       builder: (context, state) => ChangeNotifierProvider(
@@ -150,6 +153,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             ),
           ],
         ),
+        // The parent's kid sign-in screen (accounts ADR-0003).
+        kidSignInRoute(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(
@@ -287,9 +292,12 @@ String? redirectForSession(SessionController session, String location) {
       SignInScreen.path,
       RegisterScreen.path,
       ForgotPasswordScreen.path,
+      KidRoute.codePath,
     ];
     return waysIn.contains(location) ? null : SignInScreen.path;
   }
+  // A kid device has one screen (accounts ADR-0003).
+  if (state.value is KidSignedIn) return redirectForKid(location);
 
   final householdId = session.activeHouseholdId;
 
