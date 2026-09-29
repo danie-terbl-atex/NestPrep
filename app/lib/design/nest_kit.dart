@@ -4,6 +4,7 @@ library;
 
 export 'primitives/nest_async_view.dart';
 export 'primitives/nest_avatar.dart';
+export 'primitives/nest_badge.dart';
 export 'primitives/nest_banner.dart';
 export 'primitives/nest_bottom_bar.dart';
 export 'primitives/nest_button.dart';

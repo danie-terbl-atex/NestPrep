@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/firestore/server_timestamp_converter.dart';
+import '../../../shared/recurrence/calendar_date_converter.dart';
+import '../../../shared/time/calendar_date.dart';
 import 'document_limits.dart';
 
 part 'household_document.freezed.dart';
@@ -28,6 +30,13 @@ abstract class HouseholdDocument with _$HouseholdDocument {
     /// The member profile that added it, not the account.
     required String uploadedBy,
     @ServerTimestampConverter() DateTime? uploadedAt,
+
+    /// Free-text labels a person searches by (documents ADR-0005). Absent on
+    /// every row written before phase 2, which reads as none (`BE-10`).
+    @Default(<String>[]) List<String> tags,
+
+    /// The day it stops being valid, in the household's zone, if it has one.
+    @NullableCalendarDateConverter() CalendarDate? expiresOn,
   }) = _HouseholdDocument;
 
   const HouseholdDocument._();

@@ -5,11 +5,15 @@ import 'package:provider/provider.dart';
 import '../../../app/documents_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/vault_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/document_library.dart';
 import '../state/document_library_controller.dart';
+import '../state/vault_lock_controller.dart';
 import 'document_folder_row.dart';
 import 'document_folder_sheet.dart';
+import 'household_expiring_soon.dart';
+import 'vault_entry_card.dart';
 
 /// The household's filing cabinet: the folders, and how much is in each.
 ///
@@ -22,6 +26,7 @@ class DocumentLibraryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<DocumentLibraryController>();
     final failure = controller.actionFailure;
+    final householdId = controller.householdId;
     return NestScaffold(
       title: AppCopy.documentsTitle,
       leading: context.canPop()
@@ -33,6 +38,12 @@ class DocumentLibraryScreen extends StatelessWidget {
             )
           : null,
       trailing: [
+        NestIconButton(
+          icon: Icons.search,
+          label: VaultCopy.searchTitle,
+          onPressed: () =>
+              context.push(DocumentsRoute.searchPathFor(householdId)),
+        ),
         if (controller.isAdmin)
           NestIconButton(
             icon: Icons.create_new_folder_outlined,
@@ -59,18 +70,29 @@ class DocumentLibraryScreen extends StatelessWidget {
               state: controller.library,
               isEmpty: (library) => library.isEmpty,
               onRetry: controller.retry,
-              emptyBuilder: (_) => NestEmptyView(
-                title: AppCopy.documentsEmptyTitle,
-                message: controller.isAdmin
-                    ? AppCopy.documentsEmptyBody
-                    : AppCopy.documentsEmptyBodyForMembers,
-                icon: Icons.folder_outlined,
-                actionLabel: controller.isAdmin
-                    ? AppCopy.documentsAddFolder
-                    : null,
-                onAction: controller.isAdmin
-                    ? () => _addFolder(context, controller)
-                    : null,
+              // The way into the vaults stays above the empty state, so a
+              // household with no folders can still reach its passports
+              // (`FE-08`).
+              emptyBuilder: (_) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _VaultWayIn(),
+                  Expanded(
+                    child: NestEmptyView(
+                      title: AppCopy.documentsEmptyTitle,
+                      message: controller.isAdmin
+                          ? AppCopy.documentsEmptyBody
+                          : AppCopy.documentsEmptyBodyForMembers,
+                      icon: Icons.folder_outlined,
+                      actionLabel: controller.isAdmin
+                          ? AppCopy.documentsAddFolder
+                          : null,
+                      onAction: controller.isAdmin
+                          ? () => _addFolder(context, controller)
+                          : null,
+                    ),
+                  ),
+                ],
               ),
               dataBuilder: (context, library) =>
                   _FolderList(library: library, controller: controller),
@@ -102,6 +124,10 @@ class _FolderList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
+        const _VaultWayIn(),
+        HouseholdExpiringSoon(library: library),
+        const NestSectionHeader(title: VaultCopy.householdSection),
+        const SizedBox(height: NestSpace.sm),
         Text(
           AppCopy.documentsOfflineNote,
           style: NestTheme.of(context).text.caption
@@ -142,5 +168,27 @@ class _FolderList extends StatelessWidget {
       return;
     }
     await controller.renameFolder(folder, result.name);
+  }
+}
+
+/// The vault card, reading the lock itself so the folder list does not
+/// rebuild when the vaults open or close.
+class _VaultWayIn extends StatelessWidget {
+  const _VaultWayIn();
+
+  @override
+  Widget build(BuildContext context) {
+    final isUnlocked = context.select<VaultLockController, bool>(
+      (lock) => lock.isUnlocked,
+    );
+    final householdId = context.read<DocumentLibraryController>().householdId;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: NestSpace.xl),
+      child: VaultEntryCard(
+        isUnlocked: isUnlocked,
+        onOpenVaults: () =>
+            context.push(DocumentsRoute.vaultPathFor(householdId)),
+      ),
+    );
   }
 }

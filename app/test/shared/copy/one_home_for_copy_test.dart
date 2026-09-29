@@ -102,24 +102,41 @@ void main() {
     // `AppCopy.loading` existed for a while used by nothing, while a widget
     // said the same word as a literal. An unused constant is the first half of
     // that mistake, so it is worth knowing about.
-    final copySource = File('lib/shared/copy/app_copy.dart').readAsStringSync();
-    final names = RegExp(r'static const (\w+) =')
-        .allMatches(copySource)
-        .map((match) => match.group(1)!)
-        .toSet();
+    // Every copy file, not only `AppCopy`: documents phase 2 keeps its words
+    // in `VaultCopy` beside it, and a file this test did not read would be a
+    // place for unused words to hide.
+    final copyFiles = Directory('lib/shared/copy')
+        .listSync()
+        .whereType<File>()
+        .where((file) => file.path.endsWith('_copy.dart'))
+        .toList();
+    expect(copyFiles.length, greaterThanOrEqualTo(2));
 
     final usedAnywhere = <String>{};
-    for (final file in dartFiles) {
-      final isCopyFile = file.path.endsWith('app_copy.dart');
-      final source = file.readAsStringSync();
-      for (final name in names) {
-        // Inside the copy file a constant is referenced by its bare name:
-        // `weekdayName()` indexes `weekdayNames`, `mealSlotName()` returns
-        // `mealsBreakfast`. More than the declaration itself is a use.
-        final used = isCopyFile
-            ? RegExp('\\b$name\\b').allMatches(source).length > 1
-            : source.contains('AppCopy.$name');
-        if (used) usedAnywhere.add(name);
+    final names = <String>{};
+    for (final copyFile in copyFiles) {
+      final copySource = copyFile.readAsStringSync();
+      final owner = RegExp(r'abstract final class (\w+)')
+          .firstMatch(copySource)!
+          .group(1)!;
+      final declared = RegExp(r'static (?:const|String(?: get)?) (\w+)[ (=]')
+          .allMatches(copySource)
+          .map((match) => '$owner.${match.group(1)!}')
+          .toSet();
+      names.addAll(declared);
+      for (final file in dartFiles) {
+        final isThisCopyFile = file.path == copyFile.path;
+        final source = file.readAsStringSync();
+        for (final qualified in declared) {
+          final name = qualified.substring(owner.length + 1);
+          // Inside the copy file a constant is referenced by its bare name:
+          // `weekdayName()` indexes `weekdayNames`, `mealSlotName()` returns
+          // `mealsBreakfast`. More than the declaration itself is a use.
+          final used = isThisCopyFile
+              ? RegExp('\\b$name\\b').allMatches(source).length > 1
+              : source.contains(qualified);
+          if (used) usedAnywhere.add(qualified);
+        }
       }
     }
 

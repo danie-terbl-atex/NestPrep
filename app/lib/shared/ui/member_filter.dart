@@ -14,6 +14,7 @@ class MemberFilter extends StatelessWidget {
     required this.selectedId,
     required this.onSelect,
     required this.everybodyLabel,
+    this.extraChips = const [],
     super.key,
   });
 
@@ -25,6 +26,10 @@ class MemberFilter extends StatelessWidget {
 
   /// What "no filter" is called here — the two features word it differently.
   final String everybodyLabel;
+
+  /// Choices that are not a person — "Household" on document search — placed
+  /// after "everybody" and before the people.
+  final List<Widget> extraChips;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,10 @@ class MemberFilter extends StatelessWidget {
             isSelected: selectedId == null,
             onTap: () => onSelect(null),
           ),
+          for (final chip in extraChips) ...[
+            const SizedBox(width: NestSpace.sm),
+            chip,
+          ],
           for (final member in members) ...[
             const SizedBox(width: NestSpace.sm),
             NestChip(

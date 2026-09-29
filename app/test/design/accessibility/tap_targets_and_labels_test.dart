@@ -32,6 +32,7 @@ import '../../support/fake_grocery_repository.dart';
 import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
 import '../../support/fake_todo_repository.dart';
+import '../../support/fake_vault.dart';
 import '../../support/household_fixtures.dart';
 import '../../support/pump_screen.dart';
 
@@ -148,6 +149,7 @@ void main() {
     documentDirectory: FakeDocumentDirectory(),
     documentPicker: FakeDocumentPicker(),
     documentOpener: FakeDocumentOpener(),
+    scanIntake: fakeScanIntake(),
     householdId: Fixtures.householdId,
     memberId: Fixtures.samMemberId,
     viewerUid: Fixtures.samUid,
@@ -314,6 +316,7 @@ void main() {
         ChangeNotifierProvider<DocumentLibraryController>.value(
           value: controller,
         ),
+        vaultLockProvider(),
       ],
     );
     repository.emitFolders([
@@ -342,6 +345,7 @@ void main() {
         ChangeNotifierProvider<DocumentLibraryController>.value(
           value: controller,
         ),
+        vaultLockProvider(),
       ],
     );
     repository.emitFolders([

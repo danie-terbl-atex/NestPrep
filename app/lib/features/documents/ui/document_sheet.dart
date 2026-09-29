@@ -5,11 +5,16 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/byte_size.dart';
+import '../../../shared/time/calendar_date.dart';
+import '../../../shared/time/household_clock.dart';
 import '../model/document_folder.dart';
 import '../model/document_limits.dart';
 import '../model/household_document.dart';
 import '../state/document_library_controller.dart';
+import 'document_badges.dart';
 import 'document_preview.dart';
+import 'expiry_field.dart';
+import 'tag_field.dart';
 
 /// Opening a document: what it is, what is in it if the app can show that, and
 /// the ways to change or remove it.
@@ -21,8 +26,10 @@ Future<void> showDocumentSheet({
   required HouseholdDocument document,
   required List<DocumentFolder> folders,
   required bool canManage,
+  List<String> tagSuggestions = const [],
 }) {
   final controller = context.read<DocumentLibraryController>();
+  final today = context.read<HouseholdClock>().today;
   return showNestSheet<void>(
     context: context,
     title: document.name,
@@ -31,6 +38,8 @@ Future<void> showDocumentSheet({
       folders: folders,
       canManage: canManage,
       controller: controller,
+      today: today,
+      tagSuggestions: tagSuggestions,
     ),
   );
 }
@@ -41,12 +50,16 @@ class _DocumentSheetBody extends StatefulWidget {
     required this.folders,
     required this.canManage,
     required this.controller,
+    required this.today,
+    required this.tagSuggestions,
   });
 
   final HouseholdDocument document;
   final List<DocumentFolder> folders;
   final bool canManage;
   final DocumentLibraryController controller;
+  final CalendarDate today;
+  final List<String> tagSuggestions;
 
   @override
   State<_DocumentSheetBody> createState() => _DocumentSheetBodyState();
@@ -55,6 +68,8 @@ class _DocumentSheetBody extends StatefulWidget {
 class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
   late final _name = TextEditingController(text: widget.document.name);
   late String _folderId = widget.document.folderId;
+  late List<String> _tags = widget.document.tags;
+  late CalendarDate? _expiresOn = widget.document.expiresOn;
 
   @override
   void dispose() {
@@ -76,7 +91,9 @@ class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
           if (document.isPreviewable)
             DocumentPreview(
               documentId: document.id,
-              load: () => widget.controller.readDocument(document),
+              load: () async => [
+                await widget.controller.readDocument(document),
+              ],
             )
           else
             NestBanner(
@@ -89,6 +106,17 @@ class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
             NestBytes.format(document.sizeBytes),
             style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
           ),
+          const SizedBox(height: NestSpace.sm),
+          if (!widget.canManage &&
+              DocumentBadges.hasAny(
+                expiresOn: document.expiresOn,
+                tags: document.tags,
+              ))
+            DocumentBadges(
+              expiresOn: document.expiresOn,
+              tags: document.tags,
+              today: widget.today,
+            ),
           const SizedBox(height: NestSpace.lg),
           if (widget.canManage) ...[
             NestTextField(
@@ -115,6 +143,18 @@ class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
                   ),
               ],
             ),
+            const SizedBox(height: NestSpace.lg),
+            TagField(
+              tags: _tags,
+              suggestions: widget.tagSuggestions,
+              onChanged: (tags) => setState(() => _tags = tags),
+            ),
+            const SizedBox(height: NestSpace.lg),
+            ExpiryField(
+              value: _expiresOn,
+              today: widget.today,
+              onChanged: (date) => setState(() => _expiresOn = date),
+            ),
             const SizedBox(height: NestSpace.xxl),
             NestButton(
               label: AppCopy.householdSave,
@@ -138,6 +178,8 @@ class _DocumentSheetBodyState extends State<_DocumentSheetBody> {
       widget.document,
       name: _name.text,
       folderId: _folderId,
+      tags: _tags,
+      expiresOn: _expiresOn,
     );
     navigator.pop();
   }

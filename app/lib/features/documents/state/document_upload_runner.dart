@@ -1,53 +1,71 @@
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/best_effort.dart';
-import '../data/document_repository.dart';
 import '../data/document_store.dart';
 import '../model/picked_document.dart';
 import 'document_upload_state.dart';
+import 'upload_destination.dart';
 
 /// Adding one file: the bytes, then the row, in that order and only that order.
 ///
-/// This is a separate thing from the controller that holds the library because
-/// it is a separate thing to get wrong. An upload is long, it can be stopped
-/// halfway, it can fail after the bytes have landed, and what it leaves behind
-/// when it does is the difference between a document somebody can delete and
-/// bytes nobody can see and nobody stops paying for (`BE-07`, documents
-/// ADR-0001).
-final class DocumentUploadRunner {
+/// This is a separate thing from the controllers that hold the documents
+/// because it is a separate thing to get wrong. An upload is long, it can be
+/// stopped halfway, it can fail after the bytes have landed, and what it
+/// leaves behind when it does is the difference between a document somebody
+/// can delete and bytes nobody can see and nobody stops paying for (`BE-07`,
+/// documents ADR-0001). The household's folders and the personal vaults share
+/// it through an `UploadDestination`.
+final class DocumentUploadRunner<T> {
   DocumentUploadRunner({
-    required DocumentRepository documentRepository,
-    required DocumentStore documentStore,
-    required this.householdId,
-    required this.memberId,
-    required this.viewerUid,
+    required this._destination,
     required void Function() notifyChange,
     required void Function(AppFailure failure) reportFailure,
-  }) : _repository = documentRepository,
-       _store = documentStore,
-       _onChange = notifyChange,
+  }) : _onChange = notifyChange,
        _onFailure = reportFailure;
 
-  final DocumentRepository _repository;
-  final DocumentStore _store;
-  final String householdId;
-  final String memberId;
-  final String viewerUid;
+  final UploadDestination<T> _destination;
   final void Function() _onChange;
   final void Function(AppFailure failure) _onFailure;
 
   DocumentUploadState? _state;
+  var _isPreparing = false;
   DocumentUpload? _inFlight;
-  ({String folderId, PickedDocument file})? _pending;
+  ({T details, PickedDocument file})? _pending;
 
   /// What is being added, or null when nothing is.
   DocumentUploadState? get state => _state;
 
+  /// What the upload in flight, or the one that last failed, was for.
+  T? get details => _pending?.details;
+
   /// Whether the last attempt left a file worth trying again with.
   bool get canRetry => _pending != null && _state == null;
 
-  Future<void> start({required String folderId, required PickedDocument file}) {
-    _pending = (folderId: folderId, file: file);
+  /// A scan is being composed into its file, before any byte is sent.
+  bool get isPreparing => _isPreparing;
+
+  Future<void> start({required T details, required PickedDocument file}) {
+    _pending = (details: details, file: file);
     return _run();
+  }
+
+  /// Makes the file first — composing a scan takes a second or two — and then
+  /// adds it. A file that could not be made is reported like any refusal.
+  Future<void> prepareAndStart({
+    required T details,
+    required Future<PickedDocument> Function() prepare,
+  }) async {
+    _isPreparing = true;
+    _onChange();
+    final PickedDocument file;
+    try {
+      file = await prepare();
+    } on AppFailure catch (failure) {
+      _isPreparing = false;
+      _onFailure(failure);
+      return;
+    }
+    _isPreparing = false;
+    await start(details: details, file: file);
   }
 
   Future<void> retry() => _run();
@@ -69,13 +87,8 @@ final class DocumentUploadRunner {
     final pending = _pending;
     if (pending == null || _state != null) return;
 
-    final documentId = _repository.newDocumentId(householdId);
-    final upload = _store.upload(
-      householdId: householdId,
-      documentId: documentId,
-      uploaderUid: viewerUid,
-      file: pending.file,
-    );
+    final documentId = _destination.mintId(pending.details);
+    final upload = _destination.send(documentId, pending.file, pending.details);
     _inFlight = upload;
     _state = DocumentUploadState(fileName: pending.file.name, fraction: 0);
     _onChange();
@@ -112,19 +125,11 @@ final class DocumentUploadRunner {
   /// screen waits for it, and the object's name is the id the row would have
   /// had, so a sweep can still find whatever it misses (`ENG-10`).
   Future<void> _recordStoredBytes(
-    ({String folderId, PickedDocument file}) pending,
+    ({T details, PickedDocument file}) pending,
     String documentId,
   ) async {
     try {
-      await _repository.addDocument(
-        householdId: householdId,
-        documentId: documentId,
-        folderId: pending.folderId,
-        name: pending.file.name,
-        contentType: pending.file.contentType,
-        sizeBytes: pending.file.sizeBytes,
-        uploadedBy: memberId,
-      );
+      await _destination.record(documentId, pending.file, pending.details);
       _pending = null;
       _onChange();
     } on AppFailure catch (failure) {
@@ -132,8 +137,7 @@ final class DocumentUploadRunner {
       await bestEffort(
         'orphaned document bytes',
         code: 'metadata-write-failed',
-        run: () =>
-            _store.remove(householdId: householdId, documentId: documentId),
+        run: () => _destination.discard(documentId, pending.details),
       );
     }
   }

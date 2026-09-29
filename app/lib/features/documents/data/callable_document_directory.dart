@@ -30,6 +30,19 @@ final class CallableDocumentDirectory implements DocumentDirectory {
     });
   }
 
+  @override
+  Future<void> openVaultDocument({
+    required String householdId,
+    required String ownerMemberId,
+    required String documentId,
+  }) async {
+    await _call('openVaultDocument', {
+      'householdId': householdId,
+      'ownerMemberId': ownerMemberId,
+      'documentId': documentId,
+    });
+  }
+
   Future<void> _call(String name, Map<String, Object?> payload) async {
     try {
       await _functions.httpsCallable(name).call<Object?>(payload);

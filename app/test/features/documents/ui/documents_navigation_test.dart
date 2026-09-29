@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import '../../../support/fake_documents.dart';
 import '../../../support/fake_household.dart';
+import '../../../support/fake_vault.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -43,6 +44,7 @@ void main() {
       documentDirectory: FakeDocumentDirectory(),
       documentPicker: FakeDocumentPicker(),
       documentOpener: FakeDocumentOpener(),
+      scanIntake: fakeScanIntake(),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       viewerUid: Fixtures.samUid,
@@ -90,6 +92,7 @@ void main() {
         ChangeNotifierProvider<DocumentLibraryController>.value(
           value: controller,
         ),
+        vaultLockProvider(),
         ChangeNotifierProvider<HouseholdController>.value(
           value: householdController,
         ),

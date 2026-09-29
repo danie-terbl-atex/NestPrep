@@ -5,6 +5,9 @@ import 'package:nestprep/features/calendar/model/event_exception.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
+import 'package:nestprep/features/documents/model/vault_document.dart';
+import 'package:nestprep/features/documents/model/vault_grant.dart';
+import 'package:nestprep/features/documents/model/vault_view.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/household.dart';
@@ -185,6 +188,31 @@ List<ModelFixture> modelFixtures() {
     sizeBytes: 120000,
     uploadedBy: 'm1',
     uploadedAt: at,
+    tags: const ['School'],
+    expiresOn: CalendarDate(2027, 3, 31),
+  );
+  final vaultDocument = VaultDocument(
+    id: 'v1',
+    name: 'Passport',
+    contentType: 'application/pdf',
+    sizeBytes: 300000,
+    uploadedBy: 'm1',
+    uploadedAt: at,
+    tags: const ['ID'],
+    expiresOn: CalendarDate(2031, 4, 30),
+  );
+  final vaultGrant = VaultGrant(
+    id: 'uidB',
+    memberId: 'm2',
+    grantedBy: 'm1',
+    grantedAt: at,
+  );
+  final vaultView = VaultView(
+    id: 'view1',
+    documentId: 'v1',
+    documentName: 'Passport',
+    viewerMemberId: 'm1',
+    viewedAt: at,
   );
 
   return [
@@ -374,10 +402,51 @@ List<ModelFixture> modelFixtures() {
         'sizeBytes',
         'uploadedBy',
         'uploadedAt',
+        'tags',
+        'expiresOn',
       },
       note:
           'the document id is also the name of its Cloud Storage object, so a '
           'row and its bytes are found from each other (documents ADR-0001).',
+    ),
+    ModelFixture(
+      label: 'VaultDocument',
+      id: 'v1',
+      value: vaultDocument,
+      toJson: vaultDocument.toJson,
+      fromJson: VaultDocument.fromJson,
+      keys: const {
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+        'tags',
+        'expiresOn',
+      },
+      note:
+          'the owner is the path, never a stored field (documents ADR-0002); '
+          'an ownerMemberId key would be a second copy the rules refuse.',
+    ),
+    ModelFixture(
+      label: 'VaultGrant',
+      id: 'uidB',
+      value: vaultGrant,
+      toJson: vaultGrant.toJson,
+      fromJson: VaultGrant.fromJson,
+      keys: const {'memberId', 'grantedBy', 'grantedAt'},
+      note: 'the grantee uid is the document id, which the rules read.',
+    ),
+    ModelFixture(
+      label: 'VaultView',
+      id: 'view1',
+      value: vaultView,
+      toJson: vaultView.toJson,
+      fromJson: VaultView.fromJson,
+      keys: const {'documentId', 'documentName', 'viewerMemberId', 'viewedAt'},
+      note:
+          'written only by openVaultDocument; the app reads it and never '
+          'writes it (documents ADR-0003).',
     ),
   ];
 }

@@ -11,6 +11,7 @@ class NestChip extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
     this.icon,
+    this.semanticLabel,
     super.key,
   });
 
@@ -18,6 +19,10 @@ class NestChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback? onTap;
   final IconData? icon;
+
+  /// What a screen reader says when the tap does something the label alone
+  /// does not — "Remove ID" for a chip that reads "ID".
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +32,7 @@ class NestChip extends StatelessWidget {
     return Semantics(
       button: onTap != null,
       selected: isSelected,
-      label: label,
+      label: semanticLabel ?? label,
       onTap: onTap,
       excludeSemantics: true,
       child: AnimatedContainer(

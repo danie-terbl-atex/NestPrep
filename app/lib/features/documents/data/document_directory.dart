@@ -1,5 +1,6 @@
-/// The two things about documents that Security Rules cannot do, and that are
-/// therefore Cloud Functions (foundation ADR-0002, documents ADR-0001).
+/// The things about documents that Security Rules cannot do, and that are
+/// therefore Cloud Functions (foundation ADR-0002, documents ADR-0001,
+/// ADR-0003).
 abstract interface class DocumentDirectory {
   /// Puts this account's household memberships onto its own ID token, and
   /// refreshes the token so the next Storage call carries them.
@@ -16,5 +17,14 @@ abstract interface class DocumentDirectory {
   Future<void> deleteFolder({
     required String householdId,
     required String folderId,
+  });
+
+  /// Logs that this person is opening a vault document and issues the
+  /// five-minute ticket its bytes need (documents ADR-0003). Refuses with
+  /// `DocumentProblem.vaultNotShared` for a vault not open to them.
+  Future<void> openVaultDocument({
+    required String householdId,
+    required String ownerMemberId,
+    required String documentId,
   });
 }

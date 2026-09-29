@@ -8,6 +8,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_vault.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -29,6 +30,7 @@ void main() {
       documentDirectory: directory,
       documentPicker: picker,
       documentOpener: opener,
+      scanIntake: fakeScanIntake(),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       viewerUid: Fixtures.samUid,
@@ -61,6 +63,7 @@ void main() {
       ChangeNotifierProvider<DocumentLibraryController>.value(
         value: controller,
       ),
+      vaultLockProvider(),
     ],
     brightness: brightness ?? Brightness.light,
     textScale: scale,
@@ -177,6 +180,13 @@ void main() {
     repository.emitDocuments([]);
     await tester.pumpAndSettle();
 
+    expect(tester.takeException(), isNull);
+    // Below the vault's way in at this size, and reachable by scrolling.
+    await tester.scrollUntilVisible(
+      find.text('School reports and letters'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(tester.takeException(), isNull);
     expect(find.text('School reports and letters'), findsOneWidget);
   });

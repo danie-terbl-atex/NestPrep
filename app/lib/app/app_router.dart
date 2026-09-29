@@ -16,14 +16,6 @@ import '../features/accounts/ui/verify_email_screen.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
-import '../features/documents/data/document_directory.dart';
-import '../features/documents/data/document_opener.dart';
-import '../features/documents/data/document_picker.dart';
-import '../features/documents/data/document_repository.dart';
-import '../features/documents/data/document_store.dart';
-import '../features/documents/state/document_library_controller.dart';
-import '../features/documents/ui/document_folder_screen.dart';
-import '../features/documents/ui/document_library_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/state/grocery_list_controller.dart';
 import '../features/groceries/ui/grocery_list_screen.dart';
@@ -48,7 +40,7 @@ import '../features/todos/ui/todo_screen.dart';
 import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'design_gallery_access.dart';
-import 'documents_route.dart';
+import 'documents_shell.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 
@@ -116,37 +108,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
           path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
           builder: (context, state) => const HouseholdScreen(),
         ),
-        // A shell of its own, so the folders screen and a folder share one
-        // controller and one pair of listeners rather than opening a second
-        // set on the way in (documents ADR-0001).
-        ShellRoute(
-          builder: (context, state, child) => ChangeNotifierProvider(
-            create: (context) => DocumentLibraryController(
-              documentRepository: context.read<DocumentRepository>(),
-              documentStore: context.read<DocumentStore>(),
-              documentDirectory: context.read<DocumentDirectory>(),
-              documentPicker: context.read<DocumentPicker>(),
-              documentOpener: context.read<DocumentOpener>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: _viewerMemberId(context),
-              viewerUid: session.uidOrEmpty,
-              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
-            ),
-            child: child,
-          ),
-          routes: [
-            GoRoute(
-              path: DocumentsRoute.path,
-              builder: (context, state) => const DocumentLibraryScreen(),
-            ),
-            GoRoute(
-              path: DocumentsRoute.folderPath,
-              builder: (context, state) => DocumentFolderScreen(
-                folderId: DocumentsRoute.folderIdFrom(state),
-              ),
-            ),
-          ],
-        ),
+        // Documents — folders, vaults, their log and search — in a shell of
+        // its own (documents ADR-0001, ADR-0003).
+        documentsShellRoute(session),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

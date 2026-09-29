@@ -37,6 +37,7 @@ import '../features/meal_planning/data/firestore_meal_repository.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
+import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
 
@@ -117,6 +118,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) => const FileSelectorDocumentPicker(),
   ),
   Provider<DocumentOpener>(create: (context) => const LauncherDocumentOpener()),
+  // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
+  ...documentVaultProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),
