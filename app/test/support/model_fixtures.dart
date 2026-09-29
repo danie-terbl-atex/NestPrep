@@ -33,6 +33,7 @@ import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
+import 'nanny_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -603,6 +604,8 @@ List<ModelFixture> modelFixtures() {
     ),
     // todos phase 2: a child's stars (todos ADR-0003).
     ...chorePointsModelFixtures(),
+    // nanny hub (nanny-hub ADR-0003).
+    ...nannyModelFixtures(),
   ];
 }
 

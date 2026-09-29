@@ -4,6 +4,7 @@ import 'documents_route.dart';
 import 'family_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'nanny_hub_route.dart';
 
 /// Where somebody belongs inside a household, given who they are there, or
 /// null to leave them where they are (household ADR-0003).
@@ -61,6 +62,11 @@ HouseholdArea? _areaAt(String location, String householdId) {
   // a grant of `none`.
   if (location.startsWith(FamilyRoute.pathFor(householdId))) {
     return HouseholdArea.familyProfiles;
+  }
+  // The nanny hub (nanny-hub ADR-0003): a link to a card or a shift is no way
+  // round a grant of `none`.
+  if (location.startsWith(NannyHubRoute.pathFor(householdId))) {
+    return HouseholdArea.nannyHub;
   }
   return null;
 }

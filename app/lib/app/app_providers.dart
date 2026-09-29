@@ -58,6 +58,7 @@ import 'chore_points_providers.dart';
 import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
+import 'nanny_hub_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -181,6 +182,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) =>
         FirestoreFamilyProfileRepository(context.read<FirebaseFirestore>()),
   ),
+  // ---- nanny hub (nanny-hub ADR-0002, ADR-0003) ----
+  ...nannyHubProviders(),
   // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
   ...documentVaultProviders(),
   // todos phase 2: chores that earn kids stars (todos ADR-0003).

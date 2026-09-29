@@ -50,3 +50,5 @@ export { awardChorePoints } from './chore_points/award_chore_points';
 export { reserveRewardPoints } from './chore_points/reserve_reward_points';
 export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
+// ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
+export { endNannyShift } from './nanny_hub/end_nanny_shift';

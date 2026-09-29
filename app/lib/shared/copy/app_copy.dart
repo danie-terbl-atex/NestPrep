@@ -4,6 +4,7 @@ import '../recurrence/recurrence_rule.dart';
 import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'kid_copy.dart';
+import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
 
@@ -12,6 +13,10 @@ export 'access_copy.dart';
 
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
+
+// nanny hub: its words live in their own files, reached through this one.
+export 'nanny_copy.dart';
+export 'nanny_shift_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -383,6 +388,8 @@ abstract final class AppCopy {
     CalendarSyncFailure(:final problem) => CalendarSyncCopy.problem(problem),
     // todos phase 2 (todos ADR-0003).
     PointsFailure(:final problem) => PointsCopy.problem(problem),
+    // nanny hub (nanny-hub ADR-0002).
+    NannyHubFailure(:final problem) => NannyCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

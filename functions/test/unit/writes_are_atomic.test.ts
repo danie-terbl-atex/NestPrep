@@ -172,6 +172,10 @@ describe('every callable declares what it may cost', () => {
         'reserveRewardPoints',
         'reviewChore',
         'settleReward',
+        // Nanny hub: ending a shift writes a summary derived from every entry
+        // the carer logged, which no rule can read or count (nanny-hub
+        // ADR-0002).
+        'endNannyShift',
       ].sort(),
     );
   });

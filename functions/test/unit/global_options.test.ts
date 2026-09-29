@@ -49,9 +49,9 @@ describe('every function — callable, trigger or schedule', () => {
     // schedule (calendar ADR-0003). Documents phase 2: openVaultDocument and
     // the daily expiry sweep (documents ADR-0003, ADR-0005). Todos phase 2:
     // two Firestore triggers that write a child's stars and two callables a
-    // parent settles them with (todos ADR-0003). A feature adds its count and
-    // its line.
-    expect(endpoints()).toHaveLength(35);
+    // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
+    // (nanny-hub ADR-0002). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(36);
   });
 
   it('runs in the one region, which is the database region', () => {

@@ -86,6 +86,19 @@ void main() {
         'opens the platform document scanner',
     'lib/features/documents/data/printing_pdf_page_renderer.dart':
         'rasterises through the platform PDF engine',
+    // nanny hub (nanny-hub ADR-0002, ADR-0003).
+    'lib/app/nanny_hub_providers.dart':
+        'builds the nanny hub providers over live Firebase and plugins',
+    'lib/features/nanny_hub/data/firestore_nanny_hub_repository.dart':
+        'writes Firestore',
+    'lib/features/nanny_hub/data/firestore_shift_repository.dart':
+        'writes Firestore',
+    'lib/features/nanny_hub/data/callable_shift_directory.dart':
+        'calls Functions',
+    'lib/features/nanny_hub/data/storage_photo_store.dart':
+        'wraps FirebaseStorage',
+    'lib/features/nanny_hub/data/image_picker_photo_picker.dart':
+        'opens the platform camera and photo library',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -117,6 +130,15 @@ void main() {
     'lib/features/documents/data/vault_store.dart': 'interface only',
     'lib/features/documents/state/upload_destination.dart': 'interface only',
     'lib/features/documents/model/vault_lock_state.dart': 'two enums only',
+    'lib/features/nanny_hub/data/nanny_hub_repository.dart': 'interface only',
+    'lib/features/nanny_hub/data/shift_repository.dart': 'interface only',
+    'lib/features/nanny_hub/data/shift_directory.dart': 'interface only',
+    'lib/features/nanny_hub/data/photo_store.dart': 'interface only',
+    'lib/features/nanny_hub/data/photo_picker.dart':
+        'an enum and an interface only',
+    'lib/features/nanny_hub/model/contact_kind.dart': 'an enum only',
+    'lib/features/nanny_hub/model/handover_kind.dart': 'an enum only',
+    'lib/features/nanny_hub/model/handover_mood.dart': 'an enum only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their
@@ -124,6 +146,7 @@ void main() {
     // every screen test renders `NestSpace`.
     'lib/design/tokens/nest_spacing.dart': 'const only',
     'lib/app/design_gallery_access.dart': 'const only',
+    'lib/features/nanny_hub/data/nanny_paths.dart': 'const only',
   };
 
   final lcov = File('coverage/lcov.info');

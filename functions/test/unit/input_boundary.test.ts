@@ -13,6 +13,7 @@ import {
 } from '../../src/household/schemas';
 import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
+import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -116,6 +117,12 @@ const validBodies = {
   settleReward: {
     schema: settleRewardInput,
     body: { householdId: 'h1', requestId: 'r1', decision: 'fulfil' },
+  },
+  // Nanny hub: the closing note is required-and-nullable, so the app always
+  // says whether there is one (nanny-hub ADR-0002).
+  endNannyShift: {
+    schema: endNannyShiftInput,
+    body: { householdId: 'h1', shiftId: 'shift-1', closingNote: null },
   },
 } as const;
 
