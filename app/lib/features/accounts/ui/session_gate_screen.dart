@@ -28,16 +28,27 @@ class SessionGateScreen extends StatelessWidget {
           // The very first thing anybody sees on a cold start. Three grey bars
           // with no words is a screen that looks broken for as long as the
           // session read takes, which on a bad connection is a while.
+          // It follows the native splash, so it opens on the same nest in the
+          // same place and the hand-over reads as one screen (ADR-0003).
           _ => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const NestBrandMark(width: NestSize.brandMarkLarge),
+              const SizedBox(height: NestSpace.xxl),
               Text(
                 AppCopy.sessionStarting,
                 style: NestTheme.of(context).text.bodySecondary,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: NestSpace.lg),
-              const NestLoadingView(rows: 3),
+              // One pulsing bar the nest's width, not rows: nothing list-shaped
+              // is coming to this screen, so row placeholders promised content
+              // that never arrives. It still moves, so it still says "working".
+              const NestSkeleton(
+                width: NestSize.brandMarkMedium,
+                height: NestSpace.sm,
+                radius: NestRadius.pill,
+              ),
             ],
           ),
         },

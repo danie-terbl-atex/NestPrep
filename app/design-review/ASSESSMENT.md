@@ -28,7 +28,21 @@ scan. There are now two named formatters — `relative` for a date on its own, `
 of consecutive days — so the choice is made once rather than remembered at each call site. Which day
 is today is still carried by the card's own tint, so nothing was lost.
 
-## Yours to decide
+## Answered by the brand (2026-09-29)
+
+Both questions below were token questions, and the move onto Daniel's logo re-made every token, so
+they were answered then rather than left for a second retheme (design-system ADR-0003):
+
+- **The purples.** There is no purple now. The action is solid forest green; the selected day is a
+  *tonal* teal — soft fill, teal ring, teal number — so the two differ in hue and in weight, and the
+  eye goes to the button. The rule is general: green acts, teal says where you are.
+- **Card separation.** Warmed the page instead of hardening the card: cream page, white card, a
+  firmer warm border. Card against page is now 1.13 : 1 light and 1.18 : 1 dark, the border 1.41 and
+  1.46 against the card, and the contrast test holds floors of 1.12 and 1.4 so they cannot drift back.
+
+The two sections below are kept as they were written, against the lavender direction.
+
+## Yours to decide (as first written)
 
 **1. Two strong purples compete on the week screen.** The *today* pill in the date strip and the
 *Add an event* button are the same saturated accent, roughly the same size and weight. One is state,

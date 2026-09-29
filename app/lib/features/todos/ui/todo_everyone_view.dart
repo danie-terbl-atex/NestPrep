@@ -43,7 +43,6 @@ class TodoEveryoneView extends StatelessWidget {
               ? const NestEmptyView(
                   title: AppCopy.todosEveryoneEmptyTitle,
                   message: AppCopy.todosEveryoneEmptyBody,
-                  icon: Icons.check_circle_outline,
                 )
               : _GroupedList(occurrences: occurrences, board: board),
         ),

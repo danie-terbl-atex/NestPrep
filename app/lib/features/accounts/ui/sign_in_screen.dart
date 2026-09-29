@@ -31,7 +31,7 @@ class SignInScreen extends StatelessWidget {
 
   /// Where the way in sits in the entrance, counted from the welcome's own
   /// last step so the button follows the tagline rather than racing it.
-  static const _waysInStep = 10;
+  static const _waysInStep = 6;
 
   @override
   Widget build(BuildContext context) {

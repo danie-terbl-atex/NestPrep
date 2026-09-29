@@ -29,7 +29,7 @@ class NestBadge extends StatelessWidget {
     final c = nest.colors;
     final (fill, ink) = switch (tone) {
       NestBadgeTone.neutral => (c.surfaceTint, c.inkSecondary),
-      NestBadgeTone.info => (c.accentSoft, c.accentInk),
+      NestBadgeTone.info => (c.secondarySoft, c.secondaryInk),
       NestBadgeTone.warning => (c.warningSoft, c.warning),
       NestBadgeTone.danger => (c.dangerSoft, c.danger),
     };

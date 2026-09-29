@@ -96,7 +96,9 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final ink = isSelected ? nest.colors.onAccent : nest.colors.ink;
+    // The selected day is state, so it takes the tonal teal and leaves the
+    // solid green to the screen's one action (design-system ADR-0003).
+    final ink = isSelected ? nest.colors.secondaryInk : nest.colors.ink;
     return Semantics(
       button: true,
       selected: isSelected,
@@ -135,11 +137,15 @@ class _DayCell extends StatelessWidget {
                 height: NestSize.avatarMedium,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isSelected ? nest.colors.accent : Colors.transparent,
+                  color: isSelected
+                      ? nest.colors.secondarySoft
+                      : Colors.transparent,
                   shape: BoxShape.circle,
-                  border: isToday && !isSelected
+                  // Today is a ring; the selected day adds the tonal fill, so
+                  // the two stay apart when they are not the same day.
+                  border: isToday || isSelected
                       ? Border.all(
-                          color: nest.colors.accent,
+                          color: nest.colors.secondary,
                           width: NestStroke.focus,
                         )
                       : null,
@@ -162,7 +168,7 @@ class _DayCell extends StatelessWidget {
                     ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? nest.colors.accent
+                              ? nest.colors.secondary
                               : nest.colors.inkTertiary,
                           shape: BoxShape.circle,
                         ),

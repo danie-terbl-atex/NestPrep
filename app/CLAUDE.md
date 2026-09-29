@@ -134,5 +134,11 @@ so the on-screen copy cannot tell you the backend was unreachable.
 - iOS is registered in the Firebase project and `ios/Runner/GoogleService-Info.plist` is committed,
   but it is not yet added to the Xcode target: `flutterfire configure` cannot edit this Xcode
   project with the system Ruby's `xcodeproj`. Do that when iOS is first verified.
-- Fonts are bundled under `assets/fonts/` (Plus Jakarta Sans, OFL). `flutter pub get` after
-  changing the `fonts:` block or the family is silently absent.
+- Fonts are bundled under `assets/fonts/` (Plus Jakarta Sans for body, Nunito for headings, both
+  OFL). `flutter pub get` after changing the `fonts:` block or the family is silently absent.
+- The logo's pieces under `assets/brand/` are generated from the vault's logo by
+  `tools/brand/extract_brand_assets.py`, then the icons and splash by `dart run
+  flutter_launcher_icons` and `dart run flutter_native_splash:create`. **The splash generator puts
+  Android 12's styles on non-AppCompat themes**, which stops `FlutterFragmentActivity` (the vault's
+  lock) starting on Android 12+; put them back — `test/app/android_launch_themes_test.dart` fails
+  until you do. Revert its Info.plist re-indent and the icon tool's pbxproj edit.

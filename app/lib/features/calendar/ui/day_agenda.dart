@@ -41,7 +41,6 @@ class DayAgenda extends StatelessWidget {
             '${AppCopy.calendarDayEmpty} '
             '${NestDates.relative(day, week.today).toLowerCase()}',
         message: AppCopy.calendarEmptyBody,
-        icon: Icons.event_available_outlined,
       );
     }
 

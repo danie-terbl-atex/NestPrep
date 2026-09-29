@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'nest_colors.dart';
 
-/// The type scale. One family, four weights, sized for a phone. Headings are
-/// large and friendly; list titles are light so the content, not the chrome,
-/// carries the weight. Colour comes from the theme's ink roles.
+/// The type scale, sized for a phone. Two families: headings speak in the
+/// wordmark's voice — Nunito, rounded, heavy — and everything read at length
+/// is Plus Jakarta Sans (design-system ADR-0003). List titles are light so the
+/// content, not the chrome, carries the weight. Colour comes from the ink
+/// roles.
 @immutable
 class NestTextStyles {
   const NestTextStyles({
@@ -20,9 +22,13 @@ class NestTextStyles {
     required this.button,
   });
 
-  /// Change the family here and everything follows. Bundled under
-  /// `assets/fonts/`; declared in `pubspec.yaml`.
+  /// Change a family here and everything follows. Both are bundled under
+  /// `assets/fonts/` with their OFL licence and declared in `pubspec.yaml`.
   static const fontFamily = 'PlusJakartaSans';
+
+  /// The headings' family: the closest open face to the logo's rounded
+  /// wordmark, at the two heavy weights a heading uses.
+  static const displayFamily = 'Nunito';
 
   /// The greeting on a home screen.
   final TextStyle display;
@@ -51,8 +57,9 @@ class NestTextStyles {
       required double height,
       Color? color,
       double letterSpacing = 0,
+      String family = fontFamily,
     }) => TextStyle(
-      fontFamily: fontFamily,
+      fontFamily: family,
       fontSize: size,
       fontWeight: weight,
       height: height,
@@ -63,17 +70,24 @@ class NestTextStyles {
     return NestTextStyles(
       display: style(
         size: 32,
-        weight: FontWeight.w600,
+        weight: FontWeight.w800,
         height: 1.2,
-        letterSpacing: -0.5,
+        letterSpacing: -0.3,
+        family: displayFamily,
       ),
       headline: style(
         size: 24,
-        weight: FontWeight.w600,
+        weight: FontWeight.w800,
         height: 1.25,
-        letterSpacing: -0.3,
+        letterSpacing: -0.2,
+        family: displayFamily,
       ),
-      title: style(size: 18, weight: FontWeight.w600, height: 1.3),
+      title: style(
+        size: 18,
+        weight: FontWeight.w700,
+        height: 1.3,
+        family: displayFamily,
+      ),
       titleLight: style(
         size: 24,
         weight: FontWeight.w400,

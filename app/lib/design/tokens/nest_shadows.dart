@@ -14,11 +14,11 @@ class NestShadows {
 
   static const light = NestShadows(
     card: [
-      BoxShadow(color: Color(0x14201A3A), blurRadius: 24, offset: Offset(0, 8)),
+      BoxShadow(color: Color(0x1A3B2E1A), blurRadius: 24, offset: Offset(0, 8)),
     ],
     floating: [
       BoxShadow(
-        color: Color(0x1F201A3A),
+        color: Color(0x243B2E1A),
         blurRadius: 32,
         offset: Offset(0, 12),
       ),

@@ -50,7 +50,16 @@ void main() {
   ) async {
     await pump(tester);
 
-    expect(find.text(AppCopy.appName), findsOneWidget);
+    // The name is the logo's own wordmark now, not typed text
+    // (design-system ADR-0003); nest_brand_test.dart proves it reads as the
+    // name, once, as a heading.
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is NestWordmark && widget.semanticsLabel == AppCopy.appName,
+      ),
+      findsOneWidget,
+    );
     expect(find.text(AppCopy.signInTagline), findsOneWidget);
     expect(find.text(AppCopy.signInWithGoogle), findsOneWidget);
   });

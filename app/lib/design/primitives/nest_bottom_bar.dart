@@ -18,7 +18,7 @@ class NestBottomBarItem {
 }
 
 /// The floating pill navigation bar: outlined icons, the selected one in the
-/// accent. Labels are read to assistive tech and shown as tooltips (`FE-13`).
+/// selection teal — where you are is state, not an action (ADR-0003). Labels are read to assistive tech and shown as tooltips (`FE-13`).
 class NestBottomBar extends StatelessWidget {
   const NestBottomBar({
     required this.items,
@@ -98,7 +98,7 @@ class _BarButton extends StatelessWidget {
                 isSelected ? item.selectedIcon : item.icon,
                 key: ValueKey(isSelected),
                 size: NestSize.iconLarge,
-                color: isSelected ? c.accent : c.inkSecondary,
+                color: isSelected ? c.secondary : c.inkSecondary,
               ),
             ),
           ),

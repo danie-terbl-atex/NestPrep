@@ -102,9 +102,15 @@ void main() {
       'The Parkers',
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.widgetWithText(NestButton, AppCopy.householdCreateAction),
+    // The nest and the question sit above the form now, so the button can
+    // be below the fold of the test's surface.
+    final create = find.widgetWithText(
+      NestButton,
+      AppCopy.householdCreateAction,
     );
+    await tester.ensureVisible(create);
+    await tester.pumpAndSettle();
+    await tester.tap(create);
     await tester.pumpAndSettle();
 
     final created = directory.created.single;

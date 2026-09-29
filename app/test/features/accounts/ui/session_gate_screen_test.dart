@@ -47,10 +47,11 @@ void main() {
     await tester.pump();
 
     expect(find.text(AppCopy.sessionStarting), findsOneWidget);
+    expect(find.byType(NestBrandMark), findsOneWidget, reason: 'the splash');
     expect(
-      find.byType(NestLoadingView),
+      find.byType(NestSkeleton),
       findsOneWidget,
-      reason: 'the words go with the skeleton, not instead of it',
+      reason: 'the words go with something that moves, not instead of it',
     );
   });
 

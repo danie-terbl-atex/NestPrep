@@ -47,6 +47,9 @@ class CalendarScreen extends StatelessWidget {
     );
 
     return NestScaffold(
+      // The home tab carries the brand: the small nest where a back button
+      // would be on a screen that has one (design-system ADR-0003).
+      leading: const NestBrandMark(width: NestSize.brandMarkSmall),
       title: AppCopy.calendarTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
       trailing: const [HouseholdLinkButton(), AccountMenuButton()],
