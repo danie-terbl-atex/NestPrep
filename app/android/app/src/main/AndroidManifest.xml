@@ -7,6 +7,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+    <!-- Documents phase 2: scanning a card (documents ADR-0004). ML Kit's
+         scanner runs in Play services and needs no permission of its own; the
+         plugin's fallback camera, on a phone without Play services, does. Not
+         required, so a phone with no camera can still install the app. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+
     <application
         android:label="nestprep"
         android:name="${applicationName}"

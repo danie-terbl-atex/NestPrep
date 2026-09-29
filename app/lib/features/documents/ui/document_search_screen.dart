@@ -18,6 +18,7 @@ import '../state/vault_controller.dart';
 import '../state/vault_lock_controller.dart';
 import 'document_search_filters.dart';
 import 'document_search_results.dart';
+import 'vault_locked_note.dart';
 
 /// Finding a paper by name, person or tag, across the household's folders
 /// and — while they are unlocked — the personal vaults (documents ADR-0005).
@@ -69,14 +70,6 @@ class DocumentSearchScreen extends StatelessWidget {
             onTag: search.toggleTag,
             onExpiringSoon: search.setExpiringSoonOnly,
           ),
-          if (!lock.isUnlocked) ...[
-            const SizedBox(height: NestSpace.md),
-            NestBanner(
-              message: VaultCopy.searchLockedNote,
-              actionLabel: VaultCopy.unlock,
-              onAction: lock.unlock,
-            ),
-          ],
           const SizedBox(height: NestSpace.md),
           Expanded(
             child: NestAsyncView<DocumentLibrary>(
@@ -102,6 +95,9 @@ class DocumentSearchScreen extends StatelessWidget {
                   results: found,
                   ownerNames: names,
                   onClearFilters: search.clear,
+                  header: lock.isUnlocked
+                      ? null
+                      : VaultLockedNote(onUnlock: lock.unlock),
                 );
               },
             ),

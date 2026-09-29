@@ -73,6 +73,33 @@ class GallerySurfacesSection extends StatelessWidget {
               subtitle: 'Routine · Saturdays',
               onTap: () {},
             ),
+            NestListRow(
+              leading: const NestIconTile(
+                icon: Icons.picture_as_pdf_outlined,
+                tint: NestTileTint.peach,
+              ),
+              title: 'Passport',
+              subtitle: 'A row with badges under it',
+              footer: const Wrap(
+                spacing: NestSpace.xs,
+                runSpacing: NestSpace.xs,
+                children: [
+                  NestBadge(
+                    label: 'Expired',
+                    tone: NestBadgeTone.danger,
+                    icon: Icons.error_outline,
+                  ),
+                  NestBadge(
+                    label: 'Expires in 12 days',
+                    tone: NestBadgeTone.warning,
+                    icon: Icons.schedule,
+                  ),
+                  NestBadge(label: 'Coming up', tone: NestBadgeTone.info),
+                  NestBadge(label: 'ID', icon: Icons.sell_outlined),
+                ],
+              ),
+              onTap: () {},
+            ),
             const Wrap(
               spacing: NestSpace.md,
               runSpacing: NestSpace.md,

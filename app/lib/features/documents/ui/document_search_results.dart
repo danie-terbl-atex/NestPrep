@@ -19,6 +19,7 @@ class DocumentSearchResults extends StatelessWidget {
     required this.results,
     required this.ownerNames,
     required this.onClearFilters,
+    this.header,
     super.key,
   });
 
@@ -26,15 +27,29 @@ class DocumentSearchResults extends StatelessWidget {
   final Map<String, String> ownerNames;
   final VoidCallback onClearFilters;
 
+  /// Said above the results — that the vaults were not searched, say.
+  final Widget? header;
+
   @override
   Widget build(BuildContext context) {
+    final top = header;
     if (results.isEmpty) {
-      return NestEmptyView(
+      final empty = NestEmptyView(
         title: VaultCopy.searchNoResultsTitle,
         message: VaultCopy.searchNoResultsBody,
         icon: Icons.search_off,
         actionLabel: VaultCopy.searchClearFilters,
         onAction: onClearFilters,
+      );
+      if (top == null) return empty;
+      // The way to unlock stays above "nothing matches" — the match may be in
+      // a vault (`FE-08`).
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          top,
+          Expanded(child: empty),
+        ],
       );
     }
     final nest = NestTheme.of(context);
@@ -47,9 +62,17 @@ class DocumentSearchResults extends StatelessWidget {
         if (index == 0) {
           return Padding(
             padding: const EdgeInsets.only(bottom: NestSpace.sm),
-            child: Text(
-              VaultCopy.resultCount(results.length),
-              style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (top != null) ...[top, const SizedBox(height: NestSpace.md)],
+                Text(
+                  VaultCopy.resultCount(results.length),
+                  style: nest.text.caption.copyWith(
+                    color: nest.colors.inkTertiary,
+                  ),
+                ),
+              ],
             ),
           );
         }

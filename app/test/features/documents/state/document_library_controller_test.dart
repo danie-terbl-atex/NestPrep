@@ -287,6 +287,64 @@ void main() {
     });
   });
 
+  group('scanning into a folder (documents ADR-0004)', () {
+    test(
+      'the sides become one PDF, added under the name somebody gave it',
+      () async {
+        final composer = FakeScanComposer();
+        final controller = DocumentLibraryController(
+          documentRepository: repository,
+          documentStore: store,
+          documentDirectory: directory,
+          documentPicker: picker,
+          documentOpener: opener,
+          scanIntake: fakeScanIntake(composer: composer),
+          householdId: Fixtures.householdId,
+          memberId: Fixtures.samMemberId,
+          viewerUid: Fixtures.samUid,
+          isAdmin: true,
+        );
+        addTearDown(controller.dispose);
+
+        final sides = (await controller.scanSides())!;
+        final adding = controller.addScan(
+          'f-home',
+          pages: sides,
+          name: 'Car licence',
+        );
+        await pumpEventQueue();
+        await store.nextUpload!.finish();
+        await adding;
+
+        expect(composer.composed, [2]);
+        expect(repository.added.single.name, 'Car licence');
+        expect(repository.added.single.folderId, 'f-home');
+        expect(controller.isPreparing, isFalse);
+      },
+    );
+
+    test('a scanner that cannot run is said on screen', () async {
+      final scanner = FakeDocumentScanner()
+        ..failWith = const DocumentFailure(DocumentProblem.scanFailed);
+      final controller = DocumentLibraryController(
+        documentRepository: repository,
+        documentStore: store,
+        documentDirectory: directory,
+        documentPicker: picker,
+        documentOpener: opener,
+        scanIntake: fakeScanIntake(scanner: scanner),
+        householdId: Fixtures.householdId,
+        memberId: Fixtures.samMemberId,
+        viewerUid: Fixtures.samUid,
+        isAdmin: true,
+      );
+      addTearDown(controller.dispose);
+
+      expect(await controller.scanSides(), isNull);
+      expect(controller.actionFailure, isA<DocumentFailure>());
+    });
+  });
+
   group('deleting a document', () {
     test('takes the bytes before the row', () async {
       final controller = build();

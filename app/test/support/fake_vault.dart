@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:nestprep/features/documents/data/device_lock.dart';
@@ -27,6 +28,12 @@ import 'fake_documents.dart';
 /// bytes, the phone's lock, its scanner, the scan pipeline and the PDF
 /// renderer. One file because they are one substitution, like
 /// `fake_documents.dart` beside it. Nothing here touches a plugin.
+
+/// A real one-pixel PNG, so a screen that draws "the page" has an image to
+/// decode rather than three bytes the engine refuses.
+final Uint8List onePixelPng = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+);
 
 final class FakeVaultRepository implements VaultRepository {
   final _vaults = <String, StreamController<List<VaultDocument>>>{};
@@ -181,7 +188,7 @@ final class FakeVaultRepository implements VaultRepository {
 final class FakeVaultStore implements VaultStore {
   FakeDocumentUpload? nextUpload;
   AppFailure? failReadWith;
-  Uint8List bytes = Uint8List.fromList([1, 2, 3]);
+  Uint8List bytes = onePixelPng;
   final uploads =
       <({String owner, String documentId, String uploaderUid, String name})>[];
   final reads = <String>[];
@@ -245,10 +252,7 @@ final class FakeDeviceLock implements DeviceLock {
 
 final class FakeDocumentScanner implements DocumentScanner {
   /// What the next scan returns; null is somebody backing out.
-  List<Uint8List>? next = [
-    Uint8List.fromList([1]),
-    Uint8List.fromList([2]),
-  ];
+  List<Uint8List>? next = [onePixelPng, onePixelPng];
   AppFailure? failWith;
   int? askedForPages;
 
@@ -276,9 +280,7 @@ final class FakeScanComposer implements ScanComposer {
 }
 
 final class FakePdfPageRenderer implements PdfPageRenderer {
-  List<Uint8List> pages = [
-    Uint8List.fromList([9]),
-  ];
+  List<Uint8List> pages = [onePixelPng];
   AppFailure? failWith;
   var renders = 0;
 
