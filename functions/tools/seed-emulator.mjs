@@ -14,6 +14,8 @@
  *
  *     npm run seed        (with the emulator suite already running)
  */
+import { cannedPlanWeekReply } from './canned-plan-week.mjs';
+
 const HOST = process.env.NESTPREP_AUTH_EMULATOR ?? 'http://127.0.0.1:9099';
 const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'nestprep-643b7';
 const PASSWORD = 'nestprep';
@@ -84,6 +86,20 @@ async function seedLetterReply() {
   return 'canned school-letter reply for the emulator model';
 }
 
-const results = await Promise.all([...ACCOUNTS.map(seed), seedLetterReply()]);
+/** Plan my week's canned week (lunch-box ADR-0011), in the Function's placeholders. */
+async function seedPlanWeekReply() {
+  const url = `${FIRESTORE}/v1/projects/${PROJECT}/databases/(default)/documents/aiEmulator/planMyWeek`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
+    body: JSON.stringify({
+      fields: { reply: { stringValue: JSON.stringify(cannedPlanWeekReply) } },
+    }),
+  });
+  if (!response.ok) throw new Error(`canned plan-week reply: ${response.status}`);
+  return 'canned plan-my-week reply for the emulator model';
+}
+
+const results = await Promise.all([...ACCOUNTS.map(seed), seedLetterReply(), seedPlanWeekReply()]);
 for (const line of results) console.log(line);
 console.log(`\npassword for all of them: ${PASSWORD}`);

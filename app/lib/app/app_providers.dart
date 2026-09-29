@@ -65,6 +65,7 @@ import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
+import 'plan_week_providers.dart';
 import 'subscription_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
@@ -212,6 +213,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // calendar V2's own (calendar ADR-0005, ADR-0006); the V2 switches are
   // provided once, above (foundation ADR-0014).
   ...calendarV2Providers(),
+  // plan my week with AI (lunch-box ADR-0011).
+  ...planWeekProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

@@ -7,10 +7,11 @@ match /groceryItems/{itemId} {
     && request.resource.data.keys().hasOnly(
          ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy', 'source'])
     && isNonEmptyString(request.resource.data.name)
-    // Where a line nobody typed came from (lunch-box ADR-0006); a typed one
-    // has none. `GrocerySource` in the app spells the same list.
+    // Where a line nobody typed came from (lunch-box ADR-0006; `plan` is a
+    // new dinner's ingredients from plan my week, ADR-0011); a typed one has
+    // none. `GrocerySource` in the app spells the same list.
     && (!('source' in request.resource.data)
-          || request.resource.data.source in ['lunch', 'pantry'])
+          || request.resource.data.source in ['lunch', 'pantry', 'plan'])
     && isOwnMember(householdId, request.resource.data.addedBy)
     && isServerTime('addedAt')
     && request.resource.data.boughtAt == null

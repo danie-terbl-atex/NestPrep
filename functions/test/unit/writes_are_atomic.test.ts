@@ -190,6 +190,10 @@ describe('every callable declares what it may cost', () => {
         // its service account, behind a monthly cap claimed in a transaction
         // (calendar ADR-0005, foundation ADR-0015).
         'readSchoolLetter',
+        // Plan my week: a proposal from the model, behind premium and the same
+        // monthly cap; it writes nothing but the cap's own ledger (lunch-box
+        // ADR-0011, foundation ADR-0015).
+        'planMyWeek',
       ].sort(),
     );
   });

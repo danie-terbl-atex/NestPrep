@@ -239,6 +239,10 @@ void main() {
     // Either one's failures went to its own onError already.
     '_packedSubscription?.cancel())',
     '_todaySubscription?.cancel())',
+    // plan my week (lunch-box ADR-0011): letting go of the meal library and
+    // the week's dinners; their failures went to their own onError.
+    '_librarySubscription?.cancel())',
+    '_weekSubscription?.cancel())',
     // ---- calendar V2: the shared week (calendar ADR-0006) ----
     // Moving the week cancels two reads and opens two; the new reads send
     // their failures to their own onError and onto the week's state.

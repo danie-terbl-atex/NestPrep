@@ -15,6 +15,7 @@ import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
 import { readSchoolLetterInput } from '../../src/school_letter/schemas';
+import { planMyWeekInput } from '../../src/plan_week/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -152,6 +153,19 @@ const validBodies = {
   readSchoolLetter: {
     schema: readSchoolLetterInput,
     body: { householdId: 'h1', mimeType: 'application/pdf', data: 'JVBERi0xLjc=' },
+  },
+  // Plan my week: every option is said, so nothing defaults on the server
+  // (lunch-box ADR-0011).
+  planMyWeek: {
+    schema: planMyWeekInput,
+    body: {
+      householdId: 'h1',
+      week: '2026-W40',
+      childIds: ['m-kid'],
+      includeDinners: true,
+      useWhatsInTheHouse: false,
+      budget: 'none',
+    },
   },
 } as const;
 

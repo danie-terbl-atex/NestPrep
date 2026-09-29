@@ -22,6 +22,7 @@ import 'app_router.dart';
 import 'household_route.dart';
 import 'lunch_planning_routes.dart';
 import 'lunch_route.dart';
+import 'plan_week_routes.dart';
 import 'viewer_member.dart';
 
 /// Lunch boxes' routes under the household shell (lunch-box ADR-0001,
@@ -92,5 +93,7 @@ ShellRoute lunchRoutes() => ShellRoute(
       ),
     ),
     ...lunchPlanningRoutes(),
+    // plan my week with AI (lunch-box ADR-0011).
+    planWeekRoute(),
   ],
 );

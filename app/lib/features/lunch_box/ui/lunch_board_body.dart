@@ -7,6 +7,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../family_profiles/ui/food_rules_summary.dart';
 import '../../household/model/household_view.dart';
+import '../../plan_week/ui/plan_week_entry_card.dart';
 import '../model/lunch_board.dart';
 import '../state/lunch_board_controller.dart';
 import 'lunch_auto_fill_note.dart';
@@ -47,6 +48,10 @@ class LunchBoardBody extends StatelessWidget {
           ),
           const SizedBox(height: NestSpace.md),
         ],
+        // plan my week with AI — the week in one tap (lunch-box ADR-0011).
+        NestRiseIn(
+          child: PlanWeekEntryCard(board: board, canEdit: canEdit),
+        ),
         NestRiseIn(
           index: 1,
           child: LunchHeroCard(

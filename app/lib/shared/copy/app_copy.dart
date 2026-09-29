@@ -10,6 +10,7 @@ import 'lunch_copy.dart';
 import 'lunch_planning_copy.dart';
 import 'mental_load_copy.dart';
 import 'nanny_copy.dart';
+import 'plan_week_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
 import 'school_letter_copy.dart';
@@ -42,6 +43,8 @@ export 'mental_load_copy.dart';
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';
+// plan my week with AI: its words live in their own file (lunch-box ADR-0011).
+export 'plan_week_copy.dart';
 export 'school_letter_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
@@ -431,6 +434,8 @@ abstract final class AppCopy {
     AiFailure(:final problem) => AiCopy.problem(problem),
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
+    // plan my week with AI (lunch-box ADR-0011).
+    PlanWeekFailure(:final problem) => PlanWeekCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

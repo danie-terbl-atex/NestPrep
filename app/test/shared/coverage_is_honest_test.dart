@@ -120,6 +120,10 @@ void main() {
         'calls Functions',
     'lib/features/mental_load/data/platform_card_image_sharer.dart':
         'opens the platform share sheet',
+    // Plan my week (lunch-box ADR-0011).
+    'lib/app/plan_week_providers.dart':
+        'builds the planner over live Functions',
+    'lib/features/plan_week/data/callable_week_planner.dart': 'calls Functions',
 
     // Found absent on 2026-09-29 with a fresh report, from features built in
     // parallel: each wraps a platform or a live Firebase.
@@ -210,6 +214,7 @@ void main() {
     'lib/features/school_letter/data/letter_picker.dart':
         'an enum and an interface only',
     'lib/features/mental_load/data/card_image_sharer.dart': 'interface only',
+    'lib/features/plan_week/data/week_planner.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

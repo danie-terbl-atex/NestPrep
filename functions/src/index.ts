@@ -62,3 +62,6 @@ export { setChildProfile } from './family_profiles/set_child_profile';
 
 // ---- calendar V2: snap a school letter, the first AI call (calendar ADR-0005, foundation ADR-0015) ----
 export { readSchoolLetter } from './school_letter/read_school_letter';
+
+// ---- plan my week with AI: a proposal, never a write (lunch-box ADR-0011, foundation ADR-0015) ----
+export { planMyWeek } from './plan_week/plan_my_week';
