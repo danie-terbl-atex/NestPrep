@@ -408,6 +408,34 @@ final class PremiumRequiredFailure extends AppFailure {
   final PremiumFeature feature;
 }
 
+// ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
+
+/// Why sharing or entering a referral code did not happen. The server's
+/// `REFERRAL_REFUSALS` is the other half, and `referral_contract_test.dart`
+/// reads both; membership refusals stay `HouseholdProblem`.
+enum ReferralProblem {
+  /// Switched off in `appConfig/flags` (foundation ADR-0014).
+  referralsOff,
+
+  /// A helper, carer or kid asked. Referring is the family's.
+  onlyFamilyCanRefer,
+  referralCodeNotFound,
+
+  /// The household's own code, or one from a household somebody here is in.
+  ownReferralCode,
+  alreadyRedeemed,
+
+  /// A code is entered in the household's first seven days.
+  tooLateToRedeem,
+  tooManyRedemptions,
+}
+
+final class ReferralFailure extends AppFailure {
+  const ReferralFailure(this.problem);
+
+  final ReferralProblem problem;
+}
+
 /// Anything not recognised. The cause is kept for logging, never for display.
 final class UnknownFailure extends AppFailure {
   const UnknownFailure(this.cause);

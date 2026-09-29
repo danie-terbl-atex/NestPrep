@@ -9,6 +9,7 @@ import 'lunch_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'referral_copy.dart';
 import 'subscription_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
@@ -26,6 +27,9 @@ export 'lunch_copy.dart';
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';
+
+// referrals: give a month, get a month (subscriptions ADR-0002).
+export 'referral_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -408,6 +412,8 @@ abstract final class AppCopy {
     PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
       feature,
     ),
+    // referrals (subscriptions ADR-0002)
+    ReferralFailure(:final problem) => ReferralCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

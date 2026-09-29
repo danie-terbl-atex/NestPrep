@@ -39,7 +39,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are forty-two of them, so a new one cannot slip past these checks', () => {
+  it('there are forty-five of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -52,8 +52,10 @@ describe('every function — callable, trigger or schedule', () => {
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
     // (nanny-hub ADR-0002). Subscriptions: six — three callables, the App
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
-    // (subscriptions ADR-0001). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(42);
+    // (subscriptions ADR-0001). Referrals: two callables (subscriptions
+    // ADR-0002); conversion by trigger: recordPaywallOpened (product-analytics
+    // ADR-0002). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(45);
   });
 
   it('runs in the one region, which is the database region', () => {

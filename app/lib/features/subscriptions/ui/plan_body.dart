@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/referral_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../household/model/household_view.dart';
+import '../../referrals/ui/referral_mention.dart';
+import '../../referrals/ui/referrals_offered.dart';
 import '../model/entitlement.dart';
 import '../model/premium_feature.dart';
 import '../state/plan_controller.dart';
@@ -56,6 +60,7 @@ class PlanBody extends StatelessWidget {
                 ? null
                 : NestDates.full(clock.dateOf(until), clock.today),
             buyerName: buyerName,
+            now: now,
           ),
         ),
         const SizedBox(height: NestSpace.lg),
@@ -76,6 +81,13 @@ class PlanBody extends StatelessWidget {
           )
         else
           const NestBanner(message: SubscriptionCopy.askAParent),
+        // Give a month, get a month (subscriptions ADR-0002).
+        if (referralsOffered(context)) ...[
+          const SizedBox(height: NestSpace.lg),
+          ReferralMention(
+            onTap: () => context.push(ReferralRoute.pathFor(view.household.id)),
+          ),
+        ],
         const SizedBox(height: NestSpace.xl),
         if (view.permissions.isFamily)
           PlanActions(

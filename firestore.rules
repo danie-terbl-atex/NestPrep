@@ -269,6 +269,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ==== rules/firestore/root/app_config.rules ====
+    // ---- app config: the V2 switches (foundation ADR-0014) ----
+    // One document, `appConfig/flags`: a boolean per V2 capability. Anybody may
+    // read it — it is a list of switches, not anybody's data — and nobody writes
+    // it from a client; Daniel sets it in the console. Any other id here is
+    // closed, so the collection cannot quietly grow into a place for data.
+    match /appConfig/{configId} {
+      allow get: if configId == 'flags';
+      allow list: if false;
+      allow write: if false;
+    }
+
     // ==== rules/firestore/root/calendar_sync.rules ====
     // ---- calendar sync, the credentials (calendar ADR-0003) ----
     // A refresh token or a calendar link, a connection in flight, and a feed
@@ -327,6 +339,21 @@ service cloud.firestore {
     match /analyticsWeeks/{week} {
       allow read: if isSignedIn() && request.auth.token.get('analyticsReader', false) == true;
       allow write: if false;
+    }
+
+    // ==== rules/firestore/root/referrals.rules ====
+    // ---- referrals (subscriptions ADR-0002) ----
+    // Which household a code is, and the ledger of every referral. Functions
+    // alone read and write them: a readable code index could be walked to find
+    // every household's code, and the ledger pairs two households that must
+    // never learn each other's ids.
+
+    match /referralCodes/{code} {
+      allow read, write: if false;
+    }
+
+    match /referrals/{referredHouseholdId} {
+      allow read, write: if false;
     }
 
     // ==== rules/firestore/root/subscriptions.rules ====
@@ -1870,6 +1897,31 @@ service cloud.firestore {
                 || data.get('photoId', null) != null)
           && data.at is timestamp
           && data.at <= request.time + duration.value(5, 'm');
+      }
+
+      // ==== rules/firestore/household/referrals.rules ====
+      // ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
+      //
+      // The household's own code, the lines of every referral it took part in,
+      // and the free months it was given. Family reads them — like buying,
+      // referring is the family's, so a helper, carer or kid sees none of it.
+      // Nobody writes them from a client: a code, a referral's progress and a
+      // month of premium are all written by Functions alone, so no phone can
+      // give itself a month.
+
+      match /referral/{document} {
+        allow read: if isFamily(householdId);
+        allow write: if false;
+      }
+
+      match /referralHistory/{entryId} {
+        allow read: if isFamily(householdId);
+        allow write: if false;
+      }
+
+      match /premiumGrants/{grantId} {
+        allow read: if isFamily(householdId);
+        allow write: if false;
       }
 
       // ==== rules/firestore/household/subscriptions.rules ====

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Prints the beta numbers, one row per week, newest first (product-analytics
- * ADR-0001). The same totals the Beta numbers screen shows.
+ * ADR-0001), then premium conversion by trigger and referrals (ADR-0002). The
+ * same totals the Beta numbers screen shows.
  *
  *     npm run build                                  # this reads lib/, not src/
  *     npm run beta-numbers                           # the last 12 weeks
@@ -22,6 +23,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 import { WEEKLY_TOTALS } from '../lib/product_analytics/analytics_documents.js';
 import { readoutTable, storedWeeklyTotals } from '../lib/product_analytics/beta_numbers_readout.js';
+import { premiumTable } from '../lib/product_analytics/premium_readout.js';
 import { rollupWeek, weeksToRollUp } from '../lib/product_analytics/weekly_rollup.js';
 
 const PROJECT = process.env.NESTPREP_PROJECT ?? 'nestprep-643b7';
@@ -58,3 +60,6 @@ for (const document of snapshot.docs) {
 }
 
 console.log(readoutTable(rows));
+// Premium and referrals (product-analytics ADR-0002): conversion rate by the
+// feature that opened the paywall, and what give-a-month-get-a-month did.
+if (rows.length > 0) console.log(`\n${premiumTable(rows)}`);

@@ -6,6 +6,8 @@ import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../model/weekly_numbers.dart';
 import 'beta_number_tile.dart';
+import 'beta_tile_grid.dart';
+import 'premium_numbers.dart';
 
 /// One week's three beta numbers on a card (product-analytics ADR-0001).
 ///
@@ -27,11 +29,6 @@ class WeeklyNumbersCard extends StatelessWidget {
   final CalendarDate today;
   final bool isCurrent;
 
-  /// Narrower than this at 100% text, tiles wrap rather than squeeze. It grows
-  /// with the text setting, so 200% text wraps sooner instead of clipping
-  /// (`FE-13`, `FE-14`).
-  static const _tileMinWidth = 88.0;
-
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
@@ -39,7 +36,6 @@ class WeeklyNumbersCard extends StatelessWidget {
     final weekRange = NestDates.weekRange(numbers.weekStart);
     final computedAt = numbers.computedAt;
     final percent = numbers.inviteRatePercent;
-    final minWidth = MediaQuery.textScalerOf(context).scale(_tileMinWidth);
 
     final activeFamilies = BetaNumberTile(
       label: copy.activeFamilies,
@@ -79,22 +75,13 @@ class WeeklyNumbersCard extends StatelessWidget {
             activeFamilies,
             const SizedBox(height: NestSpace.xl),
           ],
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final width = _tileWidth(
-                available: constraints.maxWidth,
-                count: tiles.length,
-                minWidth: minWidth,
-              );
-              return Wrap(
-                spacing: NestSpace.lg,
-                runSpacing: NestSpace.lg,
-                children: [
-                  for (final tile in tiles) SizedBox(width: width, child: tile),
-                ],
-              );
-            },
-          ),
+          BetaTileGrid(tiles: tiles),
+          // Premium and referrals (product-analytics ADR-0002): always this
+          // week, and an earlier week only when there was any.
+          if (isCurrent || numbers.hasPremiumActivity) ...[
+            const SizedBox(height: NestSpace.xl),
+            PremiumNumbers(numbers: numbers),
+          ],
           if (computedAt != null) ...[
             const SizedBox(height: NestSpace.lg),
             Text(
@@ -110,20 +97,5 @@ class WeeklyNumbersCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  /// All [count] across when they fit, then one fewer, down to one a row —
-  /// never narrower than [minWidth].
-  double _tileWidth({
-    required double available,
-    required int count,
-    required double minWidth,
-  }) {
-    const gap = NestSpace.lg;
-    for (var across = count; across > 1; across -= 1) {
-      final width = (available - gap * (across - 1)) / across;
-      if (width >= minWidth) return width;
-    }
-    return available;
   }
 }

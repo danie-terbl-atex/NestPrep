@@ -5,19 +5,18 @@ import {
   type Transaction,
 } from 'firebase-admin/firestore';
 
-import { type Entitlement, entitlementFrom, type LinkedPurchase } from './entitlement';
+import type { Entitlement } from './entitlement';
+import {
+  type HouseholdPremium,
+  linkedOf,
+  readHouseholdPremium,
+  stageHouseholdPremium,
+} from './household_premium';
+import { entitlementFrom } from './entitlement';
 import { refuseSubscription } from './errors';
 import type { Plan } from './purchase_state';
 import type { Cohort } from './subscription_config';
-import {
-  PURCHASES_PER_HOUSEHOLD,
-  STORE_PURCHASES,
-  type StoredPurchase,
-  entitlementFields,
-  entitlementRef,
-  storePurchaseRef,
-  storedPurchase,
-} from './subscription_documents';
+import { type StoredPurchase, storePurchaseRef, storedPurchase } from './subscription_documents';
 import type { VerifiedPurchase } from './verified_purchase';
 
 /**
@@ -81,8 +80,8 @@ export async function recordPurchase(
     const affected = [
       ...new Set([householdId, previousHousehold, replaced?.householdId ?? null]),
     ].filter((id): id is string => id !== null);
-    const linkedBy: Record<string, Record<string, StoredPurchase>> = {};
-    for (const id of affected) linkedBy[id] = await readLinked(transaction, store, id);
+    const premiumOf: Record<string, HouseholdPremium> = {};
+    for (const id of affected) premiumOf[id] = await readHouseholdPremium(transaction, store, id);
 
     // Every read is done; from here on, only writes (a transaction's rule).
     const updated = storedAfter(request, existing, householdId);
@@ -101,7 +100,7 @@ export async function recordPurchase(
     }
 
     const entitlement = restateEntitlements(transaction, store, {
-      linkedBy,
+      premiumOf,
       recounted: new Set([ref.id, replacedRef?.id]),
       householdId,
       updated,
@@ -112,7 +111,7 @@ export async function recordPurchase(
 }
 
 interface Restatement {
-  readonly linkedBy: Readonly<Record<string, Readonly<Record<string, StoredPurchase>>>>;
+  readonly premiumOf: Readonly<Record<string, HouseholdPremium>>;
   /** Documents whose stored copy is out of date: the one just recorded, and the one it replaced. */
   readonly recounted: ReadonlySet<string | undefined>;
   readonly householdId: string | null;
@@ -122,22 +121,31 @@ interface Restatement {
 
 /**
  * Writes the entitlement of every household the purchase touched, from what
- * was read plus what was just recorded, and answers with [householdId]'s.
+ * was read plus what was just recorded — composed with each household's
+ * granted months (subscriptions ADR-0002) — and answers with [householdId]'s.
  */
 function restateEntitlements(
   transaction: Transaction,
   store: Firestore,
   restatement: Restatement,
 ): Entitlement | null {
-  const { linkedBy, recounted, householdId, updated, now } = restatement;
+  const { premiumOf, recounted, householdId, updated, now } = restatement;
   let entitlement: Entitlement | null = null;
-  for (const [id, purchases] of Object.entries(linkedBy)) {
-    const others = Object.entries(purchases)
+  for (const [id, premium] of Object.entries(premiumOf)) {
+    const others = Object.entries(premium.purchases)
       .filter(([key]) => !recounted.has(key))
       .map(([, other]) => other);
     const isGiving = id === householdId && updated.supersededBy === null;
-    const next = entitlementFrom((isGiving ? [...others, updated] : others).map(linkedOf), now);
-    transaction.set(entitlementRef(store, id), entitlementFields(next));
+    const storeEntitlement = entitlementFrom(
+      (isGiving ? [...others, updated] : others).map(linkedOf),
+      now,
+    );
+    const next = stageHouseholdPremium(
+      transaction,
+      store,
+      { householdId: id, storeEntitlement, premium },
+      now,
+    );
     if (id === householdId) entitlement = next;
   }
   return entitlement;
@@ -172,21 +180,6 @@ function storedFields(purchase: StoredPurchase): Record<string, unknown> {
   };
 }
 
-function linkedOf(purchase: StoredPurchase): LinkedPurchase {
-  return {
-    store: purchase.store,
-    plan: purchase.plan,
-    linkedByMemberId: purchase.linkedByMemberId,
-    state: {
-      status: purchase.status,
-      accessUntil: purchase.accessUntil,
-      willRenew: purchase.willRenew,
-      productId: purchase.productId,
-      isTest: purchase.isTest,
-    },
-  };
-}
-
 async function readStored(
   transaction: Transaction,
   ref: DocumentReference,
@@ -198,24 +191,4 @@ async function readStored(
   // treating it as absent would let a second household claim the purchase.
   if (!parsed.success) throw new Error(`unreadable store purchase ${ref.id}`);
   return parsed.data;
-}
-
-/** The subscriptions giving [householdId] premium, keyed by document id. */
-async function readLinked(
-  transaction: Transaction,
-  store: Firestore,
-  householdId: string,
-): Promise<Record<string, StoredPurchase>> {
-  const snapshot = await transaction.get(
-    store
-      .collection(STORE_PURCHASES)
-      .where('householdId', '==', householdId)
-      .limit(PURCHASES_PER_HOUSEHOLD),
-  );
-  return Object.fromEntries(
-    snapshot.docs.flatMap((doc) => {
-      const parsed = storedPurchase.safeParse(doc.data());
-      return parsed.success && parsed.data.supersededBy === null ? [[doc.id, parsed.data]] : [];
-    }),
-  );
 }

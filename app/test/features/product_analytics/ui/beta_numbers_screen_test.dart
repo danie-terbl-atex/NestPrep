@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/product_analytics/state/beta_numbers_controller.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
@@ -169,10 +170,81 @@ void main() {
     repository.emitWeeks(twoWeeks);
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(find.text('21 – 27 Sep'), 200);
     expect(find.text(copy.earlierWeeks), findsOneWidget);
     expect(find.text('21 – 27 Sep'), findsOneWidget);
     await tester.scrollUntilVisible(find.text(copy.howCountedTitle), 200);
     expect(find.text(copy.howCountedTitle), findsOneWidget);
+  });
+
+  group('premium and referrals (product-analytics ADR-0002)', () {
+    final premiumWeek = twoWeeks.first.copyWith(
+      paywallFamilies: 8,
+      paywallFamiliesByTrigger: {'additionalChild': 4, 'prepList': 4},
+      premiumConversions: 2,
+      premiumConversionsByTrigger: {'additionalChild': 1, 'direct': 1},
+      referralsRedeemed: 3,
+      referralsQualified: 2,
+      referralMonthsGiven: 4,
+    );
+
+    testWidgets('shows conversion over the families shown premium, and what '
+        'opened the paywall for each', (tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 2000 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(tester);
+      repository.emitWeeks([premiumWeek]);
+      await tester.pumpAndSettle();
+
+      expect(find.text(copy.percent(25)), findsOneWidget);
+      expect(
+        find.text(copy.conversionDetail(bought: 2, shown: 8)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(copy.triggerName(PremiumFeature.additionalChild)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(copy.triggerRate(bought: 1, shown: 4, percent: 25)),
+        findsOneWidget,
+      );
+      expect(
+        find.text(copy.triggerRate(bought: 0, shown: 4, percent: 0)),
+        findsOneWidget,
+      );
+      // Bought from the plan screen with no opening recorded: said as a count.
+      expect(find.text(copy.triggerRate(bought: 1, shown: 0)), findsOneWidget);
+      expect(
+        find.text(copy.triggerName(PremiumFeature.budgetMode)),
+        findsNothing,
+      );
+    });
+
+    testWidgets('shows what give a month, get a month did', (tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 2000 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pump(tester);
+      repository.emitWeeks([premiumWeek]);
+      await tester.pumpAndSettle();
+
+      expect(find.text(copy.referrals), findsOneWidget);
+      expect(
+        find.text(copy.referralsDetail(qualified: 2, months: 4)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('says "none shown" this week rather than a 0% conversion', (
+      tester,
+    ) async {
+      await pump(tester);
+      repository.emitWeeks(twoWeeks);
+      await tester.pumpAndSettle();
+      expect(find.text(copy.noPaywall), findsOneWidget);
+    });
   });
 
   testWidgets(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../../shared/copy/referral_copy.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../model/entitlement.dart';
 import '../model/entitlement_status.dart';
@@ -15,6 +16,7 @@ class PlanStatusCard extends StatelessWidget {
     required this.isPremium,
     required this.untilLabel,
     required this.buyerName,
+    this.now,
     super.key,
   });
 
@@ -26,6 +28,9 @@ class PlanStatusCard extends StatelessWidget {
 
   /// Who bought it, named, or null when nobody has.
   final String? buyerName;
+
+  /// What "now" is, for telling a given month from a bought one.
+  final DateTime? now;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +67,13 @@ class PlanStatusCard extends StatelessWidget {
           ),
           const SizedBox(height: NestSpace.md),
           Text(detail, style: nest.text.body),
+          if (entitlement.referralMonthsWaiting > 0 && isPremium) ...[
+            const SizedBox(height: NestSpace.sm),
+            Text(
+              ReferralCopy.waiting(entitlement.referralMonthsWaiting),
+              style: nest.text.caption,
+            ),
+          ],
           if (buyer != null &&
               entitlement.status != EntitlementStatus.none) ...[
             const SizedBox(height: NestSpace.sm),
@@ -76,6 +88,11 @@ class PlanStatusCard extends StatelessWidget {
   }
 
   String _detail() {
+    final until = untilLabel;
+    final at = now;
+    if (at != null && until != null && entitlement.isGivenOnlyAt(at)) {
+      return SubscriptionCopy.givenUntil(until);
+    }
     switch (entitlement.status) {
       case EntitlementStatus.none:
         return SubscriptionCopy.freeSummary;
@@ -86,7 +103,6 @@ class PlanStatusCard extends StatelessWidget {
       default:
         break;
     }
-    final until = untilLabel;
     if (!isPremium || until == null) return SubscriptionCopy.lapsed;
     if (entitlement.status == EntitlementStatus.inGracePeriod) {
       return SubscriptionCopy.graceUntil(until);

@@ -37,6 +37,16 @@ abstract class Entitlement with _$Entitlement {
 
     /// A sandbox or licence-tester purchase.
     @Default(false) bool isTest,
+
+    /// Premium from the stores alone, before any month the household was
+    /// given (subscriptions ADR-0002).
+    @NullableTimestampConverter() DateTime? storeUntil,
+
+    /// Until when given months cover the household, or null.
+    @NullableTimestampConverter() DateTime? referralUntil,
+
+    /// Given days that wait behind paid time and start when it ends.
+    @Default(0) int referralDaysWaiting,
   }) = _Entitlement;
 
   const Entitlement._();
@@ -59,4 +69,12 @@ abstract class Entitlement with _$Entitlement {
   /// The store said it renews on its own at [premiumUntil]; otherwise that
   /// date is when what was paid for ends.
   bool get isRenewing => willRenew == true;
+
+  /// Premium now that no store sold — a month from a referral
+  /// (subscriptions ADR-0002).
+  bool isGivenOnlyAt(DateTime now) =>
+      status == EntitlementStatus.none && isPremiumAt(now);
+
+  /// Whole months waiting behind paid time, rounded up so a part is said.
+  int get referralMonthsWaiting => (referralDaysWaiting + 29) ~/ 30;
 }

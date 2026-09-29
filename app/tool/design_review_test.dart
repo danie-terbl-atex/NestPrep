@@ -431,6 +431,19 @@ void main() {
             newFamilies: 9,
             newFamiliesInvitingAnAdult: 5,
             computedAt: _now,
+            // Premium and referrals (product-analytics ADR-0002).
+          ).copyWith(
+            paywallFamilies: 11,
+            paywallFamiliesByTrigger: {
+              'additionalChild': 6,
+              'prepList': 4,
+              'direct': 2,
+            },
+            premiumConversions: 3,
+            premiumConversionsByTrigger: {'additionalChild': 2, 'direct': 1},
+            referralsRedeemed: 4,
+            referralsQualified: 2,
+            referralMonthsGiven: 4,
           ),
           weekOf(
             '2026-W37',

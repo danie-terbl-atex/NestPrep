@@ -52,6 +52,7 @@ import 'household_shell.dart';
 import 'kid_routes.dart';
 import 'lunch_routes.dart';
 import 'nanny_hub_routes.dart';
+import 'referral_routes.dart';
 import 'subscription_routes.dart';
 import 'viewer_member.dart';
 
@@ -143,6 +144,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         lunchRoutes(),
         // subscriptions: plan and billing (subscriptions ADR-0001).
         subscriptionRoute(),
+        // referrals: give a month, get a month (subscriptions ADR-0002).
+        referralRoute(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

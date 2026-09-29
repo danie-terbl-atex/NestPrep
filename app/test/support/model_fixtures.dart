@@ -45,6 +45,7 @@ import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
+import 'referral_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -280,6 +281,9 @@ List<ModelFixture> modelFixtures() {
     willRenew: true,
     managedByMemberId: 'm1',
     isTest: true,
+    storeUntil: at,
+    referralUntil: at,
+    referralDaysWaiting: 30,
   );
   final synced = SyncedEvent(
     id: 'c1_abc',
@@ -638,6 +642,10 @@ List<ModelFixture> modelFixtures() {
         'willRenew',
         'managedByMemberId',
         'isTest',
+        // Given months (subscriptions ADR-0002).
+        'storeUntil',
+        'referralUntil',
+        'referralDaysWaiting',
       },
       note:
           'written only by the subscriptions Functions; the rules refuse '
@@ -651,6 +659,8 @@ List<ModelFixture> modelFixtures() {
     ...homeCareModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
+    // referrals: give a month, get a month (subscriptions ADR-0002).
+    ...referralModelFixtures(fixtureInstant),
   ];
 }
 

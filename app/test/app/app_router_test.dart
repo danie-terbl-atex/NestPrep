@@ -35,6 +35,7 @@ import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dar
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -43,6 +44,7 @@ import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
+import '../support/fake_feature_flag_source.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
 import '../support/fake_link_opener.dart';
@@ -140,6 +142,13 @@ void main() {
           // The store, premium and the shell's entitlement listener.
           ...SubscriptionHarness().providers,
           ChangeNotifierProvider<SessionController>.value(value: session),
+          // The V2 switches (foundation ADR-0014), off as in a release build.
+          ChangeNotifierProvider<FeatureFlagsController>(
+            create: (_) => FeatureFlagsController(
+              source: FakeFeatureFlagSource(),
+              defaultOn: false,
+            ),
+          ),
         ],
         child: MaterialApp.router(
           theme: nestThemeData(NestTheme.light()),

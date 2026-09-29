@@ -59,3 +59,7 @@ export { appStoreNotifications } from './subscriptions/app_store_notifications';
 export { playBillingNotifications } from './subscriptions/play_billing_notifications';
 export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
 export { setChildProfile } from './family_profiles/set_child_profile';
+// ---- referrals and conversion by trigger (subscriptions ADR-0002, product-analytics ADR-0002) ----
+export { ensureReferralCode } from './referrals/ensure_referral_code';
+export { redeemReferralCode } from './referrals/redeem_referral_code';
+export { recordPaywallOpened } from './product_analytics/record_paywall_opened';

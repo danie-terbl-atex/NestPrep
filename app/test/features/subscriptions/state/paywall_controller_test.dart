@@ -9,6 +9,7 @@ import 'package:nestprep/features/subscriptions/state/purchase_coordinator.dart'
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
+import '../../../support/fake_paywall_open_recorder.dart';
 import '../../../support/fake_subscriptions.dart';
 
 /// What a paywall offers, in the store's own prices, and which plan it opens
@@ -17,8 +18,10 @@ void main() {
   late FakeStoreBilling store;
   late FakeSubscriptionDirectory server;
   late PurchaseCoordinator coordinator;
+  late FakePaywallOpenRecorder opens;
 
   setUp(() {
+    opens = FakePaywallOpenRecorder();
     store = FakeStoreBilling();
     server = FakeSubscriptionDirectory();
     coordinator = PurchaseCoordinator(
@@ -39,6 +42,7 @@ void main() {
       subscriptionDirectory: server,
       storeBilling: store,
       purchaseCoordinator: coordinator,
+      paywallOpenRecorder: opens,
       householdId: 'h1',
       feature: feature,
     );
@@ -92,6 +96,24 @@ void main() {
       expect(controller.selected, isNull);
     },
   );
+
+  test('tells the server it opened, and on which feature — once per opening '
+      '(product-analytics ADR-0002)', () async {
+    await opened(feature: PremiumFeature.prepList);
+    await opened();
+    expect(opens.opened, [
+      (householdId: 'h1', trigger: PremiumFeature.prepList),
+      (householdId: 'h1', trigger: PremiumFeature.additionalChild),
+    ]);
+  });
+
+  test('still offers premium when the opening could not be counted', () async {
+    opens.failWith = const UnavailableFailure();
+    final controller = await opened();
+    await Future<void>.delayed(Duration.zero);
+    expect(controller.offer, isA<AsyncData<PaywallOffer>>());
+    expect(opens.opened, isEmpty);
+  });
 
   test('offers nothing to buy to somebody who may not', () async {
     server.answer = const SubscriptionOffer(

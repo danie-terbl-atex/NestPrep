@@ -8,12 +8,14 @@ import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'fake_auth.dart';
+import 'fake_feature_flag_source.dart';
 import 'fake_subscriptions.dart';
 import 'household_fixtures.dart';
 
@@ -104,6 +106,15 @@ Future<void> pumpRouter(
         Provider<HouseholdView>.value(value: householdView),
         Provider<HouseholdClock>.value(
           value: HouseholdClock(householdView.household.timeZone),
+        ),
+        // The V2 switches, as the app graph holds them (foundation
+        // ADR-0014): off here, so a screen shows what a release build shows
+        // until a test provides its own below.
+        ChangeNotifierProvider<FeatureFlagsController>(
+          create: (_) => FeatureFlagsController(
+            source: FakeFeatureFlagSource(),
+            defaultOn: false,
+          ),
         ),
         // The household shell's entitlement listener (subscriptions
         // ADR-0001): free unless a test provides its own below.

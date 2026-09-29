@@ -186,6 +186,13 @@ describe('every callable declares what it may cost', () => {
         'reconcileSubscriptions',
         'setChildProfile',
         'verifyPurchase',
+        // Referrals and conversion by trigger (subscriptions ADR-0002,
+        // product-analytics ADR-0002): a code no phone may pick, a redemption
+        // checked against two households at once, and a paywall opening that
+        // is counted where no client can move the number.
+        'ensureReferralCode',
+        'recordPaywallOpened',
+        'redeemReferralCode',
       ].sort(),
     );
   });
