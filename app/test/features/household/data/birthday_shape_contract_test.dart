@@ -41,12 +41,14 @@ void main() {
   bool rulesAccept(String stored) =>
       patternsTheRulesAccept().any((pattern) => pattern.hasMatch(stored));
 
-  /// Both `hasOnly` lists under `match /members/{memberId}`.
+  /// Both `hasOnly` lists under `match /members/{memberId}`, read from the
+  /// household's own rules partial (foundation ADR-0012), where that block is
+  /// the last thing in the file.
   List<Set<String>> keysTheMemberRulesAllow() {
-    final source = rulesFile.readAsStringSync();
+    final source = File('../rules/firestore/household/household.rules')
+        .readAsStringSync();
     final block = source.substring(
       source.indexOf('match /members/{memberId} {'),
-      source.indexOf('match /groceryItems/{itemId} {'),
     );
     return [
       for (final match in RegExp(

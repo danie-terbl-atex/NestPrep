@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/household/model/access_defaults.dart';
+import 'package:nestprep/features/household/model/access_level.dart';
+import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
 import 'package:nestprep/features/kid_accounts/ui/kid_home_screen.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
@@ -12,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_auth.dart';
+import '../../../support/household_fixtures.dart';
 import '../../../support/kid_home_fixture.dart';
 import '../../../support/pump_screen.dart';
 
@@ -188,5 +192,38 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.scrollUntilVisible(find.text('Pasta bake'), 200);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a grant that only looks shows the jobs without a tap', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.runAsync(
+      () => fixture.arrive(tasks: [KidHomeFixture.chore('dishes', 'Dishes')]),
+    );
+    fixture.households.emitMember(
+      Fixtures.kid.copyWith(
+        access: AccessDefaults.kid.withLevel(
+          HouseholdArea.todos,
+          AccessLevel.view,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dishes'), findsOneWidget);
+    expect(find.text(KidCopy.choreToDo), findsOneWidget);
+    expect(find.text(KidCopy.choreTapToFinish), findsNothing);
+  });
+
+  testWidgets('a grant that opens nothing says so, kindly', (tester) async {
+    await pump(tester);
+    await tester.runAsync(fixture.arrive);
+    fixture.households.emitMember(Fixtures.kid.copyWith(access: null));
+    await tester.pumpAndSettle();
+
+    expect(find.text(KidCopy.nothingShownTitle), findsOneWidget);
+    expect(find.text(KidCopy.choresTitle), findsNothing);
+    expect(find.text(KidCopy.foodTitle), findsNothing);
   });
 }

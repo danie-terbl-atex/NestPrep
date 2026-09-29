@@ -1,0 +1,93 @@
+// ---- what the caller may see and do, per area (household ADR-0003) ----
+//
+// Family — admin, parent, and the old `member` — sees and does everything,
+// as every member did before. A kid, helper or carer holds one level per
+// area: `none`, `own` (only what is theirs), `view` (read) or `edit` (what
+// family does). A claimed member's level is in the household's `access`
+// map, which only Functions write; a helper claimed before ADR-0003 has no
+// entry and keeps `edit` everywhere until a parent chooses; a kid or carer
+// with none has nothing.
+//
+// A kid device's level is the `access` its kid profile holds — the one
+// place a parent's choice is written, so the access editor governs the
+// child's tablet too — and only while that profile's role is `kid`: a
+// profile moved to any other role leaves its devices with nothing
+// (accounts ADR-0004).
+//
+// The area keys are a contract other features gate on — the household
+// overview lists them, and `functions/test/unit/access_contract.test.ts`
+// checks the rules against `functions/src/household/access.ts`. Gate a new
+// collection on `canView` / `canEdit` / `hasOwnOnly` and it is right for
+// helpers, carers, kids and kid devices at once; never on a role name.
+
+function isFamily(householdId) {
+  return isMember(householdId)
+    && householdData(householdId).members[uid()] in ['admin', 'parent', 'member'];
+}
+
+function memberLevelIn(householdId, area) {
+  let household = householdData(householdId);
+  let grant = household.get('access', {}).get(uid(), null);
+  return grant != null
+    ? grant.get(area, 'none')
+    : (household.members[uid()] == 'helper' ? 'edit' : 'none');
+}
+
+function kidDeviceLevelIn(householdId, area) {
+  let profile = memberData(householdId, kidMemberId(householdId));
+  return profile.role == 'kid' ? profile.get('access', {}).get(area, 'none') : 'none';
+}
+
+// Only ever asked once `isInHousehold` holds.
+function levelIn(householdId, area) {
+  return isMember(householdId)
+    ? memberLevelIn(householdId, area)
+    : kidDeviceLevelIn(householdId, area);
+}
+
+function canView(householdId, area) {
+  return isFamily(householdId)
+    || (isInHousehold(householdId) && levelIn(householdId, area) in ['view', 'edit']);
+}
+
+function canEdit(householdId, area) {
+  return isFamily(householdId)
+    || (isInHousehold(householdId) && levelIn(householdId, area) == 'edit');
+}
+
+function hasOwnOnly(householdId, area) {
+  return isInHousehold(householdId) && !isFamily(householdId)
+    && levelIn(householdId, area) == 'own';
+}
+
+// The member id this caller is, which is what `own` compares with: the
+// profile a member claimed, or the profile a kid device is bound to.
+// Empty for an account claimed before ADR-0003, which never holds `own`.
+function ownMemberId(householdId) {
+  return isKid(householdId)
+    ? kidMemberId(householdId)
+    : householdData(householdId).get('profiles', {}).get(uid(), '');
+}
+
+function isGrant(value) {
+  return value == null
+    || (value is map
+        && value.keys().hasOnly(
+             ['calendar', 'groceries', 'todos', 'meals', 'documents', 'lunch',
+              'familyProfiles', 'medical', 'homeCare', 'nannyHub'])
+        && value.values().hasOnly(['none', 'own', 'view', 'edit']));
+}
+
+// The profile this caller acts as. Anything a member creates is stamped
+// with it, so nobody can write an item in somebody else's name (BE-03). A
+// kid device acts as its kid profile, so what its grant lets it do it does
+// as that child (accounts ADR-0004).
+function isOwnMember(householdId, memberId) {
+  return isKidAs(householdId, memberId) || hasClaimed(householdId, memberId);
+}
+
+// The profile this account claimed, and nothing else — for what only a
+// person with their own login may do, like sharing where they are.
+function hasClaimed(householdId, memberId) {
+  return isSignedIn() && memberData(householdId, memberId).claimedBy == uid();
+}

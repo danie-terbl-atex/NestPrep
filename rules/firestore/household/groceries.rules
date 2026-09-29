@@ -1,0 +1,41 @@
+// ---- groceries (groceries ADR-0001) ----
+
+match /groceryItems/{itemId} {
+  allow read: if canView(householdId, 'groceries');
+
+  allow create: if canEdit(householdId, 'groceries')
+    && request.resource.data.keys().hasOnly(
+         ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy'])
+    && isNonEmptyString(request.resource.data.name)
+    && isOwnMember(householdId, request.resource.data.addedBy)
+    && isServerTime('addedAt')
+    && request.resource.data.boughtAt == null
+    && request.resource.data.boughtBy == null;
+
+  // Two different writes share this rule, and a caller may do exactly one
+  // of them: anybody in the household ticks anything, but only the person
+  // who added an item — or an admin — changes what it says.
+  allow update: if canEdit(householdId, 'groceries')
+    && didNotChange('addedBy')
+    && didNotChange('addedAt')
+    && (isTickOrUntick(householdId) || isTextEdit(householdId));
+
+  allow delete: if isAdmin(householdId)
+    || (canEdit(householdId, 'groceries')
+          && isOwnMember(householdId, resource.data.addedBy));
+
+  function isTickOrUntick(householdId) {
+    return onlyChanged(['boughtAt', 'boughtBy'])
+      && (request.resource.data.boughtAt == null
+            ? request.resource.data.boughtBy == null
+            : isServerTime('boughtAt')
+                && isOwnMember(householdId, request.resource.data.boughtBy));
+  }
+
+  function isTextEdit(householdId) {
+    return onlyChanged(['name', 'quantity'])
+      && isNonEmptyString(request.resource.data.name)
+      && (isAdmin(householdId)
+            || isOwnMember(householdId, resource.data.addedBy));
+  }
+}

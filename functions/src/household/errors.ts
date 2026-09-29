@@ -23,6 +23,7 @@ export const HOUSEHOLD_REFUSALS = {
   emailNotVerified: ['failed-precondition', 'Verify your email address first.'],
   // A kid device calls no household callable at all (accounts ADR-0003).
   kidAccount: ['permission-denied', 'A kid sign-in cannot do that.'],
+  familyHasFullAccess: ['failed-precondition', 'Family members already see everything.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type HouseholdRefusal = keyof typeof HOUSEHOLD_REFUSALS;

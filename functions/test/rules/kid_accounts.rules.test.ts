@@ -2,6 +2,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  GeoPoint,
   getDoc,
   getDocs,
   query,
@@ -13,121 +14,34 @@ import {
 import { beforeAll, describe, it } from 'vitest';
 
 import {
-  asKid,
-  asUser,
-  assertFails,
-  assertSucceeds,
-  givenData,
-  type Firestore,
-} from './rules_harness';
+  DATE,
+  HOME,
+  KID,
+  LEO,
+  MIA,
+  REVOKED_KID,
+  SAM,
+  THANDI,
+  completion,
+  givenAKidsHousehold,
+  miasTablet,
+  task,
+} from './kid_fixture';
+import { asKid, asUser, assertFails, assertSucceeds } from './rules_harness';
 
 /**
- * What a kid device may do, and — mostly — what it may not (accounts ADR-0003).
+ * What a kid device may do, and what it may not (accounts ADR-0003, ADR-0004).
  *
  * A kid device is not a member. It reaches its household only through the
- * household's `kids` map, and only where a block grants it: the household
- * itself, its own profile, the chores that name it, routines, its own
- * completions, and the meal plan. Every other collection refuses it by
- * default, which is what most of this file proves.
+ * household's `kids` map. It always reads the household and its own profile;
+ * everything else it reaches through the grant its kid profile holds — the
+ * same `canView` / `canEdit` / `own` every helper and carer goes through — so
+ * what a parent chooses in the access editor is what the child's tablet can
+ * open. Mia holds the kid defaults, Ava a grant a parent changed, Ben no grant
+ * at all, and Old a profile that is not a kid.
  */
 
-const SAM = 'uid-sam';
-const THANDI = 'uid-thandi';
-const KID = 'kid_mia-tablet';
-const REVOKED_KID = 'kid_lost-phone';
-const HOME = 'households/h-kids';
-const MIA = 'm-mia';
-const LEO = 'm-leo';
-const DATE = '2026-09-29';
-const miasTablet = (): Promise<Firestore> => asKid(KID, { householdId: 'h-kids', memberId: MIA });
-
-function task(title: string, assigneeIds: string[], routineId: string | null = null): object {
-  return {
-    title,
-    note: null,
-    dueDate: DATE,
-    recurrence: null,
-    assigneeIds,
-    createdBy: 'm-sam',
-    routineId,
-    createdAt: new Date(),
-  };
-}
-
-function completion(taskId: string, by: string, forMember: string): object {
-  return {
-    taskId,
-    occurrenceDate: DATE,
-    completedBy: by,
-    completedFor: forMember,
-    completedAt: serverTimestamp(),
-  };
-}
-
-beforeAll(async () => {
-  await givenData(async (db: Firestore) => {
-    await setDoc(doc(db, HOME), {
-      name: 'The Parkers',
-      timeZone: 'Africa/Johannesburg',
-      members: { [SAM]: 'admin', [THANDI]: 'helper' },
-      kids: { [KID]: MIA },
-    });
-    for (const [id, name, role, claimedBy] of [
-      ['m-sam', 'Sam', 'admin', SAM],
-      ['m-thandi', 'Thandi', 'helper', THANDI],
-      [MIA, 'Mia', 'member', null],
-      [LEO, 'Leo', 'member', null],
-    ] as const) {
-      await setDoc(doc(db, `${HOME}/members/${id}`), {
-        displayName: name,
-        color: 'violet',
-        role,
-        claimedBy,
-      });
-    }
-    await setDoc(doc(db, `${HOME}/tasks/dishes`), task('Dishes', [MIA]));
-    await setDoc(doc(db, `${HOME}/tasks/feed-cat`), task('Feed the cat', [MIA], 'r-morning'));
-    await setDoc(doc(db, `${HOME}/tasks/homework-leo`), task('Homework', [LEO]));
-    await setDoc(doc(db, `${HOME}/tasks/bins`), task('Bins', []));
-    await setDoc(doc(db, `${HOME}/routines/r-morning`), {
-      name: 'Morning',
-      firstDate: DATE,
-      recurrence: null,
-      defaultAssigneeIds: [MIA],
-      color: 'mint',
-      createdBy: 'm-sam',
-      createdAt: new Date(),
-    });
-    await setDoc(doc(db, `${HOME}/taskCompletions/homework-leo_${DATE}`), {
-      ...completion('homework-leo', LEO, LEO),
-      completedAt: new Date(),
-    });
-    await setDoc(doc(db, `${HOME}/taskCompletions/feed-cat_${DATE}`), {
-      ...completion('feed-cat', MIA, MIA),
-      completedAt: new Date(),
-    });
-    await setDoc(doc(db, `${HOME}/meals/pasta`), {
-      name: 'Pasta',
-      nameKey: 'pasta',
-      addedBy: 'm-sam',
-      createdAt: new Date(),
-    });
-    await setDoc(doc(db, `${HOME}/mealPlans/2026-09-28`), { slots: { '2_lunch': 'pasta' } });
-    await setDoc(doc(db, `${HOME}/groceryItems/milk`), { name: 'Milk' });
-    await setDoc(doc(db, `${HOME}/events/dentist`), { title: 'Dentist' });
-    await setDoc(doc(db, `${HOME}/documentFolders/school`), { name: 'School' });
-    await setDoc(doc(db, `${HOME}/documents/passport`), { name: 'Passport' });
-    await setDoc(doc(db, `${HOME}/memberLocations/m-sam`), { accuracyMetres: 5 });
-    await setDoc(doc(db, `${HOME}/kidDevices/${KID}`), {
-      memberId: MIA,
-      label: 'Tablet',
-      pairedBy: SAM,
-      pairedAt: new Date(),
-    });
-    await setDoc(doc(db, 'kidPairings/ABC234'), { householdId: 'h-kids', memberId: LEO });
-    await setDoc(doc(db, 'invites/ABCD2345'), { householdId: 'h-kids', memberId: LEO });
-  });
-});
+beforeAll(givenAKidsHousehold);
 
 describe('a kid device reads its own corner of the household', () => {
   it('the household itself, for its name and its zone', async () => {
@@ -195,14 +109,12 @@ describe('and nothing about anybody else', () => {
   });
 
   for (const path of [
-    'groceryItems/milk',
-    'events/dentist',
     'documentFolders/school',
     'documents/passport',
     'memberLocations/m-sam',
     `kidDevices/${KID}`,
   ]) {
-    it(`not ${path.split('/')[0] ?? path}`, async () => {
+    it(`not ${path.split('/')[0] ?? path}, which the kid defaults do not open`, async () => {
       await assertFails(getDoc(doc(await miasTablet(), `${HOME}/${path}`)));
     });
   }
@@ -284,17 +196,29 @@ describe('a kid device changes nothing else', () => {
       setDoc(doc(db, `${HOME}/members/m-new`), {
         displayName: 'Friend',
         color: 'mint',
-        role: 'member',
+        role: 'kid',
         claimedBy: null,
         createdAt: serverTimestamp(),
       }),
     );
   });
 
-  it('no tasks and no groceries', async () => {
+  it('no tasks, even in its own name, because `own` creates nothing', async () => {
     const db = await miasTablet();
-    await assertFails(setDoc(doc(db, `${HOME}/tasks/new`), task('Skip school', [MIA])));
-    await assertFails(setDoc(doc(db, `${HOME}/groceryItems/sweets`), { name: 'Sweets' }));
+    await assertFails(
+      setDoc(doc(db, `${HOME}/tasks/new`), { ...task('Skip school', [MIA]), createdBy: MIA }),
+    );
+  });
+
+  it('never where somebody is — not even its own, which is only for a login', async () => {
+    await assertFails(
+      setDoc(doc(await miasTablet(), `${HOME}/memberLocations/${MIA}`), {
+        point: new GeoPoint(-26.2, 28.04),
+        accuracyMetres: 5,
+        reportedAt: serverTimestamp(),
+        sharingUntil: new Date(Date.now() + 60 * 60 * 1000),
+      }),
+    );
   });
 
   it('and no account document, because it has no account', async () => {

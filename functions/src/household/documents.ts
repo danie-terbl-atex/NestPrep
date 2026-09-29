@@ -5,9 +5,14 @@ import type {
   Transaction,
 } from 'firebase-admin/firestore';
 
-/** The three roles a member can hold (household ADR-0001). */
-export const ROLES = ['admin', 'member', 'helper'] as const;
-export type Role = (typeof ROLES)[number];
+/**
+ * The roles a member can be given (household ADR-0003). `member` is not among
+ * them: it is ADR-0001's name for a family adult, still read as `parent` on
+ * every profile that carries it, and never written again.
+ */
+export const ROLES = ['admin', 'parent', 'kid', 'helper', 'carer'] as const;
+export type AssignableRole = (typeof ROLES)[number];
+export type Role = AssignableRole | 'member';
 
 export const HOUSEHOLDS = 'households';
 export const MEMBERS = 'members';
@@ -30,6 +35,14 @@ export interface HouseholdDocument extends DocumentData {
    * Absent on every household that has never paired a device.
    */
   readonly kids?: Record<string, string>;
+
+  /**
+   * uid → area → level for every claimed member who is not family, and the
+   * member id each uid claimed — what `canView`, `canEdit` and `own` read in
+   * the rules (household ADR-0003). Absent on households made before it.
+   */
+  readonly access?: Record<string, Record<string, string>>;
+  readonly profiles?: Record<string, string>;
 }
 
 export interface MemberDocument extends DocumentData {
@@ -49,6 +62,9 @@ export interface MemberDocument extends DocumentData {
    * callable to touch a member overwrites something it did not know was there.
    */
   readonly birthday?: string | null;
+
+  /** What a parent chose for a kid, helper or carer (household ADR-0003). */
+  readonly access?: Record<string, string> | null;
 }
 
 export interface InviteDocument extends DocumentData {

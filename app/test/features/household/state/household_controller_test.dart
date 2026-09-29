@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
+import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
@@ -155,6 +156,57 @@ void main() {
     });
   });
 
+  group('a grant follows the role (household ADR-0003)', () {
+    test('a new helper is written with the helper defaults', () async {
+      await settle();
+      await controller.addMember(
+        displayName: 'Grace',
+        color: MemberColor.teal,
+        role: MemberRole.helper,
+      );
+      expect(repository.added.single.access, AccessDefaults.helper);
+    });
+
+    test('a new parent is written with no grant — family needs none', () async {
+      await settle();
+      await controller.addMember(
+        displayName: 'Gogo',
+        color: MemberColor.teal,
+        role: MemberRole.parent,
+      );
+      expect(repository.added.single.access, isNull);
+    });
+
+    test(
+      'an unclaimed profile made a carer starts from the carer grant',
+      () async {
+        await settle();
+        await controller.updateMember(
+          memberId: Fixtures.kidMemberId,
+          displayName: 'Kid Parker',
+          color: MemberColor.sky,
+          role: MemberRole.carer,
+        );
+        expect(repository.updated.single.access, AccessDefaults.carer);
+      },
+    );
+
+    test('a rename that leaves the role alone sends no grant', () async {
+      await settle();
+      await controller.updateMember(
+        memberId: Fixtures.kidMemberId,
+        displayName: 'Kiddo',
+        color: MemberColor.sky,
+        role: Fixtures.kid.role,
+      );
+      expect(
+        repository.updated.single.access,
+        isNull,
+        reason: 'a parent adjusted it; renaming must not reset it',
+      );
+    });
+  });
+
   group('actions', () {
     test('an invite is kept for the sheet, and can be dismissed', () async {
       await settle();
@@ -208,7 +260,7 @@ void main() {
         await controller.addMember(
           displayName: 'Gogo',
           color: MemberColor.sky,
-          role: MemberRole.member,
+          role: MemberRole.parent,
         );
         await controller.renameHousehold(
           name: 'The Parker-Dlaminis',

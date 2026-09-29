@@ -1,15 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
+import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
+import 'household_place_redirect.dart';
 
 /// Everything under a household shares one listener on the household and its
 /// members, because every screen needs the member names, the member colours and
@@ -20,9 +23,17 @@ import '../shared/time/household_clock.dart';
 /// lets a feature's controller be created already knowing the household's
 /// clock (foundation ADR-0007).
 class HouseholdShell extends StatefulWidget {
-  const HouseholdShell({required this.child, super.key});
+  const HouseholdShell({
+    required this.child,
+    required this.location,
+    super.key,
+  });
 
   final Widget child;
+
+  /// Where the router is, so the shell can move somebody on from a place
+  /// their role cannot use, or into the invite step (household ADR-0003).
+  final String location;
 
   @override
   State<HouseholdShell> createState() => _HouseholdShellState();
@@ -32,6 +43,20 @@ class _HouseholdShellState extends State<HouseholdShell> {
   HouseholdClock? _clock;
   String? _clockTimeZone;
   String? _reportedMemberId;
+  String? _redirectingTo;
+
+  /// Moves the router off the frame, once per destination: a build is not
+  /// where navigation belongs (`FE-05`), and asking twice for the same place
+  /// while the first request is still landing would stack two.
+  void _moveTo(String target) {
+    if (_redirectingTo == target) return;
+    _redirectingTo = target;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _redirectingTo = null;
+      context.go(target);
+    });
+  }
 
   /// Ties this device's crash reports to the profile using it — an opaque
   /// household key, never a name (observability ADR-0001, `ENG-22`). Done off
@@ -64,6 +89,14 @@ class _HouseholdShellState extends State<HouseholdShell> {
       emptyBuilder: (_) => const SizedBox.shrink(),
       dataBuilder: (context, view) {
         _rememberMember(view.viewerMember?.id);
+        final target = householdPlaceRedirect(
+          location: widget.location,
+          view: view,
+        );
+        if (target != null) {
+          _moveTo(target);
+          return const NestLoadingView();
+        }
         return MultiProvider(
           providers: [
             Provider<HouseholdView>.value(value: view),
@@ -97,17 +130,26 @@ class HouseholdTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Only the tabs this person may use (household ADR-0003). A helper who
+    // may only clean has none of the four, and never reaches a tab to see
+    // this bar — the shell sends them to the household screen instead.
+    final permissions = context.watch<HouseholdView>().permissions;
+    final tabs = [
+      for (final tab in HouseholdTab.values)
+        if (permissions.canUse(tab.area)) tab,
+    ];
+    final selected = tabs.indexOf(current);
     return NestBottomBar(
       items: [
-        for (final tab in HouseholdTab.values)
+        for (final tab in tabs)
           NestBottomBarItem(
             icon: tab.icon,
             selectedIcon: tab.selectedIcon,
             label: tab.label,
           ),
       ],
-      selectedIndex: current.index,
-      onSelect: (index) => onSelect(HouseholdTab.values[index]),
+      selectedIndex: selected < 0 ? 0 : selected,
+      onSelect: (index) => onSelect(tabs[index]),
     );
   }
 }
@@ -125,6 +167,14 @@ enum HouseholdTab {
   final String segment;
   final IconData icon;
   final IconData selectedIcon;
+
+  /// The area this tab is (household ADR-0003).
+  HouseholdArea get area => switch (this) {
+    HouseholdTab.week => HouseholdArea.calendar,
+    HouseholdTab.todos => HouseholdArea.todos,
+    HouseholdTab.groceries => HouseholdArea.groceries,
+    HouseholdTab.meals => HouseholdArea.meals,
+  };
 
   String get label => switch (this) {
     HouseholdTab.week => AppCopy.tabWeek,

@@ -1,10 +1,9 @@
 import { onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 
-import { auth } from '../shared/auth';
 import { db } from '../shared/firestore';
+import { writeAccountClaims } from '../household/access_claim';
 import { requireUid } from '../household/parse_input';
-import { CLAIM_NAME, householdClaimFor } from './household_claim';
 
 /**
  * Puts the caller's household memberships onto their own ID token, so Storage
@@ -22,13 +21,10 @@ import { CLAIM_NAME, householdClaimFor } from './household_claim';
  */
 export const syncDocumentAccess = onCall(async (request) => {
   const uid = requireUid(request.auth);
-  const claim = await householdClaimFor(db(), uid);
+  // Both claims, `households` and the per-area `access` a kid, helper or carer
+  // holds (household ADR-0003), written together and keeping any other claim.
+  const households = await writeAccountClaims(db(), uid);
 
-  // Custom claims are written whole, so anything else on the token would be
-  // lost by writing only ours. There is nothing else today; there will be.
-  const existing = (await auth().getUser(uid)).customClaims ?? {};
-  await auth().setCustomUserClaims(uid, { ...existing, [CLAIM_NAME]: claim });
-
-  logger.info('document access synced', { households: Object.keys(claim).length });
-  return { households: Object.keys(claim).length };
+  logger.info('document access synced', { households });
+  return { households };
 });

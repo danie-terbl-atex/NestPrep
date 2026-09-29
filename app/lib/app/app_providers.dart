@@ -28,6 +28,8 @@ import '../features/household/data/callable_household_directory.dart';
 import '../features/household/data/firestore_household_repository.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
+import '../features/household/data/invite_sharer.dart';
+import '../features/household/data/platform_invite_sharer.dart';
 import '../features/kid_accounts/data/callable_kid_sign_in_directory.dart';
 import '../features/kid_accounts/data/firestore_kid_device_repository.dart';
 import '../features/kid_accounts/data/kid_device_repository.dart';
@@ -76,6 +78,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) =>
         CallableHouseholdDirectory(context.read<FirebaseFunctions>()),
   ),
+  // household phase 2: the invite leaves through the share sheet (household
+  // ADR-0003).
+  Provider<InviteSharer>(create: (context) => PlatformInviteSharer()),
   Provider<GroceryRepository>(
     create: (context) =>
         FirestoreGroceryRepository(context.read<FirebaseFirestore>()),

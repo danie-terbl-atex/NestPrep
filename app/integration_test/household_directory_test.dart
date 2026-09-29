@@ -158,7 +158,7 @@ void main() {
         householdId: home.id,
         displayName: 'Ada',
         color: MemberColor.teal,
-        role: MemberRole.member,
+        role: MemberRole.parent,
       );
       final profiles = await home.households.watchMembers(home.id).first;
       final unclaimed = profiles.firstWhere(
@@ -186,7 +186,7 @@ void main() {
         householdId: home.id,
         displayName: 'Ada',
         color: MemberColor.teal,
-        role: MemberRole.member,
+        role: MemberRole.parent,
       );
       final profiles = await home.households.watchMembers(home.id).first;
       final unclaimed = profiles.firstWhere(
@@ -208,7 +208,7 @@ void main() {
         householdId: home.id,
         displayName: 'Ada',
         color: MemberColor.teal,
-        role: MemberRole.member,
+        role: MemberRole.parent,
       );
       final profiles = await home.households.watchMembers(home.id).first;
       final other = profiles.firstWhere((profile) => profile.claimedBy == null);

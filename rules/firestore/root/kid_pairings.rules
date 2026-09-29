@@ -1,0 +1,7 @@
+// ---- kid pairing codes (accounts ADR-0003) ----
+// Closed for the same reason invites are: a readable collection of codes
+// is a list of ways into somebody's household. `createKidPairing`,
+// `cancelKidPairing` and `redeemKidPairing` are the only way in.
+match /kidPairings/{code} {
+  allow read, write: if false;
+}

@@ -7,10 +7,12 @@ import '../../todos/model/routine.dart';
 import '../../todos/model/task.dart';
 import '../../todos/model/task_completion.dart';
 import '../../todos/model/task_occurrence.dart';
+import 'kid_areas.dart';
 
 /// What a kid sees on their own device (accounts ADR-0003): who they are,
-/// today's jobs, and today's food. Derived once per emission, never in a
-/// build method (`FE-12`).
+/// today's jobs, and today's food — each only when the grant their profile
+/// holds opens it ([areas], accounts ADR-0004). Derived once per emission,
+/// never in a build method (`FE-12`).
 ///
 /// The jobs are the todos feature's own occurrences — the same expansion, the
 /// same routine schedules, the same idea of done (`ENG-01`) — narrowed to the
@@ -19,13 +21,17 @@ class KidDay {
   const KidDay({
     required this.me,
     required this.today,
+    required this.areas,
     required this.chores,
     required this.meals,
   });
 
+  /// [tasks], [routines] and [completions] are empty when [areas] shows no
+  /// chores; [plan] and [library] when it shows no food.
   factory KidDay.from({
     required Member me,
     required CalendarDate today,
+    required KidAreas areas,
     required List<Task> tasks,
     required List<Routine> routines,
     required List<TaskCompletion> completions,
@@ -43,6 +49,7 @@ class KidDay {
     return KidDay(
       me: me,
       today: today,
+      areas: areas,
       chores: [
         for (final occurrence in occurrences)
           if (occurrence.isFor(me.id) &&
@@ -63,6 +70,9 @@ class KidDay {
 
   final Member me;
   final CalendarDate today;
+
+  /// Which parts of the day this device may show.
+  final KidAreas areas;
 
   /// Overdue first, then today's, each in the todos feature's order.
   final List<TaskOccurrence> chores;

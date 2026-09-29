@@ -1,0 +1,64 @@
+// Every member reads it, and so does a kid device: the name, the zone that
+// makes "today" the household's today, and the `kids` map its own access is
+// worked out from (accounts ADR-0003, ADR-0004).
+allow read: if isInHousehold(householdId);
+
+// Created by `createHousehold`; the membership map is written only by
+// Functions, which is why there is no client write that touches it.
+allow create, delete: if false;
+
+allow update: if isAdmin(householdId)
+  && ((onlyChanged(['name', 'timeZone'])
+        && isNonEmptyString(request.resource.data.name)
+        && isNonEmptyString(request.resource.data.timeZone))
+      || isFinishingSetup());
+
+// The invite step `createHousehold` opens (household ADR-0003). An admin
+// may close it — done or skipped — and never open it again.
+function isFinishingSetup() {
+  return onlyChanged(['pendingSetupStep'])
+    && request.resource.data.pendingSetupStep == null;
+}
+
+match /members/{memberId} {
+  // A kid device reads its own profile and nobody else's — not the list
+  // (accounts ADR-0003).
+  allow read: if isMember(householdId) || isKidAs(householdId, memberId);
+
+  // An admin adds a profile for somebody whether or not they will ever
+  // sign in. It starts unclaimed; claiming is `redeemInvite` alone.
+  allow create: if isAdmin(householdId)
+    && request.resource.data.keys().hasOnly(
+         ['displayName', 'color', 'role', 'birthday', 'access', 'claimedBy',
+          'createdAt'])
+    && isNonEmptyString(request.resource.data.displayName)
+    && isNonEmptyString(request.resource.data.color)
+    && isRole(request.resource.data.role)
+    && isBirthday(request.resource.data.get('birthday', null))
+    && isGrant(request.resource.data.get('access', null))
+    && request.resource.data.claimedBy == null
+    && isServerTime('createdAt');
+
+  // A claimed member's role also lives in the household's uid→role map,
+  // and one write cannot touch two documents — so changing it is
+  // `setMemberRole`, and here it may only change while nobody holds it.
+  // `get('birthday', null)` rather than a bare read: every profile
+  // written before the field existed has no key at all, and a rule that
+  // reads a missing key refuses the write (BE-10).
+  //
+  // The grant follows the same rule as the role, for the same reason: a
+  // claimed member's lives in the household document too, so changing
+  // it is `setMemberAccess` (household ADR-0003).
+  allow update: if isAdmin(householdId)
+    && onlyChanged(['displayName', 'color', 'role', 'birthday', 'access'])
+    && isNonEmptyString(request.resource.data.displayName)
+    && isNonEmptyString(request.resource.data.color)
+    && isRole(request.resource.data.role)
+    && isBirthday(request.resource.data.get('birthday', null))
+    && isGrant(request.resource.data.get('access', null))
+    && (resource.data.claimedBy == null
+          || (didNotChange('role') && !changedKeys().hasAny(['access'])));
+
+  // Removing a profile detaches whoever claimed it: `removeMember`.
+  allow delete: if false;
+}

@@ -32,6 +32,11 @@ void main() {
 
     fixture.households.emitHousehold(Fixtures.household());
     await pumpEventQueue();
+    // ...and for the profile, whose grant says which reads to open at all
+    // (accounts ADR-0004).
+    expect(fixture.todos.tasksForMemberId, isNull);
+    fixture.households.emitMember(Fixtures.kid);
+    await pumpEventQueue();
 
     expect(fixture.todos.tasksForMemberId, Fixtures.kidMemberId);
     expect(fixture.todos.completionsForMemberId, Fixtures.kidMemberId);
@@ -155,9 +160,16 @@ void main() {
       ),
     );
 
-    test('is told so when the rules start refusing its reads', () async {
+    test('is told so when the rules start refusing its household', () async {
       await fixture.arrive();
-      fixture.todos.failTasksWith(const PermissionDeniedFailure());
+      fixture.households.failHouseholdWith(const PermissionDeniedFailure());
+      await pumpEventQueue();
+      expect(fixture.controller.day, isDisconnected());
+    });
+
+    test('and when they refuse its own profile', () async {
+      await fixture.arrive();
+      fixture.households.failMemberWith(const PermissionDeniedFailure());
       await pumpEventQueue();
       expect(fixture.controller.day, isDisconnected());
     });

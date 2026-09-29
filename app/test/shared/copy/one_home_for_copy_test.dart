@@ -102,32 +102,41 @@ void main() {
     // `AppCopy.loading` existed for a while used by nothing, while a widget
     // said the same word as a literal. An unused constant is the first half of
     // that mistake, so it is worth knowing about.
-    // `KidCopy` sits beside `AppCopy` (accounts ADR-0003) and is held to the
-    // same rule, each name qualified by the class a screen reads it through.
-    const copyFiles = {'app_copy.dart': 'AppCopy', 'kid_copy.dart': 'KidCopy'};
-    final names = <String>{
-      for (final MapEntry(key: fileName, value: className) in copyFiles.entries)
-        ...RegExp(r'static const (\w+) =')
-            .allMatches(File('lib/shared/copy/$fileName').readAsStringSync())
-            .map((match) => '$className.${match.group(1)!}'),
+    // Every file in the copy folder, each read under the class its name
+    // spells — `kid_copy.dart` is `KidCopy`, `access_copy.dart` is
+    // `AccessCopy` — so a feature that adds its own copy file beside
+    // `AppCopy` (accounts ADR-0003, household ADR-0003) is held to this rule
+    // without editing this test.
+    final copyFiles = {
+      for (final file in Directory('lib/shared/copy').listSync())
+        if (file is File && file.path.endsWith('_copy.dart'))
+          file.path: _classNameOf(file.path),
     };
+    final names = <String>{};
+    final owner = <String, String>{};
+    for (final MapEntry(key: path, value: className) in copyFiles.entries) {
+      final copySource = File(path).readAsStringSync();
+      for (final match in RegExp(
+        r'static const (\w+) =',
+      ).allMatches(copySource)) {
+        final name = '$className.${match.group(1)!}';
+        names.add(name);
+        owner[name] = path;
+      }
+    }
 
     final usedAnywhere = <String>{};
     for (final file in dartFiles) {
-      final copyClass = copyFiles.entries
-          .where((entry) => file.path.endsWith(entry.key))
-          .map((entry) => entry.value)
-          .firstOrNull;
       final source = file.readAsStringSync();
-      for (final qualified in names) {
-        final bare = qualified.split('.').last;
-        // Inside the copy file a constant is referenced by its bare name:
+      for (final name in names) {
+        final bare = name.split('.').last;
+        // Inside its own copy file a constant is referenced by its bare name:
         // `weekdayName()` indexes `weekdayNames`, `mealSlotName()` returns
         // `mealsBreakfast`. More than the declaration itself is a use.
-        final used = copyClass != null && qualified.startsWith('$copyClass.')
+        final used = file.path == owner[name]
             ? RegExp('\\b$bare\\b').allMatches(source).length > 1
-            : source.contains(qualified);
-        if (used) usedAnywhere.add(qualified);
+            : source.contains(name);
+        if (used) usedAnywhere.add(name);
       }
     }
 
@@ -157,3 +166,12 @@ void main() {
     );
   });
 }
+
+/// `lib/shared/copy/product_analytics_copy.dart` → `ProductAnalyticsCopy`.
+String _classNameOf(String path) => path
+    .split('/')
+    .last
+    .replaceAll('.dart', '')
+    .split('_')
+    .map((word) => word[0].toUpperCase() + word.substring(1))
+    .join();

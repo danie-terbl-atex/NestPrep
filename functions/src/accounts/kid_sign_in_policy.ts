@@ -19,11 +19,13 @@ export const KID_CODE_LIFETIME_MS = 10 * 60 * 1000;
 export const KID_DEVICE_LIMIT = 5;
 
 /**
- * The roles a kid sign-in may be made for. Mirrored by the client's
- * `MemberRole.canHaveKidSignIn`. Household phase 2's `kid` role joins this
- * list when it exists.
+ * The roles a kid sign-in may be made for: `kid`, and only `kid` (accounts
+ * ADR-0004). A kid device holds its profile's grant, which only a `kid` has —
+ * `member` is read as a parent (household ADR-0003), and a device bound to one
+ * would have no grant to hold. Mirrored by the client's
+ * `MemberRole.canHaveKidSignIn`.
  */
-export const KID_SIGN_IN_ROLES: readonly Role[] = ['member'];
+export const KID_SIGN_IN_ROLES: readonly Role[] = ['kid'];
 
 /**
  * Whether a profile may have a kid sign-in: nobody has claimed it, and its role

@@ -33,7 +33,7 @@ import '../test/support/fake_meal_repository.dart';
 import '../test/support/fake_product_analytics.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
-import 'design_review_press.dart';
+import 'review_press.dart';
 
 /// Not a test — a screenshot press. It renders every tab of the app with a
 /// believable week of a believable household, in light and dark, and writes the
@@ -64,7 +64,25 @@ void main() {
     await loadEveryFont();
   });
 
-  const capture = captureForReview;
+  /// The shared shutter (`review_press.dart`), named as this file always
+  /// called it.
+  Future<void> capture(
+    WidgetTester tester,
+    String name, {
+    required Widget screen,
+    required List<ChangeNotifierProvider<Object?>> providers,
+    required Future<void> Function() emit,
+    Brightness brightness = Brightness.light,
+    double textScale = 1,
+  }) => captureScreen(
+    tester,
+    name,
+    screen: screen,
+    providers: providers,
+    emit: emit,
+    brightness: brightness,
+    textScale: textScale,
+  );
 
   // ------------------------------------------------------------- the way in
 

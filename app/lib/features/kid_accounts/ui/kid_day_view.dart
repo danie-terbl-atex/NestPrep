@@ -9,10 +9,12 @@ import 'kid_hero_card.dart';
 import 'kid_moment_card.dart';
 
 /// A kid's day, top to bottom: who they are and how far along they are, their
-/// jobs, and today's food (accounts ADR-0003).
+/// jobs, and today's food (accounts ADR-0003) — each section only when the
+/// grant their profile holds opens it (accounts ADR-0004).
 ///
 /// "No jobs" is part of the view rather than a replacement for it: the food is
-/// still worth seeing on a day with nothing to do (`FE-08`).
+/// still worth seeing on a day with nothing to do (`FE-08`). A grant that opens
+/// neither says so, kindly, rather than showing a blank page.
 class KidDayView extends StatelessWidget {
   const KidDayView({required this.day, required this.onToggle, super.key});
 
@@ -25,38 +27,51 @@ class KidDayView extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
         NestRiseIn(child: KidHeroCard(day: day)),
-        const SizedBox(height: NestSpace.xxl),
-        const NestSectionHeader(title: KidCopy.choresTitle),
-        const SizedBox(height: NestSpace.sm),
-        if (!day.hasChores)
-          const KidMomentCard(
-            icon: Icons.wb_sunny_rounded,
-            tint: NestTileTint.sky,
-            title: KidCopy.choresNone,
-            message: KidCopy.choresNoneBody,
-          ),
-        for (final (index, chore) in day.chores.indexed)
-          Padding(
-            padding: const EdgeInsets.only(bottom: NestSpace.md),
-            child: NestRiseIn(
-              index: index + 1,
-              child: KidChoreTile(
-                key: ValueKey(chore.key),
-                chore: chore,
-                isOverdue: chore.isOverdue(day.today),
-                onToggle: () => onToggle(index),
+        if (day.areas.chores) ...[
+          const SizedBox(height: NestSpace.xxl),
+          const NestSectionHeader(title: KidCopy.choresTitle),
+          const SizedBox(height: NestSpace.sm),
+          if (!day.hasChores)
+            const KidMomentCard(
+              icon: Icons.wb_sunny_rounded,
+              tint: NestTileTint.sky,
+              title: KidCopy.choresNone,
+              message: KidCopy.choresNoneBody,
+            ),
+          for (final (index, chore) in day.chores.indexed)
+            Padding(
+              padding: const EdgeInsets.only(bottom: NestSpace.md),
+              child: NestRiseIn(
+                index: index + 1,
+                child: KidChoreTile(
+                  key: ValueKey(chore.key),
+                  chore: chore,
+                  isOverdue: chore.isOverdue(day.today),
+                  onToggle: day.areas.canTick ? () => onToggle(index) : null,
+                ),
               ),
             ),
-          ),
-        if (day.isAllDone)
+          if (day.isAllDone)
+            const KidMomentCard(
+              icon: Icons.emoji_events_rounded,
+              tint: NestTileTint.peach,
+              title: KidCopy.choresAllDone,
+              message: KidCopy.choresAllDoneBody,
+            ),
+        ],
+        if (day.areas.food) ...[
+          const SizedBox(height: NestSpace.xxl),
+          KidFoodCard(meals: day.meals),
+        ],
+        if (!day.areas.showsAnything) ...[
+          const SizedBox(height: NestSpace.xxl),
           const KidMomentCard(
-            icon: Icons.emoji_events_rounded,
-            tint: NestTileTint.peach,
-            title: KidCopy.choresAllDone,
-            message: KidCopy.choresAllDoneBody,
+            icon: Icons.lock_clock_rounded,
+            tint: NestTileTint.sky,
+            title: KidCopy.nothingShownTitle,
+            message: KidCopy.nothingShownBody,
           ),
-        const SizedBox(height: NestSpace.xxl),
-        KidFoodCard(meals: day.meals),
+        ],
       ],
     );
   }

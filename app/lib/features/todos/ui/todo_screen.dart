@@ -42,15 +42,17 @@ class _TodoScreenState extends State<TodoScreen> {
         current: HouseholdTab.todos,
         onSelect: widget.onSelectTab,
       ),
-      floatingAction: Padding(
-        padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
-        child: NestButton(
-          label: AppCopy.todosAddTask,
-          icon: Icons.add,
-          isExpanded: false,
-          onPressed: () => _addTask(context, controller, view),
-        ),
-      ),
+      floatingAction: controller.canEdit
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
+              child: NestButton(
+                label: AppCopy.todosAddTask,
+                icon: Icons.add,
+                isExpanded: false,
+                onPressed: () => _addTask(context, controller, view),
+              ),
+            )
+          : null,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -64,25 +66,28 @@ class _TodoScreenState extends State<TodoScreen> {
                 onAction: controller.dismissActionFailure,
               ),
             ),
-          Row(
-            children: [
-              Expanded(
-                child: NestChip(
-                  label: AppCopy.todosMine,
-                  isSelected: !_showingEveryone,
-                  onTap: () => setState(() => _showingEveryone = false),
+          // Somebody who may only see their own to-dos has no everyone view
+          // to switch to (household ADR-0003).
+          if (!controller.isOwnOnly)
+            Row(
+              children: [
+                Expanded(
+                  child: NestChip(
+                    label: AppCopy.todosMine,
+                    isSelected: !_showingEveryone,
+                    onTap: () => setState(() => _showingEveryone = false),
+                  ),
                 ),
-              ),
-              const SizedBox(width: NestSpace.sm),
-              Expanded(
-                child: NestChip(
-                  label: AppCopy.todosEveryone,
-                  isSelected: _showingEveryone,
-                  onTap: () => setState(() => _showingEveryone = true),
+                const SizedBox(width: NestSpace.sm),
+                Expanded(
+                  child: NestChip(
+                    label: AppCopy.todosEveryone,
+                    isSelected: _showingEveryone,
+                    onTap: () => setState(() => _showingEveryone = true),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           const SizedBox(height: NestSpace.lg),
           Expanded(
             child: NestAsyncView<TodoBoard>(

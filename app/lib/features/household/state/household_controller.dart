@@ -8,6 +8,7 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
+import '../model/access_defaults.dart';
 import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/household_view.dart';
@@ -65,6 +66,8 @@ final class HouseholdController extends ChangeNotifier
     _subscribe();
   }
 
+  /// A kid, helper or carer starts from its role's grant, which a parent
+  /// then adjusts (household ADR-0003).
   Future<void> addMember({
     required String displayName,
     required MemberColor color,
@@ -77,6 +80,7 @@ final class HouseholdController extends ChangeNotifier
       color: color,
       role: role,
       birthday: birthday,
+      access: AccessDefaults.forRole(role),
     ),
   );
 
@@ -93,6 +97,10 @@ final class HouseholdController extends ChangeNotifier
     // allow (household ADR-0002).
     final roleMovedOnAClaimedMember =
         member != null && member.isClaimed && member.role != role;
+    // A new role on a profile nobody holds starts from that role's grant, as
+    // `setMemberRole` does for a claimed one (household ADR-0003).
+    final roleMovedOnAnUnclaimedMember =
+        member != null && !member.isClaimed && member.role != role;
     await _run(() async {
       await _repository.updateMember(
         householdId: householdId,
@@ -101,6 +109,9 @@ final class HouseholdController extends ChangeNotifier
         color: color,
         role: roleMovedOnAClaimedMember ? member.role : role,
         birthday: birthday,
+        access: roleMovedOnAnUnclaimedMember
+            ? AccessDefaults.forRole(role)
+            : null,
       );
       if (roleMovedOnAClaimedMember) {
         await _directory.setMemberRole(

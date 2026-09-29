@@ -1,5 +1,6 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
+import '../model/access_grant.dart';
 import '../model/member_role.dart';
 import 'household_directory.dart';
 import 'household_failure_mapper.dart';
@@ -72,6 +73,19 @@ final class CallableHouseholdDirectory implements HouseholdDirectory {
       'householdId': householdId,
       'memberId': memberId,
       'role': role.name,
+    });
+  }
+
+  @override
+  Future<void> setMemberAccess({
+    required String householdId,
+    required String memberId,
+    required AccessGrant access,
+  }) async {
+    await _call('setMemberAccess', {
+      'householdId': householdId,
+      'memberId': memberId,
+      'access': access.toJson(),
     });
   }
 

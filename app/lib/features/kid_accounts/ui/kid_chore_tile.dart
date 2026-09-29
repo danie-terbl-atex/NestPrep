@@ -12,6 +12,9 @@ import '../../todos/model/task_occurrence.dart';
 /// explained, not decoration, and under reduce-motion it simply appears
 /// (`FE-15`). Done is said in words and by the icon as well as by colour
 /// (`FE-13`).
+///
+/// With [onToggle] null — a grant of `view` on to-dos, which looks and does not
+/// tick (accounts ADR-0004) — the tile is not a button and says no "tap".
 class KidChoreTile extends StatelessWidget {
   const KidChoreTile({
     required this.chore,
@@ -22,7 +25,7 @@ class KidChoreTile extends StatelessWidget {
 
   final TaskOccurrence chore;
   final bool isOverdue;
-  final VoidCallback onToggle;
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +36,11 @@ class KidChoreTile extends StatelessWidget {
         ? KidCopy.choreDone
         : isOverdue
         ? KidCopy.choreOverdue
+        : onToggle == null
+        ? KidCopy.choreToDo
         : KidCopy.choreTapToFinish;
     return Semantics(
-      button: true,
+      button: onToggle != null,
       checked: isDone,
       label: '${chore.task.title}, $status',
       excludeSemantics: true,

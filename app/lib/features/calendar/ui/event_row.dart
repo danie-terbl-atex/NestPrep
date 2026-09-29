@@ -5,6 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../model/event_occurrence.dart';
 import '../state/calendar_controller.dart';
@@ -32,7 +33,9 @@ class EventRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(NestRadius.lg),
-        onTap: () => _edit(context, view),
+        onTap: view.permissions.canEdit(HouseholdArea.calendar)
+            ? () => _edit(context, view)
+            : null,
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,

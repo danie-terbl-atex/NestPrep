@@ -1,0 +1,35 @@
+// ---- accounts (accounts ADR-0001) ----
+
+match /users/{userId} {
+  function isSelf() {
+    return isSignedIn() && userId == uid();
+  }
+
+  allow read: if isSelf();
+
+  // A new account belongs to no household and has none active: only a
+  // Function may change that (household ADR-0002). A kid device has no
+  // account document at all — it belongs to one household, through the
+  // `kids` map, and to nothing else (accounts ADR-0003).
+  allow create: if isSelf()
+    && request.auth.token.get('kidProfile', null) == null
+    && request.resource.data.keys().hasOnly(
+         ['displayName', 'photoUrl', 'householdIds', 'activeHouseholdId',
+          'createdAt', 'lastSignedInAt'])
+    && isNonEmptyString(request.resource.data.displayName)
+    && request.resource.data.householdIds.size() == 0
+    && request.resource.data.activeHouseholdId == null
+    && isServerTime('createdAt');
+
+  // What Google tells us about the person, and which household is showing.
+  // `householdIds` and `createdAt` are not in the list, so they cannot move.
+  allow update: if isSelf()
+    && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt'])
+    && isNonEmptyString(request.resource.data.displayName)
+    && (request.resource.data.activeHouseholdId == null
+        || request.resource.data.activeHouseholdId in resource.data.householdIds)
+    && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'));
+
+  // Deleting an account is a Function, in the phase that ships to a store.
+  allow delete: if false;
+}

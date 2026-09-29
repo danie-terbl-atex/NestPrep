@@ -1,0 +1,41 @@
+// ---- shapes ----
+
+function changedKeys() {
+  return request.resource.data.diff(resource.data).affectedKeys();
+}
+
+function onlyChanged(fields) {
+  return changedKeys().hasOnly(fields);
+}
+
+function didNotChange(field) {
+  return request.resource.data[field] == resource.data[field];
+}
+
+// A timestamp the server assigns, never one the client chose (BE-03).
+function isServerTime(field) {
+  return request.resource.data[field] == request.time;
+}
+
+function isNonEmptyString(value) {
+  return value is string && value.size() > 0;
+}
+
+// `member` is household ADR-0001's family adult. An app installed before
+// ADR-0003 still writes it, so it is still accepted, and read as parent.
+function isRole(value) {
+  return value in ['admin', 'parent', 'member', 'kid', 'helper', 'carer'];
+}
+
+// A member's birthday (birthdays ADR-0001): absent, null, `YYYY-MM-DD`, or
+// `--MM-DD` where the household does not know the year. The month and the
+// day are range-checked here; that 31 February is not a day is the only
+// part left to the client, because the rules language cannot count the
+// days in a month and a wrong one is a wrong date in one household's own
+// profile, not a way into anybody's data (BE-03).
+function isBirthday(value) {
+  return value == null
+    || (value is string
+        && (value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+            || value.matches('^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')));
+}

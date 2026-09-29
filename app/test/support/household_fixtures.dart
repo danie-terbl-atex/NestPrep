@@ -1,4 +1,5 @@
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
+import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
@@ -31,11 +32,14 @@ abstract final class Fixtures {
     claimedBy: thandiUid,
   );
 
-  static Member get kid => const Member(
+  /// A kid profile holding the kid defaults (household ADR-0003) — what a kid
+  /// device reads its access from (accounts ADR-0004).
+  static Member get kid => Member(
     id: kidMemberId,
     displayName: 'Kid Parker',
     color: MemberColor.sky,
-    roleName: 'member',
+    roleName: 'kid',
+    access: AccessDefaults.kid,
   );
 
   static Household household({String timeZone = 'Africa/Johannesburg'}) =>

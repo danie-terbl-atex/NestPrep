@@ -16,7 +16,7 @@ import '../test/support/fake_auth.dart';
 import '../test/support/fake_kid_sign_in.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/kid_home_fixture.dart';
-import 'design_review_press.dart';
+import 'review_press.dart';
 
 /// Not a test — the kids' half of the screenshot press (accounts ADR-0003):
 /// the child's way in, the child's home, and the parent's screen with a code
@@ -37,7 +37,7 @@ void main() {
       authGateway: auth,
     );
     addTearDown(controller.dispose);
-    await captureForReview(
+    await captureScreen(
       tester,
       'kid-code-${brightness.name}',
       screen: const KidCodeScreen(),
@@ -52,7 +52,7 @@ void main() {
   Future<void> kidHome(WidgetTester tester, Brightness brightness) async {
     final fixture = KidHomeFixture();
     addTearDown(fixture.close);
-    await captureForReview(
+    await captureScreen(
       tester,
       'kid-home-${brightness.name}',
       screen: const KidHomeScreen(),
@@ -93,7 +93,7 @@ void main() {
       members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
     );
     addTearDown(controller.dispose);
-    await captureForReview(
+    await captureScreen(
       tester,
       withCode
           ? 'kids-pairing-${brightness.name}'

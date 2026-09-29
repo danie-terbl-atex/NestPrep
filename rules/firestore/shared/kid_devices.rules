@@ -1,0 +1,28 @@
+// ---- kid devices (accounts ADR-0003, ADR-0004) ----
+//
+// A kid device is **not a member**: it is never in the uid→role map, so no
+// `isMember()` admits it and no membership rule or callable treats it as
+// an adult. It is recorded in the household's `kids` map (uid → the member
+// profile the device is signed in as), which only Functions write and a
+// parent empties in one call; the rules read that map, never the token's
+// `kidProfile` claim, which would outlive a revoke until the token
+// refreshed. What a kid device may *see* is not decided here: it holds the
+// grant of the kid profile it is bound to, through `canView` and friends
+// below (accounts ADR-0004).
+
+function isKid(householdId) {
+  return isSignedIn() && uid() in householdData(householdId).get('kids', {});
+}
+
+function kidMemberId(householdId) {
+  return householdData(householdId).kids[uid()];
+}
+
+function isKidAs(householdId, memberId) {
+  return isKid(householdId) && kidMemberId(householdId) == memberId;
+}
+
+// A member by the uid→role map, or a kid device by the `kids` map.
+function isInHousehold(householdId) {
+  return isMember(householdId) || isKid(householdId);
+}

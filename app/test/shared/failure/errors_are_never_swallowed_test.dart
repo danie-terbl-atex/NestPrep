@@ -166,10 +166,22 @@ void main() {
     // heartbeat runs the call through `bestEffort`, which logs a failure and
     // never throws, so nothing can escape; nobody waits on it by design.
     '_heartbeat.beat(',
+    // household phase 2 (household ADR-0003). Each keeps its own outcome:
+    // `save` and `invite` hold an AppFailure for the screen's banner through
+    // their runners, and the share sheet turns a PlatformException into
+    // `InviteShareOutcome.unavailable`, which the screen says in words.
+    'controller.save()',
+    '_invite(context controller role)',
+    'controller.shareAgain(invite)',
+    'context.read<InviteSharer>().shareCode(',
     // Closing the upload's own progress stream once it has ended. There is
     // nobody left to tell: the failure, if there was one, has already been
     // put on that stream and delivered.
     '_close()',
+    // The kid home closing the reads a narrowed grant no longer allows
+    // (accounts ADR-0004). Cancelling a listener has no failure to report:
+    // anything it was going to say has already reached `_onError`.
+    'subscription.cancel())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

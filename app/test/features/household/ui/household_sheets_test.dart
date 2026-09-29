@@ -87,6 +87,12 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text(AppCopy.roleName(MemberRole.helper.name)));
       await tester.pumpAndSettle();
+      // The role picker says what each role means, so the save sits below
+      // the fold of a phone-sized sheet (the lesson on taps below the fold).
+      await tester.ensureVisible(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
       await tester.pumpAndSettle();
 
@@ -134,6 +140,12 @@ void main() {
         'Gogo',
       );
       await tester.pumpAndSettle();
+      // The role picker says what each role means, so the save sits below
+      // the fold of a phone-sized sheet (the lesson on taps below the fold).
+      await tester.ensureVisible(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
       await tester.pumpAndSettle();
 
@@ -159,6 +171,12 @@ void main() {
         reason: 'the row says which half of the birthday is missing',
       );
 
+      // The role picker says what each role means, so the save sits below
+      // the fold of a phone-sized sheet (the lesson on taps below the fold).
+      await tester.ensureVisible(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
       await tester.pumpAndSettle();
 
@@ -181,6 +199,12 @@ void main() {
         findsOneWidget,
       );
 
+      // The role picker says what each role means, so the save sits below
+      // the fold of a phone-sized sheet (the lesson on taps below the fold).
+      await tester.ensureVisible(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
       await tester.pumpAndSettle();
 
@@ -196,6 +220,12 @@ void main() {
       );
 
       await tester.tap(find.text(AppCopy.householdBirthdayNone));
+      await tester.pumpAndSettle();
+      // The role picker says what each role means, so the save sits below
+      // the fold of a phone-sized sheet (the lesson on taps below the fold).
+      await tester.ensureVisible(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
       await tester.pumpAndSettle();
@@ -231,6 +261,7 @@ void main() {
         ),
       );
 
+      var shared = 0;
       await pumpKit(
         tester,
         Builder(
@@ -243,6 +274,7 @@ void main() {
                 code: 'ABCD2345',
                 expiresAt: DateTime.utc(2026, 9, 25),
               ),
+              onShare: () => shared += 1,
             ),
           ),
         ),
@@ -252,6 +284,10 @@ void main() {
 
       expect(find.text('ABCD2345'), findsOneWidget);
       expect(find.text(Fixtures.kid.displayName), findsOneWidget);
+
+      // The share sheet is the first way out (household ADR-0003).
+      await tester.tap(find.widgetWithText(NestButton, AccessCopy.inviteShare));
+      expect(shared, 1);
 
       await tester.tap(
         find.widgetWithText(NestButton, AppCopy.householdCopyCode),

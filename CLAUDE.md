@@ -29,7 +29,8 @@ This folder is the NestPrep monorepo: one Firebase project, three parts. Each pa
 - `app/` — the Flutter client, Android and iOS from one codebase
 - `functions/` — Cloud Functions (TypeScript, 2nd gen); only what Security Rules cannot express
 - `firebase.json`, `firestore.rules`, `storage.rules`, `firestore.indexes.json` — the Firebase config
-  at the root; the two rules files are the authorisation layer and every rule has a denied-case test
+  at the root; the two rules files are the authorisation layer and every rule has a denied-case test.
+  **`firestore.rules` is generated** from `rules/firestore/` — see below.
 
 `DesignsInsp/` is design inspiration, not source; it is gitignored on purpose.
 
@@ -65,5 +66,33 @@ The suite is still the environment for the rules suite, the Functions tests and
 it before an emulator run, because a Firestore **write** against a backend that is not listening
 never completes and never throws — the app sits on "Getting things ready" for ever with no error.
 That is a vault lesson, not a bug to rediscover.
+
+## Firestore rules are partials, built into one file
+
+`firestore.rules` is generated and committed; never edit it (foundation ADR-0012, `ENG-05`). Each
+feature owns one partial, and adding one is a new file nobody else touches:
+
+    rules/firestore/shared/*.rules      functions every match may call (who the caller is, grants, shapes)
+    rules/firestore/root/*.rules        top-level  match /<collection>/{id} { … }
+    rules/firestore/household/*.rules   blocks inside  match /households/{householdId} { … }
+
+A partial is written **without** its scope's indentation — the builder adds it — and files are read
+in name order, which does not change what the rules mean. To add a feature's rules:
+
+1. Create `rules/firestore/household/<feature>.rules` (or `root/`) holding that feature's `match`
+   blocks and its own helper functions. Gate every household read and write on the area grant —
+   `canView(householdId, '<area>')`, `canEdit(…)`, `hasOwnOnly(…)` with `ownMemberId(…)` — never on
+   a bare `isMember` or a role name; that makes it right for helpers, carers, kids and kid devices
+   at once (household ADR-0003, accounts ADR-0004). Stamp authorship with `isOwnMember`.
+2. A helper several features need goes in a new `rules/firestore/shared/<name>.rules`; do not grow
+   `access.rules` or `shapes.rules` for one feature.
+3. `npm --prefix functions run rules:build`, and commit the partial and `firestore.rules` together.
+   `npm run test:rules` builds first; `functions/test/unit/rules_are_generated.test.ts` fails when
+   the committed file is not what the partials build to, and when a partial passes 300 lines.
+4. **A merge conflict in `firestore.rules` is never resolved by hand**: take either side, run
+   `rules:build`, `git add firestore.rules`. Conflicts belong in the partials, and two features that
+   each add their own file have none.
+
+`storage.rules` is still one hand-written file (132 lines); split it the same way when it nears 300.
 
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

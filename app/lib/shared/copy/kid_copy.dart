@@ -33,6 +33,11 @@ abstract final class KidCopy {
   static const choreOverdue = 'From before';
   static const choreTapToFinish = 'Tap when it is done';
   static const choreDone = 'Done!';
+  static const choreToDo = 'Still to do';
+  static const nothingShownTitle = 'Nothing here yet';
+  static const nothingShownBody =
+      'A grown-up chooses what shows on this device. Ask them to open '
+      'Household on their phone.';
   static const foodTitle = 'Today’s food';
   static const foodNothingPlanned = 'Not planned yet';
   static const signOut = 'Sign this device out';
@@ -51,12 +56,13 @@ abstract final class KidCopy {
   static const manageEntryBody =
       'Let a child sign in on their own tablet with a code — no email needed.';
   static const manageIntro =
-      'A child signs in with a code you make here. They see their own jobs and '
-      'today’s food, and nothing else.';
+      'A child signs in with a code you make here. Their device shows what you '
+      'chose for them under Household — to begin with, their own jobs and '
+      'today’s food.';
   static const manageEmptyTitle = 'No children to sign in yet';
   static const manageEmptyBody =
-      'Add a person with the Member role who has not joined. They can then '
-      'sign in here on their own device.';
+      'Add a person with the Kid role who has not joined. They can then sign '
+      'in here on their own device.';
   static const manageAddDevice = 'Add a device';
   static const manageSignOutEverywhere = 'Sign out everywhere';
   static const manageSignOutEverywhereConfirm = 'Sign out every device?';

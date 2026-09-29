@@ -6,7 +6,6 @@ import { db } from '../shared/firestore';
 import {
   type InviteDocument,
   type MemberDocument,
-  householdRef,
   inviteRef,
   memberRef,
   readHousehold,
@@ -15,12 +14,14 @@ import {
 } from './documents';
 import { refuse } from './errors';
 import { looksLikeInviteCode } from './invite_code';
+import { recordClaim } from './membership';
 import { parseInput, requireVerifiedUid } from './parse_input';
 import { redeemInviteInput } from './schemas';
 
 /**
  * The one call that turns a code into membership, in one transaction: the
- * profile is claimed, the household's uid→role map gains the caller, the
+ * profile is claimed, the household's uid→role map gains the caller — with the
+ * grant a kid, helper or carer holds (household ADR-0003) — the
  * account's household list gains the household, and the invite is spent
  * (household ADR-0002). Any refusal leaves nothing half-done (BE-07).
  */
@@ -61,9 +62,15 @@ export const redeemInvite = onCall(async (request) => {
     }
     if (memberData.claimedBy !== null) throw refuse('memberAlreadyClaimed');
 
-    transaction.update(member, { claimedBy: uid });
-    transaction.update(householdRef(store, inviteData.householdId), {
-      [`members.${uid}`]: memberData.role,
+    // `member` is ADR-0001's family adult; it joins as what it now means.
+    const role = memberData.role === 'member' ? 'parent' : memberData.role;
+    transaction.update(member, { claimedBy: uid, role });
+    recordClaim(transaction, store, {
+      householdId: inviteData.householdId,
+      uid,
+      memberId: inviteData.memberId,
+      role,
+      access: memberData.access,
     });
     transaction.set(
       userRef(store, uid),

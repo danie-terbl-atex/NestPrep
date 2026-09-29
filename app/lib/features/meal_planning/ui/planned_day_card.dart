@@ -5,6 +5,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../household/model/household_area.dart';
+import '../../household/model/household_view.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
@@ -71,9 +73,12 @@ class _SlotRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final planned = meal;
+    final canEdit = context.watch<HouseholdView>().permissions.canEdit(
+      HouseholdArea.meals,
+    );
     return InkWell(
       borderRadius: BorderRadius.circular(NestRadius.sm),
-      onTap: () => _pick(context),
+      onTap: canEdit ? () => _pick(context) : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: NestSpace.sm),
         child: Row(

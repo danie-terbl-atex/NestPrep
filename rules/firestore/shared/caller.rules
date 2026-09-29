@@ -1,0 +1,27 @@
+// ---- who the caller is ----
+
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function uid() {
+  return request.auth.uid;
+}
+
+// ---- what the caller is in a household ----
+
+function householdData(householdId) {
+  return get(/databases/$(database)/documents/households/$(householdId)).data;
+}
+
+function isMember(householdId) {
+  return isSignedIn() && uid() in householdData(householdId).members;
+}
+
+function isAdmin(householdId) {
+  return isMember(householdId) && householdData(householdId).members[uid()] == 'admin';
+}
+
+function memberData(householdId, memberId) {
+  return get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId)).data;
+}

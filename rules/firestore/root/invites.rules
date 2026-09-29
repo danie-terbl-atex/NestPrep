@@ -1,0 +1,6 @@
+// ---- invites (household ADR-0002) ----
+// No client reads or writes these at all: a readable invite collection is a
+// list of valid codes. `createInvite` and `redeemInvite` are the only way in.
+match /invites/{code} {
+  allow read, write: if false;
+}

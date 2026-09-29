@@ -132,7 +132,9 @@ describe('redeemInvite', () => {
 
     await callAs(joiner, 'redeemInvite', { code: invite.code.toLowerCase() });
     const household = await adminDb().collection('households').doc(householdId).get();
-    expect(membersOf(household)[joiner.uid]).toBe('member');
+    // The profile was written as ADR-0001's `member`; it joins as what that
+    // now means (household ADR-0003).
+    expect(membersOf(household)[joiner.uid]).toBe('parent');
   });
 
   it('refuses an account that already holds a profile in that household', async () => {
@@ -275,7 +277,7 @@ describe('setMemberRole', () => {
     );
   });
 
-  it('refuses a role that is not one of the three', async () => {
+  it('refuses a role that is not one of the five', async () => {
     const sam = await signUp();
     const { householdId, memberId } = await createHousehold(sam);
     await expectRefusal(

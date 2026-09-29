@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
+import '../model/access_grant.dart';
 import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/member.dart';
@@ -69,12 +70,13 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
           .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
-  Future<void> addMember({
+  Future<String> addMember({
     required String householdId,
     required String displayName,
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   }) async {
     final members = _members(householdId);
     final document = members.doc();
@@ -86,9 +88,11 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
           color: color,
           roleName: role.name,
           birthday: birthday,
+          access: access,
         ),
       ),
     );
+    return document.id;
   }
 
   @override
@@ -99,16 +103,26 @@ final class FirestoreHouseholdRepository implements HouseholdRepository {
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   }) => _guarded(
     // Hand-built because an update names the fields it moves, so the birthday
     // goes in as the string it is stored as — Firestore never calls `toJson`
     // on a model it is handed.
+    //
+    // The grant is only sent when it is being set: the rules refuse any change
+    // to it on a claimed profile, whose grant moves through `setMemberAccess`.
     () => _members(householdId).doc(memberId).update({
       'displayName': displayName,
       'color': color.name,
       'role': role.name,
       'birthday': birthday?.iso,
+      'access': ?access?.toJson(),
     }),
+  );
+
+  @override
+  Future<void> finishSetupStep(String householdId) => _guarded(
+    () => _households.doc(householdId).update({'pendingSetupStep': null}),
   );
 
   @override

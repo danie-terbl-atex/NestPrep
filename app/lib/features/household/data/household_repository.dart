@@ -1,4 +1,5 @@
 import '../../../design/tokens/nest_member_palette.dart';
+import '../model/access_grant.dart';
 import '../model/birthday.dart';
 import '../model/household.dart';
 import '../model/member.dart';
@@ -32,18 +33,22 @@ abstract interface class HouseholdRepository {
   Stream<Member?> watchMember(String householdId, String memberId);
 
   /// Adds an unclaimed profile. Admin only, and the rules say so too. A null
-  /// birthday is the ordinary case, not a missing one (birthdays ADR-0001).
-  Future<void> addMember({
+  /// birthday is the ordinary case, not a missing one (birthdays ADR-0001). A
+  /// kid, helper or carer is written with its grant; family with none
+  /// (household ADR-0003). Returns the new profile's id, which the invite step
+  /// makes a code for at once.
+  Future<String> addMember({
     required String householdId,
     required String displayName,
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   });
 
-  /// Renames or recolours a profile, and changes the role of one nobody has
-  /// claimed. A claimed member's role moves through `setMemberRole` because it
-  /// also lives in the household's uid→role map.
+  /// Renames or recolours a profile, and changes the role — and with it the
+  /// grant — of one nobody has claimed. A claimed member's role moves through
+  /// `setMemberRole` because it also lives in the household's uid→role map.
   Future<void> updateMember({
     required String householdId,
     required String memberId,
@@ -51,7 +56,12 @@ abstract interface class HouseholdRepository {
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
+    AccessGrant? access,
   });
+
+  /// Closes the invite step a new household opens, whether it was finished
+  /// or skipped (household ADR-0003). Admin only.
+  Future<void> finishSetupStep(String householdId);
 
   /// Renames the household or changes its timezone. Admin only.
   Future<void> updateHousehold({

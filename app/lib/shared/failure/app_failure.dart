@@ -115,6 +115,10 @@ enum HouseholdProblem {
   /// already does not show (accounts ADR-0003).
   kidAccount,
 
+  /// A grant asked for on a parent or an admin, who already see everything
+  /// (household ADR-0003).
+  familyHasFullAccess,
+
   /// The app sent something the Function would not accept — our bug.
   badRequest,
 

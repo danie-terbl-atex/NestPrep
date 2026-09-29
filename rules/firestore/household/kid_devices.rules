@@ -1,0 +1,7 @@
+// ---- kid devices (accounts ADR-0003) ----
+// Which devices are signed in as which kid, for the parents who can end
+// them. Written only by the kid sign-in callables and `removeMember`.
+match /kidDevices/{deviceUid} {
+  allow read: if isAdmin(householdId);
+  allow write: if false;
+}

@@ -234,13 +234,15 @@ List<ModelFixture> modelFixtures() {
         'color',
         'role',
         'birthday',
+        'access',
         'claimedBy',
         'createdAt',
       },
       note:
           '`roleName` is stored as `role`, which is the name the rules read. '
           '`birthday` is a string in one of two shapes, never a nested model '
-          '(birthdays ADR-0001).',
+          '(birthdays ADR-0001). `access` is a map of area to level, or null '
+          '(household ADR-0003).',
     ),
     ModelFixture(
       label: 'GroceryItem',

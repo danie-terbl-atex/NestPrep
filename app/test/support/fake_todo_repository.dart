@@ -60,18 +60,31 @@ final class FakeTodoRepository implements TodoRepository {
     await _completions.close();
   }
 
-  @override
-  Stream<List<Task>> watchTasks(String householdId) => _tasks.stream;
+  /// What the last `watchTasks` and `watchCompletions` were narrowed to.
+  String? tasksAssignedTo;
+  String? completionsFor;
+  var routinesWatched = 0;
 
   @override
-  Stream<List<Routine>> watchRoutines(String householdId) => _routines.stream;
+  Stream<List<Task>> watchTasks(String householdId, {String? assignedTo}) {
+    tasksAssignedTo = assignedTo;
+    return _tasks.stream;
+  }
+
+  @override
+  Stream<List<Routine>> watchRoutines(String householdId) {
+    routinesWatched += 1;
+    return _routines.stream;
+  }
 
   @override
   Stream<List<TaskCompletion>> watchCompletions(
     String householdId, {
     required CalendarDate from,
     required CalendarDate to,
+    String? completedFor,
   }) {
+    completionsFor = completedFor;
     completionsFrom = from;
     completionsTo = to;
     return _completions.stream;
@@ -81,9 +94,14 @@ final class FakeTodoRepository implements TodoRepository {
   String? tasksForMemberId;
   String? completionsForMemberId;
 
+  /// How many times a kid's own tasks were asked for — a grant that did not
+  /// change must not reopen them (accounts ADR-0004).
+  var tasksForWatched = 0;
+
   @override
   Stream<List<Task>> watchTasksFor(String householdId, String memberId) {
     tasksForMemberId = memberId;
+    tasksForWatched++;
     return _tasks.stream;
   }
 

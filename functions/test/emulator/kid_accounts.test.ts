@@ -44,7 +44,7 @@ async function createHousehold(parent: TestUser): Promise<Created> {
 async function addProfile(
   householdId: string,
   displayName: string,
-  role = 'member',
+  role = 'kid',
   claimedBy: string | null = null,
 ): Promise<string> {
   const ref = household(householdId).collection('members').doc();
@@ -126,10 +126,13 @@ describe('createKidPairing', () => {
 
   it('refuses a profile that is not a child nobody has claimed', async () => {
     const { sam, householdId } = await aFamily();
-    const teen = await addProfile(householdId, 'Teen', 'member', 'uid-teen');
+    const teen = await addProfile(householdId, 'Teen', 'kid', 'uid-teen');
     const helper = await addProfile(householdId, 'Thandi', 'helper');
+    // `member` is an adult now — read as a parent (accounts ADR-0004).
+    const grandad = await addProfile(householdId, 'Grandad', 'member');
     await expectRefusal(pairingFor(sam, householdId, teen), 'notEligible');
     await expectRefusal(pairingFor(sam, householdId, helper), 'notEligible');
+    await expectRefusal(pairingFor(sam, householdId, grandad), 'notEligible');
     await expectRefusal(pairingFor(sam, householdId, 'm-nobody'), 'memberNotFound');
   });
 

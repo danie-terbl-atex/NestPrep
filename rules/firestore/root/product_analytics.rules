@@ -1,0 +1,24 @@
+// ---- product analytics (product-analytics ADR-0001) ----
+// The per-household ledgers are written by Functions alone and read by the
+// rollup alone: a readable ledger would say which members of which household
+// opened the app in which week. No household may read its own either — the
+// numbers are about the product, never a view of one family. The weekly
+// totals are counts with no identifier in them, readable only by an account
+// holding the reader claim `functions/tools/grant-analytics-reader.mjs` sets.
+
+match /analyticsHouseholdWeeks/{entryId} {
+  allow read, write: if false;
+}
+
+match /analyticsHouseholds/{householdId} {
+  allow read, write: if false;
+}
+
+match /analyticsConversions/{conversionId} {
+  allow read, write: if false;
+}
+
+match /analyticsWeeks/{week} {
+  allow read: if isSignedIn() && request.auth.token.get('analyticsReader', false) == true;
+  allow write: if false;
+}

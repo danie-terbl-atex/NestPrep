@@ -292,7 +292,8 @@ void main() {
     await emit(tester, [tablet(label: 'The big family tablet in the kitchen')]);
     expect(tester.takeException(), isNull);
 
-    await tester.ensureVisible(find.text(KidCopy.manageAddDevice));
+    // At 200% the card is below the list's first build, so scroll to it.
+    await tester.scrollUntilVisible(find.text(KidCopy.manageAddDevice), 200);
     await tester.pumpAndSettle();
     await makeCode(tester);
     expect(tester.takeException(), isNull);

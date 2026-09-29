@@ -71,8 +71,10 @@ describe('every write a callable makes is atomic', () => {
     expect(redeem).toBeDefined();
     const source = redeem?.source ?? '';
     expect(source).toContain('runTransaction');
+    // `recordClaim(transaction, …)` stages the household's side of the claim —
+    // role, profile and grant (household ADR-0003) — on the same transaction.
     expect(
-      (source.match(/transaction\.(set|update|delete)\(/g) ?? []).length,
+      (source.match(/transaction\.(set|update|delete)\(|recordClaim\(transaction/g) ?? []).length,
     ).toBeGreaterThanOrEqual(4);
   });
 });
@@ -111,7 +113,9 @@ describe('every callable declares what it may cost', () => {
     // need and the folder-is-empty check no rule can perform (documents
     // ADR-0001). The five product-analytics ones count the beta numbers, which
     // no rule can do because a rule cannot write a second document
-    // (product-analytics ADR-0001).
+    // (product-analytics ADR-0001). `setMemberAccess` is the grant a parent
+    // chooses, which lives on the profile and on the household document at
+    // once (household ADR-0003).
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
@@ -134,6 +138,7 @@ describe('every callable declares what it may cost', () => {
       'resetKidSignIn',
       'revokeKidDevice',
       'rollupBetaNumbers',
+      'setMemberAccess',
       'setMemberRole',
       'syncDocumentAccess',
     ]);

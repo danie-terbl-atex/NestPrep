@@ -8,8 +8,10 @@ import {
   leaveHouseholdInput,
   redeemInviteInput,
   removeMemberInput,
+  setMemberAccessInput,
   setMemberRoleInput,
 } from '../../src/household/schemas';
+import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput } from '../../src/documents/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
@@ -54,6 +56,10 @@ const validBodies = {
   setMemberRole: {
     schema: setMemberRoleInput,
     body: { householdId: 'h1', memberId: 'm-kid', role: 'admin' },
+  },
+  setMemberAccess: {
+    schema: setMemberAccessInput,
+    body: { householdId: 'h1', memberId: 'm-thandi', access: ROLE_DEFAULTS.helper },
   },
   deleteDocumentFolder: {
     schema: deleteDocumentFolderInput,
@@ -180,17 +186,61 @@ describe('an invite code', () => {
 describe('a role', () => {
   const { schema, body } = validBodies.setMemberRole;
 
-  for (const role of ['admin', 'member', 'helper']) {
+  for (const role of ['admin', 'parent', 'kid', 'helper', 'carer']) {
     it(`accepts ${role}`, () => {
-      expect(() => parseInput(schema, { ...body, role })).not.toThrow();
+      expect(parseInput(schema, { ...body, role }).role).toBe(role);
     });
   }
+
+  it('accepts `member` from an app installed before ADR-0003, and writes it as parent', () => {
+    expect(parseInput(schema, { ...body, role: 'member' }).role).toBe('parent');
+  });
 
   for (const role of ['owner', 'ADMIN', 'superuser', '', null]) {
     it(`refuses ${JSON.stringify(role)}`, () => {
       expect(() => parseInput(schema, { ...body, role })).toThrow(HttpsError);
     });
   }
+});
+
+describe('a grant', () => {
+  const { schema, body } = validBodies.setMemberAccess;
+
+  it('accepts every role default as it stands', () => {
+    for (const grant of Object.values(ROLE_DEFAULTS)) {
+      expect(() => parseInput(schema, { ...body, access: grant })).not.toThrow();
+    }
+  });
+
+  it('refuses a grant that leaves an area out — "not said" is not "none"', () => {
+    const partial: Partial<typeof ROLE_DEFAULTS.helper> = { ...ROLE_DEFAULTS.helper };
+    delete partial.documents;
+    expect(() => parseInput(schema, { ...body, access: partial })).toThrow(HttpsError);
+  });
+
+  it('refuses an area nobody has heard of', () => {
+    const access = { ...ROLE_DEFAULTS.helper, garage: 'edit' };
+    expect(() => parseInput(schema, { ...body, access })).toThrow(HttpsError);
+  });
+
+  it('refuses a level that is not one of the four', () => {
+    const access = { ...ROLE_DEFAULTS.helper, calendar: 'admin' };
+    expect(() => parseInput(schema, { ...body, access })).toThrow(HttpsError);
+  });
+
+  it('refuses `own` where the area has no meaning of "theirs"', () => {
+    for (const area of ['calendar', 'groceries', 'meals', 'documents', 'nannyHub']) {
+      const access = { ...ROLE_DEFAULTS.helper, [area]: 'own' };
+      expect(() => parseInput(schema, { ...body, access }), area).toThrow(HttpsError);
+    }
+  });
+
+  it('accepts `own` where it does', () => {
+    for (const area of ['todos', 'lunch', 'familyProfiles', 'medical', 'homeCare']) {
+      const access = { ...ROLE_DEFAULTS.helper, [area]: 'own' };
+      expect(() => parseInput(schema, { ...body, access }), area).not.toThrow();
+    }
+  });
 });
 
 describe('what a refusal tells the client', () => {

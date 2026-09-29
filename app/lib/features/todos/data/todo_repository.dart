@@ -12,15 +12,21 @@ import '../model/task_completion.dart';
 /// (foundation ADR-0005). Completions are the one read that grows without
 /// bound, so that one is windowed (`BE-08`).
 abstract interface class TodoRepository {
-  Stream<List<Task>> watchTasks(String householdId);
+  /// Every task, or — with [assignedTo] — only the ones that name that
+  /// member. A kid, helper or carer whose to-dos are `own` may read nothing
+  /// else, and a rule is not a filter, so the query has to ask for exactly
+  /// that (household ADR-0003).
+  Stream<List<Task>> watchTasks(String householdId, {String? assignedTo});
 
   Stream<List<Routine>> watchRoutines(String householdId);
 
-  /// What has been done between two days, inclusive.
+  /// What has been done between two days, inclusive — for one member only,
+  /// with [completedFor], for the same reason as `watchTasks`.
   Stream<List<TaskCompletion>> watchCompletions(
     String householdId, {
     required CalendarDate from,
     required CalendarDate to,
+    String? completedFor,
   });
 
   /// The tasks that name one member — the only task read a kid device may

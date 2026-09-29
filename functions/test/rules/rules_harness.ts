@@ -82,10 +82,12 @@ export async function asSignedOut(): Promise<Firestore> {
 export async function storageAs(
   uid: string,
   households: Record<string, string>,
+  access?: Record<string, Record<string, string>>,
 ): Promise<FirebaseStorage> {
-  const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid, {
-    households,
-  });
+  // No `access` at all is a token minted before household ADR-0003; an empty
+  // one is a token that says this account holds no grant anywhere.
+  const claims = access === undefined ? { households } : { households, access };
+  const context: RulesTestContext = (await rulesEnvironment()).authenticatedContext(uid, claims);
   return context.storage();
 }
 

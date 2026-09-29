@@ -3,21 +3,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
+import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:provider/single_child_widget.dart';
 
 import '../test/support/pump_screen.dart';
 
-/// The shutter every design-review picture is taken with, shared by the
-/// household's press and the kids' one (`ENG-02`) — so every picture in
-/// `design-review/` is the same phone, the same scale and the same fonts.
-
-/// An ordinary phone.
+/// The shutter every design-review press shares: one screen at phone size,
+/// with the real fonts and the real shadows, written to `design-review/`.
+///
+/// Every press uses it — the tabs (`design_review_test.dart`), household
+/// phase 2's screens (`household_access_review_test.dart`) and the kid device
+/// (`kid_design_review_test.dart`) — which is why it is its own file rather
+/// than a copy in each (`ENG-02`).
 const reviewPhone = Size(390, 844);
 
 /// Every font the app ships, read from the bundle's own manifest — the type
 /// family *and* the icon font. A test renders in Ahem by default, so without
-/// this the screenshots are black boxes where the words and the icons should be,
-/// which is the opposite of useful for a design review.
+/// this the screenshots are black boxes where the words and the icons should
+/// be, which is the opposite of useful for a design review.
 Future<void> loadEveryFont() async {
   final manifest = json.decode(
     await rootBundle.loadString('FontManifest.json'),
@@ -43,14 +46,15 @@ Future<void> loadEveryFont() async {
 }
 
 /// Renders one screen at phone size and writes it to `design-review/`.
-Future<void> captureForReview(
+Future<void> captureScreen(
   WidgetTester tester,
   String name, {
   required Widget screen,
-  required List<ChangeNotifierProvider<Object?>> providers,
+  required List<SingleChildWidget> providers,
   required Future<void> Function() emit,
   Brightness brightness = Brightness.light,
   double textScale = 1,
+  HouseholdView? view,
 }) async {
   tester.view.devicePixelRatio = 2;
   tester.view.physicalSize = reviewPhone * 2;
@@ -64,6 +68,7 @@ Future<void> captureForReview(
     tester,
     screen,
     providers: providers,
+    view: view,
     brightness: brightness,
     textScale: textScale,
   );

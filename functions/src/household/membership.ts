@@ -5,6 +5,7 @@ import {
   type Transaction,
 } from 'firebase-admin/firestore';
 
+import { effectiveGrant } from './access';
 import {
   type MemberDocument,
   householdRef,
@@ -57,6 +58,8 @@ export function detachMember(
   }
   transaction.update(householdRef(store, householdId), {
     [`members.${uid}`]: FieldValue.delete(),
+    [`access.${uid}`]: FieldValue.delete(),
+    [`profiles.${uid}`]: FieldValue.delete(),
   });
   transaction.set(
     userRef(store, uid),
@@ -77,4 +80,24 @@ export async function readMember(
 ): Promise<MemberDocument | undefined> {
   const snapshot = await transaction.get(memberRef(store, householdId, memberId));
   return snapshot.data() as MemberDocument | undefined;
+}
+
+/**
+ * Everything a household records about one claimed account, staged on the
+ * caller's transaction: its role in the uid→role map, the profile it claimed,
+ * and — for a kid, helper or carer — the grant the rules read (household
+ * ADR-0003). A family role has no grant, so any left over from an earlier role
+ * is removed rather than left to be read by mistake.
+ */
+export function recordClaim(
+  transaction: Transaction,
+  store: Firestore,
+  claim: { householdId: string; uid: string; memberId: string; role: string; access: unknown },
+): void {
+  const grant = effectiveGrant(claim.role, claim.access);
+  transaction.update(householdRef(store, claim.householdId), {
+    [`members.${claim.uid}`]: claim.role,
+    [`profiles.${claim.uid}`]: claim.memberId,
+    [`access.${claim.uid}`]: grant ?? FieldValue.delete(),
+  });
 }

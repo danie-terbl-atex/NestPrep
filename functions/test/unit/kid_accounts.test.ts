@@ -87,21 +87,24 @@ describe('redeeming a pairing', () => {
 });
 
 describe('who can have a kid sign-in', () => {
-  it('an unclaimed member profile', () => {
-    expect(isEligibleForKidSignIn({ role: 'member', claimedBy: null })).toBe(true);
+  it('an unclaimed kid profile', () => {
+    expect(isEligibleForKidSignIn({ role: 'kid', claimedBy: null })).toBe(true);
   });
 
   it('not a profile somebody has already claimed', () => {
-    expect(isEligibleForKidSignIn({ role: 'member', claimedBy: 'uid-teen' })).toBe(false);
+    expect(isEligibleForKidSignIn({ role: 'kid', claimedBy: 'uid-teen' })).toBe(false);
   });
 
-  it('not an admin or a helper, who are not children', () => {
-    expect(isEligibleForKidSignIn({ role: 'admin', claimedBy: null })).toBe(false);
-    expect(isEligibleForKidSignIn({ role: 'helper', claimedBy: null })).toBe(false);
+  it('not an adult, a helper or a carer — nor an old `member`, who reads as a parent', () => {
+    // A kid device holds its profile's grant, which only a kid has
+    // (accounts ADR-0004).
+    for (const role of ['admin', 'parent', 'member', 'helper', 'carer'] as const) {
+      expect(isEligibleForKidSignIn({ role, claimedBy: null })).toBe(false);
+    }
   });
 
-  it('is one list, so a kid role joins it in one line', () => {
-    expect(KID_SIGN_IN_ROLES).toEqual(['member']);
+  it('is one list, mirrored by the client', () => {
+    expect(KID_SIGN_IN_ROLES).toEqual(['kid']);
     expect(KID_DEVICE_LIMIT).toBe(5);
   });
 });

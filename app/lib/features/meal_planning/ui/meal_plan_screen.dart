@@ -6,6 +6,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../household/model/household_area.dart';
+import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
 import '../model/meal_week.dart';
 import '../state/meal_plan_controller.dart';
@@ -24,16 +26,22 @@ class MealPlanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<MealPlanController>();
     final failure = controller.actionFailure;
+    // A plan somebody may only read: no library, no copying, no picking
+    // (household ADR-0003).
+    final canEdit = context.watch<HouseholdView>().permissions.canEdit(
+      HouseholdArea.meals,
+    );
 
     return NestScaffold(
       title: AppCopy.mealsTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
       trailing: [
-        NestIconButton(
-          icon: Icons.menu_book_outlined,
-          label: AppCopy.mealsManage,
-          onPressed: () => showMealLibrarySheet(context: context),
-        ),
+        if (canEdit)
+          NestIconButton(
+            icon: Icons.menu_book_outlined,
+            label: AppCopy.mealsManage,
+            onPressed: () => showMealLibrarySheet(context: context),
+          ),
         const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],
@@ -69,7 +77,7 @@ class MealPlanScreen extends StatelessWidget {
                   variant: NestButtonVariant.tonal,
                   size: NestButtonSize.small,
                   isLoading: controller.isCopying,
-                  onPressed: controller.copyLastWeek,
+                  onPressed: canEdit ? controller.copyLastWeek : null,
                 ),
               ),
               NestIconButton(
