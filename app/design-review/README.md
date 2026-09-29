@@ -32,7 +32,7 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `week-dark-200-percent-text.png` | the same week at the largest text a phone offers |
 | `beta-numbers-light.png` / `beta-numbers-dark.png` | Daniel's readout during the beta: this week's three numbers, then earlier weeks side by side (product-analytics ADR-0001) |
 | `kid-code-light.png` / `kid-code-dark.png` | a child's way in: a hello, six big letter tiles half typed, and one button (accounts ADR-0003) |
-| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, their stars (with the line a celebration leaves and a streak), the jobs as big tiles each saying what it is worth, then — below the fold — the treat shelf and today's food (todos ADR-0003) |
+| `kid-home-light.png` / `kid-home-dark.png` | the only screen a kid device has: their colour and name, how far through today's jobs they are, their stars (with the line a celebration leaves and a streak), the jobs as big tiles each saying what it is worth, their own lunch box (lunch-box ADR-0004), then — below the fold — the treat shelf and today's food (todos ADR-0003) |
 | `stars-and-rewards-light.png` / `stars-and-rewards-dark.png` | a parent's stars and rewards: a chore waiting for a look, a treat to hand over, a child's stars and streak, and the shelf's header (todos ADR-0003) |
 | `kids-sign-in-light.png` / `kids-sign-in-dark.png` | the parent's side: each child, the devices they are signed in on, add one or sign them all out |
 | `kids-pairing-light.png` / `kids-pairing-dark.png` | the code a parent reads out, counting down its ten minutes |
@@ -49,6 +49,12 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `home-care-job-light.png` / `home-care-job-dark.png` | one cleaning job: the spot circled on the photo, the never-mix warning above everything, the facts, and what this person can do next |
 | `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through: progress, the spot, and each step as a big tile she ticks |
 | `home-care-review-light.png` / `home-care-review-dark.png` | the parent's review: before and after side by side, the checklist, approve or send it back |
+| `lunch-light.png` / `lunch-dark.png` | the household's home (lunch-box ADR-0004): the child switcher, today's box drawn, *Fill the week*, and the child's food rules |
+| `lunch-week-light.png` | the same week further down: a day's five compartments, a per-item thumb, and what came home |
+| `lunch-dark-200-percent-text.png` | the lunch screen at the largest text a phone offers |
+| `lunch-swap-light.png` | the one-tap swap: a compartment's library ranked for the child, each with why it ranks there |
+| `lunch-prep-light.png` / `lunch-prep-dark.png` | the Sunday prep list: what to make ahead, then what to have in the house, with ticks |
+| `lunch-library-light.png` / `lunch-library-dark.png` | the lunch library, slot by slot, saying what is in each thing |
 
 ## What to look at
 
@@ -91,7 +97,8 @@ numbers are.
 ## Regenerating them
 
 ```sh
-flutter test tool/ --update-goldens
+flutter test tool/ --update-goldens                           # every screen, lunch's included
+flutter test tool/lunch_design_review_test.dart --update-goldens   # the lunch screens alone
 ```
 
 `tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.

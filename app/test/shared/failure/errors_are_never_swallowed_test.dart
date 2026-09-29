@@ -219,6 +219,10 @@ void main() {
     // photo's failed state, which the screen shows with a retry; it is
     // unawaited because the board is followed while the shell builds.
     '_load(photoId)',
+    // Writing a new household's starter lunch library (lunch-box ADR-0001).
+    // It runs through `runAction`, which holds an AppFailure for the screen's
+    // banner; it is unawaited because it starts from a listener.
+    '_seedLibrary()',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

@@ -50,6 +50,7 @@ import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'kid_routes.dart';
+import 'lunch_routes.dart';
 import 'nanny_hub_routes.dart';
 import 'viewer_member.dart';
 
@@ -136,6 +137,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         nannyHubRoutes(),
         // home-care (home-care ADR-0001): jobs, rooms, products.
         homeCareRoutes(session),
+        // lunch-box (lunch-box ADR-0001, ADR-0004): the lunch tab, its prep
+        // list and its library.
+        lunchRoutes(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

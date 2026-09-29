@@ -5,6 +5,7 @@ import 'access_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'home_care_copy.dart';
 import 'kid_copy.dart';
+import 'lunch_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
@@ -17,6 +18,9 @@ export 'family_copy.dart';
 
 // home-care: its words live in their own file (home-care ADR-0001).
 export 'home_care_copy.dart';
+
+// lunch-box: its words live in their own file, reached through this one.
+export 'lunch_copy.dart';
 
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
@@ -396,6 +400,8 @@ abstract final class AppCopy {
     NannyHubFailure(:final problem) => NannyCopy.problem(problem),
     // home-care (home-care ADR-0001, ADR-0003).
     HomeCareFailure(:final problem) => HomeCareCopy.problem(problem),
+    // lunch-box (lunch-box ADR-0001)
+    LunchFailure(:final problem) => LunchCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

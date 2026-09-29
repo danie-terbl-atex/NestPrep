@@ -15,8 +15,11 @@ import '../support/pump_kit.dart';
 /// pushing it, and the system back button closed the app.
 void main() {
   group('the tabs themselves', () {
-    test('are the four the verdict scoped, in the order a week uses them', () {
+    test('are lunch first — the launch feature and the home (lunch-box '
+        'ADR-0004) — then the four the verdict scoped, in the order a week '
+        'uses them', () {
       expect(HouseholdTab.values.map((tab) => tab.name), [
+        'lunch',
         'week',
         'todos',
         'groceries',
@@ -68,7 +71,7 @@ void main() {
       expect(
         path,
         HouseholdRoute.homeFor(Fixtures.householdId)
-            .replaceAll(HouseholdTab.week.segment, HouseholdTab.meals.segment),
+            .replaceAll(HouseholdTab.lunch.segment, HouseholdTab.meals.segment),
       );
     });
   });

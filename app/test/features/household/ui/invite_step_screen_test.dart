@@ -123,7 +123,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(repository.setupStepsFinished, 1);
-    expect(find.text('landed on week'), findsOneWidget);
+    // Home is lunch, the launch feature (lunch-box ADR-0004).
+    expect(find.text('landed on lunch'), findsOneWidget);
   });
 
   testWidgets('a grandparent is suggested as a parent, and shared at once', (

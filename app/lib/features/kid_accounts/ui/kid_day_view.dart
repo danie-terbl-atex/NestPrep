@@ -8,10 +8,11 @@ import '../model/kid_day.dart';
 import 'kid_chore_tile.dart';
 import 'kid_food_card.dart';
 import 'kid_hero_card.dart';
+import 'kid_lunch_card.dart';
 import 'kid_moment_card.dart';
 
 /// A kid's day, top to bottom: who they are and how far along they are, their
-/// jobs, and today's food (accounts ADR-0003) — each section only when the
+/// jobs, their lunch box, and today's food (accounts ADR-0003) — each section only when the
 /// grant their profile holds opens it (accounts ADR-0004).
 ///
 /// "No jobs" is part of the view rather than a replacement for it: the food is
@@ -82,6 +83,15 @@ class KidDayView extends StatelessWidget {
               title: KidCopy.choresAllDone,
               message: KidCopy.choresAllDoneBody,
             ),
+        ],
+        // Their own box, before the household's meals: it is the food they
+        // carry (lunch-box ADR-0004).
+        if (day.lunchBox case final box?) ...[
+          const SizedBox(height: NestSpace.xxl),
+          NestRiseIn(
+            index: day.chores.length + 1,
+            child: KidLunchCard(box: box),
+          ),
         ],
         if (shelf case final shelf?) ...[
           const SizedBox(height: NestSpace.xxl),

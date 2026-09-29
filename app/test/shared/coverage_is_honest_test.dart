@@ -61,6 +61,8 @@ void main() {
         'writes Firestore',
     'lib/features/family_profiles/data/firestore_family_profile_repository.dart':
         'writes Firestore',
+    'lib/features/lunch_box/data/firestore_lunch_repository.dart':
+        'writes Firestore',
     'lib/features/documents/data/storage_document_store.dart':
         'wraps FirebaseStorage',
     'lib/features/documents/data/callable_document_directory.dart':
@@ -123,6 +125,7 @@ void main() {
         'interface only',
     'lib/features/family_profiles/data/family_profile_repository.dart':
         'interface only',
+    'lib/features/lunch_box/data/lunch_repository.dart': 'interface only',
     'lib/features/documents/data/device_lock.dart': 'interface only',
     'lib/features/documents/data/document_scanner.dart': 'interface only',
     'lib/features/documents/data/pdf_page_renderer.dart': 'interface only',

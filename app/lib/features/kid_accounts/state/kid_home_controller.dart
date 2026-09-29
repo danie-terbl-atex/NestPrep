@@ -11,6 +11,7 @@ import '../../accounts/model/kid_identity.dart';
 import '../../household/data/household_repository.dart';
 import '../../household/model/household_permissions.dart';
 import '../../household/model/member.dart';
+import '../../lunch_box/data/lunch_repository.dart';
 import '../../meal_planning/data/meal_repository.dart';
 import '../../todos/data/todo_repository.dart';
 import '../../todos/model/task_occurrence.dart';
@@ -36,11 +37,13 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
     required HouseholdRepository householdRepository,
     required TodoRepository todoRepository,
     required MealRepository mealRepository,
+    required LunchRepository lunchRepository,
     required this.identity,
     HouseholdClock Function(String timeZone)? clockFor,
   }) : _households = householdRepository,
        _todos = todoRepository,
        _meals = mealRepository,
+       _lunches = lunchRepository,
        _clockFor = clockFor ?? HouseholdClock.new {
     _subscribe();
   }
@@ -48,6 +51,7 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
   final HouseholdRepository _households;
   final TodoRepository _todos;
   final MealRepository _meals;
+  final LunchRepository _lunches;
   final HouseholdClock Function(String timeZone) _clockFor;
   final KidIdentity identity;
 
@@ -103,6 +107,7 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
   KidAreaReads _newReads() => KidAreaReads(
     todoRepository: _todos,
     mealRepository: _meals,
+    lunchRepository: _lunches,
     identity: identity,
     onChange: _publish,
     onFailure: _fail,

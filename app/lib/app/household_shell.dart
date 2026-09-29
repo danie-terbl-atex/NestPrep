@@ -154,9 +154,12 @@ class HouseholdTabBar extends StatelessWidget {
   }
 }
 
-/// The four things a household does (the verdict's v1). Order is the order they
-/// are used in a week, not the order they were built.
+/// The things a household does (the verdict's v1). Lunch comes first: it is
+/// the launch feature and the household's home (lunch-box ADR-0004); the rest
+/// are in the order a week uses them, not the order they were built.
 enum HouseholdTab {
+  // ---- lunch-box (lunch-box ADR-0004) ----
+  lunch('lunch', Icons.bento_outlined, Icons.bento),
   week('week', Icons.calendar_today_outlined, Icons.calendar_today),
   todos('todos', Icons.check_circle_outline, Icons.check_circle),
   groceries('groceries', Icons.shopping_basket_outlined, Icons.shopping_basket),
@@ -170,6 +173,7 @@ enum HouseholdTab {
 
   /// The area this tab is (household ADR-0003).
   HouseholdArea get area => switch (this) {
+    HouseholdTab.lunch => HouseholdArea.lunch,
     HouseholdTab.week => HouseholdArea.calendar,
     HouseholdTab.todos => HouseholdArea.todos,
     HouseholdTab.groceries => HouseholdArea.groceries,
@@ -177,6 +181,7 @@ enum HouseholdTab {
   };
 
   String get label => switch (this) {
+    HouseholdTab.lunch => LunchCopy.tab,
     HouseholdTab.week => AppCopy.tabWeek,
     HouseholdTab.todos => AppCopy.tabTodos,
     HouseholdTab.groceries => AppCopy.tabGroceries,

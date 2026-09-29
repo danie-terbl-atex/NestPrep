@@ -49,10 +49,11 @@ abstract final class HouseholdRoute {
     return id;
   }
 
-  /// Where a household opens: the week, because that is the question the app
-  /// exists to answer.
+  /// Where a household opens: lunch, the launch feature (lunch-box
+  /// ADR-0004). Somebody whose grant does not open lunch is moved on to the
+  /// first tab it does by the household shell.
   static String homeFor(String householdId) =>
-      pathFor(householdId, HouseholdTab.week);
+      pathFor(householdId, HouseholdTab.lunch);
 
   /// The id this route was matched with. Its absence would mean the route table
   /// and this helper disagree, which is our bug and not a person's.

@@ -86,6 +86,20 @@ abstract final class NestDates {
   }
 
   /// The week a Monday starts, as a person says it: "15 – 21 Sep".
+  /// The day's whole name — "Monday" — for a heading that names one day.
+  static String weekdayName(CalendarDate date) =>
+      DateFormat('EEEE').format(_asDateTime(date));
+
+  /// Monday to Friday of a school week — "28 Sep – 2 Oct" (lunch-box).
+  static String schoolWeekRange(CalendarDate monday) {
+    final friday = monday.addDays(4);
+    final start = monday.month == friday.month
+        ? _dayOnly.format(_asDateTime(monday))
+        : DateFormat('d MMM').format(_asDateTime(monday));
+    final end = DateFormat('d MMM').format(_asDateTime(friday));
+    return '$start – $end';
+  }
+
   static String weekRange(CalendarDate monday) {
     final sunday = monday.addDays(6);
     final start = monday.month == sunday.month

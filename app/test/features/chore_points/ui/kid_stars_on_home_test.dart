@@ -8,6 +8,8 @@ import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
 import 'package:nestprep/features/kid_accounts/ui/kid_home_screen.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
+import 'package:nestprep/shared/copy/lunch_copy.dart';
 import 'package:nestprep/shared/copy/points_copy.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -209,8 +211,11 @@ void main() {
       await fixture.starsArrive();
     });
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text(PointsCopy.kidShelfEmpty), 200);
+    // The stars card is at the top and the shelf below the lunch box, so
+    // each is checked where it is: a lazy list lets go of what scrolled away.
     expect(find.text(PointsCopy.kidNoStarsYet), findsOneWidget);
+    await tester.scrollUntilVisible(find.text(PointsCopy.kidShelfEmpty), 200);
+    expect(find.text(PointsCopy.kidShelfEmpty), findsOneWidget);
   });
 
   testWidgets('a grant that only looks shows the shelf without the button', (
@@ -285,5 +290,24 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.scrollUntilVisible(find.text(PointsCopy.kidAskedTitle), 300);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the stars and the child\'s own lunch box share the home '
+      '(todos ADR-0003, lunch-box ADR-0004)', (tester) async {
+    await pump(tester);
+    await tester.runAsync(() async {
+      await fixture.arrive(
+        tasks: [KidHomeFixture.chore('bed', 'Make your bed', points: 5)],
+        lunchSlots: const {
+          '2_main': LunchPick(itemId: 'wrap', name: 'Chicken mayo wrap'),
+        },
+      );
+      await fixture.starsArrive(stars: 7);
+    });
+    await tester.pumpAndSettle();
+    expect(find.text('7'), findsWidgets);
+    await tester.scrollUntilVisible(find.text(LunchCopy.kidLunchTitle), 200);
+    expect(find.text(LunchCopy.kidLunchTitle), findsOneWidget);
+    expect(find.text('Chicken mayo wrap'), findsOneWidget);
   });
 }

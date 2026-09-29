@@ -5,6 +5,9 @@ import 'package:nestprep/features/chore_points/model/reward.dart';
 import 'package:nestprep/features/chore_points/model/reward_request.dart';
 import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
 import 'package:nestprep/features/kid_accounts/state/kid_home_controller.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/todos/model/task.dart';
@@ -14,6 +17,7 @@ import 'package:nestprep/shared/time/household_clock.dart';
 
 import 'fake_chore_points.dart';
 import 'fake_household.dart';
+import 'fake_lunch_repository.dart';
 import 'fake_meal_repository.dart';
 import 'fake_todo_repository.dart';
 import 'household_fixtures.dart';
@@ -29,6 +33,7 @@ final class KidHomeFixture {
       householdRepository: households,
       todoRepository: todos,
       mealRepository: meals,
+      lunchRepository: lunches,
       identity: identity,
       clockFor: (zone) => HouseholdClock(zone, now: () => nowUtc),
     );
@@ -53,6 +58,7 @@ final class KidHomeFixture {
   final households = FakeHouseholdRepository();
   final todos = FakeTodoRepository();
   final meals = FakeMealRepository();
+  final lunches = FakeLunchRepository();
   final points = FakePointsRepository();
   final rewards = FakeRewardRepository();
   late final KidHomeController controller;
@@ -97,6 +103,7 @@ final class KidHomeFixture {
     List<Task> tasks = const [],
     List<TaskCompletion> completions = const [],
     Map<String, String> slots = const {},
+    Map<String, LunchPick> lunchSlots = const {},
   }) async {
     households.emitMember(Fixtures.kid);
     households.emitHousehold(Fixtures.household());
@@ -108,6 +115,12 @@ final class KidHomeFixture {
     meals
       ..emitWeek(WeekPlan(id: today.weekStart.iso, slots: slots))
       ..emitMeals(const [pasta]);
+    lunches.emitPlan(
+      LunchPlan.empty(
+        childId: Fixtures.kidMemberId,
+        week: LunchWeek.of(today),
+      ).copyWith(slots: lunchSlots),
+    );
     await pumpEventQueue();
   }
 
@@ -137,5 +150,6 @@ final class KidHomeFixture {
     await households.close();
     await todos.close();
     await meals.close();
+    await lunches.close();
   }
 }

@@ -75,6 +75,9 @@ Future<void> captureScreen(
   Brightness brightness = Brightness.light,
   double textScale = 1,
   HouseholdView? view,
+  // What to do once the screen has settled and before the shutter — open a
+  // sheet, scroll to a part — for a picture of a moment rather than a load.
+  Future<void> Function()? act,
 }) async {
   tester.view.devicePixelRatio = 2;
   tester.view.physicalSize = reviewPhone * 2;
@@ -94,6 +97,10 @@ Future<void> captureScreen(
   );
   await emit();
   await tester.pumpAndSettle();
+  if (act != null) {
+    await act();
+    await tester.pumpAndSettle();
+  }
   await decodeEveryImage(tester);
 
   try {

@@ -10,6 +10,7 @@ import 'package:nestprep/features/kid_accounts/state/kid_sign_in_controller.dart
 import 'package:nestprep/features/kid_accounts/ui/kid_code_screen.dart';
 import 'package:nestprep/features/kid_accounts/ui/kid_home_screen.dart';
 import 'package:nestprep/features/kid_accounts/ui/kid_sign_in_screen.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/shared/copy/kid_copy.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,13 @@ void main() {
           slots: {
             WeekPlan.slotKey(KidHomeFixture.today.weekday, MealSlot.lunch):
                 'pasta',
+          },
+          // Their own box today (lunch-box ADR-0004).
+          lunchSlots: const {
+            '2_main': LunchPick(itemId: 'wrap', name: 'Chicken mayo wrap'),
+            '2_fruit': LunchPick(itemId: 'naartjie', name: 'Naartjie'),
+            '2_veg': LunchPick(itemId: 'carrots', name: 'Carrot sticks'),
+            '2_treat': LunchPick(itemId: 'rusk', name: 'Rusk'),
           },
         );
         // Stars and treats (todos ADR-0003).
