@@ -52,3 +52,5 @@ export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
+// nanny hub V2: a carer who sees the household only on a booked shift (nanny-hub ADR-0006)
+export { setCarerShiftOnly } from './nanny_hub/set_carer_shift_only';

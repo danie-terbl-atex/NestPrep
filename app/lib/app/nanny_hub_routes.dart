@@ -5,6 +5,7 @@ import '../features/documents/data/document_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/household/model/household_view.dart';
 import '../features/nanny_hub/data/nanny_hub_repository.dart';
+import '../features/nanny_hub/data/offline_shelf.dart';
 import '../features/nanny_hub/data/photo_picker.dart';
 import '../features/nanny_hub/data/photo_store.dart';
 import '../features/nanny_hub/data/shift_directory.dart';
@@ -22,7 +23,10 @@ import '../features/nanny_hub/ui/shift_screen.dart';
 import '../features/nanny_hub/ui/shift_summary_screen.dart';
 import '../shared/links/external_link_opener.dart';
 import 'household_route.dart';
+import 'nanny_access_routes.dart';
 import 'nanny_hub_route.dart';
+import 'nanny_photo_routes.dart';
+import 'nanny_pickup_routes.dart';
 
 /// The nanny hub's routes under the household shell (nanny-hub ADR-0003), in
 /// their own file so the route table gains one line.
@@ -41,6 +45,8 @@ ShellRoute nannyHubRoutes() => ShellRoute(
         documentDirectory: context.read<DocumentDirectory>(),
         householdId: householdId,
         uploaderUid: view.viewerUid,
+        // Photos saved for offline answer first (nanny-hub ADR-0007).
+        shelf: context.read<OfflineShelf>(),
       ),
       child: ChangeNotifierProxyProvider<HouseholdView, NannyHubController>(
         create: (context) => NannyHubController(
@@ -55,7 +61,8 @@ ShellRoute nannyHubRoutes() => ShellRoute(
         ),
         update: (context, view, controller) =>
             controller!..followHousehold(view),
-        child: child,
+        // ---- pickups (nanny-hub ADR-0005) ----
+        child: withPickups(householdId: householdId, child: child),
       ),
     );
   },
@@ -103,9 +110,16 @@ ShellRoute nannyHubRoutes() => ShellRoute(
           ),
           memberId: context.read<HouseholdView>().viewerMember?.id ?? '',
         ),
-        child: const ShiftScreen(),
+        // Shift mode sends photo updates (nanny-hub ADR-0004).
+        child: withPhotoFeed(state, child: const ShiftScreen()),
       ),
     ),
+    // ---- pickups (nanny-hub ADR-0005) ----
+    ...pickupRoutes(),
+    // ---- photo updates: the parents' live feed (nanny-hub ADR-0004) ----
+    photoFeedRoute(),
+    // ---- shift-only access: bookings and house codes (nanny-hub ADR-0006) ----
+    ...nannyAccessRoutes(),
     GoRoute(
       path: NannyHubRoute.summaryPath,
       builder: (context, state) => ShiftSummaryScreen(

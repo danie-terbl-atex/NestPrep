@@ -7,9 +7,15 @@ import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/documents/data/document_directory.dart';
 import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/features/nanny_hub/data/booking_repository.dart';
+import 'package:nestprep/features/nanny_hub/data/cache_warmer.dart';
+import 'package:nestprep/features/nanny_hub/data/house_code_repository.dart';
 import 'package:nestprep/features/nanny_hub/data/nanny_hub_repository.dart';
+import 'package:nestprep/features/nanny_hub/data/offline_shelf.dart';
 import 'package:nestprep/features/nanny_hub/data/photo_picker.dart';
 import 'package:nestprep/features/nanny_hub/data/photo_store.dart';
+import 'package:nestprep/features/nanny_hub/data/photo_update_repository.dart';
+import 'package:nestprep/features/nanny_hub/data/pickup_repository.dart';
 import 'package:nestprep/features/nanny_hub/data/shift_directory.dart';
 import 'package:nestprep/features/nanny_hub/data/shift_repository.dart';
 import 'package:nestprep/features/nanny_hub/model/child_card.dart';
@@ -20,16 +26,23 @@ import 'package:nestprep/features/nanny_hub/model/house_rule.dart';
 import 'package:nestprep/features/nanny_hub/model/shift.dart';
 import 'package:nestprep/features/nanny_hub/model/shift_checklist.dart';
 import 'package:nestprep/features/nanny_hub/model/shift_summary.dart';
+import 'package:nestprep/features/nanny_hub/state/offline_keeper.dart';
+import 'package:nestprep/features/nanny_hub/state/shift_pass_controller.dart';
+import 'package:nestprep/features/nanny_hub/ui/carer_scope.dart';
+import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
 
 import 'fake_documents.dart';
 import 'fake_family_profiles.dart';
 import 'fake_link_opener.dart';
+import 'fake_nanny_access.dart';
 import 'fake_nanny_hub.dart';
+import 'fake_nanny_pickups.dart';
 import 'household_fixtures.dart';
 import 'nanny_fixtures.dart';
 import 'pump_screen.dart';
+import 'test_flags.dart';
 
 /// Every fake behind the nanny hub, in one place a test can reach into.
 final class NannyFakes {
@@ -41,6 +54,15 @@ final class NannyFakes {
   final family = FakeFamilyProfileRepository();
   final documents = FakeDocumentDirectory();
   final opener = FakeLinkOpener();
+  // pickups (nanny-hub ADR-0005)
+  final pickups = FakePickupRepository();
+  // photo updates, shift-only access and offline (nanny-hub ADR-0004,
+  // ADR-0006, ADR-0007)
+  final photoUpdates = FakePhotoUpdateRepository();
+  final bookings = FakeBookingRepository();
+  final codes = FakeHouseCodeRepository();
+  final warmer = FakeCacheWarmer();
+  final shelf = FakeOfflineShelf();
 
   /// Every read the hub makes answers: the authored records, the open shifts
   /// and the summaries, and the family profiles.
@@ -84,6 +106,9 @@ final class NannyFakes {
     await hub.close();
     await shifts.close();
     await family.close();
+    await pickups.close();
+    await photoUpdates.close();
+    await bookings.close();
   }
 }
 
@@ -97,6 +122,7 @@ Future<void> pumpNannyHub(
   HouseholdView? view,
   Brightness brightness = Brightness.light,
   double textScale = 1,
+  FeatureFlags flags = TestFlags.on,
 }) => pumpRouter(
   tester,
   router: GoRouter(
@@ -118,6 +144,40 @@ Future<void> pumpNannyHub(
     Provider<FamilyProfileRepository>.value(value: fakes.family),
     Provider<DocumentDirectory>.value(value: fakes.documents),
     Provider<ExternalLinkOpener>.value(value: fakes.opener),
+    ChangeNotifierProvider(create: (_) => testFlagsController(flags)),
+    // pickups (nanny-hub ADR-0005)
+    Provider<PickupRepository>.value(value: fakes.pickups),
+    // photo updates, shift-only access and offline (nanny-hub ADR-0004,
+    // ADR-0006, ADR-0007), with the two the household shell's `CarerScope`
+    // keeps for the whole household.
+    Provider<PhotoUpdateRepository>.value(value: fakes.photoUpdates),
+    Provider<BookingRepository>.value(value: fakes.bookings),
+    Provider<HouseCodeRepository>.value(value: fakes.codes),
+    Provider<CacheWarmer>.value(value: fakes.warmer),
+    Provider<OfflineShelf>.value(value: fakes.shelf),
+    ChangeNotifierProvider(
+      create: (context) {
+        final household = context.read<HouseholdView>();
+        return ShiftPassController(
+          bookingRepository: fakes.bookings,
+          householdId: household.household.id,
+          memberId: household.viewerMember?.id,
+          isFamily: household.permissions.isFamily,
+          now: DateTime.now,
+        );
+      },
+    ),
+    ChangeNotifierProvider(
+      create: (context) => OfflineKeeper(
+        cacheWarmer: fakes.warmer,
+        shelf: fakes.shelf,
+        photoStore: fakes.photos,
+        documentDirectory: fakes.documents,
+        householdId: Fixtures.householdId,
+        request: CarerScope.warmRequestFor(context.read<HouseholdView>()),
+        now: DateTime.now,
+      ),
+    ),
   ],
   view: view ?? NannyFixtures.parentView(),
   brightness: brightness,

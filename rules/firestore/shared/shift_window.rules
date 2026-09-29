@@ -1,0 +1,41 @@
+// ---- shift-only access (nanny-hub ADR-0006) ----
+//
+// A babysitter a parent marked shift-only sees the household only during a
+// shift a parent booked for them, from 15 minutes before it starts to 15
+// minutes after it ends. The mark is the household document's `shiftOnly`
+// map (member id → true), written only by `setCarerShiftOnly`, so asking it
+// costs nothing: the household document is already read by every rule.
+//
+// Rules cannot query, so the carer names the booking they are on — or next
+// on — in `nannyShiftPasses/{memberId}`, and these functions check that
+// booking itself against `request.time`: a pass naming somebody else's
+// booking, or a booking that is not on now, opens nothing. The grace is
+// `NannyLimits.shiftGrace` in the app; `nanny_v2_contract_test.dart` reads
+// this file.
+
+function isWithinBookedWindow(booking) {
+  return request.time >= booking.startsAt - duration.value(15, 'm')
+    && request.time <= booking.endsAt + duration.value(15, 'm');
+}
+
+function isBookingOpenFor(householdId, bookingId, memberId) {
+  let booking = get(/databases/$(database)/documents/households/$(householdId)/nannyBookings/$(bookingId));
+  return booking != null
+    && booking.data.carerMemberId == memberId
+    && isWithinBookedWindow(booking.data);
+}
+
+// Whether [memberId] is inside the window of a shift booked for them now.
+function isOnBookedShift(householdId, memberId) {
+  let pass = get(/databases/$(database)/documents/households/$(householdId)/nannyShiftPasses/$(memberId));
+  return pass != null && isBookingOpenFor(householdId, pass.data.bookingId, memberId);
+}
+
+// A claimed member marked shift-only, outside every booked window. Asked
+// with the household data the caller's level was already read from.
+function isShiftOnlyOffShift(householdId, household) {
+  let memberId = household.get('profiles', {}).get(uid(), '');
+  return memberId != ''
+    && household.get('shiftOnly', {}).get(memberId, false) == true
+    && !isOnBookedShift(householdId, memberId);
+}

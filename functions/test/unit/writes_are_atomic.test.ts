@@ -176,6 +176,9 @@ describe('every callable declares what it may cost', () => {
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
         'endNannyShift',
+        // Nanny hub V2: the shift-only mark lives in the household document,
+        // which only Functions write (nanny-hub ADR-0006).
+        'setCarerShiftOnly',
       ].sort(),
     );
   });

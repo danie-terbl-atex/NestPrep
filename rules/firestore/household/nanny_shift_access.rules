@@ -1,0 +1,95 @@
+// ---- nanny hub: booked shifts, passes and house codes (nanny-hub ADR-0006) ----
+//
+// Parents book a carer's shifts ahead. A carer marked shift-only sees the
+// household only inside a booked window (`shift_window.rules`), and the
+// house codes — the alarm, the gate — are read by anybody but family only
+// inside a booked window of their own, whatever their grant.
+
+// A shift a parent booked ahead. Never changed: moving one is cancelling it
+// and booking again, so a pass can never outlive the times it copied.
+match /nannyBookings/{bookingId} {
+  // A carer always sees their own bookings — including a shift-only carer
+  // off shift, who must see when the household opens for them next.
+  allow read: if isFamily(householdId)
+    || canView(householdId, 'nannyHub')
+    || (isInHousehold(householdId)
+          && resource.data.carerMemberId == ownMemberId(householdId));
+
+  allow create: if isFamily(householdId)
+    && request.resource.data.keys().hasOnly(
+         ['carerMemberId', 'startsAt', 'endsAt', 'note', 'createdBy', 'createdAt'])
+    && isNannyBooking(request.resource.data)
+    && nannyMemberExists(householdId, request.resource.data.carerMemberId)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if false;
+
+  allow delete: if isFamily(householdId);
+}
+
+// Which booking a carer is on, or next on — named by the carer, because the
+// rules cannot search for it. Its times are copies of the booking's, so the
+// Storage rules can check the window with one read; the Firestore rules
+// check the booking itself.
+match /nannyShiftPasses/{memberId} {
+  allow read: if hasClaimed(householdId, memberId) || isFamily(householdId);
+
+  allow create, update: if hasClaimed(householdId, memberId)
+    && request.resource.data.keys().hasOnly(['bookingId', 'startsAt', 'endsAt', 'updatedAt'])
+    && request.resource.data.bookingId is string
+    && isNannyPassFor(householdId, memberId, request.resource.data)
+    && isServerTime('updatedAt');
+
+  // Family deletes a pass in the same batch that cancels its booking.
+  allow delete: if hasClaimed(householdId, memberId) || isFamily(householdId);
+}
+
+// The alarm code, the gate code: family always; anybody else who reads the
+// hub only while a shift booked for them is on.
+match /nannySecrets/{secretId} {
+  allow read: if isFamily(householdId)
+    || (canView(householdId, 'nannyHub') && isNannySecretWindowOpen(householdId));
+
+  allow create: if isFamily(householdId)
+    && request.resource.data.keys().hasOnly(['label', 'value', 'note', 'createdBy', 'createdAt'])
+    && isNannySecret(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if isFamily(householdId)
+    && onlyChanged(['label', 'value', 'note'])
+    && isNannySecret(request.resource.data);
+
+  allow delete: if isFamily(householdId);
+}
+
+// The limits are `NannyLimits` in the app; `nanny_v2_contract_test.dart`
+// reads this file.
+function isNannyBooking(data) {
+  return data.startsAt is timestamp
+    && data.endsAt is timestamp
+    && data.startsAt < data.endsAt
+    && data.endsAt <= data.startsAt + duration.value(24, 'h')
+    && data.endsAt > request.time
+    && isNannyOptionalText(data.get('note', null), 200);
+}
+
+function isNannyPassFor(householdId, memberId, data) {
+  let booking = get(/databases/$(database)/documents/households/$(householdId)/nannyBookings/$(data.bookingId));
+  return booking != null
+    && booking.data.carerMemberId == memberId
+    && data.startsAt == booking.data.startsAt
+    && data.endsAt == booking.data.endsAt;
+}
+
+function isNannySecretWindowOpen(householdId) {
+  let memberId = ownMemberId(householdId);
+  return memberId != '' && isOnBookedShift(householdId, memberId);
+}
+
+function isNannySecret(data) {
+  return isNannyText(data.label, 60)
+    && isNannyText(data.value, 120)
+    && isNannyOptionalText(data.get('note', null), 200);
+}

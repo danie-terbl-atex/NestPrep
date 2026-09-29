@@ -8,6 +8,7 @@ import '../design/nest_kit.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
+import '../features/nanny_hub/ui/carer_scope.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../shared/copy/app_copy.dart';
@@ -108,7 +109,9 @@ class _HouseholdShellState extends State<HouseholdShell> {
           // ADR-0001) — here, where it is known the account is really in it.
           child: HouseholdActivityScope(
             householdId: view.household.id,
-            child: widget.child,
+            // The booked-shift window and offline saving (nanny-hub
+            // ADR-0006, ADR-0007).
+            child: CarerScope(child: widget.child),
           ),
         );
       },

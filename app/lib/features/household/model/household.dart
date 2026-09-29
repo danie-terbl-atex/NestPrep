@@ -32,6 +32,13 @@ abstract class Household with _$Household {
     @Default(<String, String>{})
     Map<String, String> profiles,
 
+    /// memberId → true for a carer who sees the household only during a
+    /// shift a parent booked for them (nanny-hub ADR-0006). Written only by
+    /// `setCarerShiftOnly`; the rules read it on every request.
+    @JsonKey(includeToJson: false)
+    @Default(<String, bool>{})
+    Map<String, bool> shiftOnly,
+
     /// `invitePeople` while a new household's admin has not yet finished or
     /// skipped the invite step (household ADR-0003).
     @JsonKey(includeToJson: false) String? pendingSetupStep,
@@ -60,4 +67,7 @@ abstract class Household with _$Household {
   bool get isWaitingOnInviteStep => pendingSetupStep == invitePeopleStep;
 
   int get claimedMemberCount => members.length;
+
+  /// Kept to their booked shifts (nanny-hub ADR-0006).
+  bool isShiftOnly(String memberId) => shiftOnly[memberId] ?? false;
 }

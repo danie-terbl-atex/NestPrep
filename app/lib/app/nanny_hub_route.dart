@@ -20,6 +20,28 @@ abstract final class NannyHubRoute {
   static const shiftPath = '$path/shifts/:$shiftParameter';
   static const summaryPath = '$path/summaries/:$shiftParameter';
 
+  // V2 (nanny-hub ADR-0004 to ADR-0007).
+  static const photosPath = '$path/shifts/:$shiftParameter/photos';
+  static const pickupsPath = '$path/pickups';
+  static const pickupCheckPath = '$path/pickups/check/:$childParameter';
+  static const bookingsPath = '$path/bookings';
+  static const codesPath = '$path/codes';
+
+  static String photosPathFor(String householdId, String shiftId) =>
+      '${pathFor(householdId)}/shifts/$shiftId/photos';
+
+  static String pickupsPathFor(String householdId) =>
+      '${pathFor(householdId)}/pickups';
+
+  static String pickupCheckPathFor(String householdId, String childId) =>
+      '${pathFor(householdId)}/pickups/check/$childId';
+
+  static String bookingsPathFor(String householdId) =>
+      '${pathFor(householdId)}/bookings';
+
+  static String codesPathFor(String householdId) =>
+      '${pathFor(householdId)}/codes';
+
   static String pathFor(String householdId) =>
       '/households/$householdId/$segment';
 

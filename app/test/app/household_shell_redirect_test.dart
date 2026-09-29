@@ -14,6 +14,7 @@ import '../support/fake_household.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/household_fixtures.dart';
 import '../support/pump_screen.dart';
+import '../support/test_flags.dart';
 
 /// The shell acting on `householdPlaceRedirect` once the household is in hand
 /// (household ADR-0003): the redirect itself is tested on its own; this is
@@ -59,6 +60,10 @@ void main() {
       ),
       // The shell counts a household as opened (product-analytics ADR-0001).
       providers: [
+        // The nanny hub's carer scope reads the switches (nanny-hub ADR-0006).
+        ChangeNotifierProvider(
+          create: (_) => testFlagsController(TestFlags.on),
+        ),
         Provider<ActivityHeartbeat>(
           create: (_) =>
               ActivityHeartbeat(activityRecorder: FakeActivityRecorder()),

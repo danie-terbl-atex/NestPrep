@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/best_effort.dart';
 import '../../documents/data/document_directory.dart';
+import '../data/offline_shelf.dart';
 import '../data/photo_compressor.dart';
 import '../data/photo_store.dart';
 
@@ -25,6 +26,7 @@ final class PhotoLibrary extends ChangeNotifier {
     required DocumentDirectory documentDirectory,
     required this.householdId,
     required this.uploaderUid,
+    this._shelf,
     this._compress = PhotoCompressor.compress,
   }) : _store = photoStore,
        _directory = documentDirectory;
@@ -34,6 +36,10 @@ final class PhotoLibrary extends ChangeNotifier {
 
   final PhotoStore _store;
   final DocumentDirectory _directory;
+
+  /// Photos saved for offline (nanny-hub ADR-0007), read before the network
+  /// so the guide and the cards show their pictures without a signal.
+  final OfflineShelf? _shelf;
   final Future<Uint8List> Function(Uint8List bytes) _compress;
   final String householdId;
   final String uploaderUid;
@@ -97,6 +103,11 @@ final class PhotoLibrary extends ChangeNotifier {
   }
 
   Future<void> _fetch(String photoId) async {
+    final kept = await _fromShelf(photoId);
+    if (kept != null) {
+      _settle(photoId, AsyncData(kept));
+      return;
+    }
     try {
       await _openAccess();
       final bytes = await _store.read(
@@ -107,6 +118,26 @@ final class PhotoLibrary extends ChangeNotifier {
     } on AppFailure catch (failure) {
       _settle(photoId, AsyncFailure(failure));
     }
+  }
+
+  /// The shelf's copy, or null. A shelf that will not read is no worse than
+  /// no shelf: the photo comes from Storage as it always did, and the log
+  /// says why the shelf did not answer.
+  Future<Uint8List?> _fromShelf(String photoId) async {
+    final shelf = _shelf;
+    if (shelf == null) return null;
+    Uint8List? kept;
+    await bestEffort(
+      'read an offline photo',
+      code: 'filesystem',
+      run: () async {
+        kept = await shelf.readPhoto(
+          householdId: householdId,
+          photoId: photoId,
+        );
+      },
+    );
+    return kept;
   }
 
   /// A photo let go of while it was on its way stays let go of: it is asked

@@ -43,4 +43,36 @@ abstract final class NannyLimits {
   static const summaryListen = 20;
   static const openShiftListen = 5;
   static const entryListen = 200;
+
+  // ---- V2 (nanny-hub ADR-0004 to ADR-0007) ----
+
+  /// A photo update's caption, and how many children it can be about.
+  static const photoCaption = 200;
+  static const photoUpdateChildren = 10;
+  static const photoUpdateListen = 60;
+
+  static const pickupName = 60;
+  static const pickupRelationship = 40;
+  static const pickupIdNote = 200;
+  static const pickupChildren = 10;
+  static const schoolRunPlace = 80;
+  static const pickupChangeNote = 200;
+  static const pickupPeopleListen = 40;
+  static const schoolRunListen = 70;
+  static const pickupChangeListen = 60;
+
+  static const bookingNote = 200;
+
+  /// The longest shift a parent can book.
+  static const bookingLength = Duration(hours: 24);
+  static const bookingListen = 30;
+
+  /// How long before a booked shift starts, and after it ends, the carer's
+  /// access is open — time to reach the gate, and to hand over at the end.
+  static const shiftGrace = Duration(minutes: 15);
+
+  static const secretLabel = 60;
+  static const secretValue = 120;
+  static const secretNote = 200;
+  static const secretListen = 20;
 }

@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "nannyBookings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "carerMemberId", "order": "ASCENDING" },
+        { "fieldPath": "endsAt", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "taskCompletions",
       "queryScope": "COLLECTION",
       "fields": [

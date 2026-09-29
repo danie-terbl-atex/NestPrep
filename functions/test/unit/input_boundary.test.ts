@@ -13,7 +13,7 @@ import {
 } from '../../src/household/schemas';
 import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
-import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
+import { endNannyShiftInput, setCarerShiftOnlyInput } from '../../src/nanny_hub/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -123,6 +123,11 @@ const validBodies = {
   endNannyShift: {
     schema: endNannyShiftInput,
     body: { householdId: 'h1', shiftId: 'shift-1', closingNote: null },
+  },
+  // Nanny hub V2: marking a carer shift-only (nanny-hub ADR-0006).
+  setCarerShiftOnly: {
+    schema: setCarerShiftOnlyInput,
+    body: { householdId: 'h1', memberId: 'm-nomsa', shiftOnly: true },
   },
 } as const;
 

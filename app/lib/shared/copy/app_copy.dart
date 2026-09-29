@@ -10,12 +10,15 @@ import 'product_analytics_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
-
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
-
-// nanny hub: its words live in their own files, reached through this one.
+// nanny hub: its words live in their own files, reached through this one —
+// V2 (nanny-hub ADR-0004 to ADR-0007) one file per capability.
+export 'nanny_booking_copy.dart';
 export 'nanny_copy.dart';
+export 'nanny_offline_copy.dart';
+export 'nanny_photo_copy.dart';
+export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and

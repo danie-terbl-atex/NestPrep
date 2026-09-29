@@ -56,6 +56,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(fakes.opener.opened, [Uri.parse('tel:10177')]);
     expect(find.text(NannyCopy.noAddress), findsOneWidget);
+    // Below the offline line (nanny-hub ADR-0007) on a small test screen.
+    await scrollTo(tester, find.text(NannyCopy.noContacts));
     expect(find.text(NannyCopy.noContacts), findsOneWidget);
   });
 

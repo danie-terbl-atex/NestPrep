@@ -12,6 +12,7 @@ import 'child_header.dart';
 import 'child_safety_section.dart';
 import 'comfort_section.dart';
 import 'likes_section.dart';
+import 'offline_badge.dart';
 import 'routine_section.dart';
 
 /// Everything on a child's card once the hub has loaded. Safety comes before
@@ -59,6 +60,9 @@ class ChildCardBody extends StatelessWidget {
         goodToKnow: card.goodToKnow,
         onEdit: canEdit ? () => edits.editCareNotes(context) : null,
       ),
+      // Last, so nothing comes before the allergies (nanny-hub ADR-0003):
+      // whether this card is on the phone for no signal (ADR-0007).
+      const OfflineBadge(),
     ];
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),

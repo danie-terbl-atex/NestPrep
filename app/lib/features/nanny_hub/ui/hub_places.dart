@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../../app/nanny_hub_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../model/nanny_hub.dart';
 
 /// The four places a carer needs during a shift, each a row that says how much
@@ -45,6 +48,36 @@ class HubPlaces extends StatelessWidget {
         NannyCopy.checklistsBody(hub.checklistItemCount),
         NannyHubRoute.checklistsPathFor(householdId),
       ),
+      // ---- pickups (nanny-hub ADR-0005), switchable by its flag ----
+      if (context.watch<FeatureFlagsController>().isOn(
+        FeatureFlag.nannyPickups,
+      ))
+        (
+          Icons.directions_walk,
+          NestTileTint.accent,
+          NannyPickupCopy.place,
+          NannyPickupCopy.placeBody,
+          NannyHubRoute.pickupsPathFor(householdId),
+        ),
+      // ---- shift-only access (nanny-hub ADR-0006), switchable by its flag ----
+      if (context.watch<FeatureFlagsController>().isOn(
+        FeatureFlag.nannyShiftOnly,
+      )) ...[
+        (
+          Icons.event_available_outlined,
+          NestTileTint.mint,
+          NannyBookingCopy.bookings,
+          NannyBookingCopy.bookingsBody,
+          NannyHubRoute.bookingsPathFor(householdId),
+        ),
+        (
+          Icons.key_outlined,
+          NestTileTint.peach,
+          NannyBookingCopy.codes,
+          NannyBookingCopy.codesBody,
+          NannyHubRoute.codesPathFor(householdId),
+        ),
+      ],
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

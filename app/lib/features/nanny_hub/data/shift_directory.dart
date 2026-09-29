@@ -9,4 +9,13 @@ abstract interface class ShiftDirectory {
     required String shiftId,
     String? closingNote,
   });
+
+  /// Keeps a carer to the shifts a parent books for them — or lets them see
+  /// the household at any time again (nanny-hub ADR-0006). Admin only; a
+  /// member who is not a carer is refused with `NannyHubProblem.notACarer`.
+  Future<void> setCarerShiftOnly({
+    required String householdId,
+    required String memberId,
+    required bool isShiftOnly,
+  });
 }

@@ -44,6 +44,7 @@ import '../support/fake_meal_repository.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
+import '../support/test_flags.dart';
 
 /// The wiring every screen arrives through.
 ///
@@ -122,6 +123,11 @@ void main() {
           ),
           Provider<BetaNumbersRepository>.value(value: betaNumbers),
           Provider<FamilyProfileRepository>.value(value: familyProfiles),
+          // Every household screen sits under the nanny hub's carer scope
+          // (nanny-hub ADR-0006, ADR-0007), which reads the switches.
+          ChangeNotifierProvider(
+            create: (_) => testFlagsController(TestFlags.on),
+          ),
           ChangeNotifierProvider<SessionController>.value(value: session),
         ],
         child: MaterialApp.router(

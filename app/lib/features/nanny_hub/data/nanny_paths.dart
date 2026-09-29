@@ -11,4 +11,13 @@ abstract final class NannyPaths {
   static const shifts = 'nannyShifts';
   static const entries = 'entries';
   static const summaries = 'nannyShiftSummaries';
+
+  // V2 (nanny-hub ADR-0004 to ADR-0007).
+  static const photoUpdates = 'photoUpdates';
+  static const pickupPeople = 'nannyPickupPeople';
+  static const schoolRuns = 'nannySchoolRuns';
+  static const pickupChanges = 'nannyPickupChanges';
+  static const bookings = 'nannyBookings';
+  static const passes = 'nannyShiftPasses';
+  static const secrets = 'nannySecrets';
 }

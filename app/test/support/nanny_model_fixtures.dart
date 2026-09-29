@@ -16,6 +16,8 @@ import 'package:nestprep/features/nanny_hub/model/shift_summary.dart';
 import 'package:nestprep/features/nanny_hub/model/summary_moment.dart';
 
 import 'model_fixtures.dart';
+import 'nanny_access_fixtures.dart';
+import 'nanny_pickup_fixtures.dart';
 
 /// The nanny hub's stored models, every field filled (nanny-hub ADR-0003),
 /// in a file of its own that `modelFixtures()` spreads — so a parallel
@@ -241,5 +243,9 @@ List<ModelFixture> nannyModelFixtures() {
           'written only by endNannyShift; the app reads it and never writes '
           'it (nanny-hub ADR-0002).',
     ),
+    // pickups (nanny-hub ADR-0005)
+    ...pickupModelFixtures(),
+    // photo updates and shift-only access (nanny-hub ADR-0004, ADR-0006)
+    ...accessModelFixtures(),
   ];
 }

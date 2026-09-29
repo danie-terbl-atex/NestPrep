@@ -6,6 +6,7 @@ import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_nanny_access.dart';
 import '../../../support/fake_nanny_hub.dart';
 
 void main() {
@@ -131,5 +132,51 @@ void main() {
       library.stateOf('p${PhotoLibrary.heldLimit}'),
       isA<AsyncData<Uint8List>>(),
     );
+  });
+
+  group('saved for offline (nanny-hub ADR-0007)', () {
+    late FakeOfflineShelf shelf;
+    late PhotoLibrary offline;
+
+    setUp(() {
+      shelf = FakeOfflineShelf();
+      offline = PhotoLibrary(
+        photoStore: store,
+        documentDirectory: directory,
+        householdId: 'h1',
+        uploaderUid: 'uid-nomsa',
+        shelf: shelf,
+        compress: (bytes) async => bytes,
+      );
+    });
+
+    tearDown(() => offline.dispose());
+
+    test('a photo on the shelf shows without a signal — Storage is never '
+        'asked', () async {
+      shelf.photos['h1/p1'] = Uint8List.fromList([4, 2]);
+      offline.ensure(['p1']);
+      await pumpEventQueue();
+      expect(store.reads, isEmpty);
+      expect(directory.syncCount, 0);
+      final state = offline.stateOf('p1') as AsyncData<Uint8List>;
+      expect(state.value, [4, 2]);
+    });
+
+    test('a photo not on the shelf comes from Storage as before', () async {
+      store.objects['p1'] = Uint8List.fromList([1]);
+      offline.ensure(['p1']);
+      await pumpEventQueue();
+      expect(store.reads, ['p1']);
+      expect(offline.stateOf('p1'), isA<AsyncData<Uint8List>>());
+    });
+
+    test('a shelf that will not read is no worse than no shelf', () async {
+      shelf.failWith = const NannyHubFailure(NannyHubProblem.cannotSaveOffline);
+      store.objects['p1'] = Uint8List.fromList([1]);
+      offline.ensure(['p1']);
+      await pumpEventQueue();
+      expect(offline.stateOf('p1'), isA<AsyncData<Uint8List>>());
+    });
   });
 }

@@ -187,11 +187,41 @@ service firebase.storage {
     // is small on purpose: a photo past it was not made by the app. Whoever
     // may read the hub sees them; whoever may write it adds them; a photo is
     // removed by whoever added it, or by family.
+    //
+    // A carer a parent marked shift-only (nanny-hub ADR-0006) is refused
+    // outside their booked window, read live from Firestore because a token
+    // cannot know the time: the household document says who is shift-only,
+    // and their pass carries the booked times — two reads, and only for
+    // somebody who is not family.
     match /households/{householdId}/nannyHub/{photoId} {
-      allow read: if canView(householdId, 'nannyHub');
+      function isNannyPassOpen(memberId) {
+        let pass = firestore.get(/databases/(default)/documents/households/$(householdId)/nannyShiftPasses/$(memberId));
+        return pass != null
+          && request.time >= pass.data.startsAt - duration.value(15, 'm')
+          && request.time <= pass.data.endsAt + duration.value(15, 'm');
+      }
+
+      // The token already said this caller is in the household; a household
+      // document it cannot find marks nobody shift-only.
+      function isNannyOffShift() {
+        let household = firestore.get(/databases/(default)/documents/households/$(householdId));
+        let memberId = household == null
+          ? ''
+          : household.data.get('profiles', {}).get(request.auth.uid, '');
+        return memberId != ''
+          && household.data.get('shiftOnly', {}).get(memberId, false) == true
+          && !isNannyPassOpen(memberId);
+      }
+
+      function mayUseNannyHubNow() {
+        return isFamily(householdId) || !isNannyOffShift();
+      }
+
+      allow read: if canView(householdId, 'nannyHub') && mayUseNannyHubNow();
 
       allow create: if resource == null
         && canEdit(householdId, 'nannyHub')
+        && mayUseNannyHubNow()
         && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
         // 2 MiB, written as bytes: the documents cap is the only `* 1024 *
         // 1024` in this file, which its own contract test relies on.

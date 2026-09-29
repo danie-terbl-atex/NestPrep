@@ -5,8 +5,12 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/nanny_hub/model/handover_kind.dart';
 import 'package:nestprep/features/nanny_hub/model/handover_mood.dart';
 import 'package:nestprep/features/nanny_hub/state/nanny_hub_controller.dart';
+import 'package:nestprep/features/nanny_hub/state/offline_keeper.dart';
+import 'package:nestprep/features/nanny_hub/state/photo_feed_controller.dart';
 import 'package:nestprep/features/nanny_hub/state/photo_library.dart';
 import 'package:nestprep/features/nanny_hub/state/shift_controller.dart';
+import 'package:nestprep/features/nanny_hub/state/shift_pass_controller.dart';
+import 'package:nestprep/features/nanny_hub/ui/carer_scope.dart';
 import 'package:nestprep/features/nanny_hub/ui/child_card_screen.dart';
 import 'package:nestprep/features/nanny_hub/ui/emergency_screen.dart';
 import 'package:nestprep/features/nanny_hub/ui/nanny_hub_screen.dart';
@@ -19,6 +23,7 @@ import '../test/support/fake_family_profiles.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/nanny_fixtures.dart';
 import '../test/support/pump_nanny_hub.dart';
+import '../test/support/test_flags.dart';
 import 'review_press.dart';
 
 /// The nanny hub in the design-review press — the hub as a carer finds it,
@@ -80,6 +85,43 @@ void main() {
       memberId: NannyFixtures.nomsaMemberId,
     );
     addTearDown(shift.dispose);
+    // V2 (nanny-hub ADR-0004, ADR-0006, ADR-0007): the shift's photos, the
+    // household's booked-shift window and the offline line, as the household
+    // shell and the shift route provide them.
+    final feed = PhotoFeedController(
+      photoUpdateRepository: fakes.photoUpdates,
+      shiftRepository: fakes.shifts,
+      photos: photos,
+      householdId: Fixtures.householdId,
+      shiftId: 'shift-1',
+      memberId: view.viewerMember?.id ?? '',
+      isFamily: view.permissions.isFamily,
+    );
+    final pass = ShiftPassController(
+      bookingRepository: fakes.bookings,
+      householdId: Fixtures.householdId,
+      memberId: view.viewerMember?.id,
+      isFamily: true,
+      now: DateTime.now,
+    );
+    final keeper = OfflineKeeper(
+      cacheWarmer: fakes.warmer,
+      shelf: fakes.shelf,
+      photoStore: fakes.photos,
+      documentDirectory: fakes.documents,
+      householdId: Fixtures.householdId,
+      request: CarerScope.warmRequestFor(view),
+      now: DateTime.now,
+    );
+    fakes.shelf.stamps[Fixtures.householdId] = DateTime.now().subtract(
+      const Duration(minutes: 12),
+    );
+    await keeper.open();
+    addTearDown(() {
+      feed.dispose();
+      pass.dispose();
+      keeper.dispose();
+    });
     await captureScreen(
       tester,
       name,
@@ -91,6 +133,12 @@ void main() {
         ChangeNotifierProvider<PhotoLibrary>.value(value: photos),
         ChangeNotifierProvider<NannyHubController>.value(value: hub),
         ChangeNotifierProvider<ShiftController>.value(value: shift),
+        ChangeNotifierProvider<PhotoFeedController>.value(value: feed),
+        ChangeNotifierProvider<ShiftPassController>.value(value: pass),
+        ChangeNotifierProvider<OfflineKeeper>.value(value: keeper),
+        ChangeNotifierProvider(
+          create: (_) => testFlagsController(TestFlags.on),
+        ),
       ],
       emit: () async {
         fakes.answerAFullHub(
@@ -104,6 +152,7 @@ void main() {
           ),
         );
         fakes.shifts.shift.add(NannyFixtures.openShift);
+        fakes.photoUpdates.updates.add(const []);
         fakes.shifts.entries.add([
           NannyFixtures.tea,
           NannyFixtures.tea.copyWith(

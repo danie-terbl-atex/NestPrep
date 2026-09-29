@@ -23,6 +23,11 @@ _Household _$HouseholdFromJson(Map<String, dynamic> json) => _Household(
         (k, e) => MapEntry(k, e as String),
       ) ??
       const <String, String>{},
+  shiftOnly:
+      (json['shiftOnly'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as bool),
+      ) ??
+      const <String, bool>{},
   pendingSetupStep: json['pendingSetupStep'] as String?,
   createdBy: json['createdBy'] as String?,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),

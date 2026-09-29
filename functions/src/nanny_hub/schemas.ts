@@ -16,3 +16,14 @@ export const endNannyShiftInput = z.object({
     .transform((note) => (note === null || note === '' ? null : note)),
 });
 export type EndNannyShiftInput = z.infer<typeof endNannyShiftInput>;
+
+/**
+ * Marking a carer shift-only, or not (nanny-hub ADR-0006): once marked they
+ * see the household only during a shift a parent booked for them.
+ */
+export const setCarerShiftOnlyInput = z.object({
+  householdId: z.string().trim().min(1).max(64),
+  memberId: z.string().trim().min(1).max(64),
+  shiftOnly: z.boolean(),
+});
+export type SetCarerShiftOnlyInput = z.infer<typeof setCarerShiftOnlyInput>;

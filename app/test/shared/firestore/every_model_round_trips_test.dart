@@ -31,8 +31,10 @@ void main() {
   test('every model with a JSON boundary has a fixture', () {
     // The count is the ratchet: a thirty-eighth stored model has to be added
     // here before this passes again. Todos phase 2 added five (todos
-    // ADR-0003); nanny hub added nine (nanny-hub ADR-0003).
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 37);
+    // ADR-0003); nanny hub added nine (nanny-hub ADR-0003); nanny-hub
+    // pickups three (nanny-hub ADR-0005); photo updates, bookings and house
+    // codes three (nanny-hub ADR-0004, ADR-0006).
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 43);
   });
 
   for (final fixture in fixtures) {

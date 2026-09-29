@@ -8,6 +8,7 @@ import '../../../shared/ui/back_leading.dart';
 import '../model/nanny_hub_view.dart';
 import '../model/shift_log.dart';
 import '../state/nanny_hub_controller.dart';
+import '../state/photo_feed_controller.dart';
 import '../state/shift_controller.dart';
 import 'nanny_hub_screen.dart';
 import 'shift_body.dart';
@@ -24,7 +25,9 @@ class ShiftScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final shift = context.watch<ShiftController>();
     final hub = context.watch<NannyHubController>();
-    final failure = shift.actionFailure ?? hub.actionFailure;
+    final photos = context.watch<PhotoFeedController>();
+    final failure =
+        shift.actionFailure ?? photos.actionFailure ?? hub.actionFailure;
     return NestScaffold(
       title: NannyShiftCopy.shiftTitle,
       leading: backLeading(context),
@@ -41,6 +44,7 @@ class ShiftScreen extends StatelessWidget {
                 actionLabel: AppCopy.back,
                 onAction: () {
                   shift.dismissActionFailure();
+                  photos.dismissActionFailure();
                   hub.dismissActionFailure();
                 },
               ),
