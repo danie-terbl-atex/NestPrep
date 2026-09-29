@@ -42,6 +42,9 @@ import '../features/live_location/ui/live_location_screen.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/meal_planning/state/meal_plan_controller.dart';
 import '../features/meal_planning/ui/meal_plan_screen.dart';
+import '../features/product_analytics/data/beta_numbers_repository.dart';
+import '../features/product_analytics/state/beta_numbers_controller.dart';
+import '../features/product_analytics/ui/beta_numbers_screen.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
@@ -219,6 +222,19 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
           ),
         ),
       ],
+    ),
+    // ---- product analytics (product-analytics ADR-0001) ----
+    // Outside the household shell: the numbers are about every family, never
+    // a view of this one. Offered from the account sheet to a reader only; the
+    // rules refuse the numbers to anybody else who finds the path.
+    GoRoute(
+      path: BetaNumbersScreen.path,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) => BetaNumbersController(
+          betaNumbersRepository: context.read<BetaNumbersRepository>(),
+        ),
+        child: const BetaNumbersScreen(),
+      ),
     ),
     if (DesignGalleryAccess.isAvailable)
       GoRoute(

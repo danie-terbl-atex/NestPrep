@@ -49,6 +49,10 @@ void main() {
         'writes Firestore',
     'lib/features/household/data/callable_household_directory.dart':
         'calls Functions',
+    'lib/features/product_analytics/data/callable_activity_recorder.dart':
+        'calls Functions',
+    'lib/features/product_analytics/data/firestore_beta_numbers_repository.dart':
+        'reads Firestore and the ID token',
     'lib/features/live_location/data/firestore_live_location_repository.dart':
         'writes Firestore',
     'lib/features/live_location/data/geolocator_location_source.dart':

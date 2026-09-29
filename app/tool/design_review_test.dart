@@ -16,6 +16,8 @@ import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/product_analytics/state/beta_numbers_controller.dart';
+import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
@@ -31,6 +33,7 @@ import '../test/support/fake_calendar_repository.dart';
 import '../test/support/fake_grocery_repository.dart';
 import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
+import '../test/support/fake_product_analytics.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/pump_screen.dart';
@@ -443,6 +446,63 @@ void main() {
 
     testWidgets('meals — ${brightness.name}', (tester) async {
       await meals(tester, brightness);
+    });
+
+    // Daniel's readout during the beta (product-analytics ADR-0001): a week
+    // three weeks into it, with this week's invite cohort still counting.
+    testWidgets('beta numbers — ${brightness.name}', (tester) async {
+      final repository = FakeBetaNumbersRepository(isReader: true);
+      addTearDown(repository.close);
+      final controller = BetaNumbersController(
+        betaNumbersRepository: repository,
+        now: () => _now,
+      );
+      addTearDown(controller.dispose);
+      await capture(
+        tester,
+        'beta-numbers-${brightness.name}',
+        screen: const BetaNumbersScreen(),
+        providers: [
+          ChangeNotifierProvider<BetaNumbersController>.value(
+            value: controller,
+          ),
+        ],
+        brightness: brightness,
+        emit: () async => repository.emitWeeks([
+          weekOf(
+            '2026-W38',
+            CalendarDate.parse('2026-09-14'),
+            activeFamilies: 23,
+            familiesSeen: 38,
+            lunchPlansCreated: 61,
+            familiesPlanningLunches: 27,
+            newFamilies: 9,
+            newFamiliesInvitingAnAdult: 5,
+            computedAt: _now,
+          ),
+          weekOf(
+            '2026-W37',
+            CalendarDate.parse('2026-09-07'),
+            activeFamilies: 17,
+            familiesSeen: 31,
+            lunchPlansCreated: 44,
+            familiesPlanningLunches: 21,
+            newFamilies: 14,
+            newFamiliesInvitingAnAdult: 8,
+          ),
+          weekOf(
+            '2026-W36',
+            CalendarDate.parse('2026-08-31'),
+            activeFamilies: 9,
+            familiesSeen: 20,
+            lunchPlansCreated: 18,
+            familiesPlanningLunches: 11,
+            newFamilies: 20,
+            newFamiliesInvitingAnAdult: 9,
+            isInviteCohortComplete: true,
+          ),
+        ]),
+      );
     });
   }
 

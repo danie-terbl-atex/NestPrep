@@ -162,6 +162,10 @@ void main() {
     // the screen's banner, so nothing escapes; it is unawaited because a
     // controller's constructor cannot wait and the listeners must open now.
     '_openStorageAccess()',
+    // Counting a household as opened (product-analytics ADR-0001). The
+    // heartbeat runs the call through `bestEffort`, which logs a failure and
+    // never throws, so nothing can escape; nobody waits on it by design.
+    '_heartbeat.beat(',
     // Closing the upload's own progress stream once it has ended. There is
     // nobody left to tell: the failure, if there was one, has already been
     // put on that stream and delivered.

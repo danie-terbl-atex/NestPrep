@@ -1,10 +1,14 @@
 import '../failure/app_failure.dart';
 import '../recurrence/recurrence_rule.dart';
+import 'product_analytics_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
 abstract final class AppCopy {
   static const appName = 'NestPrep';
+
+  // product analytics — the Beta numbers screen (product-analytics ADR-0001)
+  static const productAnalytics = ProductAnalyticsCopy();
 
   static const loading = 'Loading';
   static const retry = 'Try again';

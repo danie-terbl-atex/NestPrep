@@ -109,17 +109,24 @@ describe('every callable declares what it may cost', () => {
     // name here should have cost somebody an ADR to justify. Six were the
     // household's; the two documents ones are the household claim Storage rules
     // need and the folder-is-empty check no rule can perform (documents
-    // ADR-0001).
+    // ADR-0001). The five product-analytics ones count the beta numbers, which
+    // no rule can do because a rule cannot write a second document
+    // (product-analytics ADR-0001).
     const exported = [...(index?.source ?? '').matchAll(/export \{ (\w+) \}/g)].flatMap((match) =>
       match[1] === undefined ? [] : [match[1]],
     );
     expect([...exported].sort()).toEqual([
+      'countHouseholdCreated',
+      'countInviteCreated',
+      'countLunchPlanCreated',
       'createHousehold',
       'createInvite',
       'deleteDocumentFolder',
       'leaveHousehold',
+      'recordActivity',
       'redeemInvite',
       'removeMember',
+      'rollupBetaNumbers',
       'setMemberRole',
       'syncDocumentAccess',
     ]);

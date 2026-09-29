@@ -17,6 +17,8 @@
     "test:rules": "firebase emulators:exec --only firestore,storage --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.rules.config.ts\"",
     "test:all": "npm run test && npm run test:rules && npm run test:emulator",
     "seed": "node tools/seed-emulator.mjs",
+    "beta-numbers": "node tools/beta-numbers.mjs",
+    "grant-analytics-reader": "node tools/grant-analytics-reader.mjs",
     "test:emulator": "npm run build && firebase emulators:exec --only firestore,auth,functions --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.emulator.config.ts\""
   },
   "dependencies": {

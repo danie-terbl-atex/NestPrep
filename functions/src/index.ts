@@ -13,3 +13,10 @@ export { removeMember } from './household/remove_member';
 export { setMemberRole } from './household/set_member_role';
 export { syncDocumentAccess } from './documents/sync_document_access';
 export { deleteDocumentFolder } from './documents/delete_document_folder';
+
+// ---- product analytics: the three beta numbers (product-analytics ADR-0001) ----
+export { recordActivity } from './product_analytics/record_activity';
+export { countHouseholdCreated } from './product_analytics/count_household_created';
+export { countInviteCreated } from './product_analytics/count_invite_created';
+export { countLunchPlanCreated } from './product_analytics/count_lunch_plan_created';
+export { rollupBetaNumbers } from './product_analytics/rollup_beta_numbers';

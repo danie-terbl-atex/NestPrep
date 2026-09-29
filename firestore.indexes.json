@@ -6,6 +6,24 @@
       "fieldPath": "sharingUntil",
       "ttl": true,
       "indexes": []
+    },
+    {
+      "collectionGroup": "analyticsHouseholdWeeks",
+      "fieldPath": "expireAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "analyticsHouseholds",
+      "fieldPath": "expireAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "analyticsConversions",
+      "fieldPath": "expireAt",
+      "ttl": true,
+      "indexes": []
     }
   ]
 }
