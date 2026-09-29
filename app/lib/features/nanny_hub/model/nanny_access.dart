@@ -63,14 +63,8 @@ class NannyAccess {
   bool mayEndShiftOf(String carerMemberId) =>
       canEdit && (isFamily || carerMemberId == viewerMemberId);
 
-  (bool, bool, bool, FamilyAccess, String?, String) get _identity => (
-    canView,
-    canEdit,
-    isFamily,
-    family,
-    viewerMemberId,
-    viewerUid,
-  );
+  (bool, bool, bool, FamilyAccess, String?, String) get _identity =>
+      (canView, canEdit, isFamily, family, viewerMemberId, viewerUid);
 
   @override
   bool operator ==(Object other) =>

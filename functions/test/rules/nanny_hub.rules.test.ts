@@ -177,6 +177,48 @@ describe('the house guide, the house rules and the checklists', () => {
     return asUser(PEOPLE.parent.uid);
   }
 
+  it('lets whoever writes the hub add a place and a rule, stamped as theirs', async () => {
+    const db = await asUser(CARER.uid);
+    await assertSucceeds(
+      setDoc(doc(db, `${HOME}/nannyGuide/new`), {
+        title: 'First-aid kit',
+        note: 'Under the sink',
+        photoId: null,
+        createdBy: CARER.member,
+        createdAt: serverTimestamp(),
+      }),
+    );
+    await assertSucceeds(
+      setDoc(doc(db, `${HOME}/nannyRules/new`), {
+        text: 'Bed by eight',
+        createdBy: CARER.member,
+        createdAt: serverTimestamp(),
+      }),
+    );
+  });
+
+  it('refuses a place or a rule from a helper at view, or in somebody else’s name', async () => {
+    const viewer = await asUser(PEOPLE.viewer.uid);
+    await assertFails(
+      setDoc(doc(viewer, `${HOME}/nannyGuide/new`), {
+        title: 'Keys',
+        note: null,
+        photoId: null,
+        createdBy: PEOPLE.viewer.member,
+        createdAt: serverTimestamp(),
+      }),
+    );
+    const carer = await asUser(CARER.uid);
+    await assertFails(
+      setDoc(doc(carer, `${HOME}/nannyRules/new`), {
+        text: 'Bed by eight',
+        createdBy: PEOPLE.admin.member,
+        createdAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(deleteDoc(doc(viewer, `${HOME}/nannyRules/screens`)));
+  });
+
   it('lets a spot carry a photo by its id, and refuses anything shaped like a path', async () => {
     const db = await parent();
     await assertSucceeds(updateDoc(doc(db, PATHS.spot), { photoId: 'Abc123_photo-01' }));

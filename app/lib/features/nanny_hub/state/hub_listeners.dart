@@ -53,10 +53,7 @@ final class HubListeners {
       _shifts.watchOpenShifts(householdId),
       (value) => _openShifts = value,
     );
-    _listen(
-      _shifts.watchSummaries(householdId),
-      (value) => _summaries = value,
-    );
+    _listen(_shifts.watchSummaries(householdId), (value) => _summaries = value);
   }
 
   void _listen<T>(Stream<T> stream, void Function(T value) keep) {
@@ -102,8 +99,9 @@ final class HubListeners {
     );
   }
 
-  void _fail(Object error) =>
-      onChange(AsyncFailure(error is AppFailure ? error : UnknownFailure(error)));
+  void _fail(Object error) => onChange(
+    AsyncFailure(error is AppFailure ? error : UnknownFailure(error)),
+  );
 
   Future<void> stop() async {
     for (final subscription in _subscriptions) {

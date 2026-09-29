@@ -50,7 +50,7 @@ class HandoverRow extends StatelessWidget {
               children: [
                 Text(
                   '${clock.timeOf(entry.at)} · '
-                  '${NannyCopy.kindName(entry.kind)}',
+                  '${NannyShiftCopy.kindName(entry.kind)}',
                   style: nest.text.bodyStrong,
                 ),
                 if (childNames.isNotEmpty)
@@ -58,7 +58,7 @@ class HandoverRow extends StatelessWidget {
                 if (mood != null) ...[
                   const SizedBox(height: NestSpace.xs),
                   NestTag(
-                    label: NannyCopy.moodName(mood),
+                    label: NannyShiftCopy.moodName(mood),
                     icon: mood.icon,
                     tone: NestTagTone.accent,
                   ),
@@ -69,10 +69,7 @@ class HandoverRow extends StatelessWidget {
                 ],
                 if (photoId != null) ...[
                   const SizedBox(height: NestSpace.sm),
-                  NannyPhoto(
-                    photoId: photoId,
-                    label: NannyCopy.withPhoto,
-                  ),
+                  NannyPhoto(photoId: photoId, label: NannyShiftCopy.withPhoto),
                 ],
               ],
             ),

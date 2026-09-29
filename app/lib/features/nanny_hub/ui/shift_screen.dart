@@ -26,7 +26,7 @@ class ShiftScreen extends StatelessWidget {
     final hub = context.watch<NannyHubController>();
     final failure = shift.actionFailure ?? hub.actionFailure;
     return NestScaffold(
-      title: NannyCopy.shiftTitle,
+      title: NannyShiftCopy.shiftTitle,
       leading: backLeading(context),
       trailing: const [EmergencyLinkButton()],
       body: Column(
@@ -54,8 +54,8 @@ class ShiftScreen extends StatelessWidget {
                 hub.retry();
               },
               emptyBuilder: (_) => const NestEmptyView(
-                title: NannyCopy.shiftGoneTitle,
-                message: NannyCopy.shiftGoneBody,
+                title: NannyShiftCopy.shiftGoneTitle,
+                message: NannyShiftCopy.shiftGoneBody,
                 icon: Icons.event_busy_outlined,
               ),
               dataBuilder: (context, both) => ShiftBody(

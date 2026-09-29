@@ -1196,7 +1196,7 @@ service cloud.firestore {
           && data.get('routines', []) is list
           && data.get('routines', []).size() <= 12
           && data.get('comfortItems', []) is list
-          && data.get('comfortItems', []).size() <= 12
+          && data.get('comfortItems', []).size() <= 30
           && isNannyOptionalText(data.get('settling', null), 600)
           && isNannyOptionalText(data.get('goodToKnow', null), 600)
           && isNannyPhotoId(data.get('photoId', null));

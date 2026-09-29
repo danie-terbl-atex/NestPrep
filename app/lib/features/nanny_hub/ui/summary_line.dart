@@ -19,7 +19,7 @@ class SummaryTags extends StatelessWidget {
     final kinds = summary.kindsLogged;
     if (kinds.isEmpty) {
       return Text(
-        NannyCopy.summaryNothingLogged,
+        NannyShiftCopy.summaryNothingLogged,
         style: NestTheme.of(context).text.bodySecondary,
       );
     }
@@ -29,7 +29,7 @@ class SummaryTags extends StatelessWidget {
       children: [
         for (final kind in kinds)
           NestTag(
-            label: NannyCopy.summaryCount(kind, summary.countOf(kind)),
+            label: NannyShiftCopy.summaryCount(kind, summary.countOf(kind)),
             icon: kind.icon,
             tone: kind == HandoverKind.incident
                 ? NestTagTone.danger
@@ -37,7 +37,7 @@ class SummaryTags extends StatelessWidget {
           ),
         if (summary.photoCount > 0)
           NestTag(
-            label: NannyCopy.summaryPhotos(summary.photoCount),
+            label: NannyShiftCopy.summaryPhotos(summary.photoCount),
             icon: Icons.photo_outlined,
           ),
       ],

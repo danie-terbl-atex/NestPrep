@@ -31,8 +31,7 @@ class NannyHub {
        guide = List.unmodifiable(guide),
        rules = List.unmodifiable(rules),
        _checklists = Map.unmodifiable({
-         for (final checklist in checklists)
-           ?checklist.moment: checklist,
+         for (final checklist in checklists) ?checklist.moment: checklist,
        }),
        openShifts = List.unmodifiable(openShifts),
        summaries = List.unmodifiable(
@@ -77,7 +76,9 @@ class NannyHub {
   /// The shift this member is on right now, if any.
   Shift? openShiftOf(String? memberId) => memberId == null
       ? null
-      : openShifts.where((shift) => shift.carerMemberId == memberId).firstOrNull;
+      : openShifts
+            .where((shift) => shift.carerMemberId == memberId)
+            .firstOrNull;
 
   ShiftSummary? get latestSummary => summaries.firstOrNull;
 

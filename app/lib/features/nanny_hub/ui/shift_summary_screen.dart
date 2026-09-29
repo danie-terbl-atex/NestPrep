@@ -19,13 +19,13 @@ class ShiftSummaryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<NannyHubController>();
     return NannyHubPage(
-      title: NannyCopy.summaryTitle,
+      title: NannyShiftCopy.summaryTitle,
       // Opened a moment after the end, the summary may not have reached the
       // listener yet; said, rather than shown as blank.
       isEmpty: (view) => view.hub.summaryOf(shiftId) == null,
       emptyBuilder: (_) => const NestEmptyView(
-        title: NannyCopy.summaryGoneTitle,
-        message: NannyCopy.summaryGoneBody,
+        title: NannyShiftCopy.summaryGoneTitle,
+        message: NannyShiftCopy.summaryGoneBody,
         icon: Icons.hourglass_empty,
       ),
       builder: (context, view) => ShiftSummaryView(

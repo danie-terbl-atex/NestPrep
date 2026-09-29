@@ -21,11 +21,13 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
 
   final FirebaseFirestore _firestore;
 
-  CollectionReference<Map<String, dynamic>> _raw(String householdId, String path) =>
-      _firestore
-          .collection(NannyPaths.households)
-          .doc(householdId)
-          .collection(path);
+  CollectionReference<Map<String, dynamic>> _raw(
+    String householdId,
+    String path,
+  ) => _firestore
+      .collection(NannyPaths.households)
+      .doc(householdId)
+      .collection(path);
 
   CollectionReference<T> _typed<T>(
     String householdId,
@@ -38,8 +40,9 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
     toJson: (_) => throw UnsupportedError('written field by field'),
   );
 
-  Stream<List<T>> _list<T>(Query<T> query) => query
-      .snapshots()
+  /// Every read here is bounded where it is built, beside its `.limit`
+  /// (`BE-08`); this only unwraps the documents and translates a failure.
+  Stream<List<T>> _list<T>(Stream<QuerySnapshot<T>> snapshots) => snapshots
       .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
       .handleError((Object error) => throw failureFromFirebase(error));
 
@@ -49,7 +52,7 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
       householdId,
       NannyPaths.cards,
       ChildCard.fromJson,
-    ).limit(NannyLimits.cardListen),
+    ).limit(NannyLimits.cardListen).snapshots(),
   );
 
   @override
@@ -58,7 +61,7 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
       householdId,
       NannyPaths.contacts,
       EmergencyContact.fromJson,
-    ).limit(NannyLimits.contactListen),
+    ).limit(NannyLimits.contactListen).snapshots(),
   );
 
   @override
@@ -71,16 +74,20 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
 
   @override
   Stream<List<GuideSpot>> watchGuide(String householdId) => _list(
-    _typed(householdId, NannyPaths.guide, GuideSpot.fromJson)
-        .orderBy('createdAt')
-        .limit(NannyLimits.guideListen),
+    _typed(
+      householdId,
+      NannyPaths.guide,
+      GuideSpot.fromJson,
+    ).orderBy('createdAt').limit(NannyLimits.guideListen).snapshots(),
   );
 
   @override
   Stream<List<HouseRule>> watchRules(String householdId) => _list(
-    _typed(householdId, NannyPaths.rules, HouseRule.fromJson)
-        .orderBy('createdAt')
-        .limit(NannyLimits.ruleListen),
+    _typed(
+      householdId,
+      NannyPaths.rules,
+      HouseRule.fromJson,
+    ).orderBy('createdAt').limit(NannyLimits.ruleListen).snapshots(),
   );
 
   @override
@@ -89,7 +96,7 @@ final class FirestoreNannyHubRepository implements NannyHubRepository {
       householdId,
       NannyPaths.checklists,
       ShiftChecklist.fromJson,
-    ).limit(ShiftMoment.values.length),
+    ).limit(ShiftMoment.values.length).snapshots(),
   );
 
   @override

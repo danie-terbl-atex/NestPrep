@@ -30,11 +30,11 @@ class HandoverTimeline extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(NannyCopy.logSoFar, style: nest.text.title),
+        Text(NannyShiftCopy.logSoFar, style: nest.text.title),
         const SizedBox(height: NestSpace.sm),
         if (entries.isEmpty)
           Text(
-            NannyCopy.logEmpty,
+            NannyShiftCopy.logEmpty,
             style: nest.text.bodySecondary.copyWith(
               color: nest.colors.inkTertiary,
             ),
@@ -45,9 +45,7 @@ class HandoverTimeline extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: NestSpace.sm),
             child: HandoverRow(
               entry: entry,
-              childNames: [
-                for (final id in entry.childIds) ?names[id],
-              ],
+              childNames: [for (final id in entry.childIds) ?names[id]],
               onTap: canEdit(entry) ? () => onEdit(entry) : null,
             ),
           ),

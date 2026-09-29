@@ -6,7 +6,7 @@ not have to wait for a working Android emulator.
 
 Take them at 390×844, the size of an ordinary phone, at 2× so the type is sharp. The kids' eight
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
-the same shutter (`tool/design_review_press.dart`).
+the same shutter (`tool/design_review_press.dart`). The nanny hub's eleven are `tool/nanny_design_review_test.dart`.
 
 `sign-in-*` was retaken on 2026-09-29 when the kids' way in joined it. `household-gate-*` is
 **stale**: it no longer matches the screen (a 5% pixel difference, from before kid sign-in), and it
@@ -30,6 +30,12 @@ was left alone rather than retaken on a branch that did not change that screen.
 | `family-light.png` / `family-dark.png` | family profiles: children first, each with their allergies in their severity's tone and the nut-free rule, then everyone else and the household's schools |
 | `family-profile-light.png` / `family-profile-dark.png` | one child's profile: the severe-allergy banner, the nut-free rule with its reasons, then allergies, food and the rest below the fold |
 | `family-profile-dark-200-percent-text.png` | the same profile at the largest text a phone offers |
+| `nanny-hub-light.png` / `nanny-hub-dark.png` | the nanny hub as a carer finds it: start the shift, the latest handover, each child with a severe allergy named before the card is opened, and the places a shift needs (nanny-hub ADR-0003) |
+| `nanny-shift-light.png` / `nanny-shift-dark.png` | shift mode: who is on since when, seven big tiles for what happened, this part of the evening's checklist half ticked, and the log so far (nanny-hub ADR-0002) |
+| `nanny-shift-dark-200-percent-text.png` | shift mode at the largest text a phone offers — one tile to a row, so no word breaks |
+| `nanny-child-card-light.png` / `nanny-child-card-dark.png` | a child's card: allergies in their severity's tone first, then medication with its times, then the routine |
+| `nanny-emergency-light.png` / `nanny-emergency-dark.png` | the emergency sheet: 10111, 10177 and 112 as big buttons, the address to read out, the medical aid, and a call button on every contact |
+| `nanny-handover-light.png` / `nanny-handover-dark.png` | a finished shift's summary for the parents: the incident called out first, the counts, the carer's last word, the checklist, then the evening moment by moment |
 
 ## What to look at
 

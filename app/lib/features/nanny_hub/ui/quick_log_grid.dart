@@ -15,17 +15,28 @@ class QuickLogGrid extends StatelessWidget {
   final bool isBusy;
   final ValueChanged<HandoverKind> onLog;
 
+  /// The width, in unscaled points, two tiles need side by side.
+  static const _twoColumnWidth = 220.0;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(NannyCopy.logSomething, style: nest.text.title),
+        Text(NannyShiftCopy.logSomething, style: nest.text.title),
         const SizedBox(height: NestSpace.md),
         LayoutBuilder(
           builder: (context, constraints) {
-            final width = (constraints.maxWidth - NestSpace.sm) / 2;
+            // Two to a row while a word like "Medicine" still fits beside its
+            // icon; one to a row at a large text setting, so no label ever
+            // breaks mid-word (`FE-13`, `FE-14`).
+            final scale = MediaQuery.textScalerOf(context).scale(1);
+            final columns = constraints.maxWidth / scale >= _twoColumnWidth
+                ? 2
+                : 1;
+            final width =
+                (constraints.maxWidth - NestSpace.sm * (columns - 1)) / columns;
             return Wrap(
               spacing: NestSpace.sm,
               runSpacing: NestSpace.sm,
@@ -60,7 +71,7 @@ class _LogTile extends StatelessWidget {
       container: true,
       button: true,
       enabled: onTap != null,
-      label: NannyCopy.logTitle(kind),
+      label: NannyShiftCopy.logTitle(kind),
       excludeSemantics: true,
       child: NestCard(
         variant: NestCardVariant.flat,
@@ -79,7 +90,7 @@ class _LogTile extends StatelessWidget {
               const SizedBox(width: NestSpace.sm),
               Expanded(
                 child: Text(
-                  NannyCopy.kindName(kind),
+                  NannyShiftCopy.kindName(kind),
                   style: nest.text.bodyStrong,
                 ),
               ),

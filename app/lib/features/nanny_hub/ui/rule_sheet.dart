@@ -72,9 +72,7 @@ class _RuleBodyState extends State<_RuleBody> {
           label: NannyCopy.save,
           onPressed: text.isEmpty
               ? null
-              : () => Navigator.of(
-                  context,
-                ).pop((text: text, isRemoval: false)),
+              : () => Navigator.of(context).pop((text: text, isRemoval: false)),
         ),
         if (widget.existing != null) ...[
           const SizedBox(height: NestSpace.sm),

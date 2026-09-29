@@ -38,7 +38,9 @@ class ChildSafetySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FamilySectionCard(
-          icon: food == null ? Icons.lock_outline : Icons.health_and_safety_outlined,
+          icon: food == null
+              ? Icons.lock_outline
+              : Icons.health_and_safety_outlined,
           tint: NestTileTint.pink,
           title: NannyCopy.allergies,
           child: switch (food) {
@@ -104,15 +106,17 @@ class _Allergies extends StatelessWidget {
           Padding(
             key: ValueKey(allergy.key),
             padding: const EdgeInsets.only(bottom: NestSpace.sm),
+            // The severity is said in words under the name rather than in a
+            // tag beside it: at a large text setting a tag and the name
+            // cannot share a phone's width, and this row must never clip.
             child: NestToneRow(
               icon: allergy.severity.icon,
               tone: allergy.severity.tone,
               title: allergyName(allergy),
-              subtitle: allergy.note,
-              trailing: NestTag(
-                label: FamilyCopy.severityName(allergy.severity),
-                tone: allergy.severity.tone,
-              ),
+              subtitle: [
+                FamilyCopy.severityName(allergy.severity),
+                ?allergy.note,
+              ].join(' · '),
             ),
           ),
       ],

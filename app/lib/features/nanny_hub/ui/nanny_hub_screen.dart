@@ -37,7 +37,7 @@ class EmergencyLinkButton extends StatelessWidget {
     final householdId = context.read<HouseholdView>().household.id;
     return NestIconButton(
       icon: Icons.emergency_outlined,
-      label: NannyCopy.openEmergency,
+      label: NannyShiftCopy.openEmergency,
       variant: NestIconButtonVariant.accent,
       onPressed: () =>
           context.push(NannyHubRoute.emergencyPathFor(householdId)),

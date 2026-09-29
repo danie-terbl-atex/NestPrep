@@ -103,10 +103,17 @@ final class PhotoLibrary extends ChangeNotifier {
         householdId: householdId,
         photoId: photoId,
       );
-      _photos[photoId] = AsyncData(bytes);
+      _settle(photoId, AsyncData(bytes));
     } on AppFailure catch (failure) {
-      _photos[photoId] = AsyncFailure(failure);
+      _settle(photoId, AsyncFailure(failure));
     }
+  }
+
+  /// A photo let go of while it was on its way stays let go of: it is asked
+  /// for again if a screen still wants it.
+  void _settle(String photoId, AsyncState<Uint8List> state) {
+    if (!_photos.containsKey(photoId)) return;
+    _photos[photoId] = state;
     _notify();
   }
 

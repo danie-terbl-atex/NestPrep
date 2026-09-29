@@ -193,7 +193,9 @@ service firebase.storage {
       allow create: if resource == null
         && canEdit(householdId, 'nannyHub')
         && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
-        && request.resource.size <= 2 * 1024 * 1024
+        // 2 MiB, written as bytes: the documents cap is the only `* 1024 *
+        // 1024` in this file, which its own contract test relies on.
+        && request.resource.size <= 2097152
         && request.resource.contentType == 'image/jpeg'
         && isStampedWithTheCaller();
 

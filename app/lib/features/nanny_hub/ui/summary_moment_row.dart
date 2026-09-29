@@ -28,11 +28,11 @@ class SummaryMomentRow extends StatelessWidget {
     final note = moment.note;
     final mood = moment.mood;
     final heading =
-        '${clock.timeOf(moment.at)} · ${NannyCopy.kindName(moment.kind)}';
+        '${clock.timeOf(moment.at)} · ${NannyShiftCopy.kindName(moment.kind)}';
     final line = [
       if (childNames.isNotEmpty) childNames.join(', '),
-      if (mood != null) NannyCopy.moodName(mood),
-      if (moment.hasPhoto) NannyCopy.withPhoto,
+      if (mood != null) NannyShiftCopy.moodName(mood),
+      if (moment.hasPhoto) NannyShiftCopy.withPhoto,
     ].join(' · ');
     if (moment.kind == HandoverKind.incident) {
       return NestToneRow(

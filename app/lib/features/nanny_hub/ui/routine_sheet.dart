@@ -26,7 +26,9 @@ class _Step {
       note = TextEditingController(text: routine.note ?? ''),
       minute = routine.minuteOfDay;
 
-  _Step.blank() : label = TextEditingController(), note = TextEditingController();
+  _Step.blank()
+    : label = TextEditingController(),
+      note = TextEditingController();
 
   final TextEditingController label;
   final TextEditingController note;
@@ -110,9 +112,9 @@ class _RoutineSheetBodyState extends State<_RoutineSheetBody> {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: NannyCopy.save,
-            onPressed: () => Navigator.of(
-              context,
-            ).pop([for (final step in _steps) step.routine]),
+            onPressed: () =>
+                Navigator.of(context)
+                    .pop([for (final step in _steps) step.routine]),
           ),
         ],
       ),
@@ -153,7 +155,9 @@ class _StepEditor extends StatelessWidget {
                     hint: NannyCopy.routineStepHint,
                     controller: step.label,
                     inputFormatters: [
-                      LengthLimitingTextInputFormatter(NannyLimits.routineLabel),
+                      LengthLimitingTextInputFormatter(
+                        NannyLimits.routineLabel,
+                      ),
                     ],
                   ),
                 ),

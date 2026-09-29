@@ -25,7 +25,7 @@ class ChildChoice extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          NannyCopy.whoFor,
+          NannyShiftCopy.whoFor,
           style: nest.text.label.copyWith(color: nest.colors.inkSecondary),
         ),
         const SizedBox(height: NestSpace.sm),

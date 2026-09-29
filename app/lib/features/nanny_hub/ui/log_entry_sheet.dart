@@ -35,7 +35,7 @@ Future<LogOutcome?> showLogEntrySheet({
   HandoverEntry? existing,
 }) => showNestSheet<LogOutcome>(
   context: context,
-  title: NannyCopy.logTitle(existing?.kind ?? kind),
+  title: NannyShiftCopy.logTitle(existing?.kind ?? kind),
   builder: (_) => _LogEntryBody(
     kind: existing?.kind ?? kind,
     children: children,
@@ -112,7 +112,7 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
   Future<void> _remove() async {
     final confirmed = await showNestConfirm(
       context: context,
-      title: NannyCopy.removeEntryConfirm,
+      title: NannyShiftCopy.removeEntryConfirm,
       confirmLabel: NannyCopy.delete,
       cancelLabel: NannyCopy.cancel,
       isDangerous: true,
@@ -131,7 +131,7 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
         children: [
           if (widget.kind == HandoverKind.incident) ...[
             const NestBanner(
-              message: NannyCopy.incidentWarning,
+              message: NannyShiftCopy.incidentWarning,
               tone: NestBannerTone.warning,
             ),
             const SizedBox(height: NestSpace.lg),
@@ -151,8 +151,8 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
           ),
           const SizedBox(height: NestSpace.lg),
           NestTextField(
-            label: NannyCopy.note,
-            hint: NannyCopy.noteHint(widget.kind),
+            label: NannyShiftCopy.note,
+            hint: NannyShiftCopy.noteHint(widget.kind),
             controller: _note,
             maxLines: 3,
             inputFormatters: [
@@ -169,15 +169,15 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
           const SizedBox(height: NestSpace.lg),
           PhotoField(
             currentPhotoId: widget.existing?.photoId,
-            label: NannyCopy.kindName(widget.kind),
+            label: NannyShiftCopy.kindName(widget.kind),
             onPick: widget.onPick,
             onChanged: (photo) => setState(() => _photo = photo),
           ),
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: _saysSomething
-                ? NannyCopy.logIt
-                : NannyCopy.entryNeedsSomething,
+                ? NannyShiftCopy.logIt
+                : NannyShiftCopy.entryNeedsSomething,
             icon: _saysSomething ? Icons.check : null,
             onPressed: _saysSomething ? () => _finish(isRemoval: false) : null,
           ),

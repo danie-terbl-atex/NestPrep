@@ -26,8 +26,8 @@ class ShiftSummaryView extends StatelessWidget {
   String _when(HouseholdClock clock) {
     final started = summary.startedAt;
     final ended = summary.endedAt;
-    if (started == null || ended == null) return NannyCopy.summaryPending;
-    return NannyCopy.summaryWhen(
+    if (started == null || ended == null) return NannyShiftCopy.summaryPending;
+    return NannyShiftCopy.summaryWhen(
       clock.dayOf(ended),
       clock.timeOf(started),
       clock.timeOf(ended),
@@ -60,7 +60,7 @@ class ShiftSummaryView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    NannyCopy.summaryHeadline(carer?.displayName ?? ''),
+                    NannyShiftCopy.summaryHeadline(carer?.displayName ?? ''),
                     style: nest.text.headline,
                   ),
                   Text(_when(clock), style: nest.text.bodySecondary),
@@ -72,7 +72,7 @@ class ShiftSummaryView extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         if (summary.hadIncident) ...[
           const NestBanner(
-            message: NannyCopy.summaryIncident,
+            message: NannyShiftCopy.summaryIncident,
             tone: NestBannerTone.warning,
           ),
           const SizedBox(height: NestSpace.lg),
@@ -85,7 +85,7 @@ class ShiftSummaryView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(NannyCopy.summaryClosingNote, style: label),
+                Text(NannyShiftCopy.summaryClosingNote, style: label),
                 const SizedBox(height: NestSpace.xs),
                 Text(closing, style: nest.text.body),
               ],
@@ -94,18 +94,21 @@ class ShiftSummaryView extends StatelessWidget {
         ],
         if (!checklist.isEmpty) ...[
           const SizedBox(height: NestSpace.xl),
-          Text(NannyCopy.summaryChecklist, style: label),
+          Text(NannyShiftCopy.summaryChecklist, style: label),
           const SizedBox(height: NestSpace.xs),
           Text(
-            NannyCopy.ticked(checklist.ticked, checklist.total),
+            NannyShiftCopy.ticked(checklist.ticked, checklist.total),
             style: nest.text.bodyStrong,
           ),
         ],
         const SizedBox(height: NestSpace.xl),
-        Text(NannyCopy.summaryMoments, style: nest.text.title),
+        Text(NannyShiftCopy.summaryMoments, style: nest.text.title),
         const SizedBox(height: NestSpace.sm),
         if (summary.moments.isEmpty)
-          Text(NannyCopy.summaryNothingLogged, style: nest.text.bodySecondary),
+          Text(
+            NannyShiftCopy.summaryNothingLogged,
+            style: nest.text.bodySecondary,
+          ),
         for (final (index, moment) in summary.moments.indexed)
           Padding(
             key: ValueKey(index),
@@ -119,7 +122,7 @@ class ShiftSummaryView extends StatelessWidget {
           ),
         if (summary.isTrimmed)
           Text(
-            NannyCopy.summaryTrimmed(summary.moments.length),
+            NannyShiftCopy.summaryTrimmed(summary.moments.length),
             style: nest.text.caption,
           ),
       ],

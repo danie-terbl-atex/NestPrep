@@ -198,6 +198,18 @@ void main() {
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.
     'retry())',
+    // ---- nanny hub (nanny-hub ADR-0003) ----
+    // Opening a child's medication read as the children change. It is
+    // synchronous up to the cancels of reads nobody wants any more; each read
+    // it opens sends its failure to that child's medication state.
+    '_care.followChildren(',
+    // Closing the hub's listener sets in dispose: there is no screen left to
+    // tell, as with every `_cancel()` above.
+    '_hubListeners.stop())',
+    '_care.stop())',
+    // Fetching one photo. It catches its own `AppFailure` and holds it as that
+    // photo's state, which the tile renders with a retry.
+    '_fetch(photoId))',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

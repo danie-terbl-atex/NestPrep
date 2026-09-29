@@ -49,7 +49,7 @@ class WhenChoice extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          NannyCopy.whenLabel,
+          NannyShiftCopy.whenLabel,
           style: nest.text.label.copyWith(color: nest.colors.inkSecondary),
         ),
         const SizedBox(height: NestSpace.sm),
@@ -58,7 +58,7 @@ class WhenChoice extends StatelessWidget {
           runSpacing: NestSpace.sm,
           children: [
             NestChip(
-              label: NannyCopy.now,
+              label: NannyShiftCopy.now,
               isSelected: minutesBack < 1,
               onTap: () => onChanged(clock.now),
             ),

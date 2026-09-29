@@ -84,7 +84,7 @@ class ShiftHeroCard extends StatelessWidget {
 
   static String _started(HouseholdClock clock, Shift shift) {
     final at = shift.startedAt;
-    return at == null ? NannyCopy.summaryPending : clock.timeOf(at);
+    return at == null ? NannyShiftCopy.summaryPending : clock.timeOf(at);
   }
 }
 

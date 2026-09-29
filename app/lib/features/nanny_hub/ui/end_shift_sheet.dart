@@ -11,7 +11,7 @@ import '../model/nanny_limits.dart';
 Future<String?> showEndShiftSheet({required BuildContext context}) =>
     showNestSheet<String>(
       context: context,
-      title: NannyCopy.endShiftTitle,
+      title: NannyShiftCopy.endShiftTitle,
       builder: (_) => const _EndShiftBody(),
     );
 
@@ -39,11 +39,11 @@ class _EndShiftBodyState extends State<_EndShiftBody> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(NannyCopy.endShiftBody, style: nest.text.bodySecondary),
+          Text(NannyShiftCopy.endShiftBody, style: nest.text.bodySecondary),
           const SizedBox(height: NestSpace.lg),
           NestTextField(
-            label: NannyCopy.closingNote,
-            hint: NannyCopy.closingNoteHint,
+            label: NannyShiftCopy.closingNote,
+            hint: NannyShiftCopy.closingNoteHint,
             controller: _note,
             maxLines: 3,
             inputFormatters: [
@@ -52,7 +52,7 @@ class _EndShiftBodyState extends State<_EndShiftBody> {
           ),
           const SizedBox(height: NestSpace.xxl),
           NestButton(
-            label: NannyCopy.endShift,
+            label: NannyShiftCopy.endShift,
             icon: Icons.nights_stay_outlined,
             onPressed: () => Navigator.of(context).pop(_note.text),
           ),

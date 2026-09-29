@@ -31,10 +31,7 @@ abstract class CareRoutine with _$CareRoutine {
     return [for (final (_, routine) in indexed) routine];
   }
 
-  static int _byTimeThenPosition(
-    (int, CareRoutine) a,
-    (int, CareRoutine) b,
-  ) {
+  static int _byTimeThenPosition((int, CareRoutine) a, (int, CareRoutine) b) {
     final byTime = a.$2.sortMinute.compareTo(b.$2.sortMinute);
     return byTime != 0 ? byTime : a.$1.compareTo(b.$1);
   }

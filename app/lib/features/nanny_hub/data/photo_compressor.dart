@@ -39,7 +39,7 @@ abstract final class PhotoCompressor {
   /// The pipeline itself, on whatever thread calls it. Null when the bytes are
   /// not an image — an isolate cannot carry an `AppFailure` back.
   static Uint8List? compressNow(Uint8List bytes) {
-    final decoded = img.decodeImage(bytes);
+    final decoded = _decode(bytes);
     if (decoded == null) return null;
     var upright = img.bakeOrientation(decoded);
     final isWide = upright.width >= upright.height;
@@ -54,5 +54,18 @@ abstract final class PhotoCompressor {
     }
     upright.exif = img.ExifData();
     return img.encodeJpg(upright, quality: jpegQuality);
+  }
+
+  /// The picture in [bytes], or null when they are not one. The `image`
+  /// package reads a file shorter than a format's signature — or a truncated
+  /// one — by running off the end of it, which is the same answer: not a
+  /// picture. It becomes `photoUnreadable` for the person, so the reason is
+  /// said rather than lost (`ENG-10`).
+  static img.Image? _decode(Uint8List bytes) {
+    try {
+      return img.findDecoderForData(bytes)?.decode(bytes);
+    } on RangeError {
+      return null;
+    }
   }
 }

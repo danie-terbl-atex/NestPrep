@@ -44,9 +44,9 @@ class ShiftHeader extends StatelessWidget {
             children: [
               Text(person?.displayName ?? '', style: nest.text.headline),
               Text(
-                NannyCopy.shiftStarted(
+                NannyShiftCopy.shiftStarted(
                   started == null
-                      ? NannyCopy.summaryPending
+                      ? NannyShiftCopy.summaryPending
                       : clock.timeOf(started),
                 ),
                 style: nest.text.bodySecondary,
@@ -58,10 +58,7 @@ class ShiftHeader extends StatelessWidget {
                   runSpacing: NestSpace.xs,
                   children: [
                     for (final child in children)
-                      NestTag(
-                        label: child.displayName,
-                        icon: Icons.child_care,
-                      ),
+                      NestTag(label: child.displayName, icon: Icons.child_care),
                   ],
                 ),
               ],

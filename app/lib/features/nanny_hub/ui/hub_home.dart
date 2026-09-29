@@ -77,9 +77,8 @@ class HubHome extends StatelessWidget {
       PastShifts(
         summaries: hub.summaries,
         memberById: controller.memberById,
-        onOpen: (shiftId) => context.push(
-          NannyHubRoute.summaryPathFor(_householdId, shiftId),
-        ),
+        onOpen: (shiftId) =>
+            context.push(NannyHubRoute.summaryPathFor(_householdId, shiftId)),
       ),
       if (!access.canEdit) const NestBanner(message: NannyCopy.viewOnlyNote),
     ];

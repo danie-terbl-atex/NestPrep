@@ -50,7 +50,9 @@ class _ShiftChecklistPanelState extends State<ShiftChecklistPanel> {
     final nest = NestTheme.of(context);
     final lists = _withItems;
     if (lists.isEmpty) return const SizedBox.shrink();
-    final open = lists.where((list) => _done(list.$1, list.$2) < list.$2.items.length);
+    final open = lists.where(
+      (list) => _done(list.$1, list.$2) < list.$2.items.length,
+    );
     final (moment, checklist) = lists.firstWhere(
       (list) => list.$1 == _chosen,
       orElse: () => open.firstOrNull ?? lists.first,
@@ -58,7 +60,7 @@ class _ShiftChecklistPanelState extends State<ShiftChecklistPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(NannyCopy.checklistNow, style: nest.text.title),
+        Text(NannyShiftCopy.checklistNow, style: nest.text.title),
         const SizedBox(height: NestSpace.sm),
         Wrap(
           spacing: NestSpace.sm,
@@ -77,7 +79,10 @@ class _ShiftChecklistPanelState extends State<ShiftChecklistPanel> {
         ),
         const SizedBox(height: NestSpace.md),
         Text(
-          NannyCopy.ticked(_done(moment, checklist), checklist.items.length),
+          NannyShiftCopy.ticked(
+            _done(moment, checklist),
+            checklist.items.length,
+          ),
           style: nest.text.caption,
         ),
         const SizedBox(height: NestSpace.sm),

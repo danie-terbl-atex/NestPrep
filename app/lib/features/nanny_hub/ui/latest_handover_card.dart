@@ -52,12 +52,12 @@ class LatestHandoverCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      NannyCopy.summaryHeadline(person?.displayName ?? ''),
+                      NannyShiftCopy.summaryHeadline(person?.displayName ?? ''),
                       style: nest.text.title,
                     ),
                     Text(
                       ended == null
-                          ? NannyCopy.summaryPending
+                          ? NannyShiftCopy.summaryPending
                           : '${clock.dayOf(ended)} · ${clock.timeOf(ended)}',
                       style: nest.text.bodySecondary,
                     ),

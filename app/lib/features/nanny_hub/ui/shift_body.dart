@@ -103,16 +103,16 @@ class ShiftBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  NannyCopy.shiftEndedTitle,
+                  NannyShiftCopy.shiftEndedTitle,
                   style: NestTheme.of(context).text.title,
                 ),
                 Text(
-                  NannyCopy.shiftEndedBody,
+                  NannyShiftCopy.shiftEndedBody,
                   style: NestTheme.of(context).text.bodySecondary,
                 ),
                 const SizedBox(height: NestSpace.lg),
                 NestButton(
-                  label: NannyCopy.seeSummary,
+                  label: NannyShiftCopy.seeSummary,
                   onPressed: () => context.pushReplacement(
                     NannyHubRoute.summaryPathFor(hub.householdId, current.id),
                   ),
@@ -146,7 +146,7 @@ class ShiftBody extends StatelessWidget {
         if (isOpen && access.mayEndShiftOf(current.carerMemberId)) ...[
           const SizedBox(height: NestSpace.xxxl),
           NestButton(
-            label: NannyCopy.endShift,
+            label: NannyShiftCopy.endShift,
             variant: NestButtonVariant.outline,
             icon: Icons.nights_stay_outlined,
             isLoading: shift.isEnding,

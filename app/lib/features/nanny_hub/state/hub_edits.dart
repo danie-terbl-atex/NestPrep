@@ -48,15 +48,18 @@ final class HubEdits {
       {for (final item in items) ?tidy(item)}.take(limit).toList();
 
   Future<void> saveRoutines(String childId, List<CareRoutine> routines) => _run(
-    () => _repository.saveRoutines(_card(childId), [
-      for (final routine in routines)
-        if (tidy(routine.label) case final label?)
-          CareRoutine(
-            label: label,
-            minuteOfDay: routine.minuteOfDay,
-            note: tidy(routine.note),
-          ),
-    ].take(NannyLimits.routines).toList()),
+    () => _repository.saveRoutines(
+      _card(childId),
+      [
+        for (final routine in routines)
+          if (tidy(routine.label) case final label?)
+            CareRoutine(
+              label: label,
+              minuteOfDay: routine.minuteOfDay,
+              note: tidy(routine.note),
+            ),
+      ].take(NannyLimits.routines).toList(),
+    ),
   );
 
   Future<void> saveComfortItems(String childId, List<String> items) => _run(
@@ -156,10 +159,11 @@ final class HubEdits {
 
   /// The place, then its photo — so a failure leaves at worst a photo nothing
   /// shows, never a place showing a photo that is gone.
-  Future<void> removeGuideSpot(String spotId, {String? photoId}) => _run(() async {
-    await _repository.removeGuideSpot(householdId, spotId);
-    if (photoId != null) await _photos.discard(photoId);
-  });
+  Future<void> removeGuideSpot(String spotId, {String? photoId}) =>
+      _run(() async {
+        await _repository.removeGuideSpot(householdId, spotId);
+        if (photoId != null) await _photos.discard(photoId);
+      });
 
   Future<void> addRule(String text) =>
       _run(() => _repository.addRule(_by, text.trim()));
@@ -174,14 +178,20 @@ final class HubEdits {
   /// one here; an item that kept its id keeps its tick on an open shift.
   Future<void> saveChecklist(ShiftMoment moment, List<ChecklistItem> items) =>
       _run(
-        () => _repository.saveChecklist(_by, moment, [
-          for (final item in items)
-            if (tidy(item.text) case final text?)
-              ChecklistItem(
-                id: item.id.isEmpty ? _repository.newItemId(householdId) : item.id,
-                text: text,
-              ),
-        ].take(NannyLimits.checklistItems).toList()),
+        () => _repository.saveChecklist(
+          _by,
+          moment,
+          [
+            for (final item in items)
+              if (tidy(item.text) case final text?)
+                ChecklistItem(
+                  id: item.id.isEmpty
+                      ? _repository.newItemId(householdId)
+                      : item.id,
+                  text: text,
+                ),
+          ].take(NannyLimits.checklistItems).toList(),
+        ),
       );
 
   /// Stores a picked photo first and writes the record pointing at it; an old

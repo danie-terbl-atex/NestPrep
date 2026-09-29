@@ -97,8 +97,7 @@ final class NannyHubController extends ChangeNotifier with ActionFailureHolder {
   /// carer without their phone, a grandparent babysitting.
   List<Member> get carersToStartFor => [
     for (final member in _members)
-      if (member.role != MemberRole.kid &&
-          member.id != _access.viewerMemberId)
+      if (member.role != MemberRole.kid && member.id != _access.viewerMemberId)
         member,
   ];
 

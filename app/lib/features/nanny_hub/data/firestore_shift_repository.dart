@@ -32,10 +32,13 @@ final class FirestoreShiftRepository implements ShiftRepository {
   @override
   Stream<List<Shift>> watchOpenShifts(String householdId) => _list(
     typedCollection(
-      _shifts(householdId),
-      fromJson: Shift.fromJson,
-      toJson: _readOnly,
-    ).where('status', isEqualTo: Shift.open).limit(NannyLimits.openShiftListen),
+          _shifts(householdId),
+          fromJson: Shift.fromJson,
+          toJson: _readOnly,
+        )
+        .where('status', isEqualTo: Shift.open)
+        .limit(NannyLimits.openShiftListen)
+        .snapshots(),
   );
 
   @override
@@ -62,7 +65,7 @@ final class FirestoreShiftRepository implements ShiftRepository {
       _entries(householdId, shiftId),
       fromJson: HandoverEntry.fromJson,
       toJson: _readOnly,
-    ).orderBy('at').limit(NannyLimits.entryListen),
+    ).orderBy('at').limit(NannyLimits.entryListen).snapshots(),
   );
 
   @override
@@ -73,11 +76,13 @@ final class FirestoreShiftRepository implements ShiftRepository {
           toJson: _readOnly,
         )
         .orderBy('endedAt', descending: true)
-        .limit(NannyLimits.summaryListen),
+        .limit(NannyLimits.summaryListen)
+        .snapshots(),
   );
 
-  Stream<List<T>> _list<T>(Query<T> query) => query
-      .snapshots()
+  /// Every read here is bounded where it is built, beside its `.limit`
+  /// (`BE-08`); this only unwraps the documents and translates a failure.
+  Stream<List<T>> _list<T>(Stream<QuerySnapshot<T>> snapshots) => snapshots
       .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
       .handleError((Object error) => throw failureFromFirebase(error));
 
@@ -137,7 +142,8 @@ final class FirestoreShiftRepository implements ShiftRepository {
     required String entryId,
     required HandoverDraft draft,
   }) => _guarded(
-    () => _entries(householdId, shiftId).doc(entryId).update(_draftFields(draft)),
+    () =>
+        _entries(householdId, shiftId).doc(entryId).update(_draftFields(draft)),
   );
 
   static Map<String, Object?> _draftFields(HandoverDraft draft) => {

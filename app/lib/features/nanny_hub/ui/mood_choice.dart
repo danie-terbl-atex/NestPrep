@@ -28,7 +28,7 @@ class MoodChoice extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          NannyCopy.kindName(HandoverKind.mood),
+          NannyShiftCopy.kindName(HandoverKind.mood),
           style: isProminent
               ? nest.text.title
               : nest.text.label.copyWith(color: nest.colors.inkSecondary),
@@ -40,7 +40,7 @@ class MoodChoice extends StatelessWidget {
           children: [
             for (final option in HandoverMood.values)
               NestChip(
-                label: NannyCopy.moodName(option),
+                label: NannyShiftCopy.moodName(option),
                 icon: option.icon,
                 isSelected: option == mood,
                 onTap: () => onChanged(option == mood ? null : option),

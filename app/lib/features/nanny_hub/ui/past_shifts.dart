@@ -51,7 +51,7 @@ class PastShifts extends StatelessWidget {
                 ),
                 null => const Icon(Icons.history),
               },
-              title: NannyCopy.summaryHeadline(
+              title: NannyShiftCopy.summaryHeadline(
                 memberById(summary.carerMemberId)?.displayName ?? '',
               ),
               subtitle: _when(clock, summary),
@@ -68,7 +68,7 @@ class PastShifts extends StatelessWidget {
   static String _when(HouseholdClock clock, ShiftSummary summary) {
     final ended = summary.endedAt;
     return ended == null
-        ? NannyCopy.summaryPending
+        ? NannyShiftCopy.summaryPending
         : '${clock.dayOf(ended)} · ${clock.timeOf(ended)}';
   }
 }

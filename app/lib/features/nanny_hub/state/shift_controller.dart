@@ -70,32 +70,36 @@ final class ShiftController extends ChangeNotifier with ActionFailureHolder {
     _start();
   }
 
-  Future<void> setTick(ShiftMoment moment, String itemId, {required bool isTicked}) =>
-      runAction(
-        () => _repository.setTick(
-          householdId: householdId,
-          shiftId: shiftId,
-          tickKey: ShiftChecklist.tickKey(moment, itemId),
-          isTicked: isTicked,
-        ),
-      );
+  Future<void> setTick(
+    ShiftMoment moment,
+    String itemId, {
+    required bool isTicked,
+  }) => runAction(
+    () => _repository.setTick(
+      householdId: householdId,
+      shiftId: shiftId,
+      tickKey: ShiftChecklist.tickKey(moment, itemId),
+      isTicked: isTicked,
+    ),
+  );
 
   /// Logs an entry, storing its photo first so the entry never points at a
   /// photo that is not there. True when it was logged.
-  Future<bool> addEntry(HandoverDraft draft, {Uint8List? photo}) => _saving(() async {
-    final photoId = photo == null ? null : await photos.store(photo);
-    try {
-      await _repository.addEntry(
-        householdId: householdId,
-        shiftId: shiftId,
-        byMemberId: memberId,
-        draft: draft.withPhoto(photoId),
-      );
-    } on AppFailure {
-      if (photoId != null) await photos.discard(photoId);
-      rethrow;
-    }
-  });
+  Future<bool> addEntry(HandoverDraft draft, {Uint8List? photo}) =>
+      _saving(() async {
+        final photoId = photo == null ? null : await photos.store(photo);
+        try {
+          await _repository.addEntry(
+            householdId: householdId,
+            shiftId: shiftId,
+            byMemberId: memberId,
+            draft: draft.withPhoto(photoId),
+          );
+        } on AppFailure {
+          if (photoId != null) await photos.discard(photoId);
+          rethrow;
+        }
+      });
 
   Future<bool> updateEntry(
     HandoverEntry entry,
