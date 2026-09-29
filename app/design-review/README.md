@@ -58,6 +58,11 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
+| `share-sheet-light.png` / `share-sheet-dark.png` | sharing one document by a link: until the shift that is on now ends, or a fixed length, and the PIN switch (documents ADR-0006) |
+| `share-link-ready-light.png` / `share-link-ready-dark.png` | the link, shown once, with when it stops working, send and copy |
+| `shared-links-light.png` / `shared-links-dark.png` | every live link: when it ends, how often it was opened, who shared it, a PIN tag, and the stop button |
+| `offline-copies-light.png` / `offline-copies-dark.png` | what this phone keeps behind the vaults' lock: the room it takes, each copy with its "Available offline" badge (documents ADR-0007) |
+| `share-page-{document,pdf,pin,expired}-{light,dark}.png` | the one page a person without NestPrep sees — served by the `documentShare` Function, shot at 390 px by headless Chrome with `tools/share_page_review.sh`, not by the press: a picture inline, a PDF behind a button, the PIN form after a wrong try, and an expired link |
 
 ## What to look at
 

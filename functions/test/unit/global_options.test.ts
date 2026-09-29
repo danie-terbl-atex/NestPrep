@@ -33,6 +33,9 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
+/** The one HTTPS function allowed past thirty seconds, and by how much. */
+const LONGER_TIMEOUTS: Readonly<Record<string, number>> = { documentShare: 120 };
+
 /** A scheduled job sets its own timeout; everything else is a callable. */
 function isScheduled(endpoint: Endpoint): boolean {
   return endpoint.scheduleTrigger !== undefined;
@@ -52,8 +55,10 @@ describe('every function — callable, trigger or schedule', () => {
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
     // (nanny-hub ADR-0002). Subscriptions: six — three callables, the App
     // Store's HTTP endpoint, the Play Pub/Sub trigger and the daily reconcile
-    // (subscriptions ADR-0001). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(42);
+    // (subscriptions ADR-0001). Documents V2: two callables, the HTTPS
+    // function a shared link opens and the trigger that ends a shift's links
+    // (documents ADR-0006). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(46);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -73,8 +78,17 @@ describe('every function — callable, trigger or schedule', () => {
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
       expect(endpoint.availableMemoryMb, name).toBe(256);
-      if (isScheduled(endpoint)) continue;
+      if (isScheduled(endpoint) || name in LONGER_TIMEOUTS) continue;
       expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('only a function that streams a file runs longer, and says how long', () => {
+    // A shared link streams up to 20 MiB to a phone that may be on a slow
+    // connection, which thirty seconds cannot promise (documents ADR-0006).
+    for (const [name, seconds] of Object.entries(LONGER_TIMEOUTS)) {
+      const endpoint = endpoints().find(([candidate]) => candidate === name)?.[1];
+      expect(endpoint?.timeoutSeconds, name).toBe(seconds);
     }
   });
 

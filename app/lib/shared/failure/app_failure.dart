@@ -201,6 +201,36 @@ enum DocumentProblem {
 
   /// The bytes arrived but are not a PDF or picture the app can draw.
   cannotRender,
+
+  // ---- documents V2: shared links and offline copies (documents ADR-0006,
+  // ADR-0007). The first five are reasons `createDocumentShare` and
+  // `revokeDocumentShare` give; the last three are the phone's own.
+
+  /// The capability is switched off (foundation ADR-0014).
+  featureOff,
+
+  /// Only the family, or a vault's owner, sends a document outside the
+  /// household.
+  notAllowedToShare,
+
+  /// The shift a link was to end with has already ended.
+  shiftNotOpen,
+
+  /// The household already has as many live links as it may.
+  tooManyShares,
+
+  /// The link was removed while somebody was stopping it.
+  shareNotFound,
+
+  /// This phone already keeps as many offline copies as it may.
+  offlineLimitReached,
+
+  /// An offline copy could not be read back — changed on disk, or its key
+  /// is gone. It is removed rather than shown.
+  offlineCopyUnreadable,
+
+  /// This phone would not give NestPrep a safe place for its key.
+  offlineStorageUnavailable,
 }
 
 final class DocumentFailure extends AppFailure {

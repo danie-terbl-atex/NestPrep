@@ -14,6 +14,10 @@ import {
 import { ROLE_DEFAULTS } from '../../src/household/access';
 import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 import { endNannyShiftInput } from '../../src/nanny_hub/schemas';
+import {
+  createDocumentShareInput,
+  revokeDocumentShareInput,
+} from '../../src/documents/share/share_schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -145,6 +149,23 @@ const validBodies = {
   setChildProfile: {
     schema: setChildProfileInput,
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
+  },
+  // Documents V2: a shared link (documents ADR-0006). The owner, the shift and
+  // the PIN are required-and-nullable, so the app always says which it means.
+  createDocumentShare: {
+    schema: createDocumentShareInput,
+    body: {
+      householdId: 'h1',
+      ownerMemberId: 'm-emma',
+      documentId: 'doc-1',
+      lifetimeHours: 24,
+      shiftId: null,
+      pin: '2468',
+    },
+  },
+  revokeDocumentShare: {
+    schema: revokeDocumentShareInput,
+    body: { householdId: 'h1', shareId: 's1' },
   },
 } as const;
 

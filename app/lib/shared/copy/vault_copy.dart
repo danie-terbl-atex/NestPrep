@@ -151,6 +151,7 @@ abstract final class VaultCopy {
   static const logEmptyBody =
       'When somebody opens a document in a vault, it shows here.';
   static const logSomebody = 'Somebody';
+  static const logThroughLink = 'Somebody with a shared link';
 
   static String logLine(String viewer, String vault) =>
       '$viewer opened it · $vault';

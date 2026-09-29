@@ -1,7 +1,7 @@
 import { defineSecret, defineString } from 'firebase-functions/params';
 
 import { configured } from '../shared/configured_value';
-import { FUNCTIONS_REGION } from '../shared/region';
+import { functionUrlFrom } from '../shared/function_url';
 import type { OAuthProvider } from './sync_documents';
 
 /**
@@ -61,16 +61,9 @@ export function oauthClients(withSecrets: boolean): OAuthClients {
 }
 
 /**
- * Where a Function of this codebase answers over HTTP: the configured base, or
+ * Where a calendar sync Function answers over HTTP: the configured base, or
  * the address Cloud Functions gives it, or the emulator's.
  */
 export function functionUrl(name: string): string {
-  const base = configured(functionsBaseUrl.value());
-  if (base !== null) return `${base.replace(/\/+$/, '')}/${name}`;
-  const project = process.env['GCLOUD_PROJECT'] ?? '';
-  if (process.env['FUNCTIONS_EMULATOR'] === 'true') {
-    const host = process.env['FUNCTIONS_EMULATOR_HOST'] ?? '127.0.0.1:5001';
-    return `http://${host}/${project}/${FUNCTIONS_REGION}/${name}`;
-  }
-  return `https://${FUNCTIONS_REGION}-${project}.cloudfunctions.net/${name}`;
+  return functionUrlFrom(configured(functionsBaseUrl.value()), name);
 }

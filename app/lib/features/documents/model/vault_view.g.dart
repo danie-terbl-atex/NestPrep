@@ -11,6 +11,7 @@ _VaultView _$VaultViewFromJson(Map<String, dynamic> json) => _VaultView(
   documentId: json['documentId'] as String,
   documentName: json['documentName'] as String,
   viewerMemberId: json['viewerMemberId'] as String?,
+  shareId: json['shareId'] as String?,
   viewedAt: const ServerTimestampConverter().fromJson(json['viewedAt']),
 );
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$VaultViewToJson(_VaultView instance) =>
       'documentId': instance.documentId,
       'documentName': instance.documentName,
       'viewerMemberId': instance.viewerMemberId,
+      'shareId': instance.shareId,
       'viewedAt': const ServerTimestampConverter().toJson(instance.viewedAt),
     };

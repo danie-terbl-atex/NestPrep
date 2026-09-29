@@ -59,3 +59,9 @@ export { appStoreNotifications } from './subscriptions/app_store_notifications';
 export { playBillingNotifications } from './subscriptions/play_billing_notifications';
 export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
 export { setChildProfile } from './family_profiles/set_child_profile';
+
+// ---- documents V2: one document shared by an expiring link (documents ADR-0006) ----
+export { createDocumentShare } from './documents/share/create_document_share';
+export { revokeDocumentShare } from './documents/share/revoke_document_share';
+export { documentShare } from './documents/share/document_share';
+export { endSharesWithShift } from './documents/share/end_shares_with_shift';

@@ -85,6 +85,14 @@ abstract final class NestDates {
         '${minute.toString().padLeft(2, '0')}';
   }
 
+  /// A moment on the household's clock, as a person reads it: "Today, 14:30",
+  /// "Tue 29 Sep, 09:05". The day and the minute are already the household's.
+  static String moment(
+    CalendarDate date,
+    CalendarDate today,
+    int minutesOfDay,
+  ) => '${relative(date, today)}, ${timeOfDay(minutesOfDay)}';
+
   /// The week a Monday starts, as a person says it: "15 – 21 Sep".
   /// The day's whole name — "Monday" — for a heading that names one day.
   static String weekdayName(CalendarDate date) =>

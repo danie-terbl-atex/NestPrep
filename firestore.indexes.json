@@ -39,6 +39,23 @@
         { "fieldPath": "helperId", "order": "ASCENDING" },
         { "fieldPath": "dueDate", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "documentShares",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "expiresAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "documentShares",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "createdByUid", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "expiresAt", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [
@@ -105,6 +122,18 @@
     {
       "collectionGroup": "vaultOpenings",
       "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "documentShareTokens",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "documentShares",
+      "fieldPath": "purgeAt",
       "ttl": true,
       "indexes": []
     }

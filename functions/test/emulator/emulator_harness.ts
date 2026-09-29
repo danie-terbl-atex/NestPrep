@@ -1,6 +1,7 @@
 import { deleteApp, getApps, initializeApp, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getStorage, type Storage } from 'firebase-admin/storage';
 import { FUNCTIONS_REGION } from '../../src/shared/region';
 
 /**
@@ -14,6 +15,7 @@ export const REGION = FUNCTIONS_REGION;
 const AUTH_HOST = process.env['FIREBASE_AUTH_EMULATOR_HOST'] ?? '127.0.0.1:9099';
 const FIRESTORE_HOST = process.env['FIRESTORE_EMULATOR_HOST'] ?? '127.0.0.1:8080';
 const FUNCTIONS_HOST = process.env['FUNCTIONS_EMULATOR_HOST'] ?? '127.0.0.1:5001';
+const STORAGE_HOST = process.env['FIREBASE_STORAGE_EMULATOR_HOST'] ?? '127.0.0.1:9199';
 
 export interface TestUser {
   readonly uid: string;
@@ -144,6 +146,7 @@ let store: Firestore | undefined;
 function testApp(): App {
   process.env['FIRESTORE_EMULATOR_HOST'] = FIRESTORE_HOST;
   process.env['FIREBASE_AUTH_EMULATOR_HOST'] = AUTH_HOST;
+  process.env['FIREBASE_STORAGE_EMULATOR_HOST'] = STORAGE_HOST;
   return (
     getApps().find((candidate) => candidate.name === 'tests') ??
     initializeApp({ projectId: PROJECT_ID }, 'tests')
@@ -162,6 +165,20 @@ export function adminDb(): Firestore {
  */
 export function adminAuth(): Auth {
   return getAuth(testApp());
+}
+
+/**
+ * Storage as the server sees it, for the one feature whose Function reads
+ * bytes: a shared link streams a document to somebody with no account
+ * (documents ADR-0006).
+ */
+export function adminStorage(): Storage {
+  return getStorage(testApp());
+}
+
+/** Where a Function reaches the emulator over HTTP, for an `onRequest`. */
+export function functionUrl(name: string): string {
+  return `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${REGION}/${name}`;
 }
 
 export async function clearFirestore(): Promise<void> {

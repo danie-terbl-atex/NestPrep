@@ -12,6 +12,7 @@ class VaultViewRow extends StatelessWidget {
     required this.viewer,
     required this.vaultOwner,
     required this.when,
+    this.isThroughSharedLink = false,
     super.key,
   });
 
@@ -24,10 +25,16 @@ class VaultViewRow extends StatelessWidget {
   /// When, as a person reads it — "just now", "Tue 29 Sep, 10:42".
   final String when;
 
+  /// Opened by whoever held a shared link — nobody the household knows by
+  /// name (documents ADR-0006).
+  final bool isThroughSharedLink;
+
   @override
   Widget build(BuildContext context) {
     final who = viewer;
-    final viewerName = who?.displayName ?? VaultCopy.logSomebody;
+    final viewerName = isThroughSharedLink
+        ? VaultCopy.logThroughLink
+        : who?.displayName ?? VaultCopy.logSomebody;
     final vault = vaultOwner == null
         ? VaultCopy.homeTitle
         : VaultCopy.vaultOf(vaultOwner!.displayName);
@@ -35,8 +42,8 @@ class VaultViewRow extends StatelessWidget {
       title: documentName,
       subtitle: '${VaultCopy.logLine(viewerName, vault)} · $when',
       leading: who == null
-          ? const NestIconTile(
-              icon: Icons.person_outline,
+          ? NestIconTile(
+              icon: isThroughSharedLink ? Icons.link : Icons.person_outline,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             )

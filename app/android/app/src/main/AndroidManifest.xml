@@ -17,7 +17,9 @@
     <application
         android:label="nestprep"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="@xml/nestprep_backup_rules"
+        android:dataExtractionRules="@xml/nestprep_data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"

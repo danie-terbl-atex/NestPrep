@@ -57,7 +57,9 @@ import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'chore_points_providers.dart';
+import 'document_tools_providers.dart';
 import 'documents_providers.dart';
+import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
@@ -76,6 +78,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<FirebaseAuth>.value(value: services.auth),
   Provider<FirebaseFunctions>.value(value: services.functions),
   Provider<FirebaseStorage>.value(value: services.storage),
+  // The V2 switches (foundation ADR-0014).
+  ...featureFlagProviders(),
   Provider<AuthGateway>(
     create: (context) => FirebaseAuthGateway(context.read<FirebaseAuth>()),
   ),
@@ -208,4 +212,7 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
       accountRepository: context.read<AccountRepository>(),
     ),
   ),
+  // documents V2: shared links and offline copies (documents ADR-0006,
+  // ADR-0007). After the session, which the offline janitor listens to.
+  ...documentToolProviders(),
 ];

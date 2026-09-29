@@ -21,7 +21,7 @@
     "seed": "node tools/seed-emulator.mjs",
     "beta-numbers": "node tools/beta-numbers.mjs",
     "grant-analytics-reader": "node tools/grant-analytics-reader.mjs",
-    "test:emulator": "npm run build && firebase emulators:exec --only firestore,auth,functions --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.emulator.config.ts\""
+    "test:emulator": "npm run build && firebase emulators:exec --only firestore,auth,functions,storage --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.emulator.config.ts\""
   },
   "dependencies": {
     "firebase-admin": "^14.4.0",

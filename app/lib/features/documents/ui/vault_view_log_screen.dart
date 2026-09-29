@@ -84,10 +84,14 @@ class _ViewList extends StatelessWidget {
             documentName: entry.documentName,
             viewer: viewerId == null ? null : view.memberById(viewerId),
             vaultOwner: view.memberById(entry.ownerMemberId),
+            isThroughSharedLink: entry.isThroughSharedLink,
             when: at == null
                 ? AppCopy.timeJustNow
-                : '${NestDates.relative(clock.dateOf(at), today)}, '
-                      '${NestDates.timeOfDay(clock.minutesOfDay(at))}',
+                : NestDates.moment(
+                    clock.dateOf(at),
+                    today,
+                    clock.minutesOfDay(at),
+                  ),
           ),
         );
       },
