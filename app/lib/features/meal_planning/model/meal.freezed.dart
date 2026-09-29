@@ -20,7 +20,9 @@ mixin _$Meal {
 /// this before" in one query. It is derived, never typed — `Meal.named`
 /// is the only way to make one (`ENG-02`: the same normaliser groceries
 /// ranks its chips with).
- String get nameKey; String get addedBy;@ServerTimestampConverter() DateTime? get createdAt;
+ String get nameKey; String get addedBy;@ServerTimestampConverter() DateTime? get createdAt;/// What it needs, which is what the grocery list fills itself from
+/// (meal-planning ADR-0002). Empty on a meal nobody has described.
+@MealIngredientsConverter() List<MealIngredient> get ingredients;
 /// Create a copy of Meal
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,20 +36,20 @@ $MealCopyWith<Meal> get copyWith => _$MealCopyWithImpl<Meal>(this as Meal, _$ide
 @override
 bool operator ==(Object other) {
   final _this = this as Meal;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Meal&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.nameKey, _this.nameKey) || other.nameKey == _this.nameKey)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Meal&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.nameKey, _this.nameKey) || other.nameKey == _this.nameKey)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&const DeepCollectionEquality().equals(other.ingredients, _this.ingredients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Meal;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.nameKey,_this.addedBy,_this.createdAt);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.nameKey,_this.addedBy,_this.createdAt,const DeepCollectionEquality().hash(_this.ingredients));
 }
 
 @override
 String toString() {
   final _this = this as Meal;
-  return 'Meal(id: ${_this.id}, name: ${_this.name}, nameKey: ${_this.nameKey}, addedBy: ${_this.addedBy}, createdAt: ${_this.createdAt})';
+  return 'Meal(id: ${_this.id}, name: ${_this.name}, nameKey: ${_this.nameKey}, addedBy: ${_this.addedBy}, createdAt: ${_this.createdAt}, ingredients: ${_this.ingredients})';
 }
 
 
@@ -58,7 +60,7 @@ abstract mixin class $MealCopyWith<$Res>  {
   factory $MealCopyWith(Meal value, $Res Function(Meal) _then) = _$MealCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String nameKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String nameKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt,@MealIngredientsConverter() List<MealIngredient> ingredients
 });
 
 
@@ -75,14 +77,15 @@ class _$MealCopyWithImpl<$Res>
 
 /// Create a copy of Meal
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? addedBy = null,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? addedBy = null,Object? createdAt = freezed,Object? ingredients = null,}) {
   return _then(Meal(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,nameKey: null == nameKey ? _self.nameKey : nameKey // ignore: cast_nullable_to_non_nullable
 as String,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
 as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,ingredients: null == ingredients ? _self.ingredients : ingredients // ignore: cast_nullable_to_non_nullable
+as List<MealIngredient>,
   ));
 }
 
@@ -167,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt, @MealIngredientsConverter()  List<MealIngredient> ingredients)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Meal() when $default != null:
-return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt,_that.ingredients);case _:
   return orElse();
 
 }
@@ -188,10 +191,10 @@ return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt, @MealIngredientsConverter()  List<MealIngredient> ingredients)  $default,) {final _that = this;
 switch (_that) {
 case _Meal():
-return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt,_that.ingredients);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +211,10 @@ return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt, @MealIngredientsConverter()  List<MealIngredient> ingredients)?  $default,) {final _that = this;
 switch (_that) {
 case _Meal() when $default != null:
-return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt,_that.ingredients);case _:
   return null;
 
 }
@@ -223,7 +226,7 @@ return $default(_that.id,_that.name,_that.nameKey,_that.addedBy,_that.createdAt)
 @JsonSerializable()
 
 class _Meal extends Meal {
-  const _Meal({@JsonKey(includeToJson: false) required this.id, required this.name, required this.nameKey, required this.addedBy, @ServerTimestampConverter() this.createdAt}): super._();
+  const _Meal({@JsonKey(includeToJson: false) required this.id, required this.name, required this.nameKey, required this.addedBy, @ServerTimestampConverter() this.createdAt, @MealIngredientsConverter()  List<MealIngredient> ingredients = const <MealIngredient>[]}): _ingredients = ingredients,super._();
   factory _Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -235,6 +238,17 @@ class _Meal extends Meal {
 @override final  String nameKey;
 @override final  String addedBy;
 @override@ServerTimestampConverter() final  DateTime? createdAt;
+/// What it needs, which is what the grocery list fills itself from
+/// (meal-planning ADR-0002). Empty on a meal nobody has described.
+ final  List<MealIngredient> _ingredients;
+/// What it needs, which is what the grocery list fills itself from
+/// (meal-planning ADR-0002). Empty on a meal nobody has described.
+@override@JsonKey()@MealIngredientsConverter() List<MealIngredient> get ingredients {
+  if (_ingredients is EqualUnmodifiableListView) return _ingredients;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_ingredients);
+}
+
 
 /// Create a copy of Meal
 /// with the given fields replaced by the non-null parameter values.
@@ -249,18 +263,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Meal&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameKey, nameKey) || other.nameKey == nameKey)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Meal&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameKey, nameKey) || other.nameKey == nameKey)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.ingredients, _ingredients));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,nameKey,addedBy,createdAt);
+    return Object.hash(runtimeType,id,name,nameKey,addedBy,createdAt,const DeepCollectionEquality().hash(_ingredients));
 }
 
 @override
 String toString() {
-    return 'Meal(id: $id, name: $name, nameKey: $nameKey, addedBy: $addedBy, createdAt: $createdAt)';
+    return 'Meal(id: $id, name: $name, nameKey: $nameKey, addedBy: $addedBy, createdAt: $createdAt, ingredients: $ingredients)';
 }
 
 
@@ -271,7 +285,7 @@ abstract mixin class _$MealCopyWith<$Res> implements $MealCopyWith<$Res> {
   factory _$MealCopyWith(_Meal value, $Res Function(_Meal) _then) = __$MealCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String nameKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String nameKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt,@MealIngredientsConverter() List<MealIngredient> ingredients
 });
 
 
@@ -288,14 +302,15 @@ class __$MealCopyWithImpl<$Res>
 
 /// Create a copy of Meal
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? addedBy = null,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? addedBy = null,Object? createdAt = freezed,Object? ingredients = null,}) {
   return _then(_Meal(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,nameKey: null == nameKey ? _self.nameKey : nameKey // ignore: cast_nullable_to_non_nullable
 as String,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
 as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,ingredients: null == ingredients ? _self._ingredients : ingredients // ignore: cast_nullable_to_non_nullable
+as List<MealIngredient>,
   ));
 }
 

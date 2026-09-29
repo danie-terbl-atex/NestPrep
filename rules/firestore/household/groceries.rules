@@ -1,28 +1,39 @@
-// ---- groceries (groceries ADR-0001) ----
+// ---- groceries (groceries ADR-0002, which keeps ADR-0001's list) ----
 
+// An item the week's plans put on the list carries three source fields —
+// `sourceKey`, `sourceWeek`, `sourceNote` — and a typed item has none (or
+// all three null). Nobody owns an unbought planned item, so any groceries
+// editor may refresh or remove one; a person's edit adopts it by clearing
+// the three fields; a ticked one is history like any other.
 match /groceryItems/{itemId} {
   allow read: if canView(householdId, 'groceries');
 
   allow create: if canEdit(householdId, 'groceries')
     && request.resource.data.keys().hasOnly(
-         ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy'])
+         ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy',
+          'sourceKey', 'sourceWeek', 'sourceNote'])
     && isNonEmptyString(request.resource.data.name)
     && isOwnMember(householdId, request.resource.data.addedBy)
     && isServerTime('addedAt')
     && request.resource.data.boughtAt == null
-    && request.resource.data.boughtBy == null;
+    && request.resource.data.boughtBy == null
+    && groceriesSourceIsValid(request.resource.data);
 
-  // Two different writes share this rule, and a caller may do exactly one
-  // of them: anybody in the household ticks anything, but only the person
-  // who added an item — or an admin — changes what it says.
+  // Three different writes share this rule, and a caller may do exactly one
+  // of them: anybody in the household ticks anything; the plans refresh an
+  // unbought planned item; only the person who added an item — or an admin,
+  // or anybody for a planned one — changes what it says.
   allow update: if canEdit(householdId, 'groceries')
     && didNotChange('addedBy')
     && didNotChange('addedAt')
-    && (isTickOrUntick(householdId) || isTextEdit(householdId));
+    && (isTickOrUntick(householdId)
+          || groceriesIsPlanRefresh()
+          || isTextEdit(householdId));
 
   allow delete: if isAdmin(householdId)
     || (canEdit(householdId, 'groceries')
-          && isOwnMember(householdId, resource.data.addedBy));
+          && (isOwnMember(householdId, resource.data.addedBy)
+                || groceriesIsUnboughtPlanned(resource.data)));
 
   function isTickOrUntick(householdId) {
     return onlyChanged(['boughtAt', 'boughtBy'])
@@ -32,10 +43,49 @@ match /groceryItems/{itemId} {
                 && isOwnMember(householdId, request.resource.data.boughtBy));
   }
 
+  // A person's edit. Saving it clears the source fields, so a planned item
+  // becomes theirs and the plans leave it alone from then on.
   function isTextEdit(householdId) {
-    return onlyChanged(['name', 'quantity'])
+    return onlyChanged(['name', 'quantity', 'sourceKey', 'sourceWeek', 'sourceNote'])
       && isNonEmptyString(request.resource.data.name)
+      && request.resource.data.get('sourceKey', null) == null
+      && request.resource.data.get('sourceWeek', null) == null
+      && request.resource.data.get('sourceNote', null) == null
       && (isAdmin(householdId)
-            || isOwnMember(householdId, resource.data.addedBy));
+            || isOwnMember(householdId, resource.data.addedBy)
+            || groceriesIsPlanned(resource.data));
   }
+
+  // The plans bring an unbought planned item's amount and reasons up to
+  // date; nothing else about it moves.
+  function groceriesIsPlanRefresh() {
+    return groceriesIsUnboughtPlanned(resource.data)
+      && onlyChanged(['quantity', 'sourceNote'])
+      && groceriesIsSourceNote(request.resource.data.sourceNote);
+  }
+}
+
+function groceriesIsPlanned(data) {
+  return data.get('sourceKey', null) != null;
+}
+
+function groceriesIsUnboughtPlanned(data) {
+  return groceriesIsPlanned(data) && data.get('boughtBy', null) == null;
+}
+
+// All three source fields, well formed, or none of them.
+function groceriesSourceIsValid(data) {
+  return data.get('sourceKey', null) == null
+    ? data.get('sourceWeek', null) == null && data.get('sourceNote', null) == null
+    : data.sourceKey is string
+        && data.sourceKey.size() > 0
+        && data.sourceKey.size() <= 80
+        && data.sourceKey == data.sourceKey.lower()
+        && data.get('sourceWeek', null) is string
+        && data.sourceWeek.matches('^[0-9]{4}-W[0-9]{2}$')
+        && groceriesIsSourceNote(data.get('sourceNote', null));
+}
+
+function groceriesIsSourceNote(value) {
+  return value is string && value.size() <= 200;
 }

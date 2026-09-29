@@ -14,6 +14,7 @@ import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/grocery_plan_copy.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ import '../../../support/fake_calendar_repository.dart';
 import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_grocery_repository.dart';
 import '../../../support/fake_todo_repository.dart';
+import '../../../support/grocery_plan_harness.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_kit.dart';
 import '../../../support/pump_screen.dart';
@@ -85,6 +87,8 @@ void main() {
     });
 
     Future<void> pump(WidgetTester tester, AccessLevel level) async {
+      final plans = GroceryPlanHarness(canEdit: level == AccessLevel.edit);
+      addTearDown(plans.close);
       await pumpScreen(
         tester,
         GroceryListScreen(onSelectTab: (_) {}),
@@ -92,6 +96,7 @@ void main() {
           ChangeNotifierProvider<GroceryListController>.value(
             value: controller,
           ),
+          plans.provider,
         ],
         view: thandiWith(AccessGrant({HouseholdArea.groceries: level})),
       );
@@ -102,11 +107,14 @@ void main() {
     testWidgets('offer no field to add to', (tester) async {
       await pump(tester, AccessLevel.view);
       expect(find.byType(GroceryAddField), findsNothing);
+      // Nor the week's plans: they only ever offer to add (groceries ADR-0002).
+      expect(find.bySemanticsLabel(GroceryPlanCopy.open), findsNothing);
     });
 
     testWidgets('while a helper who may change them has one', (tester) async {
       await pump(tester, AccessLevel.edit);
       expect(find.byType(GroceryAddField), findsOneWidget);
+      expect(find.bySemanticsLabel(GroceryPlanCopy.open), findsOneWidget);
     });
   });
 

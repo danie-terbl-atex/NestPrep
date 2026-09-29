@@ -29,7 +29,9 @@ import 'package:nestprep/features/lunch_box/model/lunch_item.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
+import 'package:nestprep/features/meal_planning/model/ingredient_unit.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
+import 'package:nestprep/features/meal_planning/model/meal_ingredient.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/subscriptions/model/billing_store.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
@@ -43,6 +45,7 @@ import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
+import 'grocery_plan_model_fixtures.dart';
 import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
 
@@ -134,6 +137,10 @@ List<ModelFixture> modelFixtures() {
     addedAt: at,
     boughtAt: at,
     boughtBy: 'm2',
+    // Put there by the week's plans (groceries ADR-0002).
+    sourceKey: 'milk',
+    sourceWeek: '2026-W38',
+    sourceNote: 'For 5 lunches + Tuesday dinner',
   );
   final event = HouseholdEvent(
     id: 'e1',
@@ -191,6 +198,16 @@ List<ModelFixture> modelFixtures() {
     nameKey: 'spag bol',
     addedBy: 'm1',
     createdAt: at,
+    // What goes in it (meal-planning ADR-0002) — a nested model, so this is
+    // also the proof that it is written as maps, not objects.
+    ingredients: [
+      MealIngredient.typed(
+        name: 'Mince',
+        amount: 500,
+        unit: IngredientUnit.gram,
+      ),
+      MealIngredient.typed(name: 'Salt'),
+    ],
   );
   const plan = WeekPlan(id: '2026-09-21', slots: {'2026-09-21-dinner': 'ml1'});
   final location = MemberLocation(
@@ -356,7 +373,13 @@ List<ModelFixture> modelFixtures() {
         'addedAt',
         'boughtAt',
         'boughtBy',
+        'sourceKey',
+        'sourceWeek',
+        'sourceNote',
       },
+      note:
+          'the three `source` fields mark an item the plans put there, and '
+          'are written as null on a typed one (groceries ADR-0002).',
     ),
     ModelFixture(
       label: 'HouseholdEvent',
@@ -439,10 +462,11 @@ List<ModelFixture> modelFixtures() {
       value: meal,
       toJson: meal.toJson,
       fromJson: Meal.fromJson,
-      keys: const {'name', 'nameKey', 'addedBy', 'createdAt'},
+      keys: const {'name', 'nameKey', 'addedBy', 'createdAt', 'ingredients'},
       note:
           '`nameKey` is what the "have we typed this before" query reads; it '
-          'is derived from `name` and never typed.',
+          'is derived from `name` and never typed. `ingredients` is a list of '
+          'plain maps (meal-planning ADR-0002).',
     ),
     ModelFixture(
       label: 'MemberLocation',
@@ -651,6 +675,8 @@ List<ModelFixture> modelFixtures() {
     ...homeCareModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
+    // ---- groceries phase 2 (groceries ADR-0002) ----
+    ...groceryPlanModelFixtures(fixtureInstant),
   ];
 }
 

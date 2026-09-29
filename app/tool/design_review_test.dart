@@ -33,6 +33,7 @@ import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
 import '../test/support/fake_product_analytics.dart';
 import '../test/support/fake_todo_repository.dart';
+import '../test/support/grocery_plan_harness.dart';
 import '../test/support/household_fixtures.dart';
 import 'review_press.dart';
 
@@ -137,6 +138,9 @@ void main() {
       now: () => _now,
     );
     addTearDown(controller.dispose);
+    // groceries phase 2: the week's plans offer three things above the list.
+    final plans = GroceryPlanHarness();
+    addTearDown(plans.close);
 
     await captureScreen(
       tester,
@@ -144,9 +148,17 @@ void main() {
       screen: GroceryListScreen(onSelectTab: (_) {}),
       providers: [
         ChangeNotifierProvider<GroceryListController>.value(value: controller),
+        plans.provider,
       ],
       brightness: brightness,
       emit: () async {
+        plans.open(
+          mealNeeds: [
+            GroceryPlanHarness.dinner('Mince', 2),
+            GroceryPlanHarness.dinner('Onions', 2),
+          ],
+          lunchNeeds: [GroceryPlanHarness.lunch('Apples', 5)],
+        );
         repository.emitItems([
           for (final (id, name, quantity) in [
             ('g1', 'Milk', '2 litres'),

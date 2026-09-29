@@ -1,5 +1,6 @@
 import '../../../shared/time/calendar_date.dart';
 import '../model/meal.dart';
+import '../model/meal_ingredient.dart';
 import '../model/week_plan.dart';
 
 /// What meal planning needs from Firestore. Two reads: the household's library,
@@ -27,6 +28,14 @@ abstract interface class MealRepository {
     required String householdId,
     required String mealId,
     required String name,
+  });
+
+  /// Replaces what a meal needs (meal-planning ADR-0002). Any meals editor may,
+  /// not only the adder — the rules allow a write that moves nothing else.
+  Future<void> setIngredients({
+    required String householdId,
+    required String mealId,
+    required List<MealIngredient> ingredients,
   });
 
   /// Deletes a meal and clears every slot that used it, across the weeks given.

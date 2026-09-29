@@ -23,7 +23,9 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `week-light.png` / `week-dark.png` | the family week: the seven-day strip, today, and the day's agenda in member colours |
 | `todos-mine-light.png` / `todos-mine-dark.png` | what one person is being asked to do, overdue first |
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
-| `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked |
+| `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked, and the week's plans offering three things above it (groceries phase 2) |
+| `grocery-plans-light.png` / `grocery-plans-dark.png` | *From this week's plans*: keep-in-step, what to add with its reasons and amounts, an amount that changed, something bought yesterday — `tool/grocery_plans_design_review_test.dart` |
+| `meal-ingredients-light.png` / `meal-ingredients-dark.png` | *What goes in* a meal, from the library: its lines, and the form for the next one (meal-planning ADR-0002) |
 | `meals-light.png` / `meals-dark.png` | the week's twenty-one slots, some filled |
 | `launch-light.png` / `launch-dark.png` | what the native splash hands over to while the session is read: the nest at the splash's size, the words, one pulsing bar |
 | `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the logo's nest with the household's five member marks circling it, the wordmark, the tagline, and the way in |

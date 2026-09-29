@@ -1,7 +1,4 @@
-import 'dart:async';
-
-import '../model/lunch_item.dart';
-import '../model/lunch_plan.dart';
+import '../../../shared/async/combine_latest.dart';
 import '../model/lunch_week.dart';
 import '../model/lunch_week_items.dart';
 import 'lunch_repository.dart';
@@ -23,37 +20,9 @@ final class LunchWeekReader {
   Stream<List<LunchWeekItem>> watchWeekItems(
     String householdId,
     LunchWeek week,
-  ) {
-    late final StreamController<List<LunchWeekItem>> output;
-    StreamSubscription<List<LunchPlan>>? plans;
-    StreamSubscription<List<LunchItem>>? items;
-    List<LunchPlan>? latestPlans;
-    List<LunchItem>? latestItems;
-
-    void publish() {
-      final (planList, itemList) = (latestPlans, latestItems);
-      if (planList == null || itemList == null) return;
-      output.add(LunchWeekItems.from(plans: planList, library: itemList));
-    }
-
-    output = StreamController<List<LunchWeekItem>>(
-      onListen: () {
-        plans = _repository
-            .watchPlans(householdId, from: week, to: week)
-            .listen((value) {
-              latestPlans = value;
-              publish();
-            }, onError: output.addError);
-        items = _repository.watchItems(householdId).listen((value) {
-          latestItems = value;
-          publish();
-        }, onError: output.addError);
-      },
-      onCancel: () async {
-        await plans?.cancel();
-        await items?.cancel();
-      },
-    );
-    return output.stream;
-  }
+  ) => combineLatest2(
+    _repository.watchPlans(householdId, from: week, to: week),
+    _repository.watchItems(householdId),
+    (plans, library) => LunchWeekItems.from(plans: plans, library: library),
+  );
 }

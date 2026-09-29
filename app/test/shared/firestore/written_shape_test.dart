@@ -13,6 +13,7 @@ import 'package:nestprep/features/documents/model/vault_document.dart';
 import 'package:nestprep/features/documents/model/vault_grant.dart';
 import 'package:nestprep/features/family_profiles/model/school.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/groceries/model/grocery_plan_settings.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
@@ -145,11 +146,48 @@ void main() {
         'addedAt',
         'boughtAt',
         'boughtBy',
+        'sourceKey',
+        'sourceWeek',
+        'sourceNote',
       });
       // Only `addedAt` is the server's. `boughtAt` must be null, or the rules
       // refuse the create and every new item arrives bought.
       expect(shape.serverAssigned, {'addedAt'});
       expect(shape.nulls, containsAll({'boughtAt', 'boughtBy'}));
+      // A typed item carries no source, all three null or the rules refuse it
+      // (groceries ADR-0002).
+      expect(
+        shape.nulls,
+        containsAll({'sourceKey', 'sourceWeek', 'sourceNote'}),
+      );
+    });
+
+    test('writes a planned item with all three source fields, well formed', () {
+      final json = const GroceryItem(
+        id: 'plan-2026-W40-bread',
+        name: 'Bread',
+        quantity: '2 loaves',
+        addedBy: 'm-sam',
+        sourceKey: 'bread',
+        sourceWeek: '2026-W40',
+        sourceNote: 'For 5 lunches + Tuesday dinner',
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.serverAssigned, {'addedAt'});
+      // What `groceriesSourceIsValid` checks.
+      expect(json['sourceKey'], json['sourceKey'].toString().toLowerCase());
+      expect(json['sourceWeek'], matches(RegExp(r'^[0-9]{4}-W[0-9]{2}$')));
+      expect((json['sourceNote']! as String).length, lessThanOrEqualTo(200));
+    });
+  });
+
+  group('grocerySettings/plans', () {
+    test('writes exactly the keys the rule names', () {
+      final shape = shapeOf(
+        const GroceryPlanSettings(keepInStep: true, updatedBy: 'm').toJson(),
+      );
+      expect(shape.keys, {'keepInStep', 'staples', 'updatedBy', 'updatedAt'});
+      expect(shape.serverAssigned, {'updatedAt'});
     });
   });
 
@@ -367,8 +405,17 @@ void main() {
         addedBy: 'm-sam',
       ).toJson();
       final shape = shapeOf(json);
-      expect(shape.keys, {'name', 'nameKey', 'addedBy', 'createdAt'});
+      expect(shape.keys, {
+        'name',
+        'nameKey',
+        'addedBy',
+        'createdAt',
+        'ingredients',
+      });
       expect(shape.serverAssigned, {'createdAt'});
+      // A list, never a nested object Firestore would refuse (meal-planning
+      // ADR-0002) — and empty for a meal nobody has described.
+      expect(json['ingredients'], isA<List<Object?>>());
       expect(json['name'], 'Spaghetti Bolognese');
       // The rule insists the key is lower-cased.
       expect(json['nameKey'], 'spaghetti bolognese');

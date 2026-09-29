@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/meal_ingredient_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/text/normalised_name.dart';
 import '../../../shared/time/calendar_date.dart';
@@ -30,6 +31,11 @@ final class SlotTyped extends SlotChoice {
 
 final class SlotCleared extends SlotChoice {
   const SlotCleared();
+}
+
+/// Open what goes in the meal already in the slot (meal-planning ADR-0002).
+final class SlotIngredients extends SlotChoice {
+  const SlotIngredients();
 }
 
 Future<SlotChoice?> showSlotPickerSheet({
@@ -134,8 +140,23 @@ class _SlotPickerBodyState extends State<_SlotPickerBody> {
             ),
           ),
         ],
-        if (widget.current != null) ...[
+        if (widget.current case final current?) ...[
           const SizedBox(height: NestSpace.lg),
+          NestButton(
+            label: MealIngredientCopy.whatGoesIn,
+            icon: Icons.shopping_basket_outlined,
+            variant: NestButtonVariant.tonal,
+            onPressed: () => Navigator.of(context).pop(const SlotIngredients()),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: NestSpace.xs),
+            child: Text(
+              MealIngredientCopy.count(current.ingredients.length),
+              textAlign: TextAlign.center,
+              style: nest.text.caption,
+            ),
+          ),
+          const SizedBox(height: NestSpace.sm),
           NestButton(
             label: AppCopy.mealsClearSlot,
             variant: NestButtonVariant.outline,

@@ -234,6 +234,12 @@ void main() {
     'showPaywall(context',
     '_subscription.cancel())',
     '_subscription?.cancel())',
+    // groceries phase 2 (groceries ADR-0002): one keep-in-step write. `_send`
+    // catches its own AppFailure, logs it and holds it; the next emission
+    // asking for the same change reports it on the screen's banner. It is
+    // unawaited because it starts from a listener, and offline it completes
+    // only when the network is back.
+    '_send(signature',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.
