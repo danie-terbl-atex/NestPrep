@@ -7,6 +7,7 @@ part 'nanny_hub_failure.dart';
 part 'calendar_v2_failures.dart';
 part 'co_parent_failure.dart';
 part 'lunch_planning_failure.dart';
+part 'plan_week_failure.dart';
 
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message

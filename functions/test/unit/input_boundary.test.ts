@@ -32,6 +32,7 @@ import {
   saveCoParentHandoverInput,
 } from '../../src/coparent/schemas';
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
+import { planMyWeekInput } from '../../src/plan_week/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
 import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../src/referrals/schemas';
@@ -178,6 +179,19 @@ const validBodies = {
     // `guardianConsent` is optional — a child with consent on record needs
     // none — so it is not here; its shape is below (accounts ADR-0005).
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
+  },
+  // Plan my week: every option is said, so nothing defaults on the server
+  // (lunch-box ADR-0011).
+  planMyWeek: {
+    schema: planMyWeekInput,
+    body: {
+      householdId: 'h1',
+      week: '2026-W40',
+      childIds: ['m-kid'],
+      includeDinners: true,
+      useWhatsInTheHouse: false,
+      budget: 'none',
+    },
   },
   // Home care: a helper's words in her language (home-care ADR-0006).
   translateHomeCareTexts: {

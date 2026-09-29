@@ -263,6 +263,10 @@ void main() {
     // in dispose. There is no screen left to tell, as with `_cancel()` (the
     // plain `_subscription` cancels are allowed above, for subscriptions).
     '_shiftSubscription?.cancel())',
+    // plan my week (lunch-box ADR-0011): letting go of the meal library and
+    // the week's dinners; their failures went to their own onError.
+    '_librarySubscription?.cancel())',
+    '_weekSubscription?.cancel())',
     // ---- calendar V2: the shared week (calendar ADR-0006) ----
     // Moving the week cancels two reads and opens two; the new reads send
     // their failures to their own onError and onto the week's state.

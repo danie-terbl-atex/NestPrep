@@ -30,6 +30,10 @@ final class FeatureFlagsController extends ChangeNotifier {
 
   bool isOn(FeatureFlag flag) => _flags.isOn(flag);
 
+  /// The switches as they stand, for a screen that reads the value rather
+  /// than the controller (`context.watch<FeatureFlags>()`).
+  FeatureFlags get flags => _flags;
+
   /// Whether the document has said anything yet. Something that *deletes*
   /// when a switch is off waits for this — the defaults are a guess, and a
   /// release build's guess is "off".

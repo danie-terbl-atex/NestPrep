@@ -104,4 +104,7 @@ export { sendTestNotification } from './notifications/send_test_notification';
 // the V2 producers on the same channel: a carer's photo (nanny-hub ADR-0004) and
 // the other home's requests and handover notes (household ADR-0004)
 export { notifyPhotoUpdate } from './notifications/notify_photo_update';
-export { notifyCoParentRequest, notifyCoParentHandover } from './notifications/notify_coparent';
+export { notifyCoParentRequest } from './notifications/notify_coparent';
+export { notifyCoParentHandover } from './notifications/notify_coparent';
+// ---- plan my week with AI: a proposal, never a write (lunch-box ADR-0011, foundation ADR-0015) ----
+export { planMyWeek } from './plan_week/plan_my_week';

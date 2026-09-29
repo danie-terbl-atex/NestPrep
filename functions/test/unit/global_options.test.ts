@@ -44,6 +44,8 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   exportAccountData: { timeoutSeconds: 120, memoryMb: 512 },
   // Reading a letter waits on Vertex (foundation ADR-0015).
   readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
+  // Planning a week waits on Vertex the same way (lunch-box ADR-0011).
+  planMyWeek: { memoryMb: 512, timeoutSeconds: 60 },
 };
 
 /** A scheduled job sets its own timeout; everything else is a callable. */
@@ -52,7 +54,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are seventy-five of them, so a new one cannot slip past these checks', () => {
+  it('there are seventy-six of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -69,23 +71,19 @@ describe('every function — callable, trigger or schedule', () => {
     // account, export its data, the hourly export sweep and the web deletion
     // request (accounts ADR-0006). Home care V2: a Firestore trigger that puts
     // a low product on the grocery list and a callable that translates for the
-    // helper (home-care ADR-0005, ADR-0006). A feature adds its count and its
-
-    // (subscriptions ADR-0001). Documents V2: two callables, the HTTPS
-    // function a shared link opens and the trigger that ends a shift's links
-    // (documents ADR-0006). Snap a school letter: readSchoolLetter, the first
-    // AI call (calendar ADR-0005). Co-parenting: eight callables that write
-    // both homes' copies of a link at once (household ADR-0004). Nanny hub
-    // V2: setCarerShiftOnly (nanny-hub ADR-0006). Referrals: two callables
+    // helper (home-care ADR-0005, ADR-0006). Documents V2: two callables, the
+    // HTTPS function a shared link opens and the trigger that ends a shift's
+    // links (documents ADR-0006). Snap a school letter: readSchoolLetter, the
+    // first AI call (calendar ADR-0005). Co-parenting: eight callables that
+    // write both homes' copies of a link at once (household ADR-0004). Nanny
+    // hub V2: setCarerShiftOnly (nanny-hub ADR-0006). Referrals: two callables
     // (subscriptions ADR-0002); conversion by trigger: recordPaywallOpened
-    // (product-analytics ADR-0002). Notifications: six — two schedules (the
-    // digest and delivery), three Firestore triggers (a handover, a chore to
-    // check, a reward asked for) and the test callable (notifications
-    // ADR-0001 to ADR-0003), and three more triggers on the same channel: a
-    // carer's photo (nanny-hub ADR-0004) and the other home's requests and
-    // handover notes (household ADR-0004). A feature adds its count and its
-    // line.
-    expect(endpoints()).toHaveLength(75);
+    // (product-analytics ADR-0002). Notifications: six — two schedules, three
+    // Firestore triggers and the test callable (notifications ADR-0001 to
+    // ADR-0003) — and three more triggers on the same channel (nanny-hub
+    // ADR-0004, household ADR-0004). Plan my week: planMyWeek (lunch-box
+    // ADR-0011). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(76);
   });
 
   it('runs in the one region, which is the database region', () => {

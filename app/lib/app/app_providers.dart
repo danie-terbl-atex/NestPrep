@@ -68,6 +68,7 @@ import 'location_reporting.dart';
 import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
 import 'notifications_providers.dart';
+import 'plan_week_providers.dart';
 import 'referral_providers.dart';
 import 'subscription_providers.dart';
 import 'two_homes_providers.dart';
@@ -224,6 +225,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // referrals and conversion by trigger (subscriptions ADR-0002,
   // product-analytics ADR-0002)
   ...referralProviders(),
+  // plan my week with AI (lunch-box ADR-0011).
+  ...planWeekProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

@@ -47,6 +47,8 @@ export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
+// plan my week with AI: its words live in their own file (lunch-box ADR-0011).
+export 'plan_week_copy.dart';
 // referrals: give a month, get a month (subscriptions ADR-0002).
 export 'referral_copy.dart';
 // calendar V2: snap a school letter (calendar ADR-0005).

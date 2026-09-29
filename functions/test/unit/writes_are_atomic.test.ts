@@ -249,6 +249,10 @@ describe('every callable declares what it may cost', () => {
         'notifyCoParentHandover',
         'notifyCoParentRequest',
         'notifyPhotoUpdate',
+        // Plan my week: a proposal from the model, behind premium and the same
+        // monthly cap; it writes nothing but the cap's own ledger (lunch-box
+        // ADR-0011, foundation ADR-0015).
+        'planMyWeek',
       ].sort(),
     );
   });

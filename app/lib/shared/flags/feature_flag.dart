@@ -73,7 +73,13 @@ enum FeatureFlag {
 
   /// The helper's own language for her jobs, and read-aloud (home-care
   /// ADR-0006).
-  homeCareHelperLanguage('homeCareHelperLanguage');
+  homeCareHelperLanguage('homeCareHelperLanguage'),
+
+  // ---- plan my week with AI (lunch-box ADR-0011) ----
+
+  /// One tap plans the week's lunches, dinners and the shopping list —
+  /// premium as well, and counted against the AI cap.
+  planMyWeek('planMyWeek');
 
   const FeatureFlag(this.field);
 

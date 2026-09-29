@@ -41,6 +41,8 @@ abstract final class FailureCopy {
     AiFailure(:final problem) => AiCopy.problem(problem),
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
+    // plan my week with AI (lunch-box ADR-0011).
+    PlanWeekFailure(:final problem) => PlanWeekCopy.problem(problem),
     // co-parenting (household ADR-0004).
     CoParentFailure(:final problem) => TwoHomesCopy.problem(problem),
     // referrals (subscriptions ADR-0002)
