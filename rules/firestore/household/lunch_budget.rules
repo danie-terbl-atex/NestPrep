@@ -1,0 +1,51 @@
+// ---- lunch-box V2: budget mode (lunch-box ADR-0007) ----
+//
+// Premium: every write needs `hasPremium` as well as `lunch` at edit, and a
+// lapsed household keeps reading what it wrote (subscriptions ADR-0001).
+// Money is whole cents in rand — never a float (ENG-20, BE-11).
+
+// What the household pays for one library item: the document id is the
+// item's. `cents` buys `portions` boxes' worth.
+match /lunchPrices/{itemId} {
+  allow read: if canView(householdId, 'lunch');
+
+  allow create, update: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
+    && isLunchPrice(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt')
+    && exists(/databases/$(database)/documents/households/$(householdId)/lunchItems/$(itemId));
+
+  allow delete: if canEdit(householdId, 'lunch');
+}
+
+// The household's weekly lunch budget — one document, `weekly`.
+match /lunchBudget/{budgetId} {
+  allow read: if canView(householdId, 'lunch');
+
+  allow create, update: if budgetId == 'weekly'
+    && canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
+    && isLunchBudget(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt');
+
+  allow delete: if canEdit(householdId, 'lunch');
+}
+
+// Up to R5 000 for something that does one to a hundred boxes.
+function isLunchPrice(data) {
+  return data.keys().hasOnly(['cents', 'portions', 'currency', 'updatedBy', 'updatedAt'])
+    && data.cents is int && data.cents >= 0 && data.cents <= 500000
+    && data.portions is int && data.portions >= 1 && data.portions <= 100
+    && data.currency == 'ZAR'
+    && data.updatedBy is string;
+}
+
+// R1 to R100 000 a week.
+function isLunchBudget(data) {
+  return data.keys().hasOnly(['cents', 'currency', 'updatedBy', 'updatedAt'])
+    && data.cents is int && data.cents >= 100 && data.cents <= 10000000
+    && data.currency == 'ZAR'
+    && data.updatedBy is string;
+}

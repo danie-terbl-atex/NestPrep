@@ -1,0 +1,10 @@
+// ---- app config: the V2 switches (foundation ADR-0014) ----
+// One document, `appConfig/flags`: a boolean per V2 capability. Anybody may
+// read it — it is a list of switches, not anybody's data — and nobody writes
+// it from a client; Daniel sets it in the console. Any other id here is
+// closed, so the collection cannot quietly grow into a place for data.
+match /appConfig/{configId} {
+  allow get: if configId == 'flags';
+  allow list: if false;
+  allow write: if false;
+}

@@ -7,6 +7,7 @@ import '../model/lunch_board.dart';
 import '../model/lunch_box.dart';
 import '../model/lunch_favourite.dart';
 import '../model/lunch_feedback.dart';
+import '../model/lunch_fill_bias.dart';
 import '../model/lunch_item.dart';
 import '../model/lunch_item_draft.dart';
 import '../model/lunch_pick.dart';
@@ -70,14 +71,7 @@ final class LunchBoardEdits {
     required String childId,
     required int isoWeekday,
     required LunchItem item,
-  }) async {
-    final slot = item.slot;
-    if (slot == null) return;
-    if (!_isSafeFor(childId, [LunchPick.of(item)])) return;
-    await _write(childId, {
-      LunchPlan.slotKey(isoWeekday, slot): LunchPick.of(item),
-    });
-  }
+  }) => packAcross(childId: childId, weekdays: [isoWeekday], item: item);
 
   /// Adds something the household has not had before, then packs it — or,
   /// when it is not safe for this child, only adds it.
@@ -131,8 +125,9 @@ final class LunchBoardEdits {
   }
 
   /// Fills the empty parts of a child's week from their favourites and what
-  /// they eat (lunch-box ADR-0003).
-  Future<void> autoFill(String childId) async {
+  /// they eat (lunch-box ADR-0003) — preferring what the pantry has when
+  /// planning from it ([bias], lunch-box ADR-0006).
+  Future<void> autoFill(String childId, {LunchFillBias? bias}) async {
     final board = _boardOf();
     final childWeek = _childWeek(childId);
     if (_isFilling || board is! AsyncData<LunchBoard> || childWeek == null) {
@@ -145,6 +140,7 @@ final class LunchBoardEdits {
       library: board.value.library,
       rules: childWeek.child.foodRules,
       taste: childWeek.taste,
+      bias: bias,
     );
     _isFilling = true;
     _lastAutoFill = null;
@@ -158,6 +154,22 @@ final class LunchBoardEdits {
       _isFilling = false;
       _notify();
     }
+  }
+
+  /// Puts [item] in its slot on each of [weekdays], in one write — a cheaper
+  /// swap across a week (lunch-box ADR-0007).
+  Future<void> packAcross({
+    required String childId,
+    required List<int> weekdays,
+    required LunchItem item,
+  }) async {
+    final slot = item.slot;
+    if (slot == null || weekdays.isEmpty) return;
+    if (!_isSafeFor(childId, [LunchPick.of(item)])) return;
+    await _write(childId, {
+      for (final day in weekdays)
+        LunchPlan.slotKey(day, slot): LunchPick.of(item),
+    });
   }
 
   Future<void> saveFavourite({

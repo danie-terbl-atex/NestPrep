@@ -14,6 +14,7 @@ import '../features/lunch_box/ui/lunch_screen.dart';
 import '../shared/time/household_clock.dart';
 import 'app_router.dart';
 import 'household_route.dart';
+import 'lunch_planning_routes.dart';
 import 'lunch_route.dart';
 import 'viewer_member.dart';
 
@@ -50,6 +51,8 @@ ShellRoute lunchRoutes() => ShellRoute(
         update: (context, family, controller) =>
             controller!..followRoster(family.roster),
       ),
+      // lunch-box V2 — pantry, budget, kid picks (ADR-0006 to ADR-0008).
+      ...lunchPlanningShellProviders(state),
     ],
     child: child,
   ),
@@ -67,5 +70,6 @@ ShellRoute lunchRoutes() => ShellRoute(
       path: LunchRoute.libraryPath,
       builder: (context, state) => const LunchLibraryScreen(),
     ),
+    ...lunchPlanningRoutes(),
   ],
 );

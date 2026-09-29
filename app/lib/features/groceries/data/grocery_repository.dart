@@ -1,4 +1,5 @@
 import '../model/grocery_item.dart';
+import '../model/grocery_source.dart';
 
 /// What the groceries feature needs from Firestore.
 ///
@@ -13,11 +14,14 @@ abstract interface class GroceryRepository {
   /// (groceries ADR-0001).
   Stream<List<GroceryItem>> watchItems(String householdId);
 
+  /// A line nobody typed says where it came from — the pantry's shortfall,
+  /// say (lunch-box ADR-0006).
   Future<void> add({
     required String householdId,
     required String name,
     String? quantity,
     required String addedBy,
+    GrocerySource? origin,
   });
 
   /// Ticks or unticks. Ticking stamps the server's time and who did it;

@@ -13,6 +13,7 @@ import 'lunch_auto_fill_note.dart';
 import 'lunch_child_switcher.dart';
 import 'lunch_day_card.dart';
 import 'lunch_hero_card.dart';
+import 'lunch_planning_tools.dart';
 
 /// One child's week, top to bottom: whose it is, the next box drawn with the
 /// button that packs the rest, their food rules, and the five days. The days
@@ -82,6 +83,12 @@ class LunchBoardBody extends StatelessWidget {
                 ),
             ],
           ),
+        ),
+        // lunch-box V2 — pantry, budget, kid picks (ADR-0006 to ADR-0008).
+        LunchPlanningTools(
+          board: board,
+          childWeek: childWeek,
+          canEdit: canEdit,
         ),
         const SizedBox(height: NestSpace.md),
         FoodRulesSummary(rules: childWeek.child.foodRules),

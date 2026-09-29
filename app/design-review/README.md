@@ -55,6 +55,13 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `lunch-swap-light.png` | the one-tap swap: a compartment's library ranked for the child, each with why it ranks there |
 | `lunch-prep-light.png` / `lunch-prep-dark.png` | the Sunday prep list: what to make ahead, then what to have in the house, with ticks |
 | `lunch-library-light.png` / `lunch-library-dark.png` | the lunch library, slot by slot, saying what is in each thing |
+| `lunch-planning-board-light.png` | the lunch board with its V2 tools switched on (lunch-box ADR-0006 to ADR-0008): Pantry, Budget, Kid picks, and *Plan from what we have* on, with *Fill from the pantry* and what the week still needs |
+| `lunch-pantry-light.png` / `lunch-pantry-dark.png` | the pantry: what the week still needs with the one button to groceries, then what is in the house against the week, stepped by the box |
+| `lunch-budget-light.png` / `lunch-budget-dark.png` | budget mode for a premium household: the week against its budget, a meter never red, what has no price yet, each child's week by the day, and cheaper swaps |
+| `lunch-budget-locked-light.png` | budget mode for a free household: what it does, and the way to premium |
+| `lunch-prices-light.png` | every library item's price, unpriced first |
+| `lunch-kid-picks-light.png` / `lunch-kid-picks-dark.png` | a parent's kid picks: *Suggest options*, *Let Lwazi choose now*, and each day's compartments with their options and what the child chose |
+| `lunch-choose-light.png` / `lunch-choose-dark.png` / `lunch-choose-dark-200-percent-text.png` | the chooser a child sees, on their tablet or a parent's phone: big drawn cards, a tick and stars; at large text one card to a row |
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
@@ -102,6 +109,7 @@ numbers are.
 ```sh
 flutter test tool/ --update-goldens                           # every screen, lunch's included
 flutter test tool/lunch_design_review_test.dart --update-goldens   # the lunch screens alone
+flutter test tool/lunch_planning_design_review_test.dart --update-goldens   # lunch's V2 tools alone
 ```
 
 `tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.

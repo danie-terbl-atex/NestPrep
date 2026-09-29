@@ -1,0 +1,57 @@
+// ---- lunch-box V2: the pantry (lunch-box ADR-0006) ----
+//
+// What is in the house for lunches, in boxes' worth per library item, and a
+// record of each box marked packed — which is what takes its portions out of
+// the pantry, in the same batch, once. Everything is the `lunch` grant:
+// `edit` stocks and packs, `view` reads, `own` and `none` see nothing.
+
+// One entry per library item: the document id is the item's.
+match /lunchPantry/{itemId} {
+  allow read: if canView(householdId, 'lunch');
+
+  allow create, update: if canEdit(householdId, 'lunch')
+    && isLunchPantryEntry(request.resource.data)
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt')
+    && exists(/databases/$(database)/documents/households/$(householdId)/lunchItems/$(itemId));
+
+  allow delete: if canEdit(householdId, 'lunch');
+}
+
+// `{childId}_{YYYY-MM-DD}`: that box was packed. Created once and never
+// changed, so the same box cannot use the pantry up twice; deleting it is
+// the undo, which gives the portions back.
+match /lunchPacked/{packedId} {
+  allow read: if canView(householdId, 'lunch');
+
+  allow create: if canEdit(householdId, 'lunch')
+    && isLunchPackedDay(packedId, request.resource.data)
+    && isLunchChild(householdId, request.resource.data.childId)
+    && isOwnMember(householdId, request.resource.data.by)
+    && isServerTime('at');
+
+  allow update: if false;
+
+  allow delete: if canEdit(householdId, 'lunch');
+}
+
+// Whole boxes' worth, never below nothing and never past what a pantry
+// holds for school lunches.
+function isLunchPantryEntry(data) {
+  return data.keys().hasOnly(['portions', 'updatedBy', 'updatedAt'])
+    && data.portions is int
+    && data.portions >= 0
+    && data.portions <= 99
+    && data.updatedBy is string;
+}
+
+function isLunchPackedDay(packedId, data) {
+  return data.keys().hasOnly(['childId', 'date', 'week', 'itemIds', 'by', 'at'])
+    && data.childId is string
+    && data.date is string && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+    && data.week is string && data.week.matches('^[0-9]{4}-W[0-9]{2}$')
+    && packedId == data.childId + '_' + data.date
+    && data.itemIds is list
+    && data.itemIds.size() <= 5
+    && data.by is string;
+}

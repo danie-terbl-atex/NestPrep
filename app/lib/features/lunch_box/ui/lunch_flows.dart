@@ -13,6 +13,7 @@ import '../state/lunch_board_controller.dart';
 import 'lunch_day_menu.dart';
 import 'lunch_favourites_sheet.dart';
 import 'lunch_feedback_sheet.dart';
+import 'lunch_picker_lens.dart';
 import 'lunch_picker_sheet.dart';
 
 /// The conversations a day card starts — a sheet asked, an answer handed to
@@ -30,13 +31,15 @@ abstract final class LunchFlows {
     required LunchSlot slot,
   }) async {
     final controller = context.read<LunchBoardController>();
+    final lens = LunchPickerLens.of(context);
     final choice = await showLunchPickerSheet(
       context: context,
       slot: slot,
       dayName: _dayName(day),
       childName: childWeek.child.member.displayName,
-      ranked: childWeek.rank(slot, board.library),
+      ranked: lens.order(childWeek.rank(slot, board.library)),
       current: day.box[slot],
+      notesFor: lens.notesFor,
     );
     final childId = childWeek.childId;
     final weekday = day.date.weekday;

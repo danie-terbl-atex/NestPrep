@@ -20,6 +20,11 @@ void main() {
     ('QuickAddCopy', 'lib/shared/copy/quick_add_copy.dart'),
     // todos phase 2: stars and rewards (todos ADR-0003).
     ('PointsCopy', 'lib/shared/copy/points_copy.dart'),
+    // lunch-box V2 (lunch-box ADR-0006 to ADR-0008).
+    ('LunchPlanningCopy', 'lib/shared/copy/lunch_planning_copy.dart'),
+    ('LunchPantryCopy', 'lib/shared/copy/lunch_pantry_copy.dart'),
+    ('LunchBudgetCopy', 'lib/shared/copy/lunch_budget_copy.dart'),
+    ('LunchKidPicksCopy', 'lib/shared/copy/lunch_kid_picks_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();
