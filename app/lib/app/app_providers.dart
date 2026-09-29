@@ -59,6 +59,7 @@ import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
+import 'two_homes_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
 /// feature, each registered behind its interface so a widget test substitutes a
@@ -188,6 +189,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...documentVaultProviders(),
   // todos phase 2: chores that earn kids stars (todos ADR-0003).
   ...chorePointsProviders(),
+  // co-parenting: two homes, and the feature flags (household ADR-0004).
+  ...twoHomesProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

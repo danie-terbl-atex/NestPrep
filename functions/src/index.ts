@@ -52,3 +52,13 @@ export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
+
+// ---- co-parenting: a child in two homes (household ADR-0004) ----
+export { createCoParentInvite } from './coparent/create_coparent_invite';
+export { previewCoParentInvite } from './coparent/preview_coparent_invite';
+export { acceptCoParentInvite } from './coparent/accept_coparent_invite';
+export { confirmCoParentLink } from './coparent/confirm_coparent_link';
+export { endCoParentLink } from './coparent/end_coparent_link';
+export { proposeCoParentChange } from './coparent/propose_coparent_change';
+export { answerCoParentChange } from './coparent/answer_coparent_change';
+export { saveCoParentHandover } from './coparent/save_coparent_handover';

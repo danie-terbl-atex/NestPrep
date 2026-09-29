@@ -32,7 +32,6 @@ void main() {
     'lib/app/app_providers.dart':
         'builds the provider graph over live repositories',
     'lib/app/nestprep_app.dart': 'the root widget, which boots the graph',
-    'lib/shared/firestore/typed_collection.dart': 'wraps a CollectionReference',
     'lib/features/accounts/data/firebase_auth_gateway.dart':
         'wraps FirebaseAuth',
     'lib/features/accounts/data/firestore_account_repository.dart':
@@ -99,6 +98,12 @@ void main() {
         'wraps FirebaseStorage',
     'lib/features/nanny_hub/data/image_picker_photo_picker.dart':
         'opens the platform camera and photo library',
+    // co-parenting (household ADR-0004), and the feature flags it switches on.
+    'lib/app/two_homes_providers.dart':
+        'builds the two-homes and flag providers over live Firebase',
+    'lib/features/two_homes/data/callable_two_homes_directory.dart':
+        'calls Functions',
+    'lib/shared/flags/firestore_feature_flag_source.dart': 'reads Firestore',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -139,6 +144,10 @@ void main() {
     'lib/features/nanny_hub/model/contact_kind.dart': 'an enum only',
     'lib/features/nanny_hub/model/handover_kind.dart': 'an enum only',
     'lib/features/nanny_hub/model/handover_mood.dart': 'an enum only',
+    'lib/features/two_homes/data/two_homes_repository.dart': 'interface only',
+    'lib/features/two_homes/data/two_homes_directory.dart':
+        'an enum and an interface only',
+    'lib/shared/flags/feature_flag_source.dart': 'interface only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

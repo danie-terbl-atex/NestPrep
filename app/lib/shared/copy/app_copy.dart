@@ -7,6 +7,7 @@ import 'kid_copy.dart';
 import 'nanny_copy.dart';
 import 'points_copy.dart';
 import 'product_analytics_copy.dart';
+import 'two_homes_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
@@ -17,6 +18,8 @@ export 'family_copy.dart';
 // nanny hub: its words live in their own files, reached through this one.
 export 'nanny_copy.dart';
 export 'nanny_shift_copy.dart';
+// co-parenting: a child in two homes (household ADR-0004).
+export 'two_homes_copy.dart';
 
 /// Every user-facing string in the app (`FE-19`). Screens read from here and
 /// nowhere else, so tone stays in one place and translation is later work.
@@ -390,6 +393,8 @@ abstract final class AppCopy {
     PointsFailure(:final problem) => PointsCopy.problem(problem),
     // nanny hub (nanny-hub ADR-0002).
     NannyHubFailure(:final problem) => NannyCopy.problem(problem),
+    // co-parenting (household ADR-0004).
+    CoParentFailure(:final problem) => TwoHomesCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

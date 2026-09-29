@@ -50,6 +50,7 @@ import 'household_route.dart';
 import 'household_shell.dart';
 import 'kid_routes.dart';
 import 'nanny_hub_routes.dart';
+import 'two_homes_routes.dart';
 import 'viewer_member.dart';
 
 /// A route creates the controller its screen reads, so the controller's
@@ -133,6 +134,8 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // the emergency sheet, the guide, rules, checklists, shift mode and
         // a shift's summary.
         nannyHubRoutes(),
+        // co-parenting: a child in two homes (household ADR-0004).
+        ...twoHomesRoutes(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

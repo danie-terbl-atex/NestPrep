@@ -176,6 +176,17 @@ describe('every callable declares what it may cost', () => {
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
         'endNannyShift',
+        // Co-parenting: a child in two homes. Every write goes to both
+        // households' mirrors of the link in one transaction, which no client
+        // may do because no client is in both (household ADR-0004).
+        'acceptCoParentInvite',
+        'answerCoParentChange',
+        'confirmCoParentLink',
+        'createCoParentInvite',
+        'endCoParentLink',
+        'previewCoParentInvite',
+        'proposeCoParentChange',
+        'saveCoParentHandover',
       ].sort(),
     );
   });

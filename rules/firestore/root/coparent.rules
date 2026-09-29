@@ -1,0 +1,12 @@
+// ---- co-parenting: codes and the authority (household ADR-0004) ----
+// Closed to every client. A readable code collection is a list of ways into
+// a child's week; the authority names both households of a link, which is
+// exactly what neither home may learn about the other. The co-parenting
+// Functions are the only way in.
+match /coParentInvites/{code} {
+  allow read, write: if false;
+}
+
+match /coParentLinks/{linkId} {
+  allow read, write: if false;
+}

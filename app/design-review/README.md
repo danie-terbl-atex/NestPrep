@@ -11,7 +11,8 @@ Take them at 390×844, the size of an ordinary phone, at 2× so the type is shar
 are a press of their own — `flutter test tool/kid_design_review_test.dart --update-goldens` — sharing
 the same shutter (`tool/design_review_press.dart`). The parent's stars and rewards are another —
 `flutter test tool/chore_points_design_review_test.dart --update-goldens` (todos ADR-0003).
-The nanny hub's eleven are `tool/nanny_design_review_test.dart`.
+The nanny hub's eleven are `tool/nanny_design_review_test.dart`. Two homes' fourteen are
+`tool/two_homes_design_review_test.dart` (household ADR-0004).
 
 Five presses share one shutter: `design_review_test.dart` (the tabs and the way in),
 `kid_design_review_test.dart`, `family_design_review_test.dart`, `household_access_review_test.dart`
@@ -45,51 +46,10 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `nanny-child-card-light.png` / `nanny-child-card-dark.png` | a child's card: allergies in their severity's tone first, then medication with its times, then the routine |
 | `nanny-emergency-light.png` / `nanny-emergency-dark.png` | the emergency sheet: 10111, 10177 and 112 as big buttons, the address to read out, the medical aid, and a call button on every contact |
 | `nanny-handover-light.png` / `nanny-handover-dark.png` | a finished shift's summary for the parents: the incident called out first, the counts, the carer's last word, the checklist, then the evening moment by moment |
-
-## What to look at
-
-The design system is tokens, not screens: colours in `lib/design/tokens/nest_colors.dart`, the type
-family in `nest_typography.dart`, the shape of a button in `primitives/nest_button.dart`. A verdict
-of "too purple" or "too round" changes one file, not fifteen screens. That is the question worth
-answering here — the direction, not any single screen.
-
-**The two way-in screens move, and a still cannot show it.** They are choreographed: the mark, then
-the rings, then each thing in orbit, then the name, then the tagline typing itself out, then the
-button — once, in about a second and a half, and then the screen is still. These are pictures of the
-end of that. The deliberate choice behind them is in design-system ADR-0002: the app this was drawn
-from drifts forever and ours stops, and the honest question to bring back is whether stopping leaves
-it too quiet.
-
-## A starting point for the verdict
-
-[ASSESSMENT.md](ASSESSMENT.md) is my reading of the first eleven pictures: keep the direction. Of the
-four things it first flagged, the two that were defects are fixed; two are judgement calls left for
-you, with measurements rather than adjectives. React to it, do not defer to it. It predates the four
-way-in pictures and does not cover them.
-
-## What the pictures already caught
-
-The first render of `week-dark-200-percent-text.png` showed the weekday names running together —
-*MonTueWed*, no gap. Nothing clipped and nothing overflowed, so every existing test passed; a
-`FittedBox` will shrink type forever rather than admit it has run out of room. It is fixed, and the
-fix has a test that measures the gap. These images are regenerated from the current code, so that
-one now shows seven separate days.
-
-The first render of `family-profile-dark-200-percent-text.png` caught the nut-free rule as a tag cut
-to *Nut-free · nut allergy,…* — the reasons, which are the point, were the part that went. It is a
-wrapping banner now.
-
-The first render of `sign-in-light.png` did the same job for the welcome: two of the member marks
-had landed on the same bearing as the tiles inside them and overlapped, which no test could have
-had an opinion about. The bearings are picked by eye now, and the reason is written where the
-numbers are.
-
-## Regenerating them
-
-```sh
-flutter test tool/ --update-goldens
-```
-
-`tool/design_review_test.dart` is deliberately outside `test/`, so `flutter test` never runs it.
-These are pictures to look at, not assertions to defend: if the design changes, the images change,
-and that is the point. Read a diff here as "the design moved", never as a failing test.
+| `two-homes-light.png` / `two-homes-dark.png` | two homes: a link waiting for this home to confirm, and a live one — where the child is today, the coming week in each home's colour, the next handover — then the ways in and the privacy boundary (household ADR-0004) |
+| `two-homes-link-light.png` / `two-homes-link-dark.png` | one link: the next two weeks, the coming handovers with how far the bag has got, and a swap the other home has asked for |
+| `two-homes-handover-light.png` / `two-homes-handover-dark.png` | a handover: who goes where, the bag half packed, the usual things a tap away, and the notes both homes read |
+| `two-homes-setup-light.png` / `two-homes-setup-dark.png` | making a code: the child, this home's name and colour, then the schedule chosen from four patterns |
+| `two-homes-join-light.png` / `two-homes-join-dark.png` | accepting a code: what the other home offers, the fortnight it proposes, this home's profile for the child, and what will be shared |
+| `two-homes-privacy-light.png` / `two-homes-privacy-dark.png` | what the other home can see, and what stays — the same two lists everywhere they appear |
+| `week-two-homes-light.png` / `week-two-homes-dark.png` | the week with a linked child: a small bar under each day in the home's colour, and the day's all-day band — *goes to Mum's home, at 17:00* |

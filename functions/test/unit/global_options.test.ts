@@ -50,8 +50,10 @@ describe('every function — callable, trigger or schedule', () => {
     // the daily expiry sweep (documents ADR-0003, ADR-0005). Todos phase 2:
     // two Firestore triggers that write a child's stars and two callables a
     // parent settles them with (todos ADR-0003). Nanny hub: endNannyShift
-    // (nanny-hub ADR-0002). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(36);
+    // (nanny-hub ADR-0002). Co-parenting: eight callables that write both
+    // homes' copies of a link at once (household ADR-0004). A feature adds its
+    // count and its line.
+    expect(endpoints()).toHaveLength(44);
   });
 
   it('runs in the one region, which is the database region', () => {

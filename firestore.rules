@@ -247,6 +247,17 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ==== rules/firestore/root/app_config.rules ====
+    // ---- feature flags (verdict 003; household ADR-0004 is the first user) ----
+    // One document of switches the app reads to turn a V2 capability off without
+    // a migration. Any signed-in caller may read it — it says what the app
+    // offers, which is no secret — and no client may write it; it is changed in
+    // the console or by an admin tool.
+    match /appConfig/{documentId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
     // ==== rules/firestore/root/calendar_sync.rules ====
     // ---- calendar sync, the credentials (calendar ADR-0003) ----
     // A refresh token or a calendar link, a connection in flight, and a feed
@@ -261,6 +272,20 @@ service cloud.firestore {
     }
 
     match /calendarFeeds/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/coparent.rules ====
+    // ---- co-parenting: codes and the authority (household ADR-0004) ----
+    // Closed to every client. A readable code collection is a list of ways into
+    // a child's week; the authority names both households of a link, which is
+    // exactly what neither home may learn about the other. The co-parenting
+    // Functions are the only way in.
+    match /coParentInvites/{code} {
+      allow read, write: if false;
+    }
+
+    match /coParentLinks/{linkId} {
       allow read, write: if false;
     }
 
@@ -488,6 +513,33 @@ service cloud.firestore {
           && isServerTime('requestedAt');
 
         allow update, delete: if false;
+      }
+
+      // ==== rules/firestore/household/coparent.rules ====
+      // ---- co-parenting: a child in two homes (household ADR-0004) ----
+      // This household's own copy of a link with another home. Only the
+      // co-parenting Functions write it — both homes' copies in one transaction —
+      // so no client ever writes across households. It is read here under this
+      // household's grants and nothing else: no rule names the other household,
+      // so no read a phone can make reaches the other home's data.
+      //
+      // The link and its schedule are where the child is, so they are read with
+      // the calendar. A handover carries medicine given, so it needs `medical`
+      // too. Requests are a negotiation between the adults who run the week, so
+      // they are read by whoever may change the calendar.
+      match /coParentLinks/{linkId} {
+        allow read: if canView(householdId, 'calendar');
+        allow write: if false;
+
+        match /handovers/{date} {
+          allow read: if canView(householdId, 'calendar') && canView(householdId, 'medical');
+          allow write: if false;
+        }
+
+        match /requests/{requestId} {
+          allow read: if canEdit(householdId, 'calendar');
+          allow write: if false;
+        }
       }
 
       // ==== rules/firestore/household/document_vaults.rules ====

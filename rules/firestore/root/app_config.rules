@@ -1,0 +1,9 @@
+// ---- feature flags (verdict 003; household ADR-0004 is the first user) ----
+// One document of switches the app reads to turn a V2 capability off without
+// a migration. Any signed-in caller may read it — it says what the app
+// offers, which is no secret — and no client may write it; it is changed in
+// the console or by an admin tool.
+match /appConfig/{documentId} {
+  allow read: if isSignedIn();
+  allow write: if false;
+}
