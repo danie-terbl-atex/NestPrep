@@ -52,6 +52,7 @@ import 'household_shell.dart';
 import 'kid_routes.dart';
 import 'lunch_routes.dart';
 import 'nanny_hub_routes.dart';
+import 'notifications_routes.dart';
 import 'subscription_routes.dart';
 import 'viewer_member.dart';
 
@@ -143,6 +144,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         lunchRoutes(),
         // subscriptions: plan and billing (subscriptions ADR-0001).
         subscriptionRoute(),
+        // notifications: the inbox, its settings and one notification opened
+        // (notifications ADR-0001 to ADR-0003).
+        ...notificationsRoutes(),
         GoRoute(
           path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
           builder: (context, state) => ChangeNotifierProvider(

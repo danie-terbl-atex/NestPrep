@@ -63,6 +63,18 @@ cloud because the client redirects every service.
   is an adapter tested against canned responses (`BE-09`). A pasted link is checked against
   private and loopback addresses on every hop (`link_guard.ts`); loopback is allowed only when
   `FUNCTIONS_EMULATOR` is `true`, which is how the emulator tests serve a calendar from this machine.
+- `src/notifications/` is the one channel every reminder is delivered through (notifications
+  ADR-0001 to ADR-0003 in the vault): `composeMorningDigests` (every 15 min) and
+  `deliverNotifications` (every 5 min) are schedules whose bodies — `runMorningDigest`,
+  `runNotificationDelivery` — the emulator suite drives with a fixed clock and a recording
+  `PushSender`; `notifyShiftHandover`, `notifyChoreCheck` and `notifyRewardRequest` are triggers;
+  `sendTestNotification` is the callable. **Only `fcm_push_sender.ts` knows FCM exists**, and it
+  never throws: an outage is an outcome. Every producer goes through `deliverDrafts`, which writes
+  one `notificationInbox` item per person and dispatches at most once. FCM needs no parameter here:
+  Android works with the project's own credentials; iOS needs an APNs auth key uploaded in the
+  Firebase console. In the emulator a send reaches for the real FCM with whatever
+  application-default credentials the machine has — none means a logged, retried, then `failed`
+  push, and the inbox still has it.
 - `tsconfig.json` covers `src/`, `test/` and the config files for the editor and ESLint;
   `tsconfig.build.json` is what `tsc` emits from, and it includes `src/` only.
 

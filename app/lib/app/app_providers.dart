@@ -62,6 +62,7 @@ import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'location_reporting.dart';
 import 'nanny_hub_providers.dart';
+import 'notifications_providers.dart';
 import 'subscription_providers.dart';
 
 /// The app-wide dependency graph: the platform instances and one repository per
@@ -208,4 +209,7 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
       accountRepository: context.read<AccountRepository>(),
     ),
   ),
+  // notifications — after the session, which the phone's registration
+  // follows (notifications ADR-0001).
+  ...notificationsProviders(),
 ];

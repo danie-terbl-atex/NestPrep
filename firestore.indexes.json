@@ -39,6 +39,30 @@
         { "fieldPath": "helperId", "order": "ASCENDING" },
         { "fieldPath": "dueDate", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "notificationInbox",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "memberId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "notificationInbox",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "memberId", "order": "ASCENDING" },
+        { "fieldPath": "readAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "notificationInbox",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "push.state", "order": "ASCENDING" },
+        { "fieldPath": "push.sendAfter", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [
@@ -105,6 +129,39 @@
     {
       "collectionGroup": "vaultOpenings",
       "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "notificationSettings",
+      "fieldPath": "digestSlot",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    },
+    {
+      "collectionGroup": "expiryReminders",
+      "fieldPath": "status",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    },
+    {
+      "collectionGroup": "nannyShiftSummaries",
+      "fieldPath": "delivery.state",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    },
+    {
+      "collectionGroup": "notificationInbox",
+      "fieldPath": "expireAt",
       "ttl": true,
       "indexes": []
     }

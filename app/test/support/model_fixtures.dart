@@ -45,6 +45,7 @@ import 'chore_points_model_fixtures.dart';
 import 'fake_family_profiles.dart';
 import 'home_care_model_fixtures.dart';
 import 'nanny_model_fixtures.dart';
+import 'notifications_model_fixtures.dart';
 
 /// Every stored model, once, with every field populated — the fixtures two
 /// boundary tests share (`ENG-01`): that each model round-trips through its
@@ -649,6 +650,8 @@ List<ModelFixture> modelFixtures() {
     ...nannyModelFixtures(),
     // home-care (home-care ADR-0001).
     ...homeCareModelFixtures(),
+    // notifications (notifications ADR-0001, ADR-0003).
+    ...notificationsModelFixtures(),
     // ---- lunch-box (lunch-box ADR-0001) ----
     ..._lunchFixtures(fixtureInstant),
   ];

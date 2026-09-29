@@ -34,6 +34,7 @@ import {
   subscriptionOfferInput,
   verifyPurchaseInput,
 } from '../../src/subscriptions/schemas';
+import { sendTestNotificationInput } from '../../src/notifications/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -146,6 +147,7 @@ const validBodies = {
     schema: setChildProfileInput,
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
   },
+  sendTestNotification: { schema: sendTestNotificationInput, body: { householdId: 'h1' } },
 } as const;
 
 describe('verifyPurchase refuses what is not a purchase to verify', () => {

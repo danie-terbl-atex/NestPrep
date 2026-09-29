@@ -59,3 +59,11 @@ export { appStoreNotifications } from './subscriptions/app_store_notifications';
 export { playBillingNotifications } from './subscriptions/play_billing_notifications';
 export { reconcileSubscriptions } from './subscriptions/reconcile_subscriptions';
 export { setChildProfile } from './family_profiles/set_child_profile';
+
+// ---- notifications: the morning digest and the one push channel (notifications ADR-0001 to ADR-0003) ----
+export { composeMorningDigests } from './notifications/compose_morning_digests';
+export { deliverNotifications } from './notifications/deliver_notifications';
+export { notifyShiftHandover } from './notifications/notify_shift_handover';
+export { notifyChoreCheck } from './notifications/notify_chore_check';
+export { notifyRewardRequest } from './notifications/notify_reward_request';
+export { sendTestNotification } from './notifications/send_test_notification';

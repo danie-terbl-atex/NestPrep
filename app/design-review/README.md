@@ -58,6 +58,11 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `paywall-light.png` / `paywall-dark.png` | premium's paywall, opened on a second child: the mark, what premium adds, both plans at the store's own prices with the yearly saving (regenerate with `flutter test tool/subscriptions_design_review_test.dart --update-goldens`) |
 | `plan-free-light.png` / `plan-free-dark.png` | Plan & billing on the free plan: what the family has and the way to premium |
 | `plan-premium-light.png` / `plan-premium-dark.png` | Plan & billing on premium: when it renews, who bought it, and the buyer's way to their store |
+| `notifications-inbox-light.png` / `notifications-inbox-dark.png` | the inbox behind every tab's bell: today apart from before, each notification's kind, what it said and when, unread marked with a dot and in words (notifications ADR-0001; regenerate with `flutter test tool/notifications_design_review_test.dart --update-goldens`) |
+| `notifications-first-run-light.png` | the same inbox before notifications are on: the card that says what they would bring and asks the phone only on a tap (ADR-0003), above the empty state |
+| `notifications-digest-light.png` / `notifications-digest-dark.png` | a morning digest opened in full: the counts the lock screen showed, then each section — on today, what to pack, chores, documents, the hub, what waits for you — with its way into the app (ADR-0002) |
+| `notifications-digest-dark-200-percent-text.png` | the same digest at the largest text a phone offers |
+| `notifications-settings-light.png` / `notifications-settings-dark.png` | notification settings: this phone with its test push answered, the morning digest and its time, and what this person's digest holds in words |
 
 ## What to look at
 

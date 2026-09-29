@@ -9,6 +9,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../notifications/ui/notification_bell.dart';
 import '../model/meal_week.dart';
 import '../state/meal_plan_controller.dart';
 import 'meal_library_sheet.dart';
@@ -42,6 +43,7 @@ class MealPlanScreen extends StatelessWidget {
             label: AppCopy.mealsManage,
             onPressed: () => showMealLibrarySheet(context: context),
           ),
+        const NotificationBell(),
         const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],

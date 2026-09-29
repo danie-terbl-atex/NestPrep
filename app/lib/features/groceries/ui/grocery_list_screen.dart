@@ -9,6 +9,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/household_link_button.dart';
+import '../../notifications/ui/notification_bell.dart';
 import '../model/grocery_list_view.dart';
 import '../state/grocery_list_controller.dart';
 import 'grocery_add_field.dart';
@@ -34,7 +35,11 @@ class GroceryListScreen extends StatelessWidget {
     );
     return NestScaffold(
       title: AppCopy.groceriesTitle,
-      trailing: const [HouseholdLinkButton(), AccountMenuButton()],
+      trailing: const [
+        NotificationBell(),
+        HouseholdLinkButton(),
+        AccountMenuButton(),
+      ],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.groceries,
         onSelect: onSelectTab,

@@ -119,7 +119,12 @@ describe('ending a shift', () => {
     expect(summary?.['photoCount']).toBe(1);
     expect(summary?.['closingNote']).toBe('Asleep by 8.');
     expect(summary?.['checklist']).toEqual({ ticked: 1, total: 2 });
-    expect(summary?.['delivery']).toEqual({ state: 'pending' });
+    // Born `pending`; notifications' trigger may already have delivered it
+    // by the time this reads (notifications ADR-0001) — `notifications.test.ts`
+    // follows it to `sent`.
+    expect(['pending', 'sent']).toContain(
+      (summary?.['delivery'] as { state?: string } | undefined)?.state,
+    );
     const moments = summary?.['moments'] as { kind: string }[];
     expect(moments.map((moment) => moment.kind)).toEqual(['meal', 'incident', 'note']);
   });
