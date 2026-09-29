@@ -13,6 +13,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_calendar_sync.dart';
+import '../../../support/fake_link_opener.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 

@@ -118,9 +118,10 @@ void main() {
       final copySource = File(path).readAsStringSync();
       // Constants, and the functions that build a sentence from a value.
       for (final match in RegExp(
-        r'static (?:const (\w+) =|String (\w+)\()',
+        r'static (?:const (\w+) =|String (\w+)\(|String get (\w+))',
       ).allMatches(copySource)) {
-        final name = '$className.${match.group(1) ?? match.group(2)!}';
+        final name =
+            '$className.${match.group(1) ?? match.group(2) ?? match.group(3)!}';
         names.add(name);
         owner[name] = path;
       }

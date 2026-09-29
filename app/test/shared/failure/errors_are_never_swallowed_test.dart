@@ -129,6 +129,13 @@ void main() {
   const accountedFor = {
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
+    // The same, for the listener sets documents phase 2 keeps apart from its
+    // controllers — and for a vault listener closed because its grant was
+    // revoked, whose documents have already left the screen (documents
+    // ADR-0002).
+    '_listeners.stop()',
+    '_stop()',
+    '_subscriptions.remove(key)?.cancel()',
     '_authSubscription?.cancel()',
     '_accountSubscription?.cancel()',
     // Cancel and re-listen; the new stream's errors go to its onError.

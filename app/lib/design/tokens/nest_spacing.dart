@@ -42,6 +42,9 @@ abstract final class NestSize {
   /// (accounts ADR-0003).
   static const double controlHuge = 72;
   static const double iconSmall = 18;
+
+  /// The glyph inside a `NestBadge`, sized to its caption text.
+  static const double iconBadge = 14;
   static const double iconMedium = 22;
   static const double iconLarge = 28;
   static const double iconTile = 52;
@@ -61,6 +64,12 @@ abstract final class NestSize {
   /// screen of its own. Tall enough to recognise a letter, short enough to
   /// leave the actions under it visible at 200% text.
   static const double previewHeight = 240;
+
+  /// The two sides of a scan shown side by side for checking before saving.
+  static const double scanSidesHeight = 180;
+
+  /// A vault document's pages, taller than a preview so print can be read.
+  static const double pagesHeight = 420;
 }
 
 /// Stroke widths for hairlines and focus rings.

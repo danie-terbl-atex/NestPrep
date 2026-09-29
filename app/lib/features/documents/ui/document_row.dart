@@ -2,22 +2,37 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/format/byte_size.dart';
-import '../../household/model/member.dart';
-import '../model/household_document.dart';
+import '../../../shared/time/calendar_date.dart';
+import 'document_badges.dart';
 
-/// One document on the shelf. Tapping opens it; the subtitle says who put it
-/// there and how big it is, which between them answer "is this the one I
-/// want" without downloading anything.
+/// One document on a shelf — the household's or a vault's. Tapping opens it;
+/// the subtitle says how big it is and who it concerns, and the badges say
+/// when it expires and how it is tagged, which between them answer "is this
+/// the one I want" without downloading anything.
 class DocumentRow extends StatelessWidget {
   const DocumentRow({
-    required this.document,
-    required this.uploadedBy,
+    required this.name,
+    required this.sizeBytes,
+    required this.isImage,
     required this.onOpen,
+    required this.today,
+    this.byline,
+    this.tags = const [],
+    this.expiresOn,
     super.key,
   });
 
-  final HouseholdDocument document;
-  final Member? uploadedBy;
+  final String name;
+  final int sizeBytes;
+
+  /// A picture or a PDF, for the tile — never the only signal (`FE-13`).
+  final bool isImage;
+
+  /// Who added it, or whose vault it is in — a name, never a colour alone.
+  final String? byline;
+  final List<String> tags;
+  final CalendarDate? expiresOn;
+  final CalendarDate today;
   final VoidCallback onOpen;
 
   @override
@@ -26,26 +41,18 @@ class DocumentRow extends StatelessWidget {
       variant: NestCardVariant.flat,
       padding: EdgeInsets.zero,
       child: NestListRow(
-        title: document.name,
-        subtitle: _subtitle,
+        title: name,
+        subtitle: [NestBytes.format(sizeBytes), ?byline].join(' · '),
         leading: NestIconTile(
-          icon: document.isPreviewable
-              ? Icons.image_outlined
-              : Icons.picture_as_pdf_outlined,
-          tint: document.isPreviewable ? NestTileTint.mint : NestTileTint.peach,
+          icon: isImage ? Icons.image_outlined : Icons.picture_as_pdf_outlined,
+          tint: isImage ? NestTileTint.mint : NestTileTint.peach,
         ),
         onTap: onOpen,
         trailing: const Icon(Icons.chevron_right),
+        footer: DocumentBadges.hasAny(expiresOn: expiresOn, tags: tags)
+            ? DocumentBadges(expiresOn: expiresOn, tags: tags, today: today)
+            : null,
       ),
     );
-  }
-
-  /// The size, and the person — a name, never a colour alone (`FE-13`).
-  String get _subtitle {
-    final by = uploadedBy;
-    return [
-      NestBytes.format(document.sizeBytes),
-      if (by != null) by.displayName,
-    ].join(' · ');
   }
 }

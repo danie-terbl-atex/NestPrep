@@ -184,6 +184,21 @@ enum DocumentProblem {
   /// The file left the app and no viewer on the device took it. The document
   /// is fine; the phone is the problem, and the person can say so.
   cannotOpen,
+
+  /// A personal vault nobody shared with this person (documents ADR-0002).
+  vaultNotShared,
+
+  /// The document was deleted while somebody was opening it.
+  documentNotFound,
+
+  /// The scanner could not start or finish on this phone.
+  scanFailed,
+
+  /// The person refused the camera, which the scanner needs.
+  cameraRefused,
+
+  /// The bytes arrived but are not a PDF or picture the app can draw.
+  cannotRender,
 }
 
 final class DocumentFailure extends AppFailure {

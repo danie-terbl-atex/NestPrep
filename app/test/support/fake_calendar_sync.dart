@@ -8,7 +8,6 @@ import 'package:nestprep/features/calendar_sync/model/calendar_provider.dart';
 import 'package:nestprep/features/calendar_sync/model/provider_availability.dart';
 import 'package:nestprep/features/calendar_sync/model/synced_event.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
-import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 /// Calendar sync's three reads, driven by hand. Until a test emits, the synced
@@ -126,17 +125,5 @@ final class FakeCalendarSyncDirectory implements CalendarSyncDirectory {
   void _refuseIfAsked() {
     final failure = failWith;
     if (failure != null) throw failure;
-  }
-}
-
-/// A phone where opening a link works, or — when told — does not.
-final class FakeLinkOpener implements ExternalLinkOpener {
-  bool opens = true;
-  final opened = <Uri>[];
-
-  @override
-  Future<bool> open(Uri link) async {
-    opened.add(link);
-    return opens;
   }
 }

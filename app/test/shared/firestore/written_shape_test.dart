@@ -7,6 +7,8 @@ import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/document_limits.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
+import 'package:nestprep/features/documents/model/vault_document.dart';
+import 'package:nestprep/features/documents/model/vault_grant.dart';
 import 'package:nestprep/features/family_profiles/model/school.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/household/model/birthday.dart';
@@ -358,8 +360,14 @@ void main() {
         'sizeBytes',
         'uploadedBy',
         'uploadedAt',
+        'tags',
+        'expiresOn',
       });
       expect(shape.serverAssigned, {'uploadedAt'});
+      // No expiry is written as null, which the rule's `isExpiry` accepts, and
+      // tags as an empty list (documents ADR-0005).
+      expect(shape.nulls, {'expiresOn'});
+      expect(json['tags'], isEmpty);
       // Nothing names the Storage object, because the document's own id does
       // (documents ADR-0001). A `storagePath` field here would be a second
       // copy of the same fact, and the rules refuse the key besides.
@@ -404,6 +412,49 @@ void main() {
       expect(shape.keys, {'name', 'nutFree', 'createdAt'});
       expect(shape.serverAssigned, {'createdAt'});
       expect(shape.nulls, isEmpty, reason: 'nut-free is a yes or a no');
+    });
+  });
+
+  // Documents phase 2 (documents ADR-0002).
+  group('vaults/{memberId}/vaultDocuments/{documentId}', () {
+    test('writes exactly the keys the rule names, and never its owner', () {
+      final json = VaultDocument(
+        id: 'v',
+        ownerMemberId: 'm-emma',
+        name: 'Passport',
+        contentType: 'application/pdf',
+        sizeBytes: 300000,
+        uploadedBy: 'm-sam',
+        tags: const ['ID'],
+        expiresOn: CalendarDate(2031, 4, 30),
+      ).toJson();
+      final shape = shapeOf(json);
+      expect(shape.keys, {
+        'name',
+        'contentType',
+        'sizeBytes',
+        'uploadedBy',
+        'uploadedAt',
+        'tags',
+        'expiresOn',
+      });
+      expect(shape.serverAssigned, {'uploadedAt'});
+      // The rule matches this pattern; a model here would be refused.
+      expect(json['expiresOn'], '2031-04-30');
+    });
+  });
+
+  group('vaults/{memberId}/grants/{granteeUid}', () {
+    test('writes the grantee profile, the granter and a server time', () {
+      final shape = shapeOf(
+        const VaultGrant(
+          id: 'uid-thandi',
+          memberId: 'm-thandi',
+          grantedBy: 'm-sam',
+        ).toJson(),
+      );
+      expect(shape.keys, {'memberId', 'grantedBy', 'grantedAt'});
+      expect(shape.serverAssigned, {'grantedAt'});
     });
   });
 }

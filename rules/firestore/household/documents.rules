@@ -33,23 +33,27 @@ match /documentFolders/{folderId} {
 match /documents/{documentId} {
   allow read: if canView(householdId, 'documents');
 
+  // `tags` and `expiresOn` are optional and additive (documents
+  // ADR-0005): rows written before them have neither (BE-10).
   allow create: if canEdit(householdId, 'documents')
     && request.resource.data.keys().hasOnly(
          ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
-          'uploadedAt'])
+          'uploadedAt', 'tags', 'expiresOn'])
     && isNonEmptyString(request.resource.data.folderId)
     && isDocumentName(request.resource.data.name)
     && isKeptType(request.resource.data.contentType)
     && isSmallEnough(request.resource.data.sizeBytes)
+    && hasDocumentDetails()
     && isOwnMember(householdId, request.resource.data.uploadedBy)
     && isServerTime('uploadedAt');
 
-  // Renaming and moving between folders; the bytes never change, so
-  // neither does anything describing them.
+  // Renaming, moving between folders, tagging and dating; the bytes never
+  // change, so neither does anything describing them.
   allow update: if canEdit(householdId, 'documents')
-    && onlyChanged(['name', 'folderId'])
+    && onlyChanged(['name', 'folderId', 'tags', 'expiresOn'])
     && isDocumentName(request.resource.data.name)
     && isNonEmptyString(request.resource.data.folderId)
+    && hasDocumentDetails()
     && (isAdmin(householdId)
           || isOwnMember(householdId, resource.data.uploadedBy));
 

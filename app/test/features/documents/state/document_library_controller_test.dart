@@ -8,6 +8,8 @@ import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_link_opener.dart';
+import '../../../support/fake_vault.dart';
 import '../../../support/household_fixtures.dart';
 
 DocumentFolder folder(String id, String name) =>
@@ -39,7 +41,7 @@ void main() {
   late FakeDocumentStore store;
   late FakeDocumentDirectory directory;
   late FakeDocumentPicker picker;
-  late FakeDocumentOpener opener;
+  late FakeLinkOpener opener;
 
   DocumentLibraryController build({bool isAdmin = true}) =>
       DocumentLibraryController(
@@ -48,6 +50,7 @@ void main() {
         documentDirectory: directory,
         documentPicker: picker,
         documentOpener: opener,
+        scanIntake: fakeScanIntake(),
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
         viewerUid: Fixtures.samUid,
@@ -59,7 +62,7 @@ void main() {
     store = FakeDocumentStore();
     directory = FakeDocumentDirectory();
     picker = FakeDocumentPicker();
-    opener = FakeDocumentOpener();
+    opener = FakeLinkOpener();
   });
 
   tearDown(() => repository.close());
@@ -285,6 +288,64 @@ void main() {
     });
   });
 
+  group('scanning into a folder (documents ADR-0004)', () {
+    test(
+      'the sides become one PDF, added under the name somebody gave it',
+      () async {
+        final composer = FakeScanComposer();
+        final controller = DocumentLibraryController(
+          documentRepository: repository,
+          documentStore: store,
+          documentDirectory: directory,
+          documentPicker: picker,
+          documentOpener: opener,
+          scanIntake: fakeScanIntake(composer: composer),
+          householdId: Fixtures.householdId,
+          memberId: Fixtures.samMemberId,
+          viewerUid: Fixtures.samUid,
+          isAdmin: true,
+        );
+        addTearDown(controller.dispose);
+
+        final sides = (await controller.scanSides())!;
+        final adding = controller.addScan(
+          'f-home',
+          pages: sides,
+          name: 'Car licence',
+        );
+        await pumpEventQueue();
+        await store.nextUpload!.finish();
+        await adding;
+
+        expect(composer.composed, [2]);
+        expect(repository.added.single.name, 'Car licence');
+        expect(repository.added.single.folderId, 'f-home');
+        expect(controller.isPreparing, isFalse);
+      },
+    );
+
+    test('a scanner that cannot run is said on screen', () async {
+      final scanner = FakeDocumentScanner()
+        ..failWith = const DocumentFailure(DocumentProblem.scanFailed);
+      final controller = DocumentLibraryController(
+        documentRepository: repository,
+        documentStore: store,
+        documentDirectory: directory,
+        documentPicker: picker,
+        documentOpener: opener,
+        scanIntake: fakeScanIntake(scanner: scanner),
+        householdId: Fixtures.householdId,
+        memberId: Fixtures.samMemberId,
+        viewerUid: Fixtures.samUid,
+        isAdmin: true,
+      );
+      addTearDown(controller.dispose);
+
+      expect(await controller.scanSides(), isNull);
+      expect(controller.actionFailure, isA<DocumentFailure>());
+    });
+  });
+
   group('deleting a document', () {
     test('takes the bytes before the row', () async {
       final controller = build();
@@ -345,7 +406,7 @@ void main() {
     test('says so when nothing on the device would take it', () async {
       final controller = build();
       addTearDown(controller.dispose);
-      opener.willOpen = false;
+      opener.opens = false;
 
       await controller.openOutside(document('d1'));
 

@@ -1,3 +1,4 @@
+import '../../../shared/time/calendar_date.dart';
 import '../model/document_folder.dart';
 import '../model/household_document.dart';
 
@@ -43,11 +44,14 @@ abstract interface class DocumentRepository {
     required String uploadedBy,
   });
 
+  /// Renames, moves, tags and dates a document (documents ADR-0005).
   Future<void> editDocument({
     required String householdId,
     required String documentId,
     required String name,
     required String folderId,
+    required List<String> tags,
+    required CalendarDate? expiresOn,
   });
 
   /// Removes the row. The bytes go first (`BE-07`).

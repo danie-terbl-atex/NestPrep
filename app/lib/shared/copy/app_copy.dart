@@ -393,6 +393,15 @@ abstract final class AppCopy {
     DocumentProblem.uploadCancelled => 'That file was not added.',
     DocumentProblem.cannotOpen =>
       'Nothing on this phone offered to open that file.',
+    DocumentProblem.vaultNotShared =>
+      'That vault has not been shared with you. Ask its owner or a parent.',
+    DocumentProblem.documentNotFound => 'That document is no longer there.',
+    DocumentProblem.scanFailed =>
+      'The scanner did not work on this phone. Try again, or choose a file.',
+    DocumentProblem.cameraRefused =>
+      'NestPrep needs the camera to scan. Allow it in your phone settings.',
+    DocumentProblem.cannotRender =>
+      'NestPrep cannot show this file. It may be damaged.',
   };
 
   static String householdProblem(HouseholdProblem problem) => switch (problem) {

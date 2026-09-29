@@ -20,6 +20,7 @@ import { FUNCTIONS_REGION } from '../../src/shared/region';
  */
 interface Endpoint {
   region?: string[];
+  scheduleTrigger?: unknown;
   maxInstances?: number | null;
   timeoutSeconds?: number | null;
   availableMemoryMb?: number | null;
@@ -32,16 +33,23 @@ function endpoints(): [string, Endpoint][] {
   ]);
 }
 
+/** A scheduled job sets its own timeout; everything else is a callable. */
+function isScheduled(endpoint: Endpoint): boolean {
+  return endpoint.scheduleTrigger !== undefined;
+}
+
 describe('every function — callable, trigger or schedule', () => {
-  it('there are twenty-nine of them, so a new one cannot slip past these checks', () => {
+  it('there are thirty-one of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
     // that must run in the database's region or never fire, and one schedule
     // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
     // ADR-0003). Calendar sync: ten — seven callables, two HTTP and one
-    // schedule (calendar ADR-0003). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(29);
+    // schedule (calendar ADR-0003). Documents phase 2: openVaultDocument and
+    // the daily expiry sweep (documents ADR-0003, ADR-0005). A feature adds its
+    // count and its line.
+    expect(endpoints()).toHaveLength(31);
   });
 
   it('runs in the one region, which is the database region', () => {
@@ -60,8 +68,21 @@ describe('every function — callable, trigger or schedule', () => {
 
   it('has an explicit timeout and memory rather than the platform default', () => {
     for (const [name, endpoint] of endpoints()) {
-      expect(endpoint.timeoutSeconds, name).toBe(30);
       expect(endpoint.availableMemoryMb, name).toBe(256);
+      if (isScheduled(endpoint)) continue;
+      expect(endpoint.timeoutSeconds, name).toBe(30);
+    }
+  });
+
+  it('a scheduled job carries a timeout of its own, and a bounded one', () => {
+    // A sweep is longer work than one person's request, so it does not share
+    // the callables' thirty seconds — but it is never the platform's default
+    // either (documents ADR-0005, BE-15, BE-19).
+    const scheduled = endpoints().filter(([, endpoint]) => isScheduled(endpoint));
+    expect(scheduled.map(([name]) => name)).toContain('sweepExpiryReminders');
+    for (const [name, endpoint] of scheduled) {
+      expect(endpoint.timeoutSeconds, name).toBeGreaterThanOrEqual(30);
+      expect(endpoint.timeoutSeconds, name).toBeLessThanOrEqual(300);
     }
   });
 });

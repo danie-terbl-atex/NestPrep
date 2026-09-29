@@ -391,6 +391,108 @@ service cloud.firestore {
         allow write: if false;
       }
 
+      // ==== rules/firestore/household/document_vaults.rules ====
+      // ---- documents phase 2: tags, expiry, personal vaults ----
+      // (documents ADR-0002, ADR-0003, ADR-0005)
+
+      // At most eight tags of 1–24 characters. Rules have no loops, so the
+      // eight places are spelled out; a ninth fails the size check first.
+      function isTagAt(tags, index) {
+        return index >= tags.size()
+          || (tags[index] is string && tags[index].size() > 0 && tags[index].size() <= 24);
+      }
+
+      function isTags(tags) {
+        return tags is list && tags.size() <= 8
+          && isTagAt(tags, 0) && isTagAt(tags, 1) && isTagAt(tags, 2) && isTagAt(tags, 3)
+          && isTagAt(tags, 4) && isTagAt(tags, 5) && isTagAt(tags, 6) && isTagAt(tags, 7);
+      }
+
+      // A day in the household's zone, `YYYY-MM-DD`, or none (ENG-21).
+      function isExpiry(value) {
+        return value == null
+          || (value is string
+              && value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$'));
+      }
+
+      // Shared by the household's documents and the vaults.
+      function hasDocumentDetails() {
+        return isTags(request.resource.data.get('tags', []))
+          && isExpiry(request.resource.data.get('expiresOn', null));
+      }
+
+      // A member's own vault. The owner is the path, never a field, so no query
+      // has to prove it. Read and changed by its owner and by the family —
+      // `isFamily`, household ADR-0003, which keeps per-item privacy between family
+      // members out of v1 — and readable by anybody else only once the owner or a
+      // family member grants it. A helper reads no ID copy unless granted it; a
+      // kid's tablet has no vault of its own (`hasClaimed`, a login, not a device
+      // — accounts ADR-0004).
+      match /vaults/{ownerMemberId} {
+        function isVaultOwner() {
+          return isMember(householdId) && hasClaimed(householdId, ownerMemberId);
+        }
+
+        function mayManageVault() {
+          return isFamily(householdId) || isVaultOwner();
+        }
+
+        function isGrantedVault() {
+          return isMember(householdId)
+            && exists(/databases/$(database)/documents/households/$(householdId)/vaults/$(ownerMemberId)/grants/$(uid()));
+        }
+
+        match /vaultDocuments/{documentId} {
+          allow read: if mayManageVault() || isGrantedVault();
+
+          allow create: if mayManageVault()
+            && request.resource.data.keys().hasOnly(
+                 ['name', 'contentType', 'sizeBytes', 'uploadedBy', 'uploadedAt',
+                  'tags', 'expiresOn'])
+            && isDocumentName(request.resource.data.name)
+            && isKeptType(request.resource.data.contentType)
+            && isSmallEnough(request.resource.data.sizeBytes)
+            && hasDocumentDetails()
+            && isOwnMember(householdId, request.resource.data.uploadedBy)
+            && isServerTime('uploadedAt');
+
+          allow update: if mayManageVault()
+            && onlyChanged(['name', 'tags', 'expiresOn'])
+            && isDocumentName(request.resource.data.name)
+            && hasDocumentDetails();
+
+          allow delete: if mayManageVault();
+        }
+
+        // Keyed by the grantee's uid, because that is what these rules know.
+        // The uid must be the claimant of the named profile and in the
+        // household, so a grant can name neither a stranger nor somebody
+        // else's profile. Read-only access; revoking is deleting.
+        match /grants/{granteeUid} {
+          allow read: if mayManageVault()
+            || (isMember(householdId) && uid() == granteeUid);
+
+          allow create: if mayManageVault()
+            && request.resource.data.keys().hasOnly(['memberId', 'grantedBy', 'grantedAt'])
+            && request.resource.data.memberId != ownerMemberId
+            && granteeUid in householdData(householdId).members
+            && memberData(householdId, request.resource.data.memberId).claimedBy == granteeUid
+            && isOwnMember(householdId, request.resource.data.grantedBy)
+            && isServerTime('grantedAt');
+
+          allow update: if false;
+          allow delete: if mayManageVault();
+        }
+
+        // Written only by `openVaultDocument`, in the same batch as the
+        // ticket the bytes need — so the log cannot be skipped, and nobody
+        // edits it (documents ADR-0003).
+        match /views/{viewId} {
+          allow read: if mayManageVault();
+          allow write: if false;
+        }
+      }
+
       // ==== rules/firestore/household/documents.rules ====
       // ---- documents (documents ADR-0001) ----
 
@@ -427,23 +529,27 @@ service cloud.firestore {
       match /documents/{documentId} {
         allow read: if canView(householdId, 'documents');
 
+        // `tags` and `expiresOn` are optional and additive (documents
+        // ADR-0005): rows written before them have neither (BE-10).
         allow create: if canEdit(householdId, 'documents')
           && request.resource.data.keys().hasOnly(
                ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
-                'uploadedAt'])
+                'uploadedAt', 'tags', 'expiresOn'])
           && isNonEmptyString(request.resource.data.folderId)
           && isDocumentName(request.resource.data.name)
           && isKeptType(request.resource.data.contentType)
           && isSmallEnough(request.resource.data.sizeBytes)
+          && hasDocumentDetails()
           && isOwnMember(householdId, request.resource.data.uploadedBy)
           && isServerTime('uploadedAt');
 
-        // Renaming and moving between folders; the bytes never change, so
-        // neither does anything describing them.
+        // Renaming, moving between folders, tagging and dating; the bytes never
+        // change, so neither does anything describing them.
         allow update: if canEdit(householdId, 'documents')
-          && onlyChanged(['name', 'folderId'])
+          && onlyChanged(['name', 'folderId', 'tags', 'expiresOn'])
           && isDocumentName(request.resource.data.name)
           && isNonEmptyString(request.resource.data.folderId)
+          && hasDocumentDetails()
           && (isAdmin(householdId)
                 || isOwnMember(householdId, resource.data.uploadedBy));
 

@@ -124,6 +124,61 @@ service firebase.storage {
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 
+    // ---- personal vaults (documents ADR-0002, ADR-0003) ----
+    //
+    // Unlike the household's documents above, a vault object is authorised
+    // **live, from Firestore** — cross-service rules — never by the token
+    // claim, so a revoked grant or a removed member is refused on the next
+    // request rather than an hour later. At most two Firestore documents are
+    // read per request.
+    //
+    // The object is `households/{h}/vaults/{memberId}/{documentId}`, and its
+    // metadata row is `…/vaults/{memberId}/vaultDocuments/{documentId}` — the
+    // same id, for the same reason as above.
+    match /households/{householdId}/vaults/{ownerMemberId}/{documentId} {
+      function householdDoc() {
+        return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
+      }
+
+      // Family — `admin`, `parent`, and `member`, read as `parent` (household
+      // ADR-0003) — manages every vault; per-item privacy between family
+      // members is out of v1.
+      function isVaultFamily() {
+        return request.auth != null
+          && householdDoc().members.get(request.auth.uid, '') in ['admin', 'parent', 'member'];
+      }
+
+      // The account that claimed the vault's profile, while still a member.
+      function isVaultOwner() {
+        return request.auth != null
+          && firestore.get(/databases/(default)/documents/households/$(householdId)/members/$(ownerMemberId)).data.claimedBy == request.auth.uid
+          && request.auth.uid in householdDoc().members;
+      }
+
+      // Written only by `openVaultDocument`, after it checked who may read
+      // this vault and wrote the view-log entry in the same batch. No client
+      // can write one, so no vault bytes are read without a log line.
+      function openingTicket() {
+        return firestore.get(/databases/(default)/documents/households/$(householdId)/vaultOpenings/$(request.auth.uid + '_' + documentId)).data;
+      }
+
+      allow get: if request.auth != null
+        && openingTicket().ownerMemberId == ownerMemberId
+        && openingTicket().expiresAt > request.time;
+
+      allow list: if false;
+
+      allow create: if resource == null
+        && isSmallEnough()
+        && isAKeptType()
+        && isStampedWithTheCaller()
+        && (isVaultFamily() || isVaultOwner());
+
+      allow update: if false;
+
+      allow delete: if isVaultFamily() || isVaultOwner();
+    }
+
     // Everything not named above (BE-05).
     match /{allPaths=**} {
       allow read, write: if false;

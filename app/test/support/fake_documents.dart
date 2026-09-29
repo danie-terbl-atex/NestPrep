@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:nestprep/features/documents/data/document_directory.dart';
-import 'package:nestprep/features/documents/data/document_opener.dart';
 import 'package:nestprep/features/documents/data/document_picker.dart';
 import 'package:nestprep/features/documents/data/document_repository.dart';
 import 'package:nestprep/features/documents/data/document_store.dart';
@@ -10,6 +9,7 @@ import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/model/household_document.dart';
 import 'package:nestprep/features/documents/model/picked_document.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/time/calendar_date.dart';
 
 /// Everything behind the documents controller, faked: the metadata, the bytes,
 /// the two callables, the device's picker and the device's viewer.
@@ -33,7 +33,16 @@ final class FakeDocumentRepository implements DocumentRepository {
   final createdFolders = <String>[];
   final renamedFolders = <({String folderId, String name})>[];
   final added = <({String documentId, String folderId, String name})>[];
-  final edited = <({String documentId, String name, String folderId})>[];
+  final edited =
+      <
+        ({
+          String documentId,
+          String name,
+          String folderId,
+          List<String> tags,
+          CalendarDate? expiresOn,
+        })
+      >[];
   final removed = <String>[];
 
   void emitFolders(List<DocumentFolder> folders) => _folders.add(folders);
@@ -100,9 +109,17 @@ final class FakeDocumentRepository implements DocumentRepository {
     required String documentId,
     required String name,
     required String folderId,
+    required List<String> tags,
+    required CalendarDate? expiresOn,
   }) async {
     _refuseIfAsked();
-    edited.add((documentId: documentId, name: name, folderId: folderId));
+    edited.add((
+      documentId: documentId,
+      name: name,
+      folderId: folderId,
+      tags: tags,
+      expiresOn: expiresOn,
+    ));
   }
 
   @override
@@ -202,8 +219,23 @@ final class FakeDocumentUpload implements DocumentUpload {
 final class FakeDocumentDirectory implements DocumentDirectory {
   AppFailure? failSyncWith;
   AppFailure? failDeleteWith;
+  AppFailure? failOpenWith;
   var syncCount = 0;
   final deletedFolders = <String>[];
+
+  /// Every vault document opened, in order — the log the server would write.
+  final opened = <({String ownerMemberId, String documentId})>[];
+
+  @override
+  Future<void> openVaultDocument({
+    required String householdId,
+    required String ownerMemberId,
+    required String documentId,
+  }) async {
+    final failure = failOpenWith;
+    if (failure != null) throw failure;
+    opened.add((ownerMemberId: ownerMemberId, documentId: documentId));
+  }
 
   @override
   Future<void> syncAccess() async {
@@ -233,17 +265,6 @@ final class FakeDocumentPicker implements DocumentPicker {
   Future<PickedDocument?> pickOne() async {
     pickCount++;
     return next;
-  }
-}
-
-final class FakeDocumentOpener implements DocumentOpener {
-  var willOpen = true;
-  final opened = <Uri>[];
-
-  @override
-  Future<bool> open(Uri link) async {
-    opened.add(link);
-    return willOpen;
   }
 }
 

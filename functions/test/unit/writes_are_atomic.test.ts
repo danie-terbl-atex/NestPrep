@@ -131,6 +131,11 @@ describe('every callable declares what it may cost', () => {
         'setMemberAccess',
         'setMemberRole',
         'syncDocumentAccess',
+        // Documents phase 2: the one door to a vault document's bytes, which
+        // writes the view log a client could skip, and the daily expiry sweep,
+        // which no rule can schedule (documents ADR-0003, ADR-0005).
+        'openVaultDocument',
+        'sweepExpiryReminders',
         // Product analytics: counting the beta numbers, which no rule can do
         // because a rule cannot write a second document (product-analytics
         // ADR-0001).

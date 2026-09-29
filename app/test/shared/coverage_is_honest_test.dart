@@ -67,12 +67,25 @@ void main() {
         'calls Functions and refreshes an ID token',
     'lib/features/documents/data/file_selector_document_picker.dart':
         'opens the platform file picker',
-    'lib/features/documents/data/launcher_document_opener.dart':
-        'hands a link to the platform',
     'lib/features/kid_accounts/data/callable_kid_sign_in_directory.dart':
         'calls Functions',
     'lib/features/kid_accounts/data/firestore_kid_device_repository.dart':
         'reads Firestore',
+    // Documents phase 2 (documents ADR-0002 to ADR-0004).
+    'lib/app/documents_providers.dart':
+        'builds the vault providers over live Firebase and plugins',
+    'lib/features/documents/data/firestore_vault_repository.dart':
+        'writes Firestore',
+    'lib/features/documents/data/storage_vault_store.dart':
+        'wraps FirebaseStorage',
+    'lib/features/documents/data/storage_upload.dart':
+        'wraps a FirebaseStorage UploadTask',
+    'lib/features/documents/data/local_auth_device_lock.dart':
+        'asks the platform biometric prompt',
+    'lib/features/documents/data/platform_document_scanner.dart':
+        'opens the platform document scanner',
+    'lib/features/documents/data/printing_pdf_page_renderer.dart':
+        'rasterises through the platform PDF engine',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -91,13 +104,19 @@ void main() {
     'lib/features/documents/data/document_store.dart': 'interface only',
     'lib/features/documents/data/document_directory.dart': 'interface only',
     'lib/features/documents/data/document_picker.dart': 'interface only',
-    'lib/features/documents/data/document_opener.dart': 'interface only',
     'lib/features/kid_accounts/data/kid_sign_in_directory.dart':
         'interface only',
     'lib/features/kid_accounts/data/kid_device_repository.dart':
         'interface only',
     'lib/features/family_profiles/data/family_profile_repository.dart':
         'interface only',
+    'lib/features/documents/data/device_lock.dart': 'interface only',
+    'lib/features/documents/data/document_scanner.dart': 'interface only',
+    'lib/features/documents/data/pdf_page_renderer.dart': 'interface only',
+    'lib/features/documents/data/scan_composer.dart': 'interface only',
+    'lib/features/documents/data/vault_store.dart': 'interface only',
+    'lib/features/documents/state/upload_destination.dart': 'interface only',
+    'lib/features/documents/model/vault_lock_state.dart': 'two enums only',
     'lib/design/nest_kit.dart': 'barrel of exports',
 
     // Compile-time constants, folded before anything runs. Tested by their

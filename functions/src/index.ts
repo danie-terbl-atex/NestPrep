@@ -40,3 +40,7 @@ export { shareCalendarFeed } from './calendar_sync/share_calendar_feed';
 export { resetCalendarFeed } from './calendar_sync/reset_calendar_feed';
 export { calendarFeed } from './calendar_sync/calendar_feed';
 export { syncCalendarsOnSchedule } from './calendar_sync/sync_calendars_on_schedule';
+
+// documents phase 2 — personal vaults and expiry reminders (documents ADR-0003, ADR-0005)
+export { openVaultDocument } from './documents/open_vault_document';
+export { sweepExpiryReminders } from './documents/sweep_expiry_reminders';

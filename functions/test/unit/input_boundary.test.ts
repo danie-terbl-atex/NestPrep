@@ -12,7 +12,7 @@ import {
   setMemberRoleInput,
 } from '../../src/household/schemas';
 import { ROLE_DEFAULTS } from '../../src/household/access';
-import { deleteDocumentFolderInput } from '../../src/documents/schemas';
+import { deleteDocumentFolderInput, openVaultDocumentInput } from '../../src/documents/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import {
   cancelKidPairingInput,
@@ -99,6 +99,12 @@ const validBodies = {
   syncCalendarConnection: {
     schema: connectionInput,
     body: { householdId: 'h1', connectionId: 'c1' },
+  },
+  // Documents phase 2: the one door to a vault document's bytes (documents
+  // ADR-0003).
+  openVaultDocument: {
+    schema: openVaultDocumentInput,
+    body: { householdId: 'h1', ownerMemberId: 'm-emma', documentId: 'doc-1' },
   },
 } as const;
 

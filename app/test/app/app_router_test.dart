@@ -39,6 +39,7 @@ import '../support/fake_calendar_sync.dart';
 import '../support/fake_family_profiles.dart';
 import '../support/fake_grocery_repository.dart';
 import '../support/fake_household.dart';
+import '../support/fake_link_opener.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_todo_repository.dart';

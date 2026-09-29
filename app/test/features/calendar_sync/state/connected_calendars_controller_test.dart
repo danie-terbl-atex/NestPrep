@@ -9,6 +9,7 @@ import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_calendar_sync.dart';
+import '../../../support/fake_link_opener.dart';
 import '../../../support/household_fixtures.dart';
 
 /// The connected calendars controller (calendar ADR-0003): it shows what the

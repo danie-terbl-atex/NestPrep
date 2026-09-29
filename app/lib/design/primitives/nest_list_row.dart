@@ -16,6 +16,7 @@ class NestListRow extends StatelessWidget {
     this.onTap,
     this.isSelected = false,
     this.titleStyle,
+    this.footer,
     super.key,
   });
 
@@ -28,6 +29,10 @@ class NestListRow extends StatelessWidget {
 
   /// Override for the light, large list title of a schedule row.
   final TextStyle? titleStyle;
+
+  /// Anything under the subtitle — a row of badges, say. It sits inside the
+  /// row's own box, so the row still owns its layout (`FE-03`).
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +73,10 @@ class NestListRow extends StatelessWidget {
                         if (subtitleText != null) ...[
                           const SizedBox(height: NestSpace.xxs),
                           Text(subtitleText, style: nest.text.caption),
+                        ],
+                        if (footer != null) ...[
+                          const SizedBox(height: NestSpace.sm),
+                          footer!,
                         ],
                       ],
                     ),

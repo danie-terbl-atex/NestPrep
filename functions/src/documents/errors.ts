@@ -18,6 +18,10 @@ export const DOCUMENT_REFUSALS = {
   notAnAdmin: ['permission-denied', 'Only an admin can do that.'],
   folderNotFound: ['not-found', 'That folder no longer exists.'],
   folderNotEmpty: ['failed-precondition', 'That folder still holds documents.'],
+  // A personal vault the caller is neither the owner of, an admin of, nor
+  // granted (documents ADR-0002).
+  vaultNotShared: ['permission-denied', 'That vault has not been shared with you.'],
+  documentNotFound: ['not-found', 'That document no longer exists.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type DocumentRefusal = keyof typeof DOCUMENT_REFUSALS;

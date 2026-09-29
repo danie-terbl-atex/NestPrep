@@ -4,9 +4,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/links/external_link_opener.dart';
 import '../../../shared/state/action_failure.dart';
+import '../../../shared/time/calendar_date.dart';
 import '../data/document_directory.dart';
-import '../data/document_opener.dart';
 import '../data/document_picker.dart';
 import '../data/document_repository.dart';
 import '../data/document_store.dart';
@@ -14,8 +15,11 @@ import '../model/document_folder.dart';
 import '../model/document_library.dart';
 import '../model/document_limits.dart';
 import '../model/household_document.dart';
+import 'document_library_listeners.dart';
 import 'document_upload_runner.dart';
 import 'document_upload_state.dart';
+import 'folder_upload_destination.dart';
+import 'scan_intake.dart';
 
 /// The documents screens' controller: two live reads become one library, with
 /// one upload at a time running beside it.
@@ -31,7 +35,8 @@ final class DocumentLibraryController extends ChangeNotifier
     required DocumentStore documentStore,
     required DocumentDirectory documentDirectory,
     required DocumentPicker documentPicker,
-    required DocumentOpener documentOpener,
+    required ExternalLinkOpener documentOpener,
+    required this.scanIntake,
     required this.householdId,
     required this.memberId,
     required this.viewerUid,
@@ -41,14 +46,21 @@ final class DocumentLibraryController extends ChangeNotifier
        _directory = documentDirectory,
        _picker = documentPicker,
        _opener = documentOpener {
-    _uploads = DocumentUploadRunner(
-      documentRepository: documentRepository,
-      documentStore: documentStore,
-      householdId: householdId,
-      memberId: memberId,
-      viewerUid: viewerUid,
+    _uploads = DocumentUploadRunner<String>(
+      destination: FolderUploadDestination(
+        repository: documentRepository,
+        store: documentStore,
+        householdId: householdId,
+        memberId: memberId,
+        viewerUid: viewerUid,
+      ),
       notifyChange: notifyListeners,
       reportFailure: recordFailure,
+    );
+    _listeners = DocumentLibraryListeners(
+      repository: documentRepository,
+      householdId: householdId,
+      onLibrary: _onLibrary,
     );
     _start();
   }
@@ -57,8 +69,13 @@ final class DocumentLibraryController extends ChangeNotifier
   final DocumentStore _store;
   final DocumentDirectory _directory;
   final DocumentPicker _picker;
-  final DocumentOpener _opener;
-  late final DocumentUploadRunner _uploads;
+  final ExternalLinkOpener _opener;
+  late final DocumentUploadRunner<String> _uploads;
+  late final DocumentLibraryListeners _listeners;
+
+  /// The camera scanner and the pipeline that makes one PDF of its pages,
+  /// shared with the vault (documents ADR-0004).
+  final ScanIntake scanIntake;
 
   final String householdId;
 
@@ -71,14 +88,18 @@ final class DocumentLibraryController extends ChangeNotifier
 
   final bool isAdmin;
 
-  StreamSubscription<List<DocumentFolder>>? _folderSubscription;
-  StreamSubscription<List<HouseholdDocument>>? _documentSubscription;
-
-  List<DocumentFolder>? _folders;
-  List<HouseholdDocument>? _documents;
   AsyncState<DocumentLibrary> _library = const AsyncLoading();
 
+  /// A scan is being composed into its PDF, before the upload starts.
+  bool get isPreparing => _uploads.isPreparing;
+
   AsyncState<DocumentLibrary> get library => _library;
+
+  /// The library once it has loaded, for a sheet that needs its folders.
+  DocumentLibrary? get loadedLibrary => switch (_library) {
+    AsyncData(:final value) => value,
+    _ => null,
+  };
 
   /// The upload in flight, or null when nothing is being added.
   DocumentUploadState? get upload => _uploads.state;
@@ -87,9 +108,7 @@ final class DocumentLibraryController extends ChangeNotifier
   bool get canRetryUpload => _uploads.canRetry;
 
   Future<void> retry() async {
-    await _cancel();
-    _folders = null;
-    _documents = null;
+    await _listeners.stop();
     _library = const AsyncLoading();
     notifyListeners();
     _start();
@@ -147,7 +166,33 @@ final class DocumentLibraryController extends ChangeNotifier
       recordFailure(DocumentFailure(problem));
       return;
     }
-    await _uploads.start(folderId: folderId, file: file);
+    await _uploads.start(details: folderId, file: file);
+  }
+
+  /// The sides of a scan, or null when somebody backed out of the scanner or
+  /// it could not run — the latter said on screen.
+  Future<List<Uint8List>?> scanSides() async {
+    clearFailureQuietly();
+    try {
+      return await scanIntake.capture();
+    } on AppFailure catch (failure) {
+      recordFailure(failure);
+      return null;
+    }
+  }
+
+  /// Files a scan somebody has reviewed: its sides become one compressed PDF
+  /// named [name], added like any other file (documents ADR-0004).
+  Future<void> addScan(
+    String folderId, {
+    required List<Uint8List> pages,
+    required String name,
+  }) async {
+    clearFailureQuietly();
+    await _uploads.prepareAndStart(
+      details: folderId,
+      prepare: () => scanIntake.compose(pages, name: name),
+    );
   }
 
   Future<void> retryUpload() => _uploads.retry();
@@ -163,6 +208,8 @@ final class DocumentLibraryController extends ChangeNotifier
     HouseholdDocument document, {
     required String name,
     required String folderId,
+    required List<String> tags,
+    required CalendarDate? expiresOn,
   }) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
@@ -172,6 +219,8 @@ final class DocumentLibraryController extends ChangeNotifier
         documentId: document.id,
         name: trimmed,
         folderId: folderId,
+        tags: tags,
+        expiresOn: expiresOn,
       ),
     );
   }
@@ -213,7 +262,7 @@ final class DocumentLibraryController extends ChangeNotifier
   // ---- the plumbing ----
 
   void _start() {
-    _subscribe();
+    _listeners.start();
     unawaited(_openStorageAccess());
   }
 
@@ -228,48 +277,14 @@ final class DocumentLibraryController extends ChangeNotifier
     }
   }
 
-  void _subscribe() {
-    _folderSubscription = _repository.watchFolders(householdId).listen((
-      folders,
-    ) {
-      _folders = folders;
-      _publish();
-    }, onError: _onError);
-    _documentSubscription = _repository.watchDocuments(householdId).listen((
-      documents,
-    ) {
-      _documents = documents;
-      _publish();
-    }, onError: _onError);
-  }
-
-  void _publish() {
-    final folders = _folders;
-    final documents = _documents;
-    if (folders == null || documents == null) return;
-    _library = AsyncData(
-      DocumentLibrary(folders: folders, documents: documents),
-    );
+  void _onLibrary(AsyncState<DocumentLibrary> library) {
+    _library = library;
     notifyListeners();
-  }
-
-  void _onError(Object error) {
-    _library = AsyncFailure(
-      error is AppFailure ? error : UnknownFailure(error),
-    );
-    notifyListeners();
-  }
-
-  Future<void> _cancel() async {
-    await _folderSubscription?.cancel();
-    await _documentSubscription?.cancel();
-    _folderSubscription = null;
-    _documentSubscription = null;
   }
 
   @override
   void dispose() {
-    unawaited(_cancel());
+    unawaited(_listeners.stop());
     super.dispose();
   }
 }

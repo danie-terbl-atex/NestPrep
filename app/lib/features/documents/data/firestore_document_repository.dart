@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
+import '../../../shared/time/calendar_date.dart';
 import '../model/document_folder.dart';
 import '../model/household_document.dart';
 import 'document_repository.dart';
@@ -113,11 +114,15 @@ final class FirestoreDocumentRepository implements DocumentRepository {
     required String documentId,
     required String name,
     required String folderId,
+    required List<String> tags,
+    required CalendarDate? expiresOn,
   }) => _guarded(
-    () =>
-        _documents(householdId)
-            .doc(documentId)
-            .update({'name': name, 'folderId': folderId}),
+    () => _documents(householdId).doc(documentId).update({
+      'name': name,
+      'folderId': folderId,
+      'tags': tags,
+      'expiresOn': expiresOn?.iso,
+    }),
   );
 
   @override

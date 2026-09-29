@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>To scan a document — the front and back of an ID card, a passport page — into your family's vault.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>So your household can see where you are while you choose to share it. Sharing is always yours to start and stop, and every share ends on its own.</string>
 	<key>UIApplicationSceneManifest</key>

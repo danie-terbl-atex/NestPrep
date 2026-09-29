@@ -42,7 +42,7 @@ import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'calendar_routes.dart';
 import 'design_gallery_access.dart';
-import 'documents_routes.dart';
+import 'documents_shell.dart';
 import 'family_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
@@ -119,8 +119,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // household phase 2: the invite step and the access editor (household
         // ADR-0003).
         ...householdAccessRoutes(),
-        // documents (documents ADR-0001).
-        documentsRoutes(session),
+        // Documents — folders, vaults, their log and search — in a shell of
+        // its own (documents ADR-0001, ADR-0003).
+        documentsShellRoute(session),
         // The parent's kid sign-in screen (accounts ADR-0003).
         kidSignInRoute(),
         // family-profiles (family-profiles ADR-0001): the family and one

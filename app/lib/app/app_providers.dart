@@ -18,13 +18,11 @@ import '../features/calendar_sync/data/callable_calendar_sync_directory.dart';
 import '../features/calendar_sync/data/firestore_calendar_sync_repository.dart';
 import '../features/documents/data/callable_document_directory.dart';
 import '../features/documents/data/document_directory.dart';
-import '../features/documents/data/document_opener.dart';
 import '../features/documents/data/document_picker.dart';
 import '../features/documents/data/document_repository.dart';
 import '../features/documents/data/document_store.dart';
 import '../features/documents/data/file_selector_document_picker.dart';
 import '../features/documents/data/firestore_document_repository.dart';
-import '../features/documents/data/launcher_document_opener.dart';
 import '../features/documents/data/storage_document_store.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/data/firestore_family_profile_repository.dart';
@@ -56,6 +54,7 @@ import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
+import 'documents_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'location_reporting.dart';
 
@@ -150,7 +149,6 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<DocumentPicker>(
     create: (context) => const FileSelectorDocumentPicker(),
   ),
-  Provider<DocumentOpener>(create: (context) => const LauncherDocumentOpener()),
   // ---- product analytics (product-analytics ADR-0001) ----
   // The heartbeat is app-wide so its once-a-day memory outlives any one
   // household shell; the shell's scope only tells it when to beat.
@@ -182,6 +180,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) =>
         FirestoreFamilyProfileRepository(context.read<FirebaseFirestore>()),
   ),
+  // documents phase 2 — vaults, lock, scanning (documents ADR-0002 to ADR-0004)
+  ...documentVaultProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

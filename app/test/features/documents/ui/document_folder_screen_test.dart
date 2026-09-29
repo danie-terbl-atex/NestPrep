@@ -10,6 +10,8 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_link_opener.dart';
+import '../../../support/fake_vault.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -36,7 +38,7 @@ void main() {
   late FakeDocumentStore store;
   late FakeDocumentDirectory directory;
   late FakeDocumentPicker picker;
-  late FakeDocumentOpener opener;
+  late FakeLinkOpener opener;
   late DocumentLibraryController controller;
 
   setUp(() {
@@ -44,13 +46,14 @@ void main() {
     store = FakeDocumentStore();
     directory = FakeDocumentDirectory();
     picker = FakeDocumentPicker();
-    opener = FakeDocumentOpener();
+    opener = FakeLinkOpener();
     controller = DocumentLibraryController(
       documentRepository: repository,
       documentStore: store,
       documentDirectory: directory,
       documentPicker: picker,
       documentOpener: opener,
+      scanIntake: fakeScanIntake(),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       viewerUid: Fixtures.samUid,
@@ -74,6 +77,7 @@ void main() {
       ChangeNotifierProvider<DocumentLibraryController>.value(
         value: controller,
       ),
+      vaultLockProvider(),
     ],
     brightness: brightness ?? Brightness.light,
     textScale: scale,

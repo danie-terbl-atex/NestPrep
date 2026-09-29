@@ -5,12 +5,16 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/vault_copy.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/time/household_clock.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../model/document_library.dart';
+import '../model/document_tags.dart';
 import '../state/document_library_controller.dart';
+import 'add_to_folder.dart';
 import 'document_row.dart';
 import 'document_sheet.dart';
 import 'document_upload_card.dart';
@@ -57,7 +61,7 @@ class DocumentFolderScreen extends StatelessWidget {
             variant: NestIconButtonVariant.accent,
             onPressed: controller.upload != null
                 ? null
-                : () => controller.addDocument(folderId),
+                : () => addToFolder(context, folderId),
           ),
         const AccountMenuButton(),
       ],
@@ -73,6 +77,11 @@ class DocumentFolderScreen extends StatelessWidget {
                 actionLabel: AppCopy.back,
                 onAction: controller.dismissActionFailure,
               ),
+            ),
+          if (controller.isPreparing)
+            const Padding(
+              padding: EdgeInsets.only(bottom: NestSpace.md),
+              child: NestBanner(message: VaultCopy.preparing),
             ),
           if (controller.upload != null || controller.canRetryUpload)
             Padding(
@@ -136,6 +145,12 @@ class _DocumentList extends StatelessWidget {
   Widget build(BuildContext context) {
     final view = context.read<HouseholdView>();
     final controller = context.read<DocumentLibraryController>();
+    final today = context.read<HouseholdClock>().today;
+    final vocabulary = DocumentTags.vocabulary(
+      library.folders
+          .expand((folder) => library.inFolder(folder.id))
+          .map((document) => document.tags),
+    );
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -144,8 +159,13 @@ class _DocumentList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: NestSpace.sm),
             child: DocumentRow(
               key: ValueKey(document.id),
-              document: document,
-              uploadedBy: view.memberById(document.uploadedBy),
+              name: document.name,
+              sizeBytes: document.sizeBytes,
+              isImage: document.isPreviewable,
+              byline: view.memberById(document.uploadedBy)?.displayName,
+              tags: document.tags,
+              expiresOn: document.expiresOn,
+              today: today,
               onOpen: () => showDocumentSheet(
                 context: context,
                 document: document,
@@ -154,6 +174,7 @@ class _DocumentList extends StatelessWidget {
                     controller.isAdmin ||
                     (view.permissions.canEdit(HouseholdArea.documents) &&
                         document.uploadedBy == controller.memberId),
+                tagSuggestions: vocabulary,
               ),
             ),
           ),

@@ -9,6 +9,8 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_link_opener.dart';
+import '../../../support/fake_vault.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -52,7 +54,8 @@ void main() {
       documentStore: store,
       documentDirectory: directory,
       documentPicker: FakeDocumentPicker(),
-      documentOpener: FakeDocumentOpener(),
+      documentOpener: FakeLinkOpener(),
+      scanIntake: fakeScanIntake(),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       viewerUid: Fixtures.samUid,
@@ -80,6 +83,7 @@ void main() {
         ChangeNotifierProvider<DocumentLibraryController>.value(
           value: controller,
         ),
+        vaultLockProvider(),
       ],
     );
     repository.emitFolders([folder()]);
@@ -95,6 +99,7 @@ void main() {
         ChangeNotifierProvider<DocumentLibraryController>.value(
           value: controller,
         ),
+        vaultLockProvider(),
       ],
     );
     repository.emitFolders([folder()]);
@@ -157,12 +162,30 @@ void main() {
       await pumpFolder(tester);
 
       await tapOn(tester, find.text('Term letter'));
-      await tester.enterText(find.byType(TextField), 'Term 3 letter');
+      await tester.enterText(find.byType(TextField).first, 'Term 3 letter');
       await tester.pumpAndSettle();
       await tapOn(tester, find.text(AppCopy.householdSave));
 
       expect(repository.edited.single.name, 'Term 3 letter');
       expect(repository.edited.single.folderId, _folderId);
+    });
+
+    testWidgets('tags a document, and keeps no expiry it was never given', (
+      tester,
+    ) async {
+      // Tags and expiry are phase 2's (documents ADR-0005); a household
+      // document written before them has neither, and saving it must not
+      // invent a date.
+      await pumpFolder(tester);
+
+      await tapOn(tester, find.text('Term letter'));
+      await tester.enterText(find.byType(TextField).at(1), 'School');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      await tapOn(tester, find.text(AppCopy.householdSave));
+
+      expect(repository.edited.single.tags, ['School']);
+      expect(repository.edited.single.expiresOn, isNull);
     });
 
     testWidgets('offers the device for a file the app cannot render', (
@@ -199,7 +222,8 @@ void main() {
         documentStore: store,
         documentDirectory: directory,
         documentPicker: FakeDocumentPicker(),
-        documentOpener: FakeDocumentOpener(),
+        documentOpener: FakeLinkOpener(),
+        scanIntake: fakeScanIntake(),
         householdId: Fixtures.householdId,
         memberId: Fixtures.thandiMemberId,
         viewerUid: Fixtures.thandiUid,
