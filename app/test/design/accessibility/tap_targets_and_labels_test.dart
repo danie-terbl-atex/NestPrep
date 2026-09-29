@@ -45,6 +45,7 @@ import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
 import '../../support/fake_todo_repository.dart';
 import '../../support/fake_vault.dart';
+import '../../support/grocery_plan_harness.dart';
 import '../../support/household_fixtures.dart';
 import '../../support/kid_home_fixture.dart';
 import '../../support/pump_screen.dart';
@@ -162,14 +163,20 @@ void main() {
       now: () => now,
     );
     addTearDown(controller.dispose);
+    // groceries phase 2: the week's plans, with something to propose, so the
+    // prompt and its button are audited too.
+    final plans = GroceryPlanHarness();
+    addTearDown(plans.close);
 
     await pumpScreen(
       tester,
       GroceryListScreen(onSelectTab: (_) {}),
       providers: [
         ChangeNotifierProvider<GroceryListController>.value(value: controller),
+        plans.provider,
       ],
     );
+    plans.open(mealNeeds: [GroceryPlanHarness.dinner('Bread', 2)]);
     repository.emitItems([
       GroceryItem(
         id: 'g1',

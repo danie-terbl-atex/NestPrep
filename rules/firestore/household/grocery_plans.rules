@@ -1,0 +1,21 @@
+// ---- groceries: the week's plans against the list (groceries ADR-0002) ----
+
+// One document, `plans`: whether the list is kept in step with the week's
+// meal and lunch plans, and the names marked *usually in the house*. The
+// household's, not anybody's — any groceries editor changes it, signed with
+// their own member at the server's time.
+match /grocerySettings/{settingId} {
+  allow read: if canView(householdId, 'groceries');
+
+  allow create, update: if canEdit(householdId, 'groceries')
+    && settingId == 'plans'
+    && request.resource.data.keys().hasOnly(
+         ['keepInStep', 'staples', 'updatedBy', 'updatedAt'])
+    && request.resource.data.get('keepInStep', false) is bool
+    && request.resource.data.get('staples', []) is list
+    && request.resource.data.get('staples', []).size() <= 200
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt');
+
+  allow delete: if false;
+}

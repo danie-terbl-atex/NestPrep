@@ -1,5 +1,6 @@
 import '../model/grocery_item.dart';
-import '../model/grocery_source.dart';
+import '../model/grocery_plan_changes.dart';
+import '../model/grocery_plan_settings.dart';
 
 /// What the groceries feature needs from Firestore.
 ///
@@ -14,14 +15,13 @@ abstract interface class GroceryRepository {
   /// (groceries ADR-0001).
   Stream<List<GroceryItem>> watchItems(String householdId);
 
-  /// A line nobody typed says where it came from — the pantry's shortfall,
-  /// say (lunch-box ADR-0006).
+  /// A line a person typed. What the plans — or the pantry — put on the list
+  /// goes through [applyPlanChanges] instead, and says where it came from.
   Future<void> add({
     required String householdId,
     required String name,
     String? quantity,
     required String addedBy,
-    GrocerySource? origin,
   });
 
   /// Ticks or unticks. Ticking stamps the server's time and who did it;
@@ -34,7 +34,9 @@ abstract interface class GroceryRepository {
   });
 
   /// Edits an item's name **and** its quantity — both are written, so this is
-  /// an edit rather than only a rename.
+  /// an edit rather than only a rename. An item the plans put there becomes
+  /// the editor's: its source fields are cleared in the same write, so the
+  /// plans leave it alone from then on (groceries ADR-0002).
   ///
   /// [quantity] is `required` while still nullable on purpose. Writing it
   /// unconditionally is right — clearing a quantity has to be possible — but
@@ -48,6 +50,33 @@ abstract interface class GroceryRepository {
   });
 
   Future<void> remove({required String householdId, required String itemId});
+
+  /// Writes what the week's plans change on the list — new items, refreshed
+  /// amounts, items no plan asks for now — in one batch, so a half-applied
+  /// update is never on anybody's screen (groceries ADR-0002, `BE-07`).
+  Future<void> applyPlanChanges({
+    required String householdId,
+    required GroceryPlanChanges changes,
+    required String memberId,
+  });
+
+  /// The household's keep-in-step switch and staples; [GroceryPlanSettings.empty]
+  /// until somebody sets either.
+  Stream<GroceryPlanSettings> watchPlanSettings(String householdId);
+
+  Future<void> setKeepInStep({
+    required String householdId,
+    required bool keepInStep,
+    required String memberId,
+  });
+
+  /// Marks a normalised name *usually in the house*, or takes the mark off.
+  Future<void> setStaple({
+    required String householdId,
+    required String key,
+    required bool isStaple,
+    required String memberId,
+  });
 
   /// How much of a household's list is read at once. Bounded so a bug cannot
   /// make it unbounded; far above what a household actually has.

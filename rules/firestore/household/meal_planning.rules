@@ -13,18 +13,23 @@ match /meals/{mealId} {
 
   allow create: if canEdit(householdId, 'meals')
     && request.resource.data.keys().hasOnly(
-         ['name', 'nameKey', 'addedBy', 'createdAt'])
+         ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients'])
     && isNonEmptyString(request.resource.data.name)
     && isNormalisedKey(request.resource.data.nameKey)
     && isOwnMember(householdId, request.resource.data.addedBy)
-    && isServerTime('createdAt');
+    && isServerTime('createdAt')
+    && mealsIngredientsAreValid(request.resource.data.get('ingredients', []));
 
+  // Renaming is the adder's or an admin's; what goes in a meal is anybody's
+  // who edits meals (meal-planning ADR-0002) — the two never share a write.
   allow update: if canEdit(householdId, 'meals')
-    && onlyChanged(['name', 'nameKey'])
-    && isNonEmptyString(request.resource.data.name)
-    && isNormalisedKey(request.resource.data.nameKey)
-    && (isAdmin(householdId)
-          || isOwnMember(householdId, resource.data.addedBy));
+    && ((onlyChanged(['name', 'nameKey'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNormalisedKey(request.resource.data.nameKey)
+          && (isAdmin(householdId)
+                || isOwnMember(householdId, resource.data.addedBy)))
+        || (onlyChanged(['ingredients'])
+          && mealsIngredientsAreValid(request.resource.data.ingredients)));
 
   allow delete: if isAdmin(householdId)
     || (canEdit(householdId, 'meals')
@@ -32,6 +37,13 @@ match /meals/{mealId} {
 
   function isNormalisedKey(value) {
     return value is string && value.size() > 0 && value == value.lower();
+  }
+
+  // The list's size, not each line's shape: the rules language cannot loop,
+  // and a malformed line is dropped by the app's parser — the household's
+  // own library, not a way into anybody's data (meal-planning ADR-0002).
+  function mealsIngredientsAreValid(value) {
+    return value is list && value.size() <= 40;
   }
 }
 

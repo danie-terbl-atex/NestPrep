@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
+import 'package:nestprep/features/meal_planning/model/meal_ingredient.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/text/normalised_name.dart';
@@ -24,6 +25,8 @@ final class FakeMealRepository implements MealRepository {
   final watchedWeeks = <String>[];
   final addedMeals = <String>[];
   final renamedMeals = <({String mealId, String name})>[];
+  final ingredientWrites =
+      <({String mealId, List<MealIngredient> ingredients})>[];
   final deletedMeals = <({String mealId, List<String> weeks})>[];
   final writtenSlots = <({String monday, Map<String, String> slots})>[];
 
@@ -84,6 +87,16 @@ final class FakeMealRepository implements MealRepository {
   }) async {
     _refuseIfAsked();
     renamedMeals.add((mealId: mealId, name: name));
+  }
+
+  @override
+  Future<void> setIngredients({
+    required String householdId,
+    required String mealId,
+    required List<MealIngredient> ingredients,
+  }) async {
+    _refuseIfAsked();
+    ingredientWrites.add((mealId: mealId, ingredients: ingredients));
   }
 
   @override

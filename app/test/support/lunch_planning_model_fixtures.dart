@@ -61,7 +61,9 @@ List<ModelFixture> lunchPlanningModelFixtures(DateTime at) {
     quantity: 'for 3 lunch boxes',
     addedBy: 'm1',
     addedAt: at,
-    source: 'pantry',
+    sourceKey: 'apple slices',
+    sourceWeek: '2026-W40',
+    sourceNote: 'Not in the pantry — 3 lunch boxes need it',
   );
   return [
     ModelFixture(
@@ -133,11 +135,13 @@ List<ModelFixture> lunchPlanningModelFixtures(DateTime at) {
         'addedAt',
         'boughtAt',
         'boughtBy',
-        'source',
+        'sourceKey',
+        'sourceWeek',
+        'sourceNote',
       },
       note:
-          'a typed line writes no `source`; the pantry’s writes `pantry` '
-          '(lunch-box ADR-0006).',
+          'the pantry writes a planned item, the one provenance groceries '
+          'knows (groceries ADR-0002, lunch-box ADR-0006).',
     ),
   ];
 }

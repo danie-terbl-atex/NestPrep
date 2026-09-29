@@ -5,6 +5,7 @@ import '../../../shared/firestore/typed_collection.dart';
 import '../../../shared/text/normalised_name.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../model/meal.dart';
+import '../model/meal_ingredient.dart';
 import '../model/week_plan.dart';
 import 'meal_repository.dart';
 
@@ -96,6 +97,19 @@ final class FirestoreMealRepository implements MealRepository {
         _meals(householdId)
             .doc(mealId)
             .update({'name': name, 'nameKey': normalisedName(name)}),
+  );
+
+  @override
+  Future<void> setIngredients({
+    required String householdId,
+    required String mealId,
+    required List<MealIngredient> ingredients,
+  }) => _guarded(
+    () => _meals(householdId).doc(mealId).update({
+      // An update names its fields by hand, so each line is turned into its
+      // map here — Firestore never calls `toJson` on a nested model.
+      'ingredients': [for (final line in ingredients) line.toJson()],
+    }),
   );
 
   @override

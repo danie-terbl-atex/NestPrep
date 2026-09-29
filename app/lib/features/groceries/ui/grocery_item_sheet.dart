@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/grocery_plan_copy.dart';
 import '../model/grocery_item.dart';
 import '../state/grocery_list_controller.dart';
 
@@ -65,6 +66,14 @@ class _GroceryItemSheetBodyState extends State<_GroceryItemSheetBody> {
           controller: _quantity,
           textInputAction: TextInputAction.done,
         ),
+        if (widget.item.isFromPlans) ...[
+          const SizedBox(height: NestSpace.md),
+          // Saving makes it the editor's (groceries ADR-0002); say so first.
+          Text(
+            GroceryPlanCopy.editAdopts,
+            style: NestTheme.of(context).text.caption,
+          ),
+        ],
         const SizedBox(height: NestSpace.xxl),
         NestButton(
           label: AppCopy.householdSave,

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
-import 'package:nestprep/features/groceries/model/grocery_source.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_box.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_item_draft.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_packed_day.dart';
@@ -146,6 +145,7 @@ void main() {
       );
       final sending = harness.pantry.sendShortfallToGroceries(
         quantityFor: (boxes) => 'for $boxes',
+        noteFor: (boxes) => 'short by $boxes',
       );
       await pumpEventQueue();
       harness.groceries.emitItems([
@@ -156,12 +156,15 @@ void main() {
         ),
       ]);
       expect(await sending, 1);
-      expect(harness.groceries.added.single, (
-        name: 'Apple slices',
-        quantity: 'for 1',
-        addedBy: Fixtures.samMemberId,
-      ));
-      expect(harness.groceries.origins, [GrocerySource.pantry]);
+      // A planned item: the groceries feature's one way of saying where a
+      // line nobody typed came from (groceries ADR-0002).
+      final write = harness.groceries.planChanges.single;
+      expect(write.memberId, Fixtures.samMemberId);
+      final create = write.changes.creates.single;
+      expect(
+        (create.name, create.quantity, create.key, create.note),
+        ('Apple slices', 'for 1', 'apple slices', 'short by 1'),
+      );
     },
   );
 

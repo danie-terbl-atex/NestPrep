@@ -86,6 +86,7 @@ class _LunchPantryMissingCardState extends State<LunchPantryMissingCard> {
   Future<void> _send(LunchPantryController pantry) async {
     final added = await pantry.sendShortfallToGroceries(
       quantityFor: LunchPantryCopy.forBoxes,
+      noteFor: LunchPantryCopy.shortfallNote,
     );
     if (!mounted || added == null) return;
     setState(() => _added = added);

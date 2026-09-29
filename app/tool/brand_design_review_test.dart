@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../test/support/fake_auth.dart';
 import '../test/support/fake_grocery_repository.dart';
+import '../test/support/grocery_plan_harness.dart';
 import '../test/support/household_fixtures.dart';
 import 'review_press.dart';
 
@@ -61,15 +62,23 @@ void main() {
       memberId: Fixtures.samMemberId,
     );
     addTearDown(controller.dispose);
+    // A first-run household has planned nothing either, so the plans are
+    // quiet and the empty state is the nest (groceries ADR-0002).
+    final plans = GroceryPlanHarness();
+    addTearDown(plans.close);
     await captureScreen(
       tester,
       'groceries-empty-${brightness.name}',
       screen: GroceryListScreen(onSelectTab: (_) {}),
       providers: [
         ChangeNotifierProvider<GroceryListController>.value(value: controller),
+        plans.provider,
       ],
       brightness: brightness,
-      emit: () async => repository.emitItems(const []),
+      emit: () async {
+        repository.emitItems(const []);
+        plans.open();
+      },
     );
   }
 

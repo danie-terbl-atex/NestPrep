@@ -4,19 +4,28 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/meal_ingredient_copy.dart';
 import '../../../shared/ui/rename_sheet.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../state/meal_plan_controller.dart';
+import 'meal_ingredients_sheet.dart';
 
-/// Renames or deletes what the household eats. Deleting clears the slots that
-/// used it, which the sheet says before it happens (meal-planning ADR-0001).
+/// Renames or deletes what the household eats, and says what goes in each.
+/// Deleting clears the slots that used it, which the sheet says before it
+/// happens (meal-planning ADR-0001); ingredients are meal-planning ADR-0002.
+///
+/// It listens to the controller, so a meal's ingredient count moves the moment
+/// its own sheet saves.
 Future<void> showMealLibrarySheet({required BuildContext context}) {
   final controller = context.read<MealPlanController>();
   return showNestSheet<void>(
     context: context,
     title: AppCopy.mealsManage,
-    builder: (sheetContext) => _MealLibraryBody(controller: controller),
+    builder: (sheetContext) => ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) => _MealLibraryBody(controller: controller),
+    ),
   );
 }
 
@@ -49,14 +58,30 @@ class _MealLibraryBody extends StatelessWidget {
               child: NestListRow(
                 key: ValueKey(meal.id),
                 title: meal.name,
-                // Tapping the name edits it; the bin stays its own target, so
-                // a mis-tap renames rather than deletes.
+                subtitle: MealIngredientCopy.count(meal.ingredients.length),
+                // Tapping the name edits it; the basket and the bin stay their
+                // own targets, so a mis-tap renames rather than deletes.
                 onTap: () => _rename(context, meal),
-                trailing: NestIconButton(
-                  icon: Icons.delete_outline,
-                  label: AppCopy.mealsDelete,
-                  variant: NestIconButtonVariant.plain,
-                  onPressed: () => _delete(context, meal),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    NestIconButton(
+                      icon: Icons.shopping_basket_outlined,
+                      label: MealIngredientCopy.openFor(meal.name),
+                      variant: NestIconButtonVariant.plain,
+                      onPressed: () => showMealIngredientsSheet(
+                        context: context,
+                        meal: meal,
+                        controller: controller,
+                      ),
+                    ),
+                    NestIconButton(
+                      icon: Icons.delete_outline,
+                      label: AppCopy.mealsDelete,
+                      variant: NestIconButtonVariant.plain,
+                      onPressed: () => _delete(context, meal),
+                    ),
+                  ],
                 ),
               ),
             ),

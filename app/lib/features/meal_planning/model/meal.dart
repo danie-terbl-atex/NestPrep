@@ -2,12 +2,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/text/normalised_name.dart';
+import 'meal_ingredient.dart';
+import 'meal_ingredients_converter.dart';
 
 part 'meal.freezed.dart';
 part 'meal.g.dart';
 
 /// Something the household eats, at `households/{id}/meals/{mealId}`
-/// (meal-planning ADR-0001).
+/// (meal-planning ADR-0002, which keeps ADR-0001's library).
 ///
 /// The library is not a list somebody maintains — it is what has been typed
 /// before. Typing a name that is not in it creates the meal; picking from it
@@ -25,6 +27,12 @@ abstract class Meal with _$Meal {
     required String nameKey,
     required String addedBy,
     @ServerTimestampConverter() DateTime? createdAt,
+
+    /// What it needs, which is what the grocery list fills itself from
+    /// (meal-planning ADR-0002). Empty on a meal nobody has described.
+    @MealIngredientsConverter()
+    @Default(<MealIngredient>[])
+    List<MealIngredient> ingredients,
   }) = _Meal;
 
   const Meal._();

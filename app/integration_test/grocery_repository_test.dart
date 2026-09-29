@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nestprep/features/groceries/data/firestore_grocery_repository.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/groceries/model/grocery_plan_changes.dart';
 
 import 'household_fixture.dart';
 
@@ -173,6 +174,78 @@ void main() {
       await groceries.remove(householdId: home.id, itemId: id);
 
       expect(await groceries.watchItems(home.id).first, isEmpty);
+    });
+  });
+
+  // groceries phase 2 (groceries ADR-0002): what the week's plans write, in one
+  // batch, through the real converters and rules.
+  group('the week’s plans', () {
+    const week = '2026-W40';
+    const create = (
+      id: 'plan-$week-bread',
+      name: 'Bread',
+      quantity: '2 loaves',
+      key: 'bread',
+      week: week,
+      note: 'For 5 lunches + Tuesday dinner',
+    );
+
+    test('a planned item arrives with its source, then refreshes', () async {
+      await groceries.applyPlanChanges(
+        householdId: home.id,
+        changes: const GroceryPlanChanges(creates: [create]),
+        memberId: home.memberId,
+      );
+      final planned = await onlyItem();
+      expect(planned.id, create.id);
+      expect(planned.isFromPlans, isTrue);
+      expect(planned.sourceWeek, week);
+
+      await groceries.applyPlanChanges(
+        householdId: home.id,
+        changes: const GroceryPlanChanges(
+          refreshes: [
+            (itemId: 'plan-$week-bread', quantity: '3 loaves', note: 'For 6'),
+          ],
+        ),
+        memberId: home.memberId,
+      );
+      expect((await onlyItem()).quantity, '3 loaves');
+    });
+
+    test('editing a planned item makes it the editor’s', () async {
+      await groceries.applyPlanChanges(
+        householdId: home.id,
+        changes: const GroceryPlanChanges(creates: [create]),
+        memberId: home.memberId,
+      );
+      await groceries.rename(
+        householdId: home.id,
+        itemId: create.id,
+        name: 'Brown bread',
+        quantity: '1',
+      );
+      final adopted = await onlyItem();
+      expect(adopted.isFromPlans, isFalse);
+      expect(adopted.sourceNote, isNull);
+    });
+
+    test('keep-in-step and staples are one settings document', () async {
+      await groceries.setKeepInStep(
+        householdId: home.id,
+        keepInStep: true,
+        memberId: home.memberId,
+      );
+      await groceries.setStaple(
+        householdId: home.id,
+        key: 'salt',
+        isStaple: true,
+        memberId: home.memberId,
+      );
+      final settings = await groceries.watchPlanSettings(home.id).first;
+      expect(settings.keepInStep, isTrue);
+      expect(settings.staples, ['salt']);
+      expect(settings.updatedBy, home.memberId);
     });
   });
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nestprep/features/meal_planning/data/firestore_meal_repository.dart';
+import 'package:nestprep/features/meal_planning/model/ingredient_unit.dart';
+import 'package:nestprep/features/meal_planning/model/meal_ingredient.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'household_fixture.dart';
@@ -233,6 +235,34 @@ void main() {
 
       final untouched = await meals.readWeek(home.id, other);
       expect(untouched.slots['2026-09-28-dinner'], 'something-else');
+    });
+  });
+
+  // meal-planning ADR-0002: a nested list Firestore must be handed as maps.
+  group('setIngredients', () {
+    test('what goes in a meal is stored and read back as written', () async {
+      final mealId = await meals.addMeal(
+        householdId: home.id,
+        name: 'Spaghetti',
+        addedBy: home.memberId,
+      );
+      final lines = [
+        MealIngredient.typed(
+          name: 'Mince',
+          amount: 500,
+          unit: IngredientUnit.gram,
+        ),
+        MealIngredient.typed(name: 'Salt'),
+      ];
+
+      await meals.setIngredients(
+        householdId: home.id,
+        mealId: mealId,
+        ingredients: lines,
+      );
+
+      final meal = (await meals.watchMeals(home.id).first).single;
+      expect(meal.ingredients, lines);
     });
   });
 }

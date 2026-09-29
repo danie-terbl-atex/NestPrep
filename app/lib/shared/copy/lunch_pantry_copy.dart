@@ -51,6 +51,11 @@ abstract final class LunchPantryCopy {
   static String forBoxes(int boxes) =>
       boxes == 1 ? 'for 1 lunch box' : 'for $boxes lunch boxes';
 
+  /// Why the pantry put it on the grocery list, as the list shows it.
+  static String shortfallNote(int boxes) => boxes == 1
+      ? 'Not in the pantry — 1 lunch box needs it'
+      : 'Not in the pantry — $boxes lunch boxes need it';
+
   // One entry.
   static String enoughFor(int boxes) => switch (boxes) {
     0 => 'None left',

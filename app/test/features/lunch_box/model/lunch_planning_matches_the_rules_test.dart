@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nestprep/features/groceries/model/grocery_source.dart';
 import 'package:nestprep/features/lunch_box/data/firestore_lunch_budget_repository.dart';
 import 'package:nestprep/features/lunch_box/data/firestore_lunch_choices_repository.dart';
 import 'package:nestprep/features/lunch_box/data/firestore_lunch_pantry_repository.dart';
@@ -23,7 +22,6 @@ void main() {
   final pantry = partial('lunch_pantry');
   final budget = partial('lunch_budget');
   final picks = partial('lunch_kid_picks');
-  final groceries = partial('groceries');
 
   test('the collections are the ones the rules guard', () {
     expect(
@@ -87,15 +85,5 @@ void main() {
     for (final key in ['0_main', '6_main', '1_lunch', '1_Main', '1_main2']) {
       expect(pattern.hasMatch(key), isFalse, reason: key);
     }
-  });
-
-  test('a grocery line’s source is one the groceries rules accept', () {
-    final listed = RegExp(r'source in \[([^\]]+)\]')
-        .firstMatch(groceries)!
-        .group(1)!;
-    expect(
-      {for (final m in RegExp(r"'(\w+)'").allMatches(listed)) m.group(1)!},
-      {for (final source in GrocerySource.values) source.name},
-    );
   });
 }

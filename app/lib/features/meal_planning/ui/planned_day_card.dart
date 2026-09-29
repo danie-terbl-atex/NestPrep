@@ -11,6 +11,7 @@ import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
 import '../state/meal_plan_controller.dart';
+import 'meal_ingredients_sheet.dart';
 import 'slot_picker_sheet.dart';
 
 /// One day, with its three slots. An empty slot is a tap target that says it is
@@ -130,6 +131,14 @@ class _SlotRow extends StatelessWidget {
         return;
       case SlotCleared():
         await controller.clearSlot(slotKey);
+      case SlotIngredients():
+        final planned = meal;
+        if (planned == null || !context.mounted) return;
+        await showMealIngredientsSheet(
+          context: context,
+          meal: planned,
+          controller: controller,
+        );
       case SlotPicked(:final mealId):
         await controller.setSlot(slotKey, mealId);
       case SlotTyped(:final name):

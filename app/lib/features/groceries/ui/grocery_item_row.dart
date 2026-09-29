@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/grocery_plan_copy.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
@@ -95,12 +96,16 @@ class GroceryItemRow extends StatelessWidget {
   }
 
   /// The quantity if there is one, and who asked for it — a name, never a
-  /// colour alone (`FE-13`).
+  /// colour alone (`FE-13`). An item the plans put here says which plans
+  /// instead: *For 5 lunches + Tuesday dinner* (groceries ADR-0002).
   String? _subtitleFor(Member? addedBy) {
     final quantity = item.quantity?.trim();
+    final source = item.isFromPlans
+        ? item.sourceNote ?? GroceryPlanCopy.fromPlans
+        : null;
     final parts = [
       if (quantity != null && quantity.isNotEmpty) quantity,
-      if (addedBy != null) addedBy.displayName,
+      if (source != null) source else if (addedBy != null) addedBy.displayName,
     ];
     return parts.isEmpty ? null : parts.join(' · ');
   }

@@ -13,9 +13,6 @@ import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
 import '../features/accounts/ui/verify_email_screen.dart';
-import '../features/groceries/data/grocery_repository.dart';
-import '../features/groceries/state/grocery_list_controller.dart';
-import '../features/groceries/ui/grocery_list_screen.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household.dart';
@@ -47,6 +44,7 @@ import 'chore_points_route.dart';
 import 'design_gallery_access.dart';
 import 'documents_shell.dart';
 import 'family_routes.dart';
+import 'grocery_route.dart';
 import 'home_care_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
@@ -203,19 +201,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             ),
           ),
         ),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.groceries.segment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => GroceryListController(
-              groceryRepository: context.read<GroceryRepository>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: viewerMemberIdOf(context),
-            ),
-            child: GroceryListScreen(
-              onSelectTab: (tab) => goToTab(context, state, tab),
-            ),
-          ),
-        ),
+        // groceries phase 2: the list and the week's plans against it
+        // (groceries ADR-0002).
+        groceryRoute(),
       ],
     ),
     // ---- product analytics (product-analytics ADR-0001) ----

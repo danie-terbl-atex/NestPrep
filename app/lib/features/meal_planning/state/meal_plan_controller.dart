@@ -9,6 +9,7 @@ import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../data/meal_repository.dart';
 import '../model/meal.dart';
+import '../model/meal_ingredient.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
 
@@ -143,6 +144,20 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
       ),
     );
   }
+
+  /// Replaces what a meal needs (meal-planning ADR-0002). Lines with no name
+  /// are dropped; the rest are written as typed.
+  Future<void> setIngredients(String mealId, List<MealIngredient> lines) =>
+      runAction(
+        () => _repository.setIngredients(
+          householdId: householdId,
+          mealId: mealId,
+          ingredients: [
+            for (final line in lines.take(MealIngredient.lineLimit))
+              if (line.name.trim().isNotEmpty) line,
+          ],
+        ),
+      );
 
   /// Deletes a meal and clears the slots that used it, in the weeks either side
   /// of the one showing — which is as far as a plan is ever looked at.

@@ -189,9 +189,13 @@ final class LunchPantryController extends ChangeNotifier
   /// it added, or null when it did not get that far.
   Future<int?> sendShortfallToGroceries({
     required String Function(int boxes) quantityFor,
+    required String Function(int boxes) noteFor,
   }) async {
     final pantry = _pantry;
-    if (pantry is! AsyncData<LunchPantryWeek> || _isSending) return null;
+    final week = _week;
+    if (pantry is! AsyncData<LunchPantryWeek> || week == null || _isSending) {
+      return null;
+    }
     int? added;
     _isSending = true;
     notifyListeners();
@@ -199,7 +203,9 @@ final class LunchPantryController extends ChangeNotifier
       await runAction(() async {
         added = await groceries.add(
           pantry.value.shortfall,
+          week: week,
           quantityFor: quantityFor,
+          noteFor: noteFor,
         );
       });
     } finally {

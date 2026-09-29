@@ -239,6 +239,12 @@ void main() {
     // Either one's failures went to its own onError already.
     '_packedSubscription?.cancel())',
     '_todaySubscription?.cancel())',
+    // groceries phase 2 (groceries ADR-0002): one keep-in-step write. `_send`
+    // catches its own AppFailure, logs it and holds it; the next emission
+    // asking for the same change reports it on the screen's banner. It is
+    // unawaited because it starts from a listener, and offline it completes
+    // only when the network is back.
+    '_send(signature',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

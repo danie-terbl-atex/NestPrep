@@ -2,13 +2,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
-import 'grocery_source.dart';
+import '../../../shared/text/normalised_name.dart';
 
 part 'grocery_item.freezed.dart';
 part 'grocery_item.g.dart';
 
 /// One line on the household's single list, at
-/// `households/{id}/groceryItems/{itemId}` (groceries ADR-0001).
+/// `households/{id}/groceryItems/{itemId}` (groceries ADR-0002, which keeps
+/// ADR-0001's list).
 ///
 /// Ticking sets `boughtAt` to the server's time; unticking clears it. A bought
 /// item is never deleted — it is the history the quick re-add chips are built
@@ -29,10 +30,17 @@ abstract class GroceryItem with _$GroceryItem {
     @NullableTimestampConverter() DateTime? boughtAt,
     String? boughtBy,
 
-    /// Where it came from when nobody typed it — `GrocerySource`'s name, or
-    /// null for a line a person added (lunch-box ADR-0006). Read through
-    /// [origin].
-    @JsonKey(includeIfNull: false) String? source,
+    /// Set only on an item the week's plans put here (groceries ADR-0002): the
+    /// normalised name it was proposed under. A person editing it clears all
+    /// three source fields, and from then on it is theirs.
+    String? sourceKey,
+
+    /// The household week it was proposed for, `YYYY-Www`.
+    String? sourceWeek,
+
+    /// Where it came from, as the person was shown it — "For 5 lunches +
+    /// Tuesday dinner".
+    String? sourceNote,
   }) = _GroceryItem;
 
   const GroceryItem._();
@@ -49,6 +57,13 @@ abstract class GroceryItem with _$GroceryItem {
   /// network came back (groceries phase 1).
   bool get isBought => boughtBy != null;
 
+  /// Whether the week's plans put this here and nobody has made it theirs.
+  bool get isFromPlans => sourceKey != null;
+
+  /// The name this item is matched on against a proposal: the key it was
+  /// proposed under, or what a person typed.
+  String get matchKey => sourceKey ?? normalisedName(name);
+
   /// Whether a bought item is still worth showing, struck through, so somebody
   /// who ticked the wrong thing can undo it (groceries ADR-0001).
   ///
@@ -62,6 +77,4 @@ abstract class GroceryItem with _$GroceryItem {
   }
 
   static const visibleAfterBuying = Duration(hours: 24);
-
-  GrocerySource? get origin => GrocerySource.fromName(source);
 }

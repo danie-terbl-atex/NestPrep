@@ -14,7 +14,9 @@ _GroceryItem _$GroceryItemFromJson(Map<String, dynamic> json) => _GroceryItem(
   addedAt: const ServerTimestampConverter().fromJson(json['addedAt']),
   boughtAt: const NullableTimestampConverter().fromJson(json['boughtAt']),
   boughtBy: json['boughtBy'] as String?,
-  source: json['source'] as String?,
+  sourceKey: json['sourceKey'] as String?,
+  sourceWeek: json['sourceWeek'] as String?,
+  sourceNote: json['sourceNote'] as String?,
 );
 
 Map<String, dynamic> _$GroceryItemToJson(_GroceryItem instance) =>
@@ -25,5 +27,7 @@ Map<String, dynamic> _$GroceryItemToJson(_GroceryItem instance) =>
       'addedAt': const ServerTimestampConverter().toJson(instance.addedAt),
       'boughtAt': const NullableTimestampConverter().toJson(instance.boughtAt),
       'boughtBy': instance.boughtBy,
-      'source': ?instance.source,
+      'sourceKey': instance.sourceKey,
+      'sourceWeek': instance.sourceWeek,
+      'sourceNote': instance.sourceNote,
     };
