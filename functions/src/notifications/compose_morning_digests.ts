@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 
 import { db } from '../shared/firestore';
 import { runMorningDigest } from './morning_digest';
@@ -15,7 +16,13 @@ import { pushService } from './push_service';
  * reads rather than one person's request (BE-19).
  */
 export const composeMorningDigests = onSchedule(
-  { schedule: '*/15 * * * *', timeZone: 'UTC', timeoutSeconds: 300, retryCount: 0 },
+  {
+    region: SCHEDULER_REGION,
+    schedule: '*/15 * * * *',
+    timeZone: 'UTC',
+    timeoutSeconds: 300,
+    retryCount: 0,
+  },
   async () => {
     await runMorningDigest({ store: db(), sender: pushService(), now: new Date() });
   },

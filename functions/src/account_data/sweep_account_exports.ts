@@ -1,5 +1,6 @@
 import { logger } from 'firebase-functions/v2';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 
 import { objectStore } from '../shared/storage';
 import { sweepExpiredExports } from './export_files';
@@ -11,6 +12,7 @@ import { sweepExpiredExports } from './export_files';
  */
 export const sweepAccountExports = onSchedule(
   {
+    region: SCHEDULER_REGION,
     schedule: '20 * * * *',
     timeZone: 'Africa/Johannesburg',
     timeoutSeconds: 120,

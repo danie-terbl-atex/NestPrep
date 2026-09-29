@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 
 import { db } from '../shared/firestore';
 import { runNotificationDelivery } from './notification_delivery';
@@ -14,7 +15,13 @@ import { pushService } from './push_service';
  * (BE-15); the timeout is its own and bounded (BE-19).
  */
 export const deliverNotifications = onSchedule(
-  { schedule: '*/5 * * * *', timeZone: 'UTC', timeoutSeconds: 240, retryCount: 0 },
+  {
+    region: SCHEDULER_REGION,
+    schedule: '*/5 * * * *',
+    timeZone: 'UTC',
+    timeoutSeconds: 240,
+    retryCount: 0,
+  },
   async () => {
     await runNotificationDelivery(db(), pushService(), new Date());
   },

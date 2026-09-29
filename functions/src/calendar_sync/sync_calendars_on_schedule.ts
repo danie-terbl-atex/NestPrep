@@ -1,5 +1,6 @@
 import type { Firestore } from 'firebase-admin/firestore';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 import { logger } from 'firebase-functions/v2';
 import { z } from 'zod';
 
@@ -25,7 +26,11 @@ export const BUDGET_MS = 20_000;
 const secretShape = z.object({ householdId: z.string() });
 
 export const syncCalendarsOnSchedule = onSchedule(
-  { schedule: 'every 30 minutes', secrets: PROVIDER_SECRETS },
+  {
+    region: SCHEDULER_REGION,
+    schedule: 'every 30 minutes',
+    secrets: PROVIDER_SECRETS,
+  },
   async () => {
     const store = db();
     const summary = await syncOldestConnections(store, {

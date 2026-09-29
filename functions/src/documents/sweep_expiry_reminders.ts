@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 
 import { db } from '../shared/firestore';
 import { runExpirySweep } from './expiry_sweep';
@@ -16,6 +17,7 @@ import { runExpirySweep } from './expiry_sweep';
  */
 export const sweepExpiryReminders = onSchedule(
   {
+    region: SCHEDULER_REGION,
     schedule: '0 5 * * *',
     timeZone: 'Africa/Johannesburg',
     timeoutSeconds: 120,

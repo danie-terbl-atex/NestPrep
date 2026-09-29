@@ -15,3 +15,12 @@
  * functions, with a window where the client can reach neither.
  */
 export const FUNCTIONS_REGION = 'africa-south1';
+
+/**
+ * Where scheduled functions run (foundation ADR-0017). Cloud Scheduler has no
+ * `africa-south1` location, so an `onSchedule` function deployed there gets
+ * its function but never its job, and never fires. Scheduled work is batch
+ * work that no client addresses, so it runs in the nearest Scheduler region
+ * and reads and writes the `africa-south1` database from there.
+ */
+export const SCHEDULER_REGION = 'europe-west1';

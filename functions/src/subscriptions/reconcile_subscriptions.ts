@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 
 import { db } from '../shared/firestore';
 import { runReconcile } from './reconcile';
@@ -15,6 +16,7 @@ import { STORE_SECRETS, subscriptionConfig } from './subscription_config';
  */
 export const reconcileSubscriptions = onSchedule(
   {
+    region: SCHEDULER_REGION,
     schedule: '30 4 * * *',
     timeZone: 'Africa/Johannesburg',
     timeoutSeconds: 300,

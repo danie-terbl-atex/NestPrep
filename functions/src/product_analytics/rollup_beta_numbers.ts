@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { SCHEDULER_REGION } from '../shared/region';
 import { logger } from 'firebase-functions/v2';
 
 import { db } from '../shared/firestore';
@@ -15,7 +16,11 @@ import { rollupWeek, weeksToRollUp } from './weekly_rollup';
  * other function here.
  */
 export const rollupBetaNumbers = onSchedule(
-  { schedule: 'every day 03:00', timeZone: LAUNCH_TIME_ZONE },
+  {
+    region: SCHEDULER_REGION,
+    schedule: 'every day 03:00',
+    timeZone: LAUNCH_TIME_ZONE,
+  },
   async () => {
     const now = new Date();
     const store = db();
