@@ -15,14 +15,15 @@ import 'package:nestprep/features/documents/model/document_limits.dart';
 /// `emulator_ports.test.ts` reads `firebase.json`.
 void main() {
   final repoRoot = Directory.current.parent;
-  final storageRules = File('${repoRoot.path}/storage.rules');
+  // The documents' limits are their own Storage partial (foundation
+  // ADR-0013): the photo features keep caps of their own in theirs, which
+  // their own contract tests hold to their numbers.
+  final storageRules = File(
+    '${repoRoot.path}/rules/storage/shared/document_files.rules',
+  );
   final firestoreRules = File('${repoRoot.path}/firestore.rules');
 
-  /// The documents' part of a rules file. Home care keeps its photos in the
-  /// same bucket under caps of its own (home-care ADR-0003), which
-  /// `home_care_limits_match_the_rules_test.dart` holds to its own numbers.
-  String read(File file) =>
-      file.readAsStringSync().split('// ---- home care photos').first;
+  String read(File file) => file.readAsStringSync();
 
   /// Every `'type/subtype'` in a rules file, which is how both spell the list.
   Set<String> contentTypesIn(String source) => {
@@ -43,7 +44,7 @@ void main() {
       storageRules.existsSync(),
       isTrue,
       reason:
-          'if storage.rules moved, this contract lost its home — point the '
+          'if the documents\' Storage partial moved, this contract lost its home — point the '
           'test at the new one rather than deleting it',
     );
     expect(firestoreRules.existsSync(), isTrue);

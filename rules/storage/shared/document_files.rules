@@ -1,0 +1,24 @@
+// ---- what a document may be (documents ADR-0001) ----
+//
+// The household's documents and the personal vaults keep the same files.
+// Photo features keep their own caps in their own partials.
+
+// Enforced here and nowhere else that counts. The client refuses an
+// oversized or unreadable file earlier so a person is not made to wait for
+// a refusal, but that check is a courtesy and this one is the rule
+// (FE-04, BE-20). `document_limits_match_the_rules_test.dart` reads this
+// partial and fails when the two drift apart.
+function isSmallEnough() {
+  return request.resource.size <= 20 * 1024 * 1024;
+}
+
+// What a household actually keeps: a scan or a photo of a piece of paper.
+function isAKeptType() {
+  return request.resource.contentType in [
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/heic',
+    'image/webp'
+  ];
+}

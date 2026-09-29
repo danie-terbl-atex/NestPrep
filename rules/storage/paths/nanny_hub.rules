@@ -1,0 +1,25 @@
+// ---- nanny hub photos (nanny-hub ADR-0003) ----
+//
+// House-guide spots, child cards and handover entries point at a photo by
+// id; its bytes live here, one level under the household. The app
+// compresses every photo to a JPEG before it leaves the phone, so the cap
+// is small on purpose: a photo past it was not made by the app. Whoever
+// may read the hub sees them; whoever may write it adds them; a photo is
+// removed by whoever added it, or by family.
+match /households/{householdId}/nannyHub/{photoId} {
+  allow read: if canView(householdId, 'nannyHub');
+
+  allow create: if resource == null
+    && canEdit(householdId, 'nannyHub')
+    && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
+    // 2 MiB, written as bytes — the number `nanny_contract_test.dart` reads.
+    && request.resource.size <= 2097152
+    && request.resource.contentType == 'image/jpeg'
+    && isStampedWithTheCaller();
+
+  allow update: if false;
+
+  allow delete: if isFamily(householdId)
+    || (canEdit(householdId, 'nannyHub')
+          && resource.metadata.uploadedByUid == request.auth.uid);
+}

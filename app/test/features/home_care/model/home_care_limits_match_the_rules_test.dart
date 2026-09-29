@@ -6,14 +6,17 @@ import 'package:nestprep/features/home_care/model/compressed_photo.dart';
 
 /// The photo limits are `storage.rules`' (home-care ADR-0003); the app keeps
 /// a copy only so a photo too big is refused before anybody waits for the
-/// upload. This reads the home-care block of the rules file itself.
+/// upload. This reads the home-care Storage partial itself (foundation
+/// ADR-0013).
 void main() {
+  final block = File(
+    '${Directory.current.parent.path}/rules/storage/paths/home_care.rules',
+  ).readAsStringSync();
   final storageRules = File('${Directory.current.parent.path}/storage.rules')
       .readAsStringSync();
-  final block = storageRules.split('// ---- home care photos').last;
 
   test('the home-care block is where this test thinks it is', () {
-    expect(storageRules, contains('// ---- home care photos'));
+    expect(block, contains('// ---- home care photos'));
     expect(block, contains('match /households/{householdId}/homeCareJobs/'));
   });
 

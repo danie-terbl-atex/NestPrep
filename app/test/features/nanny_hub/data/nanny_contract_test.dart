@@ -18,7 +18,8 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 void main() {
   final rules = File('../rules/firestore/household/nanny_hub.rules')
       .readAsStringSync();
-  final storageRules = File('../storage.rules').readAsStringSync();
+  final storageRules = File('../rules/storage/paths/nanny_hub.rules')
+      .readAsStringSync();
   final summary = File('../functions/src/nanny_hub/shift_summary.ts')
       .readAsStringSync();
   final refs = File('../functions/src/nanny_hub/nanny_refs.ts')

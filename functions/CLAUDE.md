@@ -15,8 +15,8 @@ npm install
 npm run build          # tsc -p tsconfig.build.json → lib/
 npm run lint           # eslint (strictTypeChecked) + prettier --check
 npm test               # vitest, pure functions only — needs nothing running
-npm run rules:build    # firestore.rules from ../rules/firestore/ partials (foundation ADR-0012)
-npm run rules:check    # exit 1 if the committed firestore.rules is out of date
+npm run rules:build    # firestore.rules and storage.rules from ../rules/ partials (foundation ADR-0012, ADR-0013)
+npm run rules:check    # exit 1 if either committed rules file is out of date
 npm run test:rules     # builds the rules, then firestore.rules *and* storage.rules, allowed and denied
 npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order

@@ -30,7 +30,7 @@ This folder is the NestPrep monorepo: one Firebase project, three parts. Each pa
 - `functions/` — Cloud Functions (TypeScript, 2nd gen); only what Security Rules cannot express
 - `firebase.json`, `firestore.rules`, `storage.rules`, `firestore.indexes.json` — the Firebase config
   at the root; the two rules files are the authorisation layer and every rule has a denied-case test.
-  **`firestore.rules` is generated** from `rules/firestore/` — see below.
+  **Both rules files are generated** from `rules/` — see below.
 
 `DesignsInsp/` is design inspiration, not source; it is gitignored on purpose.
 
@@ -96,6 +96,19 @@ in name order, which does not change what the rules mean. To add a feature's rul
    `rules:build`, `git add firestore.rules`. Conflicts belong in the partials, and two features that
    each add their own file have none.
 
-`storage.rules` is still one hand-written file (249 lines once home care's block joined it); split it the same way before it passes 300 — the next Storage feature is the one that must.
+## Storage rules are partials too
+
+`storage.rules` is generated the same way, by the same command, from `rules/storage/`
+(foundation ADR-0013, `ENG-05`); never edit it:
+
+    rules/storage/shared/*.rules   functions every Storage match may call (caller, grants, document file limits)
+    rules/storage/paths/*.rules    one feature's  match /households/{householdId}/<its path>/…  blocks, full path
+
+Storage has no parent document to nest under, so a `paths/` partial spells out the whole object
+path. Gate on the token-claim `canView`/`canEdit` in `shared/caller.rules`, or — when a grant must
+bite on the next request rather than within the hour — read Firestore live the way
+`document_vaults.rules` and `home_care.rules` do, prefixing the helpers with the feature. Then
+`npm --prefix functions run rules:build` and commit the partial with `storage.rules`; the same
+check test and the same never-by-hand rule for conflicts apply.
 
 Never `git stash`, `git checkout -- .` or `git reset --hard` here.

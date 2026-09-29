@@ -1,0 +1,25 @@
+// ---- a household's documents (documents ADR-0001) ----
+//
+// The object's name is the id of its metadata document at
+// `households/{householdId}/documents/{documentId}`. They are deliberately
+// the same string: an orphan on either side is findable by listing the
+// other, which is what makes a half-finished upload or delete recoverable
+// rather than an invisible bill (BE-07).
+match /households/{householdId}/documents/{documentId} {
+  allow read: if canView(householdId, 'documents');
+
+  allow create: if resource == null
+    && canEdit(householdId, 'documents')
+    && isSmallEnough()
+    && isAKeptType()
+    && isStampedWithTheCaller();
+
+  // Bytes are never rewritten in place. Replacing a document is a delete
+  // and an add, so "what is in this object" stays answerable from the one
+  // metadata row that carries its name.
+  allow update: if false;
+
+  allow delete: if isAdmin(householdId)
+    || (canEdit(householdId, 'documents')
+          && resource.metadata.uploadedByUid == request.auth.uid);
+}
