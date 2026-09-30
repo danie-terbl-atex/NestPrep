@@ -39,7 +39,7 @@ class BetaNumberTile extends StatelessWidget {
           const SizedBox(height: NestSpace.xs),
           Text(
             value,
-            style: isProminent ? nest.text.display : nest.text.headline,
+            style: isProminent ? nest.text.figure : nest.text.figureSmall,
           ),
           if (detailText != null) ...[
             const SizedBox(height: NestSpace.xxs),

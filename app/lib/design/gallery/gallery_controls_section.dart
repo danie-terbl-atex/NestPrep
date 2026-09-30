@@ -25,7 +25,9 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
           children: [
             Text('Hello, Alex', style: nest.text.display),
             Text('How may I help?', style: nest.text.headline),
-            Text('Section title', style: nest.text.title),
+            Text('Screen title', style: nest.text.screenTitle),
+            Text('Card title', style: nest.text.title),
+            Text('4 812', style: nest.text.figure),
             Text('Stand-up', style: nest.text.titleLight),
             Text('Body copy at sixteen.', style: nest.text.body),
             Text('Secondary body copy.', style: nest.text.bodySecondary),

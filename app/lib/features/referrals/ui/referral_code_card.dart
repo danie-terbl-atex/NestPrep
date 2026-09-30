@@ -52,7 +52,7 @@ class _ReferralCodeCardState extends State<ReferralCodeCard> {
                 child: Text(
                   code,
                   textAlign: TextAlign.center,
-                  style: nest.text.display.copyWith(
+                  style: nest.text.figure.copyWith(
                     color: nest.colors.accentInk,
                     letterSpacing: NestSpace.xs,
                   ),

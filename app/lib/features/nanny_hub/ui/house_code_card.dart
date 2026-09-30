@@ -34,7 +34,7 @@ class HouseCodeCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: NestSpace.md),
-          Text(code.value, style: nest.text.display),
+          Text(code.value, style: nest.text.figure),
           if (note != null) ...[
             const SizedBox(height: NestSpace.sm),
             Text(note, style: nest.text.bodySecondary),

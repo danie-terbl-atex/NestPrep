@@ -68,7 +68,7 @@ ThemeData nestThemeData(NestTheme nest) {
       foregroundColor: colors.ink,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: text.title,
+      titleTextStyle: text.screenTitle,
     ),
     cardTheme: CardThemeData(
       color: colors.surface,

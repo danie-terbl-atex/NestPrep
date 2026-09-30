@@ -74,7 +74,7 @@ class _LetterTile extends StatelessWidget {
         child: FittedBox(
           child: Text(
             letter,
-            style: nest.text.display.copyWith(color: c.accentInk),
+            style: nest.text.figure.copyWith(color: c.accentInk),
           ),
         ),
       ),

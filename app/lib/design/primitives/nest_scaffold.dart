@@ -119,7 +119,7 @@ class _NestHeader extends StatelessWidget {
                 if (titleText != null)
                   Text(
                     titleText,
-                    style: nest.text.title,
+                    style: nest.text.screenTitle,
                     overflow: TextOverflow.ellipsis,
                   ),
                 if (subtitleText != null)

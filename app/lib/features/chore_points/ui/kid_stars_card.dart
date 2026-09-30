@@ -100,7 +100,7 @@ class _CountUp extends StatelessWidget {
       duration: NestMotion.of(context).slow * 2,
       curve: NestMotion.enter,
       builder: (context, value, _) =>
-          Text('${value.round()}', style: nest.text.display),
+          Text('${value.round()}', style: nest.text.figure),
     );
   }
 }

@@ -59,7 +59,7 @@ class KidBalanceCard extends StatelessWidget {
               ),
               Icon(Icons.star_rounded, color: c.warning),
               const SizedBox(width: NestSpace.xs),
-              Text('${balance.balance}', style: nest.text.headline),
+              Text('${balance.balance}', style: nest.text.figureSmall),
             ],
           ),
           if (streak >= 2) ...[
