@@ -5,6 +5,7 @@ import 'package:nestprep/features/accounts/data/auth_gateway.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/model/legal_consent.dart';
+import 'package:nestprep/features/accounts/model/session_check.dart';
 import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
@@ -23,6 +24,9 @@ final class FakeAuthGateway implements AuthGateway {
   /// Set to make a reset send fail.
   AppFailure? failSendWith;
 
+  /// What the next session check answers.
+  SessionCheck sessionCheck = SessionCheck.accepted;
+
   int signOutCount = 0;
   final googleSignIns = <int>[];
   final registrations = <String>[];
@@ -38,6 +42,9 @@ final class FakeAuthGateway implements AuthGateway {
 
   @override
   Stream<AuthUser?> authStateChanges() => _users.stream;
+
+  @override
+  Future<SessionCheck> checkSession() async => sessionCheck;
 
   @override
   Future<AuthUser> signInWithGoogle() async {

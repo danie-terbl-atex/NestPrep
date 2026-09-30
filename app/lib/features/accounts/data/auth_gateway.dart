@@ -1,4 +1,5 @@
 import '../model/auth_user.dart';
+import '../model/session_check.dart';
 
 /// What the app needs from Firebase Auth (accounts ADR-0001, ADR-0002). Behind
 /// an interface so a widget test can sign a user in without a platform channel.
@@ -11,6 +12,14 @@ abstract interface class AuthGateway {
   /// Who is signed in, live. Emits null when nobody is, including at startup
   /// before the SDK has restored a session.
   Stream<AuthUser?> authStateChanges();
+
+  /// Asks the backend whether the signed-in session is still one it accepts,
+  /// by refreshing the token (accounts ADR-0008). A session restored from disk
+  /// can be dead — the account deleted, disabled or its password changed, or
+  /// the token issued by another backend — and until it is checked every
+  /// Firestore write waits on it for ever. Never throws: offline or slow is
+  /// [SessionCheck.unverified], which keeps the cached session.
+  Future<SessionCheck> checkSession();
 
   Future<AuthUser> signInWithGoogle();
 

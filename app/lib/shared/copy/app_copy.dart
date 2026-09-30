@@ -120,6 +120,13 @@ abstract final class AppCopy {
   static const account = 'Account';
   static const sessionStarting = 'Getting things ready';
 
+  /// The gate, when starting has taken far longer than it ever should. Two
+  /// ways out, because trying again cannot cure every cause (accounts
+  /// ADR-0008).
+  static const sessionStalled =
+      'This is taking longer than it should. Check your connection and try '
+      'again, or sign out and sign in again.';
+
   static const tabWeek = 'Week';
   static const tabTodos = 'To do';
   static const tabGroceries = 'Groceries';

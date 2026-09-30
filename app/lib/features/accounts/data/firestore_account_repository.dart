@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
+import '../../../shared/log/app_log.dart';
 import '../model/account.dart';
 import '../model/auth_user.dart';
 import 'account_repository.dart';
@@ -43,11 +46,27 @@ final class FirestoreAccountRepository implements AccountRepository {
         );
         return;
       }
-      await document.update({
-        'displayName': user.bestName,
-        'photoUrl': user.photoUrl,
-        'lastSignedInAt': FieldValue.serverTimestamp(),
-      });
+      // Refreshing an existing account is not something the session waits on.
+      // A write's future completes only when the server acknowledges it, so
+      // awaiting this offline — or with a token the backend is refusing —
+      // holds the gate for ever (vault lesson on writes against an unreachable
+      // backend). It is queued, syncs when the connection is back, and a
+      // refusal is logged rather than lost (`ENG-10`).
+      unawaited(
+        document
+            .update({
+              'displayName': user.bestName,
+              'photoUrl': user.photoUrl,
+              'lastSignedInAt': FieldValue.serverTimestamp(),
+            })
+            .catchError((Object error) {
+              AppLog.failure(
+                'account refresh',
+                code: error is FirebaseException ? error.code : 'unknown',
+                error: error,
+              );
+            }),
+      );
     } on FirebaseException catch (error) {
       throw failureFromFirebase(error);
     }

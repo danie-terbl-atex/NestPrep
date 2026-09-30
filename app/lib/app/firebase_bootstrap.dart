@@ -10,6 +10,7 @@ import 'app_check_providers.dart';
 import 'backend_target.dart';
 import 'emulator_endpoint.dart';
 import 'firebase_options.dart';
+import 'foreign_session_guard.dart';
 
 /// The region every callable is deployed to, and therefore the region the
 /// client must address them in (foundation ADR-0003).
@@ -21,6 +22,8 @@ import 'firebase_options.dart';
 /// which resolves to a URL where nothing is deployed, so every household action
 /// fails with NOT_FOUND at runtime and looks like a broken backend.
 const functionsRegion = 'africa-south1';
+
+const _appCheckTimeout = Duration(seconds: 5);
 
 /// The Firebase services the app injects, initialised for the chosen target.
 class FirebaseServices {
@@ -71,6 +74,9 @@ Future<FirebaseServices> bootstrapFirebase(BackendTarget target) async {
   }
 
   firestore.settings = const Settings(persistenceEnabled: true);
+  // After the emulator redirect, so a sign-out reaches the backend the build
+  // talks to; before the session gate listens, so it never sees the user.
+  await forgetForeignSession(auth, target);
   return FirebaseServices(
     firestore: firestore,
     auth: auth,
@@ -87,6 +93,9 @@ Future<FirebaseServices> bootstrapFirebase(BackendTarget target) async {
 /// that cannot attest — no Play services, an old iPhone — must still open the
 /// household's week. The failure is logged. Once enforcement is on, the
 /// refusal a request then meets reaches the person as copy, like any other.
+///
+/// Bounded as well: this runs before the first frame, and an attestation
+/// provider that never answers must not hold the splash for ever.
 Future<void> activateAppCheck(AppCheckPlan plan) async {
   final android = plan.android;
   final apple = plan.apple;
@@ -94,9 +103,8 @@ Future<void> activateAppCheck(AppCheckPlan plan) async {
   await bestEffort(
     'app check activation',
     code: 'activate-failed',
-    run: () => FirebaseAppCheck.instance.activate(
-      providerAndroid: android,
-      providerApple: apple,
-    ),
+    run: () => FirebaseAppCheck.instance
+        .activate(providerAndroid: android, providerApple: apple)
+        .timeout(_appCheckTimeout),
   );
 }

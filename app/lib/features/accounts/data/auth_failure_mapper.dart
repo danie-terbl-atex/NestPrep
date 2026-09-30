@@ -51,3 +51,33 @@ AppFailure failureFromFirebaseAuth(FirebaseAuthException error) {
     _ => SignInProblem.unknown,
   });
 }
+
+/// Whether an auth error means the backend refuses this session for good —
+/// signing in again is the only cure (accounts ADR-0008).
+///
+/// Android does not always give these their own code: a refused refresh token
+/// arrives as `internal-error` or `unknown` with the service's reason
+/// (`INVALID_REFRESH_TOKEN`) only in the message, so the reason is read there
+/// too. A network failure is never one of these.
+bool isRejectedSession(FirebaseException error) {
+  if (_rejectedSessionCodes.contains(error.code)) return true;
+  final message = error.message ?? '';
+  return _rejectedSessionReasons.any(message.contains);
+}
+
+const _rejectedSessionCodes = {
+  'user-token-expired',
+  'invalid-user-token',
+  'user-not-found',
+  'user-disabled',
+  'invalid-refresh-token',
+  'token-expired',
+};
+
+const _rejectedSessionReasons = [
+  'INVALID_REFRESH_TOKEN',
+  'TOKEN_EXPIRED',
+  'USER_NOT_FOUND',
+  'USER_DISABLED',
+  'INVALID_ID_TOKEN',
+];

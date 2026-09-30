@@ -10,6 +10,7 @@ import '../model/account.dart';
 import '../model/auth_user.dart';
 import '../model/kid_identity.dart';
 import '../model/session.dart';
+import '../model/session_check.dart';
 
 /// Who is signed in, for the whole app. This is the one controller that is not
 /// route-scoped: the router redirects on it, so it has to outlive every route
@@ -29,6 +30,15 @@ final class SessionController extends ChangeNotifier {
 
   final AuthGateway _auth;
   final AccountRepository _accounts;
+
+  /// Bumped on every auth event and retry, so work an older one started — an
+  /// account write that finally lands after the person tapped *Try again* —
+  /// cannot overwrite what the newer one decided.
+  int _generation = 0;
+
+  /// How long a start waits on the session check before going on from the
+  /// cache. Short, because offline this is pure delay.
+  static const _checkBudget = Duration(seconds: 6);
 
   StreamSubscription<AuthUser?>? _authSubscription;
   StreamSubscription<Account?>? _accountSubscription;
@@ -122,8 +132,7 @@ final class SessionController extends ChangeNotifier {
   /// Retries the read of the account document after a failure, without signing
   /// the person out to do it.
   Future<void> retry() async {
-    _session = const AsyncLoading();
-    notifyListeners();
+    _setSession(const AsyncLoading());
     await _onAuthUser(_currentUser);
   }
 
@@ -168,13 +177,43 @@ final class SessionController extends ChangeNotifier {
   }
 
   Future<void> _onAuthUser(AuthUser? user) async {
+    final generation = ++_generation;
+    bool isStale() => generation != _generation;
     _currentUser = user;
     await _accountSubscription?.cancel();
     _accountSubscription = null;
+    if (isStale()) return;
 
     if (user == null) {
-      _session = const AsyncData(SignedOut());
-      notifyListeners();
+      _setSession(const AsyncData(SignedOut()));
+      return;
+    }
+
+    // A session restored from disk is checked before anything trusts it: a
+    // token the backend refuses makes every Firestore write wait for ever,
+    // which is a gate that never opens. Offline keeps the cached session
+    // (accounts ADR-0008).
+    // The check has a budget, not the last word: the refresh behind it can be
+    // slow (App Check being fetched first, a poor network), and the gate must
+    // not wait on it. Past the budget the start goes on from the cache, and a
+    // refusal that arrives later still signs the person out.
+    final pending = _auth.checkSession();
+    final check = await pending.timeout(
+      _checkBudget,
+      onTimeout: () {
+        unawaited(
+          pending.then((late) async {
+            if (late == SessionCheck.rejected && !isStale()) {
+              await _failSession(const SessionExpiredFailure());
+            }
+          }),
+        );
+        return SessionCheck.unverified;
+      },
+    );
+    if (isStale()) return;
+    if (check == SessionCheck.rejected) {
+      await _failSession(const SessionExpiredFailure());
       return;
     }
 
@@ -183,17 +222,17 @@ final class SessionController extends ChangeNotifier {
     // ADR-0003).
     final kid = user.kid;
     if (kid != null) {
-      _session = AsyncData(KidSignedIn(uid: user.uid, kid: kid));
-      notifyListeners();
+      _setSession(AsyncData(KidSignedIn(uid: user.uid, kid: kid)));
       return;
     }
 
     try {
       await _accounts.ensureAccount(user);
     } on AppFailure catch (failure) {
-      await _failSession(failure);
+      if (!isStale()) await _failSession(_ownAccountFailure(failure));
       return;
     }
+    if (isStale()) return;
 
     _accountSubscription = _accounts
         .watch(user.uid)
@@ -203,12 +242,15 @@ final class SessionController extends ChangeNotifier {
             // has not come back through the listener. Stay on loading rather
             // than flashing a signed-out screen at someone who is signed in.
             if (account == null) return;
-            _session = AsyncData(SignedIn(user: user, account: account));
-            notifyListeners();
+            _setSession(AsyncData(SignedIn(user: user, account: account)));
           },
           onError: (Object error) {
             unawaited(
-              _failSession(error is AppFailure ? error : UnknownFailure(error)),
+              _failSession(
+                _ownAccountFailure(
+                  error is AppFailure ? error : UnknownFailure(error),
+                ),
+              ),
             );
           },
         );
@@ -223,14 +265,25 @@ final class SessionController extends ChangeNotifier {
       await signOut();
       return;
     }
-    _session = AsyncFailure(failure);
-    notifyListeners();
+    _setSession(AsyncFailure(failure));
   }
 
   void _onAuthError(Object error) {
-    _session = AsyncFailure(
-      error is AppFailure ? error : UnknownFailure(error),
+    unawaited(
+      _failSession(error is AppFailure ? error : UnknownFailure(error)),
     );
+  }
+
+  /// The rules let every signed-in person read their own account, always, so
+  /// a refusal there means the request carried no identity the backend
+  /// accepts — a dead session, not a permission (accounts ADR-0008).
+  AppFailure _ownAccountFailure(AppFailure failure) =>
+      failure is PermissionDeniedFailure
+      ? const SessionExpiredFailure()
+      : failure;
+
+  void _setSession(AsyncState<Session> session) {
+    _session = session;
     notifyListeners();
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -5,6 +7,7 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
 import '../model/auth_user.dart';
 import '../model/kid_identity.dart';
+import '../model/session_check.dart';
 import 'auth_failure_mapper.dart';
 import 'auth_gateway.dart';
 import 'credential_linking.dart';
@@ -22,6 +25,16 @@ final class FirebaseAuthGateway implements AuthGateway {
   final CredentialLinking _linking;
   bool _googleIsInitialised = false;
 
+  /// The uid whose token this process has already had accepted — by signing in
+  /// here, or by a check — so a fresh sign-in is not asked about twice.
+  String? _acceptedUid;
+
+  /// How long a session check waits for the backend before calling it
+  /// unverified. Generous on purpose: the session controller stops waiting on
+  /// it far sooner and only listens for a late refusal, so this bounds that
+  /// listening rather than any screen.
+  static const _checkTimeout = Duration(seconds: 45);
+
   @override
   Stream<AuthUser?> authStateChanges() =>
       _auth.authStateChanges().asyncMap(_withKidClaim);
@@ -30,12 +43,33 @@ final class FirebaseAuthGateway implements AuthGateway {
   String? get pendingLinkEmail => _linking.pendingEmail;
 
   @override
+  Future<SessionCheck> checkSession() async {
+    final user = _auth.currentUser;
+    // Nobody signed in: the auth stream says so on its own, and there is no
+    // token to ask about.
+    if (user == null) return SessionCheck.unverified;
+    if (user.uid == _acceptedUid) return SessionCheck.accepted;
+    try {
+      // `true` forces a refresh: a cached ID token can look valid for up to an
+      // hour after the refresh token behind it has been revoked.
+      await user.getIdToken(true).timeout(_checkTimeout);
+      _acceptedUid = user.uid;
+      return SessionCheck.accepted;
+    } on TimeoutException {
+      AppLog.failure('session check', code: 'timeout');
+      return SessionCheck.unverified;
+    } on FirebaseException catch (error) {
+      AppLog.failure('session check', code: error.code, error: error);
+      return isRejectedSession(error)
+          ? SessionCheck.rejected
+          : SessionCheck.unverified;
+    }
+  }
+
+  @override
   Future<AuthUser> signInWithGoogle() async {
     try {
-      if (!_googleIsInitialised) {
-        await _google.initialize();
-        _googleIsInitialised = true;
-      }
+      await _initialiseGoogle();
       final account = await _google.authenticate();
       final idToken = account.authentication.idToken;
       if (idToken == null) {
@@ -102,6 +136,7 @@ final class FirebaseAuthGateway implements AuthGateway {
       final credential = await _auth.signInWithCustomToken(token);
       final user = credential.user;
       if (user == null) throw const SignInFailure(SignInProblem.unknown);
+      _acceptedUid = user.uid;
       return await _withKidClaim(user) ?? _fromUser(user);
     } on FirebaseAuthException catch (error) {
       throw failureFromFirebaseAuth(error);
@@ -111,15 +146,27 @@ final class FirebaseAuthGateway implements AuthGateway {
   @override
   Future<void> signOut() async {
     _linking.clear();
+    _acceptedUid = null;
     // Firebase first: if signing out of Google fails, the app must still not be
     // holding a Firebase session it believes is signed out.
     await _auth.signOut();
     try {
+      // A session restored from disk never initialised Google in this process,
+      // and the plugin must be before any other call — signing out included.
+      await _initialiseGoogle();
       await _google.signOut();
-    } on GoogleSignInException {
-      // Already signed out of Google, or Google was never used on this build —
-      // neither changes the fact that the Firebase session is gone.
+    } on GoogleSignInException catch (error) {
+      // Already signed out of Google, or Google is not configured on this
+      // build — neither changes the fact that the Firebase session is gone, so
+      // it is logged and not thrown (`ENG-10`).
+      AppLog.failure('google sign-out', code: error.code.name, error: error);
     }
+  }
+
+  Future<void> _initialiseGoogle() async {
+    if (_googleIsInitialised) return;
+    await _google.initialize();
+    _googleIsInitialised = true;
   }
 
   /// Every way in goes through here, so the pending-credential link happens
@@ -129,6 +176,7 @@ final class FirebaseAuthGateway implements AuthGateway {
       final credential = await attempt();
       final user = credential.user;
       if (user == null) throw const SignInFailure(SignInProblem.cancelled);
+      _acceptedUid = user.uid;
       await _linking.linkTo(user);
       return _toAuthUser(_auth.currentUser) ?? _fromUser(user);
     } on FirebaseAuthException catch (error) {
@@ -165,6 +213,9 @@ final class FirebaseAuthGateway implements AuthGateway {
       final token = await user.getIdTokenResult();
       return base.copyWith(kid: KidIdentity.fromClaims(token.claims));
     } on FirebaseAuthException catch (error) {
+      // A kid device whose token the backend refuses is signed out like any
+      // other dead session, not shown a sign-in error (accounts ADR-0008).
+      if (isRejectedSession(error)) throw const SessionExpiredFailure();
       throw failureFromFirebaseAuth(error);
     }
   }
