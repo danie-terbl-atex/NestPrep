@@ -40,28 +40,3 @@ export function requireUid(auth: Caller | undefined): string {
   if (carriesKidClaim(auth.token)) throw refuse('kidAccount');
   return auth.uid;
 }
-
-/** What the two membership calls need off the caller's token, and nothing more. */
-export interface VerifiedCaller extends Caller {
-  token: Readonly<Record<string, unknown>> & { email_verified?: boolean };
-}
-
-/**
- * The uid of a caller who has proved the address they signed up with
- * (accounts ADR-0002).
- *
- * Only the two calls that create membership use this — creating a household and
- * redeeming an invite — because those are the moments an address stops being a
- * string somebody typed and starts being a person with a household's data. A
- * Google credential arrives verified, so this is invisible to every Google user
- * and binding on every password one, which is the whole point of it.
- *
- * The claim is read off the token rather than the Auth record on purpose: the
- * token is what the rules see too, and a record read here would be a second
- * source of truth that can disagree with them (BE-01).
- */
-export function requireVerifiedUid(auth: VerifiedCaller | undefined): string {
-  const uid = requireUid(auth);
-  if (auth?.token.email_verified !== true) throw refuse('emailNotVerified');
-  return uid;
-}

@@ -48,9 +48,21 @@ The suite needs no cloud *access* — the client configuration is committed — 
 the real project id (foundation ADR-0008):
 
 ```sh
-firebase emulators:start --project nestprep-643b7     # Auth 9099, Firestore 8080, Functions 5001, Storage 9199, UI 4000
-npm --prefix functions run seed                       # three signed-in users for the emulator
+npm --prefix functions run emulators       # build, start the suite with its data kept, seed it
+npm --prefix functions run emulators:lan   # the same, listening on 0.0.0.0 for a phone on the Wi-Fi
 ```
+
+Auth 9099, Firestore 8080, Functions 5001, Storage 9199, UI 4000. Data lives in `emulator-data/`
+(gitignored): imported on start, exported when you stop the suite with **Ctrl+C** — a killed suite
+exports nothing. After every start the seed (idempotent) puts back three accounts under fixed uids
+and the demo household they share — *The Oak Street Nest*, two children, premium, every flag on —
+so the seeded *Parent* button is the same account in the same household on every device and after
+every restart (foundation ADR-0018). Delete `emulator-data/` to start clean. `emulators:lan`
+generates `firebase.lan.json` (gitignored; never edit it). A phone reaches it with
+`--dart-define=NESTPREP_BACKEND=emulator --dart-define=NESTPREP_EMULATOR_HOST=<this Mac's LAN IP>`
+(`ipconfig getifaddr en0`); the Mac's firewall must let `node` and `java` accept connections.
+The plain `firebase emulators:start --project nestprep-643b7` still works, in memory, and then
+`npm --prefix functions run build && npm --prefix functions run seed`.
 
 The project id is `nestprep-643b7`. It lives here and in the generated config files, never in the
 vault. A `demo-` project id no longer works: the Android Cloud Functions SDK validates the client

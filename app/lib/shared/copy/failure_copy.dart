@@ -103,8 +103,6 @@ abstract final class FailureCopy {
       'A household needs an admin. Make somebody else an admin first.',
     HouseholdProblem.cannotRemoveSelf =>
       'To leave the household, use Leave household.',
-    HouseholdProblem.emailNotVerified =>
-      'Confirm your email address first — check your inbox for the link.',
     HouseholdProblem.kidAccount =>
       'That needs a grown-up\u2019s account, not a kid sign-in.',
     HouseholdProblem.familyHasFullAccess =>

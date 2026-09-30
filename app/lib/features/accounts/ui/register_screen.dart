@@ -12,7 +12,8 @@ import 'sign_in_screen.dart';
 /// Creating an account with an address and a password (accounts ADR-0002).
 ///
 /// On success nothing happens here: registering signs the person in, the
-/// session's auth stream fires, and the router sends them to the verify screen.
+/// session's auth stream fires, and the router moves them on to the consent
+/// step and the household gate (accounts ADR-0007).
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 

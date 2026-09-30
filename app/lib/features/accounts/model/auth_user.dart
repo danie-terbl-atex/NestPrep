@@ -8,11 +8,6 @@ part 'auth_user.freezed.dart';
 /// at `users/{uid}` is (accounts ADR-0001). The uid is the only identifier any
 /// rule or Function keys on; the email is shown to the person and never used as
 /// a key.
-///
-/// `emailVerified` is the same claim the callables read off the token, mirrored
-/// here so a screen can say why joining a household is refused before the
-/// person tries it (accounts ADR-0002). It is never the *enforcement* — that is
-/// the server's, and this field is only how the app explains it (`BE-01`).
 @freezed
 abstract class AuthUser with _$AuthUser {
   const factory AuthUser({
@@ -20,7 +15,6 @@ abstract class AuthUser with _$AuthUser {
     required String email,
     String? displayName,
     String? photoUrl,
-    @Default(false) bool emailVerified,
 
     /// Set only on a kid device, from its token's claim (accounts ADR-0003).
     /// A kid device has no email, no account document and no household list;

@@ -7,8 +7,8 @@ import '../data/auth_gateway.dart';
 ///
 /// Route-scoped, like every controller that is not the session (foundation
 /// ADR-0006). It keeps nothing after a success: registering signs the person
-/// in, the session's auth stream fires, and the router moves them to the verify
-/// screen — so there is no state here to hand over.
+/// in, the session's auth stream fires, and the router moves them on (accounts
+/// ADR-0007) — so there is no state here to hand over.
 final class RegisterController extends ChangeNotifier {
   RegisterController({required AuthGateway authGateway}) : _auth = authGateway;
 

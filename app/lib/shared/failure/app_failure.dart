@@ -116,11 +116,6 @@ enum HouseholdProblem {
   lastAdmin,
   cannotRemoveSelf,
 
-  /// Creating or joining a household with an address nobody has proved. Only a
-  /// password account can be in this state — a Google credential arrives
-  /// verified (accounts ADR-0002).
-  emailNotVerified,
-
   /// A kid device asked for something only an adult's account may do. The kid
   /// app never offers one, so this is the server refusing what the screen
   /// already does not show (accounts ADR-0003).

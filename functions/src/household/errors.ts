@@ -20,7 +20,6 @@ export const HOUSEHOLD_REFUSALS = {
   alreadyInHousehold: ['already-exists', 'You are already in that household.'],
   lastAdmin: ['failed-precondition', 'A household needs an admin.'],
   cannotRemoveSelf: ['failed-precondition', 'Leave the household instead of removing yourself.'],
-  emailNotVerified: ['failed-precondition', 'Verify your email address first.'],
   // A kid device calls no household callable at all (accounts ADR-0003).
   kidAccount: ['permission-denied', 'A kid sign-in cannot do that.'],
   familyHasFullAccess: ['failed-precondition', 'Family members already see everything.'],

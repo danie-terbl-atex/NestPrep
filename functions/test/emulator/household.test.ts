@@ -179,55 +179,12 @@ describe('createInvite', () => {
 });
 
 /**
- * The gate between an account and its first household (accounts ADR-0002).
- *
- * The unit tests pin `requireVerifiedUid` in isolation; these say the two
- * callables that create membership actually call it, over HTTP, with a real
- * token — which is the only way to know the claim survives the trip and that
- * the refusal reaches the client as a `reason` the app can turn into copy.
+ * No gate between an account and its first household (accounts ADR-0007,
+ * which lifted ADR-0002's verified-address rule): an address nobody has
+ * confirmed yet creates and joins like any other.
  */
-describe('an address nobody has proved', () => {
-  it('cannot create a household', async () => {
-    const stranger = await signUpUnverified();
-    await expect(createHousehold(stranger)).rejects.toMatchObject({
-      reason: 'emailNotVerified',
-    });
-  });
-
-  it('cannot redeem an invite', async () => {
-    const admin = await signUp();
-    const { householdId } = await createHousehold(admin);
-    const member = await adminDb()
-      .collection(`households/${householdId}/members`)
-      .add({ displayName: 'Kid', color: 'mint', role: 'child', claimedBy: null });
-    const { code } = await callAs<CreatedInvite>(admin, 'createInvite', {
-      householdId,
-      memberId: member.id,
-    });
-
-    const stranger = await signUpUnverified();
-    await expect(callAs(stranger, 'redeemInvite', { code })).rejects.toMatchObject({
-      reason: 'emailNotVerified',
-    });
-  });
-
-  it('leaves the invite unspent, so it still works once proved', async () => {
-    // A refusal that quietly burned the code would turn a verification prompt
-    // into "ask for another invite".
-    const admin = await signUp();
-    const { householdId } = await createHousehold(admin);
-    const member = await adminDb()
-      .collection(`households/${householdId}/members`)
-      .add({ displayName: 'Kid', color: 'mint', role: 'child', claimedBy: null });
-    const { code } = await callAs<CreatedInvite>(admin, 'createInvite', {
-      householdId,
-      memberId: member.id,
-    });
-
-    const stranger = await signUpUnverified();
-    await expect(callAs(stranger, 'redeemInvite', { code })).rejects.toThrow(CallFailed);
-
-    const verified = await signUp();
-    await expect(callAs(verified, 'redeemInvite', { code })).resolves.toBeDefined();
+describe('an address nobody has confirmed', () => {
+  it('can create a household', async () => {
+    await expect(createHousehold(await signUpUnverified())).resolves.toBeDefined();
   });
 });

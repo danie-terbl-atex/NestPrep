@@ -22,9 +22,9 @@ abstract interface class AuthGateway {
     required String password,
   });
 
-  /// Creating an account, naming it, and sending the first verification email
-  /// in one step — an account that exists with no way to prove its address is a
-  /// person stuck behind the household gate with nothing to click.
+  /// Creating an account, naming it, and sending a verification email in one
+  /// step. The email is a courtesy — nothing waits on the address being proved
+  /// (accounts ADR-0007) — so its failing never fails the registration.
   Future<AuthUser> registerWithEmail({
     required String email,
     required String password,
@@ -34,14 +34,6 @@ abstract interface class AuthGateway {
   /// Sends a reset, and says nothing about whether the address had an account:
   /// the screen shows the same sentence either way (accounts ADR-0002).
   Future<void> sendPasswordReset(String email);
-
-  /// Sends another verification email to whoever is signed in.
-  Future<void> sendEmailVerification();
-
-  /// Re-reads the signed-in user from Firebase and reports whether the address
-  /// has been verified since. The SDK does not push this — the claim changes on
-  /// a web page in another app — so the verify screen has to ask.
-  Future<bool> refreshEmailVerified();
 
   /// Whether a credential is waiting to be linked onto the account this address
   /// already has, and which address that is. Null when nothing is pending.

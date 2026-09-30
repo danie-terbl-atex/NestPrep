@@ -41,16 +41,9 @@ void main() {
 
   Future<void> signIn({
     List<String> households = const [],
-    bool emailVerified = true,
     LegalConsent? consent = FakeAccountRepository.currentConsent,
   }) async {
-    auth.emit(
-      AuthUser(
-        uid: Fixtures.samUid,
-        email: 'sam@nestprep.test',
-        emailVerified: emailVerified,
-      ),
-    );
+    auth.emit(const AuthUser(uid: Fixtures.samUid, email: 'sam@nestprep.test'));
     await pumpEventQueue();
     accounts.emit(
       Account(
@@ -83,11 +76,6 @@ void main() {
   test('open with no household yet, instead of the household gate', () async {
     await signIn();
     expectOpen('no household');
-  });
-
-  test('open with an address not yet confirmed', () async {
-    await signIn(emailVerified: false);
-    expectOpen('unconfirmed address');
   });
 
   test(

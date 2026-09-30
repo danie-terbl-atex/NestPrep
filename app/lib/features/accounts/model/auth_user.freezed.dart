@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthUser {
 
- String get uid; String get email; String? get displayName; String? get photoUrl; bool get emailVerified;/// Set only on a kid device, from its token's claim (accounts ADR-0003).
+ String get uid; String get email; String? get displayName; String? get photoUrl;/// Set only on a kid device, from its token's claim (accounts ADR-0003).
 /// A kid device has no email, no account document and no household list;
 /// the session routes it to the kid's home instead.
  KidIdentity? get kid;
@@ -30,20 +30,20 @@ $AuthUserCopyWith<AuthUser> get copyWith => _$AuthUserCopyWithImpl<AuthUser>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as AuthUser;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthUser&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.emailVerified, _this.emailVerified) || other.emailVerified == _this.emailVerified)&&(identical(other.kid, _this.kid) || other.kid == _this.kid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthUser&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.kid, _this.kid) || other.kid == _this.kid));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AuthUser;
-  return Object.hash(runtimeType,_this.uid,_this.email,_this.displayName,_this.photoUrl,_this.emailVerified,_this.kid);
+  return Object.hash(runtimeType,_this.uid,_this.email,_this.displayName,_this.photoUrl,_this.kid);
 }
 
 @override
 String toString() {
   final _this = this as AuthUser;
-  return 'AuthUser(uid: ${_this.uid}, email: ${_this.email}, displayName: ${_this.displayName}, photoUrl: ${_this.photoUrl}, emailVerified: ${_this.emailVerified}, kid: ${_this.kid})';
+  return 'AuthUser(uid: ${_this.uid}, email: ${_this.email}, displayName: ${_this.displayName}, photoUrl: ${_this.photoUrl}, kid: ${_this.kid})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $AuthUserCopyWith<$Res>  {
   factory $AuthUserCopyWith(AuthUser value, $Res Function(AuthUser) _then) = _$AuthUserCopyWithImpl;
 @useResult
 $Res call({
- String uid, String email, String? displayName, String? photoUrl, bool emailVerified, KidIdentity? kid
+ String uid, String email, String? displayName, String? photoUrl, KidIdentity? kid
 });
 
 
@@ -71,14 +71,13 @@ class _$AuthUserCopyWithImpl<$Res>
 
 /// Create a copy of AuthUser
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? emailVerified = null,Object? kid = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? kid = freezed,}) {
   return _then(AuthUser(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,emailVerified: null == emailVerified ? _self.emailVerified : emailVerified // ignore: cast_nullable_to_non_nullable
-as bool,kid: freezed == kid ? _self.kid : kid // ignore: cast_nullable_to_non_nullable
+as String?,kid: freezed == kid ? _self.kid : kid // ignore: cast_nullable_to_non_nullable
 as KidIdentity?,
   ));
 }
@@ -176,10 +175,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String email,  String? displayName,  String? photoUrl,  bool emailVerified,  KidIdentity? kid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String email,  String? displayName,  String? photoUrl,  KidIdentity? kid)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthUser() when $default != null:
-return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.emailVerified,_that.kid);case _:
+return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.kid);case _:
   return orElse();
 
 }
@@ -197,10 +196,10 @@ return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.ema
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String email,  String? displayName,  String? photoUrl,  bool emailVerified,  KidIdentity? kid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String email,  String? displayName,  String? photoUrl,  KidIdentity? kid)  $default,) {final _that = this;
 switch (_that) {
 case _AuthUser():
-return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.emailVerified,_that.kid);case _:
+return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.kid);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -217,10 +216,10 @@ return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.ema
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String email,  String? displayName,  String? photoUrl,  bool emailVerified,  KidIdentity? kid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String email,  String? displayName,  String? photoUrl,  KidIdentity? kid)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthUser() when $default != null:
-return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.emailVerified,_that.kid);case _:
+return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.kid);case _:
   return null;
 
 }
@@ -232,14 +231,13 @@ return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.ema
 
 
 class _AuthUser extends AuthUser {
-  const _AuthUser({required this.uid, required this.email, this.displayName, this.photoUrl, this.emailVerified = false, this.kid}): super._();
+  const _AuthUser({required this.uid, required this.email, this.displayName, this.photoUrl, this.kid}): super._();
   
 
 @override final  String uid;
 @override final  String email;
 @override final  String? displayName;
 @override final  String? photoUrl;
-@override@JsonKey() final  bool emailVerified;
 /// Set only on a kid device, from its token's claim (accounts ADR-0003).
 /// A kid device has no email, no account document and no household list;
 /// the session routes it to the kid's home instead.
@@ -255,18 +253,18 @@ _$AuthUserCopyWith<_AuthUser> get copyWith => __$AuthUserCopyWithImpl<_AuthUser>
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthUser&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.emailVerified, emailVerified) || other.emailVerified == emailVerified)&&(identical(other.kid, kid) || other.kid == kid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthUser&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.kid, kid) || other.kid == kid));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,uid,email,displayName,photoUrl,emailVerified,kid);
+    return Object.hash(runtimeType,uid,email,displayName,photoUrl,kid);
 }
 
 @override
 String toString() {
-    return 'AuthUser(uid: $uid, email: $email, displayName: $displayName, photoUrl: $photoUrl, emailVerified: $emailVerified, kid: $kid)';
+    return 'AuthUser(uid: $uid, email: $email, displayName: $displayName, photoUrl: $photoUrl, kid: $kid)';
 }
 
 
@@ -277,7 +275,7 @@ abstract mixin class _$AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res>
   factory _$AuthUserCopyWith(_AuthUser value, $Res Function(_AuthUser) _then) = __$AuthUserCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String email, String? displayName, String? photoUrl, bool emailVerified, KidIdentity? kid
+ String uid, String email, String? displayName, String? photoUrl, KidIdentity? kid
 });
 
 
@@ -294,14 +292,13 @@ class __$AuthUserCopyWithImpl<$Res>
 
 /// Create a copy of AuthUser
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? emailVerified = null,Object? kid = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? kid = freezed,}) {
   return _then(_AuthUser(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,emailVerified: null == emailVerified ? _self.emailVerified : emailVerified // ignore: cast_nullable_to_non_nullable
-as bool,kid: freezed == kid ? _self.kid : kid // ignore: cast_nullable_to_non_nullable
+as String?,kid: freezed == kid ? _self.kid : kid // ignore: cast_nullable_to_non_nullable
 as KidIdentity?,
   ));
 }

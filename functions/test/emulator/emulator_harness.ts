@@ -40,10 +40,10 @@ const IDENTITY = `http://${AUTH_HOST}/identitytoolkit.googleapis.com/v1`;
 const PASSWORD = 'nestprep';
 
 /**
- * A signed-up user whose address is **verified**, which is what almost every
- * test wants: createHousehold and redeemInvite refuse an unverified caller
- * (accounts ADR-0002), and a Google credential — how people really arrive —
- * always carries the claim. Use `signUpUnverified` for the gate's own tests.
+ * A signed-up user whose address is **verified**, the way a Google credential
+ * always arrives. Nothing refuses an unverified caller any more (accounts
+ * ADR-0007); `signUpUnverified` is the password account that has not yet
+ * clicked its link.
  */
 export async function signUp(): Promise<TestUser> {
   const user = await signUpUnverified();
@@ -53,7 +53,7 @@ export async function signUp(): Promise<TestUser> {
   return { ...user, idToken: await signInAgain(user.email) };
 }
 
-/** A user who has not proved their address — the state the gate exists for. */
+/** A user who has not proved their address yet. */
 export async function signUpUnverified(): Promise<TestUser> {
   nextUser += 1;
   const email = `test-${Date.now().toString()}-${nextUser.toString()}@nestprep.test`;

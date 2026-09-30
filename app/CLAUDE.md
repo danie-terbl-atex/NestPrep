@@ -72,7 +72,9 @@ cloud variant. Three things make an unconfigured F5 fail here, and none is the a
   you actually opened is read, and their `cwd` values differ accordingly (`app` vs `NestPrep/app`).
 
 The app launches without the emulator suite running — it will just show the sign-in screen and fail
-to sign in. Start the suite and seed it first (both commands are in the root `CLAUDE.md`).
+to sign in. Start the suite first (`npm --prefix functions run emulators`, root `CLAUDE.md`). The
+seeded buttons — *Parent*, *Second parent*, *Helper* — appear whenever the backend is the emulator,
+release builds included, and sign into fixed accounts in one demo household (foundation ADR-0018).
 
 **The two emulator failures give different copy, and the copy is the diagnosis.** Neither is an app
 bug, and the seeded-user buttons are how you hit both:
@@ -80,8 +82,7 @@ bug, and the seeded-user buttons are how you hit both:
 | What you see | What is wrong | Fix |
 |---|---|---|
 | *"Signing in did not work. Please try again."* | the **suite is not running** — nothing is listening on 9099 | `firebase emulators:start --project nestprep-643b7` |
-| *"Those sign-in details are not right."* | the suite is up but **Auth is unseeded** — it is in-memory, so a restart or an integration-test run empties it | `npm --prefix functions run seed` |
-| *"Confirm your email address first…"* on the household gate | a user created by hand rather than by the seed, so the address is unproved and `createHousehold` refuses it (accounts ADR-0002) | re-run the seed, which creates its three **already verified**, or register and use the verify screen |
+| *"Those sign-in details are not right."* | the suite is up but **Auth is unseeded** — a suite started without `emulator-data/`, or emptied by an integration-test run | `npm --prefix functions run build && npm --prefix functions run seed`, or start it with `npm --prefix functions run emulators`, which seeds itself |
 
 Confirm the first from `adb logcat`, which is the only place the real reason appears — look for
 `RecaptchaCallWrapper: ... [ Failed to connect to /10.0.2.2:9099 ]`. The SDK reports that as
@@ -131,9 +132,22 @@ so the on-screen copy cannot tell you the backend was unreachable.
   does not.
 - `app/firebase.json` is flutterfire's own record of what it generated — not the emulator config,
   which is the `firebase.json` at the repo root.
-- iOS is registered in the Firebase project and `ios/Runner/GoogleService-Info.plist` is committed,
-  but it is not yet added to the Xcode target: `flutterfire configure` cannot edit this Xcode
-  project with the system Ruby's `xcodeproj`. Do that when iOS is first verified.
+- iOS is registered in the Firebase project and `ios/Runner/GoogleService-Info.plist` is in the
+  Xcode target. **Google sign-in on iOS needs `REVERSED_CLIENT_ID` from that plist as a
+  `CFBundleURLSchemes` entry in `Info.plist`** (plus `GIDClientID`) — without it the Google SDK
+  refuses to start. Re-check both after any `flutterfire configure`. On Android nothing is passed
+  to `GoogleSignIn.initialize`: the `google-services` Gradle plugin turns the type-3 client into
+  `default_web_client_id`, which the plugin reads; a device with no Google account stops at *add
+  an account* — vault lesson on checking Google sign-in per platform.
+- **`flutter run` on a physical iPhone from this Mac fails to find `build/ios/iphoneos/Runner.app`**,
+  because Xcode writes the bundle to `build/ios/Release-iphoneos/`. Build, then install and launch
+  by hand:
+  `xcrun devicectl device install app --device <udid> build/ios/Release-iphoneos/Runner.app` and
+  `xcrun devicectl device process launch --device <udid> io.nullstate.nestprep`
+  (`xcrun devicectl list devices` for the udid). An emulator build on a phone needs
+  `--dart-define=NESTPREP_EMULATOR_HOST=<the Mac's LAN IP>` and the suite started with
+  `emulators:lan`; `Info.plist` carries `NSLocalNetworkUsageDescription` and
+  `NSAllowsLocalNetworking` for that, and iOS asks once for local-network access — say yes.
 - **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
   `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
   fetched from the real service on both targets (it is a way to reach the phone, not household

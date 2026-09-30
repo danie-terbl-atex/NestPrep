@@ -76,10 +76,10 @@ final class FirebaseAuthGateway implements AuthGateway {
       await created.reload();
     } on FirebaseAuthException catch (error) {
       // The account exists and they are already signed in; only the name or the
-      // first verification email did not land. Failing the registration here
-      // would show an error over a session that is live, and the verify screen
-      // can send another email — so this is logged and carried on from, not
-      // thrown (`ENG-10`: a decision, not a swallowed error).
+      // courtesy verification email did not land. Nothing waits on either
+      // (accounts ADR-0007), and failing the registration here would show an
+      // error over a session that is live — so this is logged and carried on
+      // from, not thrown (`ENG-10`: a decision, not a swallowed error).
       AppLog.failure('register follow-up', code: error.code, error: error);
     }
     return _toAuthUser(_auth.currentUser) ?? user;
@@ -88,25 +88,6 @@ final class FirebaseAuthGateway implements AuthGateway {
   @override
   Future<void> sendPasswordReset(String email) =>
       _guard(() => _auth.sendPasswordResetEmail(email: email.trim()));
-
-  @override
-  Future<void> sendEmailVerification() => _guard(() async {
-    final user = _auth.currentUser;
-    if (user == null) throw const SignInFailure(SignInProblem.unknown);
-    await user.sendEmailVerification();
-  });
-
-  @override
-  Future<bool> refreshEmailVerified() async {
-    final user = _auth.currentUser;
-    if (user == null) return false;
-    await _guard(user.reload);
-    // The claim the callables read lives in the token, not the user record, so
-    // a stale token would still be refused after the person verified. Forcing a
-    // refresh here is what makes the "I have verified" button actually work.
-    await _guard(() => user.getIdToken(true));
-    return _auth.currentUser?.emailVerified ?? false;
-  }
 
   @override
   Future<AuthUser> signInWithSeededUser({
@@ -193,6 +174,5 @@ final class FirebaseAuthGateway implements AuthGateway {
     email: user.email ?? '',
     displayName: user.displayName,
     photoUrl: user.photoURL,
-    emailVerified: user.emailVerified,
   );
 }

@@ -20,7 +20,9 @@ npm run rules:check    # exit 1 if either committed rules file is out of date
 npm run test:rules     # builds the rules, then firestore.rules *and* storage.rules, allowed and denied
 npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order
-npm run seed           # three signed-in users, against a running Auth emulator
+npm run seed           # three fixed-uid users and the demo household, against a running suite (build first)
+npm run emulators      # build, start the suite importing/exporting ../emulator-data, then seed (foundation ADR-0018)
+npm run emulators:lan  # the same on 0.0.0.0, through a generated ../firebase.lan.json
 npm run serve          # build, then the functions emulator alone
 npm run beta-numbers   # print the weekly beta numbers (after `npm run build`; `-- --recount` recounts first)
 npm run grant-analytics-reader -- <email> [--revoke]   # who may open the Beta numbers screen
@@ -176,6 +178,9 @@ test or local run reaches Vertex or bills anything.
 - Three vitest configs, three `include` globs. A test file in the wrong folder runs in the wrong
   suite: `test/unit/` needs nothing, `test/rules/` and `test/emulator/` need the emulator around
   them.
+- **The seed reads `lib/`** (`tools/demo-household.mjs` takes grants, claims, the entitlement and the
+  flag list from the Functions' own code), so it writes the shapes the callables write. Change a
+  household-level shape in `src/` and the seed follows on the next build — no second copy.
 - `tools/` is plain Node, not part of the TypeScript program, so ESLint's type-aware rules are off
   for it — see `eslint.config.mjs`.
 - **The emulator asks the real Secret Manager for a bound secret it has no local value for.** The

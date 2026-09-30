@@ -15,7 +15,7 @@ import {
   newKidUid,
   pairingRefusal,
 } from '../../src/accounts/kid_sign_in_policy';
-import { parseInput, requireUid, requireVerifiedUid } from '../../src/household/parse_input';
+import { parseInput, requireUid } from '../../src/household/parse_input';
 import {
   READABLE_ALPHABET,
   generateReadableCode,
@@ -158,15 +158,6 @@ describe('a kid device calling a household callable', () => {
   it('is refused at the door, whatever it asked for', () => {
     const refusal = refusalOf(() => requireUid({ uid: 'kid_x', token: { [KID_CLAIM]: kid } }));
     expect(refusal.code).toBe('permission-denied');
-    expect(refusal.details).toEqual({ reason: 'kidAccount' });
-  });
-
-  it('including the two that create membership, before the address gate is asked', () => {
-    // The kid's token has no address, so without this the refusal would say
-    // "verify your email" to a seven-year-old (accounts ADR-0003).
-    const refusal = refusalOf(() =>
-      requireVerifiedUid({ uid: 'kid_x', token: { [KID_CLAIM]: kid } }),
-    );
     expect(refusal.details).toEqual({ reason: 'kidAccount' });
   });
 

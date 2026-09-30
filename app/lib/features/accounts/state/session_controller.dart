@@ -73,18 +73,6 @@ final class SessionController extends ChangeNotifier {
     _ => '',
   };
 
-  /// Whether Firebase says this person has proved their address. A Google
-  /// credential always has; a password one has not until they open the link.
-  /// The router reads this to decide whether there is any point showing the
-  /// household gate — the callables refuse an unverified caller anyway
-  /// (accounts ADR-0002), so this only saves them the round trip.
-  bool get emailVerified => switch (_session) {
-    AsyncData(value: final SignedIn signedIn) => signedIn.user.emailVerified,
-    // Nobody signed in has nothing to verify, and saying "false" here would
-    // route a signed-out person at the verify screen.
-    _ => true,
-  };
-
   /// Whether this account has still to agree to the documents this build
   /// ships — never agreed, or agreed to an older version (accounts ADR-0005).
   /// The router holds a person on the consent step until it is false.
@@ -114,34 +102,6 @@ final class SessionController extends ChangeNotifier {
   }) => _attemptSignIn(
     () => _auth.signInWithEmail(email: email.trim(), password: password),
   );
-
-  /// Asks Firebase again whether the address has been verified since, because
-  /// nothing pushes that claim to the app — the person proves it on a web page
-  /// this app never sees. Returns whether it has.
-  Future<bool> refreshEmailVerified() async {
-    try {
-      final verified = await _auth.refreshEmailVerified();
-      if (verified) {
-        // The token the callables read has changed, so the session has to be
-        // rebuilt from it or the gate stays shut for a person who is through it.
-        await _onAuthUser(_currentUser?.copyWith(emailVerified: true));
-      }
-      return verified;
-    } on AppFailure catch (failure) {
-      _signInFailure = failure;
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<void> resendVerificationEmail() async {
-    try {
-      await _auth.sendEmailVerification();
-    } on AppFailure catch (failure) {
-      _signInFailure = failure;
-      notifyListeners();
-    }
-  }
 
   Future<void> signInWithSeededUser({
     required String email,

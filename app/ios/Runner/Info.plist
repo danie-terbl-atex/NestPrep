@@ -22,20 +22,40 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string>388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>To scan a document into your family's vault, to take photos for the nanny hub — where things are in the house, and moments from a shift — and to photograph a spot that needs cleaning or show that it is clean.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>So a picture you share from NestPrep — a lunchbox card, a scanned page — can be saved to your photos when you choose Save Image.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Nest Prep connects to a development server on your local network while it is being tested.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>So your household can see where you are while you choose to share it. Sharing is always yours to start and stop, and every share ends on its own.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>So a picture you share from NestPrep — a lunchbox card, a scanned page — can be saved to your photos when you choose Save Image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -59,6 +79,10 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -75,10 +99,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

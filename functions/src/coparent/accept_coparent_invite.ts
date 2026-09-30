@@ -5,7 +5,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { ROLE_DEFAULTS } from '../household/access';
 import { householdRef, MEMBERS } from '../household/documents';
 import { looksLikeInviteCode } from '../household/invite_code';
-import { parseInput, requireVerifiedUid } from '../household/parse_input';
+import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { isAlreadyLinked, readKidProfile } from './child_profiles';
 import { requireRole } from './coparent_caller';
@@ -25,7 +25,7 @@ import { acceptCoParentInviteInput } from './schemas';
  * mirrors and, when the child is new here, their profile (BE-06, BE-07).
  */
 export const acceptCoParentInvite = onCall(async (request) => {
-  const uid = requireVerifiedUid(request.auth);
+  const uid = requireUid(request.auth);
   const input = parseInput(acceptCoParentInviteInput, request.data);
   if (!looksLikeInviteCode(input.code)) throw refuseCoParent('linkInviteNotFound');
   const store = db();

@@ -116,18 +116,6 @@ abstract final class AppCopy {
       'If that address has a NestPrep account, the link is on its way. It is '
       'worth checking the spam folder.';
 
-  static const verifyEmailTitle = 'Confirm your email';
-  static const verifyEmailSubmit = 'I have confirmed it';
-  static const verifyEmailResend = 'Send it again';
-  static const verifyEmailResent = 'Sent. Check your inbox again.';
-  static const verifyEmailStillWaiting =
-      'That address is not confirmed yet. Open the link in the email first.';
-  static const verifyEmailWrongAddress =
-      'Wrong address? Sign out and start again.';
-
-  static String verifyEmailBlurb(String email) =>
-      'We sent a link to $email. Open it, then come back — a household holds '
-      'your family\'s things, so we confirm the address before you join one.';
   static const signOut = 'Sign out';
   static const account = 'Account';
   static const sessionStarting = 'Getting things ready';

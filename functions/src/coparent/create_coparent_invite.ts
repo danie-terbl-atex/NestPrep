@@ -3,7 +3,7 @@ import { logger } from 'firebase-functions/v2';
 import { onCall } from 'firebase-functions/v2/https';
 
 import { INVITE_LIFETIME_MS, generateInviteCode } from '../household/invite_code';
-import { parseInput, requireVerifiedUid } from '../household/parse_input';
+import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { isAlreadyLinked, readKidProfile, sharedChildName } from './child_profiles';
 import { requireRole } from './coparent_caller';
@@ -22,7 +22,7 @@ import { createCoParentInviteInput } from './schemas';
  * home's admin accepts it, and this home's admin confirms.
  */
 export const createCoParentInvite = onCall(async (request) => {
-  const uid = requireVerifiedUid(request.auth);
+  const uid = requireUid(request.auth);
   const input = parseInput(createCoParentInviteInput, request.data);
   const store = db();
 

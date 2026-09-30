@@ -12,7 +12,6 @@ import '../features/accounts/ui/forgot_password_screen.dart';
 import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
-import '../features/accounts/ui/verify_email_screen.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household.dart';
@@ -92,10 +91,6 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
             PasswordResetController(authGateway: context.read<AuthGateway>()),
         child: const ForgotPasswordScreen(),
       ),
-    ),
-    GoRoute(
-      path: VerifyEmailScreen.path,
-      builder: (context, state) => const VerifyEmailScreen(),
     ),
     // Kid sign-in: the kid's way in and the kid's home (accounts ADR-0003).
     ...kidRoutes(session),
@@ -273,8 +268,8 @@ String? redirectForSession(SessionController session, String location) {
 
   // ---- account data (accounts ADR-0006) ----
   // The account centre — download, delete, the legal pages — is open to any
-  // signed-in person whatever else is unfinished: no household, an address
-  // not confirmed, terms not yet agreed. Somebody who will not agree to new
+  // signed-in person whatever else is unfinished: no household, terms not yet
+  // agreed. Somebody who will not agree to new
   // terms must still be able to delete their account.
   if (isAccountLocation(location)) return null;
 
@@ -286,14 +281,6 @@ String? redirectForSession(SessionController session, String location) {
 
   final householdId = session.activeHouseholdId;
 
-  // An unproved address cannot create or join a household — the callables
-  // refuse it (accounts ADR-0002) — so the gate would be a dead end. Somebody
-  // who is already in a household is left alone: they got in before the rule
-  // existed, or through Google, and locking them out of the app they are using
-  // would punish them for our change.
-  if (!session.emailVerified && householdId == null) {
-    return location == VerifyEmailScreen.path ? null : VerifyEmailScreen.path;
-  }
   if (householdId == null) {
     return location == HouseholdGateScreen.path
         ? null
@@ -305,7 +292,6 @@ String? redirectForSession(SessionController session, String location) {
     SignInScreen.path,
     RegisterScreen.path,
     ForgotPasswordScreen.path,
-    VerifyEmailScreen.path,
     HouseholdGateScreen.path,
     // Agreed, so the consent step is behind them (accounts ADR-0005).
     ConsentScreen.path,

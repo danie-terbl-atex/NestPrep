@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { expectRefusal } from './calendar_sync_fixture';
 import { aCode, accept, aKid, linkedHomes, mirrorOf, twoHomes } from './coparent_fixture';
-import { adminDb, callAs, clearFirestore, signUpUnverified } from './emulator_harness';
+import { adminDb, callAs, clearFirestore } from './emulator_harness';
 
 /**
  * Making, accepting, confirming and ending a link between two homes, over
@@ -60,19 +60,6 @@ describe('making a code', () => {
         schedule: ALTERNATING,
       }),
       'notAMember',
-    );
-  });
-
-  it('refuses somebody whose address is not confirmed', async () => {
-    const homes = await twoHomes();
-    await expectRefusal(
-      callAs(await signUpUnverified(), 'createCoParentInvite', {
-        householdId: homes.mum.householdId,
-        childMemberId: homes.mumChild,
-        home: MUMS_HOME,
-        schedule: ALTERNATING,
-      }),
-      'emailNotVerified',
     );
   });
 });
