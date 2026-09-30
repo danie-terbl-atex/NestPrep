@@ -76,13 +76,14 @@ to sign in. Start the suite first (`npm --prefix functions run emulators`, root 
 seeded buttons — *Parent*, *Second parent*, *Helper* — appear whenever the backend is the emulator,
 release builds included, and sign into fixed accounts in one demo household (foundation ADR-0018).
 
-**The two emulator failures give different copy, and the copy is the diagnosis.** Neither is an app
-bug, and the seeded-user buttons are how you hit both:
+**The emulator failures give different copy, and the copy is the diagnosis.** None is an app
+bug; the seeded-user buttons are how you hit the first two:
 
 | What you see | What is wrong | Fix |
 |---|---|---|
 | *"Signing in did not work. Please try again."* | the **suite is not running** — nothing is listening on 9099 | `firebase emulators:start --project nestprep-643b7` |
 | *"Those sign-in details are not right."* | the suite is up but **Auth is unseeded** — a suite started without `emulator-data/`, or emptied by an integration-test run | `npm --prefix functions run build && npm --prefix functions run seed`, or start it with `npm --prefix functions run emulators`, which seeds itself |
+| *"Sign in again to do that."* on a **physical iPhone**, on the first callable (e.g. creating a household), with nothing in the Functions emulator log | not the session: firebase-ios-sdk ≥ 12.19 **refuses on the phone** to send tokens over HTTP to a non-loopback host, as `unauthenticated`. Storage does the same. Auth and Firestore are unaffected | test callables and Storage on the Android emulator (or an iOS Simulator); a phone on the LAN emulator is for sign-in and Firestore screens only — vault lesson `an-iphone-cannot-call-functions-or-storage-on-the-emulator-over-the-lan` |
 
 Confirm the first from `adb logcat`, which is the only place the real reason appears — look for
 `RecaptchaCallWrapper: ... [ Failed to connect to /10.0.2.2:9099 ]`. The SDK reports that as
@@ -148,6 +149,9 @@ so the on-screen copy cannot tell you the backend was unreachable.
   `--dart-define=NESTPREP_EMULATOR_HOST=<the Mac's LAN IP>` and the suite started with
   `emulators:lan`; `Info.plist` carries `NSLocalNetworkUsageDescription` and
   `NSAllowsLocalNetworking` for that, and iOS asks once for local-network access — say yes.
+  **That phone cannot call a Function or use Storage on the emulator**: the iOS SDK (≥ 12.19)
+  fails any token-bearing request over HTTP to a non-loopback host with `unauthenticated` before it
+  is sent, which the app shows as *"Sign in again to do that."* — see the table above.
 - **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
   `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
   fetched from the real service on both targets (it is a way to reach the phone, not household
