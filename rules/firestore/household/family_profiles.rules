@@ -62,9 +62,13 @@ match /memberHealth/{memberId} {
 // rule for all of them — so only an admin changes one.
 match /schools/{schoolId} {
   // A school's name and whether it is nut-free say nothing about anybody,
-  // and a child at `own` needs theirs beside their profile.
+  // and a child at `own` needs theirs beside their profile. Lunch reads it
+  // too — the nut-free rule decides what may be packed — so anybody who may
+  // see lunch may read the school list.
   allow read: if canView(householdId, 'familyProfiles')
-    || hasOwnOnly(householdId, 'familyProfiles');
+    || hasOwnOnly(householdId, 'familyProfiles')
+    || canView(householdId, 'lunch')
+    || hasOwnOnly(householdId, 'lunch');
 
   allow create: if isAdmin(householdId)
     && request.resource.data.keys().hasOnly(['name', 'nutFree', 'createdAt'])
