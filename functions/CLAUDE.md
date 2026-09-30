@@ -21,6 +21,8 @@ npm run test:rules     # builds the rules, then firestore.rules *and* storage.ru
 npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order
 npm run seed           # three fixed-uid users and the demo household, against a running suite (build first)
+npm run seed:cloud-demo      # the live demo family in the real project (build first; foundation ADR-0019)
+npm run teardown:cloud-demo  # dry run; `-- --confirm` removes exactly what seed:cloud-demo made
 npm run emulators      # build, start the suite importing/exporting ../emulator-data, then seed (foundation ADR-0018)
 npm run emulators:lan  # the same on 0.0.0.0, through a generated ../firebase.lan.json
 npm run serve          # build, then the functions emulator alone
@@ -181,6 +183,14 @@ test or local run reaches Vertex or bills anything.
 - **The seed reads `lib/`** (`tools/demo-household.mjs` takes grants, claims, the entitlement and the
   flag list from the Functions' own code), so it writes the shapes the callables write. Change a
   household-level shape in `src/` and the seed follows on the next build — no second copy.
+- **The cloud demo seed** (`tools/seed-cloud-demo.mjs`, one module per area in `tools/cloud-demo/`)
+  writes five `demo-` accounts and the household `demo-oak-street` into the real project, through
+  the same `lib/` code, around the current week; its password comes only from the gitignored
+  `app/demo_logins.json`. It needs application-default credentials **with a quota project**
+  (`GOOGLE_CLOUD_QUOTA_PROJECT=nestprep-643b7`), or Identity Toolkit refuses. A reseed never sets an
+  existing account's password (that signs every phone out) unless passed `-- --reset-password`.
+  It refuses an address another uid holds and any id not starting `demo-`. A new feature's demo
+  documents go in `tools/cloud-demo/` (foundation ADR-0019).
 - `tools/` is plain Node, not part of the TypeScript program, so ESLint's type-aware rules are off
   for it — see `eslint.config.mjs`.
 - **The emulator asks the real Secret Manager for a bound secret it has no local value for.** The

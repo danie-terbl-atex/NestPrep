@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/emulator_accounts.dart';
+import '../../../app/seeded_sign_in.dart';
 import '../../../design/nest_kit.dart';
-import '../../../shared/copy/app_copy.dart';
 
-/// The emulator-only shortcut into a seeded user. Never built on a cloud target
-/// — the caller decides that, so this widget stays a plain list of choices
-/// (`FE-03`).
+/// The one-tap shortcut into a seeded or demo account. Whether a build has one
+/// at all is [SeededSignIn.forBuild]'s decision, so this widget stays a plain
+/// list of choices (`FE-03`).
 class SeededAccountPicker extends StatelessWidget {
   const SeededAccountPicker({
+    required this.hint,
     required this.accounts,
     required this.isBusy,
     required this.onPick,
     super.key,
   });
 
-  final List<EmulatorAccount> accounts;
+  final String hint;
+  final List<SeededAccount> accounts;
   final bool isBusy;
-  final ValueChanged<EmulatorAccount> onPick;
+  final ValueChanged<SeededAccount> onPick;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class SeededAccountPicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          AppCopy.signInEmulatorHint,
+          hint,
           style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
           textAlign: TextAlign.center,
         ),

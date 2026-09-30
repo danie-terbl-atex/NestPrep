@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/backend_target.dart';
-import '../../../app/emulator_accounts.dart';
+import '../../../app/seeded_sign_in.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
@@ -17,8 +17,9 @@ import 'sign_in_welcome.dart';
 
 /// The way in (accounts ADR-0001, ADR-0002). Two providers: Google, and an
 /// address with a password. The seeded shortcut below them exists only on an
-/// emulator build and is a different widget on purpose — a throwaway password
-/// list must never become the production form.
+/// emulator build or a cloud build compiled with the demo-login defines
+/// ([SeededSignIn], foundation ADR-0019), and is a different widget on purpose
+/// — a throwaway password list must never become the production form.
 ///
 /// The picture, the name and the line arrive in that order and then stop
 /// (`FE-15`). A failure banner is **not** part of the choreography: when
@@ -37,6 +38,7 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = context.watch<SessionController>();
     final failure = session.signInFailure;
+    final seeded = SeededSignIn.forBuild(BackendTarget.fromEnvironment());
     return NestScaffold(
       body: SafeArea(
         child: Center(
@@ -110,17 +112,17 @@ class SignInScreen extends StatelessWidget {
                         : () => context.go(KidCodeScreen.path),
                   ),
                 ),
-                if (BackendTarget.fromEnvironment() ==
-                    BackendTarget.emulator) ...[
+                if (seeded != null) ...[
                   const SizedBox(height: NestSpace.xxl),
                   NestRiseIn(
                     index: _waysInStep + 5,
                     child: SeededAccountPicker(
-                      accounts: EmulatorAccount.all,
+                      hint: seeded.hint,
+                      accounts: seeded.accounts,
                       isBusy: session.isSigningIn,
                       onPick: (account) => session.signInWithSeededUser(
                         email: account.email,
-                        password: EmulatorAccount.password,
+                        password: seeded.password,
                       ),
                     ),
                   ),

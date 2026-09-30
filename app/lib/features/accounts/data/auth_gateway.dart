@@ -48,11 +48,12 @@ abstract interface class AuthGateway {
   /// already has, and which address that is. Null when nothing is pending.
   String? get pendingLinkEmail;
 
-  /// The emulator's stopgap, so local runs and hand-driven tests do not need
-  /// Google's OAuth configuration. Kept separate from [signInWithEmail] even
-  /// though the SDK call is the same, because the seeded picker is an
-  /// emulator-only shortcut and must never become the production form
-  /// (accounts ADR-0002).
+  /// The one-tap shortcut into a seeded emulator user or a live demo account
+  /// (`SeededSignIn`), so local runs, demo builds and hand-driven tests do not
+  /// need Google's OAuth configuration. Kept separate from [signInWithEmail]
+  /// even though the SDK call is the same, because the picker is a shortcut
+  /// that no store build has and must never become the production form
+  /// (accounts ADR-0002, foundation ADR-0019).
   Future<AuthUser> signInWithSeededUser({
     required String email,
     required String password,

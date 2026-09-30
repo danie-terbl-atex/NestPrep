@@ -21,6 +21,8 @@
     "test:rules": "npm run rules:build && firebase emulators:exec --only firestore,storage --project nestprep-643b7 --config ../firebase.json \"vitest run --config vitest.rules.config.ts\"",
     "test:all": "npm run test && npm run test:rules && npm run test:emulator",
     "seed": "node tools/seed-emulator.mjs",
+    "seed:cloud-demo": "node tools/seed-cloud-demo.mjs",
+    "teardown:cloud-demo": "node tools/teardown-cloud-demo.mjs",
     "emulators": "node tools/emulators.mjs",
     "emulators:lan": "node tools/emulators.mjs --lan",
     "beta-numbers": "node tools/beta-numbers.mjs",

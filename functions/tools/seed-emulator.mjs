@@ -15,7 +15,7 @@
  * replaced by the fixed one. They exist only in the emulator; nothing here is
  * a secret (ENG-18).
  *
- * The same list is in `app/lib/app/emulator_accounts.dart` — keep them equal.
+ * The same list is in `app/lib/app/seeded_sign_in.dart` — keep them equal.
  *
  *     npm run build && npm run seed        (with the emulator suite already running)
  */

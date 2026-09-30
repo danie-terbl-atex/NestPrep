@@ -49,3 +49,7 @@ app.*.map.json
 
 # Golden-comparison dumps: written by a failing matchesGoldenFile, never source
 failures/
+
+# The live demo accounts' addresses and password, passed with
+# --dart-define-from-file=demo_logins.json (foundation ADR-0019). Never committed.
+demo_logins.json

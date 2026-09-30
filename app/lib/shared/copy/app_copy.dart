@@ -85,6 +85,12 @@ abstract final class AppCopy {
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';
+  static const signInDemoHint = 'Demo accounts — sign in as';
+  static const signInAsParent = 'Parent';
+  static const signInAsPartner = 'Second parent';
+  static const signInAsHelper = 'Helper';
+  static const signInAsNanny = 'Nanny';
+  static const signInAsGran = 'Gran';
 
   // Signing in with an address and a password (accounts ADR-0002).
   static const signInOr = 'or';

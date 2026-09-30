@@ -79,6 +79,12 @@ it before an emulator run, because a Firestore **write** against a backend that 
 never completes and never throws — the app sits on "Getting things ready" for ever with no error.
 That is a vault lesson, not a bug to rediscover.
 
+**Live demo accounts** exist in the cloud too (foundation ADR-0019): five `demo-` accounts in the
+populated household *The Oak Street Nest* (`demo-oak-street`). A cloud build compiled with
+`--dart-define-from-file=demo_logins.json` (gitignored, in `app/`) shows one-tap buttons for them;
+`npm --prefix functions run seed:cloud-demo` refreshes the data and `teardown:cloud-demo -- --confirm`
+removes it. The demo seed touches nothing but the demo household, its accounts and `appConfig/flags`.
+
 ## Firestore rules are partials, built into one file
 
 `firestore.rules` is generated and committed; never edit it (foundation ADR-0012, `ENG-05`). Each

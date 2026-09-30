@@ -31,10 +31,10 @@ void main() {
 
   /// Where copy is allowed to be a literal, and why.
   const allowed = {
-    // Emulator-only scaffolding that must match functions/tools/seed-emulator.mjs
+    // Seeded-account scaffolding that must match functions/tools/seed-emulator.mjs
     // exactly. These are fixture identifiers, not product copy, and they exist
-    // in no build a household will ever run.
-    'lib/app/emulator_accounts.dart',
+    // in no store build.
+    'lib/app/seeded_sign_in.dart',
     // The gallery is a debug route naming the primitives it is showing; its
     // labels are the widget names, not words anybody is meant to read.
   };

@@ -1,8 +1,9 @@
 /**
- * The demo household the emulator seed builds (foundation ADR-0018): one
+ * The demo household a seed builds (foundation ADR-0018, ADR-0019): one
  * family, the same ids on every run, written in the shapes the callables
  * write — so the seeded sign-in lands in the same household on every device,
- * after every restart of the app or the suite.
+ * after every restart of the app or the suite. The emulator seed builds the
+ * small cast below; the cloud demo seed passes its own (`cloud-demo/cast.mjs`).
  *
  * Every write is a merge onto fixed ids and `createdAt` is set only on a
  * document that does not exist yet, so running it again over imported data
@@ -20,6 +21,7 @@ const require = createRequire(import.meta.url);
 const { FieldValue, Timestamp } = require('firebase-admin/firestore');
 const { effectiveGrant, ROLE_DEFAULTS } = require('../lib/household/access.js');
 const { writeAccountClaims } = require('../lib/household/access_claim.js');
+const { markChild } = require('../lib/family_profiles/set_child_profile.js');
 const { FREE } = require('../lib/subscriptions/entitlement.js');
 const { entitlementFields } = require('../lib/subscriptions/subscription_documents.js');
 const { FEATURE_FLAGS } = require('../lib/shared/feature_flags.js');
@@ -60,19 +62,18 @@ export const PEOPLE = [
 ];
 
 /** Two children with no sign-in of their own: one allergy, one nut-free school. */
-const SCHOOLS = [
+export const SCHOOLS = [
   { id: 'greenside-primary', name: 'Greenside Primary', nutFree: true },
   { id: 'parkview-junior', name: 'Parkview Junior', nutFree: false },
 ];
 
-const CHILDREN = [
+export const CHILDREN = [
   {
     memberId: 'mia',
     displayName: 'Mia',
     color: 'violet',
     birthday: '2018-03-14',
     profile: {
-      isChild: true,
       allergies: { peanut: { severity: 'severe', note: 'EpiPen in the school bag' } },
       schoolId: 'parkview-junior',
       grade: 'Grade 2',
@@ -86,7 +87,6 @@ const CHILDREN = [
     color: 'sky',
     birthday: '2020-11-02',
     profile: {
-      isChild: true,
       schoolId: 'greenside-primary',
       grade: 'Grade R',
       diet: ['nutFree'],
@@ -95,8 +95,18 @@ const CHILDREN = [
   },
 ];
 
+/** The emulator's cast: what `seedDemoHousehold` builds when given nothing else. */
+export const EMULATOR_CAST = {
+  householdId: HOUSEHOLD_ID,
+  name: HOUSEHOLD_NAME,
+  timeZone: TIME_ZONE,
+  people: PEOPLE,
+  children: CHILDREN,
+  schools: SCHOOLS,
+};
+
 /** The legal versions this build ships, read from the one source (accounts ADR-0005). */
-function legalVersion(document) {
+export function legalVersion(document) {
   const text = readFileSync(
     resolve(import.meta.dirname, `../../app/assets/legal/${document}.md`),
     'utf8',
@@ -107,17 +117,23 @@ function legalVersion(document) {
 }
 
 /** A merge that stamps `createdAt` only the first time the document exists. */
-async function upsert(ref, data) {
+export async function upsert(ref, data) {
   const snapshot = await ref.get();
   const fields = snapshot.exists ? data : { ...data, createdAt: FieldValue.serverTimestamp() };
   await ref.set(fields, { merge: true });
 }
 
-export async function seedDemoHousehold(store) {
-  const household = store.collection('households').doc(HOUSEHOLD_ID);
+/**
+ * Builds [cast]'s household. A person or child may carry a `profile` — the
+ * family profile's fields apart from `isChild`, which only `markChild` (the
+ * body of `setChildProfile`) writes, so the free child stays consistent.
+ */
+export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
+  const { people, children, schools } = cast;
+  const household = store.collection('households').doc(cast.householdId);
   const privacyVersion = legalVersion('privacy-policy');
   const termsVersion = legalVersion('terms-of-service');
-  const admin = PEOPLE[0];
+  const admin = people[0];
 
   // The household: its uid→role map, the profile each uid claimed, and the
   // grant of everybody who is not family — what `createHousehold` and
@@ -125,15 +141,15 @@ export async function seedDemoHousehold(store) {
   const members = {};
   const profiles = {};
   const access = {};
-  for (const person of PEOPLE) {
+  for (const person of people) {
     members[person.uid] = person.role;
     profiles[person.uid] = person.memberId;
     const grant = effectiveGrant(person.role, person.access ?? null);
     if (grant !== null) access[person.uid] = grant;
   }
   await upsert(household, {
-    name: HOUSEHOLD_NAME,
-    timeZone: TIME_ZONE,
+    name: cast.name,
+    timeZone: cast.timeZone,
     members,
     profiles,
     access,
@@ -142,27 +158,55 @@ export async function seedDemoHousehold(store) {
     pendingSetupStep: null,
   });
 
-  for (const person of PEOPLE) {
+  for (const person of people) {
     await upsert(household.collection('members').doc(person.memberId), {
       displayName: person.displayName,
       color: person.color,
       role: person.role,
       claimedBy: person.uid,
+      ...(person.birthday === undefined ? {} : { birthday: person.birthday }),
       ...(person.access === undefined ? {} : { access: person.access }),
     });
+    if (person.profile !== undefined) {
+      await household
+        .collection('familyProfiles')
+        .doc(person.memberId)
+        .set(person.profile, { merge: true });
+    }
   }
 
-  for (const school of SCHOOLS) {
+  for (const school of schools) {
     await upsert(household.collection('schools').doc(school.id), {
       name: school.name,
       nutFree: school.nutFree,
     });
   }
 
+  // Premium until 2099, as months given rather than a store purchase, so
+  // every premium feature can be tried and nothing reads as a subscription
+  // somebody would have to manage. Written before the children, because a
+  // second child needs premium.
+  const until = new Date('2099-12-31T00:00:00Z');
+  await household
+    .collection('entitlement')
+    .doc('current')
+    .set(
+      entitlementFields(
+        { ...FREE, isTest: true },
+        {
+          premiumUntil: until,
+          storeUntil: null,
+          referralUntil: until,
+          referralDaysWaiting: 0,
+          referralFrom: new Date(),
+        },
+      ),
+    );
+
   // Children: an unclaimed `kid` profile with a parent's consent on it
-  // (accounts ADR-0005), and `isChild` on the family profile — which is what
-  // `setChildProfile` writes, beside the free child it keeps.
-  for (const child of CHILDREN) {
+  // (accounts ADR-0005), marked a child by `markChild` — the body of
+  // `setChildProfile` — which also keeps the free child.
+  for (const child of children) {
     const member = household.collection('members').doc(child.memberId);
     const existing = await member.get();
     await upsert(member, {
@@ -185,31 +229,13 @@ export async function seedDemoHousehold(store) {
       .collection('familyProfiles')
       .doc(child.memberId)
       .set(child.profile, { merge: true });
-  }
-  await household
-    .collection('entitlement')
-    .doc('freeChild')
-    .set({ memberId: CHILDREN[0].memberId });
-
-  // Premium until 2099, as months given rather than a store purchase, so
-  // every premium feature can be tried and nothing reads as a subscription
-  // somebody would have to manage.
-  const until = new Date('2099-12-31T00:00:00Z');
-  await household
-    .collection('entitlement')
-    .doc('current')
-    .set(
-      entitlementFields(
-        { ...FREE, isTest: true },
-        {
-          premiumUntil: until,
-          storeUntil: null,
-          referralUntil: until,
-          referralDaysWaiting: 0,
-          referralFrom: new Date(),
-        },
-      ),
+    await markChild(
+      store,
+      admin.uid,
+      { householdId: cast.householdId, memberId: child.memberId, isChild: true },
+      new Date(),
     );
+  }
 
   // Every V2 switch on, which is also the emulator's default when the
   // document is absent — written so a release build against the suite agrees.
@@ -220,19 +246,19 @@ export async function seedDemoHousehold(store) {
 
   // Each account: the household in its list and active, and the documents
   // this build ships already agreed to, so a seeded sign-in lands in the week.
-  for (const person of PEOPLE) {
+  for (const person of people) {
     await upsert(store.collection('users').doc(person.uid), {
       displayName: person.displayName,
       photoUrl: null,
-      householdIds: FieldValue.arrayUnion(HOUSEHOLD_ID),
-      activeHouseholdId: HOUSEHOLD_ID,
+      householdIds: FieldValue.arrayUnion(cast.householdId),
+      activeHouseholdId: cast.householdId,
       legalConsent: { termsVersion, privacyVersion, acceptedAt: Timestamp.now() },
     });
   }
 
   // The token claims Storage rules read, from what was just written — the
   // same projection `syncDocumentAccess` makes (documents ADR-0001).
-  for (const person of PEOPLE) await writeAccountClaims(store, person.uid);
+  for (const person of people) await writeAccountClaims(store, person.uid);
 
-  return `${HOUSEHOLD_NAME} (${HOUSEHOLD_ID}): ${String(PEOPLE.length)} adults, ${String(CHILDREN.length)} children, premium, every flag on`;
+  return `${cast.name} (${cast.householdId}): ${String(people.length)} adults, ${String(children.length)} children, premium, every flag on`;
 }
