@@ -6,6 +6,7 @@ import { db } from '../shared/firestore';
 import { consumeRateLimit } from '../shared/rate_limit';
 import { REQUESTS_PER_ADDRESS, REQUESTS_PER_DAY, recordDeletionRequest } from './deletion_requests';
 import { accountDeletionRequestInput } from './schemas';
+import { HOSTING_REGION } from '../shared/region';
 
 /**
  * The public "request deletion" form's endpoint (accounts ADR-0006), reached
@@ -17,7 +18,7 @@ import { accountDeletionRequestInput } from './schemas';
  * `tooMany`, `unavailable` — and never says whether an account exists. The
  * address is never logged (ENG-22).
  */
-export const requestAccountDeletion = onRequest(async (req, res) => {
+export const requestAccountDeletion = onRequest({ region: HOSTING_REGION }, async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ status: 'invalid' });
     return;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import * as functions from '../../src/index';
-import { FUNCTIONS_REGION, SCHEDULER_REGION } from '../../src/shared/region';
+import { FUNCTIONS_REGION, SCHEDULER_REGION, HOSTING_REGION } from '../../src/shared/region';
 
 /**
  * That the global options actually reached every endpoint (`BE-19`).
@@ -98,11 +98,17 @@ describe('every function — callable, trigger or schedule', () => {
     expect(endpoints()).toHaveLength(83);
   });
 
-  it('runs in the database region, except a schedule, which runs where Cloud Scheduler does', () => {
-    // Cloud Scheduler has no africa-south1 location (foundation ADR-0017).
+  it('runs in the database region, except a schedule and the site’s rewrite target', () => {
+    // Cloud Scheduler and Hosting rewrites have no africa-south1 location
+    // (foundation ADR-0017).
     for (const [name, endpoint] of endpoints()) {
-      const scheduled = 'scheduleTrigger' in endpoint;
-      expect(endpoint.region, name).toEqual([scheduled ? SCHEDULER_REGION : FUNCTIONS_REGION]);
+      const region =
+        'scheduleTrigger' in endpoint
+          ? SCHEDULER_REGION
+          : name === 'requestAccountDeletion'
+            ? HOSTING_REGION
+            : FUNCTIONS_REGION;
+      expect(endpoint.region, name).toEqual([region]);
     }
   });
 

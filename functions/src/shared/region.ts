@@ -24,3 +24,10 @@ export const FUNCTIONS_REGION = 'africa-south1';
  * and reads and writes the `africa-south1` database from there.
  */
 export const SCHEDULER_REGION = 'europe-west1';
+
+/**
+ * Where an HTTP function the public site rewrites to runs. Firebase Hosting
+ * cannot rewrite to `africa-south1`, so the one such function — the account
+ * deletion form — runs here and reads and writes the `africa-south1` database.
+ */
+export const HOSTING_REGION = 'europe-west1';

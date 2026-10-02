@@ -54,7 +54,7 @@ describe('the public site is generated', () => {
     expect(firebase.hosting.predeploy).toContain('node hosting/tools/build-site.mjs --check');
     expect(firebase.hosting.rewrites).toContainEqual({
       source: '/api/account-deletion-request',
-      function: { functionId: 'requestAccountDeletion', region: 'africa-south1' },
+      function: { functionId: 'requestAccountDeletion', region: 'europe-west1' },
     });
   });
 });
