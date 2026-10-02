@@ -17,11 +17,12 @@ export const aiModel = defineString('AI_MODEL', { default: 'gemini-2.5-flash' })
 export const aiLocation = defineString('AI_LOCATION', { default: 'europe-west4' });
 
 /**
- * The image model and its region (lunch-box ADR-0015): Imagen on Vertex, in
- * the same GDPR region as the text model. The prompt names foods only.
+ * The image model and its endpoint (lunch-box ADR-0016): a Gemini image model,
+ * served only from Vertex's `global` endpoint. Its prompt names foods and
+ * nothing about a family.
  */
-export const aiImageModel = defineString('AI_IMAGE_MODEL', { default: 'imagen-4.0-generate-001' });
-export const aiImageLocation = defineString('AI_IMAGE_LOCATION', { default: 'europe-west4' });
+export const aiImageModel = defineString('AI_IMAGE_MODEL', { default: 'gemini-3.1-flash-image' });
+export const aiImageLocation = defineString('AI_IMAGE_LOCATION', { default: 'global' });
 
 /** The project the Functions run in, which is the one Vertex bills. */
 export function currentProject(): string {

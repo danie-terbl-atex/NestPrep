@@ -8,7 +8,7 @@ import { EmulatorModel } from './emulator_model';
 import { FirestoreUsageLedger } from './firestore_usage_ledger';
 import type { GenerativeModel } from './generative_model';
 import type { ImageModel } from './image_model';
-import { ImagenModel } from './imagen_model';
+import { GeminiImageModel } from './gemini_image_model';
 import type { AiDependencies, ImageDependencies, SpendDependencies } from './run_ai_call';
 import { VertexModel } from './vertex_model';
 
@@ -50,10 +50,10 @@ function modelFor(store: Firestore): GenerativeModel {
   });
 }
 
-/** Imagen in the cloud; the bundled photo under the emulator. */
+/** The Gemini image model in the cloud; the bundled photo under the emulator. */
 function imageModelFor(store: Firestore): ImageModel {
   if (isEmulated()) return new EmulatorImageModel(store);
-  return new ImagenModel({
+  return new GeminiImageModel({
     project: currentProject(),
     location: aiImageLocation.value(),
     model: aiImageModel.value(),

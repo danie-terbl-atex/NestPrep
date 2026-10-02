@@ -9,7 +9,7 @@ import { ModelCallError } from './generative_model';
 import type { ImageModel, ImageReply, ImageRequest } from './image_model';
 
 /**
- * The image model the Functions emulator uses instead of Imagen (lunch-box
+ * The image model the Functions emulator uses instead of Vertex (lunch-box
  * ADR-0015): nothing leaves the machine and nothing is billed. Every picture
  * is the same bundled JPEG, unless `aiEmulator/{feature}.failWith` says to
  * fail the way Vertex can.
