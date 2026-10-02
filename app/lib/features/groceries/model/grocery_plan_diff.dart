@@ -151,10 +151,15 @@ class _DiffBuilder {
   }
 
   /// This week's unbought items from the plans whose name no plan asks for.
+  ///
+  /// Not one somebody picked a shop's product for: picking leaves the item
+  /// the plans' to refresh, but taking it off would throw away a person's
+  /// choice with it, so it stays until a person removes it.
   List<GroceryItem> noLongerPlanned(Set<String> wanted) => [
     for (final item in items)
       if (_isThisWeeks(item) &&
           !item.isBought &&
+          item.productMatch == null &&
           !wanted.contains(item.matchKey))
         item,
   ];

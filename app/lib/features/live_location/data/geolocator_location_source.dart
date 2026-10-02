@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 import '../model/coordinates.dart';
@@ -32,6 +34,36 @@ final class GeolocatorLocationSource implements LocationSource {
       LocationPermission.denied ||
       LocationPermission.unableToDetermine => LocationConsent.refused,
     };
+  }
+
+  @override
+  Future<Coordinates?> positionIfAlreadyAllowed({
+    Duration within = const Duration(seconds: 5),
+  }) async {
+    if (!await Geolocator.isLocationServiceEnabled()) return null;
+    final permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.always &&
+        permission != LocationPermission.whileInUse) {
+      return null;
+    }
+    try {
+      final position =
+          await Geolocator.getLastKnownPosition() ??
+          await Geolocator.getCurrentPosition(
+            locationSettings: LocationSettings(
+              accuracy: LocationAccuracy.low,
+              timeLimit: within,
+            ),
+          );
+      return Coordinates(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+    } on TimeoutException {
+      // No fix in time is an answer the caller handles: it falls back to a
+      // place the person chose.
+      return null;
+    }
   }
 
   @override

@@ -106,5 +106,12 @@ export { sendTestNotification } from './notifications/send_test_notification';
 export { notifyPhotoUpdate } from './notifications/notify_photo_update';
 export { notifyCoParentRequest } from './notifications/notify_coparent';
 export { notifyCoParentHandover } from './notifications/notify_coparent';
-// ---- plan my week with AI: a proposal, never a write (lunch-box ADR-0011, foundation ADR-0015) ----
-export { planMyWeek } from './plan_week/plan_my_week';
+// ---- plan my week from the store, in guided steps: proposals, never a write (lunch-box ADR-0012, foundation ADR-0015) ----
+export { draftLunchIdeas } from './plan_week/draft_lunch_ideas';
+export { buildLunchWeek } from './plan_week/build_lunch_week';
+// ---- add to Checkers: a member's own Sixty60 cart, linked by SMS code (the Checkers build contract) ----
+export { checkersLinkStatus } from './checkers/checkers_link_status';
+export { checkersRequestOtp } from './checkers/checkers_request_otp';
+export { checkersVerifyOtp } from './checkers/checkers_verify_otp';
+export { checkersPushToCart } from './checkers/checkers_push_to_cart';
+export { checkersUnlink } from './checkers/checkers_unlink';

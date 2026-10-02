@@ -104,7 +104,7 @@ void main() {
     });
   });
 
-  group('the shared week, from the household', () {
+  group('the shared week, from More', () {
     Future<void> pump(
       WidgetTester tester, {
       bool flagsOn = true,
@@ -113,7 +113,9 @@ void main() {
       final household = view ?? Fixtures.view();
       await pumpScreen(
         tester,
-        Scaffold(body: HouseholdPlaces(view: household)),
+        Scaffold(
+          body: SingleChildScrollView(child: HouseholdPlaces(view: household)),
+        ),
         view: household,
         providers: [featureFlagsProvider(defaultOn: flagsOn)],
       );

@@ -12,16 +12,16 @@ import '../../subscriptions/state/household_entitlement.dart';
 import '../model/lunch_budget_week.dart';
 import '../state/lunch_board_controller.dart';
 import '../state/lunch_budget_controller.dart';
+import 'lunch_basket_card.dart';
 import 'lunch_budget_flows.dart';
 import 'lunch_budget_locked.dart';
 import 'lunch_budget_meter.dart';
-import 'lunch_child_cost_card.dart';
 import 'lunch_child_switcher.dart';
 import 'lunch_swap_row.dart';
 
-/// Budget mode (lunch-box ADR-0007): the week against its budget, each
-/// child's boxes in money, and cheaper swaps for the child whose week is
-/// open. Premium — a free household sees what it would get instead.
+/// Budget mode (lunch-box ADR-0007, ADR-0012 §4): the household's week
+/// against its budget, the basket behind it in whole packs, and cheaper swaps
+/// for the child whose week is open. Premium — a free household sees what it would get instead.
 class LunchBudgetScreen extends StatelessWidget {
   const LunchBudgetScreen({super.key});
 
@@ -113,19 +113,8 @@ class _BudgetBody extends StatelessWidget {
               ),
             ),
         ],
-        for (final (index, child) in week.cost.children.indexed)
-          if (board.childWeek(child.childId) case final entry?) ...[
-            const SizedBox(height: NestSpace.md),
-            NestRiseIn(
-              index: index + 1,
-              child: LunchChildCostCard(
-                key: ValueKey(child.childId),
-                child: entry.child,
-                cost: child,
-                week: board.week,
-              ),
-            ),
-          ],
+        const SizedBox(height: NestSpace.md),
+        NestRiseIn(index: 1, child: LunchBasketCard(basket: week.cost.basket)),
         if (childWeek != null) ...[
           const SizedBox(height: NestSpace.xl),
           LunchChildSwitcher(

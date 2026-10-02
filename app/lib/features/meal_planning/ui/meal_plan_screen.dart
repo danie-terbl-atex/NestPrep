@@ -5,10 +5,10 @@ import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
-import '../../household/ui/household_link_button.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../model/meal_week.dart';
 import '../state/meal_plan_controller.dart';
@@ -36,6 +36,9 @@ class MealPlanScreen extends StatelessWidget {
     return NestScaffold(
       title: AppCopy.mealsTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
+      // Opened from More, so it carries the way back (design-system
+      // ADR-0005, `FE-17`); a deep link straight here has none.
+      leading: backLeading(context),
       trailing: [
         if (canEdit)
           NestIconButton(
@@ -44,7 +47,6 @@ class MealPlanScreen extends StatelessWidget {
             onPressed: () => showMealLibrarySheet(context: context),
           ),
         const NotificationBell(),
-        const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],
       bottomBar: HouseholdTabBar(

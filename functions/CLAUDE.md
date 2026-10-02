@@ -101,6 +101,9 @@ cloud because the client redirects every service.
 | `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured  |
 | `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                               |
 | `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)        |
+| `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged     |
+| `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                         |
+| `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly        |
 
 Subscriptions (subscriptions ADR-0001 in the vault) reach Google Play as **the Functions runtime
 service account**, through application-default credentials — there is no key file. It works once
@@ -120,6 +123,18 @@ Translation API is enabled on the project and that account holds `roles/cloudtra
 then Google answers 403, `translateHomeCareTexts` refunds the month's characters and refuses with
 `translationUnavailable`, and the helper reads English with the reason. Under the emulator the
 `EmulatorTranslator` answers `[zu] …` and nothing reaches Google.
+
+Add to Checkers (`src/checkers/`, the Checkers build contract in the vault) links a member's own
+Checkers Sixty60 account by SMS code and fills **their** cart — cart only, never a slot, checkout or
+payment. The four string params are the Sixty60 Android app's public client identity (the same in
+every install); their values live only in the git-ignored `.env.nestprep-643b7`, never here or in
+the vault. The session is an hour with no refresh; it and the three Checkers identifiers are sealed
+with AES-256-GCM under `CHECKERS_SESSION_KEY` in `checkersLinks/{uid}`, which no client may read. Only
+`http_checkers_login.ts` and `http_checkers_shop.ts` talk to Checkers, through `shared/http_client.ts`;
+under the emulator `EmulatorCheckers` answers instead (code `123456`, no SMS, no real cart). Behind
+the `addToCheckers` flag, except link status and unlink. Codes are limited to three per account and
+three per number per fifteen minutes (`rateLimits`). Weighed (`KG`) products are skipped, not
+guessed at. Rotating the key signs every member out of Checkers (their links stop opening).
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
@@ -199,8 +214,14 @@ test or local run reaches Vertex or bills anything.
   not a failure: the value reads as empty and the provider as not set up, which is what the
   emulator tests assert.
   To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset`,
-  `CALENDAR_MICROSOFT_CLIENT_SECRET=unset` and `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` in
+  `CALENDAR_MICROSOFT_CLIENT_SECRET=unset`, `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` and
+  `CHECKERS_SESSION_KEY=unset` (the emulator then seals with a fixed local key) in
   `functions/.secret.local` (git-ignored).
+- **Two emulator suites on one machine share project id `nestprep-643b7`.** The rules and emulator
+  harnesses read `FIRESTORE_EMULATOR_HOST`, `FIREBASE_STORAGE_EMULATOR_HOST` and
+  `FUNCTIONS_EMULATOR_HOST`; `emulators:exec` sets the first two but **not** the Functions one, so a
+  test run on other ports beside a running dev suite calls the dev suite's Functions on 5001 and
+  writes into its data. Pass `FUNCTIONS_EMULATOR_HOST=127.0.0.1:<port>` in the exec'd command.
 - **Vertex refused a `responseSchema` carrying `maxItems`** (400, _invalid argument_, 2026-09-29).
   Bound lists where the answer is parsed instead.
 - **`writes_are_atomic.test.ts` reads every `.set(`, `.update(`, `.delete(` in `src/` as a

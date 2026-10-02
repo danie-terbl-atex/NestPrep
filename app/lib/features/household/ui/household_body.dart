@@ -15,7 +15,6 @@ import '../model/household_view.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
 import '../state/household_controller.dart';
-import 'household_places.dart';
 import 'household_screen.dart';
 import 'household_settings_sheet.dart';
 import 'invite_sheet.dart';
@@ -24,8 +23,9 @@ import 'member_sheet.dart';
 import 'your_access_card.dart';
 
 /// Everything the household screen shows once the household has loaded: the
-/// people, grouped by what they are (household ADR-0003), and the places
-/// that hang off them.
+/// people, grouped by what they are (household ADR-0003). The places that
+/// used to hang off the bottom of it are on the More tab (design-system
+/// ADR-0005).
 class HouseholdBody extends StatelessWidget {
   const HouseholdBody({
     required this.view,
@@ -125,8 +125,7 @@ class HouseholdBody extends StatelessWidget {
           KidSignInLink(householdId: view.household.id),
           const SizedBox(height: NestSpace.lg),
         ],
-        HouseholdPlaces(view: view),
-        const SizedBox(height: NestSpace.xxl),
+        const SizedBox(height: NestSpace.lg),
         NestButton(
           label: AppCopy.householdLeave,
           variant: NestButtonVariant.outline,

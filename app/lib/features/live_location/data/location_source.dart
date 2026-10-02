@@ -1,3 +1,4 @@
+import '../model/coordinates.dart';
 import '../model/device_position.dart';
 
 /// The device this app is running on, as somewhere on the earth.
@@ -16,6 +17,15 @@ abstract interface class LocationSource {
   /// A fix each time the device has moved [moveBeforeReporting] metres. A
   /// device that is standing still emits nothing, which is the whole point.
   Stream<DevicePosition> watchPosition({required int moveBeforeReporting});
+
+  /// Where the device is, **only** if its owner has already allowed location
+  /// and it is switched on — never asking, so a screen that merely benefits
+  /// from a position (the Checkers product matches) cannot put a permission
+  /// prompt in front of somebody who came to do something else. Null
+  /// otherwise, or when no fix arrives within [within].
+  Future<Coordinates?> positionIfAlreadyAllowed({
+    Duration within = const Duration(seconds: 5),
+  });
 }
 
 /// What the device and its owner said when asked.

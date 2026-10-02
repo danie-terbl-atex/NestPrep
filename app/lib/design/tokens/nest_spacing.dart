@@ -17,6 +17,8 @@ abstract final class NestSpace {
 /// Corner radii. The look is round: cards and tiles sit at `lg`/`xl`, and
 /// anything that reads as a control is a full pill.
 abstract final class NestRadius {
+  /// A small square mark — a shop's logo beside a list item.
+  static const double xs = 8;
   static const double sm = 12;
   static const double md = 16;
   static const double lg = 20;
@@ -49,6 +51,10 @@ abstract final class NestSize {
   static const double iconLarge = 28;
   static const double iconTile = 52;
 
+  /// A shop's logo: beside a grocery item, and in the shop picker.
+  static const double logoSmall = 28;
+  static const double logoMedium = 36;
+
   /// A big icon tile used as a mark — a hero card, a lock, a code screen —
   /// and the glyph inside it.
   static const double mark = 72;
@@ -61,16 +67,29 @@ abstract final class NestSize {
   static const double brandMarkMedium = 128;
   static const double brandMarkSmall = 48;
 
-  /// The wordmark, by height: under the welcome's nest, and under the
-  /// household gate's.
-  static const double wordmarkLarge = 44;
-  static const double wordmarkSmall = 22;
+  /// The wordmark, by height, ascenders to descenders: under the welcome's
+  /// nest, and under the household gate's. The script's loops and the p's tail
+  /// take height the old block letters did not, so these run taller.
+  static const double wordmarkLarge = 64;
+  static const double wordmarkSmall = 32;
+
+  /// A satellite on the welcome's orbit (`NestDot`).
+  static const double dot = 12;
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;
   static const double avatarLarge = 56;
   static const double sheetHandleWidth = 44;
   static const double sheetHandleHeight = 4;
   static const double bottomBarHeight = 68;
+
+  /// The tonal pill behind the selected tab's icon, the way the bar says
+  /// where you are without relying on colour alone (`FE-13`).
+  static const double barIndicatorWidth = 56;
+  static const double barIndicatorHeight = 30;
+
+  /// The widest a place tile on the More screen grows before the grid adds a
+  /// column — two on a phone, more on a tablet.
+  static const double placeTileMaxWidth = 220;
 
   /// How much of a document's own image a sheet shows before it would be a
   /// screen of its own. Tall enough to recognise a letter, short enough to

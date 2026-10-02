@@ -91,24 +91,25 @@ void main() {
     expect(find.text('on setup'), findsOneWidget);
   });
 
-  testWidgets('a helper who may only clean lands on the household screen', (
-    tester,
-  ) async {
-    await openOnTheWeek(tester, viewer: Fixtures.thandiUid);
-    repository.emitHousehold(
-      Fixtures.household().copyWith(
-        access: {
-          Fixtures.thandiUid: AccessGrant({
-            HouseholdArea.homeCare: AccessLevel.own,
-          }),
-        },
-      ),
-    );
-    repository.emitMembers([Fixtures.sam, Fixtures.thandi]);
-    await tester.pumpAndSettle();
+  testWidgets(
+    'a helper who may only clean lands on More (design-system ADR-0005)',
+    (tester) async {
+      await openOnTheWeek(tester, viewer: Fixtures.thandiUid);
+      repository.emitHousehold(
+        Fixtures.household().copyWith(
+          access: {
+            Fixtures.thandiUid: AccessGrant({
+              HouseholdArea.homeCare: AccessLevel.own,
+            }),
+          },
+        ),
+      );
+      repository.emitMembers([Fixtures.sam, Fixtures.thandi]);
+      await tester.pumpAndSettle();
 
-    expect(find.text('on household'), findsOneWidget);
-  });
+      expect(find.text('on more'), findsOneWidget);
+    },
+  );
 
   testWidgets('family stays on the week', (tester) async {
     await openOnTheWeek(tester, viewer: Fixtures.samUid);

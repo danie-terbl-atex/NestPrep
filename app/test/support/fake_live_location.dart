@@ -91,6 +91,14 @@ final class FakeLocationSource implements LocationSource {
     return consent;
   }
 
+  /// What [positionIfAlreadyAllowed] answers: null is *not allowed yet*.
+  Coordinates? alreadyAllowedAt;
+
+  @override
+  Future<Coordinates?> positionIfAlreadyAllowed({
+    Duration within = const Duration(seconds: 5),
+  }) async => alreadyAllowedAt;
+
   @override
   Stream<DevicePosition> watchPosition({required int moveBeforeReporting}) {
     watchedWith = moveBeforeReporting;

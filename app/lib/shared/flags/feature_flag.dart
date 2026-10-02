@@ -79,7 +79,13 @@ enum FeatureFlag {
 
   /// One tap plans the week's lunches, dinners and the shopping list —
   /// premium as well, and counted against the AI cap.
-  planMyWeek('planMyWeek');
+  planMyWeek('planMyWeek'),
+
+  // ---- groceries: Checkers (the Checkers build contract) ----
+
+  /// Product matches under a grocery item, linking a member's own Checkers
+  /// account, and pushing the list into their Sixty60 cart.
+  addToCheckers('addToCheckers');
 
   const FeatureFlag(this.field);
 

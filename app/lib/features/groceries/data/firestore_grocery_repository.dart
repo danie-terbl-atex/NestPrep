@@ -5,6 +5,8 @@ import '../../../shared/firestore/typed_collection.dart';
 import '../model/grocery_item.dart';
 import '../model/grocery_plan_changes.dart';
 import '../model/grocery_plan_settings.dart';
+import '../model/product_match.dart';
+import '../model/product_match_converter.dart';
 import 'grocery_repository.dart';
 
 final class FirestoreGroceryRepository implements GroceryRepository {
@@ -47,15 +49,15 @@ final class FirestoreGroceryRepository implements GroceryRepository {
           .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
-  Future<void> add({
+  Future<String> add({
     required String householdId,
     required String name,
     String? quantity,
     required String addedBy,
-  }) {
+  }) async {
     final items = _items(householdId);
     final document = items.doc();
-    return _guarded(
+    await _guarded(
       () => document.set(
         GroceryItem(
           id: document.id,
@@ -65,6 +67,7 @@ final class FirestoreGroceryRepository implements GroceryRepository {
         ),
       ),
     );
+    return document.id;
   }
 
   @override
@@ -94,7 +97,35 @@ final class FirestoreGroceryRepository implements GroceryRepository {
       'sourceKey': null,
       'sourceWeek': null,
       'sourceNote': null,
+      // Deleted rather than nulled: on an item nobody matched, deleting an
+      // absent field changes nothing, so the rules see a plain text edit.
+      'productMatch': FieldValue.delete(),
     }),
+  );
+
+  @override
+  Future<void> setProductMatch({
+    required String householdId,
+    required String itemId,
+    required ProductMatch match,
+  }) => _guarded(
+    () => _items(householdId).doc(itemId).update({
+      // `pickedAt` null becomes the server's time (the converter's rule).
+      'productMatch': const ProductMatchConverter().toJson(
+        match.copyWith(pickedAt: null),
+      ),
+    }),
+  );
+
+  @override
+  Future<void> clearProductMatch({
+    required String householdId,
+    required String itemId,
+  }) => _guarded(
+    () =>
+        _items(householdId)
+            .doc(itemId)
+            .update({'productMatch': FieldValue.delete()}),
   );
 
   @override

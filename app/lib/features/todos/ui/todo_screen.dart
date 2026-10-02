@@ -10,7 +10,6 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
-import '../../household/ui/household_link_button.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../model/todo_board.dart';
 import '../state/todo_controller.dart';
@@ -51,7 +50,6 @@ class _TodoScreenState extends State<TodoScreen> {
                 context.push(ChorePointsRoute.pathFor(view.household.id)),
           ),
         const NotificationBell(),
-        const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],
       bottomBar: HouseholdTabBar(

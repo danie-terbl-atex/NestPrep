@@ -2,8 +2,10 @@
 
 The logo is one JPEG in the vault (`nestprep-project/brand/NestPrep logo.jpeg`):
 a white rounded card on a pale page, the nest illustration on a flat beige
-shadow, and the wordmark "Nest Prep" in one forest green underneath. Run this
-again whenever Daniel replaces it; everything it writes is derived.
+shadow, and the words "Nest Prep" underneath. Only the nest is cut from it: the
+wordmark is set in the app's script face, Grand Hotel (design-system ADR-0007),
+so the words and the headings are one font. Run this again whenever Daniel
+replaces the logo or the script changes; everything it writes is derived.
 
     python3 -m venv .venv && .venv/bin/pip install Pillow numpy scipy
     .venv/bin/python tools/brand/extract_brand_assets.py "<path to the logo>"
@@ -16,8 +18,13 @@ What it writes, under `app/assets/brand/`:
   *inside* the drawing (the calendar page, the tick's inner stroke) survives
   because an outline encloses it. The 1-3 px fringe is un-mixed against the
   colour it was blended with, so the edge is soft on any background, not haloed.
-- `nest_wordmark.png` — the words alone, as an alpha mask painted in the brand
-  forest. The app tints it with a token, so the same file works in dark.
+- `nest_wordmark.png` — "Nest Prep" set in `app/assets/fonts/GrandHotel-Regular.ttf`,
+  as an alpha mask painted in the brand forest. The app tints it with a token,
+  so the same file works in dark.
+
+And beside the source logo, not in the app: `NestPrep logo (script).png` — the
+whole logo as the brand now stands, the nest over the set wordmark on
+transparent, for anywhere the logo is shown outside the app.
 - `launcher/app_icon.png` — the iOS and legacy Android icon: the mark on cream,
   opaque (the App Store refuses alpha).
 - `launcher/app_icon_foreground.png` — the Android adaptive foreground: the mark
@@ -31,7 +38,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from scipy import ndimage
 
 # Colours sampled from the logo. The cream is the app's light canvas
@@ -42,10 +49,15 @@ WHITE = np.array([255.0, 255.0, 255.0])
 SHADOW = np.array([231.0, 218.0, 201.0])
 FOREST = np.array([0x32, 0x53, 0x3C], dtype=float)
 
-# The logo's own layout, in source pixels: the mark, then the words.
+# The logo's own layout, in source pixels: the mark (the words below it are
+# no longer cut — they are set from the font).
 MARK_BOX = (205, 205, 825, 668)
-WORDMARK_BOX = (205, 680, 825, 825)
 UPSCALE = 2
+
+WORDMARK_TEXT = 'Nest Prep'
+WORDMARK_FONT = 'assets/fonts/GrandHotel-Regular.ttf'
+# Set large and scaled down, so the curves are as smooth as the font's.
+WORDMARK_SET_SIZE = 600
 
 ICON = 1024
 RUNTIME_WIDTH = 720
@@ -102,14 +114,29 @@ def cut_mark(pixels):
     return trim(rgba.astype(np.uint8), pad=8)
 
 
-def cut_wordmark(pixels):
-    px = crop(pixels, WORDMARK_BOX)
-    darkness = (255.0 - px.mean(axis=2)) / (255.0 - FOREST.mean())
-    alpha = np.clip((darkness - 0.04) / 0.92, 0, 1)
-    rgba = np.zeros(px.shape[:2] + (4,), dtype=np.uint8)
+def set_wordmark(font_path):
+    font = ImageFont.truetype(str(font_path), WORDMARK_SET_SIZE)
+    x0, y0, x1, y1 = font.getbbox(WORDMARK_TEXT)
+    mask = Image.new('L', (x1 - x0 + 40, y1 - y0 + 40), 0)
+    ImageDraw.Draw(mask).text((20 - x0, 20 - y0), WORDMARK_TEXT, font=font, fill=255)
+    rgba = np.zeros((mask.height, mask.width, 4), dtype=np.uint8)
     rgba[..., :3] = FOREST.astype(np.uint8)
-    rgba[..., 3] = (alpha * 255).astype(np.uint8)
-    return trim(rgba, pad=4)
+    rgba[..., 3] = np.asarray(mask)
+    return trim(rgba, pad=WORDMARK_SET_SIZE // 60)
+
+
+def lockup(mark, wordmark):
+    """The nest over the words, the words two thirds of the nest's width."""
+    width = mark.width
+    words = wordmark.resize(
+        (round(width * 2 / 3), round(wordmark.height * width * 2 / 3 / wordmark.width)),
+        Image.LANCZOS,
+    )
+    gap = round(width * 0.03)
+    canvas = Image.new('RGBA', (width, mark.height + gap + words.height), (0, 0, 0, 0))
+    canvas.alpha_composite(mark, (0, 0))
+    canvas.alpha_composite(words, ((width - words.width) // 2, mark.height + gap))
+    return canvas
 
 
 def reach(mark):
@@ -148,11 +175,15 @@ def main(logo, app_dir):
     pixels = load(logo)
 
     mark = Image.fromarray(cut_mark(pixels))
+    wordmark = Image.fromarray(set_wordmark(Path(app_dir) / WORDMARK_FONT))
     for name, image in (
         ('nest_mark.png', mark),
-        ('nest_wordmark.png', Image.fromarray(cut_wordmark(pixels))),
+        ('nest_wordmark.png', wordmark),
     ):
         runtime(image).save(out / name, optimize=True)
+    lockup(mark, wordmark).save(
+        Path(logo).with_name('NestPrep logo (script).png'), optimize=True
+    )
 
     # The icon's mark fills more of the square than the adaptive one may:
     # iOS masks to a rounded square, not a circle.

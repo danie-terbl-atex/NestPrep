@@ -58,17 +58,24 @@ export const addLowStockToGroceries = onDocumentWritten(
         );
       });
       if (alreadyThere) return false;
-      transaction.set(list.doc(groceryLineId(productId)), {
-        name: restock.name,
-        quantity: null,
-        addedBy: restock.markedBy,
-        addedAt: FieldValue.serverTimestamp(),
-        boughtAt: null,
-        boughtBy: null,
-        sourceKey: key,
-        sourceWeek: weekKeyOf(new Date(), typeof zone === 'string' ? zone : LAUNCH_TIME_ZONE),
-        sourceNote: RUNNING_LOW,
-      });
+      // Merged, not replaced: a line bought before and needed again keeps
+      // the product a member picked for it (`productMatch`, the Checkers build
+      // contract) and anything else a newer app stores on it.
+      transaction.set(
+        list.doc(groceryLineId(productId)),
+        {
+          name: restock.name,
+          quantity: null,
+          addedBy: restock.markedBy,
+          addedAt: FieldValue.serverTimestamp(),
+          boughtAt: null,
+          boughtBy: null,
+          sourceKey: key,
+          sourceWeek: weekKeyOf(new Date(), typeof zone === 'string' ? zone : LAUNCH_TIME_ZONE),
+          sourceNote: RUNNING_LOW,
+        },
+        { merge: true },
+      );
       return true;
     });
 

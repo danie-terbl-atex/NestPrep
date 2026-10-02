@@ -4,6 +4,7 @@ import 'package:nestprep/features/groceries/data/grocery_repository.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/model/grocery_plan_changes.dart';
 import 'package:nestprep/features/groceries/model/grocery_plan_settings.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 /// Stands in for Firestore behind the controller, so a test drives the two live
@@ -33,6 +34,8 @@ final class FakeGroceryRepository implements GroceryRepository {
   final ticked = <({String itemId, bool isBought, String memberId})>[];
   final renamed = <({String itemId, String name, String? quantity})>[];
   final removed = <String>[];
+  final matchesSet = <({String itemId, ProductMatch match})>[];
+  final matchesCleared = <String>[];
   final planChanges = <({GroceryPlanChanges changes, String memberId})>[];
   final keepInStepWrites = <bool>[];
   final stapleWrites = <({String key, bool isStaple})>[];
@@ -63,7 +66,7 @@ final class FakeGroceryRepository implements GroceryRepository {
       _settings.stream;
 
   @override
-  Future<void> add({
+  Future<String> add({
     required String householdId,
     required String name,
     String? quantity,
@@ -71,6 +74,26 @@ final class FakeGroceryRepository implements GroceryRepository {
   }) async {
     _refuseIfAsked();
     added.add((name: name, quantity: quantity, addedBy: addedBy));
+    return 'added-${added.length}';
+  }
+
+  @override
+  Future<void> setProductMatch({
+    required String householdId,
+    required String itemId,
+    required ProductMatch match,
+  }) async {
+    _refuseIfAsked();
+    matchesSet.add((itemId: itemId, match: match));
+  }
+
+  @override
+  Future<void> clearProductMatch({
+    required String householdId,
+    required String itemId,
+  }) async {
+    _refuseIfAsked();
+    matchesCleared.add(itemId);
   }
 
   @override

@@ -1,302 +1,266 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/money/money.dart';
+import '../../add_to_checkers/data/checkers_catalogue.dart';
+import '../../add_to_checkers/data/checkers_place_resolver.dart';
+import '../../add_to_checkers/model/checkers_area.dart';
+import '../../add_to_checkers/model/checkers_place.dart';
+import '../../family_profiles/model/food_rules.dart';
 import '../../lunch_box/model/lunch_board.dart';
-import '../../lunch_box/model/lunch_fill_bias.dart';
-import '../../lunch_box/model/lunch_item.dart';
-import '../../lunch_box/model/lunch_item_draft.dart';
-import '../../lunch_box/model/lunch_safety.dart';
+import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/model/lunch_week.dart';
-import '../../meal_planning/data/meal_repository.dart';
-import '../../meal_planning/model/meal.dart';
-import '../../meal_planning/model/week_plan.dart';
-import '../data/plan_week_groceries.dart';
-import '../data/week_planner.dart';
-import '../model/plan_week_options.dart';
-import '../model/planned_week.dart';
-import '../model/planned_week_builder.dart';
-import 'plan_week_dinner_reads.dart';
-import 'plan_week_saver.dart';
+import '../data/lunch_aisle_source.dart';
+import '../data/lunch_idea_drafter.dart';
+import '../data/lunch_week_builder.dart';
+import '../data/shop_week_groceries.dart';
+import '../model/lunch_idea.dart';
+import 'plan_week_aisle.dart';
+import 'plan_week_ideas.dart';
+import 'plan_week_shop.dart';
+import 'shop_week_saver.dart';
+import 'store_search_run.dart';
 
-/// Where *Plan my week* is (lunch-box ADR-0011).
-enum PlanWeekStep { choosing, planning, review, saving, done }
+/// The five steps of *Plan my week* (lunch-box ADR-0012), each confirmed
+/// before the next.
+enum PlanWeekStep { brief, ideas, store, week, done }
 
-/// *Plan my week*: choose, ask, look it over, use it. It follows the lunch
-/// board for the children, their rules and the library, and — when dinners
-/// can be planned — the meal library and the week's dinners, so the plan is
-/// built and checked against what the phone holds now.
-///
-/// When the model cannot help — AI off, the month spent, no answer, no
-/// connection — the week is planned by the app's own auto-fill and a dinner
-/// rotation instead, and the review says so.
+/// *Plan my week from Checkers*: the brief, the lunchbox aisle and the
+/// ideas, the shop, the week, and using it. This holds which step is
+/// showing, whose lunches and which shop; each step's own state is its
+/// part's — [aisle], [ideas], [store], [shop]. It
+/// follows the lunch board for the children, their rules and the library, so
+/// every check is against what the phone holds now. Nothing is written
+/// before *Use this week*.
 final class PlanWeekController extends ChangeNotifier {
   PlanWeekController({
-    required this._planner,
-    required this._saver,
-    required this._groceries,
-    required MealRepository mealRepository,
+    required LunchIdeaDrafter drafter,
+    required LunchAisleSource aisleSource,
+    required LunchWeekBuilder weekBuilder,
+    required CheckersCatalogue catalogue,
+    required CheckersPlaceResolver placeResolver,
+    required ShopWeekSaver saver,
+    required ShopWeekGroceries groceries,
     required this.householdId,
     required this.week,
-    required this.mayPlanDinners,
-  }) : _dinnerReads = PlanWeekDinnerReads(
-         mealRepository: mealRepository,
-         householdId: householdId,
-         week: week,
-       ) {
-    if (mayPlanDinners) {
-      _dinnerReads.start(onChange: notifyListeners, onFailure: _readFailed);
-    }
+  }) : _places = placeResolver {
+    aisle = PlanWeekAisle(
+      source: aisleSource,
+      catalogue: catalogue,
+      onChange: _changed,
+    );
+    ideas = PlanWeekIdeas(drafter: drafter, onChange: _changed);
+    store = StoreSearchRun(catalogue: catalogue, onChange: _changed);
+    shop = PlanWeekShop(
+      builder: weekBuilder,
+      saver: saver,
+      groceries: groceries,
+      onChange: _changed,
+    );
+    unawaited(_resolvePlace());
   }
 
-  final WeekPlanner _planner;
-  final PlanWeekSaver _saver;
-  final PlanWeekGroceries _groceries;
-  final PlanWeekDinnerReads _dinnerReads;
+  final CheckersPlaceResolver _places;
   final String householdId;
   final LunchWeek week;
-
-  /// The `meals` grant at edit: only then are dinners offered.
-  final bool mayPlanDinners;
+  late final PlanWeekAisle aisle;
+  late final PlanWeekIdeas ideas;
+  late final StoreSearchRun store;
+  late final PlanWeekShop shop;
 
   AsyncState<LunchBoard> _board = const AsyncLoading();
-  PlanWeekStep _step = PlanWeekStep.choosing;
-  PlanWeekOptions? _options;
-  PlannedWeek? _planned;
-  PlanWeekSaved? _saved;
-  AppFailure? _failure;
-  int? _groceriesAdded;
-  bool _isAddingGroceries = false;
+  PlanWeekStep _step = PlanWeekStep.brief;
+  Set<String>? _childIds;
+  CheckersPlace? _place;
+  var _isDisposed = false;
 
   AsyncState<LunchBoard> get board => _board;
   PlanWeekStep get step => _step;
-  PlannedWeek? get planned => _planned;
-  PlanWeekSaved? get saved => _saved;
-  AppFailure? get failure => _failure;
-  int? get groceriesAdded => _groceriesAdded;
-  bool get isAddingGroceries => _isAddingGroceries;
-  List<Meal> get mealLibrary => _dinnerReads.library ?? const [];
-  WeekPlan? get _dinners => _dinnerReads.mealPlan;
 
-  /// Every child chosen and dinners in, until somebody says otherwise.
-  PlanWeekOptions get options =>
-      _options ??
-      PlanWeekOptions(
-        childIds: switch (_board) {
-          AsyncData(:final value) => {
-            for (final child in value.children) child.childId,
-          },
-          _ => const {},
+  /// Where the shop is searched; null until it is known.
+  CheckersPlace? get place => _place;
+
+  /// Every child chosen, until somebody says otherwise.
+  Set<String> get childIds =>
+      _childIds ??
+      switch (_board) {
+        AsyncData(:final value) => {
+          for (final child in value.children) child.childId,
         },
-        includeDinners: mayPlanDinners,
-        useWhatsInTheHouse: false,
-        budget: PlanBudget.none,
-      );
-
-  /// The board, and the meals when dinners can be planned, have answered.
-  bool get isReady =>
-      _board is AsyncData<LunchBoard> &&
-      (!mayPlanDinners || _dinnerReads.hasAnswered);
+        _ => const {},
+      };
 
   void followBoard(AsyncState<LunchBoard> board) {
     if (identical(board, _board)) return;
     _board = board;
-    notifyListeners();
+    _changed();
   }
 
-  void setOptions(PlanWeekOptions options) {
-    _options = options;
-    notifyListeners();
+  void toggleChild(String childId) {
+    final chosen = {...childIds};
+    if (!chosen.remove(childId)) chosen.add(childId);
+    _childIds = chosen;
+    _changed();
   }
 
-  void dismissFailure() {
-    if (_failure == null) return;
-    _failure = null;
-    notifyListeners();
+  Future<void> chooseArea(CheckersArea area) async {
+    await _places.choose(householdId, area);
+    _place = CheckersPlace.area(area);
+    _changed();
   }
 
-  /// Asks for the week; falls back to the app's own plan when AI cannot help.
-  /// [pantryBias] is the pantry's preference when planning from it
-  /// (lunch-box ADR-0006) — for the gaps the model leaves, and a plan
-  /// without AI.
-  Future<void> plan({LunchFillBias? pantryBias}) async {
-    final board = _board;
-    final chosen = options;
-    if (board is! AsyncData<LunchBoard> || _step == PlanWeekStep.planning) {
-      return;
-    }
-    if (!chosen.hasSomethingToPlan) {
-      _failure = const PlanWeekFailure(PlanWeekProblem.nothingToPlan);
-      notifyListeners();
-      return;
-    }
-    _step = PlanWeekStep.planning;
-    _failure = null;
-    notifyListeners();
-    try {
-      final reply = await _planner.plan(
-        householdId: householdId,
-        week: week,
-        options: chosen,
-      );
-      _show(
-        PlannedWeekBuilder.fromReply(
-          board: _latestBoard ?? board.value,
-          options: chosen,
-          reply: reply,
-          meals: mealLibrary,
-          mealPlan: _dinners,
-          bias: chosen.useWhatsInTheHouse ? pantryBias : null,
-        ),
-      );
-    } on AppFailure catch (failure) {
-      final reason = _fallbackFor(failure);
-      if (reason == null) {
-        _step = PlanWeekStep.choosing;
-        _failure = failure;
-        notifyListeners();
-        return;
-      }
-      _show(
-        PlannedWeekBuilder.fallback(
-          board: _latestBoard ?? board.value,
-          options: chosen,
-          meals: mealLibrary,
-          mealPlan: _dinners,
-          reason: reason,
-          mayPlanDinners: mayPlanDinners,
-          bias: chosen.useWhatsInTheHouse ? pantryBias : null,
-        ),
-      );
-    }
-  }
-
-  void swapLunch(String childId, String slotKey, LunchItem? item) {
-    final planned = _planned;
-    if (planned == null || _step != PlanWeekStep.review) return;
-    _planned = planned.withLunch(
-      childId,
-      slotKey,
-      item == null ? null : PlannedPick(item, PickOrigin.swapped),
-    );
-    notifyListeners();
-  }
-
-  /// Adds a new item to the library and swaps it in — unless it is not safe
-  /// for the child, when it is only added (the picker's own rule, lunch-box
-  /// ADR-0001).
-  Future<void> addAndSwap(
-    String childId,
-    String slotKey,
-    LunchItemDraft draft,
-  ) async {
-    try {
-      final item = await _saver.addToLibrary(draft);
-      final rules = _latestBoard?.childWeek(childId)?.child.foodRules;
-      if (rules == null) return;
-      if (!LunchSafety.isSafe(allergens: item.knownAllergens, rules: rules)) {
-        _failure = const LunchFailure(LunchProblem.unsafeForChild);
-        notifyListeners();
-        return;
-      }
-      swapLunch(childId, slotKey, item);
-    } on AppFailure catch (failure) {
-      _failure = failure;
-      notifyListeners();
-    }
-  }
-
-  void setDinner(int day, PlannedDinner? dinner) {
-    final planned = _planned;
-    if (planned == null || _step != PlanWeekStep.review) return;
-    _planned = planned.withDinner(day, dinner);
-    notifyListeners();
-  }
-
-  /// Writes the plan, under the ordinary rules.
-  Future<void> use() async {
-    final planned = _planned;
+  /// Brief → ideas: the lunchbox aisle's shelves near the household, then
+  /// the model's ideas for what they lack (lunch-box ADR-0013).
+  Future<void> draftIdeas() async {
     final board = _latestBoard;
-    if (planned == null || board == null || _step != PlanWeekStep.review) {
-      return;
-    }
-    _step = PlanWeekStep.saving;
-    _failure = null;
-    notifyListeners();
-    try {
-      _saved = await _saver.save(planned, board: board, mealPlan: _dinners);
-      _step = PlanWeekStep.done;
-    } on AppFailure catch (failure) {
-      _step = PlanWeekStep.review;
-      _failure = failure;
-    }
-    notifyListeners();
+    if (board == null || childIds.isEmpty) return;
+    _go(PlanWeekStep.ideas);
+    ideas.clear();
+    final place = _place ??= await _placeOrFallback();
+    await aisle.read(near: place.coordinates, rulesByChild: rulesByChild);
+    if (_step != PlanWeekStep.ideas) return;
+    await ideas.draft(
+      householdId: householdId,
+      week: week,
+      board: board,
+      childIds: childIds,
+      aisle: aisle.shelves,
+      aisleForModel: aisle.forModel,
+    );
   }
 
-  /// The new dinners' ingredients onto the grocery list.
-  /// [note] is the reason the list shows beside each line.
-  Future<void> addIdeasToGroceries({required String note}) async {
-    final planned = _planned;
-    if (planned == null || _isAddingGroceries) return;
-    _isAddingGroceries = true;
-    _failure = null;
-    notifyListeners();
-    try {
-      _groceriesAdded = await _groceries.add(
-        planned.ideaIngredients,
-        week: week,
-        note: note,
-      );
-    } on AppFailure catch (failure) {
-      _failure = failure;
-    } finally {
-      _isAddingGroceries = false;
-      notifyListeners();
+  void addOwnIdea(LunchSlot slot, String text) =>
+      ideas.addOwn(slot, text, rulesByChild);
+
+  /// Ideas → the shop: every idea still for a child searched in turn, after
+  /// the aisle's shelves still on the list, which are answered already.
+  Future<void> searchStore() async {
+    final active = ideas.active;
+    if (active.isEmpty) return;
+    final place = _place ??= await _places.resolve(householdId);
+    final kept = {for (final idea in active) idea.id};
+    _go(PlanWeekStep.store);
+    await store.start(
+      ideas: [
+        for (final idea in active)
+          if (idea.origin != IdeaOrigin.aisle) idea,
+      ],
+      answered: [
+        for (final shelf in aisle.shelves)
+          if (kept.contains(shelf.ideaId)) shelf,
+      ],
+      near: place.coordinates,
+      rulesByChild: rulesByChild,
+    );
+  }
+
+  Future<void> retrySearch(String ideaId) async {
+    final place = _place;
+    if (place == null) return;
+    await store.retry(
+      ideaId,
+      near: place.coordinates,
+      rulesByChild: rulesByChild,
+    );
+  }
+
+  /// The shop → the week, read against [budget]: the household's weekly
+  /// lunch budget as this phone last heard it.
+  Future<void> buildWeek({Money? budget}) async {
+    final board = _latestBoard;
+    if (board == null || !store.hasKept || !store.isSettled) return;
+    _go(PlanWeekStep.week);
+    await shop.build(
+      householdId: householdId,
+      week: week,
+      board: board,
+      childIds: childIds,
+      searches: store.searches,
+      budget: budget,
+    );
+  }
+
+  /// The week → done, once it is written.
+  Future<void> use() async {
+    final board = _latestBoard;
+    if (board == null) return;
+    if (await shop.use(board)) {
+      _go(PlanWeekStep.done);
+      _changed();
     }
+  }
+
+  /// One step back, keeping what the earlier step held.
+  void back() {
+    final previous = switch (_step) {
+      PlanWeekStep.brief || PlanWeekStep.ideas => PlanWeekStep.brief,
+      PlanWeekStep.store => PlanWeekStep.ideas,
+      PlanWeekStep.week || PlanWeekStep.done => PlanWeekStep.store,
+    };
+    if (previous == PlanWeekStep.brief) {
+      aisle.clear();
+      ideas.clear();
+    }
+    if (previous.index < PlanWeekStep.store.index) store.clear();
+    if (previous.index < PlanWeekStep.week.index) shop.clear();
+    _go(previous);
+    _changed();
   }
 
   void startOver() {
-    _step = PlanWeekStep.choosing;
-    _planned = null;
-    _saved = null;
-    _failure = null;
-    _groceriesAdded = null;
-    notifyListeners();
+    aisle.clear();
+    ideas.clear();
+    store.clear();
+    shop.clear();
+    _go(PlanWeekStep.brief);
+    _changed();
   }
+
+  /// The chosen children's food rules, as the phone holds them now.
+  Map<String, FoodRules> get rulesByChild => {
+    for (final child in _latestBoard?.children ?? const <LunchChildWeek>[])
+      if (childIds.contains(child.childId))
+        child.childId: child.child.foodRules,
+  };
 
   LunchBoard? get _latestBoard => switch (_board) {
     AsyncData(:final value) => value,
     _ => null,
   };
 
-  void _show(PlannedWeek planned) {
-    _planned = planned;
-    _step = PlanWeekStep.review;
-    notifyListeners();
+  void _go(PlanWeekStep step) => _step = step;
+
+  /// Where the shop is searched. Unawaited from the constructor, so it
+  /// keeps its own failure: a place that cannot be found is the resolver's
+  /// own fallback city, which the brief names and the parent can change.
+  Future<void> _resolvePlace() async {
+    final place = await _placeOrFallback();
+    _place ??= place;
+    _changed();
   }
 
-  /// The failures a plan without AI answers; anything else is said as it is.
-  static PlanFallbackReason? _fallbackFor(AppFailure failure) =>
-      switch (failure) {
-        AiFailure(problem: AiProblem.aiSwitchedOff) ||
-        PlanWeekFailure(
-          problem: PlanWeekProblem.planWeekOff,
-        ) => PlanFallbackReason.aiOff,
-        AiFailure(problem: AiProblem.aiLimitReached) =>
-          PlanFallbackReason.aiLimitReached,
-        AiFailure() => PlanFallbackReason.aiUnavailable,
-        UnavailableFailure() => PlanFallbackReason.offline,
-        _ => null,
-      };
+  Future<CheckersPlace> _placeOrFallback() async {
+    try {
+      return await _places.resolve(householdId);
+    } on AppFailure {
+      return const CheckersPlace.area(CheckersArea.fallback);
+    }
+  }
 
-  void _readFailed(AppFailure failure) {
-    _failure = failure;
-    notifyListeners();
+  void _changed() {
+    if (!_isDisposed) notifyListeners();
   }
 
   @override
   void dispose() {
-    _dinnerReads.close();
+    _isDisposed = true;
+    aisle.clear();
+    ideas.clear();
+    store.clear();
+    shop.clear();
     super.dispose();
   }
 }

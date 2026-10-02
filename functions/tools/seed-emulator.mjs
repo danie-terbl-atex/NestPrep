@@ -21,7 +21,7 @@
  */
 import { createRequire } from 'node:module';
 
-import { cannedPlanWeekReply } from './canned-plan-week.mjs';
+import { cannedLunchIdeasReply, cannedLunchWeekReply } from './canned-plan-week.mjs';
 import { PEOPLE, seedDemoHousehold } from './demo-household.mjs';
 
 const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'nestprep-643b7';
@@ -85,8 +85,9 @@ async function seedCannedReplies(store) {
   };
   const replies = store.collection('aiEmulator');
   await replies.doc('schoolLetter').set({ reply: JSON.stringify(letter) });
-  // Plan my week's canned week (lunch-box ADR-0011), in the Function's placeholders.
-  await replies.doc('planMyWeek').set({ reply: JSON.stringify(cannedPlanWeekReply) });
+  // Plan my week's two steps (lunch-box ADR-0012), in the Functions' placeholders.
+  await replies.doc('lunchIdeas').set({ reply: JSON.stringify(cannedLunchIdeasReply) });
+  await replies.doc('lunchWeek').set({ reply: JSON.stringify(cannedLunchWeekReply) });
   return 'canned school-letter and plan-my-week replies for the emulator model';
 }
 

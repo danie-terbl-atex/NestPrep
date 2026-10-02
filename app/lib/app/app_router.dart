@@ -20,6 +20,7 @@ import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
 import '../features/household/ui/household_gate_screen.dart';
+import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
 import '../features/legal/ui/consent_screen.dart';
 import '../features/live_location/data/live_location_repository.dart';
@@ -39,6 +40,7 @@ import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'account_routes.dart';
 import 'calendar_routes.dart';
+import 'checkers_link_routes.dart';
 import 'chore_points_route.dart';
 import 'design_gallery_access.dart';
 import 'documents_shell.dart';
@@ -149,6 +151,9 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         ...twoHomesRoutes(),
         // referrals: give a month, get a month (subscriptions ADR-0002).
         referralRoute(),
+        // Linking a Checkers account, for Add to Checkers (the Checkers build
+        // contract).
+        checkersLinkRoute(),
         // notifications: the inbox, its settings and one notification opened
         // (notifications ADR-0001 to ADR-0003).
         ...notificationsRoutes(),
@@ -209,6 +214,14 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // groceries phase 2: the list and the week's plans against it
         // (groceries ADR-0002).
         groceryRoute(),
+        // More: the people and every place beyond the bar (design-system
+        // ADR-0005).
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+          builder: (context, state) => HouseholdMoreScreen(
+            onSelectTab: (tab) => goToTab(context, state, tab),
+          ),
+        ),
       ],
     ),
     // ---- product analytics (product-analytics ADR-0001) ----
@@ -232,7 +245,7 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
   ],
 );
 
-/// Moves between the four tabs of one household.
+/// Moves between the tabs of one household.
 void goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
   context.go(HouseholdRoute.pathFor(HouseholdRoute.idFrom(state), tab));
 }

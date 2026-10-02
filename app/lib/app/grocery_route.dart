@@ -2,6 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../features/add_to_checkers/data/checkers_area_preference.dart';
+import '../features/add_to_checkers/data/checkers_catalogue.dart';
+import '../features/add_to_checkers/data/checkers_directory.dart';
+import '../features/add_to_checkers/data/checkers_place_resolver.dart';
+import '../features/add_to_checkers/data/retailer_preference.dart';
+import '../features/add_to_checkers/state/checkers_push_controller.dart';
+import '../features/add_to_checkers/state/product_match_controller.dart';
+import '../features/add_to_checkers/state/retailer_choice_controller.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/data/grocery_suggestion_source.dart';
 import '../features/groceries/data/lunch_plan_grocery_source.dart';
@@ -14,6 +22,7 @@ import '../features/home_care/data/home_care_library_repository.dart';
 import '../features/home_care/data/home_care_stock_grocery_source.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
+import '../features/live_location/data/location_source.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/data/lunch_week_reader.dart';
 import '../features/lunch_box/model/lunch_week.dart';
@@ -55,6 +64,34 @@ GoRoute groceryRoute() => GoRoute(
         ),
         ChangeNotifierProvider(
           create: (context) => _planController(context, householdId),
+        ),
+        // Checkers product matches and Add to Checkers (the Checkers build
+        // contract). Created whatever the switch says — neither does
+        // anything until the screen, which reads the switch, asks.
+        ChangeNotifierProvider(
+          create: (context) => ProductMatchController(
+            catalogue: context.read<CheckersCatalogue>(),
+            placeResolver: CheckersPlaceResolver(
+              locationSource: context.read<LocationSource>(),
+              areaPreference: context.read<CheckersAreaPreference>(),
+            ),
+            groceryRepository: context.read<GroceryRepository>(),
+            householdId: householdId,
+            memberId: viewerMemberIdOf(context),
+          ),
+        ),
+        // The shop *Find at* asks — Checkers until another is connected.
+        ChangeNotifierProvider(
+          create: (context) => RetailerChoiceController(
+            preference: context.read<RetailerPreference>(),
+            householdId: householdId,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CheckersPushController(
+            directory: context.read<CheckersDirectory>(),
+            householdId: householdId,
+          ),
         ),
       ],
       child: GroceryListScreen(

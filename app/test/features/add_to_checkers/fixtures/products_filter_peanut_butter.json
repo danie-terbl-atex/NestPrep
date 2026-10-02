@@ -1,0 +1,62 @@
+{
+  "products": [
+    {
+      "id": "5d3af65bf434cf8420738673",
+      "storeId": "62dabd7f832d656087c747d8",
+      "unitOfMeasure": "EA",
+      "name": "Yum Yum Smooth Peanut Butter 400g",
+      "displayName": "Yum Yum Smooth Peanut Butter 400g",
+      "brand": "Yum Yum",
+      "priceWithoutDecimal": 4999,
+      "priceFactor": 100,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "oldPrice": 4999,
+      "isStockAvailable": true,
+      "imageId": "6a594170f3d18ccfc18415ac",
+      "articleNumber": "10139362",
+      "packQuantity": 1,
+      "boxContent": "1 x 400g Yum Yum Smooth Peanut Butter",
+      "attributes": [
+        {
+          "name": "Allergens",
+          "value": "Contains: Peanuts, Soya."
+        },
+        {
+          "name": "Ingredients",
+          "value": "Peanuts (90%), Sugar, Vegetable Oil [Palm Fruit Contains Antioxidant TBHQ (E319)], Hydrogenated Vegetable Oil (Rapeseed, Soya Bean, Cottonseed and/or Palm Fruit), Salt"
+        },
+        {
+          "name": "Nutritional Information",
+          "value": "<b>Per 100g/ml</b>\n<ul><li>Energy: 2512kJ\n<li>Protein: 24.7g\n<li>Carbohydrates: 21g\n<li>• Of which total sugar: 16.8g\n<li>Total fat: 45.9g\n<li>• Of which saturated fat: 9.3g\n<li>• Of which Monounsatur"
+        }
+      ]
+    },
+    {
+      "id": "5f7ddd0e93ae024fc2798a1b",
+      "storeId": "62dabd7f832d656087c747d8",
+      "unitOfMeasure": "EA",
+      "name": "Yum Yum Crunchy Peanut Butter 400g",
+      "displayName": "Yum Yum Crunchy Peanut Butter 400g",
+      "brand": "Yum Yum",
+      "priceWithoutDecimal": 4999,
+      "priceFactor": 100,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "oldPrice": 4999,
+      "isStockAvailable": true,
+      "imageId": "6a59419941bc0fc5e21128f0",
+      "articleNumber": "10139363",
+      "packQuantity": 1,
+      "boxContent": "",
+      "attributes": [
+        {
+          "name": "Nutritional Information",
+          "value": "<b>Per 100g/ml</b>\n<ul><li>Energy: 2299kJ\n<li>Carbohydrates: 28g\n<li>• Of which total sugar: 13.2g\n<li>Total fat: 44.1g\n<li>• Of which saturated fat: 7.5g\n<li>• Of which Monounsaturated fat: 21.1g\n<li"
+        }
+      ]
+    }
+  ],
+  "totalCount": 2,
+  "success": true
+}

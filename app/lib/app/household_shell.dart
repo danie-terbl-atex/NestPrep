@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
 import '../features/household/model/household_area.dart';
+import '../features/household/model/household_permissions.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/nanny_hub/ui/carer_scope.dart';
@@ -139,15 +140,15 @@ class HouseholdTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Only the tabs this person may use (household ADR-0003). A helper who
-    // may only clean has none of the four, and never reaches a tab to see
-    // this bar — the shell sends them to the household screen instead.
+    // Only the tabs this person may use (household ADR-0003). More is open to
+    // everybody, so a helper who may only clean still has a bar with one
+    // place on it — the place their jobs are.
     final permissions = context.watch<HouseholdView>().permissions;
     final tabs = [
-      for (final tab in HouseholdTab.values)
-        if (permissions.canUse(tab.area)) tab,
+      for (final tab in HouseholdTab.inBar)
+        if (tab.isOpenTo(permissions)) tab,
     ];
-    final selected = tabs.indexOf(current);
+    final selected = tabs.indexOf(current.barTab);
     return NestBottomBar(
       items: [
         for (final tab in tabs)
@@ -157,22 +158,26 @@ class HouseholdTabBar extends StatelessWidget {
             label: tab.label,
           ),
       ],
-      selectedIndex: selected < 0 ? 0 : selected,
+      selectedIndex: selected < 0 ? tabs.length - 1 : selected,
       onSelect: (index) => onSelect(tabs[index]),
     );
   }
 }
 
-/// The things a household does (the verdict's v1). Lunch comes first: it is
-/// the launch feature and the household's home (lunch-box ADR-0004); the rest
-/// are in the order a week uses them, not the order they were built.
+/// The household's top-level places, each with its own address. Lunch comes
+/// first: it is the launch feature and the household's home (lunch-box
+/// ADR-0004); the rest are in the order a week uses them. More is last and
+/// holds everything else a household has — meals among it, because the bar
+/// has room for five names and no more (design-system ADR-0005).
 enum HouseholdTab {
   // ---- lunch-box (lunch-box ADR-0004) ----
   lunch('lunch', Icons.bento_outlined, Icons.bento),
   week('week', Icons.calendar_today_outlined, Icons.calendar_today),
   todos('todos', Icons.check_circle_outline, Icons.check_circle),
   groceries('groceries', Icons.shopping_basket_outlined, Icons.shopping_basket),
-  meals('meals', Icons.restaurant_outlined, Icons.restaurant);
+  meals('meals', Icons.restaurant_outlined, Icons.restaurant),
+  // ---- the More screen (design-system ADR-0005) ----
+  more('more', Icons.grid_view_outlined, Icons.grid_view_rounded);
 
   const HouseholdTab(this.segment, this.icon, this.selectedIcon);
 
@@ -180,14 +185,27 @@ enum HouseholdTab {
   final IconData icon;
   final IconData selectedIcon;
 
-  /// The area this tab is (household ADR-0003).
-  HouseholdArea get area => switch (this) {
+  /// The tabs the bar shows, in its order. Meals is reached from More.
+  static const inBar = [lunch, week, todos, groceries, more];
+
+  /// The tab the bar lights up while this place is open.
+  HouseholdTab get barTab => inBar.contains(this) ? this : more;
+
+  /// The area this tab is (household ADR-0003), or null for More, which is
+  /// everybody's: it only shows the places their grant opens.
+  HouseholdArea? get area => switch (this) {
     HouseholdTab.lunch => HouseholdArea.lunch,
     HouseholdTab.week => HouseholdArea.calendar,
     HouseholdTab.todos => HouseholdArea.todos,
     HouseholdTab.groceries => HouseholdArea.groceries,
     HouseholdTab.meals => HouseholdArea.meals,
+    HouseholdTab.more => null,
   };
+
+  bool isOpenTo(HouseholdPermissions permissions) {
+    final area = this.area;
+    return area == null || permissions.canUse(area);
+  }
 
   String get label => switch (this) {
     HouseholdTab.lunch => LunchCopy.tab,
@@ -195,5 +213,6 @@ enum HouseholdTab {
     HouseholdTab.todos => AppCopy.tabTodos,
     HouseholdTab.groceries => AppCopy.tabGroceries,
     HouseholdTab.meals => AppCopy.tabMeals,
+    HouseholdTab.more => MoreCopy.tab,
   };
 }

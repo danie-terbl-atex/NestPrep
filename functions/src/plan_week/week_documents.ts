@@ -13,38 +13,17 @@ export function isLunchSlot(value: string): value is LunchSlot {
   return (LUNCH_SLOTS as readonly string[]).includes(value);
 }
 
-export const LUNCH_ITEMS = 'lunchItems';
 export const LUNCH_PLANS = 'lunchPlans';
-export const LUNCH_FAVOURITES = 'lunchFavourites';
-export const LUNCH_PANTRY = 'lunchPantry';
-export const LUNCH_PRICES = 'lunchPrices';
-export const MEALS = 'meals';
-export const MEAL_PLANS = 'mealPlans';
 export const SCHOOLS = 'schools';
+export const LUNCH_BUDGET = 'lunchBudget';
+export const WEEKLY_BUDGET = 'weekly';
 
 /** The bounds the app's repositories read with (BE-08). */
-export const ITEM_LIMIT = 400;
 export const PLAN_LIMIT = 120;
-export const FAVOURITE_LIMIT = 200;
-export const MEAL_LIMIT = 500;
 
 const strings = z
   .array(z.unknown())
   .transform((list) => list.filter((entry): entry is string => typeof entry === 'string'));
-
-export const storedItem = z.object({
-  name: z.string().min(1),
-  slot: z.string(),
-  allergens: strings.optional().default([]),
-  archived: z.boolean().optional().default(false),
-});
-
-export interface LibraryItem {
-  readonly id: string;
-  readonly name: string;
-  readonly slot: LunchSlot;
-  readonly allergens: readonly string[];
-}
 
 const storedPick = z.object({
   itemId: z.string().min(1),
@@ -89,40 +68,6 @@ export function planFrom(data: unknown): LunchPlanFacts | null {
   return { childId: plan.data.childId, weekStart: plan.data.weekStart, slots, feedback };
 }
 
-export const storedFavourite = z.object({
-  childId: z.string(),
-  name: z.string(),
-  picks: z.record(z.string(), z.unknown()).optional().default({}),
-});
-
-export interface FavouriteFacts {
-  readonly childId: string;
-  /** Slot → item id. */
-  readonly items: Readonly<Partial<Record<LunchSlot, string>>>;
-}
-
-export function favouriteFrom(data: unknown): FavouriteFacts | null {
-  const favourite = storedFavourite.safeParse(data);
-  if (!favourite.success) return null;
-  const items: Partial<Record<LunchSlot, string>> = {};
-  for (const [slot, value] of Object.entries(favourite.data.picks)) {
-    const pick = storedPick.safeParse(value);
-    if (pick.success && isLunchSlot(slot)) items[slot] = pick.data.itemId;
-  }
-  return { childId: favourite.data.childId, items };
-}
-
-export const storedMeal = z.object({ name: z.string().min(1) });
-
-export interface MealFacts {
-  readonly id: string;
-  readonly name: string;
-}
-
-export const storedMealPlan = z.object({
-  slots: z.record(z.string(), z.unknown()).optional().default({}),
-});
-
 export const storedProfile = z.object({
   isChild: z.boolean().optional().default(false),
   allergies: z.record(z.string(), z.unknown()).optional().default({}),
@@ -137,15 +82,10 @@ export const storedOtherAllergy = z.object({ name: z.string().min(1) });
 
 export const storedSchool = z.object({ nutFree: z.boolean().optional().default(false) });
 
-export const storedPantry = z.object({ portions: z.number().int().min(0).optional().default(0) });
+/** The household's weekly lunch budget, whole rand cents (lunch-box ADR-0007). */
+export const storedBudget = z.object({ cents: z.number().int().min(0) });
 
-/** A price is for a pack of `portions` boxes' worth (lunch-box ADR-0007). */
-export const storedPrice = z.object({
-  cents: z.number().int().min(0),
-  portions: z.number().int().min(1).optional().default(1),
-});
-
-/** `{isoWeekday}_{slot}`, as a lunch plan and a meal plan key their slots. */
+/** `{isoWeekday}_{slot}`, as a lunch plan keys its slots. */
 export function slotKey(day: number, slot: string): string {
   return `${String(day)}_${slot}`;
 }

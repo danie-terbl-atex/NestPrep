@@ -17,7 +17,7 @@ import 'nanny_hub_route.dart';
 /// - a new household's admin is taken to the invite step until they finish or
 ///   skip it, and only an admin — who can invite — is ever on it;
 /// - a place the person may not use sends them to the first tab they may,
-///   or to the household screen when a grant opens none of the four.
+///   or to More when a grant opens none of them.
 ///
 /// It only moves the screen. The rules are what refuse the data (`FE-04`).
 String? householdPlaceRedirect({
@@ -41,16 +41,16 @@ String? householdPlaceRedirect({
   return firstPlaceFor(view);
 }
 
-/// The first tab this person may use, or the household screen — the one place
-/// everybody in a household can always reach.
+/// The first tab this person may use — at the latest More, the one tab
+/// everybody in a household can always reach, which shows them only the
+/// places their grant opens (design-system ADR-0005).
 String firstPlaceFor(HouseholdView view) {
   final householdId = view.household.id;
-  for (final tab in HouseholdTab.values) {
-    if (view.permissions.canUse(tab.area)) {
-      return HouseholdRoute.pathFor(householdId, tab);
-    }
-  }
-  return HouseholdRoute.householdPathFor(householdId);
+  final tab = HouseholdTab.inBar.firstWhere(
+    (tab) => tab.isOpenTo(view.permissions),
+    orElse: () => HouseholdTab.more,
+  );
+  return HouseholdRoute.pathFor(householdId, tab);
 }
 
 HouseholdArea? _areaAt(String location, String householdId) {

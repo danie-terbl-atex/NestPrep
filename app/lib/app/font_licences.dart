@@ -19,7 +19,7 @@ void registerFontLicences({AssetBundle? bundle}) {
 
 /// Each bundled family and its licence text, as declared in `pubspec.yaml`.
 const fontLicenceFiles = [
-  ('Dancing Script', 'assets/fonts/DancingScript-OFL.txt'),
+  ('Grand Hotel', 'assets/fonts/GrandHotel-OFL.txt'),
   ('Nunito', 'assets/fonts/Nunito-OFL.txt'),
   ('Plus Jakarta Sans', 'assets/fonts/PlusJakartaSans-OFL.txt'),
 ];

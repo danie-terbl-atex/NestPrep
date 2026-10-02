@@ -4,8 +4,8 @@ import 'feature_flag.dart';
 ///
 /// A field the document sets wins, either way. A field it does not set — or
 /// no document at all, or one that cannot be read — falls back to
-/// [defaultOn]: on in a debug build, so a developer and every test see the
-/// feature; off in a release build, so V2 ships dark until it is switched on.
+/// [defaultOn], which the app sets to on in every build (foundation
+/// ADR-0020): only an explicit `false` turns a capability off.
 class FeatureFlags {
   const FeatureFlags({required this.defaultOn, this.stored = const {}});
 

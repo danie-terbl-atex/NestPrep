@@ -62,11 +62,13 @@ void main() {
 
   test('helpers live where helpers live', () {
     // Not a style rule: a fake in the same folder as the tests is a fake that
-    // will be named `..._test.dart` by somebody one day, and then run.
+    // will be named `..._test.dart` by somebody one day, and then run. The
+    // suite's config is the one exception: Flutter only finds it by that name.
     final strays = [
       for (final file in dartFiles)
         if (!file.path.endsWith('_test.dart') &&
-            !file.path.startsWith('test/support/'))
+            !file.path.startsWith('test/support/') &&
+            file.path != 'test/flutter_test_config.dart')
           file.path,
     ];
 

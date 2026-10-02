@@ -4,8 +4,9 @@ import '../tokens/nest_brand_assets.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 
-/// The words "Nest Prep" as the logo draws them, never retyped in a font
-/// (design-system ADR-0003).
+/// The words "Nest Prep" as the logo draws them — set once in the script face
+/// by the brand tool and drawn from that image, never retyped in a [Text]
+/// (design-system ADR-0003, ADR-0007).
 ///
 /// The asset is an alpha mask; the colour is the theme's `accent`, which in
 /// light is the wordmark's own forest green and in dark the lifted leaf that

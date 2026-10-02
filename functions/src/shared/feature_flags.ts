@@ -39,8 +39,10 @@ export const FEATURE_FLAGS = [
   'homeCareRoutines',
   'homeCareStock',
   'homeCareHelperLanguage',
-  // ---- plan my week with AI (lunch-box ADR-0011) ----
+  // ---- plan my week from the store with AI (lunch-box ADR-0012) ----
   'planMyWeek',
+  // ---- add to Checkers: product matches and a member's own cart (the Checkers build contract) ----
+  'addToCheckers',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

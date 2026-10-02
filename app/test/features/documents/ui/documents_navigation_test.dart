@@ -3,12 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/documents_route.dart';
 import 'package:nestprep/app/household_route.dart';
+import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/features/documents/model/document_folder.dart';
 import 'package:nestprep/features/documents/state/document_library_controller.dart';
 import 'package:nestprep/features/documents/ui/document_folder_screen.dart';
 import 'package:nestprep/features/documents/ui/document_library_screen.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
-import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
@@ -67,12 +68,17 @@ void main() {
     await households.close();
   });
 
+  final morePath = HouseholdRoute.pathFor(
+    Fixtures.householdId,
+    HouseholdTab.more,
+  );
+
   GoRouter routerFrom(String initialLocation) => GoRouter(
     initialLocation: initialLocation,
     routes: [
       GoRoute(
-        path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
-        builder: (context, state) => const HouseholdScreen(),
+        path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+        builder: (context, state) => HouseholdMoreScreen(onSelectTab: (_) {}),
       ),
       GoRoute(
         path: DocumentsRoute.path,
@@ -87,8 +93,7 @@ void main() {
   );
 
   Future<void> pump(WidgetTester tester, String initialLocation) async {
-    // A tall phone: the way in sits below the people, the children and the
-    // family's profiles, and this is about where it goes, not where it is.
+    // A tall phone: this is about where the way in goes, not where it is.
     tester.view.devicePixelRatio = 3;
     tester.view.physicalSize = const Size(390 * 3, 1400 * 3);
     addTearDown(tester.view.reset);
@@ -119,8 +124,8 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// The way in sits below every other household place, and each feature
-  /// that adds a place moves it further down; it is scrolled to, not assumed.
+  /// The way in sits among the other places on More, and each feature that
+  /// adds a place can move it further down; it is scrolled to, not assumed.
   Future<void> openDocuments(WidgetTester tester) async {
     await tester.scrollUntilVisible(
       find.text(AppCopy.documentsOpenLibrary),
@@ -131,11 +136,11 @@ void main() {
     await tester.tap(find.text(AppCopy.documentsOpenLibrary));
   }
 
-  testWidgets('the documents open over the household, not instead of it', (
+  testWidgets('the documents open over More, not instead of it', (
     tester,
   ) async {
-    await pump(tester, HouseholdRoute.householdPathFor(Fixtures.householdId));
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    await pump(tester, morePath);
+    expect(find.text(MoreCopy.subtitle), findsOneWidget);
 
     await openDocuments(tester);
     await tester.pumpAndSettle();
@@ -146,15 +151,15 @@ void main() {
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
   });
 
-  testWidgets('and going back lands on the household again', (tester) async {
-    await pump(tester, HouseholdRoute.householdPathFor(Fixtures.householdId));
+  testWidgets('and going back lands on More again', (tester) async {
+    await pump(tester, morePath);
     await openDocuments(tester);
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(MoreCopy.subtitle), findsOneWidget);
     expect(find.text(AppCopy.documentsTitle), findsNothing);
   });
 

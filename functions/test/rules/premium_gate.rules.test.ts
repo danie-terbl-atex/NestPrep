@@ -10,6 +10,8 @@ import {
 import { Timestamp, doc, setDoc, type Firestore } from 'firebase/firestore';
 import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
 
+import { FIRESTORE_AT } from './rules_harness';
+
 /**
  * `hasPremium(householdId)` — the one line a premium feature adds to its
  * rules (subscriptions ADR-0001). Lunch-box's learning loop and prep list are
@@ -42,7 +44,7 @@ let environment: RulesTestEnvironment;
 beforeAll(async () => {
   environment = await initializeTestEnvironment({
     projectId: PROBE_PROJECT,
-    firestore: { rules: probeRules(), host: '127.0.0.1', port: 8080 },
+    firestore: { rules: probeRules(), ...FIRESTORE_AT },
   });
 });
 

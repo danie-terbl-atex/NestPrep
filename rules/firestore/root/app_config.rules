@@ -3,14 +3,17 @@
 // get it — it is a list of switches, not anybody's data — and no client may
 // write it: Daniel sets it in the console. `appConfig/ai` is the AI kill
 // switch and the monthly caps, read only by Functions; a client has no
-// reason to know the caps, and must never be able to raise them. Any other
+// reason to know the caps, and must never be able to raise them.
+// `appConfig/lunchAisle` names the Checkers lunchbox shelves *Plan my week*
+// reads first (lunch-box ADR-0013) — shop ids, nobody's data — read like
+// the flags and written only in the console. Any other
 // id here is closed too, so the collection cannot quietly grow into a place
 // for data, and nobody lists it.
 // `aiEmulator/{feature}` holds the canned model answers the Functions
 // emulator uses; it has no rule, so no client reads or writes it.
 
 match /appConfig/{configId} {
-  allow get: if isSignedIn() && configId == 'flags';
+  allow get: if isSignedIn() && configId in ['flags', 'lunchAisle'];
   allow list: if false;
   allow write: if false;
 }

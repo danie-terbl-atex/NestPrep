@@ -3,10 +3,11 @@
  * the server's copy of the app's `FoodRules.mustAvoid` and `LunchSafety`, and
  * of the rules' `lunchAvoidFor` (lunch-box ADR-0001).
  *
- * Planning a week applies it **before** the model is asked (an unsafe item is
- * never offered, so the model cannot choose it) and **after** (every choice is
- * checked again). The rules check a third time when the plan is written, and
- * theirs is the answer that counts (BE-20). None of it is sent to the model.
+ * Planning a week applies it to the model's ideas and to every store product
+ * before the model sees it, and to every choice after (`child_exclusion.ts`,
+ * lunch-box ADR-0012). The rules check again when the plan is written, and
+ * theirs is the answer that counts (BE-20). No allergy is sent to the model;
+ * likes and dislikes are, as words under a placeholder.
  */
 
 export const ALLERGENS = [
@@ -64,35 +65,6 @@ export function foodRulesFrom(facts: StoredFoodFacts): ChildFoodRules {
     likes: facts.likes,
     dislikes: facts.dislikes,
   };
-}
-
-/**
- * Whether a thing called [name] containing [allergens] may go in this child's
- * box at all: none of the codes they must avoid, and not named as one of their
- * free-text allergies.
- */
-export function isSafeFor(
-  rules: ChildFoodRules,
-  name: string,
-  allergens: readonly string[],
-): boolean {
-  if (allergens.some((code) => rules.avoid.has(code))) return false;
-  return !rules.otherAllergies.some((allergy) => mentions(name, allergy));
-}
-
-/** Safe, and not something they said no to — what may be suggested. */
-export function isSuggestableFor(
-  rules: ChildFoodRules,
-  name: string,
-  allergens: readonly string[],
-): boolean {
-  return (
-    isSafeFor(rules, name, allergens) && !rules.dislikes.some((dislike) => mentions(name, dislike))
-  );
-}
-
-export function isLikedBy(rules: ChildFoodRules, name: string): boolean {
-  return rules.likes.some((like) => mentions(name, like));
 }
 
 /**

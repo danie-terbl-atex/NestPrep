@@ -366,64 +366,6 @@ void main() {
     });
   });
 
-  group('the way to where everybody is', () {
-    testWidgets('is on this screen, and says what it is before it is tapped', (
-      tester,
-    ) async {
-      await pump(tester);
-      await emit(tester);
-
-      await tester.scrollUntilVisible(
-        find.text(AppCopy.locationYoursBody),
-        120,
-      );
-      expect(find.text(AppCopy.locationTitle), findsOneWidget);
-      expect(
-        find.text(AppCopy.locationYoursBody),
-        findsOneWidget,
-        reason:
-            'that sharing is each person"s own is worth knowing before the '
-            'tap, not after (live-location ADR-0002)',
-      );
-    });
-
-    testWidgets('goes there, and pushes so that back comes back here', (
-      tester,
-    ) async {
-      // Two failures in one test. The first is the one this app has had
-      // twice: a capability finished in the model, the repository and the
-      // rules, with the words already written, and no control anywhere that
-      // opened it. The second is `go` where `push` was meant — identical
-      // until somebody presses back and the app closes (`FE-17`).
-      await pump(tester);
-      await emit(tester);
-
-      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 120);
-      await tester.ensureVisible(find.text(AppCopy.locationYoursBody));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(AppCopy.locationTitle));
-      await tester.pumpAndSettle();
-      expect(find.byType(Placeholder), findsOneWidget);
-
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-
-      expect(find.text(AppCopy.householdTitle), findsOneWidget);
-    });
-
-    testWidgets('is offered to a helper exactly as it is to an admin', (
-      tester,
-    ) async {
-      // Nothing here is an admin action: every member controls their own
-      // sharing and nobody else's (live-location ADR-0002).
-      await pump(tester, viewerUid: Fixtures.thandiUid);
-      await emit(tester);
-
-      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 120);
-      expect(find.text(AppCopy.locationTitle), findsOneWidget);
-    });
-  });
-
   group('the way to kids\u2019 sign-in (accounts ADR-0003)', () {
     testWidgets('an admin is offered it, and it says what it is', (
       tester,
@@ -455,9 +397,9 @@ void main() {
       await pump(tester, viewerUid: Fixtures.thandiUid);
       await emit(tester);
 
-      // Scrolled to the row that sits just below it, so "not found" means
+      // Scrolled to the last control on the screen, so "not found" means
       // not there rather than not built yet.
-      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 200);
+      await tester.scrollUntilVisible(find.text(AppCopy.householdLeave), 200);
       expect(find.text(KidCopy.manageEntry), findsNothing);
     });
   });

@@ -117,7 +117,8 @@ void main() {
       );
       expect(find.text(LunchBudgetCopy.nearly('R1.00')), findsOneWidget);
       expect(find.text(LunchBudgetCopy.unpriced(1)), findsOneWidget);
-      expect(find.text(LunchBudgetCopy.childWeek('Ayanda')), findsOneWidget);
+      expect(find.text(LunchBudgetCopy.basketTitle), findsOneWidget);
+      expect(find.text(LunchBudgetCopy.basketLine(2, 2)), findsOneWidget);
     },
   );
 

@@ -1,0 +1,9 @@
+// ---- add to Checkers: a member's own Checkers link (the Checkers build contract) ----
+// Written and read by the Checkers Functions alone. It holds a sealed Checkers
+// session, the sealed identifiers behind it and a masked mobile number — none
+// of which a client may read, not even the member it belongs to; the app asks
+// `checkersLinkStatus` instead.
+
+match /checkersLinks/{uid} {
+  allow read, write: if false;
+}

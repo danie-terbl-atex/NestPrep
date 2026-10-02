@@ -14,6 +14,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../../support/fake_calendar_repository.dart';
 import '../../../support/fake_calendar_sync.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/outside_the_bar.dart';
 import '../../../support/pump_screen.dart';
 
 final _nowUtc = DateTime.utc(2026, 9, 18, 9);
@@ -83,7 +84,7 @@ void main() {
   testWidgets('holds the layout while it loads', (tester) async {
     await pump(tester);
     await tester.pump();
-    expect(find.text(AppCopy.calendarTitle), findsOneWidget);
+    expect(textOutsideTheBar(AppCopy.calendarTitle), findsOneWidget);
   });
 
   testWidgets('says what to do next on a day with nothing on it', (

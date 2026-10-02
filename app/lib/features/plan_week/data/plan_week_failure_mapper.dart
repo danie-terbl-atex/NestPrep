@@ -4,13 +4,13 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
 import '../../subscriptions/model/premium_feature.dart';
 
-/// Translates `planMyWeek`'s refusal into an `AppFailure`, by the `reason` in
-/// its details (`BE-04`): the plan's own reasons, the shared AI ones
+/// Translates a refusal from `draftLunchIdeas` or `buildLunchWeek` into an
+/// `AppFailure`, by the `reason` in its details (`BE-04`): the plan's own reasons, the shared AI ones
 /// (foundation ADR-0015), subscriptions' premium refusal, and the household's
 /// membership reasons, which the Function reuses because that is what they
 /// are about.
 AppFailure failureFromPlanWeekCallable(FirebaseFunctionsException error) {
-  AppLog.failure('plan my week callable', code: error.code, error: error);
+  AppLog.failure('plan week callable', code: error.code, error: error);
   final details = error.details;
   final reason = details is Map ? details['reason'] : null;
   if (reason == 'premiumRequired') {

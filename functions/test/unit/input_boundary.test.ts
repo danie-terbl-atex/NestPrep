@@ -32,7 +32,7 @@ import {
   saveCoParentHandoverInput,
 } from '../../src/coparent/schemas';
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
-import { planMyWeekInput } from '../../src/plan_week/schemas';
+import { buildLunchWeekInput, draftLunchIdeasInput } from '../../src/plan_week/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
 import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../src/referrals/schemas';
@@ -61,6 +61,12 @@ import {
   translateHomeCareTextsInput,
 } from '../../src/home_care/schemas';
 import { sendTestNotificationInput } from '../../src/notifications/schemas';
+import {
+  MAX_ITEMS_PER_PUSH,
+  checkersPushToCartInput,
+  checkersRequestOtpInput,
+  checkersVerifyOtpInput,
+} from '../../src/checkers/schemas';
 
 /**
  * The edge where a callable's body becomes a typed value (`ENG-09`, `BE-03`).
@@ -180,17 +186,41 @@ const validBodies = {
     // none — so it is not here; its shape is below (accounts ADR-0005).
     body: { householdId: 'h1', memberId: 'm-kid', isChild: true },
   },
-  // Plan my week: every option is said, so nothing defaults on the server
-  // (lunch-box ADR-0011).
-  planMyWeek: {
-    schema: planMyWeekInput,
+  // Plan my week: the week and whose lunches, then what the store had for
+  // each idea — every product field said, so nothing defaults on the server
+  // (lunch-box ADR-0012).
+  // `aisle` is optional — a phone that read no shelf sends none — so it is
+  // not here; its shape is in plan_week/aisle.test.ts (lunch-box ADR-0013).
+  draftLunchIdeas: {
+    schema: draftLunchIdeasInput,
+    body: { householdId: 'h1', week: '2026-W40', childIds: ['m-kid'] },
+  },
+  buildLunchWeek: {
+    schema: buildLunchWeekInput,
     body: {
       householdId: 'h1',
       week: '2026-W40',
       childIds: ['m-kid'],
-      includeDinners: true,
-      useWhatsInTheHouse: false,
-      budget: 'none',
+      ideas: [
+        {
+          id: 'idea-1',
+          slot: 'fruit',
+          childIds: ['m-kid'],
+          fromAisle: false,
+          products: [
+            {
+              productId: 'p1',
+              name: 'Apples 1.5kg',
+              brand: null,
+              priceCents: 3499,
+              isOnPromotion: false,
+              allergens: [],
+              allergensKnown: true,
+              packQuantity: null,
+            },
+          ],
+        },
+      ],
     },
   },
   // Home care: a helper's words in her language (home-care ADR-0006).
@@ -286,7 +316,41 @@ const validBodies = {
     body: { householdId: 'h1', trigger: 'prepList' },
   },
   sendTestNotification: { schema: sendTestNotificationInput, body: { householdId: 'h1' } },
+  // Add to Checkers (the Checkers build contract). Link status and unlink take no body.
+  checkersRequestOtp: { schema: checkersRequestOtpInput, body: { mobile: '082 123 4567' } },
+  checkersVerifyOtp: { schema: checkersVerifyOtpInput, body: { code: '123456' } },
+  checkersPushToCart: {
+    schema: checkersPushToCartInput,
+    body: { householdId: 'h1', itemIds: ['milk', 'bread'] },
+  },
 } as const;
+
+describe('Add to Checkers refuses what is not a code or a push', () => {
+  it.each([['123'], ['1234567'], ['12a4'], ['']])('a code of %j', (code) => {
+    expect(() => parseInput(checkersVerifyOtpInput, { code })).toThrow(HttpsError);
+  });
+
+  it('accepts four to six digits, trimmed', () => {
+    expect(parseInput(checkersVerifyOtpInput, { code: ' 1234 ' }).code).toBe('1234');
+  });
+
+  it('refuses a push of nothing, or of more than a list holds', () => {
+    const body = validBodies.checkersPushToCart.body;
+    expect(() => parseInput(checkersPushToCartInput, { ...body, itemIds: [] })).toThrow(HttpsError);
+    const tooMany = Array.from(
+      { length: MAX_ITEMS_PER_PUSH + 1 },
+      (_, index) => `i${String(index)}`,
+    );
+    expect(() => parseInput(checkersPushToCartInput, { ...body, itemIds: tooMany })).toThrow(
+      HttpsError,
+    );
+  });
+
+  it('pushes a repeated item once', () => {
+    const parsed = parseInput(checkersPushToCartInput, { householdId: 'h1', itemIds: ['a', 'a'] });
+    expect(parsed.itemIds).toEqual(['a']);
+  });
+});
 
 describe('translateHomeCareTexts refuses what is not a translation to make', () => {
   const body = validBodies.translateHomeCareTexts.body;

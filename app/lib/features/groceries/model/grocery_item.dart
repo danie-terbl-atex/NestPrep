@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/text/normalised_name.dart';
+import 'product_match.dart';
+import 'product_match_converter.dart';
 
 part 'grocery_item.freezed.dart';
 part 'grocery_item.g.dart';
@@ -41,6 +43,13 @@ abstract class GroceryItem with _$GroceryItem {
     /// Where it came from, as the person was shown it — "For 5 lunches +
     /// Tuesday dinner".
     String? sourceNote,
+
+    /// The product a member picked for it at a shop, if anybody has. Absent
+    /// rather than null on a new item, so creating one writes only the
+    /// fields it always had.
+    @ProductMatchConverter()
+    @JsonKey(includeIfNull: false)
+    ProductMatch? productMatch,
   }) = _GroceryItem;
 
   const GroceryItem._();

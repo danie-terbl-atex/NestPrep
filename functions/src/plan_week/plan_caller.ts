@@ -10,13 +10,11 @@ import { isOffShift } from '../household/shift_window';
 /**
  * Who is planning, in the household they named — re-derived from Firestore,
  * never taken from the request (BE-03, BE-05). Planning is the `lunch` grant
- * at `edit`, the same the rules ask of a lunch plan write; dinners are
- * planned only for somebody the `meals` grant lets change the meal plan.
+ * at `edit`, the same the rules ask of a lunch plan write.
  */
 export interface PlanCaller {
   readonly uid: string;
   readonly timeZone: string;
-  readonly mayPlanDinners: boolean;
 }
 
 // `member` is household ADR-0001's family adult, still stored on households
@@ -43,9 +41,5 @@ export async function planCallerIn(
   if (await isOffShift(store, householdId, snapshot.data(), uid, new Date())) {
     throw refusePlanWeek('lunchNotShared');
   }
-  return {
-    uid,
-    timeZone: household.data.timeZone,
-    mayPlanDinners: memberLevelIn(role, grant, 'meals') === 'edit',
-  };
+  return { uid, timeZone: household.data.timeZone };
 }

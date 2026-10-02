@@ -4,6 +4,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/grocery_list_harness.dart';
+import '../../../support/outside_the_bar.dart';
 
 void main() {
   testWidgets('holds the layout while it loads rather than collapsing', (
@@ -11,7 +12,7 @@ void main() {
   ) async {
     await GroceryListHarness().pump(tester);
     await tester.pump();
-    expect(find.text(AppCopy.groceriesTitle), findsOneWidget);
+    expect(textOutsideTheBar(AppCopy.groceriesTitle), findsOneWidget);
     expect(find.text(AppCopy.groceriesEmptyTitle), findsNothing);
   });
 

@@ -45,19 +45,31 @@ final class GroceryListController extends ChangeNotifier
     _subscribe();
   }
 
-  Future<void> add(String name, {String? quantity}) async {
+  /// Adds a line and answers the item it became — null when there was
+  /// nothing to add or the write was refused (the refusal is held as
+  /// [actionFailure]).
+  Future<GroceryItem?> add(String name, {String? quantity}) async {
     final trimmed = name.trim();
-    if (trimmed.isEmpty) return;
-    await runAction(
-      () => _repository.add(
+    if (trimmed.isEmpty) return null;
+    final cleanQuantity = quantity == null || quantity.trim().isEmpty
+        ? null
+        : quantity.trim();
+    GroceryItem? added;
+    await runAction(() async {
+      final id = await _repository.add(
         householdId: householdId,
         name: trimmed,
-        quantity: quantity == null || quantity.trim().isEmpty
-            ? null
-            : quantity.trim(),
+        quantity: cleanQuantity,
         addedBy: memberId,
-      ),
-    );
+      );
+      added = GroceryItem(
+        id: id,
+        name: trimmed,
+        quantity: cleanQuantity,
+        addedBy: memberId,
+      );
+    });
+    return added;
   }
 
   Future<void> toggleBought(GroceryItem item) => runAction(
@@ -92,7 +104,7 @@ final class GroceryListController extends ChangeNotifier
     () => _repository.remove(householdId: householdId, itemId: item.id),
   );
 
-  Future<void> addFromSuggestion(GrocerySuggestion suggestion) =>
+  Future<GroceryItem?> addFromSuggestion(GrocerySuggestion suggestion) =>
       add(suggestion.name);
 
   void _subscribe() {

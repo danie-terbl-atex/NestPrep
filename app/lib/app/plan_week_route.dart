@@ -1,6 +1,6 @@
 import 'lunch_route.dart';
 
-/// Where *Plan my week* lives (lunch-box ADR-0011): under the lunch tab,
+/// Where *Plan my week* lives (lunch-box ADR-0012): under the lunch tab,
 /// sharing its shell and the board's controller, deep-linkable (`FE-17`).
 abstract final class PlanWeekRoute {
   static const segment = 'plan-week';

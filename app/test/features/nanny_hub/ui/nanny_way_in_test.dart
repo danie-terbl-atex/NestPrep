@@ -13,7 +13,7 @@ import '../../../support/household_fixtures.dart';
 import '../../../support/nanny_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
-/// The hub is reachable — from the household screen, for whoever the
+/// The hub is reachable — from More, for whoever the
 /// `nannyHub` grant opens it to — and a deep link is no way round a grant of
 /// `none` (household ADR-0003, the vault lesson on capabilities finished
 /// everywhere but the screen).
@@ -41,8 +41,9 @@ void main() {
         view: view,
       );
 
-  testWidgets('a carer finds the hub first on the household screen, and it '
-      'opens', (tester) async {
+  testWidgets('a carer finds the hub first on More, and it opens', (
+    tester,
+  ) async {
     await pumpPlaces(tester, NannyFixtures.carerView());
     expect(find.text(NannyCopy.openFromHousehold), findsOneWidget);
     expect(

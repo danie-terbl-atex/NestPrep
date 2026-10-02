@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/household_route.dart';
+import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/subscription_routes.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
-import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
@@ -17,7 +18,7 @@ import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/pump_subscriptions.dart';
 
-/// Plan and billing is reached from the household screen, by family, and
+/// Plan and billing is reached from More, by family, and
 /// opens over it with a way back (`FE-17`, subscriptions ADR-0001) — a
 /// capability with no way in is not done (the vault lesson).
 void main() {
@@ -41,11 +42,15 @@ void main() {
     await pumpRouter(
       tester,
       router: GoRouter(
-        initialLocation: HouseholdRoute.householdPathFor(Fixtures.householdId),
+        initialLocation: HouseholdRoute.pathFor(
+          Fixtures.householdId,
+          HouseholdTab.more,
+        ),
         routes: [
           GoRoute(
-            path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
-            builder: (context, state) => const HouseholdScreen(),
+            path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+            builder: (context, state) =>
+                HouseholdMoreScreen(onSelectTab: (_) {}),
           ),
           subscriptionRoute(),
         ],
@@ -62,14 +67,14 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the household screen is the way in, and back comes back', (
-    tester,
-  ) async {
+  testWidgets('More is the way in, and back comes back', (tester) async {
     await pump(tester, viewerUid: Fixtures.samUid);
     expect(
       find.text(SubscriptionCopy.openFromHouseholdBody(isPremium: false)),
       findsOneWidget,
     );
+    await tester.ensureVisible(find.text(SubscriptionCopy.openFromHousehold));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(SubscriptionCopy.openFromHousehold));
     await tester.pumpAndSettle();
 
@@ -77,7 +82,7 @@ void main() {
     expect(find.text(SubscriptionCopy.freeSummary), findsOneWidget);
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(MoreCopy.subtitle), findsOneWidget);
   });
 
   testWidgets('a helper, who does not buy, is not offered the way in', (
@@ -88,7 +93,7 @@ void main() {
     // The view is the helper's own, which is what the link is decided on.
     expect(
       tester
-          .element(find.byType(HouseholdScreen))
+          .element(find.byType(HouseholdMoreScreen))
           .read<HouseholdView>()
           .permissions
           .isFamily,

@@ -97,13 +97,13 @@ void main() {
       }),
     };
 
-    test('sends a helper who may only clean to the household screen', () {
+    test('sends a helper who may only clean to More', () {
       expect(
         householdPlaceRedirect(
           location: week,
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.householdPathFor(id),
+        HouseholdRoute.pathFor(id, HouseholdTab.more),
       );
     });
 
@@ -113,7 +113,7 @@ void main() {
           location: DocumentsRoute.folderPathFor(id, 'f-passports'),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.householdPathFor(id),
+        HouseholdRoute.pathFor(id, HouseholdTab.more),
       );
     });
 
@@ -123,7 +123,7 @@ void main() {
           location: FamilyRoute.memberPathFor(id, Fixtures.kidMemberId),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.householdPathFor(id),
+        HouseholdRoute.pathFor(id, HouseholdTab.more),
       );
     });
 
@@ -192,7 +192,7 @@ void main() {
             location: location,
             view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
           ),
-          HouseholdRoute.householdPathFor(id),
+          HouseholdRoute.pathFor(id, HouseholdTab.more),
         );
       }
     });

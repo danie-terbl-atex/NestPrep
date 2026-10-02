@@ -4,7 +4,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/ui/art/lunch_glyph.dart';
-import '../model/planned_week.dart';
+import '../model/shop_week.dart';
 
 /// How a compartment stands on the review.
 enum PillLook {
@@ -19,8 +19,9 @@ enum PillLook {
 }
 
 /// One compartment on the review: the slot's little drawing and what is in
-/// it. The glyph is decoration; the words carry the meaning, and the slot and
-/// where the pick came from are read out with them (`FE-13`).
+/// it — the money is the basket's, in whole packs. The glyph is decoration; the words
+/// carry the meaning, and the slot and where the pick came from are read
+/// out with them (`FE-13`).
 class PlanWeekItemPill extends StatelessWidget {
   const PlanWeekItemPill({
     required this.slot,
@@ -47,10 +48,10 @@ class PlanWeekItemPill extends StatelessWidget {
       PillLook.existing => colors.surfaceTint,
       PillLook.empty => colors.surface,
     };
-    final textStyle = switch (look) {
-      PillLook.added => nest.text.label.copyWith(color: colors.ink),
-      PillLook.existing => nest.text.label.copyWith(color: colors.inkSecondary),
-      PillLook.empty => nest.text.label.copyWith(color: colors.inkTertiary),
+    final color = switch (look) {
+      PillLook.added => colors.ink,
+      PillLook.existing => colors.inkSecondary,
+      PillLook.empty => colors.inkTertiary,
     };
     return Semantics(
       button: onTap != null,
@@ -93,7 +94,7 @@ class PlanWeekItemPill extends StatelessWidget {
                   Flexible(
                     child: Text(
                       label,
-                      style: textStyle,
+                      style: nest.text.label.copyWith(color: color),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

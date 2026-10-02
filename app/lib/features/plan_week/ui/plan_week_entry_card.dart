@@ -13,7 +13,7 @@ import '../../subscriptions/model/premium_feature.dart';
 import '../../subscriptions/state/household_entitlement.dart';
 import '../../subscriptions/ui/premium_gate.dart';
 
-/// *Plan my week* on the lunch board (lunch-box ADR-0011): the one way in,
+/// *Plan my week from Checkers* on the lunch board (lunch-box ADR-0012): the one way in,
 /// for somebody who may change lunches, while its switch is on (foundation
 /// ADR-0014), on a week that has not gone. Premium says so on the card and
 /// opens the paywall first; the server checks premium again (`FE-04`).

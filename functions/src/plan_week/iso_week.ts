@@ -2,7 +2,7 @@ import { addDays, isoWeekday } from '../school_letter/plain_date';
 
 /**
  * ISO-8601 weeks, as the app's `LunchWeek` names them (`YYYY-Www`) — the key a
- * lunch plan is filed under — and the Monday a meal plan is filed under.
+ * lunch plan is filed under — and its Monday.
  * Arithmetic on `YYYY-MM-DD` at noon UTC, where no clock change moves a day.
  */
 
@@ -41,9 +41,6 @@ export function mondayOfWeek(key: string): string | null {
 
 /** Monday to Friday, `1` to `5`. */
 export const SCHOOL_DAYS = [1, 2, 3, 4, 5] as const;
-
-/** Monday to Sunday, `1` to `7`. */
-export const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 7] as const;
 
 /** How many weeks back the learning reads (lunch-box ADR-0003). */
 export const HISTORY_WEEKS = 8;

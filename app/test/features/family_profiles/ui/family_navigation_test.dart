@@ -3,13 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
+import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/features/family_profiles/model/member_health.dart';
 import 'package:nestprep/features/family_profiles/state/family_controller.dart';
 import 'package:nestprep/features/family_profiles/state/member_health_controller.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
 import 'package:nestprep/features/family_profiles/ui/family_screen.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
-import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
-/// Family profiles are reached from the household screen and open *over* it,
+/// Family profiles are reached from More and open *over* it,
 /// and a profile opens over the family — each with a way back, because a
 /// capability with no way in is not done, and a pushed screen with no way back
 /// closes the app (`FE-17`, the vault lesson on finished-but-unreachable).
@@ -70,8 +71,9 @@ void main() {
         initialLocation: initialLocation,
         routes: [
           GoRoute(
-            path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
-            builder: (context, state) => const HouseholdScreen(),
+            path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+            builder: (context, state) =>
+                HouseholdMoreScreen(onSelectTab: (_) {}),
           ),
           GoRoute(
             path: FamilyRoute.path,
@@ -100,8 +102,11 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the household screen is the way in', (tester) async {
-    await pump(tester, HouseholdRoute.householdPathFor(Fixtures.householdId));
+  testWidgets('More is the way in', (tester) async {
+    await pump(
+      tester,
+      HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
+    );
     await tester.tap(find.text(FamilyCopy.openFromHousehold));
     await tester.pumpAndSettle();
 
@@ -110,7 +115,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(MoreCopy.subtitle), findsOneWidget);
   });
 
   testWidgets('a profile opens over the family, and back lands on it', (

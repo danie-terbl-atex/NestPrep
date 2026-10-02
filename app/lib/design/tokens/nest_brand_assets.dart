@@ -1,5 +1,6 @@
-/// The two pieces of the logo the app draws, cut from Daniel's original by
-/// `tools/brand/extract_brand_assets.py` (design-system ADR-0003). Never
+/// The two pieces of the logo the app draws, written by
+/// `tools/brand/extract_brand_assets.py`: the nest cut from Daniel's original
+/// (design-system ADR-0003), the words set in the script face (ADR-0007). Never
 /// redrawn, recoloured or rearranged by a screen: a screen asks the kit for
 /// `NestBrandMark`, `NestWordmark` or `NestBrandLockup`.
 abstract final class NestBrandAssets {
@@ -10,9 +11,10 @@ abstract final class NestBrandAssets {
   /// the image has decoded and nothing below it jumps (`FE-18`).
   static const markAspect = 720 / 553;
 
-  /// The words "Nest Prep" as an alpha mask, tinted by the theme.
+  /// The words "Nest Prep" in Grand Hotel as an alpha mask, tinted by the
+  /// theme.
   static const wordmark = 'assets/brand/nest_wordmark.png';
 
   /// Width over height of [wordmark].
-  static const wordmarkAspect = 720 / 149;
+  static const wordmarkAspect = 720 / 248;
 }

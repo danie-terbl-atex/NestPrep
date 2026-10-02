@@ -35,10 +35,16 @@ abstract final class LunchBudgetCopy {
   static const saveBudget = 'Save';
   static const removeBudget = 'No budget';
 
-  // Per child.
-  static String childWeek(String name) => '$name’s week';
-  static String dayCost(String day, String amount) => '$day $amount';
-  static const nothingPacked = 'Nothing packed this week';
+  // The household's basket (lunch-box ADR-0012 §4).
+  static const basketTitle = 'This week’s basket';
+  static const basketBody =
+      'Every child’s lunches together, in whole packs — what you’d pay at '
+      'the till.';
+  static const basketEmpty = 'Nothing priced is packed this week yet.';
+  static String basketLine(int boxes, int packs) =>
+      '${boxes == 1 ? '1 box' : '$boxes boxes'} · '
+      '${packs == 1 ? '1 pack' : '$packs packs'}';
+  static String basketTotal(String amount) => 'Altogether $amount';
   static String unpriced(int count) => count == 1
       ? '1 thing this week has no price yet, so the total is at least this.'
       : '$count things this week have no price yet, so the total is at least '

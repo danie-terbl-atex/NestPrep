@@ -1,23 +1,13 @@
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_orbit_rings.dart';
 
-/// Which of the two rings a thing sits on.
-enum NestOrbitRing {
-  inner(0.275),
-  outer(0.408);
-
-  const NestOrbitRing(this.radiusFraction);
-
-  /// Radius as a fraction of the orbit's width. The outer one is as far out as
-  /// it goes: past `0.5` minus half an item, something rides off the edge.
-  final double radiusFraction;
-}
+export 'nest_orbit_rings.dart' show NestOrbitLine, NestOrbitRing;
 
 /// One thing in orbit: what to draw, which ring it rides, and where on it.
 @immutable
@@ -35,13 +25,19 @@ class NestOrbitItem {
   final double turns;
 }
 
-/// The mark at the centre of two soft rings with the household's things riding
+/// The mark at the centre of soft rings with the household's things riding
 /// them — the picture the app opens on.
 ///
-/// Everything swings into place once and stops (`FE-15`): the mark, then the
-/// rings, then each item drifting the last few degrees along its own orbit.
-/// It is an arrival, not a carousel — a screen that never settles is a test
-/// that never passes and a phone that never idles.
+/// Everything swings into place once (`FE-15`): the mark, then the rings, then
+/// each item drifting the last few degrees along its own orbit. With [spins]
+/// the rings then keep turning, each by its own [NestOrbitRing.turnRate] per
+/// [NestMotion.revolution] (design-system ADR-0006): the welcome's three go
+/// different ways at different speeds. Without it the picture comes to rest.
+/// Under reduce-motion it is simply there and never moves.
+///
+/// The picture is laid out at [maxWidth] and scaled down whole when it is
+/// given less, so the spacing that keeps neighbouring rings' items apart holds
+/// at every width.
 ///
 /// The whole picture is **one node to a screen reader**, labelled
 /// [semanticsLabel]; the items carry no semantics of their own, because a list
@@ -56,6 +52,7 @@ class NestOrbit extends StatefulWidget {
     required this.semanticsLabel,
     this.itemExtent = NestSize.iconTile,
     this.maxWidth = 340,
+    this.spins = false,
     super.key,
   });
 
@@ -68,13 +65,19 @@ class NestOrbit extends StatefulWidget {
   final double itemExtent;
   final double maxWidth;
 
+  /// Whether the items keep circling once they have arrived.
+  final bool spins;
+
   @override
   State<NestOrbit> createState() => _NestOrbitState();
 }
 
-class _NestOrbitState extends State<NestOrbit>
-    with SingleTickerProviderStateMixin {
+class _NestOrbitState extends State<NestOrbit> with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(vsync: this);
+
+  /// How far the orbit has turned, in revolutions. Stays at zero unless it
+  /// spins.
+  late final AnimationController _spin = AnimationController(vsync: this);
 
   /// The mark, then the rings, then one step per item.
   static const _stepsBeforeItems = 2;
@@ -86,9 +89,10 @@ class _NestOrbitState extends State<NestOrbit>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final motion = NestMotion.of(context);
+    _syncSpin(motion);
     if (_hasStarted) return;
     _hasStarted = true;
-    final motion = NestMotion.of(context);
     _step = motion.stagger;
     final steps = widget.items.length + _stepsBeforeItems;
     _total = _step * (steps - 1) + motion.standard;
@@ -102,7 +106,29 @@ class _NestOrbitState extends State<NestOrbit>
   }
 
   @override
+  void didUpdateWidget(NestOrbit old) {
+    super.didUpdateWidget(old);
+    if (old.spins != widget.spins) _syncSpin(NestMotion.of(context));
+  }
+
+  /// Starts or stops the turning to match [NestOrbit.spins] and the
+  /// reduce-motion gate, which can change while the screen is open. A ring
+  /// that stops stays where it got to rather than jumping back.
+  void _syncSpin(NestMotion motion) {
+    final revolution = motion.revolution;
+    if (!widget.spins || revolution == Duration.zero) {
+      _spin.stop();
+      return;
+    }
+    if (_spin.isAnimating && _spin.duration == revolution) return;
+    _spin
+      ..duration = revolution
+      ..repeat();
+  }
+
+  @override
   void dispose() {
+    _spin.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -130,37 +156,47 @@ class _NestOrbitState extends State<NestOrbit>
       image: true,
       excludeSemantics: true,
       child: MediaQuery.withNoTextScaling(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final width = math.min(constraints.maxWidth, widget.maxWidth);
-            return SizedBox.square(
-              dimension: width,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: _OrbitRings(
-                      progress: _atStep(1),
-                      color: nest.colors.outlineStrong,
-                      rings: {for (final item in widget.items) item.ring},
+        // A picture that keeps moving repaints on its own, not the screen.
+        child: RepaintBoundary(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = widget.maxWidth;
+              return SizedBox.square(
+                dimension: math.min(constraints.maxWidth, width),
+                child: FittedBox(
+                  child: SizedBox.square(
+                    dimension: width,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: NestOrbitRings(
+                            progress: _atStep(1),
+                            spin: _spin,
+                            color: nest.colors.outlineStrong,
+                            rings: {for (final item in widget.items) item.ring},
+                          ),
+                        ),
+                        Center(
+                          child: _Arriving(
+                            progress: _atStep(0),
+                            child: widget.centre,
+                          ),
+                        ),
+                        for (final (index, item) in widget.items.indexed)
+                          _OrbitingItem(
+                            item: item,
+                            width: width,
+                            extent: widget.itemExtent,
+                            progress: _atStep(index + _stepsBeforeItems),
+                            spin: _spin,
+                          ),
+                      ],
                     ),
                   ),
-                  Center(
-                    child: _Arriving(
-                      progress: _atStep(0),
-                      child: widget.centre,
-                    ),
-                  ),
-                  for (final (index, item) in widget.items.indexed)
-                    _OrbitingItem(
-                      item: item,
-                      width: width,
-                      extent: widget.itemExtent,
-                      progress: _atStep(index + _stepsBeforeItems),
-                    ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -168,13 +204,15 @@ class _NestOrbitState extends State<NestOrbit>
 }
 
 /// An item held at its place on the ring, drifting the last of the way round
-/// as it fades in.
+/// as it fades in, then carried round as its ring turns. The item itself
+/// stays upright: the ring turns, the things on it do not tumble.
 class _OrbitingItem extends StatelessWidget {
   const _OrbitingItem({
     required this.item,
     required this.width,
     required this.extent,
     required this.progress,
+    required this.spin,
   });
 
   final NestOrbitItem item;
@@ -182,16 +220,20 @@ class _OrbitingItem extends StatelessWidget {
   final double extent;
   final Animation<double> progress;
 
+  /// How far the orbit has turned, in revolutions; the ring multiplies it.
+  final Animation<double> spin;
+
   /// How far back along the ring an item starts, in turns.
   static const _driftTurns = 0.045;
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-    animation: progress,
+    animation: Listenable.merge([progress, spin]),
     child: item.child,
     builder: (context, child) {
       final t = progress.value;
-      final turns = item.turns - _driftTurns * (1 - t);
+      final turns =
+          item.turns - _driftTurns * (1 - t) + item.ring.turnRate * spin.value;
       final radius = width * item.ring.radiusFraction;
       final angle = turns * 2 * math.pi - math.pi / 2;
       return Positioned(
@@ -226,70 +268,4 @@ class _Arriving extends StatelessWidget {
       child: Opacity(opacity: progress.value, child: child),
     ),
   );
-}
-
-/// The hairline circles the items ride, drawn outward from the centre. Only
-/// a ring something rides is drawn: an empty ring through a large centre mark
-/// reads as a line struck through it.
-class _OrbitRings extends StatelessWidget {
-  const _OrbitRings({
-    required this.progress,
-    required this.color,
-    required this.rings,
-  });
-
-  final Animation<double> progress;
-  final Color color;
-  final Set<NestOrbitRing> rings;
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: progress,
-    builder: (context, _) => CustomPaint(
-      painter: _OrbitRingsPainter(
-        progress: progress.value,
-        color: color,
-        rings: rings,
-      ),
-    ),
-  );
-}
-
-class _OrbitRingsPainter extends CustomPainter {
-  const _OrbitRingsPainter({
-    required this.progress,
-    required this.color,
-    required this.rings,
-  });
-
-  final double progress;
-  final Color color;
-  final Set<NestOrbitRing> rings;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (progress <= 0) return;
-    final centre = size.center(Offset.zero);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = NestStroke.hairline
-      ..color = color.withValues(alpha: color.a * progress * _restingAlpha);
-    for (final ring in rings) {
-      canvas.drawCircle(
-        centre,
-        size.width * ring.radiusFraction * (0.85 + 0.15 * progress),
-        paint,
-      );
-    }
-  }
-
-  /// The rings are guides, not structure: they sit under the items rather than
-  /// competing with them.
-  static const _restingAlpha = 0.7;
-
-  @override
-  bool shouldRepaint(_OrbitRingsPainter old) =>
-      old.progress != progress ||
-      old.color != color ||
-      !setEquals(old.rings, rings);
 }

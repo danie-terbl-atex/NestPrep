@@ -5,13 +5,13 @@ import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
-import 'package:nestprep/features/household/ui/household_link_button.dart';
+import 'package:nestprep/features/household/ui/household_people_card.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/household_fixtures.dart';
 
-/// Leaving a tab for the household and coming back.
+/// Leaving More for the people screen and coming back.
 ///
 /// This was broken: the link *replaced* the location instead of pushing, so
 /// there was nothing to pop and the system back button closed the app
@@ -19,7 +19,7 @@ import '../../../support/household_fixtures.dart';
 /// it — go_router reports the base location either way — so these tests assert
 /// what a person actually sees and whether there is anywhere to go back to.
 void main() {
-  const groceriesTitle = 'Groceries';
+  const moreTitle = 'More';
 
   /// The household screen as the route builds it: a back button only when
   /// something pushed it.
@@ -39,11 +39,10 @@ void main() {
     initialLocation: initialLocation,
     routes: [
       GoRoute(
-        path: '${HouseholdRoute.path}/${HouseholdTab.groceries.segment}',
-        builder: (context, state) => const NestScaffold(
-          title: groceriesTitle,
-          trailing: [HouseholdLinkButton()],
-          body: SizedBox.shrink(),
+        path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+        builder: (context, state) => NestScaffold(
+          title: moreTitle,
+          body: HouseholdPeopleCard(view: Fixtures.view()),
         ),
       ),
       GoRoute(
@@ -66,18 +65,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the household opens over the tab, not instead of it', (
+  testWidgets('the people screen opens over More, not instead of it', (
     tester,
   ) async {
     await pump(
       tester,
       routerFrom(
-        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.groceries),
+        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
       ),
     );
-    expect(find.text(groceriesTitle), findsOneWidget);
+    expect(find.text(moreTitle), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.group_outlined));
+    await tester.tap(find.text(MoreCopy.peopleTitle));
     await tester.pumpAndSettle();
 
     expect(find.text(AppCopy.householdTitle), findsOneWidget);
@@ -86,20 +85,20 @@ void main() {
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
   });
 
-  testWidgets('going back lands on the tab it was opened from', (tester) async {
+  testWidgets('going back lands on More', (tester) async {
     await pump(
       tester,
       routerFrom(
-        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.groceries),
+        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
       ),
     );
-    await tester.tap(find.byIcon(Icons.group_outlined));
+    await tester.tap(find.text(MoreCopy.peopleTitle));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
 
-    expect(find.text(groceriesTitle), findsOneWidget);
+    expect(find.text(moreTitle), findsOneWidget);
     expect(find.text(AppCopy.householdTitle), findsNothing);
   });
 

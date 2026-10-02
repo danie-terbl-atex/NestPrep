@@ -78,7 +78,8 @@ void main() {
       ),
     ];
 
-    test('adds up per box, per child and for the household', () {
+    test('is the household basket: every child together, in whole packs', () {
+      // Two wraps from a bag that does eight is one bag, R42 — not 2/8 of it.
       final cost = LunchWeekCost.of(
         board: boardOf(plans),
         prices: {
@@ -87,12 +88,31 @@ void main() {
           'biltong': price('biltong', 1500),
         },
       );
-      final ayanda = cost.childCost(LunchFixtures.ayandaId)!;
-      expect(ayanda.on(1)!.total.money, const Money(975));
-      expect(ayanda.on(2)!.total.money, const Money(2025));
-      expect(ayanda.total.money, const Money(3000));
-      expect(cost.total.money, const Money(3000));
+      expect(cost.basket.lineFor('wrap')!.packs, 1);
+      expect(cost.basket.lineFor('wrap')!.cost, const Money(4200));
+      expect(cost.basket.total, const Money(6150));
       expect(cost.isAtLeast, isFalse);
+    });
+
+    test('a pack is bought again once its boxes run out, across children', () {
+      final twoChildren = [
+        ...plans,
+        LunchFixtures.plan(
+          LunchFixtures.lwaziId,
+          slots: {
+            for (var day = 1; day <= 5; day++)
+              key(day, LunchSlot.fruit): LunchPick.of(LunchFixtures.apple),
+          },
+        ),
+      ];
+      final cost = LunchWeekCost.of(
+        board: boardOf(twoChildren),
+        prices: {'apple': price('apple', 3000, 4)},
+      );
+      // Six apple boxes from bags of four: two bags.
+      expect(cost.basket.lineFor('apple')!.boxes, 6);
+      expect(cost.basket.lineFor('apple')!.packs, 2);
+      expect(cost.basket.total, const Money(6000));
     });
 
     test('an unpriced thing makes the total *at least*, and is named', () {
@@ -105,7 +125,6 @@ void main() {
         cost.unpricedNames.values,
         containsAll(['Apple slices', 'Biltong']),
       );
-      expect(cost.childCost(LunchFixtures.ayandaId)!.on(1)!.isAtLeast, isTrue);
     });
   });
 

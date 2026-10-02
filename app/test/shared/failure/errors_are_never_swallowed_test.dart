@@ -300,6 +300,10 @@ void main() {
     'controller.redeem(code)',
     '_makeCode()',
     '_recordOpening()',
+    // Plan my week finding where the shop is (lunch-box ADR-0012): it
+    // catches its own AppFailure and falls back to the resolver's own city,
+    // which the brief names; unawaited because it starts in the constructor.
+    '_resolvePlace())',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

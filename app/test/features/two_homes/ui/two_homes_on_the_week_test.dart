@@ -19,6 +19,7 @@ import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_two_homes.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/outside_the_bar.dart';
 import '../../../support/pump_two_homes.dart';
 import '../../../support/two_homes_model_fixtures.dart';
 
@@ -142,7 +143,7 @@ void main() {
       twoHomes.links.addError(const UnavailableFailure());
       await tester.pumpAndSettle();
       expect(find.text(AppCopy.retry), findsOneWidget);
-      expect(find.text(AppCopy.calendarTitle), findsOneWidget);
+      expect(textOutsideTheBar(AppCopy.calendarTitle), findsOneWidget);
     });
 
     testWidgets('holds at 360 wide, in dark, at 200% text', (tester) async {

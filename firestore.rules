@@ -366,14 +366,17 @@ service cloud.firestore {
     // get it — it is a list of switches, not anybody's data — and no client may
     // write it: Daniel sets it in the console. `appConfig/ai` is the AI kill
     // switch and the monthly caps, read only by Functions; a client has no
-    // reason to know the caps, and must never be able to raise them. Any other
+    // reason to know the caps, and must never be able to raise them.
+    // `appConfig/lunchAisle` names the Checkers lunchbox shelves *Plan my week*
+    // reads first (lunch-box ADR-0013) — shop ids, nobody's data — read like
+    // the flags and written only in the console. Any other
     // id here is closed too, so the collection cannot quietly grow into a place
     // for data, and nobody lists it.
     // `aiEmulator/{feature}` holds the canned model answers the Functions
     // emulator uses; it has no rule, so no client reads or writes it.
 
     match /appConfig/{configId} {
-      allow get: if isSignedIn() && configId == 'flags';
+      allow get: if isSignedIn() && configId in ['flags', 'lunchAisle'];
       allow list: if false;
       allow write: if false;
     }
@@ -392,6 +395,17 @@ service cloud.firestore {
     }
 
     match /calendarFeeds/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/checkers.rules ====
+    // ---- add to Checkers: a member's own Checkers link (the Checkers build contract) ----
+    // Written and read by the Checkers Functions alone. It holds a sealed Checkers
+    // session, the sealed identifiers behind it and a masked mobile number — none
+    // of which a client may read, not even the member it belongs to; the app asks
+    // `checkersLinkStatus` instead.
+
+    match /checkersLinks/{uid} {
       allow read, write: if false;
     }
 
@@ -1135,13 +1149,19 @@ service cloud.firestore {
       // all three null). Nobody owns an unbought planned item, so any groceries
       // editor may refresh or remove one; a person's edit adopts it by clearing
       // the three fields; a ticked one is history like any other.
+      //
+      // `productMatch` is the product a member picked at Checkers (the Checkers
+      // build contract): absent on a new item, set or cleared by any groceries
+      // editor on its own, and cleared — never required to be — by a rename, so an
+      // app from before the field still renames an item that carries one.
       match /groceryItems/{itemId} {
         allow read: if canView(householdId, 'groceries');
 
         allow create: if canEdit(householdId, 'groceries')
           && request.resource.data.keys().hasOnly(
                ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy',
-                'sourceKey', 'sourceWeek', 'sourceNote'])
+                'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch'])
+          && request.resource.data.get('productMatch', null) == null
           && isNonEmptyString(request.resource.data.name)
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('addedAt')
@@ -1158,7 +1178,8 @@ service cloud.firestore {
           && didNotChange('addedAt')
           && (isTickOrUntick(householdId)
                 || groceriesIsPlanRefresh()
-                || isTextEdit(householdId));
+                || isTextEdit(householdId)
+                || groceriesIsProductPick(householdId));
 
         allow delete: if isAdmin(householdId)
           || (canEdit(householdId, 'groceries')
@@ -1175,8 +1196,12 @@ service cloud.firestore {
 
         // A person's edit. Saving it clears the source fields, so a planned item
         // becomes theirs and the plans leave it alone from then on.
+        // A pick that was there may only be cleared by it, never swapped.
         function isTextEdit(householdId) {
-          return onlyChanged(['name', 'quantity', 'sourceKey', 'sourceWeek', 'sourceNote'])
+          return onlyChanged(['name', 'quantity', 'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch'])
+            && (request.resource.data.get('productMatch', null) == null
+                  || request.resource.data.get('productMatch', null)
+                       == resource.data.get('productMatch', null))
             && isNonEmptyString(request.resource.data.name)
             && request.resource.data.get('sourceKey', null) == null
             && request.resource.data.get('sourceWeek', null) == null
@@ -1184,6 +1209,14 @@ service cloud.firestore {
             && (isAdmin(householdId)
                   || isOwnMember(householdId, resource.data.addedBy)
                   || groceriesIsPlanned(resource.data));
+        }
+
+        // A member picks the item's product, or clears the pick, and nothing else
+        // moves. The pick is stamped with who made it and the server's time.
+        function groceriesIsProductPick(householdId) {
+          return onlyChanged(['productMatch'])
+            && (request.resource.data.get('productMatch', null) == null
+                  || groceriesIsProductMatch(householdId, request.resource.data.productMatch));
         }
 
         // The plans bring an unbought planned item's amount and reasons up to
@@ -1218,6 +1251,34 @@ service cloud.firestore {
 
       function groceriesIsSourceNote(value) {
         return value is string && value.size() <= 200;
+      }
+
+      // The shape of a pick (the Checkers build contract). The unit is any short
+      // code Checkers sends — `EA`, `KG`, `PK1` — because the server decides what a
+      // weighed item is, not the rules; the price is whole cents in rand.
+      function groceriesIsProductMatch(householdId, pick) {
+        return pick is map
+          && pick.keys().hasAll(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
+                                  'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
+          && pick.keys().hasOnly(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
+                                   'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
+          && pick.retailer == 'checkers'
+          && pick.productId is string
+          && pick.productId.matches('^[0-9a-f]{24}$')
+          && pick.articleCode is string
+          && pick.articleCode.matches('^[0-9A-Za-z]{1,40}$')
+          && pick.unitOfMeasure is string
+          && pick.unitOfMeasure.matches('^[A-Z0-9]{1,8}$')
+          && isNonEmptyString(pick.name)
+          && pick.name.size() <= 200
+          && (pick.brand == null || (pick.brand is string && pick.brand.size() <= 100))
+          && pick.priceCents is int
+          && pick.priceCents >= 0
+          && pick.priceCents <= 100000000
+          && pick.currency == 'ZAR'
+          && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 100))
+          && isOwnMember(householdId, pick.pickedBy)
+          && pick.pickedAt == request.time;
       }
 
       // ==== rules/firestore/household/grocery_plans.rules ====

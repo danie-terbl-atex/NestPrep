@@ -12,6 +12,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_todo_repository.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/outside_the_bar.dart';
 import '../../../support/pump_screen.dart';
 
 final _nowUtc = DateTime.utc(2026, 9, 18, 9);
@@ -75,7 +76,7 @@ void main() {
   testWidgets('holds the layout while it loads', (tester) async {
     await pump(tester);
     await tester.pump();
-    expect(find.text(AppCopy.todosTitle), findsOneWidget);
+    expect(textOutsideTheBar(AppCopy.todosTitle), findsOneWidget);
     expect(find.text(AppCopy.todosMineEmptyTitle), findsNothing);
   });
 

@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/household_route.dart';
+import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/referral_routes.dart';
 import 'package:nestprep/app/subscription_routes.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/state/invite_step_controller.dart';
-import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/invite_step_screen.dart';
 import 'package:nestprep/features/referrals/model/household_referral.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
@@ -25,7 +26,7 @@ import '../../../support/pump_referrals.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/pump_subscriptions.dart';
 
-/// Give a month, get a month is reachable — from the household screen, the
+/// Give a month, get a month is reachable — from More, the
 /// invite step, the paywall and the plan screen — by family, while it is
 /// switched on, and back comes back (`FE-17`, subscriptions ADR-0002). A
 /// capability with no way in is not done (the vault lesson).
@@ -61,11 +62,15 @@ void main() {
     await pumpRouter(
       tester,
       router: GoRouter(
-        initialLocation: HouseholdRoute.householdPathFor(Fixtures.householdId),
+        initialLocation: HouseholdRoute.pathFor(
+          Fixtures.householdId,
+          HouseholdTab.more,
+        ),
         routes: [
           GoRoute(
-            path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
-            builder: (context, state) => const HouseholdScreen(),
+            path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+            builder: (context, state) =>
+                HouseholdMoreScreen(onSelectTab: (_) {}),
           ),
           subscriptionRoute(),
           referralRoute(),
@@ -84,10 +89,10 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('the household screen is a way in, and back comes back', (
-    tester,
-  ) async {
+  testWidgets('More is a way in, and back comes back', (tester) async {
     await pumpHousehold(tester, viewerUid: Fixtures.samUid);
+    await tester.ensureVisible(find.text(ReferralCopy.openFromHousehold));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(ReferralCopy.openFromHousehold));
     await tester.pumpAndSettle();
 
@@ -95,7 +100,7 @@ void main() {
     expect(find.text('ABCD2345'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(MoreCopy.subtitle), findsOneWidget);
   });
 
   testWidgets('nobody is offered it while it is switched off', (tester) async {
@@ -114,6 +119,8 @@ void main() {
     tester,
   ) async {
     await pumpHousehold(tester, viewerUid: Fixtures.samUid);
+    await tester.ensureVisible(find.text(SubscriptionCopy.openFromHousehold));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(SubscriptionCopy.openFromHousehold));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text(ReferralCopy.mentionBody), 200);
@@ -126,7 +133,7 @@ void main() {
     tester,
   ) async {
     await pumpHousehold(tester, viewerUid: Fixtures.samUid);
-    final context = tester.element(find.byType(HouseholdScreen));
+    final context = tester.element(find.byType(HouseholdMoreScreen));
     final answer = showPaywall(context, feature: PremiumFeature.prepList);
     await tester.pumpAndSettle();
     expect(premium.paywallOpens.opened.single.trigger, PremiumFeature.prepList);

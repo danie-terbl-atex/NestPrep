@@ -7,11 +7,18 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/grocery_plan_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../add_to_checkers/state/product_match_controller.dart';
+import '../../add_to_checkers/ui/checkers_is_on.dart';
+import '../../add_to_checkers/ui/checkers_item_footer.dart';
+import '../../add_to_checkers/ui/checkers_list_bar.dart';
+import '../../add_to_checkers/ui/find_at_checkers_button.dart';
+import '../../add_to_checkers/ui/retailer_choice_bar.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
-import '../../household/ui/household_link_button.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../model/grocery_item.dart';
 import '../model/grocery_list_view.dart';
+import '../model/grocery_suggestion.dart';
 import '../state/grocery_list_controller.dart';
 import '../state/grocery_plan_controller.dart';
 import 'grocery_add_field.dart';
@@ -44,6 +51,7 @@ class GroceryListScreen extends StatelessWidget {
       HouseholdArea.groceries,
     );
     final canPlan = canEdit && plans.hasSources;
+    final checkersOn = isCheckersOn(context);
     final prompt = switch (plans.view) {
       AsyncData(value: final view)
           when canPlan && GroceryPlanPrompt.hasSomethingToSay(view) =>
@@ -60,7 +68,6 @@ class GroceryListScreen extends StatelessWidget {
             onPressed: () => _openPlans(context),
           ),
         const NotificationBell(),
-        const HouseholdLinkButton(),
         const AccountMenuButton(),
       ],
       bottomBar: HouseholdTabBar(
@@ -83,7 +90,13 @@ class GroceryListScreen extends StatelessWidget {
                 },
               ),
             ),
-          if (canEdit) GroceryAddField(onSubmit: controller.add),
+          if (canEdit)
+            GroceryAddField(
+              onSubmit: (name, {quantity}) async {
+                final added = await controller.add(name, quantity: quantity);
+                if (context.mounted) _matchAfterAdding(context, added);
+              },
+            ),
           // The chips belong to adding, not to the list, so they stay when the
           // list is empty — which is exactly when "the usual" is most useful.
           if (controller.list case AsyncData(value: final view)
@@ -91,9 +104,10 @@ class GroceryListScreen extends StatelessWidget {
             const SizedBox(height: NestSpace.md),
             GrocerySuggestionChips(
               suggestions: view.suggestions,
-              onTap: controller.addFromSuggestion,
+              onTap: (suggestion) => _addSuggestion(context, suggestion),
             ),
           ],
+
           const SizedBox(height: NestSpace.md),
           Expanded(
             child: NestAsyncView<GroceryListView>(
@@ -114,13 +128,35 @@ class GroceryListScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              dataBuilder: (_, view) =>
-                  _GroceryList(view: view, header: prompt),
+              dataBuilder: (_, view) => _GroceryList(
+                householdId: controller.householdId,
+                view: view,
+                header: prompt,
+                checkersOn: checkersOn,
+                canEdit: canEdit,
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _addSuggestion(
+    BuildContext context,
+    GrocerySuggestion suggestion,
+  ) async {
+    final controller = context.read<GroceryListController>();
+    final added = await controller.addFromSuggestion(suggestion);
+    if (context.mounted) _matchAfterAdding(context, added);
+  }
+
+  /// Once an item is safely on the list — never before, and never holding the
+  /// add up — its Checkers matches are looked for (the Checkers build
+  /// contract).
+  void _matchAfterAdding(BuildContext context, GroceryItem? added) {
+    if (added == null || !isCheckersOn(context, listen: false)) return;
+    context.read<ProductMatchController>().lookFor(added);
   }
 
   void _openPlans(BuildContext context) => showGroceryPlanSheet(
@@ -133,9 +169,18 @@ class GroceryListScreen extends StatelessWidget {
 }
 
 class _GroceryList extends StatelessWidget {
-  const _GroceryList({required this.view, this.header});
+  const _GroceryList({
+    required this.householdId,
+    required this.view,
+    required this.checkersOn,
+    required this.canEdit,
+    this.header,
+  });
 
+  final String householdId;
   final GroceryListView view;
+  final bool checkersOn;
+  final bool canEdit;
   final Widget? header;
 
   @override
@@ -147,13 +192,24 @@ class _GroceryList extends StatelessWidget {
           prompt,
           const SizedBox(height: NestSpace.lg),
         ],
+        // Both scroll with the list, so at 200% text they never squeeze the
+        // list out from under the add field.
+        if (checkersOn && canEdit) ...[
+          const RetailerChoiceBar(),
+          CheckersListBar(householdId: householdId, matched: view.matchedToBuy),
+        ],
         if (view.toBuy.isNotEmpty) ...[
           const NestSectionHeader(title: AppCopy.groceriesToBuy),
           const SizedBox(height: NestSpace.sm),
           for (final item in view.toBuy)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.sm),
-              child: GroceryItemRow(key: ValueKey(item.id), item: item),
+              child: _GroceryListRow(
+                key: ValueKey(item.id),
+                item: item,
+                checkersOn: checkersOn,
+                canEdit: canEdit,
+              ),
             ),
         ],
         if (view.justBought.isNotEmpty) ...[
@@ -163,10 +219,43 @@ class _GroceryList extends StatelessWidget {
           for (final item in view.justBought)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.sm),
-              child: GroceryItemRow(key: ValueKey(item.id), item: item),
+              child: _GroceryListRow(
+                key: ValueKey(item.id),
+                item: item,
+                checkersOn: checkersOn,
+                canEdit: canEdit,
+              ),
             ),
         ],
       ],
     );
   }
+}
+
+/// One row of the list, with what Checkers adds to it when it is on: the
+/// chosen shop's logo (*Find at Checkers*) beside an unmatched item, and the
+/// picked product under it.
+class _GroceryListRow extends StatelessWidget {
+  const _GroceryListRow({
+    required this.item,
+    required this.checkersOn,
+    required this.canEdit,
+    super.key,
+  });
+
+  final GroceryItem item;
+  final bool checkersOn;
+  final bool canEdit;
+
+  @override
+  Widget build(BuildContext context) => GroceryItemRow(
+    item: item,
+    trailing:
+        checkersOn && canEdit && !item.isBought && item.productMatch == null
+        ? FindAtCheckersButton(item: item)
+        : null,
+    footer: checkersOn
+        ? CheckersItemFooter(item: item, canEdit: canEdit)
+        : null,
+  );
 }

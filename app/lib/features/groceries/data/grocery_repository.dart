@@ -1,6 +1,7 @@
 import '../model/grocery_item.dart';
 import '../model/grocery_plan_changes.dart';
 import '../model/grocery_plan_settings.dart';
+import '../model/product_match.dart';
 
 /// What the groceries feature needs from Firestore.
 ///
@@ -17,7 +18,11 @@ abstract interface class GroceryRepository {
 
   /// A line a person typed. What the plans — or the pantry — put on the list
   /// goes through [applyPlanChanges] instead, and says where it came from.
-  Future<void> add({
+  ///
+  /// Answers the new item's id once the write is done, so a product match can
+  /// be looked for *after* the item is safely on the list — never before, and
+  /// never holding it up.
+  Future<String> add({
     required String householdId,
     required String name,
     String? quantity,
@@ -42,6 +47,9 @@ abstract interface class GroceryRepository {
   /// unconditionally is right — clearing a quantity has to be possible — but
   /// when it was merely optional, omitting it silently erased whatever was
   /// there. Nullable-and-required makes a caller say which it means.
+  ///
+  /// A picked product is cleared in the same write: it was picked for the old
+  /// name.
   Future<void> rename({
     required String householdId,
     required String itemId,
@@ -50,6 +58,20 @@ abstract interface class GroceryRepository {
   });
 
   Future<void> remove({required String householdId, required String itemId});
+
+  /// Stores the product [match] picked for an item, stamped with the server's
+  /// time. Replaces whatever was picked before.
+  Future<void> setProductMatch({
+    required String householdId,
+    required String itemId,
+    required ProductMatch match,
+  });
+
+  /// Takes the picked product off an item; the item itself stays.
+  Future<void> clearProductMatch({
+    required String householdId,
+    required String itemId,
+  });
 
   /// Writes what the week's plans change on the list — new items, refreshed
   /// amounts, items no plan asks for now — in one batch, so a half-applied

@@ -153,7 +153,9 @@ void main() {
       );
     });
 
-    testWidgets('is not shown the documents, nor invited to invite', (
+    // Whether they are shown the documents is More's to answer now
+    // (household_more_screen_test.dart).
+    testWidgets('is not invited to invite, nor offered anybody\u2019s access', (
       tester,
     ) async {
       await pump(
@@ -161,9 +163,8 @@ void main() {
         viewerUid: Fixtures.thandiUid,
         household: withThandiCleaningOnly(),
       );
-      await tester.scrollUntilVisible(find.text(AppCopy.locationTitle), 120);
+      await tester.scrollUntilVisible(find.text(AppCopy.householdLeave), 120);
 
-      expect(find.text(AppCopy.documentsOpenLibrary), findsNothing);
       expect(find.text(AccessCopy.peopleInvite), findsNothing);
       expect(find.bySemanticsLabel(AccessCopy.peopleAccess), findsNothing);
     });

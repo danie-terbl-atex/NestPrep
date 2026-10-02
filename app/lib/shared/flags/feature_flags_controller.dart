@@ -12,12 +12,13 @@ import 'feature_flags.dart';
 /// flips while somebody is in the app takes effect at once.
 ///
 /// Until the document answers, and after it fails, every flag is at its
-/// default: a read that cannot happen must never turn a V2 feature on in a
-/// release build, nor off in a debug one.
+/// default, which is **on** in every build since 2026-10-01 (foundation
+/// ADR-0020): every capability is meant to be used, and only an explicit
+/// `false` in `appConfig/flags` is a kill switch.
 final class FeatureFlagsController extends ChangeNotifier {
   FeatureFlagsController({
     required FeatureFlagSource source,
-    bool defaultOn = kDebugMode,
+    bool defaultOn = true,
   }) : _flags = FeatureFlags.defaults(defaultOn: defaultOn) {
     _subscription = source
         .watch(defaultOn: defaultOn)
@@ -35,8 +36,8 @@ final class FeatureFlagsController extends ChangeNotifier {
   FeatureFlags get flags => _flags;
 
   /// Whether the document has said anything yet. Something that *deletes*
-  /// when a switch is off waits for this — the defaults are a guess, and a
-  /// release build's guess is "off".
+  /// when a switch is off waits for this — the defaults are a guess, and only
+  /// the document can say "off".
   bool get hasAnswered => _hasAnswered;
 
   void _onFlags(FeatureFlags flags) {

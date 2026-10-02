@@ -16,7 +16,6 @@ import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
-import '../../household/ui/household_link_button.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../../two_homes/ui/custody_day_bands.dart';
 import '../../two_homes/ui/custody_day_mark.dart';
@@ -58,11 +57,7 @@ class CalendarScreen extends StatelessWidget {
       leading: const NestBrandMark(width: NestSize.brandMarkSmall),
       title: AppCopy.calendarTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
-      trailing: const [
-        NotificationBell(),
-        HouseholdLinkButton(),
-        AccountMenuButton(),
-      ],
+      trailing: const [NotificationBell(), AccountMenuButton()],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.week,
         onSelect: onSelectTab,

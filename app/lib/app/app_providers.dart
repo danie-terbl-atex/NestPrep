@@ -57,6 +57,7 @@ import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'account_routes.dart';
+import 'add_to_checkers_providers.dart';
 import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'document_tools_providers.dart';
@@ -109,6 +110,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) =>
         FirestoreGroceryRepository(context.read<FirebaseFirestore>()),
   ),
+  // Checkers product matches and Add to Checkers (the Checkers build
+  // contract).
+  ...addToCheckersProviders(),
   Provider<CalendarRepository>(
     create: (context) =>
         FirestoreCalendarRepository(context.read<FirebaseFirestore>()),

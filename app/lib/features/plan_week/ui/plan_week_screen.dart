@@ -8,14 +8,16 @@ import '../../../shared/ui/back_leading.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/state/lunch_board_controller.dart';
 import '../state/plan_week_controller.dart';
+import 'plan_week_brief_panel.dart';
 import 'plan_week_done_panel.dart';
-import 'plan_week_options_panel.dart';
-import 'plan_week_planning_panel.dart';
-import 'plan_week_review.dart';
+import 'plan_week_ideas_panel.dart';
+import 'plan_week_steps_bar.dart';
+import 'plan_week_store_panel.dart';
+import 'plan_week_week_panel.dart';
 
-/// *Plan my week* (lunch-box ADR-0011): choose what to plan, let it be
-/// planned, look it over and swap what you like, then use it. The screen only
-/// composes; every step is its controller's.
+/// *Plan my week from Checkers* (lunch-box ADR-0012): five steps, the one
+/// showing named at the top, each saying what it does and confirmed before
+/// the next. The screen only composes; every step is its controller's.
 class PlanWeekScreen extends StatelessWidget {
   const PlanWeekScreen({super.key});
 
@@ -26,31 +28,36 @@ class PlanWeekScreen extends StatelessWidget {
       leading: backLeading(context),
       title: PlanWeekCopy.title,
       subtitle: NestDates.weekRange(controller.week.monday),
-      body: AnimatedSwitcher(
-        duration: NestMotion.of(context).standard,
-        child: KeyedSubtree(
-          key: ValueKey(_panelOf(controller.step)),
-          child: switch (controller.step) {
-            PlanWeekStep.choosing => NestAsyncView<LunchBoard>(
-              state: controller.board,
-              // No children is not empty here: dinners can still be planned.
-              isEmpty: (_) => false,
-              emptyBuilder: (_) => const SizedBox.shrink(),
-              onRetry: context.read<LunchBoardController>().retry,
-              dataBuilder: (context, board) =>
-                  PlanWeekOptionsPanel(board: board),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PlanWeekStepsBar(step: controller.step),
+          const SizedBox(height: NestSpace.lg),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: NestMotion.of(context).standard,
+              child: KeyedSubtree(
+                key: ValueKey(controller.step),
+                child: switch (controller.step) {
+                  PlanWeekStep.brief => NestAsyncView<LunchBoard>(
+                    state: controller.board,
+                    // No children is said by the brief itself.
+                    isEmpty: (_) => false,
+                    emptyBuilder: (_) => const SizedBox.shrink(),
+                    onRetry: context.read<LunchBoardController>().retry,
+                    dataBuilder: (context, board) =>
+                        PlanWeekBriefPanel(board: board),
+                  ),
+                  PlanWeekStep.ideas => const PlanWeekIdeasPanel(),
+                  PlanWeekStep.store => const PlanWeekStorePanel(),
+                  PlanWeekStep.week => const PlanWeekWeekPanel(),
+                  PlanWeekStep.done => const PlanWeekDonePanel(),
+                },
+              ),
             ),
-            PlanWeekStep.planning => const PlanWeekPlanningPanel(),
-            PlanWeekStep.review ||
-            PlanWeekStep.saving => const PlanWeekReview(),
-            PlanWeekStep.done => const PlanWeekDonePanel(),
-          },
-        ),
+          ),
+        ],
       ),
     );
   }
-
-  /// Saving stays on the review, so the list does not fade out and back.
-  static PlanWeekStep _panelOf(PlanWeekStep step) =>
-      step == PlanWeekStep.saving ? PlanWeekStep.review : step;
 }

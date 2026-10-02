@@ -4,8 +4,9 @@ import { z } from 'zod';
  * The AI features, the switch that stops them all, and how many calls a
  * household gets a month (foundation ADR-0015).
  *
- * Every AI feature is named here once. `planMyWeek` is lunch-box's, named now
- * so its cap and switch exist before its code does.
+ * Every AI feature is named here once. `planMyWeek` is lunch-box's: both of
+ * its steps, the ideas and the week, are counted and switched under it
+ * (lunch-box ADR-0012).
  */
 export const AI_FEATURES = ['schoolLetter', 'planMyWeek'] as const;
 export type AiFeature = (typeof AI_FEATURES)[number];

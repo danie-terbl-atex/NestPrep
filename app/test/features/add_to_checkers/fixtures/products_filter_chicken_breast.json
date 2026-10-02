@@ -1,0 +1,162 @@
+{
+ "success": true,
+ "totalCount": 65,
+ "productsIds": null,
+ "products": [
+  {
+   "id": "5d3af63cf434cf8420737e4c",
+   "storeId": "62dabd7f832d656087c747d8",
+   "serviceOptionId": "sixty-min-delivery",
+   "unitOfMeasure": "KG",
+   "active": true,
+   "ranged": true,
+   "name": "County Fair Fresh Chicken Breasts Fillets Per kg",
+   "displayName": "County Fair Fresh Chicken Breasts Fillets Per kg",
+   "brand": "County Fair",
+   "priceWithoutDecimal": 9999,
+   "priceFactor": 100,
+   "currency": "ZAR",
+   "currencySymbol": "R",
+   "isOnPromotion": false,
+   "oldPrice": 9999,
+   "isStockAvailable": true,
+   "imageId": "6a60e2eb4cddc2a63a6b5e48",
+   "weightOptions": [
+    "700-800"
+   ],
+   "variableWeightOptions": [
+    {
+     "maximumValue": 800,
+     "minimumValue": 700
+    }
+   ],
+   "maxPerOrder": 10,
+   "bonusBuyIds": [],
+   "articleNumber": "10128606"
+  },
+  {
+   "id": "5fc8fbc1743de0d328d3a8a2",
+   "storeId": "62dabd7f832d656087c747d8",
+   "serviceOptionId": "sixty-min-delivery",
+   "unitOfMeasure": "KG",
+   "active": true,
+   "ranged": true,
+   "name": "Simple Truth Free-Range Fresh Chicken Breast Fillets Per KG",
+   "displayName": "Simple Truth Free-Range Fresh Chicken Breast Fillets Per KG",
+   "brand": "Simple Truth",
+   "priceWithoutDecimal": 13999,
+   "priceFactor": 100,
+   "currency": "ZAR",
+   "currencySymbol": "R",
+   "isOnPromotion": false,
+   "oldPrice": 13999,
+   "isStockAvailable": true,
+   "imageId": "6a5daa0bc97ed9e6901e5e11",
+   "weightOptions": [
+    "700-900"
+   ],
+   "variableWeightOptions": [
+    {
+     "maximumValue": 900,
+     "minimumValue": 700
+    }
+   ],
+   "maxPerOrder": 10,
+   "bonusBuyIds": [],
+   "articleNumber": "10718844"
+  },
+  {
+   "id": "5f607d8a184ab6884b8775ca",
+   "storeId": "62dabd7f832d656087c747d8",
+   "serviceOptionId": "sixty-min-delivery",
+   "unitOfMeasure": "KG",
+   "active": true,
+   "ranged": true,
+   "name": "Farmer's Choice Fresh 12-Piece Chicken Fillets",
+   "displayName": "Farmer's Choice Fresh 12-Piece Chicken Fillets",
+   "brand": "Farmer's Choice",
+   "priceWithoutDecimal": 8499,
+   "priceFactor": 100,
+   "currency": "ZAR",
+   "currencySymbol": "R",
+   "isOnPromotion": true,
+   "oldPrice": 8499,
+   "isStockAvailable": true,
+   "imageId": "6a5de7640240c7e9c8e60fd8",
+   "weightOptions": [
+    "1300-1900"
+   ],
+   "variableWeightOptions": [
+    {
+     "maximumValue": 1900,
+     "minimumValue": 1300
+    }
+   ],
+   "maxPerOrder": 10,
+   "bonusBuyIds": [],
+   "articleNumber": "10732969"
+  },
+  {
+   "id": "5f607d89184ab6884b8775c9",
+   "storeId": "62dabd7f832d656087c747d8",
+   "serviceOptionId": "sixty-min-delivery",
+   "unitOfMeasure": "KG",
+   "active": true,
+   "ranged": true,
+   "name": "Farmer's Choice Fresh 6 Piece Chicken Fillets (700g - 1000g)",
+   "displayName": "Farmer's Choice Fresh 6 Piece Chicken Fillets (700g - 1000g)",
+   "brand": "Farmer's Choice",
+   "priceWithoutDecimal": 8499,
+   "priceFactor": 100,
+   "currency": "ZAR",
+   "currencySymbol": "R",
+   "isOnPromotion": true,
+   "oldPrice": 8499,
+   "isStockAvailable": true,
+   "imageId": "6a60e2d333d0992db82f36ee",
+   "weightOptions": [
+    "700-1000"
+   ],
+   "variableWeightOptions": [
+    {
+     "maximumValue": 1000,
+     "minimumValue": 700
+    }
+   ],
+   "maxPerOrder": 10,
+   "bonusBuyIds": [],
+   "articleNumber": "10732968"
+  },
+  {
+   "id": "62cd41822aa38c342af26f2a",
+   "storeId": "62dabd7f832d656087c747d8",
+   "serviceOptionId": "sixty-min-delivery",
+   "unitOfMeasure": "KG",
+   "active": true,
+   "ranged": true,
+   "name": "Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg",
+   "displayName": "Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg",
+   "brand": "Farmer's Choice",
+   "priceWithoutDecimal": 7999,
+   "priceFactor": 100,
+   "currency": "ZAR",
+   "currencySymbol": "R",
+   "isOnPromotion": true,
+   "oldPrice": 7999,
+   "isStockAvailable": true,
+   "imageId": "6a60ed785074dfcf0f590b10",
+   "weightOptions": [
+    "1100-1300"
+   ],
+   "variableWeightOptions": [
+    {
+     "maximumValue": 1300,
+     "minimumValue": 1100
+    }
+   ],
+   "maxPerOrder": 10,
+   "bonusBuyIds": [],
+   "articleNumber": "10796287"
+  }
+ ]
+}

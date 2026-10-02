@@ -226,6 +226,29 @@ describe('a product marked low goes onto the grocery list', () => {
     expect((await lines(home)).map((line) => String(line['id']))).toEqual(['typed']);
   });
 
+  it('keeps the product a member picked when a bought line is needed again', async () => {
+    const home = await aHomeWithAHelper();
+    const product = await aProduct(home);
+    await mark(product, 'low');
+    await eventually(
+      () => lines(home),
+      (found) => found.length > 0,
+    );
+    const pick = { retailer: 'checkers', productId: '5f0c1a2b3c4d5e6f7a8b9c0d', priceCents: 2999 };
+    await household(home)
+      .collection('groceryItems')
+      .doc(`homeCare-${product.id}`)
+      .update({ productMatch: pick, boughtAt: new Date(), boughtBy: 'm-sam' });
+    await mark(product, 'full');
+    await mark(product, 'low');
+    const again = await eventually(
+      () => lines(home),
+      (found) => found[0]?.['boughtBy'] === null,
+    );
+    expect(again).toHaveLength(1);
+    expect(again[0]?.['productMatch']).toEqual(pick);
+  });
+
   it('adds nothing while the switch is off', async () => {
     const home = await aHomeWithAHelper();
     await adminDb().doc('appConfig/flags').set({ homeCareStock: false });

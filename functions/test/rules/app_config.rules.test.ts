@@ -16,7 +16,8 @@ import {
  * ADR-0014). Nothing in it is private, so anybody signed in reads it; it is
  * changed in the console and never by a client, and no other document in the
  * collection — `appConfig/ai`, the AI caps (foundation ADR-0015), included —
- * opens at all.
+ * opens at all. `appConfig/lunchAisle`, the Checkers lunchbox shelves *Plan
+ * my week* reads (lunch-box ADR-0013), is read and refused the same way.
  */
 const FLAGS = 'appConfig/flags';
 
@@ -31,6 +32,18 @@ describe('the feature flags', () => {
   it('are read by anybody signed in, and by nobody signed out', async () => {
     await assertSucceeds(getDoc(doc(await asUser(PEOPLE.admin.uid), FLAGS)));
     await assertFails(getDoc(doc(await asSignedOut(), FLAGS)));
+  });
+
+  it('let anybody signed in read the lunchbox shelves, and nobody write them', async () => {
+    const AISLE = 'appConfig/lunchAisle';
+    await givenData(async (db) => {
+      await setDoc(doc(db, AISLE), { shelves: [] });
+    });
+    const admin = await asUser(PEOPLE.admin.uid);
+    await assertSucceeds(getDoc(doc(admin, AISLE)));
+    await assertFails(getDoc(doc(await asSignedOut(), AISLE)));
+    await assertFails(setDoc(doc(admin, AISLE), { shelves: [] }));
+    await assertFails(deleteDoc(doc(admin, AISLE)));
   });
 
   it('keep the AI caps closed to every client', async () => {

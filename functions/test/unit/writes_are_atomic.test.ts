@@ -249,10 +249,20 @@ describe('every callable declares what it may cost', () => {
         'notifyCoParentHandover',
         'notifyCoParentRequest',
         'notifyPhotoUpdate',
-        // Plan my week: a proposal from the model, behind premium and the same
-        // monthly cap; it writes nothing but the cap's own ledger (lunch-box
-        // ADR-0011, foundation ADR-0015).
-        'planMyWeek',
+        // Plan my week: two proposals from the model — ideas, then the week
+        // from the store's products — behind premium and the same monthly
+        // cap; they write nothing but the cap's own ledger (lunch-box
+        // ADR-0012, foundation ADR-0015).
+        'buildLunchWeek',
+        'draftLunchIdeas',
+        // Add to Checkers: a member's Checkers session is held by the server,
+        // sealed, and used to fill their own Sixty60 cart — nothing a rule or
+        // a phone may hold (the Checkers build contract).
+        'checkersLinkStatus',
+        'checkersPushToCart',
+        'checkersRequestOtp',
+        'checkersUnlink',
+        'checkersVerifyOtp',
       ].sort(),
     );
   });

@@ -25,6 +25,7 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/data/invite_sharer.dart';
+import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
@@ -56,6 +57,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
+import '../support/fake_checkers.dart';
 import '../support/fake_family_profiles.dart';
 import '../support/fake_feature_flag_source.dart';
 import '../support/fake_grocery_repository.dart';
@@ -149,6 +151,8 @@ void main() {
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
           Provider<GroceryRepository>.value(value: groceries),
+          // Checkers product matches and Add to Checkers, on the grocery tab.
+          ...fakeCheckersProviders(),
           // Every tab's bell (notifications ADR-0001).
           Provider<NotificationRepository>.value(
             value: FakeNotificationRepository(),
@@ -227,6 +231,7 @@ void main() {
       (HouseholdTab.todos, TodoScreen),
       (HouseholdTab.groceries, GroceryListScreen),
       (HouseholdTab.meals, MealPlanScreen),
+      (HouseholdTab.more, HouseholdMoreScreen),
     ]) {
       testWidgets(tab.name, (tester) async {
         await pumpApp(tester);

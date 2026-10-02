@@ -1,6 +1,7 @@
 import '../failure/app_failure.dart';
 import 'app_copy.dart';
 import 'calendar_sync_copy.dart';
+import 'checkers_copy.dart';
 import 'kid_copy.dart';
 import 'points_copy.dart';
 import 'subscription_copy.dart';
@@ -49,6 +50,8 @@ abstract final class FailureCopy {
     ReferralFailure(:final problem) => ReferralCopy.problem(problem),
     // account data (accounts ADR-0006).
     AccountDataFailure(:final problem) => AccountDataCopy.problem(problem),
+    // product matches and Add to Checkers (the Checkers build contract).
+    CheckersFailure(:final problem) => CheckersCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

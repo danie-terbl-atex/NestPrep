@@ -34,7 +34,13 @@ function endpoints(): [string, Endpoint][] {
 }
 
 /** The HTTPS function allowed past thirty seconds, and by how much. */
-const LONGER_TIMEOUTS: Readonly<Record<string, number>> = { documentShare: 120 };
+const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
+  documentShare: 120,
+  // Linking and filling a Checkers cart wait on several Sixty60 calls in a
+  // row, each with its own eight-second limit (the Checkers build contract).
+  checkersVerifyOtp: 60,
+  checkersPushToCart: 60,
+};
 
 /** The functions allowed more than the global limits, and exactly how much. */
 const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
@@ -44,8 +50,9 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   exportAccountData: { timeoutSeconds: 120, memoryMb: 512 },
   // Reading a letter waits on Vertex (foundation ADR-0015).
   readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
-  // Planning a week waits on Vertex the same way (lunch-box ADR-0011).
-  planMyWeek: { memoryMb: 512, timeoutSeconds: 60 },
+  // Planning a week waits on Vertex the same way, twice (lunch-box ADR-0012).
+  draftLunchIdeas: { memoryMb: 512, timeoutSeconds: 60 },
+  buildLunchWeek: { memoryMb: 512, timeoutSeconds: 60 },
 };
 
 /** A scheduled job sets its own timeout; everything else is a callable. */
@@ -54,7 +61,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are seventy-six of them, so a new one cannot slip past these checks', () => {
+  it('there are eighty-two of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -81,9 +88,11 @@ describe('every function — callable, trigger or schedule', () => {
     // (product-analytics ADR-0002). Notifications: six — two schedules, three
     // Firestore triggers and the test callable (notifications ADR-0001 to
     // ADR-0003) — and three more triggers on the same channel (nanny-hub
-    // ADR-0004, household ADR-0004). Plan my week: planMyWeek (lunch-box
-    // ADR-0011). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(76);
+    // ADR-0004, household ADR-0004). Plan my week: draftLunchIdeas and
+    // buildLunchWeek (lunch-box ADR-0012). Add to Checkers: five callables — link status, send and
+    // verify a code, fill the cart, unlink (the Checkers build contract). A
+    // feature adds its count and its line.
+    expect(endpoints()).toHaveLength(82);
   });
 
   it('runs in the database region, except a schedule, which runs where Cloud Scheduler does', () => {

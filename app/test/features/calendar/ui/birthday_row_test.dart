@@ -13,6 +13,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../../support/fake_calendar_repository.dart';
 import '../../../support/fake_calendar_sync.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/outside_the_bar.dart';
 import '../../../support/pump_screen.dart';
 
 /// Friday 18 September 2026, where the household lives.
@@ -131,7 +132,7 @@ void main() {
     // `pumpScreen`'s router stands the household route up as a placeholder;
     // arriving there is the whole assertion (`FE-17`).
     expect(find.byType(Placeholder), findsOneWidget);
-    expect(find.text(AppCopy.calendarTitle), findsNothing);
+    expect(textOutsideTheBar(AppCopy.calendarTitle), findsNothing);
   });
 
   testWidgets('and the week is still there to come back to', (tester) async {
@@ -150,7 +151,7 @@ void main() {
     router.pop();
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.calendarTitle), findsOneWidget);
+    expect(textOutsideTheBar(AppCopy.calendarTitle), findsOneWidget);
   });
 
   testWidgets('a day with only a birthday is not an empty day', (tester) async {

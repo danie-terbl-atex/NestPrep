@@ -37,6 +37,8 @@ export 'lunch_share_copy.dart';
 
 // calendar V2: the mental-load view (calendar ADR-0006).
 export 'mental_load_copy.dart';
+// The More tab: the household's other places (design-system ADR-0005).
+export 'more_copy.dart';
 // nanny hub: its words live in their own files, reached through this one —
 // V2 (nanny-hub ADR-0004 to ADR-0007) one file per capability.
 export 'nanny_booking_copy.dart';
@@ -75,8 +77,8 @@ abstract final class AppCopy {
   /// it. The orbiting marks carry no semantics of their own, so this sentence
   /// is the whole of it.
   static const signInOrbitLabel =
-      'A nest holding a calendar, a lunchbox and to-dos, with a household '
-      'around it.';
+      'A nest holding the week, with a household circling it among its '
+      'to-dos, sport, cleaning, places and birthdays.';
 
   /// The letters on the member marks circling the sign-in screen. They are an
   /// illustration's initials, not people — one string so they stay together

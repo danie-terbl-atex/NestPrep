@@ -1,7 +1,7 @@
 import { HttpsError, type FunctionsErrorCode } from 'firebase-functions/v2/https';
 
 /**
- * Every way planning a week can refuse that is its own (lunch-box ADR-0011).
+ * Every way planning a week can refuse that is its own (lunch-box ADR-0012).
  * Membership refuses with the household's `notAMember`, premium with
  * subscriptions' `premiumRequired` (feature `aiPlanning`), and the model with
  * the shared AI reasons (`aiLimitReached`…). Same contract as every refusal
@@ -12,8 +12,8 @@ export const PLAN_WEEK_REFUSALS = {
   planWeekOff: ['failed-precondition', 'Planning the week is switched off.'],
   // The caller may not change the household's lunches.
   lunchNotShared: ['permission-denied', 'You cannot plan lunches in this household.'],
-  // Nothing to plan: no child asked for, and no dinners either.
-  nothingToPlan: ['invalid-argument', 'Choose a child or dinners to plan.'],
+  // Nothing to plan: none of the members asked for is a child.
+  nothingToPlan: ['invalid-argument', 'Choose a child to plan.'],
   // A week that is not one, or one long gone.
   weekNotPlannable: ['invalid-argument', 'That week cannot be planned.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;

@@ -49,4 +49,11 @@ class GroceryListView {
   final List<GrocerySuggestion> suggestions;
 
   bool get isEmpty => toBuy.isEmpty && justBought.isEmpty;
+
+  /// Still to buy, with a shop's product picked — what *Add to Checkers*
+  /// would send.
+  List<GroceryItem> get matchedToBuy => [
+    for (final item in toBuy)
+      if (item.productMatch != null) item,
+  ];
 }

@@ -4,8 +4,9 @@ import 'nest_colors.dart';
 
 /// The type scale, sized for a phone. Three families (design-system ADR-0004,
 /// amending the heading face of ADR-0003): the headings a person reads at a
-/// glance — the greeting, a screen's title, a hero line — are Dancing Script;
-/// the headings that must be scanned — a card title, a name in a row, a big
+/// glance — the greeting, a screen's title, a hero line — are Grand Hotel, the
+/// upright script the wordmark is also set in (design-system ADR-0007); the
+/// headings that must be scanned — a card title, a name in a row, a big
 /// number or code — stay in the wordmark's rounded Nunito; everything read at
 /// length is Plus Jakarta Sans. List titles are light so the content, not the
 /// chrome, carries the weight. Colour comes from the ink roles.
@@ -31,9 +32,14 @@ class NestTextStyles {
   /// `assets/fonts/` with their OFL licence and declared in `pubspec.yaml`.
   static const fontFamily = 'PlusJakartaSans';
 
-  /// The script for glanceable headings, at the one weight they use. Its
-  /// x-height is small, so its sizes run a step above the Nunito they replace.
-  static const scriptFamily = 'DancingScript';
+  /// The script for glanceable headings and the wordmark. It has one weight,
+  /// so its styles ask for 400 — a heavier request would be faked bold.
+  static const scriptFamily = 'GrandHotel';
+
+  /// What draws a character the script lacks (Š, Ž and the rest of Latin
+  /// Extended-A) in a heading, so a name keeps a rounded face, not the
+  /// platform's.
+  static const scriptFallback = [displayFamily];
 
   /// The scanned headings' family: the closest open face to the logo's rounded
   /// wordmark, at the two heavy weights a heading uses.
@@ -77,8 +83,10 @@ class NestTextStyles {
       Color? color,
       double letterSpacing = 0,
       String family = fontFamily,
+      List<String>? fallback,
     }) => TextStyle(
       fontFamily: family,
+      fontFamilyFallback: fallback,
       fontSize: size,
       fontWeight: weight,
       height: height,
@@ -88,22 +96,25 @@ class NestTextStyles {
 
     return NestTextStyles(
       display: style(
-        size: 36,
-        weight: FontWeight.w700,
-        height: 1.15,
+        size: 34,
+        weight: FontWeight.w400,
+        height: 1.2,
         family: scriptFamily,
+        fallback: scriptFallback,
       ),
       headline: style(
         size: 28,
-        weight: FontWeight.w700,
+        weight: FontWeight.w400,
         height: 1.2,
         family: scriptFamily,
+        fallback: scriptFallback,
       ),
       screenTitle: style(
         size: 24,
-        weight: FontWeight.w700,
+        weight: FontWeight.w400,
         height: 1.2,
         family: scriptFamily,
+        fallback: scriptFallback,
       ),
       figure: style(
         size: 32,

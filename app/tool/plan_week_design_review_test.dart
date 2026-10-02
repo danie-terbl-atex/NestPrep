@@ -1,37 +1,38 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
+import 'package:nestprep/features/family_profiles/model/allergen.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_budget.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
-import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
-import 'package:nestprep/features/meal_planning/model/meal.dart';
-import 'package:nestprep/features/meal_planning/model/week_plan.dart';
-import 'package:nestprep/features/plan_week/data/plan_week_groceries.dart';
-import 'package:nestprep/features/plan_week/data/week_planner.dart';
-import 'package:nestprep/features/plan_week/model/dinner_idea.dart';
-import 'package:nestprep/features/plan_week/model/plan_week_options.dart';
-import 'package:nestprep/features/plan_week/model/plan_week_reply.dart';
+import 'package:nestprep/features/plan_week/data/shop_week_groceries.dart';
+import 'package:nestprep/features/plan_week/model/left_out_reason.dart';
+import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
+import 'package:nestprep/features/plan_week/model/lunch_ideas_reply.dart';
+import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
 import 'package:nestprep/features/plan_week/state/plan_week_controller.dart';
-import 'package:nestprep/features/plan_week/state/plan_week_saver.dart';
+import 'package:nestprep/features/plan_week/state/shop_week_saver.dart';
 import 'package:nestprep/features/plan_week/ui/plan_week_screen.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
-import '../test/support/fake_meal_repository.dart';
+import '../test/support/checkers_fakes_for_plan_week.dart';
+import '../test/support/fake_checkers.dart';
+import '../test/support/fake_live_location.dart';
+import '../test/support/fake_plan_week.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
 import '../test/support/lunch_planning_harness.dart';
 import 'review_press.dart';
 
-/// *Plan my week* in the design-review press (lunch-box ADR-0011): the way
-/// in on the board, the choices, the wait, the review — with AI and without —
-/// and the week saved, light and dark, and the review dark at 200% text.
-/// Regenerate with
+/// *Plan my week from Checkers* in the design-review press (lunch-box
+/// ADR-0012): the way in on the board, then each of the five steps — the
+/// brief, the ideas (with AI and without), the shop, the week and done —
+/// light and dark, and the week dark at 200% text. Regenerate with
 ///
 ///     flutter test tool/plan_week_design_review_test.dart --update-goldens
 void main() {
@@ -40,83 +41,134 @@ void main() {
     await loadEveryFont();
   });
 
+  const lwazi = LunchFixtures.lwaziId;
+  const ayanda = LunchFixtures.ayandaId;
   final library = LunchSeedCatalogue.itemsFor(Fixtures.samMemberId);
-  String id(String key) => LunchSeedCatalogue.idFor(key);
   LunchPick seed(String key) =>
       LunchPick.of(library.firstWhere((item) => item.seedKey == key));
   String at(int day, LunchSlot slot) => LunchPlan.slotKey(day, slot);
 
   final lwaziWeek = LunchFixtures.plan(
-    LunchFixtures.lwaziId,
+    lwazi,
     slots: {
       at(1, LunchSlot.main): seed('chicken-mayo'),
       at(1, LunchSlot.fruit): seed('apple'),
-      at(1, LunchSlot.snack): seed('biltong'),
     },
   );
 
-  final meals = [
-    for (final (index, name) in const [
-      'Spaghetti bolognese',
-      'Chicken curry and rice',
-      'Boerewors and pap',
-      'Fish cakes and salad',
-      'Braai night',
-    ].indexed)
-      Meal.named(id: 'meal-$index', name: name, addedBy: Fixtures.samMemberId),
-  ];
+  LunchIdea idea(
+    String id,
+    LunchSlot slot,
+    String words,
+    String why, {
+    List<String> children = const [lwazi, ayanda],
+    List<LeftOutReason> excluded = const [],
+  }) => LunchIdea(
+    id: id,
+    slot: slot,
+    idea: words,
+    searchTerm: words,
+    why: why,
+    childIds: children,
+    excluded: excluded,
+    origin: IdeaOrigin.drafted,
+  );
 
-  ReplyLunch lunch(String child, int day, LunchSlot slot, String key) =>
-      ReplyLunch(childId: child, day: day, slot: slot, itemId: id(key));
-
-  final reply = PlanWeekReply(
-    lunches: [
-      for (final (day, main, fruit, veg, snack) in const [
-        (2, 'cheese-rolls', 'naartjie', 'cucumber', 'crackers'),
-        (3, 'pasta-salad', 'banana', 'sugar-snaps', 'raisins'),
-        (4, 'mealie-bread', 'pear', 'baby-corn', 'cheese-cubes'),
-        (5, 'egg-mayo', 'grapes', 'pepper-strips', 'rice-cakes'),
-      ]) ...[
-        lunch(LunchFixtures.lwaziId, day, LunchSlot.main, main),
-        lunch(LunchFixtures.lwaziId, day, LunchSlot.fruit, fruit),
-        lunch(LunchFixtures.lwaziId, day, LunchSlot.veg, veg),
-        lunch(LunchFixtures.lwaziId, day, LunchSlot.snack, snack),
-      ],
-      lunch(LunchFixtures.lwaziId, 5, LunchSlot.treat, 'muffin'),
-      for (final (day, main, fruit, snack) in const [
-        (1, 'chicken-mayo', 'grapes', 'biltong'),
-        (2, 'tuna-sandwich', 'grapes', 'yoghurt'),
-        (3, 'frikkadels', 'strawberries', 'pretzels'),
-        (4, 'hummus-pita', 'mango', 'droewors'),
-        (5, 'cheese-rolls', 'grapes', 'crackers'),
-      ]) ...[
-        lunch(LunchFixtures.ayandaId, day, LunchSlot.main, main),
-        lunch(LunchFixtures.ayandaId, day, LunchSlot.fruit, fruit),
-        lunch(LunchFixtures.ayandaId, day, LunchSlot.snack, snack),
-      ],
-    ],
-    dinners: [
-      const ReplyDinner(day: 1, mealId: 'meal-0'),
-      const ReplyDinner(day: 2, mealId: 'meal-1'),
-      const ReplyDinner(
-        day: 3,
-        idea: DinnerIdea(
-          name: 'Chicken and vegetable tray bake',
-          ingredients: [
-            IdeaIngredient(name: 'Chicken thighs', quantity: '1 kg'),
-            IdeaIngredient(name: 'Butternut', quantity: '1'),
-            IdeaIngredient(name: 'Red onions', quantity: '2'),
-            IdeaIngredient(name: 'Baby potatoes', quantity: '500 g'),
-          ],
-        ),
+  final ideas = LunchIdeasReply(
+    ideas: [
+      idea('idea-1', LunchSlot.main, 'Wholewheat wraps', 'Both ate wraps well'),
+      idea('idea-2', LunchSlot.fruit, 'Apples', 'A staple'),
+      idea('idea-3', LunchSlot.snack, 'Fruit yoghurt', 'Ayanda likes it'),
+      idea(
+        'idea-4',
+        LunchSlot.snack,
+        'Peanut butter crackers',
+        'Cheap and filling',
+        children: const [ayanda],
+        excluded: const [
+          LeftOutReason(
+            LeftOutKind.allergy,
+            childId: lwazi,
+            allergen: Allergen.peanut,
+          ),
+        ],
       ),
-      const ReplyDinner(day: 4, mealId: 'meal-3'),
-      const ReplyDinner(day: 6, mealId: 'meal-2'),
-      const ReplyDinner(day: 7, mealId: 'meal-4'),
+      idea('idea-5', LunchSlot.treat, 'Rice cakes', 'A Friday treat'),
     ],
-    dinnersIncluded: true,
-    dropped: 1,
-    callsLeft: 97,
+    budgetCents: 40000,
+    callsLeft: 23,
+  );
+
+  void stock(FakeShopCatalogue shop) => shop.byQuery
+    ..['Wholewheat wraps'] = [
+      planWeekProduct(
+        'Sasko Wholewheat Wraps 6s',
+        id: 'wraps',
+        cents: 3299,
+        packCount: 6,
+        ingredients: 'Wheat flour, water',
+      ),
+    ]
+    ..['Apples'] = [
+      planWeekProduct(
+        'Golden Delicious Apples 6 Pack',
+        id: 'apples',
+        cents: 2999,
+        packCount: 6,
+        ingredients: 'Apples',
+      ),
+      planWeekProduct('Loose Apples', id: 'loose', unit: 'KG'),
+    ]
+    ..['Fruit yoghurt'] = [
+      planWeekProduct(
+        'Clover Fruit Yoghurt 6 x 100g',
+        id: 'yog',
+        cents: 3699,
+        packCount: 6,
+        ingredients: 'Milk, fruit',
+      ),
+      planWeekProduct('Nutty Yoghurt Bar', id: 'nutty', ingredients: 'Almonds'),
+    ]
+    ..['Peanut butter crackers'] = [
+      planWeekProduct(
+        'Bakers Peanut Crackers',
+        id: 'pbc',
+        ingredients: 'Wheat',
+      ),
+    ]
+    ..['Rice cakes'] = [planWeekProduct('Rice cakes 100g', id: 'rice')];
+
+  final week = LunchWeekReply(
+    lunches: [
+      for (var day = 1; day <= 5; day++) ...[
+        if (day > 1)
+          ReplyLunch(
+            childId: lwazi,
+            day: day,
+            slot: LunchSlot.main,
+            ideaId: 'idea-1',
+            productId: 'wraps',
+          ),
+        ReplyLunch(
+          childId: ayanda,
+          day: day,
+          slot: LunchSlot.main,
+          ideaId: 'idea-1',
+          productId: 'wraps',
+        ),
+        ReplyLunch(
+          childId: ayanda,
+          day: day,
+          slot: LunchSlot.snack,
+          ideaId: 'idea-3',
+          productId: 'yog',
+        ),
+      ],
+    ],
+    boxesPerPack: const {'wraps': 6, 'yog': 6},
+    budgetCents: 40000,
+    dropped: 0,
+    callsLeft: 22,
   );
 
   Future<void> capture(
@@ -129,31 +181,40 @@ void main() {
     Future<void> Function(PlanWeekController controller)? act,
   }) async {
     final harness = LunchPlanningHarness();
-    final mealRepository = FakeMealRepository();
+    final drafter = FakeLunchIdeaDrafter()
+      ..reply = ideas
+      ..failWith = refusal;
+    final builder = FakeLunchWeekBuilder()..reply = week;
+    final shop = FakeShopCatalogue();
+    stock(shop);
     final controller = PlanWeekController(
-      planner: _FixedPlanner(reply: reply, refusal: refusal),
-      saver: PlanWeekSaver(
+      drafter: drafter,
+      aisleSource: FakeLunchAisleSource(),
+      weekBuilder: builder,
+      catalogue: shop,
+      placeResolver: CheckersPlaceResolver(
+        locationSource: FakeLocationSource(),
+        areaPreference: FakeCheckersAreaPreference(),
+      ),
+      saver: ShopWeekSaver(
         lunchRepository: harness.lunch.repository,
-        mealRepository: mealRepository,
+        budgetRepository: harness.budgetRepository,
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
-      groceries: PlanWeekGroceries(
+      groceries: ShopWeekGroceries(
         groceryRepository: harness.groceries,
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
-      mealRepository: mealRepository,
       householdId: Fixtures.householdId,
-      week: LunchWeek.of(LunchFixtures.today),
-      mayPlanDinners: true,
+      week: LunchFixtures.week,
     );
     void follow() => controller.followBoard(harness.board.board);
     harness.board.addListener(follow);
     addTearDown(() async {
       harness.board.removeListener(follow);
       controller.dispose();
-      await mealRepository.close();
       await harness.close();
     });
     await captureScreen(
@@ -167,15 +228,9 @@ void main() {
       ],
       emit: () async {
         harness.lunch.emit(items: library, plans: [lwaziWeek]);
-        harness.emitPlanning();
-        mealRepository
-          ..emitMeals(meals)
-          ..emitWeek(
-            WeekPlan(
-              id: LunchFixtures.week.monday.iso,
-              slots: {WeekPlan.slotKey(5, MealSlot.dinner): 'meal-2'},
-            ),
-          );
+        harness.emitPlanning(
+          budget: const LunchBudget(id: 'weekly', cents: 40000, updatedBy: 'm'),
+        );
         follow();
       },
       brightness: brightness,
@@ -184,8 +239,22 @@ void main() {
     );
   }
 
-  Future<void> plan(PlanWeekController controller) async {
-    unawaited(controller.plan());
+  Future<void> toIdeas(PlanWeekController controller) =>
+      controller.draftIdeas();
+
+  Future<void> toStore(PlanWeekController controller) async {
+    await controller.draftIdeas();
+    await controller.searchStore();
+  }
+
+  Future<void> toWeek(PlanWeekController controller) async {
+    await toStore(controller);
+    await controller.buildWeek();
+  }
+
+  Future<void> toDone(PlanWeekController controller) async {
+    await toWeek(controller);
+    await controller.use();
   }
 
   testWidgets(
@@ -201,94 +270,60 @@ void main() {
     (Brightness.light, 'light'),
     (Brightness.dark, 'dark'),
   ]) {
-    testWidgets(
-      'the choices, $suffix',
-      (tester) => capture(
-        tester,
-        'plan-week-options-$suffix',
-        const PlanWeekScreen(),
-        brightness: brightness,
-      ),
-    );
-    testWidgets(
-      'the review, $suffix',
-      (tester) => capture(
-        tester,
-        'plan-week-review-$suffix',
-        const PlanWeekScreen(),
-        brightness: brightness,
-        act: plan,
-      ),
-    );
+    for (final (step, act) in [
+      ('brief', null),
+      ('ideas', toIdeas),
+      ('store', toStore),
+      ('week', toWeek),
+      ('done', toDone),
+    ]) {
+      testWidgets(
+        'step $step, $suffix',
+        (tester) => capture(
+          tester,
+          'plan-week-$step-$suffix',
+          const PlanWeekScreen(),
+          brightness: brightness,
+          act: act,
+        ),
+      );
+    }
   }
 
   testWidgets(
-    'the review further down, with the dinners',
+    'the ideas without AI',
     (tester) => capture(
       tester,
-      'plan-week-review-dinners-light',
-      const PlanWeekScreen(),
-      act: (controller) async {
-        await plan(controller);
-        await tester.pumpAndSettle();
-        await tester.drag(find.byType(Scrollable).last, const Offset(0, -2400));
-      },
-    ),
-  );
-
-  testWidgets(
-    'the review without AI',
-    (tester) => capture(
-      tester,
-      'plan-week-review-without-ai-light',
+      'plan-week-ideas-without-ai-light',
       const PlanWeekScreen(),
       refusal: const AiFailure(AiProblem.aiLimitReached),
-      act: plan,
+      act: toIdeas,
     ),
   );
 
   testWidgets(
-    'the review, dark at 200% text',
+    'the week, dark at 200% text',
     (tester) => capture(
       tester,
-      'plan-week-review-dark-200-percent-text',
+      'plan-week-week-dark-200-percent-text',
       const PlanWeekScreen(),
       brightness: Brightness.dark,
       textScale: 2,
-      act: plan,
+      act: toWeek,
     ),
   );
 
   testWidgets(
-    'the week saved',
+    'the basket, further down the week',
     (tester) => capture(
       tester,
-      'plan-week-done-light',
+      'plan-week-basket-light',
       const PlanWeekScreen(),
       act: (controller) async {
-        await plan(controller);
+        await toWeek(controller);
         await tester.pumpAndSettle();
-        unawaited(controller.use());
+        await tester.drag(find.byType(Scrollable).last, const Offset(0, -2600));
       },
     ),
   );
-}
-
-/// Answers every plan with [reply], or refuses with [refusal].
-final class _FixedPlanner implements WeekPlanner {
-  const _FixedPlanner({required this.reply, this.refusal});
-
-  final PlanWeekReply reply;
-  final AppFailure? refusal;
-
-  @override
-  Future<PlanWeekReply> plan({
-    required String householdId,
-    required LunchWeek week,
-    required PlanWeekOptions options,
-  }) async {
-    final failure = refusal;
-    if (failure != null) throw failure;
-    return reply;
-  }
 }

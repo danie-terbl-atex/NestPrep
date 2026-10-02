@@ -29,13 +29,12 @@ class LunchBudgetWeek {
   /// The week against the budget, or null when none is set.
   LunchBudgetReading? get reading => switch (budget) {
     null => null,
-    final budget => LunchBudgetReading(
-      spent: cost.total.money,
-      budget: budget.money,
-    ),
+    final budget => LunchBudgetReading(spent: spent, budget: budget.money),
   };
 
-  Money get spent => cost.total.money;
+  /// The household's basket at the till — every child together, whole
+  /// packs (lunch-box ADR-0012 §4).
+  Money get spent => cost.basket.total;
 
   LunchPrice? priceOf(String itemId) => prices[itemId];
 

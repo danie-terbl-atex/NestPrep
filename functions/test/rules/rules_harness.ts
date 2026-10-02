@@ -22,6 +22,20 @@ export type { Firestore, FirebaseStorage };
 
 const PROJECT_ID = 'nestprep-643b7';
 const RULES_PATH = resolve(import.meta.dirname, '../../../firestore.rules');
+
+/**
+ * Where an emulator is: the address `firebase emulators:exec` hands the run,
+ * or `firebase.json`'s port. Reading the handed address is what lets the
+ * rules suite run beside a development suite that already holds the default
+ * ports — without it, `clearData` would wipe that suite's data.
+ */
+export function emulatorAt(variable: string, fallback: string): { host: string; port: number } {
+  const [host = '127.0.0.1', port = ''] = (process.env[variable] ?? fallback).split(':');
+  return { host, port: Number(port) };
+}
+
+export const FIRESTORE_AT = emulatorAt('FIRESTORE_EMULATOR_HOST', '127.0.0.1:8080');
+const STORAGE_AT = emulatorAt('FIREBASE_STORAGE_EMULATOR_HOST', '127.0.0.1:9199');
 const STORAGE_RULES_PATH = resolve(import.meta.dirname, '../../../storage.rules');
 
 let environment: Promise<RulesTestEnvironment> | undefined;
@@ -42,8 +56,8 @@ let environment: Promise<RulesTestEnvironment> | undefined;
 export function rulesEnvironment(): Promise<RulesTestEnvironment> {
   environment ??= initializeTestEnvironment({
     projectId: PROJECT_ID,
-    firestore: { rules: readFileSync(RULES_PATH, 'utf8'), host: '127.0.0.1', port: 8080 },
-    storage: { rules: readFileSync(STORAGE_RULES_PATH, 'utf8'), host: '127.0.0.1', port: 9199 },
+    firestore: { rules: readFileSync(RULES_PATH, 'utf8'), ...FIRESTORE_AT },
+    storage: { rules: readFileSync(STORAGE_RULES_PATH, 'utf8'), ...STORAGE_AT },
   }).catch((error: unknown) => {
     environment = undefined;
     throw error;

@@ -3,14 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/calendar_v2_route.dart';
+import '../../../app/chore_points_route.dart';
 import '../../../app/documents_route.dart';
 import '../../../app/family_route.dart';
 import '../../../app/home_care_route.dart';
 import '../../../app/household_route.dart';
+import '../../../app/household_shell.dart';
 import '../../../app/nanny_hub_route.dart';
 import '../../../app/two_homes_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/points_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../family_profiles/model/family_access.dart';
@@ -22,10 +25,13 @@ import '../../two_homes/model/two_homes_access.dart';
 import '../model/household_area.dart';
 import '../model/household_view.dart';
 
-/// The places that hang off the household screen rather than the bottom bar,
-/// which stays at the four things a household does in a week: family
-/// profiles, where everybody is, and the household's papers — each only for
-/// somebody the household's grant lets use it (household ADR-0003).
+/// Every place a household has beyond the four tabs in the bar, grouped by
+/// what it is for, on the More tab (design-system ADR-0005) — each only for
+/// somebody the household's grant and its switches let use it (household
+/// ADR-0003). A section with nothing in it for this person is not shown.
+///
+/// Every tile **pushes**: each place is a detail of More, so back comes back
+/// here rather than closing the app (`FE-17`).
 class HouseholdPlaces extends StatelessWidget {
   const HouseholdPlaces({required this.view, super.key});
 
@@ -33,170 +39,142 @@ class HouseholdPlaces extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final id = view.household.id;
+    final permissions = view.permissions;
+    final flags = context.watch<FeatureFlagsController>();
+    void open(String path) => context.push(path);
+
+    final week = [
+      if (permissions.canUse(HouseholdArea.meals))
+        NestPlaceTile(
+          icon: Icons.restaurant_outlined,
+          tint: NestTileTint.mint,
+          title: AppCopy.tabMeals,
+          subtitle: MoreCopy.mealsBody,
+          onTap: () => open(HouseholdRoute.pathFor(id, HouseholdTab.meals)),
+        ),
+      // Stars and rewards are a parent's to run (todos ADR-0003).
+      if (permissions.isFamily)
+        NestPlaceTile(
+          icon: Icons.stars_outlined,
+          tint: NestTileTint.peach,
+          title: PointsCopy.screenTitle,
+          subtitle: MoreCopy.starsBody,
+          onTap: () => open(ChorePointsRoute.pathFor(id)),
+        ),
+      // calendar V2: who is handling what this week (calendar ADR-0006) — the
+      // family's adults only, while its switch is on.
+      if (permissions.isFamily && flags.isOn(FeatureFlag.mentalLoadView))
+        NestPlaceTile(
+          icon: Icons.volunteer_activism_outlined,
+          tint: NestTileTint.pink,
+          title: MentalLoadCopy.openFromHousehold,
+          subtitle: MentalLoadCopy.openFromHouseholdBody,
+          onTap: () => open(CalendarV2Route.sharedWeekPathFor(id)),
+        ),
+    ];
+
+    final family = [
+      // family-profiles: what each person eats, cannot eat and needs, for
+      // whoever the `familyProfiles` grant lets see it (ADR-0002).
+      if (FamilyAccess.of(view).isVisible)
+        NestPlaceTile(
+          icon: Icons.family_restroom_outlined,
+          tint: NestTileTint.pink,
+          title: FamilyCopy.openFromHousehold,
+          subtitle: FamilyCopy.openFromHouseholdBody,
+          onTap: () => open(FamilyRoute.pathFor(id)),
+        ),
+      // Live location: each person's own to share, and it ends on its own.
+      NestPlaceTile(
+        icon: Icons.person_pin_circle_outlined,
+        tint: NestTileTint.sky,
+        title: AppCopy.locationTitle,
+        subtitle: MoreCopy.locationBody,
+        onTap: () => open(HouseholdRoute.wherePathFor(id)),
+      ),
+      // co-parenting: a child in two homes (household ADR-0004), for the
+      // family, behind its flag.
+      if (flags.isOn(FeatureFlag.coParenting) &&
+          TwoHomesAccess.of(view).showsWayIn)
+        NestPlaceTile(
+          icon: Icons.cottage_outlined,
+          tint: NestTileTint.peach,
+          title: TwoHomesCopy.openFromHousehold,
+          subtitle: TwoHomesCopy.openFromHouseholdBody,
+          onTap: () => open(TwoHomesRoute.pathFor(id)),
+        ),
+    ];
+
+    final home = [
+      // nanny hub (nanny-hub ADR-0003): for a carer it is what the household
+      // is for, and for a parent it is where the latest handover waits.
+      if (NannyAccess.of(view).canView)
+        NestPlaceTile(
+          icon: Icons.child_care,
+          tint: NestTileTint.mint,
+          title: NannyCopy.openFromHousehold,
+          subtitle: NannyCopy.openFromHouseholdBody,
+          onTap: () => open(NannyHubRoute.pathFor(id)),
+        ),
+      // home-care: a helper's own jobs, or all of them (home-care ADR-0001).
+      if (permissions.canUse(HouseholdArea.homeCare))
+        NestPlaceTile(
+          icon: Icons.cleaning_services_outlined,
+          tint: NestTileTint.sky,
+          title: HomeCareCopy.openFromHousehold,
+          subtitle: permissions.canEdit(HouseholdArea.homeCare)
+              ? HomeCareCopy.openFromHouseholdBody
+              : HomeCareCopy.openFromHouseholdHelperBody,
+          onTap: () => open(HomeCareRoute.pathFor(id)),
+        ),
+      // The household's papers (documents ADR-0001), only for somebody
+      // allowed to open them (household ADR-0003).
+      if (permissions.canUse(HouseholdArea.documents))
+        NestPlaceTile(
+          icon: Icons.folder_shared_outlined,
+          title: AppCopy.documentsOpenLibrary,
+          subtitle: MoreCopy.documentsBody,
+          onTap: () => open(DocumentsRoute.pathFor(id)),
+        ),
+    ];
+
+    // subscriptions and referrals (subscriptions ADR-0001, ADR-0002): for
+    // family, who buy it; referrals only while switched on.
+    final plan = [
+      if (permissions.isFamily) PlanLink(householdId: id),
+      if (referralsOffered(context)) ReferralLink(householdId: id),
+    ];
+
+    final isCarer = !permissions.isFamily && NannyAccess.of(view).canView;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // nanny hub (nanny-hub ADR-0003): first, because for a carer it is
-        // what the household screen is for, and for a parent it is where the
-        // latest handover waits.
-        if (NannyAccess.of(view).canView) ...[
-          NestCard(
-            variant: NestCardVariant.tinted,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: NannyCopy.openFromHousehold,
-              subtitle: NannyCopy.openFromHouseholdBody,
-              leading: const NestIconTile(
-                icon: Icons.child_care,
-                tint: NestTileTint.mint,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  context.push(NannyHubRoute.pathFor(view.household.id)),
-            ),
-          ),
-          const SizedBox(height: NestSpace.lg),
+        // For a carer the hub is what the household is for, so the section
+        // it opens comes first (nanny-hub ADR-0003); for family, the order a
+        // week uses them.
+        for (final (title, tiles) in [
+          if (isCarer) (MoreCopy.sectionHome, home),
+          (MoreCopy.sectionWeek, week),
+          (MoreCopy.sectionFamily, family),
+          if (!isCarer) (MoreCopy.sectionHome, home),
+        ])
+          if (tiles.isNotEmpty) ...[
+            const SizedBox(height: NestSpace.xxl),
+            NestSectionHeader(title: title),
+            const SizedBox(height: NestSpace.md),
+            NestPlaceGrid(children: tiles),
+          ],
+        if (plan.isNotEmpty) ...[
+          const SizedBox(height: NestSpace.xxl),
+          const NestSectionHeader(title: MoreCopy.sectionPlan),
+          const SizedBox(height: NestSpace.md),
+          for (final (index, link) in plan.indexed) ...[
+            if (index > 0) const SizedBox(height: NestSpace.md),
+            link,
+          ],
         ],
-        // co-parenting: a child in two homes (household ADR-0004), for the
-        // family, behind its flag.
-        if (context.watch<FeatureFlagsController>().isOn(
-              FeatureFlag.coParenting,
-            ) &&
-            TwoHomesAccess.of(view).showsWayIn) ...[
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: TwoHomesCopy.openFromHousehold,
-              subtitle: TwoHomesCopy.openFromHouseholdBody,
-              leading: const NestIconTile(
-                icon: Icons.cottage_outlined,
-                tint: NestTileTint.peach,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  context.push(TwoHomesRoute.pathFor(view.household.id)),
-            ),
-          ),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // family-profiles: what each person eats, cannot eat and needs. It
-        // hangs off the people it is about (family-profiles ADR-0001), for
-        // whoever the `familyProfiles` grant lets see it (ADR-0002).
-        if (FamilyAccess.of(view).isVisible) ...[
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: FamilyCopy.openFromHousehold,
-              subtitle: FamilyCopy.openFromHouseholdBody,
-              leading: const NestIconTile(
-                icon: Icons.family_restroom_outlined,
-                tint: NestTileTint.pink,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push(FamilyRoute.pathFor(view.household.id)),
-            ),
-          ),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // home-care: cleaning jobs, for whoever the `homeCare` grant lets
-        // see them — a helper's own jobs, or all of them (home-care
-        // ADR-0001).
-        if (view.permissions.canUse(HouseholdArea.homeCare)) ...[
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: HomeCareCopy.openFromHousehold,
-              subtitle: view.permissions.canEdit(HouseholdArea.homeCare)
-                  ? HomeCareCopy.openFromHouseholdBody
-                  : HomeCareCopy.openFromHouseholdHelperBody,
-              leading: const NestIconTile(
-                icon: Icons.cleaning_services_outlined,
-                tint: NestTileTint.mint,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  context.push(HomeCareRoute.pathFor(view.household.id)),
-            ),
-          ),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // calendar V2: who is handling what this week (calendar ADR-0006) —
-        // the family's adults only, while its switch is on.
-        if (view.permissions.isFamily &&
-            context.watch<FeatureFlagsController>().isOn(
-              FeatureFlag.mentalLoadView,
-            )) ...[
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: MentalLoadCopy.openFromHousehold,
-              subtitle: MentalLoadCopy.openFromHouseholdBody,
-              leading: const NestIconTile(
-                icon: Icons.volunteer_activism_outlined,
-                tint: NestTileTint.peach,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push(
-                CalendarV2Route.sharedWeekPathFor(view.household.id),
-              ),
-            ),
-          ),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // subscriptions: which plan the household is on, and the way to
-        // premium (subscriptions ADR-0001) — for family, who buy it.
-        if (view.permissions.isFamily) ...[
-          PlanLink(householdId: view.household.id),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // referrals: give a month, get a month, beside the plan
-        // (subscriptions ADR-0002) — for family, while switched on.
-        if (referralsOffered(context)) ...[
-          ReferralLink(householdId: view.household.id),
-          const SizedBox(height: NestSpace.lg),
-        ],
-        // The way to the live-location screen. It sits with the people rather
-        // than in the bottom bar, and says what it is before it is tapped —
-        // that sharing is each person's own, and ends on its own.
-        NestListRow(
-          leading: const NestIconTile(icon: Icons.person_pin_circle_outlined),
-          title: AppCopy.locationTitle,
-          subtitle: AppCopy.locationYoursBody,
-          trailing: Icon(
-            Icons.chevron_right,
-            size: NestSize.iconMedium,
-            color: NestTheme.of(context).colors.inkTertiary,
-          ),
-          onTap: () =>
-              context.push(HouseholdRoute.wherePathFor(view.household.id)),
-        ),
-        const SizedBox(height: NestSpace.lg),
-        // The household's papers hang off this screen rather than the bottom
-        // bar, which stays at the four things a household does in a week
-        // (documents ADR-0001) — and only for somebody allowed to open them
-        // (household ADR-0003).
-        if (view.permissions.canUse(HouseholdArea.documents))
-          NestCard(
-            variant: NestCardVariant.flat,
-            padding: EdgeInsets.zero,
-            child: NestListRow(
-              title: AppCopy.documentsOpenLibrary,
-              subtitle: AppCopy.documentsEmptyBody,
-              leading: const NestIconTile(
-                icon: Icons.folder_shared_outlined,
-                tint: NestTileTint.sky,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              // Pushed, not gone to: this opens *over* the household screen, so
-              // back lands here rather than closing the app (`FE-17`).
-              onTap: () =>
-                  context.push(DocumentsRoute.pathFor(view.household.id)),
-            ),
-          ),
       ],
     );
   }
