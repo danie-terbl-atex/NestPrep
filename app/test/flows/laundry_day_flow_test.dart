@@ -15,6 +15,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
+import '../support/outside_the_bar.dart';
 import '../support/pump_screen.dart';
 
 /// The one thing todos phase 1 still owed: the routine flow driven through the
@@ -264,7 +265,7 @@ void main() {
         ],
       );
 
-      expect(find.text(AppCopy.todosToday), findsOneWidget);
+      expect(textOutsideTheBar(AppCopy.todosToday), findsOneWidget);
       for (final title in [
         'Fold and put away',
         'Sort the whites',

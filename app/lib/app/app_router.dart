@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../design/gallery/design_gallery_screen.dart';
+import '../design/nest_kit.dart';
 import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/model/session.dart';
 import '../features/accounts/state/password_reset_controller.dart';
@@ -57,6 +58,7 @@ import 'nanny_hub_routes.dart';
 import 'notifications_routes.dart';
 import 'referral_routes.dart';
 import 'subscription_routes.dart';
+import 'today_route.dart';
 import 'two_homes_routes.dart';
 import 'viewer_member.dart';
 
@@ -214,6 +216,11 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
         // groceries phase 2: the list and the week's plans against it
         // (groceries ADR-0002).
         groceryRoute(),
+        todayRoute(),
+        GoRoute(
+          path: '${HouseholdRoute.path}/${HouseholdTab.lists.segment}',
+          builder: (context, state) => const NestLoadingView(),
+        ),
         // More: the people and every place beyond the bar (design-system
         // ADR-0005).
         GoRoute(
@@ -247,7 +254,13 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
 
 /// Moves between the tabs of one household.
 void goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
-  context.go(HouseholdRoute.pathFor(HouseholdRoute.idFrom(state), tab));
+  final permissions = context.read<HouseholdView>().permissions;
+  context.go(
+    HouseholdRoute.pathFor(
+      HouseholdRoute.idFrom(state),
+      tab.landingFor(permissions),
+    ),
+  );
 }
 
 /// Where a caller in this session belongs, or null to leave them where they are.

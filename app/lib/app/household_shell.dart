@@ -140,9 +140,8 @@ class HouseholdTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Only the tabs this person may use (household ADR-0003). More is open to
-    // everybody, so a helper who may only clean still has a bar with one
-    // place on it — the place their jobs are.
+    // Only the tabs this person may use (household ADR-0003). Today and More
+    // are open to everybody.
     final permissions = context.watch<HouseholdView>().permissions;
     final tabs = [
       for (final tab in HouseholdTab.inBar)
@@ -152,11 +151,7 @@ class HouseholdTabBar extends StatelessWidget {
     return NestBottomBar(
       items: [
         for (final tab in tabs)
-          NestBottomBarItem(
-            icon: tab.icon,
-            selectedIcon: tab.selectedIcon,
-            label: tab.label,
-          ),
+          NestBottomBarItem(icon: tab.icon, label: tab.label),
       ],
       selectedIndex: selected < 0 ? tabs.length - 1 : selected,
       onSelect: (index) => onSelect(tabs[index]),
@@ -164,56 +159,65 @@ class HouseholdTabBar extends StatelessWidget {
   }
 }
 
-/// The household's top-level places, each with its own address. Lunch comes
-/// first: it is the launch feature and the household's home (lunch-box
-/// ADR-0004); the rest are in the order a week uses them. More is last and
-/// holds everything else a household has — meals among it, because the bar
-/// has room for five names and no more (design-system ADR-0005).
+/// The household's top-level places, each with its own address
+/// (design-system ADR-0009). Today is the home. Lists is the bar's name for
+/// To do and Groceries, which keep their own addresses and switch between
+/// each other. Meals is reached from More.
 enum HouseholdTab {
-  // ---- lunch-box (lunch-box ADR-0004) ----
-  lunch('lunch', LucideIcons.sandwich, LucideIcons.sandwich),
-  week('week', LucideIcons.calendar, LucideIcons.calendar),
-  todos('todos', LucideIcons.circleCheck, LucideIcons.circleCheck),
-  groceries(
-    'groceries',
-    LucideIcons.shoppingBasket,
-    LucideIcons.shoppingBasket,
-  ),
-  meals('meals', LucideIcons.utensils, LucideIcons.utensils),
-  // ---- the More screen (design-system ADR-0005) ----
-  more('more', LucideIcons.layoutGrid, LucideIcons.layoutGrid);
+  today('today', LucideIcons.sun),
+  lunch('lunch', LucideIcons.sandwich),
+  week('week', LucideIcons.calendarDays),
+  lists('lists', LucideIcons.listChecks),
+  todos('todos', LucideIcons.circleCheck),
+  groceries('groceries', LucideIcons.shoppingBasket),
+  meals('meals', LucideIcons.utensils),
+  more('more', LucideIcons.layoutGrid);
 
-  const HouseholdTab(this.segment, this.icon, this.selectedIcon);
+  const HouseholdTab(this.segment, this.icon);
 
   final String segment;
   final IconData icon;
-  final IconData selectedIcon;
 
-  /// The tabs the bar shows, in its order. Meals is reached from More.
-  static const inBar = [lunch, week, todos, groceries, more];
+  static const inBar = [today, lunch, week, lists, more];
 
-  /// The tab the bar lights up while this place is open.
-  HouseholdTab get barTab => inBar.contains(this) ? this : more;
+  HouseholdTab get barTab => switch (this) {
+    todos || groceries => lists,
+    meals => more,
+    _ => this,
+  };
 
-  /// The area this tab is (household ADR-0003), or null for More, which is
-  /// everybody's: it only shows the places their grant opens.
+  /// The area this tab is (household ADR-0003), or null for the places that
+  /// gather several and show only what the grant opens.
   HouseholdArea? get area => switch (this) {
     HouseholdTab.lunch => HouseholdArea.lunch,
     HouseholdTab.week => HouseholdArea.calendar,
     HouseholdTab.todos => HouseholdArea.todos,
     HouseholdTab.groceries => HouseholdArea.groceries,
     HouseholdTab.meals => HouseholdArea.meals,
-    HouseholdTab.more => null,
+    HouseholdTab.today || HouseholdTab.lists || HouseholdTab.more => null,
   };
 
-  bool isOpenTo(HouseholdPermissions permissions) {
-    final area = this.area;
-    return area == null || permissions.canUse(area);
-  }
+  bool isOpenTo(HouseholdPermissions permissions) => switch (this) {
+    HouseholdTab.lists =>
+      permissions.canUse(HouseholdArea.todos) ||
+          permissions.canUse(HouseholdArea.groceries),
+    _ => area == null || permissions.canUse(area!),
+  };
+
+  /// Where tapping this tab goes: Lists opens To do, or Groceries for
+  /// somebody who may only shop.
+  HouseholdTab landingFor(HouseholdPermissions permissions) =>
+      this == HouseholdTab.lists && !permissions.canUse(HouseholdArea.todos)
+      ? HouseholdTab.groceries
+      : this == HouseholdTab.lists
+      ? HouseholdTab.todos
+      : this;
 
   String get label => switch (this) {
+    HouseholdTab.today => AppCopy.tabToday,
     HouseholdTab.lunch => LunchCopy.tab,
     HouseholdTab.week => AppCopy.tabWeek,
+    HouseholdTab.lists => AppCopy.tabLists,
     HouseholdTab.todos => AppCopy.tabTodos,
     HouseholdTab.groceries => AppCopy.tabGroceries,
     HouseholdTab.meals => AppCopy.tabMeals,

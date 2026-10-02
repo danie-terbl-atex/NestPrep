@@ -106,7 +106,7 @@ void main() {
     await pump(tester);
     await emit(tester, tasks: [task()]);
     expect(find.text('Bins'), findsOneWidget);
-    expect(find.text(AppCopy.todosToday), findsOneWidget);
+    expect(textOutsideTheBar(AppCopy.todosToday), findsOneWidget);
   });
 
   testWidgets('separates what has slipped from what is due today', (

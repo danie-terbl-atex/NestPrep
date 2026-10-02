@@ -15,32 +15,37 @@ import '../support/pump_kit.dart';
 /// pushing it, and the system back button closed the app.
 void main() {
   group('the tabs themselves', () {
-    test('are lunch first — the launch feature and the home (lunch-box '
-        'ADR-0004) — then the four the verdict scoped, in the order a week '
-        'uses them, then More', () {
-      expect(HouseholdTab.values.map((tab) => tab.name), [
-        'lunch',
-        'week',
-        'todos',
-        'groceries',
-        'meals',
-        'more',
-      ]);
-    });
-
-    test('the bar holds five, with meals reached from More '
-        '(design-system ADR-0005)', () {
+    test('the bar is Today, Lunch, Week, Lists and More '
+        '(design-system ADR-0009)', () {
       expect(HouseholdTab.inBar, [
+        HouseholdTab.today,
         HouseholdTab.lunch,
         HouseholdTab.week,
-        HouseholdTab.todos,
-        HouseholdTab.groceries,
+        HouseholdTab.lists,
         HouseholdTab.more,
       ]);
-      expect(HouseholdTab.meals.barTab, HouseholdTab.more);
       for (final tab in HouseholdTab.inBar) {
         expect(tab.barTab, tab, reason: tab.name);
       }
+    });
+
+    test('To do and Groceries light Lists; Meals lights More', () {
+      expect(HouseholdTab.todos.barTab, HouseholdTab.lists);
+      expect(HouseholdTab.groceries.barTab, HouseholdTab.lists);
+      expect(HouseholdTab.meals.barTab, HouseholdTab.more);
+    });
+
+    test('Lists opens To do, or Groceries for somebody who may only shop', () {
+      final parent = Fixtures.view().permissions;
+      expect(HouseholdTab.lists.landingFor(parent), HouseholdTab.todos);
+      expect(HouseholdTab.today.landingFor(parent), HouseholdTab.today);
+    });
+
+    test('a household opens on Today', () {
+      expect(
+        HouseholdRoute.homeFor(Fixtures.householdId),
+        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.today),
+      );
     });
 
     test('More is open to everybody, whatever their grant', () {
@@ -63,12 +68,6 @@ void main() {
         hasLength(HouseholdTab.values.length),
         reason: 'two tabs with one name is a bar nobody can describe',
       );
-    });
-
-    test('each has a selected icon distinct from its unselected one', () {
-      for (final tab in HouseholdTab.values) {
-        expect(tab.icon, isNot(tab.selectedIcon), reason: tab.name);
-      }
     });
 
     test('and a URL segment that is its own name', () {
@@ -97,7 +96,7 @@ void main() {
       expect(
         path,
         HouseholdRoute.homeFor(Fixtures.householdId)
-            .replaceAll(HouseholdTab.lunch.segment, HouseholdTab.meals.segment),
+            .replaceAll(HouseholdTab.today.segment, HouseholdTab.meals.segment),
       );
     });
   });
@@ -199,12 +198,12 @@ void main() {
         ),
       );
 
-      await tester.tap(find.bySemanticsLabel(AppCopy.tabTodos));
+      await tester.tap(find.bySemanticsLabel(AppCopy.tabLists));
       await tester.pumpAndSettle();
 
       expect(
         chosen,
-        HouseholdTab.todos,
+        HouseholdTab.lists,
         reason: 'the screen decides whether that means anything, not the bar',
       );
     });

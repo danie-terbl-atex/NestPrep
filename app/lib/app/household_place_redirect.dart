@@ -36,22 +36,22 @@ String? householdPlaceRedirect({
     return view.viewerIsAdmin ? null : firstPlaceFor(view);
   }
 
+  if (location == HouseholdRoute.pathFor(householdId, HouseholdTab.lists)) {
+    return HouseholdRoute.pathFor(
+      householdId,
+      HouseholdTab.lists.landingFor(view.permissions),
+    );
+  }
+
   final area = _areaAt(location, householdId);
   if (area == null || view.permissions.canUse(area)) return null;
   return firstPlaceFor(view);
 }
 
-/// The first tab this person may use — at the latest More, the one tab
-/// everybody in a household can always reach, which shows them only the
-/// places their grant opens (design-system ADR-0005).
-String firstPlaceFor(HouseholdView view) {
-  final householdId = view.household.id;
-  final tab = HouseholdTab.inBar.firstWhere(
-    (tab) => tab.isOpenTo(view.permissions),
-    orElse: () => HouseholdTab.more,
-  );
-  return HouseholdRoute.pathFor(householdId, tab);
-}
+/// Today, which everybody may open and which shows only what their grant
+/// allows (design-system ADR-0009).
+String firstPlaceFor(HouseholdView view) =>
+    HouseholdRoute.homeFor(view.household.id);
 
 HouseholdArea? _areaAt(String location, String householdId) {
   for (final tab in HouseholdTab.values) {

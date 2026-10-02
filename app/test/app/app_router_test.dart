@@ -38,6 +38,7 @@ import 'package:nestprep/features/notifications/data/notification_repository.dar
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
+import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
 import 'package:nestprep/features/two_homes/data/two_homes_directory.dart';
@@ -314,14 +315,14 @@ void main() {
     ], reason: 'an admin reads the medication of the person the route names');
   });
 
-  // lunch-box: the household opens on lunch, and its two pages build.
-  testWidgets('a household opens on lunch, the launch feature', (tester) async {
+  // design-system ADR-0009: the household opens on Today.
+  testWidgets('a household opens on Today', (tester) async {
     await pumpApp(tester);
     await signInWithAHousehold(tester);
     await settle(tester);
 
     expect(tester.takeException(), isNull);
-    expect(find.byType(LunchScreen), findsOneWidget);
+    expect(find.byType(TodayScreen), findsOneWidget);
   });
 
   testWidgets(

@@ -56,6 +56,7 @@ export 'referral_copy.dart';
 // calendar V2: snap a school letter (calendar ADR-0005).
 export 'school_letter_copy.dart';
 export 'share_link_copy.dart';
+export 'today_copy.dart';
 // co-parenting: a child in two homes (household ADR-0004).
 export 'two_homes_copy.dart';
 
@@ -130,6 +131,8 @@ abstract final class AppCopy {
       'This is taking longer than it should. Check your connection and try '
       'again, or sign out and sign in again.';
 
+  static const tabToday = 'Today';
+  static const tabLists = 'Lists';
   static const tabWeek = 'Week';
   static const tabTodos = 'To do';
   static const tabGroceries = 'Groceries';

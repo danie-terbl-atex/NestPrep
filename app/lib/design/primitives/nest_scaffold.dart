@@ -99,6 +99,8 @@ class _NestHeader extends StatelessWidget {
     final titleText = title;
     final subtitleText = subtitle;
     final eyebrowText = eyebrow;
+    final hasTitle =
+        titleText != null || eyebrowText != null || subtitleText != null;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         NestSpace.gutter,
@@ -108,28 +110,37 @@ class _NestHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ?leading,
-          if (leading != null) const SizedBox(width: NestSpace.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (eyebrowText != null) ...[
-                  NestEyebrow(eyebrowText),
-                  const SizedBox(height: NestSpace.xs),
+          if (!hasTitle && leading != null)
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: FittedBox(fit: BoxFit.scaleDown, child: leading),
+              ),
+            )
+          else ...[
+            ?leading,
+            if (leading != null) const SizedBox(width: NestSpace.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (eyebrowText != null) ...[
+                    NestEyebrow(eyebrowText),
+                    const SizedBox(height: NestSpace.xs),
+                  ],
+                  if (titleText != null)
+                    Text(
+                      titleText,
+                      style: nest.text.screenTitle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  if (subtitleText != null)
+                    Text(subtitleText, style: nest.text.caption),
                 ],
-                if (titleText != null)
-                  Text(
-                    titleText,
-                    style: nest.text.screenTitle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                if (subtitleText != null)
-                  Text(subtitleText, style: nest.text.caption),
-              ],
+              ),
             ),
-          ),
+          ],
           for (final action in trailing) ...[
             const SizedBox(width: NestSpace.sm),
             action,

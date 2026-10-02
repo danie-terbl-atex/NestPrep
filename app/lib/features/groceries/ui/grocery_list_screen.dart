@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/household_shell.dart';
+import '../../../app/lists_switch.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -59,7 +60,10 @@ class GroceryListScreen extends StatelessWidget {
       _ => null,
     };
     return NestScaffold(
-      title: AppCopy.groceriesTitle,
+      title: ListsSwitch.titleFor(
+        context.watch<HouseholdView>().permissions,
+        AppCopy.groceriesTitle,
+      ),
       trailing: [
         if (canPlan)
           NestIconButton(
@@ -77,6 +81,7 @@ class GroceryListScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          ListsSwitch(current: HouseholdTab.groceries, onSelect: onSelectTab),
           if (failure != null)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.md),

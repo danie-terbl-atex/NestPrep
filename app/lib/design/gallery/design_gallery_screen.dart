@@ -63,17 +63,14 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
             items: const [
               NestBottomBarItem(
                 icon: LucideIcons.mousePointerClick,
-                selectedIcon: LucideIcons.mousePointerClick,
                 label: AppCopy.galleryControls,
               ),
               NestBottomBarItem(
                 icon: LucideIcons.layers,
-                selectedIcon: LucideIcons.layers,
                 label: AppCopy.gallerySurfaces,
               ),
               NestBottomBarItem(
                 icon: LucideIcons.hourglass,
-                selectedIcon: LucideIcons.hourglass,
                 label: AppCopy.galleryStates,
               ),
             ],

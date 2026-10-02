@@ -6,14 +6,9 @@ import '../tokens/nest_theme.dart';
 
 @immutable
 class NestBottomBarItem {
-  const NestBottomBarItem({
-    required this.icon,
-    required this.selectedIcon,
-    required this.label,
-  });
+  const NestBottomBarItem({required this.icon, required this.label});
 
   final IconData icon;
-  final IconData selectedIcon;
   final String label;
 }
 
@@ -123,7 +118,7 @@ class _BarButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(NestRadius.pill),
                 ),
                 child: Icon(
-                  isSelected ? item.selectedIcon : item.icon,
+                  item.icon,
                   size: NestSize.iconMedium,
                   color: isSelected ? c.onSecondary : ink,
                 ),

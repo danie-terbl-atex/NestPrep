@@ -42,6 +42,8 @@ void main() {
   );
 
   final week = HouseholdRoute.homeFor(id);
+  final home = week;
+  final lunch = LunchRoute.pathFor(id);
   final setup = HouseholdRoute.setupPathFor(id);
 
   group('the invite step', () {
@@ -97,13 +99,13 @@ void main() {
       }),
     };
 
-    test('sends a helper who may only clean to More', () {
+    test('sends a helper who may only clean to Today', () {
       expect(
         householdPlaceRedirect(
-          location: week,
+          location: lunch,
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.pathFor(id, HouseholdTab.more),
+        home,
       );
     });
 
@@ -113,7 +115,7 @@ void main() {
           location: DocumentsRoute.folderPathFor(id, 'f-passports'),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.pathFor(id, HouseholdTab.more),
+        home,
       );
     });
 
@@ -123,14 +125,15 @@ void main() {
           location: FamilyRoute.memberPathFor(id, Fixtures.kidMemberId),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
-        HouseholdRoute.pathFor(id, HouseholdTab.more),
+        home,
       );
     });
 
-    test('sends somebody with groceries only to the groceries', () {
+    test('sends somebody with groceries only to Today, which shows their '
+        'list', () {
       expect(
         householdPlaceRedirect(
-          location: week,
+          location: lunch,
           view: view(
             viewer: Fixtures.thandiUid,
             access: {
@@ -140,7 +143,7 @@ void main() {
             },
           ),
         ),
-        HouseholdRoute.pathFor(id, HouseholdTab.groceries),
+        home,
       );
     });
 
@@ -156,6 +159,7 @@ void main() {
 
     test('leaves family wherever they are', () {
       for (final tab in HouseholdTab.values) {
+        if (tab == HouseholdTab.lists) continue;
         expect(
           householdPlaceRedirect(
             location: HouseholdRoute.pathFor(id, tab),
@@ -166,19 +170,33 @@ void main() {
       }
     });
 
-    // lunch-box ADR-0004: lunch is home, and a grant without it moves on.
-    test('opens a household on lunch, and a helper without lunch on the '
-        'week', () {
-      expect(HouseholdRoute.homeFor(id), LunchRoute.pathFor(id));
+    test('resolves Lists, which is a name and not a place, to To do', () {
       expect(
         householdPlaceRedirect(
-          location: HouseholdRoute.homeFor(id),
+          location: HouseholdRoute.pathFor(id, HouseholdTab.lists),
+          view: view(),
+        ),
+        HouseholdRoute.pathFor(id, HouseholdTab.todos),
+      );
+    });
+
+    // design-system ADR-0009: Today is home, and a grant without lunch is
+    // moved off it to Today.
+    test('opens a household on Today, and moves a helper without lunch '
+        'there', () {
+      expect(
+        HouseholdRoute.homeFor(id),
+        HouseholdRoute.pathFor(id, HouseholdTab.today),
+      );
+      expect(
+        householdPlaceRedirect(
+          location: lunch,
           view: view(
             viewer: Fixtures.thandiUid,
             access: {Fixtures.thandiUid: AccessDefaults.helper},
           ),
         ),
-        HouseholdRoute.pathFor(id, HouseholdTab.week),
+        home,
       );
     });
 
@@ -192,7 +210,7 @@ void main() {
             location: location,
             view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
           ),
-          HouseholdRoute.pathFor(id, HouseholdTab.more),
+          home,
         );
       }
     });

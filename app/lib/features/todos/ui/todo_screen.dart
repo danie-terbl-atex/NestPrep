@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../app/chore_points_route.dart';
 import '../../../app/household_shell.dart';
+import '../../../app/lists_switch.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -39,7 +40,7 @@ class _TodoScreenState extends State<TodoScreen> {
     final failure = controller.actionFailure;
 
     return NestScaffold(
-      title: AppCopy.todosTitle,
+      title: ListsSwitch.titleFor(view.permissions, AppCopy.todosTitle),
       trailing: [
         // Stars and rewards are a parent's to run (todos ADR-0003).
         if (view.permissions.isFamily)
@@ -70,6 +71,10 @@ class _TodoScreenState extends State<TodoScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          ListsSwitch(
+            current: HouseholdTab.todos,
+            onSelect: widget.onSelectTab,
+          ),
           if (failure != null)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.md),

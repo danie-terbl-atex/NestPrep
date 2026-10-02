@@ -101,16 +101,8 @@ void main() {
             selectedIndex: 0,
             onSelect: (index) => selected = index,
             items: const [
-              NestBottomBarItem(
-                icon: LucideIcons.house,
-                selectedIcon: LucideIcons.house,
-                label: 'Home',
-              ),
-              NestBottomBarItem(
-                icon: LucideIcons.list,
-                selectedIcon: LucideIcons.list,
-                label: 'Lists',
-              ),
+              NestBottomBarItem(icon: LucideIcons.house, label: 'Home'),
+              NestBottomBarItem(icon: LucideIcons.list, label: 'Lists'),
             ],
           ),
           brightness: brightness,

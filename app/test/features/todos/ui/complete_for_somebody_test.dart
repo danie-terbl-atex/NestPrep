@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/model/task_completion.dart';
@@ -43,6 +44,9 @@ void main() {
     required bool isAdmin,
     required String viewerUid,
   }) {
+    tester.view.physicalSize = const Size(400, 860);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     controller = TodoController(
       todoRepository: repository,
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => now),

@@ -92,7 +92,7 @@ void main() {
   });
 
   testWidgets(
-    'a helper who may only clean lands on More (design-system ADR-0005)',
+    'a helper who may only clean lands on Today (design-system ADR-0009)',
     (tester) async {
       await openOnTheWeek(tester, viewer: Fixtures.thandiUid);
       repository.emitHousehold(
@@ -107,7 +107,7 @@ void main() {
       repository.emitMembers([Fixtures.sam, Fixtures.thandi]);
       await tester.pumpAndSettle();
 
-      expect(find.text('on more'), findsOneWidget);
+      expect(find.text('on today'), findsOneWidget);
     },
   );
 
