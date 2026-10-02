@@ -110,7 +110,7 @@ class HouseholdBody extends StatelessWidget {
             variant: NestCardVariant.tinted,
             padding: EdgeInsets.zero,
             child: NestListRow(
-              leading: const NestIconTile(icon: LucideIcons.userPlus),
+              leading: const NestIconTile(icon: LucideIcons.users),
               title: AccessCopy.peopleInvite,
               subtitle: AccessCopy.peopleInviteBody,
               trailing: const Icon(LucideIcons.chevronRight),
