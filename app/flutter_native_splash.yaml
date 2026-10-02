@@ -1,7 +1,7 @@
-# The native launch screen: the nest on the page colour, in light and dark
-# (design-system ADR-0003). The colours are NestColors' canvases, so the
+# The native launch screen: the arch mark on the page colour, in light and dark
+# (design-system ADR-0008). The colours are NestColors' canvases, so the
 # splash hands over to the first Flutter frame — the session gate, which
-# opens on the same nest — without a flash. Regenerate with
+# opens on the same mark — without a flash. Regenerate with
 # `dart run flutter_native_splash:create`.
 #
 # AFTER REGENERATING: the tool writes values-v31/ and values-night-v31/
@@ -12,13 +12,13 @@
 # re-indents ios/Runner/Info.plist to add UIStatusBarHidden=false, which is
 # the default and can be dropped.
 flutter_native_splash:
-  color: "#F4EDDF"
-  color_dark: "#0F1411"
+  color: "#FFF8ED"
+  color_dark: "#211A20"
   image: "assets/brand/launcher/splash_mark.png"
   android_12:
     image: "assets/brand/launcher/splash_android12.png"
-    color: "#F4EDDF"
-    color_dark: "#0F1411"
+    color: "#FFF8ED"
+    color_dark: "#211A20"
   android: true
   ios: true
   web: false

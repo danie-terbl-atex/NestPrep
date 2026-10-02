@@ -1,12 +1,12 @@
-# The app icon, from the logo's nest (design-system ADR-0003). The source
-# images are written by tools/brand/extract_brand_assets.py; regenerate the
-# platform icons with `dart run flutter_launcher_icons`.
+# The app icon, the arch mark in its Guava tile (design-system ADR-0008). The
+# source images are rendered from assets/brand/nest_mark.svg by
+# tools/brand/render_brand.sh; regenerate the platform icons with
+# `dart run flutter_launcher_icons`.
 flutter_launcher_icons:
   image_path: "assets/brand/launcher/app_icon.png"
   android: "ic_launcher"
   ios: true
   remove_alpha_ios: true
-  # The cream is NestColors.light.canvas, so icon, splash and first screen
-  # are one colour.
-  adaptive_icon_background: "#F4EDDF"
+  # Guava, NestColors.guava: the tile the strokes sit on.
+  adaptive_icon_background: "#F57B91"
   adaptive_icon_foreground: "assets/brand/launcher/app_icon_foreground.png"

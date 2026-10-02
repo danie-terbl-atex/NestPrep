@@ -18,14 +18,13 @@ import {
 /** Copied byte for byte from the app, never edited on the site. */
 export const COPIED_ASSETS = [
   ['app/assets/brand/nest_mark.png', 'assets/nest_mark.png'],
-  ['app/assets/brand/nest_wordmark.png', 'assets/nest_wordmark.png'],
-  ['app/assets/fonts/Nunito-Bold.ttf', 'assets/fonts/Nunito-Bold.ttf'],
-  ['app/assets/fonts/Nunito-ExtraBold.ttf', 'assets/fonts/Nunito-ExtraBold.ttf'],
-  ['app/assets/fonts/Nunito-OFL.txt', 'assets/fonts/Nunito-OFL.txt'],
-  ['app/assets/fonts/PlusJakartaSans-Regular.ttf', 'assets/fonts/PlusJakartaSans-Regular.ttf'],
-  ['app/assets/fonts/PlusJakartaSans-SemiBold.ttf', 'assets/fonts/PlusJakartaSans-SemiBold.ttf'],
-  ['app/assets/fonts/PlusJakartaSans-Bold.ttf', 'assets/fonts/PlusJakartaSans-Bold.ttf'],
-  ['app/assets/fonts/PlusJakartaSans-OFL.txt', 'assets/fonts/PlusJakartaSans-OFL.txt'],
+  ['app/assets/fonts/DMSans-Regular.ttf', 'assets/fonts/DMSans-Regular.ttf'],
+  ['app/assets/fonts/DMSans-Medium.ttf', 'assets/fonts/DMSans-Medium.ttf'],
+  ['app/assets/fonts/DMSans-SemiBold.ttf', 'assets/fonts/DMSans-SemiBold.ttf'],
+  ['app/assets/fonts/DMSans-Bold.ttf', 'assets/fonts/DMSans-Bold.ttf'],
+  ['app/assets/fonts/DMSans-OFL.txt', 'assets/fonts/DMSans-OFL.txt'],
+  ['app/assets/fonts/Fraunces-SemiBold.ttf', 'assets/fonts/Fraunces-SemiBold.ttf'],
+  ['app/assets/fonts/Fraunces-OFL.txt', 'assets/fonts/Fraunces-OFL.txt'],
   ['hosting/src/site.css', 'assets/site.css'],
   ['hosting/src/delete-account.js', 'assets/delete-account.js'],
 ];

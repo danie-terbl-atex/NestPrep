@@ -1,75 +1,84 @@
 /*
  * NestPrep's public site. Every colour, size and radius is a custom property on
  * :root, here and nowhere else (FE-02). The colours mirror the app's
- * `app/lib/design/tokens/nest_colors.dart` by name, light and dark;
- * `functions/test/unit/site_is_generated.test.ts` fails when they drift.
+ * `app/lib/design/tokens/nest_colors.dart` by name, light and dark
+ * (design-system ADR-0008); `functions/test/unit/site_is_generated.test.ts`
+ * fails when they drift.
  */
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url('/assets/fonts/PlusJakartaSans-Regular.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Regular.ttf') format('truetype');
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url('/assets/fonts/PlusJakartaSans-SemiBold.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url('/assets/fonts/PlusJakartaSans-Bold.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Bold.ttf') format('truetype');
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Nunito';
-  src: url('/assets/fonts/Nunito-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Nunito';
-  src: url('/assets/fonts/Nunito-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
+  font-family: 'Fraunces';
+  src: url('/assets/fonts/Fraunces-SemiBold.ttf') format('truetype');
+  font-weight: 600;
   font-display: swap;
 }
 
 :root {
   color-scheme: light dark;
 
-  --color-canvas: #f4eddf;
-  --color-surface: #ffffff;
-  --color-surface-tint: #f2ecdf;
-  --color-outline: #e3d8c4;
-  --color-ink: #1c2920;
-  --color-ink-secondary: #4f5a52;
-  --color-accent: #32533c;
-  --color-accent-pressed: #26422f;
-  --color-on-accent: #ffffff;
-  --color-accent-soft: #e2eedf;
-  --color-secondary: #2f6b70;
-  --color-secondary-soft: #daedee;
-  --color-highlight: #c24e39;
-  --color-success: #1e6b3f;
-  --color-success-soft: #e1f2e4;
-  --color-warning: #83560b;
-  --color-warning-soft: #faebcb;
-  --color-danger: #b8283a;
-  --color-danger-soft: #fbe4e6;
-  --color-on-danger: #ffffff;
-  --color-tile-mint: #e2efd4;
-  --color-tile-sky: #dceaf1;
-  --color-tile-peach: #f7e8c8;
-  --color-tile-pink: #fbe3da;
+  --color-canvas: #fff8ed;
+  --color-surface: #f5e9d7;
+  --color-surface-tint: #efe1cc;
+  --color-outline: #d6c2a8;
+  --color-outline-strong: #cdb89e;
+  --color-ink: #35252e;
+  --color-ink-secondary: #6e5f65;
+  --color-ink-tertiary: #6e5f65;
+  --color-accent: #35252e;
+  --color-accent-pressed: #4a3842;
+  --color-on-accent: #fff8ed;
+  --color-accent-soft: #e4eadc;
+  --color-accent-ink: #465c48;
+  --color-secondary: #f57b91;
+  --color-on-secondary: #35252e;
+  --color-secondary-soft: #fcdde2;
+  --color-secondary-ink: #9e2f47;
+  --color-highlight: #f57b91;
+  --color-success: #3d6343;
+  --color-success-soft: #e2ebdb;
+  --color-warning: #7a5200;
+  --color-warning-soft: #faebc0;
+  --color-danger: #b4232f;
+  --color-danger-soft: #fbe1de;
+  --color-on-danger: #fff8ed;
+  --color-tile-guava: #f9b6c2;
+  --color-tile-basil: #c4d4bf;
+  --color-tile-lilac: #c9bce8;
+  --color-tile-butter: #f3d886;
+  --color-chrome: #35252e;
+  --color-on-chrome: #fff8ed;
+  --color-on-chrome-muted: #d9cbc6;
 
-  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Nunito', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   --text-display: 2rem;
   --text-headline: 1.5rem;
@@ -97,38 +106,48 @@
   --focus-ring: 3px;
   --measure-prose: 44rem;
   --measure-page: 66rem;
-  --mark-hero: 184px;
-  --mark-header: 48px;
-  --wordmark-header: 22px;
+  --mark-hero: 96px;
+  --mark-header: 36px;
+  --wordmark-header: 1.5rem;
+  --tracking-display: -0.02em;
+  --tracking-wordmark: -0.04em;
   --duration-short: 160ms;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-canvas: #0f1411;
-    --color-surface: #212a23;
-    --color-surface-tint: #2a342d;
-    --color-outline: #3a443c;
-    --color-ink: #f5f1e6;
-    --color-ink-secondary: #c5c6b8;
-    --color-accent: #9ccfa7;
-    --color-accent-pressed: #b2dbbb;
-    --color-on-accent: #0f2317;
-    --color-accent-soft: #253b2c;
-    --color-secondary: #7dc4c9;
-    --color-secondary-soft: #1d3739;
-    --color-highlight: #ff907a;
-    --color-success: #72d49d;
-    --color-success-soft: #173323;
-    --color-warning: #f2b84b;
-    --color-warning-soft: #3a2d12;
-    --color-danger: #ff8088;
-    --color-danger-soft: #3d2024;
-    --color-on-danger: #2b0f12;
-    --color-tile-mint: #24371f;
-    --color-tile-sky: #1c2f37;
-    --color-tile-peach: #3a301c;
-    --color-tile-pink: #40271f;
+    --color-canvas: #211a20;
+    --color-surface: #2e252c;
+    --color-surface-tint: #3a2f37;
+    --color-outline: #54444d;
+    --color-outline-strong: #6a5862;
+    --color-ink: #fff8ed;
+    --color-ink-secondary: #cdbfc4;
+    --color-ink-tertiary: #b8a9af;
+    --color-accent: #fff8ed;
+    --color-accent-pressed: #eadfd0;
+    --color-on-accent: #35252e;
+    --color-accent-soft: #2f3a30;
+    --color-accent-ink: #b3cdb4;
+    --color-secondary: #f57b91;
+    --color-on-secondary: #35252e;
+    --color-secondary-soft: #4e2c37;
+    --color-secondary-ink: #ffa5b5;
+    --color-highlight: #f57b91;
+    --color-success: #9acfa3;
+    --color-success-soft: #243327;
+    --color-warning: #f3d886;
+    --color-warning-soft: #3d3420;
+    --color-danger: #ff9b9b;
+    --color-danger-soft: #4a2529;
+    --color-on-danger: #2a0e12;
+    --color-tile-guava: #5c2f3c;
+    --color-tile-basil: #2f4031;
+    --color-tile-lilac: #40375a;
+    --color-tile-butter: #4d4227;
+    --color-chrome: #3a2f37;
+    --color-on-chrome: #fff8ed;
+    --color-on-chrome-muted: #d9cbc6;
   }
 }
 
@@ -158,16 +177,16 @@ img {
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--color-accent-ink);
   text-underline-offset: 0.15em;
 }
 
 a:hover {
-  color: var(--color-accent-pressed);
+  color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: var(--focus-ring) solid var(--color-secondary);
+  outline: var(--focus-ring) solid var(--color-ink);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -176,24 +195,24 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  line-height: 1.25;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.2;
   margin: 0 0 var(--space-md);
 }
 
 h1 {
   font-size: var(--text-display);
-  font-weight: 800;
 }
 
 h2 {
   font-size: var(--text-headline);
-  font-weight: 800;
   margin-top: var(--space-huge);
 }
 
 h3 {
   font-size: var(--text-title);
-  font-weight: 700;
   margin-top: var(--space-xxl);
 }
 
@@ -239,7 +258,7 @@ li + li {
 
 .site-header {
   border-bottom: 1px solid var(--color-outline);
-  background: var(--color-surface);
+  background: var(--color-canvas);
 }
 
 .site-header .wrap {
@@ -265,19 +284,18 @@ li + li {
   height: auto;
 }
 
-/* The wordmark is the logo's own drawing, an alpha mask tinted with the
-   accent — forest green on cream, lifted leaf at night — never retyped. */
 .wordmark {
-  display: inline-block;
-  height: var(--wordmark-header);
-  aspect-ratio: 720 / 149;
-  background-color: var(--color-accent);
-  -webkit-mask: url('/assets/nest_wordmark.png') center / contain no-repeat;
-  mask: url('/assets/nest_wordmark.png') center / contain no-repeat;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-optical-sizing: auto;
+  font-size: var(--wordmark-header);
+  letter-spacing: var(--tracking-wordmark);
+  line-height: 1;
+  color: var(--color-ink);
 }
 
 .wordmark--large {
-  height: calc(var(--wordmark-header) * 2);
+  font-size: calc(var(--wordmark-header) * 2);
 }
 
 .site-nav ul {
@@ -305,7 +323,7 @@ li + li {
 
 .site-nav a:hover,
 .site-nav a[aria-current='page'] {
-  color: var(--color-accent);
+  color: var(--color-ink);
   text-decoration: underline;
 }
 
@@ -430,7 +448,7 @@ main {
 }
 
 .card--lunch {
-  background: var(--color-tile-mint);
+  background: var(--color-tile-guava);
   border-color: transparent;
 }
 
@@ -438,20 +456,20 @@ main {
   color: var(--color-ink);
 }
 
-.tile-mint {
-  background: var(--color-tile-mint);
+.tile-guava {
+  background: var(--color-tile-guava);
 }
 
-.tile-sky {
-  background: var(--color-tile-sky);
+.tile-basil {
+  background: var(--color-tile-basil);
 }
 
-.tile-peach {
-  background: var(--color-tile-peach);
+.tile-lilac {
+  background: var(--color-tile-lilac);
 }
 
-.tile-pink {
-  background: var(--color-tile-pink);
+.tile-butter {
+  background: var(--color-tile-butter);
 }
 
 .panel {
@@ -565,7 +583,7 @@ textarea {
   background: var(--color-danger);
   color: var(--color-on-danger);
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
