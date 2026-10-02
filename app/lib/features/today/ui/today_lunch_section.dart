@@ -138,7 +138,11 @@ class _ChildLunch extends StatelessWidget {
       children: [
         NestPhotoCard(
           heroTag: 'today-lunch-${childWeek.childId}',
-          photo: LunchPhoto(box: day.box),
+          photo: LunchPhoto(
+            box: day.box,
+            childId: childWeek.childId,
+            date: day.date,
+          ),
           actionLabel: TodayCopy.viewLunch,
           aspectRatio: isOneOfSeveral ? 16 / 9 : 4 / 3,
           actionIcon: LucideIcons.arrowUpRight,

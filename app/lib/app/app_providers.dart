@@ -43,7 +43,9 @@ import '../features/live_location/data/geolocator_location_source.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/location_reporter.dart';
 import '../features/live_location/data/location_source.dart';
+import '../features/lunch_box/data/callable_lunch_photo_source.dart';
 import '../features/lunch_box/data/firestore_lunch_repository.dart';
+import '../features/lunch_box/data/lunch_photo_source.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/meal_planning/data/firestore_meal_repository.dart';
 import '../features/meal_planning/data/meal_repository.dart';
@@ -200,6 +202,13 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<LunchRepository>(
     create: (context) =>
         FirestoreLunchRepository(context.read<FirebaseFirestore>()),
+  ),
+  // Premium lunch photos (lunch-box ADR-0015).
+  Provider<LunchPhotoSource>(
+    create: (context) => CallableLunchPhotoSource(
+      context.read<FirebaseFunctions>(),
+      context.read<FirebaseStorage>(),
+    ),
   ),
   // family-profiles (family-profiles ADR-0001).
   Provider<FamilyProfileRepository>(

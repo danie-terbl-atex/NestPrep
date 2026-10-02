@@ -44,7 +44,11 @@ class LunchHero extends StatelessWidget {
       children: [
         NestPhotoCard(
           heroTag: tag,
-          photo: LunchPhoto(box: day.box),
+          photo: LunchPhoto(
+            box: day.box,
+            childId: childWeek.childId,
+            date: day.date,
+          ),
           actionLabel: picks.isEmpty
               ? LunchCopy.planThisLunch
               : LunchCopy.viewLunch,

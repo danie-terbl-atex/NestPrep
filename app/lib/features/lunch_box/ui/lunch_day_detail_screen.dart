@@ -52,7 +52,11 @@ class LunchDayDetailScreen extends StatelessWidget {
             child: NestPhotoFrame(
               heroTag: heroTag,
               zoomed: true,
-              child: LunchPhoto(box: day.box),
+              child: LunchPhoto(
+                box: day.box,
+                childId: childWeek.childId,
+                date: day.date,
+              ),
             ),
           ),
           const SizedBox(height: NestSpace.xl),
