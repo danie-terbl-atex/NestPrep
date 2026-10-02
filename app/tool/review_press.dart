@@ -112,3 +112,11 @@ Future<void> captureScreen(
     debugDisableShadows = true;
   }
 }
+
+/// The screen's own vertical list, never a horizontal row of chips inside it.
+Finder screenList() => find
+    .byWidgetPredicate(
+      (widget) =>
+          widget is Scrollable && widget.axisDirection == AxisDirection.down,
+    )
+    .last;

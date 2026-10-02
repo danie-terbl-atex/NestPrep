@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../tokens/nest_colors.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 import 'nest_pressable.dart';
@@ -181,10 +182,10 @@ class _NestButtonLook {
         foreground: c.onDanger,
         pressed: c.dangerSoft,
       ),
-      NestButtonVariant.onPhoto => _NestButtonLook(
-        background: c.canvas,
-        foreground: c.ink,
-        pressed: c.surfaceTint,
+      NestButtonVariant.onPhoto => const _NestButtonLook(
+        background: NestColors.oat,
+        foreground: NestColors.inkBrand,
+        pressed: NestColors.butter,
       ),
     };
   }

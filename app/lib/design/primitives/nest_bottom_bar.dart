@@ -103,7 +103,10 @@ class _BarButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(NestRadius.lg),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: NestSpace.sm),
+          padding: const EdgeInsets.symmetric(
+            vertical: NestSpace.sm,
+            horizontal: NestSpace.xs,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,

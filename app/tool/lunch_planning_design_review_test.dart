@@ -196,7 +196,7 @@ void main() {
       act: (harness) async {
         harness.pantry.setPlanningFromPantry(isOn: true);
         await tester.pump();
-        await tester.drag(find.byType(Scrollable).last, const Offset(0, -420));
+        await tester.drag(screenList(), const Offset(0, -420));
       },
     ),
   );

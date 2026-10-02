@@ -8,9 +8,24 @@ import 'lunch_glyph.dart';
 
 /// What fills a lunch's photo frame (design-system ADR-0010): the drawn box
 /// on a warm ground tinted by its main, until a curated photo of that food
-/// exists. Sizes itself to the frame it is given.
+/// exists. Always in the light palette, as a photo would be: the food brings
+/// the colour in both themes. Sizes itself to the frame it is given.
 class LunchPhoto extends StatelessWidget {
   const LunchPhoto({required this.box, super.key});
+
+  final LunchBox box;
+
+  static final _light = nestThemeData(NestTheme.light());
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: _light,
+    child: _LunchPhotoArt(box: box),
+  );
+}
+
+class _LunchPhotoArt extends StatelessWidget {
+  const _LunchPhotoArt({required this.box});
 
   final LunchBox box;
 

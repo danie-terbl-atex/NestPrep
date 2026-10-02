@@ -24,7 +24,7 @@ class TodayAgendaSection extends StatelessWidget {
     final controller = context.watch<CalendarController>();
     return TodaySection(
       eyebrow: TodayCopy.agendaEyebrow,
-      actionLabel: TodayCopy.seeTheWeek,
+      actionLabel: TodayCopy.seeAll,
       onAction: onOpen,
       child: TodayAsync<CalendarWeek>(
         state: controller.week,

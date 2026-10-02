@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/features/groceries/model/grocery_amount.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/model/grocery_need.dart';
@@ -171,7 +172,7 @@ void main() {
         );
       },
       act: () async {
-        await tester.tap(find.byIcon(Icons.menu_book_outlined));
+        await tester.tap(find.byIcon(LucideIcons.bookOpen));
         await tester.pumpAndSettle();
         await tester.tap(
           find.bySemanticsLabel(

@@ -106,7 +106,7 @@ ThemeData nestThemeData(NestTheme nest) {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: colors.surface,
+      fillColor: colors.canvas,
       hintStyle: text.body.copyWith(color: colors.inkTertiary),
       labelStyle: text.label.copyWith(color: colors.inkSecondary),
       contentPadding: const EdgeInsets.symmetric(

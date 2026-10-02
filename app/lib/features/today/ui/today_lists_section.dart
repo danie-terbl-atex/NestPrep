@@ -24,7 +24,7 @@ class TodayTodoSection extends StatelessWidget {
     final controller = context.watch<TodoController>();
     return TodaySection(
       eyebrow: TodayCopy.todoEyebrow,
-      actionLabel: TodayCopy.openTodos,
+      actionLabel: TodayCopy.seeAll,
       onAction: onOpen,
       child: TodayAsync<TodoBoard>(
         state: controller.board,

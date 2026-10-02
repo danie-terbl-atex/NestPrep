@@ -11,6 +11,7 @@ import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
@@ -18,6 +19,7 @@ import '../test/support/fake_lunch_share.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
 import '../test/support/lunch_harness.dart';
+import '../test/support/test_flags.dart';
 import 'review_press.dart';
 
 /// Lunch boxes in the design-review press — the board, the one-tap swap, the
@@ -99,11 +101,14 @@ void main() {
       appLink: Uri.parse('https://nestprep.app'),
     );
     addTearDown(share.dispose);
+    final flagsOff = testFlagsController(TestFlags.off);
+    addTearDown(flagsOff.dispose);
     await captureScreen(
       tester,
       name,
       screen: screen,
       providers: [
+        ChangeNotifierProvider<FeatureFlagsController>.value(value: flagsOff),
         ...harness.providers,
         ChangeNotifierProvider<LunchShareController>.value(value: share),
       ],
@@ -119,11 +124,7 @@ void main() {
   /// Scrolls Wednesday's empty fruit compartment into view and opens it.
   Future<void> openFruitPicker(WidgetTester tester) async {
     final fruit = find.byKey(const ValueKey('2026-09-30-fruit'));
-    await tester.scrollUntilVisible(
-      fruit,
-      300,
-      scrollable: find.byType(Scrollable).last,
-    );
+    await tester.scrollUntilVisible(fruit, 300, scrollable: screenList());
     // Clear of the floating bottom bar, so the tap lands on the row.
     await tester.runAsync(
       () => Scrollable.ensureVisible(tester.element(fruit), alignment: 0.4),
@@ -149,8 +150,7 @@ void main() {
       tester,
       'lunch-week-light',
       board,
-      act: () =>
-          tester.drag(find.byType(Scrollable).last, const Offset(0, -620)),
+      act: () => tester.drag(screenList(), const Offset(0, -620)),
     ),
   );
 
@@ -227,8 +227,7 @@ void main() {
       tester,
       'lunch-share-choices-light',
       const LunchShareScreen(),
-      act: () =>
-          tester.drag(find.byType(Scrollable).last, const Offset(0, -560)),
+      act: () => tester.drag(screenList(), const Offset(0, -560)),
     ),
   );
 

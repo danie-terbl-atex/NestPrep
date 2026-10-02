@@ -322,7 +322,7 @@ void main() {
       act: (controller) async {
         await toWeek(controller);
         await tester.pumpAndSettle();
-        await tester.drag(find.byType(Scrollable).last, const Offset(0, -2600));
+        await tester.drag(screenList(), const Offset(0, -2600));
       },
     ),
   );

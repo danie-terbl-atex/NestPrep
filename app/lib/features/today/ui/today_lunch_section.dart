@@ -37,6 +37,7 @@ class TodayLunchSection extends StatelessWidget {
                 child: _ChildLunch(
                   board: board,
                   childWeek: childWeek,
+                  isOneOfSeveral: board.children.length > 1,
                   onOpen: onOpen,
                 ),
               ),
@@ -83,11 +84,13 @@ class _ChildLunch extends StatelessWidget {
   const _ChildLunch({
     required this.board,
     required this.childWeek,
+    required this.isOneOfSeveral,
     required this.onOpen,
   });
 
   final LunchBoard board;
   final LunchChildWeek childWeek;
+  final bool isOneOfSeveral;
   final VoidCallback onOpen;
 
   @override
@@ -96,27 +99,58 @@ class _ChildLunch extends StatelessWidget {
     final day = board.focusDayOf(childWeek);
     final name = childWeek.child.member.displayName;
     final picks = [for (final (_, pick) in day.box.filled) pick.name];
-    final title = picks.isEmpty ? TodayCopy.nothingPacked : picks.join(' · ');
+    final title = picks.isEmpty ? TodayCopy.nothingPacked : picks.first;
+    final eyebrow =
+        '${NestDates.relative(day.date, board.today)} · '
+        '${TodayCopy.lunchFor(name)}';
+    if (picks.isEmpty) {
+      return NestCard(
+        onTap: onOpen,
+        child: Row(
+          children: [
+            NestAvatar(name: name, color: childWeek.child.member.color),
+            const SizedBox(width: NestSpace.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NestEyebrow(eyebrow),
+                  Text(title, style: nest.text.title),
+                ],
+              ),
+            ),
+            const SizedBox(width: NestSpace.sm),
+            Flexible(
+              child: NestButton(
+                label: TodayCopy.planLunch,
+                onPressed: onOpen,
+                variant: NestButtonVariant.tonal,
+                size: NestButtonSize.small,
+                isExpanded: false,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NestPhotoCard(
           heroTag: 'today-lunch-${childWeek.childId}',
           photo: LunchPhoto(box: day.box),
-          actionLabel: picks.isEmpty
-              ? TodayCopy.planLunch
-              : TodayCopy.viewLunch,
+          actionLabel: TodayCopy.viewLunch,
+          aspectRatio: isOneOfSeveral ? 16 / 9 : 4 / 3,
           actionIcon: LucideIcons.arrowUpRight,
-          semanticsLabel: '$name. $title',
+          semanticsLabel: '$name. ${picks.join(', ')}',
           onTap: onOpen,
         ),
         const SizedBox(height: NestSpace.md),
-        NestEyebrow(
-          '${NestDates.relative(day.date, board.today)} · '
-          '${TodayCopy.lunchFor(name)}',
-        ),
+        NestEyebrow(eyebrow),
         const SizedBox(height: NestSpace.xs),
         Text(title, style: nest.text.screenTitle),
+        if (picks.length > 1)
+          Text(picks.skip(1).join(', '), style: nest.text.bodySecondary),
       ],
     );
   }

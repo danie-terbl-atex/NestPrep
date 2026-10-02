@@ -70,9 +70,13 @@ class LunchHero extends StatelessWidget {
         ),
         const SizedBox(height: NestSpace.xs),
         Text(
-          picks.isEmpty ? LunchCopy.nothingPackedYet : picks.join(' · '),
+          picks.isEmpty ? LunchCopy.nothingPackedYet : picks.first,
           style: nest.text.headline,
         ),
+        if (picks.length > 1) ...[
+          const SizedBox(height: NestSpace.xs),
+          Text(picks.skip(1).join(', '), style: nest.text.bodySecondary),
+        ],
         if (canEdit) ...[
           const SizedBox(height: NestSpace.lg),
           NestButton(

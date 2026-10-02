@@ -16,18 +16,17 @@ abstract final class TodayCopy {
   static const addChild = 'Add a child';
   static String lunchFor(String name) => 'For $name';
   static const nothingPacked = 'Nothing packed yet';
-  static const planLunch = 'Plan this lunch';
+  static const planLunch = 'Plan';
   static const viewLunch = 'View lunch';
 
   static const agendaEyebrow = "What's on";
   static const agendaEmpty = 'Nothing on the calendar. A quiet one.';
   static const allDay = 'All day';
-  static const seeTheWeek = 'See the week';
+  static const seeAll = 'See all';
 
   static const todoEyebrow = 'Left to do';
   static const todoDone = 'All done for today. Little win.';
   static String todoMore(int count) => '+ $count more';
-  static const openTodos = 'Open to do';
 
   static const groceryEyebrow = 'On the list';
   static String groceryCount(int count) => switch (count) {

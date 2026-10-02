@@ -169,9 +169,13 @@ void main() {
       findsNothing,
     );
 
+    await bringIntoView(tester, find.byTooltip(CheckersCopy.clearMatch));
+
     await tester.tap(find.byTooltip(CheckersCopy.clearMatch));
     await tester.pumpAndSettle();
     expect(h.list.repository.matchesCleared, ['i']);
+
+    await bringIntoView(tester, find.byTooltip(CheckersCopy.changeMatch));
 
     await tester.tap(find.byTooltip(CheckersCopy.changeMatch));
     await tester.pumpAndSettle();
