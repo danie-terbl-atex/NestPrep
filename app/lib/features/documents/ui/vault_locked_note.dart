@@ -25,7 +25,7 @@ class VaultLockedNote extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                Icons.lock_outline,
+                LucideIcons.lock,
                 size: NestSize.iconMedium,
                 color: nest.colors.accentInk,
               ),
@@ -41,7 +41,7 @@ class VaultLockedNote extends StatelessWidget {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: VaultCopy.unlock,
-            icon: Icons.fingerprint,
+            icon: LucideIcons.fingerprint,
             variant: NestButtonVariant.tonal,
             size: NestButtonSize.small,
             isExpanded: false,

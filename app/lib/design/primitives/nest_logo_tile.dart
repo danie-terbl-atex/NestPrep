@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
@@ -107,7 +108,7 @@ class NestLogoTile extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.check_circle,
+                          LucideIcons.circleCheck,
                           size: NestSize.iconSmall,
                           color: c.secondary,
                         ),

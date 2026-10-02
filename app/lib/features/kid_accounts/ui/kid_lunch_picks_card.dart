@@ -32,7 +32,7 @@ class KidLunchPicksCard extends StatelessWidget {
       child: Row(
         children: [
           const NestIconTile(
-            icon: Icons.touch_app_rounded,
+            icon: LucideIcons.pointer,
             tint: NestTileTint.butter,
           ),
           const SizedBox(width: NestSpace.md),
@@ -50,7 +50,7 @@ class KidLunchPicksCard extends StatelessWidget {
                 const SizedBox(height: NestSpace.sm),
                 NestButton(
                   label: LunchKidPicksCopy.kidCardOpen,
-                  icon: Icons.arrow_forward_rounded,
+                  icon: LucideIcons.arrowRight,
                   size: NestButtonSize.small,
                   isExpanded: false,
                   onPressed: () =>

@@ -37,7 +37,7 @@ class RoutineOverview extends StatelessWidget {
         const SizedBox(height: NestSpace.md),
         NestSectionHeader(
           title: HomeCareRoutineCopy.todayHeading,
-          actionIcon: Icons.arrow_forward,
+          actionIcon: LucideIcons.arrowRight,
           actionLabel: HomeCareRoutineCopy.openToday,
           onAction: onOpenToday,
         ),

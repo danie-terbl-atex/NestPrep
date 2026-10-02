@@ -78,7 +78,7 @@ class MemberBirthdayField extends StatelessWidget {
                 ? AppCopy.householdBirthdayPick
                 : AppCopy.householdBirthdayYearUnknown,
             leading: const NestIconTile(
-              icon: Icons.cake_outlined,
+              icon: LucideIcons.cake,
               tint: NestTileTint.guava,
               size: NestSize.avatarMedium,
             ),

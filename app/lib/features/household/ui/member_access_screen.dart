@@ -46,7 +46,7 @@ class MemberAccessScreen extends StatelessWidget {
               label: controller.justSaved
                   ? AccessCopy.accessSaved
                   : AccessCopy.accessSave,
-              icon: controller.justSaved ? Icons.check : null,
+              icon: controller.justSaved ? LucideIcons.check : null,
               isExpanded: false,
               isLoading: controller.isSaving,
               onPressed: canSave ? () => unawaited(controller.save()) : null,
@@ -55,17 +55,17 @@ class MemberAccessScreen extends StatelessWidget {
         null => const NestEmptyView(
           title: AccessCopy.accessNotFoundTitle,
           message: AccessCopy.accessNotFoundBody,
-          icon: Icons.person_off_outlined,
+          icon: LucideIcons.userX,
         ),
         Member(role: final role) when role.isFamily => const NestEmptyView(
           title: AccessCopy.accessFamilyTitle,
           message: AccessCopy.accessFamilyBody,
-          icon: Icons.family_restroom_outlined,
+          icon: LucideIcons.users,
         ),
         _ when !view.viewerIsAdmin => NestEmptyView(
           title: AccessCopy.accessTitle,
           message: AppCopy.householdProblem(HouseholdProblem.notAnAdmin),
-          icon: Icons.lock_outline,
+          icon: LucideIcons.lock,
         ),
         final member => MemberAccessEditor(
           member: member,

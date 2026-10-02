@@ -64,7 +64,7 @@ class StockRow extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: NestTag(
                 label: HomeCareStockCopy.onTheList,
-                icon: Icons.shopping_cart_outlined,
+                icon: LucideIcons.shoppingCart,
                 tone: NestTagTone.warning,
               ),
             ),
@@ -93,9 +93,9 @@ class StockRow extends StatelessWidget {
   }
 
   static IconData _iconFor(StockLevel level) => switch (level) {
-    StockLevel.full => Icons.battery_full,
-    StockLevel.half => Icons.battery_4_bar,
-    StockLevel.low => Icons.battery_1_bar,
-    StockLevel.out => Icons.battery_0_bar,
+    StockLevel.full => LucideIcons.batteryFull,
+    StockLevel.half => LucideIcons.batteryMedium,
+    StockLevel.low => LucideIcons.batteryLow,
+    StockLevel.out => LucideIcons.battery,
   };
 }

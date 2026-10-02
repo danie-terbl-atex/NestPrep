@@ -119,7 +119,9 @@ class _LunchItemBodyState extends State<_LunchItemBody> {
                 NestChip(
                   label: FamilyCopy.allergenName(allergen),
                   isSelected: _allergens.contains(allergen),
-                  icon: _allergens.contains(allergen) ? Icons.check : null,
+                  icon: _allergens.contains(allergen)
+                      ? LucideIcons.check
+                      : null,
                   onTap: () => setState(
                     () => _allergens.contains(allergen)
                         ? _allergens.remove(allergen)
@@ -138,7 +140,7 @@ class _LunchItemBodyState extends State<_LunchItemBody> {
             alignment: AlignmentDirectional.centerStart,
             child: NestChip(
               label: LunchCopy.itemPrepAhead,
-              icon: Icons.soup_kitchen_outlined,
+              icon: LucideIcons.soup,
               isSelected: _prepAhead,
               onTap: () => setState(() => _prepAhead = !_prepAhead),
             ),

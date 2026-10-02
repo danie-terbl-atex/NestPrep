@@ -25,7 +25,7 @@ class KidsNotificationsCard extends StatelessWidget {
           for (final kid in controller.kids)
             SettingSwitchRow(
               key: ValueKey('kid-digest-${kid.id}'),
-              icon: Icons.child_care_outlined,
+              icon: LucideIcons.baby,
               tint: NestTileTint.guava,
               title: kid.displayName,
               subtitle: NotificationsCopy.kidDigest,

@@ -52,7 +52,7 @@ class TodayRoomsScreen extends StatelessWidget {
                 emptyBuilder: (_) => const NestEmptyView(
                   title: HomeCareRoutineCopy.nothingTodayTitle,
                   message: HomeCareRoutineCopy.nothingTodayBody,
-                  icon: Icons.wb_sunny_outlined,
+                  icon: LucideIcons.sun,
                 ),
                 dataBuilder: (context, board) => _Rooms(
                   board: board,

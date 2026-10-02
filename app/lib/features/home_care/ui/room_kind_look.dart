@@ -7,17 +7,17 @@ import '../model/room_kind.dart';
 /// signal — the room's name is always beside it (`FE-13`).
 extension RoomKindLook on RoomKind {
   IconData get icon => switch (this) {
-    RoomKind.kitchen => Icons.kitchen_outlined,
-    RoomKind.lounge => Icons.weekend_outlined,
-    RoomKind.dining => Icons.table_restaurant_outlined,
-    RoomKind.bedroom => Icons.bed_outlined,
-    RoomKind.kidsRoom => Icons.toys_outlined,
-    RoomKind.bathroom => Icons.bathtub_outlined,
-    RoomKind.laundry => Icons.local_laundry_service_outlined,
-    RoomKind.office => Icons.desk_outlined,
-    RoomKind.outside => Icons.yard_outlined,
-    RoomKind.garage => Icons.garage_outlined,
-    RoomKind.other => Icons.door_front_door_outlined,
+    RoomKind.kitchen => LucideIcons.refrigerator,
+    RoomKind.lounge => LucideIcons.sofa,
+    RoomKind.dining => LucideIcons.utensils,
+    RoomKind.bedroom => LucideIcons.bed,
+    RoomKind.kidsRoom => LucideIcons.toyBrick,
+    RoomKind.bathroom => LucideIcons.bath,
+    RoomKind.laundry => LucideIcons.washingMachine,
+    RoomKind.office => LucideIcons.lampDesk,
+    RoomKind.outside => LucideIcons.flower2,
+    RoomKind.garage => LucideIcons.warehouse,
+    RoomKind.other => LucideIcons.doorClosed,
   };
 
   NestTileTint get tint => switch (this) {

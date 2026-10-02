@@ -36,7 +36,7 @@ class ShareLifetimeChoice extends StatelessWidget {
               NestChip(
                 key: ValueKey('shift-${shift.shiftId}'),
                 label: ShareLinkCopy.untilShiftEnds(shift.carerName),
-                icon: Icons.child_care_outlined,
+                icon: LucideIcons.baby,
                 isSelected: chosen == shift,
                 onTap: () => onChosen(shift),
               ),

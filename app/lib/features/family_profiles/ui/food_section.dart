@@ -29,7 +29,7 @@ class FoodSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEmpty = likes.isEmpty && dislikes.isEmpty && diet.isEmpty;
     return FamilySectionCard(
-      icon: Icons.restaurant_outlined,
+      icon: LucideIcons.utensils,
       tint: NestTileTint.basil,
       title: FamilyCopy.sectionFood,
       actionLabel: FamilyCopy.editSection(FamilyCopy.sectionFood),
@@ -59,7 +59,7 @@ class FoodSection extends StatelessWidget {
                         NestTag(
                           label: like,
                           tone: NestTagTone.success,
-                          icon: Icons.favorite_border,
+                          icon: LucideIcons.heart,
                         ),
                     ],
                   ),
@@ -68,10 +68,7 @@ class FoodSection extends StatelessWidget {
                     label: FamilyCopy.dislikes,
                     tags: [
                       for (final dislike in dislikes)
-                        NestTag(
-                          label: dislike,
-                          icon: Icons.do_not_disturb_on_outlined,
-                        ),
+                        NestTag(label: dislike, icon: LucideIcons.circleMinus),
                     ],
                   ),
               ],

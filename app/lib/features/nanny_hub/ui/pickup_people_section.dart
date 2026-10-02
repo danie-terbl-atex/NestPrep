@@ -36,7 +36,7 @@ class PickupPeopleSection extends StatelessWidget {
       children: [
         NestSectionHeader(
           title: NannyPickupCopy.whoMayCollect,
-          actionIcon: onAdd == null ? null : Icons.person_add_alt,
+          actionIcon: onAdd == null ? null : LucideIcons.userPlus,
           actionLabel: onAdd == null ? null : NannyPickupCopy.addPerson,
           onAction: onAdd,
         ),
@@ -53,7 +53,7 @@ class PickupPeopleSection extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           if (pickups.allowedFor(child.id).isEmpty)
             NestToneRow(
-              icon: Icons.block,
+              icon: LucideIcons.ban,
               tone: NestTagTone.warning,
               title: NannyPickupCopy.nobodyListed(child.displayName),
             ),
@@ -77,7 +77,7 @@ class PickupPeopleSection extends StatelessWidget {
                   subtitle: [person.relationship, ?person.idNote].join(' · '),
                   trailing: edit == null
                       ? null
-                      : const Icon(Icons.edit_outlined),
+                      : const Icon(LucideIcons.pencil),
                   onTap: edit == null ? null : () => edit(person),
                 ),
               ),

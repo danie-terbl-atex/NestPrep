@@ -86,7 +86,7 @@ class BigStepTile extends StatelessWidget {
                 ),
                 const SizedBox(width: NestSpace.sm),
                 Icon(
-                  isDone ? Icons.check_circle : Icons.radio_button_unchecked,
+                  isDone ? LucideIcons.circleCheck : LucideIcons.circle,
                   size: NestSize.iconLarge,
                   color: isDone ? nest.colors.success : nest.colors.inkTertiary,
                 ),

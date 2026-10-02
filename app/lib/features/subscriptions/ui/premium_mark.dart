@@ -18,7 +18,7 @@ class PremiumMark extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             const NestIconTile(
-              icon: Icons.workspace_premium_outlined,
+              icon: LucideIcons.award,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
             ),
@@ -26,7 +26,7 @@ class PremiumMark extends StatelessWidget {
               top: 0,
               right: 0,
               child: Icon(
-                Icons.auto_awesome,
+                LucideIcons.sparkles,
                 size: NestSize.iconMedium,
                 color: colors.accent,
               ),
@@ -35,7 +35,7 @@ class PremiumMark extends StatelessWidget {
               bottom: NestSpace.sm,
               left: 0,
               child: Icon(
-                Icons.auto_awesome,
+                LucideIcons.sparkles,
                 size: NestSize.iconSmall,
                 color: colors.accentInk,
               ),

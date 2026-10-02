@@ -131,7 +131,7 @@ class _Tick extends StatelessWidget {
         duration: motion.slow,
         curve: NestMotion.celebrate,
         child: Icon(
-          Icons.check_rounded,
+          LucideIcons.check,
           size: NestSize.iconLarge,
           color: c.surface,
         ),

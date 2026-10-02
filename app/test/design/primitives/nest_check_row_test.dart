@@ -22,12 +22,12 @@ void main() {
           ),
           brightness: brightness,
         );
-        expect(find.byIcon(Icons.check), findsNothing);
+        expect(find.byIcon(LucideIcons.check), findsNothing);
 
         await tester.tap(find.text('I am 18 or older'));
         await tester.pumpAndSettle();
         expect(value, isTrue);
-        expect(find.byIcon(Icons.check), findsOneWidget);
+        expect(find.byIcon(LucideIcons.check), findsOneWidget);
 
         await tester.tap(find.text('I am 18 or older'));
         await tester.pumpAndSettle();
@@ -42,7 +42,7 @@ void main() {
         );
         await tester.tap(find.text('Busy'));
         await tester.pump();
-        expect(find.byIcon(Icons.check), findsOneWidget);
+        expect(find.byIcon(LucideIcons.check), findsOneWidget);
       });
 
       testWidgets('is at least a touch target tall', (tester) async {

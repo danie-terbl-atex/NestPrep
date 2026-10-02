@@ -24,7 +24,7 @@ class GroceryPlanEmpty extends StatelessWidget {
       child: Column(
         children: [
           const NestIconTile(
-            icon: Icons.restaurant_menu_rounded,
+            icon: LucideIcons.utensils,
             tint: NestTileTint.butter,
             size: NestSize.avatarLarge,
           ),
@@ -48,7 +48,7 @@ class GroceryPlanEmpty extends StatelessWidget {
             children: [
               NestButton(
                 label: GroceryPlanCopy.planMeals,
-                icon: Icons.restaurant_outlined,
+                icon: LucideIcons.utensils,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,
@@ -56,7 +56,7 @@ class GroceryPlanEmpty extends StatelessWidget {
               ),
               NestButton(
                 label: GroceryPlanCopy.planLunches,
-                icon: Icons.lunch_dining_outlined,
+                icon: LucideIcons.sandwich,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,

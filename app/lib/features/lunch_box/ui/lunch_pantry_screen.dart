@@ -53,7 +53,7 @@ class LunchPantryScreen extends StatelessWidget {
           if (canEdit) ...[
             NestButton(
               label: LunchPantryCopy.addToPantry,
-              icon: Icons.add_rounded,
+              icon: LucideIcons.plus,
               onPressed: () => showLunchPantryAddSheet(
                 context: context,
                 pantry: pantry,
@@ -68,7 +68,7 @@ class LunchPantryScreen extends StatelessWidget {
               isEmpty: (week) => week.isEmpty && week.shortfall.isEmpty,
               onRetry: pantry.retry,
               emptyBuilder: (context) => const NestEmptyView(
-                icon: Icons.kitchen_outlined,
+                icon: LucideIcons.refrigerator,
                 title: LunchPantryCopy.emptyTitle,
                 message: LunchPantryCopy.emptyBody,
               ),

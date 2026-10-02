@@ -21,7 +21,7 @@ class SettingTimeRow extends StatelessWidget {
     return MergeSemantics(
       child: NestListRow(
         leading: const NestIconTile(
-          icon: Icons.schedule_rounded,
+          icon: LucideIcons.clock,
           tint: NestTileTint.lilac,
           size: NestSize.avatarMedium,
           iconSize: NestSize.iconMedium,

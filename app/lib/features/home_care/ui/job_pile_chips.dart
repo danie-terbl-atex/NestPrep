@@ -29,9 +29,9 @@ class JobPileChips extends StatelessWidget {
           NestChip(
             label: HomeCareCopy.pileWithCount(pile, counts[pile] ?? 0),
             icon: switch (pile) {
-              JobPile.toDo => Icons.cleaning_services_outlined,
-              JobPile.toReview => Icons.rate_review_outlined,
-              JobPile.done => Icons.verified_outlined,
+              JobPile.toDo => LucideIcons.sprayCan,
+              JobPile.toReview => LucideIcons.messageSquareText,
+              JobPile.done => LucideIcons.badgeCheck,
             },
             isSelected: pile == selected,
             onTap: () => onSelect(pile),

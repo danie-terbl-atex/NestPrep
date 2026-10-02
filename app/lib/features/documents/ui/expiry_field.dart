@@ -38,7 +38,7 @@ class ExpiryField extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: VaultCopy.addExpiry,
-            icon: Icons.event_outlined,
+            icon: LucideIcons.calendarDays,
             variant: NestButtonVariant.outline,
             size: NestButtonSize.medium,
             onPressed: () => _add(context),

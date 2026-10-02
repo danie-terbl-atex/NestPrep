@@ -50,7 +50,7 @@ class HouseholdScreen extends StatelessWidget {
               emptyBuilder: (_) => NestEmptyView(
                 title: AppCopy.householdEmptyTitle,
                 message: AppCopy.householdEmptyBody,
-                icon: Icons.group_outlined,
+                icon: LucideIcons.users,
                 actionLabel: AppCopy.householdAddMember,
                 onAction: () => addMember(context, controller),
               ),

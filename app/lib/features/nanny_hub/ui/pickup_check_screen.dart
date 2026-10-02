@@ -35,7 +35,7 @@ class PickupCheckScreen extends StatelessWidget {
     emptyBuilder: (_) => const NestEmptyView(
       title: NannyPickupCopy.childGoneTitle,
       message: NannyPickupCopy.childGoneBody,
-      icon: Icons.person_off_outlined,
+      icon: LucideIcons.userX,
     ),
     builder: (context, view) => _CheckBody(view: view, childId: childId),
   );

@@ -49,7 +49,7 @@ class _LunchChooseBodyState extends State<LunchChooseBody> {
                 NestChip(
                   key: ValueKey(entry.date.iso),
                   label: NestDates.weekdayName(entry.date),
-                  icon: entry.isComplete ? Icons.star_rounded : null,
+                  icon: entry.isComplete ? LucideIcons.star : null,
                   isSelected: index == openIndex,
                   onTap: () => setState(() => _open = index),
                 ),
@@ -83,9 +83,7 @@ class _LunchChooseBodyState extends State<LunchChooseBody> {
                       children: [
                         for (final slot in day.slots)
                           Icon(
-                            slot.isChosen
-                                ? Icons.star_rounded
-                                : Icons.star_outline_rounded,
+                            slot.isChosen ? LucideIcons.star : LucideIcons.star,
                             color: slot.isChosen
                                 ? nest.colors.warning
                                 : nest.colors.outlineStrong,
@@ -118,7 +116,7 @@ class _LunchChooseBodyState extends State<LunchChooseBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: LunchKidPicksCopy.handBack,
-            icon: Icons.check_rounded,
+            icon: LucideIcons.check,
             onPressed: onDone,
           ),
         ],

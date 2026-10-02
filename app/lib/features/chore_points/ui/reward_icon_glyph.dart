@@ -7,16 +7,16 @@ import '../model/reward.dart';
 /// place the stored name becomes something to see.
 extension RewardIconGlyph on RewardIcon {
   IconData get glyph => switch (this) {
-    RewardIcon.gift => Icons.card_giftcard_rounded,
-    RewardIcon.treat => Icons.cookie_rounded,
-    RewardIcon.iceCream => Icons.icecream_rounded,
-    RewardIcon.screenTime => Icons.tablet_android_rounded,
-    RewardIcon.movie => Icons.movie_rounded,
-    RewardIcon.game => Icons.sports_esports_rounded,
-    RewardIcon.outing => Icons.park_rounded,
-    RewardIcon.book => Icons.menu_book_rounded,
-    RewardIcon.toy => Icons.toys_rounded,
-    RewardIcon.lateNight => Icons.bedtime_rounded,
+    RewardIcon.gift => LucideIcons.gift,
+    RewardIcon.treat => LucideIcons.cookie,
+    RewardIcon.iceCream => LucideIcons.iceCreamCone,
+    RewardIcon.screenTime => LucideIcons.tablet,
+    RewardIcon.movie => LucideIcons.clapperboard,
+    RewardIcon.game => LucideIcons.gamepad2,
+    RewardIcon.outing => LucideIcons.trees,
+    RewardIcon.book => LucideIcons.bookOpen,
+    RewardIcon.toy => LucideIcons.toyBrick,
+    RewardIcon.lateNight => LucideIcons.moon,
   };
 
   NestTileTint get tint => switch (this) {

@@ -59,7 +59,7 @@ class _SchoolSheetBodyState extends State<_SchoolSheetBody> {
             alignment: AlignmentDirectional.centerStart,
             child: NestChip(
               label: FamilyCopy.schoolNutFree,
-              icon: _nutFree ? Icons.check : Icons.no_food_outlined,
+              icon: _nutFree ? LucideIcons.check : LucideIcons.utensilsCrossed,
               isSelected: _nutFree,
               onTap: () => setState(() => _nutFree = !_nutFree),
             ),
@@ -80,7 +80,7 @@ class _SchoolSheetBodyState extends State<_SchoolSheetBody> {
             NestButton(
               label: FamilyCopy.deleteSchool,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () =>
                   Navigator.of(context).pop(const SheetRemoved<SchoolDraft>()),
             ),

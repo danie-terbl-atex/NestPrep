@@ -54,7 +54,7 @@ class BookingsView extends StatelessWidget {
         const NestSectionHeader(title: NannyBookingCopy.carers),
         if (!carers.any((carer) => carer.role == MemberRole.carer))
           const HubEmptyNote(
-            icon: Icons.person_add_alt_1_outlined,
+            icon: LucideIcons.userPlus,
             title: NannyBookingCopy.noCarersTitle,
             message: NannyBookingCopy.noCarersBody,
           ),
@@ -82,7 +82,7 @@ class BookingsView extends StatelessWidget {
       ),
       if (bookings.isEmpty)
         HubEmptyNote(
-          icon: Icons.event_available_outlined,
+          icon: LucideIcons.calendarCheck,
           title: NannyBookingCopy.noBookingsTitle,
           message: isFamily
               ? NannyBookingCopy.noBookingsBody

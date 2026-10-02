@@ -39,7 +39,7 @@ class RoutinesScreen extends StatelessWidget {
       floatingAction: canAdd
           ? NestButton(
               label: HomeCareRoutineCopy.newRoutine,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               isExpanded: false,
               onPressed: () => _edit(context, controller, null),
             )
@@ -144,7 +144,7 @@ class _Empty extends StatelessWidget {
       return NestEmptyView(
         title: HomeCareRoutineCopy.noRoomsTitle,
         message: HomeCareRoutineCopy.noRoomsBody,
-        icon: Icons.meeting_room_outlined,
+        icon: LucideIcons.doorOpen,
         actionLabel: canManage ? HomeCareRoutineCopy.addRooms : null,
         onAction: canManage
             ? () => context.push(HomeCareRoute.roomsPathFor(householdId))
@@ -156,7 +156,7 @@ class _Empty extends StatelessWidget {
       message: canManage
           ? HomeCareRoutineCopy.emptyBody
           : HomeCareRoutineCopy.emptyHelperBody,
-      icon: Icons.event_repeat_outlined,
+      icon: LucideIcons.calendarSync,
       actionLabel: canManage ? HomeCareRoutineCopy.newRoutine : null,
       onAction: canManage ? onAdd : null,
     );

@@ -77,7 +77,7 @@ class _DeletionConfirmState extends State<DeletionConfirm> {
               ? AccountDataCopy.deleteDeleting
               : AccountDataCopy.deleteButton,
           variant: NestButtonVariant.danger,
-          icon: Icons.delete_forever_outlined,
+          icon: LucideIcons.trash2,
           isLoading: widget.isDeleting,
           onPressed: widget.canDelete ? widget.onDelete : null,
         ),

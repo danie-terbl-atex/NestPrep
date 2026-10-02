@@ -48,7 +48,7 @@ class PhotoUpdateCard extends StatelessWidget {
               Expanded(child: Text(byline, style: nest.text.bodySecondary)),
               if (remove != null)
                 NestIconButton(
-                  icon: Icons.undo_rounded,
+                  icon: LucideIcons.undo2,
                   label: NannyPhotoCopy.remove,
                   variant: NestIconButtonVariant.plain,
                   onPressed: remove,

@@ -91,13 +91,13 @@ class MemberAccessEditor extends StatelessWidget {
               if (suggested != null)
                 NestChip(
                   label: AccessCopy.accessPresetDefaults,
-                  icon: Icons.auto_awesome_outlined,
+                  icon: LucideIcons.sparkles,
                   isSelected: draft == suggested,
                   onTap: () => controller.applyPreset(suggested),
                 ),
               NestChip(
                 label: AccessCopy.accessPresetNothing,
-                icon: Icons.visibility_off_outlined,
+                icon: LucideIcons.eyeOff,
                 isSelected: draft == _nothing,
                 onTap: () => controller.applyPreset(_nothing),
               ),

@@ -68,7 +68,7 @@ class LinkSetupScreen extends StatelessWidget {
             )
           else if (controller.kids.isEmpty)
             const NestEmptyView(
-              icon: Icons.child_care,
+              icon: LucideIcons.baby,
               title: TwoHomesSetupCopy.noKidsTitle,
               message: TwoHomesSetupCopy.noKidsBody,
             )
@@ -114,7 +114,7 @@ class LinkSetupScreen extends StatelessWidget {
             const SizedBox(height: NestSpace.xl),
             NestButton(
               label: TwoHomesSetupCopy.makeCode,
-              icon: Icons.key_outlined,
+              icon: LucideIcons.keyRound,
               isLoading: controller.isCreating,
               onPressed: controller.canCreate ? controller.create : null,
             ),

@@ -59,7 +59,7 @@ class CollectorChoice extends StatelessWidget {
               NestChip(
                 label: label,
                 isSelected: collector == chosen,
-                icon: collector == chosen ? Icons.check : null,
+                icon: collector == chosen ? LucideIcons.check : null,
                 onTap: () => onChanged(collector),
               ),
           ],

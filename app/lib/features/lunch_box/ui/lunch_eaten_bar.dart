@@ -36,9 +36,7 @@ class LunchEatenBar extends StatelessWidget {
           NestTag(
             label: ate ? LunchCopy.ateItAll : LunchCopy.cameBackFull,
             tone: ate ? NestTagTone.success : NestTagTone.warning,
-            icon: ate
-                ? Icons.thumb_up_alt_rounded
-                : Icons.thumb_down_alt_rounded,
+            icon: ate ? LucideIcons.thumbsUp : LucideIcons.thumbsDown,
           ),
           if (onMarkItems != null)
             NestButton(
@@ -63,7 +61,7 @@ class LunchEatenBar extends StatelessWidget {
             Expanded(
               child: NestButton(
                 label: LunchCopy.ateIt,
-                icon: Icons.thumb_up_alt_outlined,
+                icon: LucideIcons.thumbsUp,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 onPressed: () => mark(LunchVerdict.ate),
@@ -73,7 +71,7 @@ class LunchEatenBar extends StatelessWidget {
             Expanded(
               child: NestButton(
                 label: LunchCopy.leftIt,
-                icon: Icons.thumb_down_alt_outlined,
+                icon: LucideIcons.thumbsDown,
                 variant: NestButtonVariant.outline,
                 size: NestButtonSize.small,
                 onPressed: () => mark(LunchVerdict.left),

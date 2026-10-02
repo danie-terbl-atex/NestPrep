@@ -56,7 +56,7 @@ class PlanWeekBasketSection extends StatelessWidget {
           Text(PlanWeekCopy.noBudget, style: nest.text.bodySecondary)
         else
           NestToneRow(
-            icon: Icons.savings_outlined,
+            icon: LucideIcons.piggyBank,
             tone: reading.band == LunchBudgetBand.over
                 ? NestTagTone.warning
                 : NestTagTone.success,

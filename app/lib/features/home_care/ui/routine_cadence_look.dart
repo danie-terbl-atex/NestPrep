@@ -7,9 +7,9 @@ import '../model/routine/routine_cadence.dart';
 /// — its name is always beside it (`FE-13`).
 extension RoutineCadenceLook on RoutineCadence {
   IconData get icon => switch (this) {
-    RoutineCadence.daily => Icons.today_outlined,
-    RoutineCadence.weekly => Icons.date_range_outlined,
-    RoutineCadence.deepClean => Icons.auto_awesome_outlined,
+    RoutineCadence.daily => LucideIcons.calendarCheck,
+    RoutineCadence.weekly => LucideIcons.calendarRange,
+    RoutineCadence.deepClean => LucideIcons.sparkles,
   };
 
   NestTileTint get tint => switch (this) {

@@ -41,7 +41,7 @@ class VaultPersonScreen extends StatelessWidget {
           : VaultCopy.vaultOf(member.displayName),
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -50,13 +50,13 @@ class VaultPersonScreen extends StatelessWidget {
       trailing: [
         if (canManage) ...[
           NestIconButton(
-            icon: Icons.group_outlined,
+            icon: LucideIcons.users,
             label: VaultCopy.accessTitle,
             onPressed: () =>
                 showVaultAccessSheet(context: context, ownerMemberId: memberId),
           ),
           NestIconButton(
-            icon: Icons.document_scanner_outlined,
+            icon: LucideIcons.scanText,
             label: AppCopy.documentsAdd,
             variant: NestIconButtonVariant.accent,
             onPressed: controller.upload != null
@@ -130,7 +130,7 @@ class _EmptyVault extends StatelessWidget {
       return NestEmptyView(
         title: VaultCopy.homeTitle,
         message: AppCopy.documentProblem(DocumentProblem.vaultNotShared),
-        icon: Icons.lock_person_outlined,
+        icon: LucideIcons.userLock,
       );
     }
     return NestEmptyView(
@@ -138,7 +138,7 @@ class _EmptyVault extends StatelessWidget {
       message: canManage
           ? VaultCopy.personEmptyBody
           : VaultCopy.personEmptyBodyReadOnly,
-      icon: Icons.document_scanner_outlined,
+      icon: LucideIcons.scanText,
     );
   }
 }

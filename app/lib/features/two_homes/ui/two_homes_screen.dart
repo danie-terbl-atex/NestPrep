@@ -86,7 +86,7 @@ class _Links extends StatelessWidget {
               child: Column(
                 children: [
                   const NestIconTile(
-                    icon: Icons.cottage_outlined,
+                    icon: LucideIcons.house,
                     tint: NestTileTint.butter,
                   ),
                   const SizedBox(height: NestSpace.md),
@@ -138,14 +138,14 @@ class _Links extends StatelessWidget {
         if (access.isAdmin) ...[
           NestButton(
             label: TwoHomesCopy.linkAnotherHome,
-            icon: Icons.add_home_outlined,
+            icon: LucideIcons.housePlus,
             onPressed: () =>
                 context.push(TwoHomesRoute.setupPathFor(householdId)),
           ),
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: TwoHomesCopy.haveACode,
-            icon: Icons.pin_outlined,
+            icon: LucideIcons.rectangleEllipsis,
             variant: NestButtonVariant.outline,
             onPressed: () =>
                 context.push(TwoHomesRoute.joinPathFor(householdId)),
@@ -163,12 +163,12 @@ class _Links extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: NestListRow(
             leading: const NestIconTile(
-              icon: Icons.shield_outlined,
+              icon: LucideIcons.shield,
               tint: NestTileTint.basil,
             ),
             title: TwoHomesSetupCopy.privacyOpen,
             subtitle: TwoHomesSetupCopy.privacyOpenBody,
-            trailing: const Icon(Icons.chevron_right),
+            trailing: const Icon(LucideIcons.chevronRight),
             onTap: () =>
                 context.push(TwoHomesRoute.privacyPathFor(householdId)),
           ),

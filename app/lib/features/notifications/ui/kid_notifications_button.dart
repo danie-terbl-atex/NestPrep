@@ -20,9 +20,7 @@ class KidNotificationsButton extends StatelessWidget {
     final isOn =
         registrar.permission == PushPermission.granted && registrar.isReachable;
     return NestIconButton(
-      icon: isOn
-          ? Icons.notifications_active_rounded
-          : Icons.notifications_off_outlined,
+      icon: isOn ? LucideIcons.bellRing : LucideIcons.bellOff,
       label: isOn ? NotificationsCopy.kidOn : NotificationsCopy.kidTurnOn,
       variant: NestIconButtonVariant.plain,
       onPressed: isOn || registrar.isAsking

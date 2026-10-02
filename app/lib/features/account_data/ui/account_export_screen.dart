@@ -93,7 +93,7 @@ class _ExportAction extends StatelessWidget {
           const SizedBox(height: NestSpace.lg),
           NestButton(
             label: AppCopy.retry,
-            icon: Icons.refresh,
+            icon: LucideIcons.refreshCw,
             onPressed: controller.prepare,
           ),
         ],
@@ -103,7 +103,7 @@ class _ExportAction extends StatelessWidget {
         label: controller.isPreparing
             ? AccountDataCopy.exportPreparing
             : AccountDataCopy.exportPrepare,
-        icon: Icons.download_outlined,
+        icon: LucideIcons.download,
         isLoading: controller.isPreparing,
         onPressed: controller.isPreparing ? null : controller.prepare,
       ),

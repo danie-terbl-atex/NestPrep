@@ -49,15 +49,15 @@ class PastShifts extends StatelessWidget {
                   color: carer.color,
                   size: NestSize.avatarSmall,
                 ),
-                null => const Icon(Icons.history),
+                null => const Icon(LucideIcons.history),
               },
               title: NannyShiftCopy.summaryHeadline(
                 memberById(summary.carerMemberId)?.displayName ?? '',
               ),
               subtitle: _when(clock, summary),
               trailing: summary.hadIncident
-                  ? Icon(Icons.healing_outlined, color: nest.colors.danger)
-                  : const Icon(Icons.chevron_right),
+                  ? Icon(LucideIcons.bandage, color: nest.colors.danger)
+                  : const Icon(LucideIcons.chevronRight),
               onTap: () => onOpen(summary.shiftId),
             ),
           ),

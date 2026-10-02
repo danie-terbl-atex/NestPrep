@@ -94,7 +94,7 @@ class GroceryPlanContent extends StatelessWidget {
             label: chosen == 0
                 ? GroceryPlanCopy.nothingChosen
                 : GroceryPlanCopy.apply(chosen),
-            icon: Icons.playlist_add_check_rounded,
+            icon: LucideIcons.listChecks,
             onPressed: chosen == 0 ? null : onApply,
           ),
           const SizedBox(height: NestSpace.xs),

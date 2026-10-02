@@ -64,23 +64,23 @@ class AboutScreen extends StatelessWidget {
               child: Column(
                 children: [
                   LinkRow(
-                    icon: Icons.privacy_tip_outlined,
+                    icon: LucideIcons.shieldAlert,
                     title: LegalCopy.privacyTitle,
                     path: LegalDocumentScreen.privacyPath,
                   ),
                   LinkRow(
-                    icon: Icons.gavel_outlined,
+                    icon: LucideIcons.gavel,
                     title: LegalCopy.termsTitle,
                     path: LegalDocumentScreen.termsPath,
                   ),
                   LinkRow(
-                    icon: Icons.description_outlined,
+                    icon: LucideIcons.fileText,
                     title: LegalCopy.licencesTitle,
                     path: LicencesScreen.path,
                   ),
                   NestListRow(
                     leading: NestIconTile(
-                      icon: Icons.mail_outline,
+                      icon: LucideIcons.mail,
                       tint: NestTileTint.basil,
                       size: NestSize.avatarMedium,
                       iconSize: NestSize.iconMedium,

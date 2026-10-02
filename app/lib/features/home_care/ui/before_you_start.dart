@@ -39,8 +39,8 @@ class BeforeYouStart extends StatelessWidget {
             children: [
               NestIconTile(
                 icon: safety.hasDangers
-                    ? Icons.dangerous_outlined
-                    : Icons.health_and_safety_outlined,
+                    ? LucideIcons.octagonX
+                    : LucideIcons.shieldPlus,
                 tint: safety.hasDangers
                     ? NestTileTint.butter
                     : NestTileTint.basil,
@@ -76,7 +76,7 @@ class BeforeYouStart extends StatelessWidget {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: HomeCareSafetyCopy.readIt,
-          icon: Icons.check,
+          icon: LucideIcons.check,
           onPressed: onReady,
         ),
       ],

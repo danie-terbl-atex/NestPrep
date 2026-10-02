@@ -47,7 +47,7 @@ class KidHomeScreen extends StatelessWidget {
         body: NestEmptyView(
           title: KidCopy.disconnectedTitle,
           message: KidCopy.problem(KidSignInProblem.deviceDisconnected),
-          icon: Icons.phonelink_erase_rounded,
+          icon: LucideIcons.smartphone,
           actionLabel: KidCopy.disconnectedAction,
           onAction: session.signOut,
         ),
@@ -60,7 +60,7 @@ class KidHomeScreen extends StatelessWidget {
         // ADR-0003).
         const KidNotificationsButton(),
         NestIconButton(
-          icon: Icons.logout_rounded,
+          icon: LucideIcons.logOut,
           label: KidCopy.signOut,
           variant: NestIconButtonVariant.plain,
           onPressed: () => _signOut(context, session),

@@ -32,7 +32,7 @@ Future<void> showCheckersAreaSheet({
                 title: area.label,
                 isSelected: area == current,
                 trailing: area == current
-                    ? const Icon(Icons.check_rounded)
+                    ? const Icon(LucideIcons.check)
                     : null,
                 onTap: () {
                   Navigator.of(sheetContext).pop();

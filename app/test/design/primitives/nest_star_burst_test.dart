@@ -28,7 +28,7 @@ void main() {
     ),
   );
 
-  Finder flyingStars() => find.byIcon(Icons.star_rounded);
+  Finder flyingStars() => find.byIcon(LucideIcons.star);
 
   testWidgets('does not play on the first frame', (tester) async {
     await pumpBurst(tester, burst: 3);

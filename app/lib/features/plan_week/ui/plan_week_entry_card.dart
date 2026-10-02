@@ -46,7 +46,7 @@ class PlanWeekEntryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const NestIconTile(
-                  icon: Icons.auto_awesome_rounded,
+                  icon: LucideIcons.sparkles,
                   tint: NestTileTint.lilac,
                 ),
                 const SizedBox(width: NestSpace.md),
@@ -65,7 +65,7 @@ class PlanWeekEntryCard extends StatelessWidget {
                         const NestTag(
                           label: PlanWeekCopy.premiumTag,
                           tone: NestTagTone.accent,
-                          icon: Icons.workspace_premium_outlined,
+                          icon: LucideIcons.award,
                         ),
                       ],
                     ],
@@ -77,7 +77,7 @@ class PlanWeekEntryCard extends StatelessWidget {
             NestButton(
               key: const ValueKey('plan-week-open'),
               label: PlanWeekCopy.entryAction,
-              icon: Icons.auto_awesome_rounded,
+              icon: LucideIcons.sparkles,
               onPressed: () => _open(context),
             ),
           ],

@@ -37,7 +37,7 @@ class PlanWeekShopCard extends StatelessWidget {
             alignment: AlignmentDirectional.centerStart,
             child: NestButton(
               label: PlanWeekCopy.changeArea,
-              icon: Icons.place_outlined,
+              icon: LucideIcons.mapPin,
               variant: NestButtonVariant.ghost,
               size: NestButtonSize.small,
               isExpanded: false,

@@ -95,8 +95,8 @@ class _MedicationSheetBodyState extends State<_MedicationSheetBody> {
                 NestChip(
                   key: ValueKey(minutes),
                   label: NestDates.timeOfDay(minutes),
-                  icon: Icons.schedule,
-                  trailingIcon: Icons.close,
+                  icon: LucideIcons.clock,
+                  trailingIcon: LucideIcons.x,
                   semanticLabel: FamilyCopy.removeTime(
                     NestDates.timeOfDay(minutes),
                   ),
@@ -106,7 +106,7 @@ class _MedicationSheetBodyState extends State<_MedicationSheetBody> {
                 ),
               NestChip(
                 label: FamilyCopy.medicationAddTime,
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 onTap: _addTime,
               ),
             ],
@@ -137,7 +137,7 @@ class _MedicationSheetBodyState extends State<_MedicationSheetBody> {
             NestButton(
               label: FamilyCopy.remove,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () =>
                   Navigator.of(context).pop(const SheetRemoved<Medication>()),
             ),

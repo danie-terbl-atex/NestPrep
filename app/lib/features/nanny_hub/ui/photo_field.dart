@@ -89,18 +89,18 @@ class _PhotoFieldState extends State<PhotoField> {
           children: [
             NestChip(
               label: NannyCopy.takePhoto,
-              icon: Icons.photo_camera_outlined,
+              icon: LucideIcons.camera,
               onTap: () => _pick(PhotoSource.camera),
             ),
             NestChip(
               label: NannyCopy.choosePhoto,
-              icon: Icons.photo_library_outlined,
+              icon: LucideIcons.images,
               onTap: () => _pick(PhotoSource.library),
             ),
             if (_hasPhoto)
               NestChip(
                 label: NannyCopy.removePhoto,
-                icon: Icons.delete_outline,
+                icon: LucideIcons.trash2,
                 onTap: () => _set(const PhotoRemoved()),
               ),
           ],

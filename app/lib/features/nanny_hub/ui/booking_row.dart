@@ -38,7 +38,7 @@ class BookingRow extends StatelessWidget {
       child: NestListRow(
         leading: person == null
             ? const NestIconTile(
-                icon: Icons.event_available_outlined,
+                icon: LucideIcons.calendarCheck,
                 tint: NestTileTint.basil,
               )
             : NestAvatar(name: person.displayName, color: person.color),
@@ -48,13 +48,13 @@ class BookingRow extends StatelessWidget {
             ? const NestTag(
                 label: NannyBookingCopy.onNow,
                 tone: NestTagTone.success,
-                icon: Icons.circle,
+                icon: LucideIcons.circle,
               )
             : null,
         trailing: cancel == null
             ? null
             : NestIconButton(
-                icon: Icons.event_busy_outlined,
+                icon: LucideIcons.calendarX,
                 label: NannyBookingCopy.cancel,
                 variant: NestIconButtonVariant.plain,
                 onPressed: cancel,

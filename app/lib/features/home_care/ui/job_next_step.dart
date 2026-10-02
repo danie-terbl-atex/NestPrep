@@ -38,14 +38,14 @@ class JobNextStep extends StatelessWidget {
               JobStatus.sentBack => HomeCareCopy.tryAgain,
               _ => HomeCareCopy.start,
             },
-            icon: Icons.play_arrow_rounded,
+            icon: LucideIcons.play,
             onPressed: () =>
                 context.push(HomeCareRoute.stepsPathFor(householdId, job.id)),
           ),
         if (access.canReview(job))
           NestButton(
             label: HomeCareCopy.review,
-            icon: Icons.compare_outlined,
+            icon: LucideIcons.gitCompare,
             onPressed: () =>
                 context.push(HomeCareRoute.reviewPathFor(householdId, job.id)),
           ),
@@ -55,7 +55,7 @@ class JobNextStep extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: HomeCareCopy.editJob,
-            icon: Icons.edit_outlined,
+            icon: LucideIcons.pencil,
             variant: NestButtonVariant.tonal,
             onPressed: isBusy ? null : () => _edit(context, home, controller),
           ),
@@ -64,7 +64,7 @@ class JobNextStep extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: HomeCareCopy.deleteJob,
-            icon: Icons.delete_outline,
+            icon: LucideIcons.trash2,
             variant: NestButtonVariant.ghost,
             isLoading: isBusy,
             onPressed: isBusy ? null : () => _delete(context, controller),

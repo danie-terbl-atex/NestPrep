@@ -57,7 +57,7 @@ class SignInScreen extends StatelessWidget {
                   index: _waysInStep,
                   child: NestButton(
                     label: AppCopy.signInWithGoogle,
-                    icon: Icons.login,
+                    icon: LucideIcons.logIn,
                     isLoading: session.isSigningIn,
                     onPressed: session.signInWithGoogle,
                   ),
@@ -102,7 +102,7 @@ class SignInScreen extends StatelessWidget {
                   index: _waysInStep + 4,
                   child: NestButton(
                     label: KidCopy.signInWithCode,
-                    icon: Icons.child_care_rounded,
+                    icon: LucideIcons.baby,
                     variant: NestButtonVariant.tonal,
                     onPressed: session.isSigningIn
                         ? null

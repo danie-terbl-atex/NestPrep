@@ -87,7 +87,7 @@ void main() {
   ) async {
     await open(tester, library: [meal('m1', 'Spaghetti')]);
 
-    await tester.tap(find.byIcon(Icons.delete_outline));
+    await tester.tap(find.byIcon(LucideIcons.trash2));
     await tester.pumpAndSettle();
     expect(find.text(AppCopy.mealsDeleteConfirm), findsOneWidget);
     expect(
@@ -164,7 +164,7 @@ void main() {
   testWidgets('and deletes when it is confirmed', (tester) async {
     await open(tester, library: [meal('m1', 'Spaghetti')]);
 
-    await tester.tap(find.byIcon(Icons.delete_outline));
+    await tester.tap(find.byIcon(LucideIcons.trash2));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(NestButton, AppCopy.mealsDelete));
     await tester.pumpAndSettle();

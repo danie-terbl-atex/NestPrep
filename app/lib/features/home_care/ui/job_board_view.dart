@@ -31,7 +31,7 @@ class JobBoardView extends StatelessWidget {
       emptyBuilder: (_) => const NestEmptyView(
         title: HomeCareCopy.jobGoneTitle,
         message: HomeCareCopy.jobGoneBody,
-        icon: Icons.cleaning_services_outlined,
+        icon: LucideIcons.sprayCan,
       ),
       dataBuilder: (context, board) =>
           builder(context, board, board.jobById(jobId)!),

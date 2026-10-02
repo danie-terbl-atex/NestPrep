@@ -23,12 +23,12 @@ class MonthTokens extends StatelessWidget {
           for (var index = 0; index < cap; index += 1)
             index < earned
                 ? Icon(
-                    Icons.card_giftcard,
+                    LucideIcons.gift,
                     size: NestSize.iconLarge,
                     color: colors.accentInk,
                   )
                 : Icon(
-                    Icons.card_giftcard_outlined,
+                    LucideIcons.gift,
                     size: NestSize.iconLarge,
                     color: colors.inkTertiary,
                   ),

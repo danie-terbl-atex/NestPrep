@@ -88,7 +88,7 @@ class _ThePlan extends StatelessWidget {
               FactList(
                 title: AccountDataCopy.deleteGoesTitle,
                 facts: AccountDataCopy.deleteGoes,
-                icon: Icons.remove_circle_outline,
+                icon: LucideIcons.circleMinus,
               ),
               SizedBox(height: NestSpace.md),
               FactList(
@@ -102,7 +102,7 @@ class _ThePlan extends StatelessWidget {
         NestButton(
           label: AccountDataCopy.deleteKeepInstead,
           variant: NestButtonVariant.outline,
-          icon: Icons.download_outlined,
+          icon: LucideIcons.download,
           onPressed: () => context.push(AccountExportScreen.path),
         ),
         const SizedBox(height: NestSpace.xxl),

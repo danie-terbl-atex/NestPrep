@@ -24,7 +24,7 @@ class GalleryStatesSection extends StatelessWidget {
             ),
             NestButton(
               label: 'Force a crash',
-              icon: Icons.bug_report_outlined,
+              icon: LucideIcons.bug,
               variant: NestButtonVariant.danger,
               onPressed: CrashReporting.forceACrashForTesting,
             ),
@@ -59,24 +59,24 @@ class GalleryStatesSection extends StatelessWidget {
                 NestTag(
                   label: 'Nut-free',
                   tone: NestTagTone.warning,
-                  icon: Icons.no_food_outlined,
+                  icon: LucideIcons.utensilsCrossed,
                 ),
                 NestTag(
                   label: 'Severe',
                   tone: NestTagTone.danger,
-                  icon: Icons.emergency_outlined,
+                  icon: LucideIcons.siren,
                 ),
               ],
             ),
             NestToneRow(
-              icon: Icons.emergency_outlined,
+              icon: LucideIcons.siren,
               tone: NestTagTone.danger,
               title: 'Peanuts',
               subtitle: 'Adrenaline pen in the school bag',
               trailing: NestTag(label: 'Severe', tone: NestTagTone.danger),
             ),
             NestToneRow(
-              icon: Icons.warning_amber_rounded,
+              icon: LucideIcons.triangleAlert,
               tone: NestTagTone.warning,
               title: 'Kiwi',
               trailing: NestTag(label: 'Moderate', tone: NestTagTone.warning),
@@ -93,7 +93,7 @@ class GalleryStatesSection extends StatelessWidget {
             NestEmptyView(
               title: 'Nothing to buy',
               message: 'Add the first item and everyone will see it.',
-              icon: Icons.shopping_basket_outlined,
+              icon: LucideIcons.shoppingBasket,
               actionLabel: 'Add an item',
               onAction: () {},
             ),

@@ -112,7 +112,7 @@ class _HouseCodeBodyState extends State<_HouseCodeBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: NannyBookingCopy.saveCode,
-            icon: Icons.check,
+            icon: LucideIcons.check,
             onPressed: _isComplete ? _save : null,
           ),
           if (widget.existing != null) ...[
@@ -120,7 +120,7 @@ class _HouseCodeBodyState extends State<_HouseCodeBody> {
             NestButton(
               label: NannyBookingCopy.removeCode,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

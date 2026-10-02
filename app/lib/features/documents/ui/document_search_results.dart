@@ -37,7 +37,7 @@ class DocumentSearchResults extends StatelessWidget {
       final empty = NestEmptyView(
         title: VaultCopy.searchNoResultsTitle,
         message: VaultCopy.searchNoResultsBody,
-        icon: Icons.search_off,
+        icon: LucideIcons.searchX,
         actionLabel: VaultCopy.searchClearFilters,
         onAction: onClearFilters,
       );

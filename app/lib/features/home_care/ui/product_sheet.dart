@@ -125,13 +125,13 @@ class _ProductBodyState extends State<_ProductBody> {
             children: [
               NestChip(
                 label: HomeCareSafetyCopy.keepFromChildrenChoice,
-                icon: Icons.child_care_outlined,
+                icon: LucideIcons.baby,
                 isSelected: _fromChildren,
                 onTap: () => setState(() => _fromChildren = !_fromChildren),
               ),
               NestChip(
                 label: HomeCareSafetyCopy.keepFromPetsChoice,
-                icon: Icons.pets_outlined,
+                icon: LucideIcons.pawPrint,
                 isSelected: _fromPets,
                 onTap: () => setState(() => _fromPets = !_fromPets),
               ),
@@ -156,7 +156,7 @@ class _ProductBodyState extends State<_ProductBody> {
             NestButton(
               label: HomeCareLibraryCopy.deleteProduct,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () =>
                   Navigator.of(context).pop(const ProductDeleted()),
             ),

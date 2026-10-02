@@ -115,8 +115,8 @@ class _Band extends StatelessWidget {
               children: [
                 Icon(
                   band.day.isHandover
-                      ? Icons.swap_horiz
-                      : Icons.cottage_outlined,
+                      ? LucideIcons.arrowLeftRight
+                      : LucideIcons.house,
                   color: swatch.onFill,
                   size: NestSize.iconMedium,
                 ),
@@ -138,7 +138,7 @@ class _Band extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right, color: swatch.onFill),
+                Icon(LucideIcons.chevronRight, color: swatch.onFill),
               ],
             ),
           ),

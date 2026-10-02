@@ -9,7 +9,7 @@ class FactList extends StatelessWidget {
   const FactList({
     required this.title,
     required this.facts,
-    this.icon = Icons.check_circle_outline,
+    this.icon = LucideIcons.circleCheck,
     super.key,
   });
 

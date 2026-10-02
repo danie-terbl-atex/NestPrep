@@ -34,10 +34,10 @@ class DocumentToolsCard extends StatelessWidget {
               title: ShareLinkCopy.listEntry,
               subtitle: ShareLinkCopy.listEntryBody,
               leading: const NestIconTile(
-                icon: Icons.link,
+                icon: LucideIcons.link,
                 tint: NestTileTint.lilac,
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: onOpenShares,
             ),
           if (showsOffline)
@@ -45,10 +45,10 @@ class DocumentToolsCard extends StatelessWidget {
               title: OfflineCopiesCopy.entry,
               subtitle: OfflineCopiesCopy.entryBody,
               leading: const NestIconTile(
-                icon: Icons.offline_pin_outlined,
+                icon: LucideIcons.circleCheck,
                 tint: NestTileTint.basil,
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: onOpenOffline,
             ),
         ],

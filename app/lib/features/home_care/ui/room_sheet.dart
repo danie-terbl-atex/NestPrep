@@ -107,7 +107,7 @@ class _RoomBodyState extends State<_RoomBody> {
             NestButton(
               label: HomeCareLibraryCopy.deleteRoom,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () => Navigator.of(context).pop(const RoomDeleted()),
             ),
           ],

@@ -64,13 +64,13 @@ class _AddBodyState extends State<_AddBody> {
         NestTextField(
           label: LunchPantryCopy.search,
           hint: LunchPantryCopy.searchHint,
-          prefixIcon: Icons.search_rounded,
+          prefixIcon: LucideIcons.search,
           onChanged: (value) => setState(() => _query = value),
         ),
         const SizedBox(height: NestSpace.sm),
         NestButton(
           label: LunchPantryCopy.somethingNew,
-          icon: Icons.add_rounded,
+          icon: LucideIcons.plus,
           variant: NestButtonVariant.tonal,
           size: NestButtonSize.medium,
           onPressed: () => _addNew(context, pantry),
@@ -95,7 +95,7 @@ class _AddBodyState extends State<_AddBody> {
               final slot => LunchSlotTile(slot: slot),
             },
             trailing: Icon(
-              Icons.add_circle_outline_rounded,
+              LucideIcons.circlePlus,
               color: NestTheme.of(context).colors.accent,
               size: NestSize.iconMedium,
             ),

@@ -70,7 +70,7 @@ class LunchBoardBody extends StatelessWidget {
             children: [
               NestButton(
                 label: LunchCopy.openPrep,
-                icon: Icons.soup_kitchen_outlined,
+                icon: LucideIcons.soup,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,
@@ -82,7 +82,7 @@ class LunchBoardBody extends StatelessWidget {
               if (canEdit) ...[
                 NestButton(
                   label: LunchCopy.openLibrary,
-                  icon: Icons.menu_book_outlined,
+                  icon: LucideIcons.bookOpen,
                   variant: NestButtonVariant.tonal,
                   size: NestButtonSize.small,
                   isExpanded: false,
@@ -93,7 +93,7 @@ class LunchBoardBody extends StatelessWidget {
                 // (lunch-box ADR-0005).
                 NestButton(
                   label: LunchShareCopy.openShare,
-                  icon: Icons.ios_share_rounded,
+                  icon: LucideIcons.share,
                   variant: NestButtonVariant.tonal,
                   size: NestButtonSize.small,
                   isExpanded: false,

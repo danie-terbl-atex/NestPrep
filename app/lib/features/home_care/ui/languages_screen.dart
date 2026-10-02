@@ -126,13 +126,13 @@ class _LanguageRow extends StatelessWidget {
               : HomeCareLanguageCopy.names(chosen.ownName, chosen.englishName),
           leading: person == null
               ? const NestIconTile(
-                  icon: Icons.translate,
+                  icon: LucideIcons.languages,
                   tint: NestTileTint.lilac,
                   size: NestSize.avatarMedium,
                   iconSize: NestSize.iconMedium,
                 )
               : NestAvatar(name: person.displayName, color: person.color),
-          trailing: canSet ? const Icon(Icons.chevron_right) : null,
+          trailing: canSet ? const Icon(LucideIcons.chevronRight) : null,
           onTap: canSet ? () => _choose(context, language, id, chosen) : null,
         ),
       ),

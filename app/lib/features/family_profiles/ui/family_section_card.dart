@@ -12,7 +12,7 @@ class FamilySectionCard extends StatelessWidget {
     required this.tint,
     required this.title,
     required this.child,
-    this.actionIcon = Icons.edit_outlined,
+    this.actionIcon = LucideIcons.pencil,
     this.actionLabel,
     this.onAction,
     super.key,

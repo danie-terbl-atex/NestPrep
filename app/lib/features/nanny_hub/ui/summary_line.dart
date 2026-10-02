@@ -38,7 +38,7 @@ class SummaryTags extends StatelessWidget {
         if (summary.photoCount > 0)
           NestTag(
             label: NannyShiftCopy.summaryPhotos(summary.photoCount),
-            icon: Icons.photo_outlined,
+            icon: LucideIcons.image,
           ),
       ],
     );

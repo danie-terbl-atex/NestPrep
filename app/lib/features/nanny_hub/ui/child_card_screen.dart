@@ -29,7 +29,7 @@ class ChildCardScreen extends StatelessWidget {
       emptyBuilder: (_) => const NestEmptyView(
         title: NannyCopy.childGoneTitle,
         message: NannyCopy.childGoneBody,
-        icon: Icons.person_off_outlined,
+        icon: LucideIcons.userX,
       ),
       builder: (context, view) => ChildCardBody(
         child: view.childById(childId)!,

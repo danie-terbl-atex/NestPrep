@@ -33,7 +33,7 @@ class LinkRow extends StatelessWidget {
     ),
     title: title,
     subtitle: subtitle,
-    trailing: const Icon(Icons.chevron_right),
+    trailing: const Icon(LucideIcons.chevronRight),
     onTap: () => context.push(path),
   );
 }

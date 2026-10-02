@@ -22,10 +22,10 @@ class KidSignInLink extends StatelessWidget {
         title: KidCopy.manageEntry,
         subtitle: KidCopy.manageEntryBody,
         leading: const NestIconTile(
-          icon: Icons.child_care_rounded,
+          icon: LucideIcons.baby,
           tint: NestTileTint.butter,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         // Pushed, so back lands on the household screen (`FE-17`).
         onTap: () => context.push(KidRoute.managePathFor(householdId)),
       ),

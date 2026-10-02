@@ -57,7 +57,7 @@ class KidBalanceCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.star_rounded, color: c.warning),
+              Icon(LucideIcons.star, color: c.warning),
               const SizedBox(width: NestSpace.xs),
               Text('${balance.balance}', style: nest.text.figureSmall),
             ],
@@ -69,7 +69,7 @@ class KidBalanceCard extends StatelessWidget {
               child: NestTag(
                 label: PointsCopy.streakDays(streak),
                 tone: NestTagTone.warning,
-                icon: Icons.local_fire_department_rounded,
+                icon: LucideIcons.flame,
               ),
             ),
           ],
@@ -80,7 +80,7 @@ class KidBalanceCard extends StatelessWidget {
             children: [
               NestButton(
                 label: PointsCopy.history,
-                icon: Icons.receipt_long_rounded,
+                icon: LucideIcons.receiptText,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,
@@ -88,7 +88,7 @@ class KidBalanceCard extends StatelessWidget {
               ),
               NestButton(
                 label: PointsCopy.spendFor,
-                icon: Icons.redeem_rounded,
+                icon: LucideIcons.gift,
                 variant: NestButtonVariant.outline,
                 size: NestButtonSize.small,
                 isExpanded: false,

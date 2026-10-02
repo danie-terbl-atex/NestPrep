@@ -61,7 +61,7 @@ class ClaimReviewRow extends StatelessWidget {
                     NestTag(
                       label: PointsCopy.starsCount(claim.points),
                       tone: NestTagTone.warning,
-                      icon: Icons.star_rounded,
+                      icon: LucideIcons.star,
                     ),
                   ],
                 ),
@@ -75,7 +75,7 @@ class ClaimReviewRow extends StatelessWidget {
             children: [
               NestButton(
                 label: PointsCopy.reviewApprove,
-                icon: Icons.check_rounded,
+                icon: LucideIcons.check,
                 size: NestButtonSize.small,
                 isExpanded: false,
                 isLoading: isBusy,
@@ -83,7 +83,7 @@ class ClaimReviewRow extends StatelessWidget {
               ),
               NestButton(
                 label: PointsCopy.reviewSendBack,
-                icon: Icons.replay_rounded,
+                icon: LucideIcons.rotateCcw,
                 variant: NestButtonVariant.outline,
                 size: NestButtonSize.small,
                 isExpanded: false,

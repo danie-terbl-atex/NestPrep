@@ -26,7 +26,7 @@ class _SourcesBody extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         for (final source in SafetySource.values) ...[
           NestToneRow(
-            icon: Icons.menu_book_outlined,
+            icon: LucideIcons.bookOpen,
             title: HomeCareSafetyCopy.sourceName(source),
             subtitle: HomeCareSafetyCopy.sourceSays(source),
           ),

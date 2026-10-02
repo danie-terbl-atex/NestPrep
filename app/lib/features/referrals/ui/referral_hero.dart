@@ -18,22 +18,16 @@ class ReferralHero extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              NestIconTile(
-                icon: Icons.cottage_outlined,
-                tint: NestTileTint.basil,
-              ),
+              NestIconTile(icon: LucideIcons.house, tint: NestTileTint.basil),
               SizedBox(width: NestSpace.md),
               NestIconTile(
-                icon: Icons.card_giftcard_outlined,
+                icon: LucideIcons.gift,
                 tint: NestTileTint.butter,
                 size: NestSize.mark,
                 iconSize: NestSize.iconMark,
               ),
               SizedBox(width: NestSpace.md),
-              NestIconTile(
-                icon: Icons.cottage_outlined,
-                tint: NestTileTint.lilac,
-              ),
+              NestIconTile(icon: LucideIcons.house, tint: NestTileTint.lilac),
             ],
           ),
         ),

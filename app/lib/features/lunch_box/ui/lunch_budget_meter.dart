@@ -53,7 +53,7 @@ class LunchBudgetMeter extends StatelessWidget {
               label: reading == null
                   ? LunchBudgetCopy.setBudget
                   : LunchBudgetCopy.changeBudget,
-              icon: Icons.savings_outlined,
+              icon: LucideIcons.piggyBank,
               variant: NestButtonVariant.tonal,
               size: NestButtonSize.small,
               isExpanded: false,

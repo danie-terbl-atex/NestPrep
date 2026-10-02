@@ -108,7 +108,7 @@ class _AllergySheetBodyState extends State<_AllergySheetBody> {
               if (widget.canAddOther)
                 NestChip(
                   label: FamilyCopy.allergenOther,
-                  icon: Icons.edit_outlined,
+                  icon: LucideIcons.pencil,
                   isSelected: _isOther,
                   onTap: () => setState(() => _isOther = true),
                 ),
@@ -152,7 +152,7 @@ class _AllergySheetBodyState extends State<_AllergySheetBody> {
             NestButton(
               label: FamilyCopy.remove,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () =>
                   Navigator.of(context).pop(const SheetRemoved<AllergyDraft>()),
             ),

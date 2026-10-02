@@ -51,7 +51,7 @@ class LunchShareBody extends StatelessWidget {
         ],
         NestButton(
           label: LunchShareCopy.shareImage,
-          icon: Icons.ios_share_rounded,
+          icon: LucideIcons.share,
           isLoading: controller.task == LunchShareTask.sharingCard,
           onPressed: content.isEmpty || controller.isBusy
               ? null

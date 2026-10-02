@@ -57,7 +57,7 @@ class HandoverRow extends StatelessWidget {
               : '$when ${TwoHomesCopy.handoverAt(NestDates.timeOfDay(minute))}',
           if (onTap != null) progress,
         ].join(' · '),
-        trailing: onTap == null ? null : const Icon(Icons.chevron_right),
+        trailing: onTap == null ? null : const Icon(LucideIcons.chevronRight),
         onTap: onTap,
       ),
     );

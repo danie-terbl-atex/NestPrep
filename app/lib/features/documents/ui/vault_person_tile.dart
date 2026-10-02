@@ -51,9 +51,9 @@ class VaultPersonTile extends StatelessWidget {
             : NestBadge(
                 label: '${VaultCopy.expiringTitle} · $needsAttention',
                 tone: NestBadgeTone.warning,
-                icon: Icons.schedule,
+                icon: LucideIcons.clock,
               ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         onTap: onOpen,
       ),
     );

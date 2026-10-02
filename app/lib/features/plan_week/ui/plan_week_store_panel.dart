@@ -52,7 +52,7 @@ class PlanWeekStorePanel extends StatelessWidget {
         PlanWeekStepActions(
           nextKey: const ValueKey('plan-week-build'),
           label: PlanWeekCopy.buildAction,
-          icon: Icons.auto_awesome_rounded,
+          icon: LucideIcons.sparkles,
           isBusy: !isSettled,
           onNext: isSettled && store.hasKept ? () => _build(context) : null,
           onBack: controller.back,

@@ -124,7 +124,7 @@ class _SwapSheetBodyState extends State<_SwapSheetBody> {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: TwoHomesCopy.send,
-            icon: Icons.send_outlined,
+            icon: LucideIcons.send,
             onPressed: problem != null
                 ? null
                 : () => Navigator.of(context).pop<SwapAsk>((

@@ -37,7 +37,7 @@ class ProductMatchPanel extends StatelessWidget {
                 ),
               ),
               NestIconButton(
-                icon: Icons.close_rounded,
+                icon: LucideIcons.x,
                 label: CheckersCopy.closeMatches,
                 variant: NestIconButtonVariant.plain,
                 onPressed: controller.dismiss,

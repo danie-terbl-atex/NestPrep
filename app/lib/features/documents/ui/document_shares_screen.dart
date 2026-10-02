@@ -49,7 +49,7 @@ class DocumentSharesScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: ShareLinkCopy.emptyTitle,
                 message: ShareLinkCopy.emptyBody,
-                icon: Icons.link_off,
+                icon: LucideIcons.unlink,
               ),
               dataBuilder: (context, shares) => _ShareList(shares: shares),
             ),

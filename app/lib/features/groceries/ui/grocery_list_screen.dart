@@ -63,7 +63,7 @@ class GroceryListScreen extends StatelessWidget {
       trailing: [
         if (canPlan)
           NestIconButton(
-            icon: Icons.playlist_add_rounded,
+            icon: LucideIcons.listPlus,
             label: GroceryPlanCopy.open,
             onPressed: () => _openPlans(context),
           ),

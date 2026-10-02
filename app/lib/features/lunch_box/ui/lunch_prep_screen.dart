@@ -38,7 +38,7 @@ class LunchPrepScreen extends StatelessWidget {
         isEmpty: (list) => list.isEmpty,
         onRetry: controller.retry,
         emptyBuilder: (context) => NestEmptyView(
-          icon: Icons.soup_kitchen_outlined,
+          icon: LucideIcons.soup,
           title: LunchCopy.prepEmptyTitle,
           message: LunchCopy.prepEmptyBody,
           actionLabel: LunchCopy.backToLunches,

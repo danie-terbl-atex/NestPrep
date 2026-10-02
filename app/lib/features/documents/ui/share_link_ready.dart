@@ -34,7 +34,10 @@ class ShareLinkReady extends StatelessWidget {
       children: [
         const NestRiseIn(
           child: Center(
-            child: NestIconTile(icon: Icons.link, tint: NestTileTint.basil),
+            child: NestIconTile(
+              icon: LucideIcons.link,
+              tint: NestTileTint.basil,
+            ),
           ),
         ),
         const SizedBox(height: NestSpace.md),
@@ -62,11 +65,11 @@ class ShareLinkReady extends StatelessWidget {
           spacing: NestSpace.sm,
           runSpacing: NestSpace.sm,
           children: [
-            NestTag(label: endsLabel, icon: Icons.schedule_outlined),
+            NestTag(label: endsLabel, icon: LucideIcons.clock),
             if (hasPin)
               const NestTag(
                 label: ShareLinkCopy.withPin,
-                icon: Icons.pin_outlined,
+                icon: LucideIcons.rectangleEllipsis,
                 tone: NestTagTone.accent,
               ),
           ],
@@ -78,13 +81,13 @@ class ShareLinkReady extends StatelessWidget {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: ShareLinkCopy.send,
-          icon: Icons.ios_share,
+          icon: LucideIcons.share,
           onPressed: onSend,
         ),
         const SizedBox(height: NestSpace.sm),
         NestButton(
           label: ShareLinkCopy.copy,
-          icon: Icons.copy_outlined,
+          icon: LucideIcons.copy,
           variant: NestButtonVariant.tonal,
           onPressed: onCopy,
         ),

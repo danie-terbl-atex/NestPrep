@@ -29,7 +29,7 @@ class _DocumentSourceOptions extends StatelessWidget {
           title: VaultCopy.scan,
           subtitle: VaultCopy.personEmptyBody,
           leading: const NestIconTile(
-            icon: Icons.document_scanner_outlined,
+            icon: LucideIcons.scanText,
             tint: NestTileTint.lilac,
           ),
           onTap: () => Navigator.of(context).pop(DocumentSource.scan),
@@ -38,7 +38,7 @@ class _DocumentSourceOptions extends StatelessWidget {
         NestListRow(
           title: VaultCopy.addFile,
           leading: const NestIconTile(
-            icon: Icons.upload_file_outlined,
+            icon: LucideIcons.fileUp,
             tint: NestTileTint.butter,
           ),
           onTap: () => Navigator.of(context).pop(DocumentSource.file),

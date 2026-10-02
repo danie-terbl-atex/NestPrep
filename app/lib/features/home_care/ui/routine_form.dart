@@ -104,7 +104,7 @@ class _RoutineFormState extends State<RoutineForm> {
               for (final member in widget.helpers)
                 NestChip(
                   label: member.displayName,
-                  icon: Icons.person_outline,
+                  icon: LucideIcons.user,
                   isSelected: member.id == _draft.helperId,
                   onTap: () => widget.onChanged((d) => d.withHelper(member.id)),
                 ),

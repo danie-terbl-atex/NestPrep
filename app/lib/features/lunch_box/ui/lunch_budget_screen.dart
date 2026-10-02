@@ -103,7 +103,7 @@ class _BudgetBody extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: NestButton(
                 label: LunchBudgetCopy.priceThem,
-                icon: Icons.sell_outlined,
+                icon: LucideIcons.tag,
                 variant: NestButtonVariant.ghost,
                 size: NestButtonSize.small,
                 isExpanded: false,
@@ -145,7 +145,7 @@ class _BudgetBody extends StatelessWidget {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: LunchBudgetCopy.allPrices,
-          icon: Icons.sell_outlined,
+          icon: LucideIcons.tag,
           variant: NestButtonVariant.outline,
           onPressed: () =>
               context.push(LunchPlanningRoute.pricesPathFor(view.household.id)),

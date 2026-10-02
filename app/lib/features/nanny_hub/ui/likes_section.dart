@@ -24,7 +24,7 @@ class LikesSection extends StatelessWidget {
     };
     if (rules == null) return const SizedBox.shrink();
     return FamilySectionCard(
-      icon: Icons.favorite_border,
+      icon: LucideIcons.heart,
       tint: NestTileTint.basil,
       title: NannyCopy.likesAndDislikes,
       child: Column(

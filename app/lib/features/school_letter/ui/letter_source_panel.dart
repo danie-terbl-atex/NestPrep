@@ -44,7 +44,7 @@ class LetterSourcePanel extends StatelessWidget {
           if (onRetry case final retry?)
             NestButton(
               label: SchoolLetterCopy.tryAgain,
-              icon: Icons.refresh,
+              icon: LucideIcons.refreshCw,
               variant: NestButtonVariant.tonal,
               onPressed: retry,
             ),
@@ -57,7 +57,7 @@ class LetterSourcePanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const NestIconTile(
-                  icon: Icons.document_scanner_outlined,
+                  icon: LucideIcons.scanText,
                   tint: NestTileTint.lilac,
                 ),
                 const SizedBox(height: NestSpace.md),
@@ -84,20 +84,20 @@ class LetterSourcePanel extends StatelessWidget {
             children: [
               NestButton(
                 label: SchoolLetterCopy.takePhoto,
-                icon: Icons.photo_camera_outlined,
+                icon: LucideIcons.camera,
                 onPressed: () => onPick(LetterSource.camera),
               ),
               const SizedBox(height: NestSpace.sm),
               NestButton(
                 label: SchoolLetterCopy.choosePhoto,
-                icon: Icons.photo_library_outlined,
+                icon: LucideIcons.images,
                 variant: NestButtonVariant.tonal,
                 onPressed: () => onPick(LetterSource.photos),
               ),
               const SizedBox(height: NestSpace.sm),
               NestButton(
                 label: SchoolLetterCopy.choosePdf,
-                icon: Icons.picture_as_pdf_outlined,
+                icon: LucideIcons.fileText,
                 variant: NestButtonVariant.outline,
                 onPressed: () => onPick(LetterSource.pdf),
               ),
@@ -108,7 +108,7 @@ class LetterSourcePanel extends StatelessWidget {
         const NestRiseIn(
           index: 2,
           child: NestToneRow(
-            icon: Icons.lock_outline,
+            icon: LucideIcons.lock,
             title: SchoolLetterCopy.privacyTitle,
             subtitle: SchoolLetterCopy.privacyBody,
           ),

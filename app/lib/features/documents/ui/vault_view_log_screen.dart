@@ -26,7 +26,7 @@ class VaultViewLogScreen extends StatelessWidget {
       title: VaultCopy.logTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -48,7 +48,7 @@ class VaultViewLogScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: VaultCopy.logEmptyTitle,
                 message: VaultCopy.logEmptyBody,
-                icon: Icons.history,
+                icon: LucideIcons.history,
               ),
               dataBuilder: (context, views) => _ViewList(views: views),
             ),

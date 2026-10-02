@@ -38,7 +38,7 @@ class PlanWeekStepActions extends StatelessWidget {
         const SizedBox(height: NestSpace.xs),
         NestButton(
           label: PlanWeekCopy.back,
-          icon: Icons.arrow_back_rounded,
+          icon: LucideIcons.arrowLeft,
           variant: NestButtonVariant.ghost,
           size: NestButtonSize.small,
           onPressed: onBack,

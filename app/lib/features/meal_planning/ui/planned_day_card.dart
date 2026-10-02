@@ -105,7 +105,7 @@ class _SlotRow extends StatelessWidget {
               ),
             ),
             Icon(
-              planned == null ? Icons.add : Icons.chevron_right,
+              planned == null ? LucideIcons.plus : LucideIcons.chevronRight,
               size: NestSize.iconSmall,
               color: nest.colors.inkTertiary,
             ),

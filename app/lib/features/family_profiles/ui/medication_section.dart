@@ -37,10 +37,10 @@ class MedicationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FamilySectionCard(
-      icon: isVisible ? Icons.medication_outlined : Icons.lock_outline,
+      icon: isVisible ? LucideIcons.pill : LucideIcons.lock,
       tint: NestTileTint.butter,
       title: FamilyCopy.sectionMedication,
-      actionIcon: Icons.add,
+      actionIcon: LucideIcons.plus,
       actionLabel: FamilyCopy.addMedication,
       onAction: isVisible ? onAdd : null,
       child: isVisible

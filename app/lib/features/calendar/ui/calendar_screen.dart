@@ -67,7 +67,7 @@ class CalendarScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
               child: NestButton(
                 label: AppCopy.calendarAddEvent,
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 isExpanded: false,
                 onPressed: () => _addEvent(context, controller, view),
               ),
@@ -103,7 +103,7 @@ class CalendarScreen extends StatelessWidget {
                   )) ...[
                 const SizedBox(width: NestSpace.sm),
                 NestIconButton(
-                  icon: Icons.document_scanner_outlined,
+                  icon: LucideIcons.scanText,
                   label: SchoolLetterCopy.openFromWeek,
                   onPressed: () => context.push(
                     CalendarV2Route.letterPathFor(controller.householdId),
@@ -112,7 +112,7 @@ class CalendarScreen extends StatelessWidget {
               ],
               const SizedBox(width: NestSpace.sm),
               NestIconButton(
-                icon: Icons.sync_alt,
+                icon: LucideIcons.arrowRightLeft,
                 label: CalendarSyncCopy.openFromWeek,
                 // Pushed, like the household link, so back returns here.
                 onPressed: () => context.push(

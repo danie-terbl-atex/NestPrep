@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
@@ -67,7 +68,7 @@ class NestCheckRow extends StatelessWidget {
                     ),
                     child: value
                         ? Icon(
-                            Icons.check,
+                            LucideIcons.check,
                             size: NestSize.iconSmall,
                             color: c.onAccent,
                           )

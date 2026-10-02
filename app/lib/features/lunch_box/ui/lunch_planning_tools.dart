@@ -55,7 +55,7 @@ class LunchPlanningTools extends StatelessWidget {
               if (hasPantry)
                 _ToolButton(
                   label: LunchPlanningCopy.openPantry,
-                  icon: Icons.kitchen_outlined,
+                  icon: LucideIcons.refrigerator,
                   onPressed: () => context.push(
                     LunchPlanningRoute.pantryPathFor(householdId),
                   ),
@@ -66,15 +66,13 @@ class LunchPlanningTools extends StatelessWidget {
                       ? LunchPlanningCopy.openBudget
                       : '${LunchPlanningCopy.openBudget} · '
                             '${LunchPlanningCopy.premiumHint}',
-                  icon: isPremium
-                      ? Icons.savings_outlined
-                      : Icons.workspace_premium_outlined,
+                  icon: isPremium ? LucideIcons.piggyBank : LucideIcons.award,
                   onPressed: () => _openBudget(context, householdId),
                 ),
               if (hasKidPicks)
                 _ToolButton(
                   label: LunchPlanningCopy.openKidPicks,
-                  icon: Icons.touch_app_outlined,
+                  icon: LucideIcons.pointer,
                   onPressed: () => context.push(
                     LunchPlanningRoute.picksPathFor(householdId),
                   ),

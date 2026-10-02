@@ -44,9 +44,9 @@ class _MealRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final (icon, tint) = switch (slot) {
-      MealSlot.breakfast => (Icons.free_breakfast_rounded, NestTileTint.butter),
-      MealSlot.lunch => (Icons.lunch_dining_rounded, NestTileTint.basil),
-      MealSlot.dinner => (Icons.dinner_dining_rounded, NestTileTint.lilac),
+      MealSlot.breakfast => (LucideIcons.coffee, NestTileTint.butter),
+      MealSlot.lunch => (LucideIcons.sandwich, NestTileTint.basil),
+      MealSlot.dinner => (LucideIcons.utensils, NestTileTint.lilac),
     };
     final name = meal?.name;
     return Row(

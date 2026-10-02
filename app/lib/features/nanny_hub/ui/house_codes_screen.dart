@@ -49,7 +49,7 @@ class HouseCodesScreen extends StatelessWidget {
       floatingAction: controller.isFamily
           ? NestButton(
               label: NannyBookingCopy.addCode,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               isExpanded: false,
               onPressed: () => _edit(context),
             )
@@ -119,7 +119,7 @@ class _Shown extends StatelessWidget {
         ),
       if (codes.codes.isEmpty)
         const HubEmptyNote(
-          icon: Icons.key_outlined,
+          icon: LucideIcons.keyRound,
           title: NannyBookingCopy.noCodesTitle,
           message: NannyBookingCopy.noCodesBody,
         ),
@@ -160,7 +160,7 @@ class _Closed extends StatelessWidget {
             children: [
               const Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: NestIconTile(icon: Icons.lock_clock_outlined),
+                child: NestIconTile(icon: LucideIcons.lockKeyhole),
               ),
               const SizedBox(height: NestSpace.md),
               Text(

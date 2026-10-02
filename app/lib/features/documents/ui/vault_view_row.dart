@@ -43,7 +43,7 @@ class VaultViewRow extends StatelessWidget {
       subtitle: '${VaultCopy.logLine(viewerName, vault)} · $when',
       leading: who == null
           ? NestIconTile(
-              icon: isThroughSharedLink ? Icons.link : Icons.person_outline,
+              icon: isThroughSharedLink ? LucideIcons.link : LucideIcons.user,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             )

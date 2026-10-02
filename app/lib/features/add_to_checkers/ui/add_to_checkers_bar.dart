@@ -30,7 +30,7 @@ class AddToCheckersBar extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: CheckersCopy.addToCheckers,
-            icon: Icons.shopping_cart_outlined,
+            icon: LucideIcons.shoppingCart,
             size: NestButtonSize.small,
             isExpanded: false,
             isLoading: isPushing,

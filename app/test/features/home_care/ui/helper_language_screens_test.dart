@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/app/home_care_route.dart';
 import 'package:nestprep/features/home_care/data/read_aloud.dart';
 import 'package:nestprep/features/home_care/model/job_status.dart';
@@ -241,7 +241,7 @@ void main() {
     ) async {
       harness.voice.support = VoiceSupport.none;
       await openStepsInZulu(tester);
-      expect(find.byIcon(Icons.volume_up_outlined), findsNothing);
+      expect(find.byIcon(LucideIcons.volume2), findsNothing);
       expect(
         find.text(
           HomeCareLanguageCopy.voice(VoiceSupport.none, HelperLanguage.isiZulu),

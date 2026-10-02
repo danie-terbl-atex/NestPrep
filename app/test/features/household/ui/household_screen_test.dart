@@ -134,13 +134,13 @@ void main() {
     testWidgets('an admin is offered the way to add somebody', (tester) async {
       await pump(tester);
       await emit(tester);
-      expect(find.byIcon(Icons.person_add_alt), findsOneWidget);
+      expect(find.byIcon(LucideIcons.userPlus), findsOneWidget);
     });
 
     testWidgets('a helper is not', (tester) async {
       await pump(tester, viewerUid: Fixtures.thandiUid);
       await emit(tester);
-      expect(find.byIcon(Icons.person_add_alt), findsNothing);
+      expect(find.byIcon(LucideIcons.userPlus), findsNothing);
     });
 
     testWidgets('only an unclaimed profile can be invited', (tester) async {
@@ -288,14 +288,14 @@ void main() {
     testWidgets('an admin is offered its settings', (tester) async {
       await pump(tester);
       await emit(tester);
-      expect(find.byIcon(Icons.tune), findsOneWidget);
+      expect(find.byIcon(LucideIcons.slidersHorizontal), findsOneWidget);
     });
 
     testWidgets('a helper is not', (tester) async {
       await pump(tester, viewerUid: Fixtures.thandiUid);
       await emit(tester);
       expect(
-        find.byIcon(Icons.tune),
+        find.byIcon(LucideIcons.slidersHorizontal),
         findsNothing,
         reason: 'the rules refuse it, so the screen must not offer it',
       );
@@ -307,7 +307,7 @@ void main() {
       await pump(tester);
       await emit(tester);
 
-      await tester.tap(find.byIcon(Icons.tune));
+      await tester.tap(find.byIcon(LucideIcons.slidersHorizontal));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -335,7 +335,7 @@ void main() {
       await pump(tester);
       await emit(tester);
 
-      await tester.tap(find.byIcon(Icons.tune));
+      await tester.tap(find.byIcon(LucideIcons.slidersHorizontal));
       await tester.pumpAndSettle();
 
       final save = tester.widget<NestButton>(
@@ -350,7 +350,7 @@ void main() {
       await pump(tester);
       await emit(tester);
 
-      await tester.tap(find.byIcon(Icons.tune));
+      await tester.tap(find.byIcon(LucideIcons.slidersHorizontal));
       await tester.pumpAndSettle();
       await tester.enterText(fieldLabelled(AppCopy.householdTimeZoneLabel), '');
       await tester.pumpAndSettle();

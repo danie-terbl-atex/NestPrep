@@ -38,7 +38,7 @@ class LunchShareScreen extends StatelessWidget {
               isEmpty: (value) => !value.hasChildren,
               onRetry: board.retry,
               emptyBuilder: (context) => NestEmptyView(
-                icon: Icons.bento_outlined,
+                icon: LucideIcons.sandwich,
                 title: LunchCopy.noChildrenTitle,
                 message: LunchCopy.noChildrenBody,
                 actionLabel: LunchCopy.openFamily,
@@ -48,7 +48,7 @@ class LunchShareScreen extends StatelessWidget {
               dataBuilder: (context, value) => LunchShareBody(board: value),
             )
           : NestEmptyView(
-              icon: Icons.lock_outline_rounded,
+              icon: LucideIcons.lock,
               title: LunchShareCopy.title,
               message: LunchShareCopy.onlyPlanners,
               actionLabel: LunchCopy.backToLunches,

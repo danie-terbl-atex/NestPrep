@@ -60,7 +60,7 @@ class _FoodSheetBodyState extends State<_FoodSheetBody> {
                 NestChip(
                   label: FamilyCopy.dietName(flag),
                   isSelected: _diet.contains(flag),
-                  icon: _diet.contains(flag) ? Icons.check : null,
+                  icon: _diet.contains(flag) ? LucideIcons.check : null,
                   onTap: () => _toggle(flag),
                 ),
             ],

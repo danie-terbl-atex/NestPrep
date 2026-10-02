@@ -176,7 +176,7 @@ class _PersonBodyState extends State<_PersonBody> {
             hint: NannyPickupCopy.phoneHint,
             controller: _phone,
             keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
+            prefixIcon: LucideIcons.phone,
             errorText: phoneTyped && !_phoneIsValid
                 ? NannyPickupCopy.phoneNotValid
                 : null,
@@ -197,7 +197,7 @@ class _PersonBodyState extends State<_PersonBody> {
                 NestChip(
                   label: child.displayName,
                   isSelected: _children.contains(child.id),
-                  icon: _children.contains(child.id) ? Icons.check : null,
+                  icon: _children.contains(child.id) ? LucideIcons.check : null,
                   onTap: () => _toggle(child.id),
                 ),
             ],
@@ -212,7 +212,7 @@ class _PersonBodyState extends State<_PersonBody> {
             NestButton(
               label: NannyCopy.delete,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

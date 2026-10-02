@@ -13,7 +13,7 @@ class LunchBudgetLocked extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => NestEmptyView(
-    icon: Icons.savings_outlined,
+    icon: LucideIcons.piggyBank,
     title: LunchBudgetCopy.lockedTitle,
     message: LunchBudgetCopy.lockedBody,
     actionLabel: LunchBudgetCopy.seePremium,

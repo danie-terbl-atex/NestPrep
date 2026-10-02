@@ -66,13 +66,13 @@ class KidRewardTile extends StatelessWidget {
               child: NestTag(
                 label: PointsCopy.kidAsked,
                 tone: NestTagTone.accent,
-                icon: Icons.hourglass_top_rounded,
+                icon: LucideIcons.hourglass,
               ),
             )
           else if (canAfford && onAsk != null)
             NestButton(
               label: PointsCopy.kidGetIt,
-              icon: Icons.redeem_rounded,
+              icon: LucideIcons.gift,
               isLoading: isAsking,
               onPressed: isAsking ? null : onAsk,
             )

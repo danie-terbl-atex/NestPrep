@@ -35,7 +35,7 @@ class LunchLibraryRow extends StatelessWidget {
               child: NestTag(
                 label: LunchCopy.prepAheadTag,
                 tone: NestTagTone.accent,
-                icon: Icons.soup_kitchen_outlined,
+                icon: LucideIcons.soup,
               ),
             )
           : null,
@@ -45,8 +45,8 @@ class LunchLibraryRow extends StatelessWidget {
       trailing: canEdit
           ? NestIconButton(
               icon: item.archived
-                  ? Icons.unarchive_outlined
-                  : Icons.inventory_2_outlined,
+                  ? LucideIcons.archiveRestore
+                  : LucideIcons.archive,
               label: item.archived
                   ? LunchCopy.bringBack(item.name)
                   : LunchCopy.putAway(item.name),

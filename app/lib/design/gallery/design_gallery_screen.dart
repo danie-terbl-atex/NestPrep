@@ -40,15 +40,15 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
           title: AppCopy.galleryTitle,
           subtitle: brightness.name,
           leading: NestIconButton(
-            icon: Icons.arrow_back,
+            icon: LucideIcons.arrowLeft,
             label: AppCopy.back,
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           trailing: [
             NestIconButton(
               icon: brightness == Brightness.dark
-                  ? Icons.light_mode_outlined
-                  : Icons.dark_mode_outlined,
+                  ? LucideIcons.sun
+                  : LucideIcons.moon,
               label: AppCopy.galleryToggleTheme,
               onPressed: () => setState(
                 () => _override = brightness == Brightness.dark
@@ -62,18 +62,18 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
             onSelect: (index) => setState(() => _tab = index),
             items: const [
               NestBottomBarItem(
-                icon: Icons.smart_button_outlined,
-                selectedIcon: Icons.smart_button,
+                icon: LucideIcons.mousePointerClick,
+                selectedIcon: LucideIcons.mousePointerClick,
                 label: AppCopy.galleryControls,
               ),
               NestBottomBarItem(
-                icon: Icons.layers_outlined,
-                selectedIcon: Icons.layers,
+                icon: LucideIcons.layers,
+                selectedIcon: LucideIcons.layers,
                 label: AppCopy.gallerySurfaces,
               ),
               NestBottomBarItem(
-                icon: Icons.hourglass_empty,
-                selectedIcon: Icons.hourglass_full,
+                icon: LucideIcons.hourglass,
+                selectedIcon: LucideIcons.hourglass,
                 label: AppCopy.galleryStates,
               ),
             ],

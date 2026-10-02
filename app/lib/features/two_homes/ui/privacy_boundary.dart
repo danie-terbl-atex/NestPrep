@@ -18,14 +18,14 @@ class PrivacyBoundary extends StatelessWidget {
         const _List(
           heading: TwoHomesSetupCopy.sharedHeading,
           items: TwoHomesSetupCopy.sharedItems,
-          icon: Icons.swap_horiz,
+          icon: LucideIcons.arrowLeftRight,
           tone: NestTagTone.accent,
         ),
         const SizedBox(height: NestSpace.lg),
         const _List(
           heading: TwoHomesSetupCopy.privateHeading,
           items: TwoHomesSetupCopy.privateItems,
-          icon: Icons.lock_outline,
+          icon: LucideIcons.lock,
           tone: NestTagTone.success,
         ),
         const SizedBox(height: NestSpace.lg),
@@ -72,7 +72,9 @@ class _List extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: NestSpace.xxs),
                     child: Icon(
-                      icon == Icons.lock_outline ? Icons.check : Icons.east,
+                      icon == LucideIcons.lock
+                          ? LucideIcons.check
+                          : LucideIcons.arrowRight,
                       size: NestSize.iconSmall,
                       color: nest.colors.inkTertiary,
                     ),

@@ -70,7 +70,7 @@ class _MealIngredientsBodyState extends State<_MealIngredientsBody> {
                   key: ValueKey('line-$index-${line.key}'),
                   title: MealIngredientCopy.line(line),
                   trailing: NestIconButton(
-                    icon: Icons.close_rounded,
+                    icon: LucideIcons.x,
                     label: MealIngredientCopy.remove(line.name),
                     variant: NestIconButtonVariant.plain,
                     onPressed: () => setState(() => _lines.removeAt(index)),

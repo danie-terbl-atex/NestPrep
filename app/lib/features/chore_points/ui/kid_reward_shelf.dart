@@ -37,7 +37,7 @@ class KidRewardShelf extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         if (points.rewards.isEmpty)
           const KidMomentCard(
-            icon: Icons.card_giftcard_rounded,
+            icon: LucideIcons.gift,
             tint: NestTileTint.guava,
             title: PointsCopy.kidShelfEmpty,
             message: PointsCopy.kidShelfEmptyBody,

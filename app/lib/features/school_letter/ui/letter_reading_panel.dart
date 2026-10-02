@@ -21,7 +21,7 @@ class LetterReadingPanel extends StatelessWidget {
           Row(
             children: [
               const NestIconTile(
-                icon: Icons.auto_awesome_outlined,
+                icon: LucideIcons.sparkles,
                 tint: NestTileTint.lilac,
               ),
               const SizedBox(width: NestSpace.md),

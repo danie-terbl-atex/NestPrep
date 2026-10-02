@@ -117,7 +117,7 @@ class _JobDetailsFormState extends State<JobDetailsForm> {
               for (final member in widget.helpers)
                 NestChip(
                   label: member.displayName,
-                  icon: Icons.person_outline,
+                  icon: LucideIcons.user,
                   isSelected: member.id == _details.helperId,
                   onTap: () => _change((d) => d.copyWith(helperId: member.id)),
                 ),

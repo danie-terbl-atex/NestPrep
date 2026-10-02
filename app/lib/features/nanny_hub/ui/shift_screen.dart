@@ -60,7 +60,7 @@ class ShiftScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: NannyShiftCopy.shiftGoneTitle,
                 message: NannyShiftCopy.shiftGoneBody,
-                icon: Icons.event_busy_outlined,
+                icon: LucideIcons.calendarX,
               ),
               dataBuilder: (context, both) => ShiftBody(
                 log: both.$1,

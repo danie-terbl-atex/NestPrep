@@ -35,7 +35,7 @@ class GrocerySuggestionChips extends StatelessWidget {
             for (final suggestion in suggestions)
               NestChip(
                 label: suggestion.name,
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 onTap: () => onTap(suggestion),
               ),
           ],

@@ -44,7 +44,7 @@ class LunchPantryPlanCard extends StatelessWidget {
                 ? LunchPantryCopy.planFromPantryOn
                 : LunchPantryCopy.planFromPantryOff,
             leading: const NestIconTile(
-              icon: Icons.kitchen_outlined,
+              icon: LucideIcons.refrigerator,
               tint: NestTileTint.basil,
               size: NestSize.avatarMedium,
             ),
@@ -72,7 +72,7 @@ class LunchPantryPlanCard extends StatelessWidget {
                   const SizedBox(height: NestSpace.sm),
                   NestButton(
                     label: LunchPantryCopy.fillFromPantry,
-                    icon: Icons.auto_awesome_rounded,
+                    icon: LucideIcons.sparkles,
                     isLoading: lunch.edit.isFilling,
                     onPressed: () => lunch.edit.autoFill(
                       childWeek.childId,
@@ -119,7 +119,7 @@ class _WeekNeeds extends StatelessWidget {
         ),
         NestButton(
           label: LunchPantryCopy.seeWhatIsMissing,
-          icon: Icons.arrow_forward_rounded,
+          icon: LucideIcons.arrowRight,
           variant: NestButtonVariant.ghost,
           size: NestButtonSize.small,
           isExpanded: false,

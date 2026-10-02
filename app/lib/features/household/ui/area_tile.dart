@@ -20,16 +20,16 @@ class AreaTile extends StatelessWidget {
   );
 
   IconData get _icon => switch (area) {
-    HouseholdArea.calendar => Icons.calendar_today_outlined,
-    HouseholdArea.groceries => Icons.shopping_basket_outlined,
-    HouseholdArea.todos => Icons.check_circle_outline,
-    HouseholdArea.meals => Icons.restaurant_outlined,
-    HouseholdArea.documents => Icons.folder_shared_outlined,
-    HouseholdArea.lunch => Icons.lunch_dining_outlined,
-    HouseholdArea.familyProfiles => Icons.face_outlined,
-    HouseholdArea.medical => Icons.medical_services_outlined,
-    HouseholdArea.homeCare => Icons.cleaning_services_outlined,
-    HouseholdArea.nannyHub => Icons.child_care_outlined,
+    HouseholdArea.calendar => LucideIcons.calendar,
+    HouseholdArea.groceries => LucideIcons.shoppingBasket,
+    HouseholdArea.todos => LucideIcons.circleCheck,
+    HouseholdArea.meals => LucideIcons.utensils,
+    HouseholdArea.documents => LucideIcons.folderOpen,
+    HouseholdArea.lunch => LucideIcons.sandwich,
+    HouseholdArea.familyProfiles => LucideIcons.smile,
+    HouseholdArea.medical => LucideIcons.briefcaseMedical,
+    HouseholdArea.homeCare => LucideIcons.sprayCan,
+    HouseholdArea.nannyHub => LucideIcons.baby,
   };
 
   NestTileTint get _tint => switch (area) {

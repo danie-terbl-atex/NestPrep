@@ -35,7 +35,7 @@ class LanguageBar extends StatelessWidget {
               Row(
                 children: [
                   const NestIconTile(
-                    icon: Icons.translate,
+                    icon: LucideIcons.languages,
                     tint: NestTileTint.lilac,
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,
@@ -70,14 +70,14 @@ class LanguageBar extends StatelessWidget {
                       label: language.showEnglish
                           ? HomeCareLanguageCopy.hideEnglish
                           : HomeCareLanguageCopy.showEnglish,
-                      icon: Icons.subtitles_outlined,
+                      icon: LucideIcons.captions,
                       isSelected: language.showEnglish,
                       onTap: language.toggleEnglish,
                     ),
                     if (language.isTranslating)
                       const NestTag(
                         label: HomeCareLanguageCopy.translating,
-                        icon: Icons.hourglass_top,
+                        icon: LucideIcons.hourglass,
                       ),
                   ],
                 ),

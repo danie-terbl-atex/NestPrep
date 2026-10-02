@@ -99,7 +99,7 @@ class _ChecklistCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.radio_button_unchecked,
+                          LucideIcons.circle,
                           size: NestSize.iconSmall,
                           color: nest.colors.inkTertiary,
                         ),

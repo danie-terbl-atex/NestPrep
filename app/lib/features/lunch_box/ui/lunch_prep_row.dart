@@ -36,9 +36,7 @@ class LunchPrepRowTile extends StatelessWidget {
         subtitle: [LunchCopy.portions(item.portions), ?note].join(' · '),
         leading: slot == null ? null : LunchSlotTile(slot: slot),
         trailing: Icon(
-          row.isDone
-              ? Icons.check_circle_rounded
-              : Icons.radio_button_unchecked_rounded,
+          row.isDone ? LucideIcons.circleCheck : LucideIcons.circle,
           color: row.isDone ? c.success : c.outlineStrong,
           size: NestSize.iconLarge,
         ),

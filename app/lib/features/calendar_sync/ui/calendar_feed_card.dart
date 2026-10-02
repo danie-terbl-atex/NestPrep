@@ -64,7 +64,7 @@ class _CalendarFeedCardState extends State<CalendarFeedCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const NestIconTile(
-                icon: Icons.ios_share,
+                icon: LucideIcons.share,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
               ),
@@ -81,7 +81,7 @@ class _CalendarFeedCardState extends State<CalendarFeedCard> {
           if (link == null)
             NestButton(
               label: CalendarSyncCopy.feedGetLink,
-              icon: Icons.link,
+              icon: LucideIcons.link,
               isLoading: isBusy,
               onPressed: isBusy ? null : widget.onGetLink,
             )
@@ -96,7 +96,7 @@ class _CalendarFeedCardState extends State<CalendarFeedCard> {
             const SizedBox(height: NestSpace.md),
             NestButton(
               label: CalendarSyncCopy.feedSubscribe,
-              icon: Icons.event_available_outlined,
+              icon: LucideIcons.calendarCheck,
               onPressed: widget.onSubscribe,
             ),
             const SizedBox(height: NestSpace.sm),
@@ -104,7 +104,7 @@ class _CalendarFeedCardState extends State<CalendarFeedCard> {
               label: _hasCopied
                   ? CalendarSyncCopy.feedCopied
                   : CalendarSyncCopy.feedCopy,
-              icon: _hasCopied ? Icons.check : Icons.copy_outlined,
+              icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
               variant: NestButtonVariant.outline,
               onPressed: () => _copy(link),
             ),

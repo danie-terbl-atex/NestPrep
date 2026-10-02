@@ -21,28 +21,28 @@ class HubPlaces extends StatelessWidget {
   Widget build(BuildContext context) {
     final places = [
       (
-        Icons.emergency_outlined,
+        LucideIcons.siren,
         NestTileTint.guava,
         NannyCopy.emergency,
         NannyCopy.emergencyBody(hub.contacts.length),
         NannyHubRoute.emergencyPathFor(householdId),
       ),
       (
-        Icons.photo_library_outlined,
+        LucideIcons.images,
         NestTileTint.lilac,
         NannyCopy.houseGuide,
         NannyCopy.houseGuideBody(hub.guide.length),
         NannyHubRoute.guidePathFor(householdId),
       ),
       (
-        Icons.gavel_outlined,
+        LucideIcons.gavel,
         NestTileTint.basil,
         NannyCopy.houseRules,
         NannyCopy.houseRulesBody(hub.rules.length),
         NannyHubRoute.rulesPathFor(householdId),
       ),
       (
-        Icons.checklist_rtl_outlined,
+        LucideIcons.listChecks,
         NestTileTint.butter,
         NannyCopy.checklists,
         NannyCopy.checklistsBody(hub.checklistItemCount),
@@ -53,7 +53,7 @@ class HubPlaces extends StatelessWidget {
         FeatureFlag.nannyPickups,
       ))
         (
-          Icons.directions_walk,
+          LucideIcons.footprints,
           NestTileTint.accent,
           NannyPickupCopy.place,
           NannyPickupCopy.placeBody,
@@ -64,14 +64,14 @@ class HubPlaces extends StatelessWidget {
         FeatureFlag.nannyShiftOnly,
       )) ...[
         (
-          Icons.event_available_outlined,
+          LucideIcons.calendarCheck,
           NestTileTint.basil,
           NannyBookingCopy.bookings,
           NannyBookingCopy.bookingsBody,
           NannyHubRoute.bookingsPathFor(householdId),
         ),
         (
-          Icons.key_outlined,
+          LucideIcons.keyRound,
           NestTileTint.butter,
           NannyBookingCopy.codes,
           NannyBookingCopy.codesBody,
@@ -94,7 +94,7 @@ class HubPlaces extends StatelessWidget {
                 leading: NestIconTile(icon: icon, tint: tint),
                 title: title,
                 subtitle: subtitle,
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(LucideIcons.chevronRight),
                 onTap: () => context.push(path),
               ),
             ),

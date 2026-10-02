@@ -44,14 +44,14 @@ class ProductMatchLine extends StatelessWidget {
         ),
         if (change != null)
           NestIconButton(
-            icon: Icons.swap_horiz_rounded,
+            icon: LucideIcons.arrowLeftRight,
             label: CheckersCopy.changeMatch,
             variant: NestIconButtonVariant.plain,
             onPressed: change,
           ),
         if (clear != null)
           NestIconButton(
-            icon: Icons.close_rounded,
+            icon: LucideIcons.x,
             label: CheckersCopy.clearMatch,
             variant: NestIconButtonVariant.plain,
             onPressed: clear,

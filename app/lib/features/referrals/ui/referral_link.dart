@@ -21,10 +21,10 @@ class ReferralLink extends StatelessWidget {
         title: ReferralCopy.openFromHousehold,
         subtitle: ReferralCopy.openFromHouseholdBody,
         leading: const NestIconTile(
-          icon: Icons.card_giftcard_outlined,
+          icon: LucideIcons.gift,
           tint: NestTileTint.butter,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         // Pushed, so back lands where the person was (`FE-17`).
         onTap: () => context.push(ReferralRoute.pathFor(householdId)),
       ),

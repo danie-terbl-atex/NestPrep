@@ -103,7 +103,7 @@ class PlanWeekItemPill extends StatelessWidget {
                       origin == PickOrigin.swapped) ...[
                     const SizedBox(width: NestSpace.xs),
                     Icon(
-                      Icons.edit_rounded,
+                      LucideIcons.pencil,
                       size: NestSize.iconBadge,
                       color: colors.inkSecondary,
                     ),

@@ -52,9 +52,7 @@ class LetterProposalTile extends StatelessWidget {
                     : SchoolLetterCopy.unticked(proposal.title),
                 excludeSemantics: true,
                 child: Icon(
-                  item.isTicked
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
+                  item.isTicked ? LucideIcons.circleCheck : LucideIcons.circle,
                   color: item.isTicked
                       ? nest.colors.success
                       : nest.colors.outlineStrong,
@@ -96,7 +94,7 @@ class LetterProposalTile extends StatelessWidget {
                       alignment: AlignmentDirectional.centerEnd,
                       child: NestButton(
                         label: SchoolLetterCopy.edit,
-                        icon: Icons.edit_outlined,
+                        icon: LucideIcons.pencil,
                         variant: NestButtonVariant.ghost,
                         size: NestButtonSize.small,
                         isExpanded: false,

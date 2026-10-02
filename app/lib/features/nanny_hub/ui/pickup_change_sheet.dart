@@ -136,7 +136,7 @@ class _ChangeBodyState extends State<_ChangeBody> {
                 NestChip(
                   label: child.displayName,
                   isSelected: child.id == childId,
-                  icon: child.id == childId ? Icons.check : null,
+                  icon: child.id == childId ? LucideIcons.check : null,
                   // A change is keyed by its child and day; moving it is a
                   // new change, so an existing one keeps both.
                   onTap: isExisting ? null : () => _pickChild(child.id),
@@ -191,7 +191,7 @@ class _ChangeBodyState extends State<_ChangeBody> {
             NestButton(
               label: NannyCopy.delete,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

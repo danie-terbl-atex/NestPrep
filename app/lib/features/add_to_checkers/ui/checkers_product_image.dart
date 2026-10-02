@@ -22,7 +22,7 @@ class CheckersProductImage extends StatelessWidget {
     final placeholder = ColoredBox(
       color: nest.colors.surfaceTint,
       child: Icon(
-        Icons.shopping_basket_outlined,
+        LucideIcons.shoppingBasket,
         size: size / 2,
         color: nest.colors.inkTertiary,
       ),

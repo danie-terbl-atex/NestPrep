@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/referral_routes.dart';
@@ -98,7 +99,7 @@ void main() {
 
     expect(find.text(ReferralCopy.heroTitle), findsOneWidget);
     expect(find.text('ABCD2345'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
     expect(find.text(MoreCopy.subtitle), findsOneWidget);
   });

@@ -62,7 +62,7 @@ class ChildHeader extends StatelessWidget {
                   label: photoId == null
                       ? NannyCopy.addPhoto
                       : NannyCopy.changePhoto,
-                  icon: Icons.photo_camera_outlined,
+                  icon: LucideIcons.camera,
                   onTap: change,
                 ),
               ],

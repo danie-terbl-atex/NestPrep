@@ -52,7 +52,7 @@ class _SendBackBodyState extends State<_SendBackBody> {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: HomeCareCopy.sendBack,
-          icon: Icons.replay,
+          icon: LucideIcons.rotateCcw,
           onPressed: note.isEmpty
               ? null
               : () => Navigator.of(context).pop(note),

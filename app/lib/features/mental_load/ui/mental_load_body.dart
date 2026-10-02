@@ -51,7 +51,7 @@ class _MentalLoadBodyState extends State<MentalLoadBody> {
         ],
         if (week.adults.length < 2) ...[
           const NestToneRow(
-            icon: Icons.group_add_outlined,
+            icon: LucideIcons.userPlus,
             title: MentalLoadCopy.noAdultsTitle,
             subtitle: MentalLoadCopy.noAdultsBody,
           ),

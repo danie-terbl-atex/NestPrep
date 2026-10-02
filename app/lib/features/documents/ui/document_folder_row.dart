@@ -33,14 +33,14 @@ class DocumentFolderRow extends StatelessWidget {
         title: folder.name,
         subtitle: AppCopy.documentsInFolder(count),
         leading: const NestIconTile(
-          icon: Icons.folder_outlined,
+          icon: LucideIcons.folder,
           tint: NestTileTint.lilac,
         ),
         onTap: onOpen,
         trailing: edit == null
             ? null
             : NestIconButton(
-                icon: Icons.tune,
+                icon: LucideIcons.slidersHorizontal,
                 label: AppCopy.documentsEditFolder,
                 variant: NestIconButtonVariant.plain,
                 onPressed: edit,

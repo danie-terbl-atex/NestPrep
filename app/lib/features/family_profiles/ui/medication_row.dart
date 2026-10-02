@@ -42,14 +42,14 @@ class MedicationRow extends StatelessWidget {
                   if (medication.isWhenNeeded)
                     const NestTag(
                       label: FamilyCopy.medicationWhenNeeded,
-                      icon: Icons.schedule,
+                      icon: LucideIcons.clock,
                     )
                   else
                     for (final minutes in medication.timesInOrder)
                       NestTag(
                         label: NestDates.timeOfDay(minutes),
                         tone: NestTagTone.accent,
-                        icon: Icons.schedule,
+                        icon: LucideIcons.clock,
                       ),
                 ],
               ),

@@ -30,7 +30,7 @@ class BetaNumbersScreen extends StatelessWidget {
       subtitle: copy.subtitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -43,7 +43,7 @@ class BetaNumbersScreen extends StatelessWidget {
         emptyBuilder: (_) => NestEmptyView(
           title: copy.emptyTitle,
           message: copy.emptyBody,
-          icon: Icons.insights_outlined,
+          icon: LucideIcons.chartLine,
         ),
         dataBuilder: (_, weeks) =>
             _TheWeeks(weeks: weeks, today: controller.today),

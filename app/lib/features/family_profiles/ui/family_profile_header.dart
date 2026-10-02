@@ -50,7 +50,7 @@ class FamilyProfileHeader extends StatelessWidget {
               if (toggle != null) ...[
                 NestChip(
                   label: FamilyCopy.isChild,
-                  icon: entry.isChild ? Icons.check : Icons.child_care_outlined,
+                  icon: entry.isChild ? LucideIcons.check : LucideIcons.baby,
                   isSelected: entry.isChild,
                   semanticLabel: FamilyCopy.markAsChild,
                   onTap: toggle,
@@ -63,7 +63,7 @@ class FamilyProfileHeader extends StatelessWidget {
                 const NestTag(
                   label: FamilyCopy.isChild,
                   tone: NestTagTone.accent,
-                  icon: Icons.child_care_outlined,
+                  icon: LucideIcons.baby,
                 ),
             ],
           ),

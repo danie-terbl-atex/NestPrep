@@ -41,7 +41,7 @@ class LinkScreen extends StatelessWidget {
       leading: backLeading(context),
       trailing: [
         NestIconButton(
-          icon: Icons.shield_outlined,
+          icon: LucideIcons.shield,
           label: TwoHomesSetupCopy.privacyOpen,
           variant: NestIconButtonVariant.plain,
           onPressed: () => context.push(
@@ -68,7 +68,7 @@ class LinkScreen extends StatelessWidget {
               isEmpty: (link) => link == null,
               onRetry: controller.retry,
               emptyBuilder: (_) => const NestEmptyView(
-                icon: Icons.link_off,
+                icon: LucideIcons.unlink,
                 title: TwoHomesCopy.title,
                 message: TwoHomesCopy.linkGone,
               ),

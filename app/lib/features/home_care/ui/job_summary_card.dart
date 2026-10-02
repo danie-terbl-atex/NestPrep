@@ -41,7 +41,7 @@ class JobSummaryCard extends StatelessWidget {
             title: room?.name ?? HomeCareCopy.roomGone,
             subtitle: HomeCareCopy.room,
             leading: NestIconTile(
-              icon: room?.kind.icon ?? Icons.door_front_door_outlined,
+              icon: room?.kind.icon ?? LucideIcons.doorClosed,
               tint: room?.kind.tint ?? NestTileTint.accent,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
@@ -52,7 +52,7 @@ class JobSummaryCard extends StatelessWidget {
             subtitle: HomeCareCopy.helper,
             leading: helper == null
                 ? const NestIconTile(
-                    icon: Icons.person_off_outlined,
+                    icon: LucideIcons.userX,
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,
                   )

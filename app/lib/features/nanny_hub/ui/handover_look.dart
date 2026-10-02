@@ -9,13 +9,13 @@ import '../model/handover_mood.dart';
 /// well as the tint (`FE-13`).
 extension HandoverLook on HandoverKind {
   IconData get icon => switch (this) {
-    HandoverKind.meal => Icons.restaurant_outlined,
-    HandoverKind.nap => Icons.bedtime_outlined,
-    HandoverKind.nappy => Icons.baby_changing_station_outlined,
-    HandoverKind.mood => Icons.mood_outlined,
-    HandoverKind.incident => Icons.healing_outlined,
-    HandoverKind.medicine => Icons.medication_outlined,
-    HandoverKind.note => Icons.edit_note_outlined,
+    HandoverKind.meal => LucideIcons.utensils,
+    HandoverKind.nap => LucideIcons.moon,
+    HandoverKind.nappy => LucideIcons.baby,
+    HandoverKind.mood => LucideIcons.smile,
+    HandoverKind.incident => LucideIcons.bandage,
+    HandoverKind.medicine => LucideIcons.pill,
+    HandoverKind.note => LucideIcons.notebookPen,
   };
 
   NestTileTint get tint => switch (this) {
@@ -31,10 +31,10 @@ extension HandoverLook on HandoverKind {
 
 extension MoodLook on HandoverMood {
   IconData get icon => switch (this) {
-    HandoverMood.happy => Icons.sentiment_very_satisfied_outlined,
-    HandoverMood.calm => Icons.sentiment_satisfied_outlined,
-    HandoverMood.tired => Icons.bedtime_outlined,
-    HandoverMood.upset => Icons.sentiment_dissatisfied_outlined,
-    HandoverMood.unwell => Icons.sick_outlined,
+    HandoverMood.happy => LucideIcons.laugh,
+    HandoverMood.calm => LucideIcons.smile,
+    HandoverMood.tired => LucideIcons.moon,
+    HandoverMood.upset => LucideIcons.frown,
+    HandoverMood.unwell => LucideIcons.thermometer,
   };
 }

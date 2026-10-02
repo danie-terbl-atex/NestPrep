@@ -130,7 +130,7 @@ class _VaultDocumentBodyState extends State<_VaultDocumentBody> {
             NestButton(
               label: VaultCopy.detailsTitle,
               variant: NestButtonVariant.tonal,
-              icon: Icons.edit_outlined,
+              icon: LucideIcons.pencil,
               onPressed: () => _edit(context, controller),
             ),
             const SizedBox(height: NestSpace.sm),

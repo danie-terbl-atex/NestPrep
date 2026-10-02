@@ -54,7 +54,7 @@ class StockScreen extends StatelessWidget {
                   message: canManage
                       ? HomeCareStockCopy.emptyBody
                       : HomeCareStockCopy.emptyHelperBody,
-                  icon: Icons.inventory_outlined,
+                  icon: LucideIcons.clipboardList,
                   actionLabel: canManage
                       ? HomeCareStockCopy.openProducts
                       : null,

@@ -178,7 +178,7 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
             label: _saysSomething
                 ? NannyShiftCopy.logIt
                 : NannyShiftCopy.entryNeedsSomething,
-            icon: _saysSomething ? Icons.check : null,
+            icon: _saysSomething ? LucideIcons.check : null,
             onPressed: _saysSomething ? () => _finish(isRemoval: false) : null,
           ),
           if (widget.existing != null) ...[
@@ -186,7 +186,7 @@ class _LogEntryBodyState extends State<_LogEntryBody> {
             NestButton(
               label: NannyCopy.delete,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

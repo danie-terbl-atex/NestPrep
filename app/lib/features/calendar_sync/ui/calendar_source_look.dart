@@ -18,16 +18,16 @@ final class CalendarSourceLook {
     String label = '',
   }) => switch (provider) {
     CalendarProvider.google => const CalendarSourceLook._(
-      Icons.calendar_month_outlined,
+      LucideIcons.calendarDays,
       NestTileTint.lilac,
     ),
     CalendarProvider.microsoft => const CalendarSourceLook._(
-      Icons.work_outline,
+      LucideIcons.briefcase,
       NestTileTint.accent,
     ),
     CalendarProvider.ics =>
       label.contains('icloud.com')
-          ? const CalendarSourceLook._(Icons.cloud_outlined, NestTileTint.basil)
-          : const CalendarSourceLook._(Icons.link, NestTileTint.butter),
+          ? const CalendarSourceLook._(LucideIcons.cloud, NestTileTint.basil)
+          : const CalendarSourceLook._(LucideIcons.link, NestTileTint.butter),
   };
 }

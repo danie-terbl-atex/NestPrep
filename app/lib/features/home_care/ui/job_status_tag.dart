@@ -15,11 +15,11 @@ class JobStatusTag extends StatelessWidget {
   Widget build(BuildContext context) => NestTag(
     label: HomeCareCopy.status(status),
     icon: switch (status) {
-      JobStatus.assigned => Icons.fiber_new_outlined,
-      JobStatus.inProgress => Icons.timelapse,
-      JobStatus.submitted => Icons.photo_camera_outlined,
-      JobStatus.approved => Icons.verified_outlined,
-      JobStatus.sentBack => Icons.replay,
+      JobStatus.assigned => LucideIcons.badgePlus,
+      JobStatus.inProgress => LucideIcons.loaderCircle,
+      JobStatus.submitted => LucideIcons.camera,
+      JobStatus.approved => LucideIcons.badgeCheck,
+      JobStatus.sentBack => LucideIcons.rotateCcw,
     },
     tone: switch (status) {
       JobStatus.assigned => NestTagTone.accent,

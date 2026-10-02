@@ -79,7 +79,7 @@ class _InviteSheetBodyState extends State<_InviteSheetBody> {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: AccessCopy.inviteShare,
-          icon: Icons.ios_share,
+          icon: LucideIcons.share,
           onPressed: widget.onShare,
         ),
         const SizedBox(height: NestSpace.sm),
@@ -88,7 +88,7 @@ class _InviteSheetBodyState extends State<_InviteSheetBody> {
           label: _hasCopied
               ? AppCopy.householdCodeCopied
               : AppCopy.householdCopyCode,
-          icon: _hasCopied ? Icons.check : Icons.copy_outlined,
+          icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
           onPressed: _copy,
         ),
       ],

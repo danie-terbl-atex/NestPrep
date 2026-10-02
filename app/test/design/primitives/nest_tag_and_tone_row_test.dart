@@ -17,7 +17,11 @@ void main() {
           Wrap(
             children: [
               for (final tone in NestTagTone.values)
-                NestTag(label: 'Severe', tone: tone, icon: Icons.warning),
+                NestTag(
+                  label: 'Severe',
+                  tone: tone,
+                  icon: LucideIcons.triangleAlert,
+                ),
             ],
           ),
           brightness: brightness,
@@ -35,7 +39,7 @@ void main() {
           SizedBox(
             width: 320,
             child: NestToneRow(
-              icon: Icons.emergency_outlined,
+              icon: LucideIcons.siren,
               tone: NestTagTone.danger,
               title: 'Peanuts',
               subtitle: 'Pen in the bag',
@@ -64,12 +68,12 @@ void main() {
       tester,
       NestChip(
         label: 'Pasta',
-        trailingIcon: Icons.close,
+        trailingIcon: LucideIcons.x,
         semanticLabel: 'Remove Pasta',
         onTap: () => taps++,
       ),
     );
-    expect(find.byIcon(Icons.close), findsOneWidget);
+    expect(find.byIcon(LucideIcons.x), findsOneWidget);
     expect(find.bySemanticsLabel('Remove Pasta'), findsOneWidget);
     await tester.tap(find.text('Pasta'));
     expect(taps, 1);
@@ -85,7 +89,11 @@ void main() {
         children: [
           const Text('Kid Parker'),
           NestChip(label: 'Child', onTap: () {}),
-          NestIconButton(icon: Icons.add, label: 'Add', onPressed: () {}),
+          NestIconButton(
+            icon: LucideIcons.plus,
+            label: 'Add',
+            onPressed: () {},
+          ),
         ],
       ),
     );

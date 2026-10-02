@@ -68,7 +68,7 @@ class QuickAddPreview extends StatelessWidget {
               ),
               NestButton(
                 label: QuickAddCopy.add,
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 size: NestButtonSize.small,
                 isExpanded: false,
                 onPressed: onAdd,

@@ -71,7 +71,7 @@ class WhenChoice extends StatelessWidget {
               ),
             NestChip(
               label: clock.timeOf(at),
-              icon: Icons.schedule,
+              icon: LucideIcons.clock,
               semanticLabel: NannyCopy.pickTime,
               onTap: () => _pick(context),
             ),

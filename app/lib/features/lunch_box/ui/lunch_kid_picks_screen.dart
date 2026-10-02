@@ -91,7 +91,7 @@ class _PicksBody extends StatelessWidget {
         board.children.firstOrNull;
     if (childWeek == null) {
       return const NestEmptyView(
-        icon: Icons.bento_outlined,
+        icon: LucideIcons.sandwich,
         title: LunchCopy.noChildrenTitle,
         message: LunchCopy.noChildrenBody,
       );
@@ -124,7 +124,7 @@ class _PicksBody extends StatelessWidget {
                   const SizedBox(height: NestSpace.md),
                   NestButton(
                     label: LunchKidPicksCopy.suggestOptions,
-                    icon: Icons.auto_awesome_rounded,
+                    icon: LucideIcons.sparkles,
                     variant: NestButtonVariant.tonal,
                     isLoading: picks.isSuggesting,
                     onPressed: () => picks.suggestWeek(childWeek),
@@ -134,7 +134,7 @@ class _PicksBody extends StatelessWidget {
                   const SizedBox(height: NestSpace.sm),
                   NestButton(
                     label: LunchKidPicksCopy.letChoose(name),
-                    icon: Icons.touch_app_rounded,
+                    icon: LucideIcons.pointer,
                     onPressed: () => context.push(
                       LunchPlanningRoute.choosePathFor(
                         view.household.id,

@@ -34,7 +34,7 @@ class LicencesScreen extends StatelessWidget {
         emptyBuilder: (_) => const NestEmptyView(
           title: LegalCopy.licencesEmptyTitle,
           message: LegalCopy.licencesEmptyBody,
-          icon: Icons.description_outlined,
+          icon: LucideIcons.fileText,
         ),
         dataBuilder: (context, packages) => ListView.builder(
           padding: const EdgeInsets.only(bottom: NestSpace.huge),
@@ -45,7 +45,7 @@ class LicencesScreen extends StatelessWidget {
               key: ValueKey(package.package),
               title: package.package,
               subtitle: LegalCopy.licenceCount(package.texts.length),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: () => context.push(pathFor(package.package)),
             );
           },

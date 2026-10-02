@@ -43,13 +43,13 @@ class InboxScreen extends StatelessWidget {
       trailing: [
         if (controller.hasUnread)
           NestIconButton(
-            icon: Icons.done_all_rounded,
+            icon: LucideIcons.checkCheck,
             label: NotificationsCopy.markAllRead,
             variant: NestIconButtonVariant.plain,
             onPressed: controller.markAllRead,
           ),
         NestIconButton(
-          icon: Icons.tune_rounded,
+          icon: LucideIcons.slidersHorizontal,
           label: NotificationsCopy.settingsLabel,
           onPressed: () => context.push(
             NotificationsRoute.settingsPathFor(controller.householdId),
@@ -80,7 +80,7 @@ class InboxScreen extends StatelessWidget {
                   NestEmptyView(
                     title: NotificationsCopy.emptyTitle,
                     message: NotificationsCopy.emptyMessage,
-                    icon: Icons.wb_twilight_rounded,
+                    icon: LucideIcons.sunset,
                   ),
                 ],
               ),

@@ -54,9 +54,7 @@ class GroceryItemRow extends StatelessWidget {
               label: item.name,
               excludeSemantics: true,
               child: Icon(
-                item.isBought
-                    ? Icons.check_circle
-                    : Icons.radio_button_unchecked,
+                item.isBought ? LucideIcons.circleCheck : LucideIcons.circle,
                 color: item.isBought
                     ? nest.colors.success
                     : nest.colors.outlineStrong,

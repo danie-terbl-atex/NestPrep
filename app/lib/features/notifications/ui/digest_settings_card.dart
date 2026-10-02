@@ -35,7 +35,7 @@ class DigestSettingsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SettingSwitchRow(
-            icon: Icons.wb_twilight_rounded,
+            icon: LucideIcons.sunset,
             tint: NestTileTint.butter,
             title: NotificationsCopy.digestSwitch,
             value: digest.enabled,

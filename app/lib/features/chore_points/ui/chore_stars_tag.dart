@@ -18,6 +18,6 @@ class ChoreStarsTag extends StatelessWidget {
         ? PointsCopy.starsChecked(task.points)
         : PointsCopy.starsCount(task.points),
     tone: NestTagTone.warning,
-    icon: Icons.star_rounded,
+    icon: LucideIcons.star,
   );
 }

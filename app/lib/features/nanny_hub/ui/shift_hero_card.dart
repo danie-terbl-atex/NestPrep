@@ -73,7 +73,7 @@ class ShiftHeroCard extends StatelessWidget {
             NestButton(
               label: NannyCopy.startShiftFor,
               variant: NestButtonVariant.ghost,
-              icon: Icons.person_add_alt_1_outlined,
+              icon: LucideIcons.userPlus,
               onPressed: startForSomebody,
             ),
           ],
@@ -103,7 +103,7 @@ class _OnShift extends StatelessWidget {
         Row(
           children: [
             const NestIconTile(
-              icon: Icons.child_care,
+              icon: LucideIcons.baby,
               tint: NestTileTint.basil,
             ),
             const SizedBox(width: NestSpace.md),
@@ -124,7 +124,7 @@ class _OnShift extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         NestButton(
           label: NannyCopy.openShiftMode,
-          icon: Icons.arrow_forward,
+          icon: LucideIcons.arrowRight,
           onPressed: onOpen,
         ),
       ],
@@ -149,7 +149,7 @@ class _Ready extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         NestButton(
           label: NannyCopy.startMyShift,
-          icon: Icons.play_arrow_rounded,
+          icon: LucideIcons.play,
           onPressed: onStart,
         ),
       ],
@@ -193,11 +193,11 @@ class _OtherShiftRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: NestListRow(
         leading: carer == null
-            ? const NestIconTile(icon: Icons.child_care)
+            ? const NestIconTile(icon: LucideIcons.baby)
             : NestAvatar(name: carer.displayName, color: carer.color),
         title: title,
         subtitle: NannyCopy.viewShift,
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         onTap: onTap,
       ),
     );

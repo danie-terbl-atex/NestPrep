@@ -46,7 +46,7 @@ class ScheduleRequestScreen extends StatelessWidget {
               isEmpty: (link) => link == null || !link.isActive,
               onRetry: controller.retry,
               emptyBuilder: (_) => const NestEmptyView(
-                icon: Icons.link_off,
+                icon: LucideIcons.unlink,
                 title: TwoHomesCopy.scheduleRequestTitle,
                 message: TwoHomesCopy.linkGone,
               ),
@@ -115,7 +115,7 @@ class _ScheduleRequestFormState extends State<_ScheduleRequestForm> {
           listenable: _draft,
           builder: (context, _) => NestButton(
             label: TwoHomesCopy.send,
-            icon: Icons.send_outlined,
+            icon: LucideIcons.send,
             isLoading: controller.isSending,
             onPressed: _draft.schedule.isComplete && !controller.isSending
                 ? _send

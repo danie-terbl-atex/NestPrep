@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../nest_kit.dart';
 import 'gallery_group.dart';
@@ -37,7 +36,7 @@ class GallerySurfacesSection extends StatelessWidget {
                 children: [
                   NestSectionHeader(
                     title: "Today's plan",
-                    actionIcon: Icons.add,
+                    actionIcon: LucideIcons.plus,
                     actionLabel: 'Add',
                     onAction: () {},
                   ),
@@ -71,18 +70,18 @@ class GallerySurfacesSection extends StatelessWidget {
           title: 'Rows and tiles',
           children: [
             NestListRow(
-              leading: const NestIconTile(icon: Icons.shopping_basket_outlined),
+              leading: const NestIconTile(icon: LucideIcons.shoppingBasket),
               title: 'Groceries',
               subtitle: '4 things to buy',
               trailing: Icon(
-                Icons.chevron_right,
+                LucideIcons.chevronRight,
                 color: nest.colors.inkTertiary,
               ),
               onTap: () {},
             ),
             NestListRow(
               leading: const NestIconTile(
-                icon: Icons.checklist_outlined,
+                icon: LucideIcons.listChecks,
                 tint: NestTileTint.basil,
               ),
               title: 'Laundry day',
@@ -91,7 +90,7 @@ class GallerySurfacesSection extends StatelessWidget {
             ),
             NestListRow(
               leading: const NestIconTile(
-                icon: Icons.picture_as_pdf_outlined,
+                icon: LucideIcons.fileText,
                 tint: NestTileTint.butter,
               ),
               title: 'Passport',
@@ -103,15 +102,15 @@ class GallerySurfacesSection extends StatelessWidget {
                   NestBadge(
                     label: 'Expired',
                     tone: NestBadgeTone.danger,
-                    icon: Icons.error_outline,
+                    icon: LucideIcons.circleAlert,
                   ),
                   NestBadge(
                     label: 'Expires in 12 days',
                     tone: NestBadgeTone.warning,
-                    icon: Icons.schedule,
+                    icon: LucideIcons.clock,
                   ),
                   NestBadge(label: 'Coming up', tone: NestBadgeTone.info),
-                  NestBadge(label: 'ID', icon: Icons.sell_outlined),
+                  NestBadge(label: 'ID', icon: LucideIcons.tag),
                 ],
               ),
               onTap: () {},
@@ -120,19 +119,19 @@ class GallerySurfacesSection extends StatelessWidget {
               spacing: NestSpace.md,
               runSpacing: NestSpace.md,
               children: [
-                NestIconTile(icon: Icons.edit_outlined, label: 'Create'),
+                NestIconTile(icon: LucideIcons.pencil, label: 'Create'),
                 NestIconTile(
-                  icon: Icons.calendar_month_outlined,
+                  icon: LucideIcons.calendarDays,
                   tint: NestTileTint.lilac,
                   label: 'Plan',
                 ),
                 NestIconTile(
-                  icon: Icons.restaurant_outlined,
+                  icon: LucideIcons.utensils,
                   tint: NestTileTint.butter,
                   label: 'Meals',
                 ),
                 NestIconTile(
-                  icon: Icons.favorite_outline,
+                  icon: LucideIcons.heart,
                   tint: NestTileTint.guava,
                   label: 'Family',
                 ),

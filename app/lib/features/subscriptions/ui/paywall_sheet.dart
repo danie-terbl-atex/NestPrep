@@ -90,7 +90,7 @@ class PaywallSheet extends StatelessWidget {
                 const NestTag(
                   label: SubscriptionCopy.paywallLabel,
                   tone: NestTagTone.accent,
-                  icon: Icons.auto_awesome,
+                  icon: LucideIcons.sparkles,
                 ),
                 const SizedBox(height: NestSpace.sm),
                 Text(

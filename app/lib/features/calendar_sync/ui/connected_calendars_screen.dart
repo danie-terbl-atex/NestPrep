@@ -31,7 +31,7 @@ class ConnectedCalendarsScreen extends StatelessWidget {
       subtitle: CalendarSyncCopy.subtitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,

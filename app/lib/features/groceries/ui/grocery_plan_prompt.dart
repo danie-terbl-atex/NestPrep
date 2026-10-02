@@ -36,9 +36,7 @@ class GroceryPlanPrompt extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NestIconTile(
-              icon: inStep
-                  ? Icons.playlist_add_check_rounded
-                  : Icons.playlist_add_rounded,
+              icon: inStep ? LucideIcons.listChecks : LucideIcons.listPlus,
               tint: inStep ? NestTileTint.basil : NestTileTint.butter,
             ),
             const SizedBox(width: NestSpace.md),

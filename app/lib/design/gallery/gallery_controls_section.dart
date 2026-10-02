@@ -52,7 +52,7 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
                   label: 'small',
                   size: NestButtonSize.small,
                   isExpanded: false,
-                  icon: Icons.add,
+                  icon: LucideIcons.plus,
                   onPressed: () {},
                 ),
                 const SizedBox(width: NestSpace.sm),
@@ -73,27 +73,27 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
             Row(
               children: [
                 NestIconButton(
-                  icon: Icons.menu,
+                  icon: LucideIcons.menu,
                   label: 'Menu',
                   onPressed: () {},
                 ),
                 const SizedBox(width: NestSpace.sm),
                 NestIconButton(
-                  icon: Icons.notifications_outlined,
+                  icon: LucideIcons.bell,
                   label: 'Alerts',
                   badge: true,
                   onPressed: () {},
                 ),
                 const SizedBox(width: NestSpace.sm),
                 NestIconButton(
-                  icon: Icons.add,
+                  icon: LucideIcons.plus,
                   label: 'Add',
                   variant: NestIconButtonVariant.accent,
                   onPressed: () {},
                 ),
                 const SizedBox(width: NestSpace.sm),
                 NestIconButton(
-                  icon: Icons.settings_outlined,
+                  icon: LucideIcons.settings,
                   label: 'Settings',
                   variant: NestIconButtonVariant.plain,
                   onPressed: () {},
@@ -118,7 +118,7 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
                   NestChip(
                     label: label,
                     isSelected: index == _chip,
-                    icon: index == 0 ? Icons.today_outlined : null,
+                    icon: index == 0 ? LucideIcons.calendarCheck : null,
                     onTap: () => setState(() => _chip = index),
                   ),
               ],
@@ -132,7 +132,7 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
             NestTextField(
               label: 'Invite code',
               hint: 'ABC-123',
-              prefixIcon: Icons.key_outlined,
+              prefixIcon: LucideIcons.keyRound,
               errorText: 'That code has expired.',
             ),
             NestTextField(label: 'Disabled', hint: 'Not now', enabled: false),

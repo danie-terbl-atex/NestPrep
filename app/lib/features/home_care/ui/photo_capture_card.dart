@@ -46,7 +46,7 @@ class PhotoCaptureCard extends StatelessWidget {
         children: [
           if (taken == null) ...[
             const NestIconTile(
-              icon: Icons.add_a_photo_outlined,
+              icon: LucideIcons.camera,
               tint: NestTileTint.butter,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
@@ -72,7 +72,7 @@ class PhotoCaptureCard extends StatelessWidget {
               label: marks.isEmpty
                   ? HomeCareCopy.markSpot
                   : HomeCareCopy.markAgain,
-              icon: Icons.gesture,
+              icon: LucideIcons.signature,
               onPressed: isBusy ? null : mark,
             ),
             const SizedBox(height: NestSpace.sm),
@@ -86,7 +86,7 @@ class PhotoCaptureCard extends StatelessWidget {
                 label: taken == null
                     ? HomeCareCopy.takePhoto
                     : HomeCareCopy.retakePhoto,
-                icon: Icons.photo_camera_outlined,
+                icon: LucideIcons.camera,
                 variant: taken == null
                     ? NestButtonVariant.primary
                     : NestButtonVariant.tonal,
@@ -97,7 +97,7 @@ class PhotoCaptureCard extends StatelessWidget {
               ),
               NestButton(
                 label: HomeCareCopy.choosePhoto,
-                icon: Icons.photo_library_outlined,
+                icon: LucideIcons.images,
                 variant: NestButtonVariant.outline,
                 size: NestButtonSize.medium,
                 isExpanded: false,

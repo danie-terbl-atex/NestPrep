@@ -26,7 +26,7 @@ class LunchPortionStepper extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         NestIconButton(
-          icon: Icons.remove_rounded,
+          icon: LucideIcons.minus,
           label: LunchPantryCopy.oneLess(name),
           variant: NestIconButtonVariant.plain,
           onPressed: portions > 0 ? () => onChanged(portions - 1) : null,
@@ -42,7 +42,7 @@ class LunchPortionStepper extends StatelessWidget {
           ),
         ),
         NestIconButton(
-          icon: Icons.add_rounded,
+          icon: LucideIcons.plus,
           label: LunchPantryCopy.oneMore(name),
           variant: NestIconButtonVariant.plain,
           onPressed: portions < LunchPantryEntry.portionLimit

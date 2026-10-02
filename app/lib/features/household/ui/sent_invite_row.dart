@@ -49,14 +49,14 @@ class SentInviteRow extends StatelessWidget {
             ),
           ),
           NestIconButton(
-            icon: Icons.copy_outlined,
+            icon: LucideIcons.copy,
             label: AppCopy.householdCopyCode,
             variant: NestIconButtonVariant.plain,
             onPressed: () =>
                 Clipboard.setData(ClipboardData(text: invite.code)),
           ),
           NestIconButton(
-            icon: Icons.ios_share,
+            icon: LucideIcons.share,
             label: AccessCopy.setupShareAgain,
             variant: NestIconButtonVariant.accent,
             onPressed: onShare,

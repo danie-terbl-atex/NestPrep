@@ -45,8 +45,8 @@ class PlanWeekBriefPanel extends StatelessWidget {
                   label: child.child.member.displayName,
                   isSelected: chosen.contains(child.childId),
                   icon: chosen.contains(child.childId)
-                      ? Icons.check_rounded
-                      : Icons.add_rounded,
+                      ? LucideIcons.check
+                      : LucideIcons.plus,
                   onTap: () => controller.toggleChild(child.childId),
                 ),
             ],
@@ -64,7 +64,7 @@ class PlanWeekBriefPanel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(
-              Icons.lock_outline_rounded,
+              LucideIcons.lock,
               size: NestSize.iconSmall,
               color: nest.colors.inkTertiary,
             ),
@@ -82,7 +82,7 @@ class PlanWeekBriefPanel extends StatelessWidget {
         PlanWeekStepActions(
           nextKey: const ValueKey('plan-week-ideas'),
           label: PlanWeekCopy.draftAction,
-          icon: Icons.auto_awesome_rounded,
+          icon: LucideIcons.sparkles,
           onNext: chosen.isEmpty ? null : controller.draftIdeas,
         ),
       ],

@@ -42,7 +42,7 @@ class AllowedPersonCard extends StatelessWidget {
               child: NestTag(
                 label: expected,
                 tone: NestTagTone.success,
-                icon: Icons.check_circle_outline,
+                icon: LucideIcons.circleCheck,
               ),
             ),
             const SizedBox(height: NestSpace.md),
@@ -56,7 +56,7 @@ class AllowedPersonCard extends StatelessWidget {
             const Align(
               alignment: AlignmentDirectional.centerStart,
               child: NestIconTile(
-                icon: Icons.person_outline,
+                icon: LucideIcons.user,
                 tint: NestTileTint.lilac,
                 size: NestSize.mark,
                 iconSize: NestSize.iconMark,
@@ -68,7 +68,7 @@ class AllowedPersonCard extends StatelessWidget {
           if (person.idNote case final note?) ...[
             const SizedBox(height: NestSpace.md),
             NestToneRow(
-              icon: Icons.badge_outlined,
+              icon: LucideIcons.idCard,
               tone: NestTagTone.accent,
               title: note,
             ),
@@ -77,7 +77,7 @@ class AllowedPersonCard extends StatelessWidget {
             const SizedBox(height: NestSpace.md),
             NestButton(
               label: NannyPickupCopy.callPerson(person.name),
-              icon: Icons.phone_outlined,
+              icon: LucideIcons.phone,
               variant: NestButtonVariant.outline,
               onPressed: call,
             ),

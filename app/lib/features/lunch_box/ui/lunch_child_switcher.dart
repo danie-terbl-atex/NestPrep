@@ -33,7 +33,7 @@ class LunchChildSwitcher extends StatelessWidget {
             semanticLabel: LunchCopy.chooseChild(
               childWeek.child.member.displayName,
             ),
-            icon: childWeek.unsafeCount > 0 ? Icons.error_outline : null,
+            icon: childWeek.unsafeCount > 0 ? LucideIcons.circleAlert : null,
             isSelected: childWeek.childId == selectedChildId,
             onTap: () => onSelect(childWeek.childId),
           ),

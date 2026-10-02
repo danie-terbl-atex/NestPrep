@@ -49,14 +49,14 @@ class CalendarWeekStrip extends StatelessWidget {
         Row(
           children: [
             NestIconButton(
-              icon: Icons.chevron_left,
+              icon: LucideIcons.chevronLeft,
               label: AppCopy.calendarPreviousWeek,
               variant: NestIconButtonVariant.plain,
               onPressed: onPrevious,
             ),
             const Spacer(),
             NestIconButton(
-              icon: Icons.chevron_right,
+              icon: LucideIcons.chevronRight,
               label: AppCopy.calendarNextWeek,
               variant: NestIconButtonVariant.plain,
               onPressed: onNext,

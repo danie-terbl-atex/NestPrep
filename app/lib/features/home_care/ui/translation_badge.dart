@@ -17,11 +17,11 @@ class TranslationBadge extends StatelessWidget {
     TranslationSource.english => const SizedBox.shrink(),
     TranslationSource.machine => const NestTag(
       label: HomeCareLanguageCopy.machineTranslated,
-      icon: Icons.translate,
+      icon: LucideIcons.languages,
     ),
     TranslationSource.reviewed => const NestTag(
       label: HomeCareLanguageCopy.reviewed,
-      icon: Icons.verified_outlined,
+      icon: LucideIcons.badgeCheck,
       tone: NestTagTone.success,
     ),
   };

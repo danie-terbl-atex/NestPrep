@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/app/documents_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
@@ -148,7 +149,7 @@ void main() {
     expect(find.text(AppCopy.documentsTitle), findsOneWidget);
     // The whole point: there is somewhere to go back to. Without this, the
     // system back button closes the app.
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
   });
 
   testWidgets('and going back lands on More again', (tester) async {
@@ -156,7 +157,7 @@ void main() {
     await openDocuments(tester);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
 
     expect(find.text(MoreCopy.subtitle), findsOneWidget);
@@ -171,9 +172,9 @@ void main() {
     await tester.tap(find.text('School'));
     await tester.pumpAndSettle();
     expect(find.text(AppCopy.documentsFolderEmptyTitle), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
 
     expect(find.text(AppCopy.documentsTitle), findsOneWidget);
@@ -191,6 +192,6 @@ void main() {
     );
 
     expect(find.text(AppCopy.documentsFolderEmptyTitle), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
   });
 }

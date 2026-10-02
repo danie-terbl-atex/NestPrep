@@ -44,7 +44,7 @@ class InviteStepScreen extends StatelessWidget {
         variant: hasInvited
             ? NestButtonVariant.primary
             : NestButtonVariant.outline,
-        icon: hasInvited ? Icons.check : null,
+        icon: hasInvited ? LucideIcons.check : null,
         isExpanded: false,
         isLoading: controller.isBusy && !hasInvited,
         onPressed: controller.isBusy ? null : () => _leave(context, view),
@@ -58,7 +58,7 @@ class InviteStepScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: NestSpace.lg),
                 const NestIconTile(
-                  icon: Icons.diversity_3_outlined,
+                  icon: LucideIcons.users,
                   size: NestSize.mark,
                   iconSize: NestSize.iconMark,
                 ),

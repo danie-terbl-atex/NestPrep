@@ -91,7 +91,7 @@ class JoinOffer extends StatelessWidget {
               ),
             NestChip(
               label: TwoHomesSetupCopy.addAsNewKid(preview.childName),
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               isSelected: controller.addsNewChild,
               onTap: () => controller.chooseChild(null),
             ),
@@ -113,7 +113,7 @@ class JoinOffer extends StatelessWidget {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: TwoHomesSetupCopy.acceptLink,
-          icon: Icons.handshake_outlined,
+          icon: LucideIcons.handshake,
           isLoading: controller.isBusy,
           onPressed: controller.canAccept ? controller.accept : null,
         ),

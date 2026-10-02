@@ -56,7 +56,7 @@ class KidSignInCard extends StatelessWidget {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: KidCopy.manageAddDevice,
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             variant: NestButtonVariant.tonal,
             size: NestButtonSize.medium,
             onPressed: entry.canAddDevice ? onAddDevice : null,
@@ -65,7 +65,7 @@ class KidSignInCard extends StatelessWidget {
             const SizedBox(height: NestSpace.sm),
             NestButton(
               label: KidCopy.manageSignOutEverywhere,
-              icon: Icons.phonelink_erase_rounded,
+              icon: LucideIcons.smartphone,
               variant: NestButtonVariant.ghost,
               size: NestButtonSize.medium,
               onPressed: onSignOutEverywhere,

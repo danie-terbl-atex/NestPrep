@@ -89,7 +89,7 @@ class _OfflineCopyBodyState extends State<_OfflineCopyBody> {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: OfflineCopiesCopy.remove,
-            icon: Icons.delete_outline,
+            icon: LucideIcons.trash2,
             variant: NestButtonVariant.outline,
             onPressed: () async {
               final navigator = Navigator.of(context);

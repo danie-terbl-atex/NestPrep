@@ -32,7 +32,7 @@ class LunchBudgetStrip extends StatelessWidget {
     final spent = week.spent.display;
     final householdId = context.read<HouseholdView>().household.id;
     return NestToneRow(
-      icon: Icons.savings_outlined,
+      icon: LucideIcons.piggyBank,
       tone: reading?.band == LunchBudgetBand.over
           ? NestTagTone.warning
           : NestTagTone.success,

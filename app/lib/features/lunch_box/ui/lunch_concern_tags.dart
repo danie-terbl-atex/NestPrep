@@ -23,9 +23,7 @@ class LunchConcernTags extends StatelessWidget {
           NestTag(
             label: concernLabel(concern),
             tone: concern.isUnsafe ? NestTagTone.danger : NestTagTone.warning,
-            icon: concern.isUnsafe
-                ? Icons.block_rounded
-                : Icons.sentiment_dissatisfied_outlined,
+            icon: concern.isUnsafe ? LucideIcons.ban : LucideIcons.frown,
           ),
       ],
     );

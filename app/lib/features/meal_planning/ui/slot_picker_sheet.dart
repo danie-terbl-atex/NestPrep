@@ -109,7 +109,7 @@ class _SlotPickerBodyState extends State<_SlotPickerBody> {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: '${AppCopy.groceriesAdd} “${_name.text.trim()}”',
-            icon: Icons.add,
+            icon: LucideIcons.plus,
             onPressed: _useTyped,
           ),
         ],
@@ -144,7 +144,7 @@ class _SlotPickerBodyState extends State<_SlotPickerBody> {
           const SizedBox(height: NestSpace.lg),
           NestButton(
             label: MealIngredientCopy.whatGoesIn,
-            icon: Icons.shopping_basket_outlined,
+            icon: LucideIcons.shoppingBasket,
             variant: NestButtonVariant.tonal,
             onPressed: () => Navigator.of(context).pop(const SlotIngredients()),
           ),

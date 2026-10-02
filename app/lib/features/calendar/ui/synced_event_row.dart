@@ -123,7 +123,7 @@ class SyncedEventRow extends StatelessWidget {
             const SizedBox(height: NestSpace.xl),
             NestButton(
               label: CalendarSyncCopy.openFromWeek,
-              icon: Icons.sync_alt,
+              icon: LucideIcons.arrowRightLeft,
               variant: NestButtonVariant.tonal,
               onPressed: () => Navigator.of(sheetContext).pop(true),
             ),

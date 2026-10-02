@@ -28,7 +28,7 @@ class RewardShelfSection extends StatelessWidget {
       children: [
         NestSectionHeader(
           title: PointsCopy.rewardsTitle,
-          actionIcon: Icons.add,
+          actionIcon: LucideIcons.plus,
           actionLabel: PointsCopy.rewardAdd,
           onAction: onAdd,
         ),
@@ -55,7 +55,7 @@ class RewardShelfSection extends StatelessWidget {
                 ),
                 title: reward.title,
                 subtitle: PointsCopy.starsCount(reward.cost),
-                trailing: const Icon(Icons.chevron_right_rounded),
+                trailing: const Icon(LucideIcons.chevronRight),
                 onTap: () => onEdit(reward),
               ),
             ),

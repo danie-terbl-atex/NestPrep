@@ -27,7 +27,7 @@ class RoomDayHeader extends StatelessWidget {
         Row(
           children: [
             NestIconTile(
-              icon: room?.kind.icon ?? Icons.door_front_door_outlined,
+              icon: room?.kind.icon ?? LucideIcons.doorClosed,
               tint: room?.kind.tint ?? NestTileTint.accent,
               size: isLarge ? NestSize.iconTile : NestSize.avatarMedium,
               iconSize: isLarge ? NestSize.iconLarge : NestSize.iconMedium,
@@ -43,7 +43,7 @@ class RoomDayHeader extends StatelessWidget {
               const SizedBox(width: NestSpace.sm),
               const NestTag(
                 label: HomeCareRoutineCopy.roomDone,
-                icon: Icons.check_circle_outline,
+                icon: LucideIcons.circleCheck,
                 tone: NestTagTone.success,
               ),
             ],

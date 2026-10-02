@@ -64,14 +64,14 @@ class LinkRequests extends StatelessWidget {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: TwoHomesCopy.askForASwap,
-            icon: Icons.swap_horiz,
+            icon: LucideIcons.arrowLeftRight,
             variant: NestButtonVariant.tonal,
             onPressed: controller.isSending ? null : () => _askForSwap(context),
           ),
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: TwoHomesCopy.suggestSchedule,
-            icon: Icons.event_repeat,
+            icon: LucideIcons.calendarSync,
             variant: NestButtonVariant.outline,
             onPressed: () => context.push(
               TwoHomesRoute.schedulePathFor(controller.householdId, link.id),

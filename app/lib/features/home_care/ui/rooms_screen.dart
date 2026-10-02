@@ -26,7 +26,7 @@ class RoomsScreen extends StatelessWidget {
       trailing: [
         if (canManage)
           NestIconButton(
-            icon: Icons.add,
+            icon: LucideIcons.plus,
             label: HomeCareLibraryCopy.addRoom,
             onPressed: () => _edit(context, controller, null),
           ),
@@ -54,7 +54,7 @@ class RoomsScreen extends StatelessWidget {
                 message: canManage
                     ? HomeCareLibraryCopy.roomsEmptyBody
                     : HomeCareLibraryCopy.roomsEmptyHelperBody,
-                icon: Icons.meeting_room_outlined,
+                icon: LucideIcons.doorOpen,
                 actionLabel: canManage
                     ? HomeCareLibraryCopy.addUsualRooms
                     : null,
@@ -86,7 +86,7 @@ class RoomsScreen extends StatelessWidget {
                         iconSize: NestSize.iconMedium,
                       ),
                       trailing: canManage
-                          ? const Icon(Icons.edit_outlined)
+                          ? const Icon(LucideIcons.pencil)
                           : null,
                       onTap: canManage
                           ? () => _edit(context, controller, room)

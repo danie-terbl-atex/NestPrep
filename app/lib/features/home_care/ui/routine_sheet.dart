@@ -93,7 +93,7 @@ class _RoutineBodyState extends State<_RoutineBody> {
           ),
           NestButton(
             label: AppCopy.householdSave,
-            icon: Icons.check,
+            icon: LucideIcons.check,
             onPressed: _save,
           ),
           if (widget.initial.id != null) ...[
@@ -101,7 +101,7 @@ class _RoutineBodyState extends State<_RoutineBody> {
             NestButton(
               label: HomeCareRoutineCopy.deleteRoutine,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () =>
                   Navigator.of(context).pop(const RoutineDeleted()),
             ),

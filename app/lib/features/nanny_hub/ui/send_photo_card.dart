@@ -35,7 +35,7 @@ class SendPhotoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const NestIconTile(
-                icon: Icons.photo_camera_outlined,
+                icon: LucideIcons.camera,
                 tint: NestTileTint.lilac,
               ),
               const SizedBox(width: NestSpace.md),
@@ -57,23 +57,23 @@ class SendPhotoCard extends StatelessWidget {
           const SizedBox(height: NestSpace.lg),
           NestButton(
             label: isSending ? NannyPhotoCopy.sending : NannyPhotoCopy.takeOne,
-            icon: Icons.photo_camera,
+            icon: LucideIcons.camera,
             isLoading: isSending,
             onPressed: isSending ? null : () => onPick(PhotoSource.camera),
           ),
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: NannyPhotoCopy.chooseOne,
-            icon: Icons.photo_library_outlined,
+            icon: LucideIcons.images,
             variant: NestButtonVariant.tonal,
             onPressed: isSending ? null : () => onPick(PhotoSource.library),
           ),
           if (sentCount > 0) ...[
             const SizedBox(height: NestSpace.md),
             NestListRow(
-              leading: const Icon(Icons.check_circle_outline),
+              leading: const Icon(LucideIcons.circleCheck),
               title: NannyPhotoCopy.sentSoFar(sentCount),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: onOpenFeed,
             ),
           ],

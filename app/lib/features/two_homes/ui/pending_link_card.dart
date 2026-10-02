@@ -57,7 +57,7 @@ class PendingLinkCard extends StatelessWidget {
                     // tag beside a name leaves the name no room (`FE-14`).
                     const NestTag(
                       label: TwoHomesCopy.statusPending,
-                      icon: Icons.hourglass_empty,
+                      icon: LucideIcons.hourglass,
                     ),
                   ],
                 ),
@@ -77,7 +77,7 @@ class PendingLinkCard extends StatelessWidget {
             const SizedBox(height: NestSpace.lg),
             NestButton(
               label: TwoHomesCopy.confirmYes,
-              icon: Icons.check,
+              icon: LucideIcons.check,
               isLoading: isBusy,
               onPressed: isBusy ? null : () => onAnswer(true),
             ),

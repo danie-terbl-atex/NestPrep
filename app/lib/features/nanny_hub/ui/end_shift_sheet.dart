@@ -53,7 +53,7 @@ class _EndShiftBodyState extends State<_EndShiftBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: NannyShiftCopy.endShift,
-            icon: Icons.nights_stay_outlined,
+            icon: LucideIcons.moonStar,
             onPressed: () => Navigator.of(context).pop(_note.text),
           ),
           const SizedBox(height: NestSpace.sm),

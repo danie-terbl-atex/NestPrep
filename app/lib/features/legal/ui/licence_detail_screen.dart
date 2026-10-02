@@ -41,7 +41,7 @@ class LicenceDetailScreen extends StatelessWidget {
         emptyBuilder: (_) => const NestEmptyView(
           title: LegalCopy.licencesEmptyTitle,
           message: LegalCopy.licencesEmptyBody,
-          icon: Icons.description_outlined,
+          icon: LucideIcons.fileText,
         ),
         dataBuilder: (context, found) => ListView(
           padding: const EdgeInsets.only(bottom: NestSpace.huge),

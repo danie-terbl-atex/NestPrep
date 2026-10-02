@@ -47,7 +47,7 @@ class HouseholdPlaces extends StatelessWidget {
     final week = [
       if (permissions.canUse(HouseholdArea.meals))
         NestPlaceTile(
-          icon: Icons.restaurant_outlined,
+          icon: LucideIcons.utensils,
           tint: NestTileTint.basil,
           title: AppCopy.tabMeals,
           subtitle: MoreCopy.mealsBody,
@@ -56,7 +56,7 @@ class HouseholdPlaces extends StatelessWidget {
       // Stars and rewards are a parent's to run (todos ADR-0003).
       if (permissions.isFamily)
         NestPlaceTile(
-          icon: Icons.stars_outlined,
+          icon: LucideIcons.sparkles,
           tint: NestTileTint.butter,
           title: PointsCopy.screenTitle,
           subtitle: MoreCopy.starsBody,
@@ -66,7 +66,7 @@ class HouseholdPlaces extends StatelessWidget {
       // family's adults only, while its switch is on.
       if (permissions.isFamily && flags.isOn(FeatureFlag.mentalLoadView))
         NestPlaceTile(
-          icon: Icons.volunteer_activism_outlined,
+          icon: LucideIcons.handHeart,
           tint: NestTileTint.guava,
           title: MentalLoadCopy.openFromHousehold,
           subtitle: MentalLoadCopy.openFromHouseholdBody,
@@ -79,7 +79,7 @@ class HouseholdPlaces extends StatelessWidget {
       // whoever the `familyProfiles` grant lets see it (ADR-0002).
       if (FamilyAccess.of(view).isVisible)
         NestPlaceTile(
-          icon: Icons.family_restroom_outlined,
+          icon: LucideIcons.users,
           tint: NestTileTint.guava,
           title: FamilyCopy.openFromHousehold,
           subtitle: FamilyCopy.openFromHouseholdBody,
@@ -87,7 +87,7 @@ class HouseholdPlaces extends StatelessWidget {
         ),
       // Live location: each person's own to share, and it ends on its own.
       NestPlaceTile(
-        icon: Icons.person_pin_circle_outlined,
+        icon: LucideIcons.mapPin,
         tint: NestTileTint.lilac,
         title: AppCopy.locationTitle,
         subtitle: MoreCopy.locationBody,
@@ -98,7 +98,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (flags.isOn(FeatureFlag.coParenting) &&
           TwoHomesAccess.of(view).showsWayIn)
         NestPlaceTile(
-          icon: Icons.cottage_outlined,
+          icon: LucideIcons.house,
           tint: NestTileTint.butter,
           title: TwoHomesCopy.openFromHousehold,
           subtitle: TwoHomesCopy.openFromHouseholdBody,
@@ -111,7 +111,7 @@ class HouseholdPlaces extends StatelessWidget {
       // is for, and for a parent it is where the latest handover waits.
       if (NannyAccess.of(view).canView)
         NestPlaceTile(
-          icon: Icons.child_care,
+          icon: LucideIcons.baby,
           tint: NestTileTint.basil,
           title: NannyCopy.openFromHousehold,
           subtitle: NannyCopy.openFromHouseholdBody,
@@ -120,7 +120,7 @@ class HouseholdPlaces extends StatelessWidget {
       // home-care: a helper's own jobs, or all of them (home-care ADR-0001).
       if (permissions.canUse(HouseholdArea.homeCare))
         NestPlaceTile(
-          icon: Icons.cleaning_services_outlined,
+          icon: LucideIcons.sprayCan,
           tint: NestTileTint.lilac,
           title: HomeCareCopy.openFromHousehold,
           subtitle: permissions.canEdit(HouseholdArea.homeCare)
@@ -132,7 +132,7 @@ class HouseholdPlaces extends StatelessWidget {
       // allowed to open them (household ADR-0003).
       if (permissions.canUse(HouseholdArea.documents))
         NestPlaceTile(
-          icon: Icons.folder_shared_outlined,
+          icon: LucideIcons.folderOpen,
           title: AppCopy.documentsOpenLibrary,
           subtitle: MoreCopy.documentsBody,
           onTap: () => open(DocumentsRoute.pathFor(id)),

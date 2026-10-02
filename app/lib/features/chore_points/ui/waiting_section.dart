@@ -43,7 +43,7 @@ class WaitingSection extends StatelessWidget {
             child: Row(
               children: [
                 const NestIconTile(
-                  icon: Icons.done_all_rounded,
+                  icon: LucideIcons.checkCheck,
                   tint: NestTileTint.basil,
                 ),
                 const SizedBox(width: NestSpace.md),

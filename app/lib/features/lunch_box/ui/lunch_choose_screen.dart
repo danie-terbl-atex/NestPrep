@@ -47,7 +47,7 @@ class LunchChooseScreen extends StatelessWidget {
               isEmpty: (days) => days.isEmpty,
               onRetry: controller.retry,
               emptyBuilder: (context) => const NestEmptyView(
-                icon: Icons.bento_outlined,
+                icon: LucideIcons.sandwich,
                 title: LunchKidPicksCopy.nothingToChoose,
                 message: LunchKidPicksCopy.nothingToChooseBody,
               ),

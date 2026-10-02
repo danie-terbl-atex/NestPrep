@@ -73,13 +73,13 @@ class _FavouriteRow extends StatelessWidget {
           ? const NestTag(
               label: LunchCopy.favouriteUnsafe,
               tone: NestTagTone.danger,
-              icon: Icons.block_rounded,
+              icon: LucideIcons.ban,
             )
           : null,
       trailing: remove == null
           ? null
           : NestIconButton(
-              icon: Icons.delete_outline_rounded,
+              icon: LucideIcons.trash2,
               label: LunchCopy.removeFavourite(favourite.name),
               variant: NestIconButtonVariant.plain,
               onPressed: () {

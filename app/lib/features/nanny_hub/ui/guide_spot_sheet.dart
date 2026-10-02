@@ -114,7 +114,7 @@ class _GuideSpotBodyState extends State<_GuideSpotBody> {
             NestButton(
               label: NannyCopy.delete,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

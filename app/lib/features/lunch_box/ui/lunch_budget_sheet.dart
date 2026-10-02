@@ -63,7 +63,7 @@ class _BudgetBodyState extends State<_BudgetBody> {
           hint: LunchBudgetCopy.budgetHint,
           controller: _amount,
           autofocus: widget.existing == null,
-          prefixIcon: Icons.savings_outlined,
+          prefixIcon: LucideIcons.piggyBank,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           errorText: _amount.text.isNotEmpty && valid == null
               ? LunchBudgetCopy.budgetInvalid

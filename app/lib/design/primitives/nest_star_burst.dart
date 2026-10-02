@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
@@ -123,7 +124,7 @@ class _Star extends StatelessWidget {
     offset: Offset(math.cos(angle) * distance, math.sin(angle) * distance),
     child: Opacity(
       opacity: opacity,
-      child: Icon(Icons.star_rounded, size: NestSize.iconSmall, color: color),
+      child: Icon(LucideIcons.star, size: NestSize.iconSmall, color: color),
     ),
   );
 }

@@ -21,7 +21,7 @@ class SwitchedOffView extends StatelessWidget {
     return const NestEmptyView(
       title: HomeCareCopy.switchedOffTitle,
       message: HomeCareCopy.switchedOffBody,
-      icon: Icons.toggle_off_outlined,
+      icon: LucideIcons.toggleLeft,
     );
   }
 }

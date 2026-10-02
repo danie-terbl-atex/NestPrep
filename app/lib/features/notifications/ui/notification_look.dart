@@ -10,13 +10,13 @@ import '../model/notification_vocabulary.dart';
 abstract final class NotificationLook {
   static IconData categoryIcon(NotificationCategory category) =>
       switch (category) {
-        NotificationCategory.digest => Icons.wb_twilight_rounded,
-        NotificationCategory.documents => Icons.description_outlined,
-        NotificationCategory.handover => Icons.child_care_outlined,
-        NotificationCategory.chores => Icons.star_outline_rounded,
-        NotificationCategory.photos => Icons.photo_camera_outlined,
-        NotificationCategory.coParenting => Icons.cottage_outlined,
-        NotificationCategory.test => Icons.notifications_active_outlined,
+        NotificationCategory.digest => LucideIcons.sunset,
+        NotificationCategory.documents => LucideIcons.fileText,
+        NotificationCategory.handover => LucideIcons.baby,
+        NotificationCategory.chores => LucideIcons.star,
+        NotificationCategory.photos => LucideIcons.camera,
+        NotificationCategory.coParenting => LucideIcons.house,
+        NotificationCategory.test => LucideIcons.bellRing,
       };
 
   static NestTileTint categoryTint(NotificationCategory category) =>
@@ -31,13 +31,13 @@ abstract final class NotificationLook {
       };
 
   static IconData sectionIcon(DigestSectionKind? kind) => switch (kind) {
-    DigestSectionKind.events => Icons.event_outlined,
-    DigestSectionKind.pack => Icons.backpack_outlined,
-    DigestSectionKind.chores => Icons.check_circle_outline,
-    DigestSectionKind.documents => Icons.description_outlined,
-    DigestSectionKind.shift => Icons.child_care_outlined,
-    DigestSectionKind.approvals => Icons.star_outline_rounded,
-    null => Icons.notes_rounded,
+    DigestSectionKind.events => LucideIcons.calendarDays,
+    DigestSectionKind.pack => LucideIcons.backpack,
+    DigestSectionKind.chores => LucideIcons.circleCheck,
+    DigestSectionKind.documents => LucideIcons.fileText,
+    DigestSectionKind.shift => LucideIcons.baby,
+    DigestSectionKind.approvals => LucideIcons.star,
+    null => LucideIcons.notepadText,
   };
 
   static NestTileTint sectionTint(DigestSectionKind? kind) => switch (kind) {
@@ -52,10 +52,10 @@ abstract final class NotificationLook {
 
   static IconData switchableIcon(SwitchableCategory category) =>
       switch (category) {
-        SwitchableCategory.documents => Icons.description_outlined,
-        SwitchableCategory.handover => Icons.child_care_outlined,
-        SwitchableCategory.chores => Icons.star_outline_rounded,
-        SwitchableCategory.photos => Icons.photo_camera_outlined,
-        SwitchableCategory.coParenting => Icons.cottage_outlined,
+        SwitchableCategory.documents => LucideIcons.fileText,
+        SwitchableCategory.handover => LucideIcons.baby,
+        SwitchableCategory.chores => LucideIcons.star,
+        SwitchableCategory.photos => LucideIcons.camera,
+        SwitchableCategory.coParenting => LucideIcons.house,
       };
 }

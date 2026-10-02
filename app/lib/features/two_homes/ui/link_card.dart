@@ -75,7 +75,7 @@ class LinkCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: nest.colors.inkTertiary),
+              Icon(LucideIcons.chevronRight, color: nest.colors.inkTertiary),
             ],
           ),
           const SizedBox(height: NestSpace.md),

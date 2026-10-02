@@ -45,14 +45,14 @@ class ConsentScreen extends StatelessWidget {
           NestButton(
             label: LegalCopy.consentReadPrivacy,
             variant: NestButtonVariant.outline,
-            icon: Icons.privacy_tip_outlined,
+            icon: LucideIcons.shieldAlert,
             onPressed: () => context.push(LegalDocumentScreen.privacyPath),
           ),
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: LegalCopy.consentReadTerms,
             variant: NestButtonVariant.outline,
-            icon: Icons.gavel_outlined,
+            icon: LucideIcons.gavel,
             onPressed: () => context.push(LegalDocumentScreen.termsPath),
           ),
           const SizedBox(height: NestSpace.xl),
@@ -83,7 +83,7 @@ class ConsentScreen extends StatelessWidget {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: LegalCopy.consentAccept,
-            icon: Icons.check,
+            icon: LucideIcons.check,
             isLoading: isBusy,
             onPressed: controller.canAccept ? controller.accept : null,
           ),

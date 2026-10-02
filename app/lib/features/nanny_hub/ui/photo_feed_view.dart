@@ -64,12 +64,12 @@ class PhotoFeedView extends StatelessWidget {
                 message: NannyPhotoCopy.liveEmptyBody(
                   carer ?? NannyPhotoCopy.somebody,
                 ),
-                icon: Icons.photo_camera_outlined,
+                icon: LucideIcons.camera,
               )
             : const HubEmptyNote(
                 title: NannyPhotoCopy.endedEmptyTitle,
                 message: NannyPhotoCopy.endedEmptyBody,
-                icon: Icons.photo_outlined,
+                icon: LucideIcons.image,
               ),
       for (final update in feed.updates)
         PhotoUpdateCard(
@@ -138,7 +138,7 @@ class _FeedHeader extends StatelessWidget {
               NestTag(
                 label: isLive ? NannyPhotoCopy.live : NannyPhotoCopy.ended,
                 tone: isLive ? NestTagTone.success : NestTagTone.neutral,
-                icon: isLive ? Icons.circle : Icons.nights_stay_outlined,
+                icon: isLive ? LucideIcons.circle : LucideIcons.moonStar,
               ),
             ],
           ),

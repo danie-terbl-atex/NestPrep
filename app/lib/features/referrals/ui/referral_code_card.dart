@@ -74,14 +74,14 @@ class _ReferralCodeCardState extends State<ReferralCodeCard> {
           const SizedBox(height: NestSpace.lg),
           NestButton(
             label: ReferralCopy.share,
-            icon: Icons.ios_share,
+            icon: LucideIcons.share,
             onPressed: code == null ? null : widget.onShare,
           ),
           const SizedBox(height: NestSpace.sm),
           NestButton(
             variant: NestButtonVariant.outline,
             label: _hasCopied ? ReferralCopy.copied : ReferralCopy.copy,
-            icon: _hasCopied ? Icons.check : Icons.copy_outlined,
+            icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
             onPressed: code == null ? null : () => _copy(code),
           ),
         ],

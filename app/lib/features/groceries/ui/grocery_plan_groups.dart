@@ -33,7 +33,7 @@ class GroceryPlanGroups extends StatelessWidget {
     }
 
     GroceryRowAction stapleAction(GroceryPlanLine line) => (
-      icon: Icons.home_outlined,
+      icon: LucideIcons.house,
       label: GroceryPlanCopy.markStapleFor(line.name),
       onPressed: () => onStaple(line.key, isStaple: true),
     );
@@ -142,7 +142,7 @@ class GroceryPlanGroups extends StatelessWidget {
                 name: line.name,
                 detail: line.note,
                 action: (
-                  icon: Icons.undo_rounded,
+                  icon: LucideIcons.undo2,
                   label: GroceryPlanCopy.putBack(line.name),
                   onPressed: () => onStaple(line.key, isStaple: false),
                 ),

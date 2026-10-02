@@ -109,13 +109,13 @@ class _SlotLine extends StatelessWidget {
                   ? NestTag(
                       label: LunchKidPicksCopy.chose(childName, chosen),
                       tone: NestTagTone.success,
-                      icon: Icons.star_rounded,
+                      icon: LucideIcons.star,
                     )
                   : const NestTag(label: LunchKidPicksCopy.waiting),
             ),
       trailing: onTap == null
           ? null
-          : const Icon(Icons.chevron_right_rounded, size: NestSize.iconMedium),
+          : const Icon(LucideIcons.chevronRight, size: NestSize.iconMedium),
       onTap: onTap,
     );
   }

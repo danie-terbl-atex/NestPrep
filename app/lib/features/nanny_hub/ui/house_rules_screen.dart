@@ -39,7 +39,7 @@ class HouseRulesScreen extends StatelessWidget {
       floatingAction: canEdit
           ? NestButton(
               label: NannyCopy.addRule,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               isExpanded: false,
               onPressed: () => _edit(context, controller),
             )
@@ -49,7 +49,7 @@ class HouseRulesScreen extends StatelessWidget {
         children: [
           if (view.hub.rules.isEmpty)
             HubEmptyNote(
-              icon: Icons.gavel_outlined,
+              icon: LucideIcons.gavel,
               title: NannyCopy.rulesEmptyTitle,
               message: canEdit
                   ? NannyCopy.rulesEmptyBody
@@ -64,7 +64,7 @@ class HouseRulesScreen extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: NestListRow(
                   leading: const NestIconTile(
-                    icon: Icons.check_circle_outline,
+                    icon: LucideIcons.circleCheck,
                     tint: NestTileTint.basil,
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,

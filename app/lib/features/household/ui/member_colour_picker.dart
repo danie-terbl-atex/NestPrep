@@ -52,7 +52,7 @@ class MemberColourPicker extends StatelessWidget {
                     ),
                     child: color == selected
                         ? Icon(
-                            Icons.check,
+                            LucideIcons.check,
                             size: NestSize.iconSmall,
                             color: nest.members.of(color).onFill,
                           )

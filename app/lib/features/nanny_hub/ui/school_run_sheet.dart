@@ -119,7 +119,7 @@ class _RunBodyState extends State<_RunBody> {
             NestButton(
               label: NannyPickupCopy.removeRun,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: () => _finish(existing.collector, isRemoval: true),
             ),
           ],

@@ -25,12 +25,12 @@ class LivePhotosCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: NestListRow(
               leading: const NestIconTile(
-                icon: Icons.photo_camera_outlined,
+                icon: LucideIcons.camera,
                 tint: NestTileTint.lilac,
               ),
               title: NannyPhotoCopy.liveFrom(shift.carer),
               subtitle: NannyPhotoCopy.liveFromBody,
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: () => onOpen(shift.shiftId),
             ),
           ),

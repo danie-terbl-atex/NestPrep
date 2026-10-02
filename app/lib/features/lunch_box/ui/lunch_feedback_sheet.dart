@@ -73,7 +73,7 @@ class _FeedbackBodyState extends State<_FeedbackBody> {
             NestButton(
               label: LunchCopy.undoMark,
               variant: NestButtonVariant.ghost,
-              icon: Icons.undo_rounded,
+              icon: LucideIcons.undo2,
               onPressed: () =>
                   Navigator.of(context).pop(const SheetRemoved<LunchMarks>()),
             ),
@@ -106,13 +106,13 @@ class _VerdictChoice extends StatelessWidget {
         children: [
           NestChip(
             label: LunchCopy.ateIt,
-            icon: Icons.thumb_up_alt_outlined,
+            icon: LucideIcons.thumbsUp,
             isSelected: selected == LunchVerdict.ate,
             onTap: () => onSelect(LunchVerdict.ate),
           ),
           NestChip(
             label: LunchCopy.leftIt,
-            icon: Icons.thumb_down_alt_outlined,
+            icon: LucideIcons.thumbsDown,
             isSelected: selected == LunchVerdict.left,
             onTap: () => onSelect(LunchVerdict.left),
           ),

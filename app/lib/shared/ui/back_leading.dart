@@ -10,7 +10,7 @@ import '../copy/app_copy.dart';
 /// `leading`.
 Widget? backLeading(BuildContext context) => context.canPop()
     ? NestIconButton(
-        icon: Icons.arrow_back,
+        icon: LucideIcons.arrowLeft,
         label: AppCopy.back,
         variant: NestIconButtonVariant.plain,
         onPressed: context.pop,

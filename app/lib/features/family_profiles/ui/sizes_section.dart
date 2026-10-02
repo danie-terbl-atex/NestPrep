@@ -25,7 +25,7 @@ class SizesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEmpty = clothingSize == null && shoeSize == null;
     return FamilySectionCard(
-      icon: Icons.checkroom_outlined,
+      icon: LucideIcons.shirt,
       tint: NestTileTint.accent,
       title: FamilyCopy.sectionSizes,
       actionLabel: FamilyCopy.editSection(FamilyCopy.sectionSizes),

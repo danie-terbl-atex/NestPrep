@@ -45,7 +45,7 @@ class PhotoFeedScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: NannyPhotoCopy.goneTitle,
                 message: NannyPhotoCopy.goneBody,
-                icon: Icons.event_busy_outlined,
+                icon: LucideIcons.calendarX,
               ),
               dataBuilder: (context, value) => PhotoFeedView(
                 feed: value,

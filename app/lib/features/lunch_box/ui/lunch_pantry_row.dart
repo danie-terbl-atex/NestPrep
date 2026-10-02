@@ -50,7 +50,7 @@ class LunchPantryRow extends StatelessWidget {
               child: NestTag(
                 label: LunchPantryCopy.short(-line.available),
                 tone: NestTagTone.warning,
-                icon: Icons.shopping_basket_outlined,
+                icon: LucideIcons.shoppingBasket,
               ),
             )
           : null,

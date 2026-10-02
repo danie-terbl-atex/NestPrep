@@ -24,27 +24,27 @@ class ExpiryBadge extends StatelessWidget {
       ExpiryUrgency.expired => (
         VaultCopy.expired,
         NestBadgeTone.danger,
-        Icons.error_outline,
+        LucideIcons.circleAlert,
       ),
       ExpiryUrgency.today => (
         VaultCopy.expiresToday,
         NestBadgeTone.danger,
-        Icons.event_busy_outlined,
+        LucideIcons.calendarX,
       ),
       ExpiryUrgency.soon => (
         VaultCopy.expiresIn(daysLeft),
         NestBadgeTone.warning,
-        Icons.schedule,
+        LucideIcons.clock,
       ),
       ExpiryUrgency.comingUp => (
         VaultCopy.expiresOn(NestDates.full(date, today)),
         NestBadgeTone.info,
-        Icons.event_outlined,
+        LucideIcons.calendarDays,
       ),
       ExpiryUrgency.later || ExpiryUrgency.none => (
         VaultCopy.expiresOn(NestDates.full(date, today)),
         NestBadgeTone.neutral,
-        Icons.event_outlined,
+        LucideIcons.calendarDays,
       ),
     };
     return NestBadge(label: label, tone: tone, icon: icon);

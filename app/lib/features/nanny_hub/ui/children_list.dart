@@ -33,7 +33,7 @@ class ChildrenList extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         if (children.isEmpty)
           const HubEmptyNote(
-            icon: Icons.child_friendly_outlined,
+            icon: LucideIcons.baby,
             title: NannyCopy.noChildrenTitle,
             message: NannyCopy.noChildrenBody,
           ),
@@ -106,19 +106,19 @@ class _ChildRow extends StatelessWidget {
                     if (food == null)
                       const NestTag(
                         label: NannyCopy.allergiesHiddenTitle,
-                        icon: Icons.lock_outline,
+                        icon: LucideIcons.lock,
                         tone: NestTagTone.warning,
                       ),
                     for (final name in severe)
                       NestTag(
                         label: name,
-                        icon: Icons.emergency_outlined,
+                        icon: LucideIcons.siren,
                         tone: NestTagTone.danger,
                       ),
                     if (takesMedicine)
                       const NestTag(
                         label: NannyCopy.medication,
-                        icon: Icons.medication_outlined,
+                        icon: LucideIcons.pill,
                         tone: NestTagTone.accent,
                       ),
                   ],
@@ -126,7 +126,7 @@ class _ChildRow extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right),
+          const Icon(LucideIcons.chevronRight),
         ],
       ),
     );

@@ -50,7 +50,7 @@ class PlanOptionCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+              isSelected ? LucideIcons.circleDot : LucideIcons.circle,
               color: isSelected ? nest.colors.accent : nest.colors.inkTertiary,
               size: NestSize.iconMedium,
             ),

@@ -21,7 +21,7 @@ class AccountMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<SessionController>();
     return NestIconButton(
-      icon: Icons.person_outline,
+      icon: LucideIcons.user,
       label: AppCopy.account,
       onPressed: () => _openSheet(context, controller),
     );
@@ -55,7 +55,7 @@ class AccountMenuButton extends StatelessWidget {
             NestButton(
               label: AppCopy.householdSwitch,
               variant: NestButtonVariant.outline,
-              icon: Icons.swap_horiz,
+              icon: LucideIcons.arrowLeftRight,
               onPressed: () async {
                 final chosen = await showSwitchHouseholdSheet(
                   context: sheetContext,
@@ -73,7 +73,7 @@ class AccountMenuButton extends StatelessWidget {
           NestButton(
             label: AccountDataCopy.centreEntry,
             variant: NestButtonVariant.outline,
-            icon: Icons.shield_outlined,
+            icon: LucideIcons.shield,
             onPressed: () {
               // Taken before the sheet closes, while this context still has
               // a router above it — the same as the Beta numbers link.
@@ -89,7 +89,7 @@ class AccountMenuButton extends StatelessWidget {
           NestButton(
             label: AppCopy.signOut,
             variant: NestButtonVariant.danger,
-            icon: Icons.logout,
+            icon: LucideIcons.logOut,
             onPressed: () async {
               Navigator.of(sheetContext).pop();
               await controller.signOut();

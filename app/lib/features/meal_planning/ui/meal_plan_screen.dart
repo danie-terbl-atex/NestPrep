@@ -42,7 +42,7 @@ class MealPlanScreen extends StatelessWidget {
       trailing: [
         if (canEdit)
           NestIconButton(
-            icon: Icons.menu_book_outlined,
+            icon: LucideIcons.bookOpen,
             label: AppCopy.mealsManage,
             onPressed: () => showMealLibrarySheet(context: context),
           ),
@@ -69,7 +69,7 @@ class MealPlanScreen extends StatelessWidget {
           Row(
             children: [
               NestIconButton(
-                icon: Icons.chevron_left,
+                icon: LucideIcons.chevronLeft,
                 label: AppCopy.calendarPreviousWeek,
                 variant: NestIconButtonVariant.plain,
                 onPressed: controller.goToPreviousWeek,
@@ -77,7 +77,7 @@ class MealPlanScreen extends StatelessWidget {
               Expanded(
                 child: NestButton(
                   label: AppCopy.mealsCopyLastWeek,
-                  icon: Icons.copy_all_outlined,
+                  icon: LucideIcons.copy,
                   variant: NestButtonVariant.tonal,
                   size: NestButtonSize.small,
                   isLoading: controller.isCopying,
@@ -85,7 +85,7 @@ class MealPlanScreen extends StatelessWidget {
                 ),
               ),
               NestIconButton(
-                icon: Icons.chevron_right,
+                icon: LucideIcons.chevronRight,
                 label: AppCopy.calendarNextWeek,
                 variant: NestIconButtonVariant.plain,
                 onPressed: controller.goToNextWeek,

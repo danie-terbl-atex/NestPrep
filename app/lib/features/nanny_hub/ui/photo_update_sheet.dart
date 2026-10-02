@@ -98,7 +98,7 @@ class _PhotoUpdateBodyState extends State<_PhotoUpdateBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: NannyPhotoCopy.send,
-            icon: Icons.send_rounded,
+            icon: LucideIcons.send,
             onPressed: _send,
           ),
         ],

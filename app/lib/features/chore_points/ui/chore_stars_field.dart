@@ -52,7 +52,7 @@ class ChoreStarsField extends StatelessWidget {
                 label: size == 0
                     ? PointsCopy.choreNoStars
                     : PointsCopy.starsCount(size),
-                icon: size == 0 ? null : Icons.star_rounded,
+                icon: size == 0 ? null : LucideIcons.star,
                 isSelected: points == size,
                 onTap: () => onPoints(size),
               ),
@@ -65,8 +65,8 @@ class ChoreStarsField extends StatelessWidget {
             child: NestChip(
               label: PointsCopy.choreNeedsApproval,
               icon: needsApproval
-                  ? Icons.check_box_rounded
-                  : Icons.check_box_outline_blank_rounded,
+                  ? LucideIcons.squareCheck
+                  : LucideIcons.square,
               isSelected: needsApproval,
               onTap: () => onNeedsApproval(!needsApproval),
             ),

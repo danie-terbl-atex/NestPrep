@@ -27,12 +27,14 @@ Future<HelperLanguage?> showLanguagePicker({
                 : language.englishName,
             isSelected: language == current,
             leading: const NestIconTile(
-              icon: Icons.translate,
+              icon: LucideIcons.languages,
               tint: NestTileTint.lilac,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             ),
-            trailing: language == current ? const Icon(Icons.check) : null,
+            trailing: language == current
+                ? const Icon(LucideIcons.check)
+                : null,
             onTap: () => Navigator.of(context).pop(language),
           ),
         ),

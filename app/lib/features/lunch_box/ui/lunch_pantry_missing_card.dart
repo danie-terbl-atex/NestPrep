@@ -68,7 +68,7 @@ class _LunchPantryMissingCardState extends State<LunchPantryMissingCard> {
             if (widget.canAddGroceries)
               NestButton(
                 label: LunchPantryCopy.addMissingToGroceries(shortfall.length),
-                icon: Icons.add_shopping_cart_rounded,
+                icon: LucideIcons.shoppingCart,
                 isLoading: pantry.isSending,
                 onPressed: () => _send(pantry),
               )

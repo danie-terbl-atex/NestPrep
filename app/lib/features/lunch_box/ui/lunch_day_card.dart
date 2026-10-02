@@ -60,12 +60,12 @@ class LunchDayCard extends StatelessWidget {
                   child: NestTag(
                     label: LunchCopy.unsafeTag,
                     tone: NestTagTone.danger,
-                    icon: Icons.block_rounded,
+                    icon: LucideIcons.ban,
                   ),
                 ),
               if (canEdit)
                 NestIconButton(
-                  icon: Icons.more_horiz_rounded,
+                  icon: LucideIcons.ellipsis,
                   label: LunchCopy.dayActions,
                   variant: NestIconButtonVariant.plain,
                   onPressed: () => LunchFlows.dayMenu(

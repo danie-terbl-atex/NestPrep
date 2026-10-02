@@ -97,7 +97,7 @@ class JobComposeScreen extends StatelessWidget {
               const SizedBox(height: NestSpace.xxl),
               NestButton(
                 label: HomeCareCopy.assign,
-                icon: Icons.send_outlined,
+                icon: LucideIcons.send,
                 isLoading: composer.isSaving,
                 onPressed: composer.isSaving
                     ? null

@@ -35,7 +35,7 @@ class QuickAddBar extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.auto_awesome_outlined,
+                    LucideIcons.sparkles,
                     size: NestSize.iconMedium,
                     color: nest.colors.accent,
                   ),

@@ -48,7 +48,7 @@ class _SharePinFieldState extends State<SharePinField> {
             title: ShareLinkCopy.pinToggle,
             subtitle: ShareLinkCopy.pinToggleNote,
             leading: const NestIconTile(
-              icon: Icons.pin_outlined,
+              icon: LucideIcons.rectangleEllipsis,
               tint: NestTileTint.lilac,
             ),
             trailing: Switch(
@@ -67,7 +67,7 @@ class _SharePinFieldState extends State<SharePinField> {
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             autofocus: true,
-            prefixIcon: Icons.password_outlined,
+            prefixIcon: LucideIcons.rectangleEllipsis,
             errorText: widget.showsProblem ? ShareLinkCopy.pinInvalid : null,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,

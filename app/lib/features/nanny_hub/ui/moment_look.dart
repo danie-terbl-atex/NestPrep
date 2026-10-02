@@ -7,11 +7,11 @@ import '../model/shift_moment.dart';
 /// and shift mode agree. The name is always beside it (`FE-13`).
 extension MomentLook on ShiftMoment {
   IconData get icon => switch (this) {
-    ShiftMoment.arrival => Icons.door_front_door_outlined,
-    ShiftMoment.afterSchool => Icons.backpack_outlined,
-    ShiftMoment.dinner => Icons.dinner_dining_outlined,
-    ShiftMoment.bedtime => Icons.bathtub_outlined,
-    ShiftMoment.beforeLeaving => Icons.waving_hand_outlined,
+    ShiftMoment.arrival => LucideIcons.doorClosed,
+    ShiftMoment.afterSchool => LucideIcons.backpack,
+    ShiftMoment.dinner => LucideIcons.utensils,
+    ShiftMoment.bedtime => LucideIcons.bath,
+    ShiftMoment.beforeLeaving => LucideIcons.hand,
   };
 
   NestTileTint get tint => switch (this) {

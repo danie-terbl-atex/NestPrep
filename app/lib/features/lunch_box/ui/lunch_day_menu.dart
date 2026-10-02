@@ -21,18 +21,18 @@ Future<LunchDayAction?> showLunchDayMenu({
     children: [
       if (hasBox)
         const _Option(
-          icon: Icons.favorite_border_rounded,
+          icon: LucideIcons.heart,
           label: LunchCopy.saveAsFavourite,
           action: LunchDayAction.saveFavourite,
         ),
       const _Option(
-        icon: Icons.autorenew_rounded,
+        icon: LucideIcons.refreshCw,
         label: LunchCopy.packFavourite,
         action: LunchDayAction.packFavourite,
       ),
       if (hasBox)
         const _Option(
-          icon: Icons.remove_circle_outline_rounded,
+          icon: LucideIcons.circleMinus,
           label: LunchCopy.clearDay,
           action: LunchDayAction.clear,
         ),

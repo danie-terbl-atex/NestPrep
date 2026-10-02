@@ -18,27 +18,27 @@ class RequestStatusTag extends StatelessWidget {
       null => (
         PointsCopy.kidRequestCounting,
         NestTagTone.neutral,
-        Icons.more_horiz_rounded,
+        LucideIcons.ellipsis,
       ),
       RequestStatus.waiting => (
         PointsCopy.kidRequestWaiting,
         NestTagTone.accent,
-        Icons.hourglass_top_rounded,
+        LucideIcons.hourglass,
       ),
       RequestStatus.fulfilled => (
         PointsCopy.kidRequestFulfilled,
         NestTagTone.success,
-        Icons.celebration_rounded,
+        LucideIcons.partyPopper,
       ),
       RequestStatus.declined => (
         PointsCopy.kidRequestDeclined,
         NestTagTone.neutral,
-        Icons.undo_rounded,
+        LucideIcons.undo2,
       ),
       RequestStatus.refused => (
         PointsCopy.kidRequestRefused(request.refusal),
         NestTagTone.warning,
-        Icons.info_outline_rounded,
+        LucideIcons.info,
       ),
     };
     return NestTag(label: label, tone: tone, icon: icon);

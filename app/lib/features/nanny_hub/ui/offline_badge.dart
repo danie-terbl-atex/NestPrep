@@ -31,28 +31,28 @@ class OfflineBadge extends StatelessWidget {
         : NannyOfflineCopy.syncedOn(clock.dayOf(at), clock.timeOf(at));
     final (icon, tone, title, detail, retries) = switch (keeper.status) {
       SavedOffline(:final savedAt) => (
-        Icons.cloud_done_outlined,
+        LucideIcons.cloudCheck,
         NestTagTone.success,
         NannyOfflineCopy.saved,
         NannyOfflineCopy.lastSynced(when(savedAt)),
         false,
       ),
       SavingOffline(:final savedAt) => (
-        Icons.cloud_sync_outlined,
+        LucideIcons.cloudSync,
         NestTagTone.accent,
         NannyOfflineCopy.saving,
         savedAt == null ? null : NannyOfflineCopy.lastSynced(when(savedAt)),
         false,
       ),
       NotSavedOffline() => (
-        Icons.cloud_download_outlined,
+        LucideIcons.cloudDownload,
         NestTagTone.accent,
         NannyOfflineCopy.notSaved,
         NannyOfflineCopy.notSavedBody,
         true,
       ),
       OfflineSaveFailed(:final savedAt, :final isNoSignal) => (
-        Icons.cloud_off_outlined,
+        LucideIcons.cloudOff,
         NestTagTone.warning,
         isNoSignal
             ? NannyOfflineCopy.noSignal

@@ -63,7 +63,11 @@ void main() {
       ) async {
         await pumpKit(
           tester,
-          NestIconButton(icon: Icons.add, label: 'Add', onPressed: () {}),
+          NestIconButton(
+            icon: LucideIcons.plus,
+            label: 'Add',
+            onPressed: () {},
+          ),
           brightness: brightness,
         );
         expect(find.bySemanticsLabel('Add'), findsOneWidget);
@@ -98,13 +102,13 @@ void main() {
             onSelect: (index) => selected = index,
             items: const [
               NestBottomBarItem(
-                icon: Icons.home_outlined,
-                selectedIcon: Icons.home,
+                icon: LucideIcons.house,
+                selectedIcon: LucideIcons.house,
                 label: 'Home',
               ),
               NestBottomBarItem(
-                icon: Icons.list_outlined,
-                selectedIcon: Icons.list,
+                icon: LucideIcons.list,
+                selectedIcon: LucideIcons.list,
                 label: 'Lists',
               ),
             ],

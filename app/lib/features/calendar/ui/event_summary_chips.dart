@@ -42,20 +42,20 @@ class EventSummaryChips extends StatelessWidget {
       runSpacing: NestSpace.xs,
       children: [
         NestChip(
-          icon: Icons.event_outlined,
+          icon: LucideIcons.calendarDays,
           label: NestDates.relative(date, today),
         ),
-        NestChip(icon: Icons.schedule, label: _when()),
+        NestChip(icon: LucideIcons.clock, label: _when()),
         if (rule != null)
           NestChip(
-            icon: Icons.repeat,
+            icon: LucideIcons.repeat,
             label: until == null
                 ? QuickAddCopy.repeats(rule)
                 : '${QuickAddCopy.repeats(rule)} '
                       '${QuickAddCopy.until(NestDates.full(until, today))}',
           ),
         for (final member in members)
-          NestChip(icon: Icons.person_outline, label: member.displayName),
+          NestChip(icon: LucideIcons.user, label: member.displayName),
       ],
     );
   }

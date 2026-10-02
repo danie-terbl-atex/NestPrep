@@ -26,7 +26,7 @@ class EmergencyCallButtons extends StatelessWidget {
                 NannyCopy.emergencyNumberName(number),
                 number.digits,
               ),
-              icon: Icons.phone_in_talk,
+              icon: LucideIcons.phoneCall,
               variant: number == EmergencyNumber.ambulance
                   ? NestButtonVariant.danger
                   : NestButtonVariant.tonal,

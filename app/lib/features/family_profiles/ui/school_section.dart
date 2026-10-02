@@ -28,7 +28,7 @@ class SchoolSection extends StatelessWidget {
     final attending = school;
     final isEmpty = attending == null && grade == null;
     return FamilySectionCard(
-      icon: Icons.school_outlined,
+      icon: LucideIcons.graduationCap,
       tint: NestTileTint.lilac,
       title: FamilyCopy.sectionSchool,
       actionLabel: FamilyCopy.editSection(FamilyCopy.sectionSchool),
@@ -47,7 +47,7 @@ class SchoolSection extends StatelessWidget {
                   const NestTag(
                     label: FamilyCopy.schoolNutFree,
                     tone: NestTagTone.warning,
-                    icon: Icons.no_food_outlined,
+                    icon: LucideIcons.utensilsCrossed,
                   ),
                 ],
               ],

@@ -19,7 +19,7 @@ class VaultEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = isUnlocked ? Icons.lock_open_outlined : Icons.lock_outline;
+    final icon = isUnlocked ? LucideIcons.lockOpen : LucideIcons.lock;
     return NestCard(
       variant: NestCardVariant.tinted,
       padding: EdgeInsets.zero,
@@ -32,7 +32,7 @@ class VaultEntryCard extends StatelessWidget {
           tone: isUnlocked ? NestBadgeTone.info : NestBadgeTone.neutral,
           icon: icon,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         onTap: onOpenVaults,
       ),
     );

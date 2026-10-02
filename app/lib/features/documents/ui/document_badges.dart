@@ -36,8 +36,7 @@ class DocumentBadges extends StatelessWidget {
             status: ExpirySchedule.statusOf(expiresOn, today),
             today: today,
           ),
-        for (final tag in tags)
-          NestBadge(label: tag, icon: Icons.sell_outlined),
+        for (final tag in tags) NestBadge(label: tag, icon: LucideIcons.tag),
       ],
     );
   }

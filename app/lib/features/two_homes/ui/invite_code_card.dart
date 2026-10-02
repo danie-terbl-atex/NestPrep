@@ -66,7 +66,7 @@ class _InviteCodeCardState extends State<InviteCodeCard> {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: TwoHomesSetupCopy.shareCode,
-          icon: Icons.ios_share,
+          icon: LucideIcons.share,
           onPressed: widget.onShare,
         ),
         const SizedBox(height: NestSpace.sm),
@@ -75,7 +75,7 @@ class _InviteCodeCardState extends State<InviteCodeCard> {
           label: _hasCopied
               ? TwoHomesSetupCopy.codeCopied
               : TwoHomesSetupCopy.copyCode,
-          icon: _hasCopied ? Icons.check : Icons.copy_outlined,
+          icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
           onPressed: _copy,
         ),
         const SizedBox(height: NestSpace.sm),

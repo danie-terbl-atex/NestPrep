@@ -83,8 +83,8 @@ class _OptionsBodyState extends State<_OptionsBody> {
               leading: LunchSlotTile(slot: widget.slot),
               trailing: Icon(
                 _chosen.contains(entry.item.id)
-                    ? Icons.check_circle_rounded
-                    : Icons.radio_button_unchecked_rounded,
+                    ? LucideIcons.circleCheck
+                    : LucideIcons.circle,
                 color: _chosen.contains(entry.item.id)
                     ? nest.colors.accent
                     : nest.colors.outlineStrong,

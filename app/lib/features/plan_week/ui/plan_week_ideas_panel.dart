@@ -86,7 +86,7 @@ class _IdeaList extends StatelessWidget {
               tone: list.source == PlanSource.ai
                   ? NestTagTone.accent
                   : NestTagTone.neutral,
-              icon: Icons.auto_awesome_rounded,
+              icon: LucideIcons.sparkles,
             ),
             if (calls != null) NestTag(label: PlanWeekCopy.callsLeft(calls)),
           ],
@@ -119,7 +119,7 @@ class _IdeaList extends StatelessWidget {
         if (active == 0) ...[
           const SizedBox(height: NestSpace.lg),
           const NestEmptyView(
-            icon: Icons.lightbulb_outline_rounded,
+            icon: LucideIcons.lightbulb,
             title: PlanWeekCopy.noIdeas,
             message: PlanWeekCopy.noIdeasBody,
           ),
@@ -130,7 +130,7 @@ class _IdeaList extends StatelessWidget {
           child: NestButton(
             key: const ValueKey('plan-week-add-idea'),
             label: PlanWeekCopy.addIdea,
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             variant: NestButtonVariant.outline,
             size: NestButtonSize.small,
             isExpanded: false,
@@ -141,7 +141,7 @@ class _IdeaList extends StatelessWidget {
         PlanWeekStepActions(
           nextKey: const ValueKey('plan-week-search'),
           label: PlanWeekCopy.searchAction(active),
-          icon: Icons.storefront_outlined,
+          icon: LucideIcons.store,
           onNext: active == 0 ? null : controller.searchStore,
           onBack: controller.back,
         ),

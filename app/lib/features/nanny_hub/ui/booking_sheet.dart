@@ -122,7 +122,7 @@ class _BookingBodyState extends State<_BookingBody> {
                 NestChip(
                   label: carer.displayName,
                   isSelected: carer.id == _carerId,
-                  icon: carer.id == _carerId ? Icons.check : null,
+                  icon: carer.id == _carerId ? LucideIcons.check : null,
                   onTap: () => setState(() => _carerId = carer.id),
                 ),
             ],
@@ -162,7 +162,7 @@ class _BookingBodyState extends State<_BookingBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: NannyBookingCopy.confirmBook,
-            icon: Icons.event_available,
+            icon: LucideIcons.calendarCheck,
             onPressed: _carerId == null || problem != null ? null : _book,
           ),
         ],
@@ -185,14 +185,14 @@ class _TimeRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: NestListRow(
         leading: const NestIconTile(
-          icon: Icons.schedule,
+          icon: LucideIcons.clock,
           tint: NestTileTint.butter,
           size: NestSize.avatarMedium,
           iconSize: NestSize.iconMedium,
         ),
         title: title,
         subtitle: note,
-        trailing: const Icon(Icons.edit_outlined),
+        trailing: const Icon(LucideIcons.pencil),
         onTap: onTap,
       ),
     );

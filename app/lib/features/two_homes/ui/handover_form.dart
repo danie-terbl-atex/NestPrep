@@ -156,7 +156,7 @@ class _HandoverFormState extends State<HandoverForm> {
           ],
           NestButton(
             label: TwoHomesHandoverCopy.save,
-            icon: Icons.check,
+            icon: LucideIcons.check,
             isLoading: controller.isSaving,
             onPressed: controller.isSaving ? null : _save,
           ),

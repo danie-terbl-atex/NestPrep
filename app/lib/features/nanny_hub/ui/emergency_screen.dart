@@ -88,7 +88,7 @@ class _EmergencyBody extends StatelessWidget {
         const SizedBox(height: NestSpace.xl),
         NestSectionHeader(
           title: NannyCopy.contacts,
-          actionIcon: canEdit ? Icons.person_add_alt : null,
+          actionIcon: canEdit ? LucideIcons.userPlus : null,
           actionLabel: canEdit ? NannyCopy.addContact : null,
           onAction: canEdit ? () => _addContact(context) : null,
         ),

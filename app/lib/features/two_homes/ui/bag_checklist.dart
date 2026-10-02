@@ -112,7 +112,7 @@ class _BagChecklistState extends State<BagChecklist> {
               ),
               const SizedBox(width: NestSpace.sm),
               NestIconButton(
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 label: TwoHomesHandoverCopy.addItem,
                 variant: NestIconButtonVariant.accent,
                 onPressed: () => _add(_newItem.text),
@@ -128,7 +128,7 @@ class _BagChecklistState extends State<BagChecklist> {
                 for (final text in suggestions)
                   NestChip(
                     label: text,
-                    icon: Icons.add,
+                    icon: LucideIcons.plus,
                     onTap: () => _add(text),
                   ),
               ],
@@ -179,8 +179,8 @@ class _BagItemRow extends StatelessWidget {
                     children: [
                       Icon(
                         item.packed
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
+                            ? LucideIcons.circleCheck
+                            : LucideIcons.circle,
                         color: item.packed
                             ? nest.colors.success
                             : nest.colors.inkTertiary,
@@ -208,7 +208,7 @@ class _BagItemRow extends StatelessWidget {
           ),
           if (remove != null)
             NestIconButton(
-              icon: Icons.close,
+              icon: LucideIcons.x,
               label: '${TwoHomesHandoverCopy.removeItem} ${item.text}',
               variant: NestIconButtonVariant.plain,
               onPressed: remove,

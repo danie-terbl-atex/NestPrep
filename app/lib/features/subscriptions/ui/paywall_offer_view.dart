@@ -30,7 +30,7 @@ class PaywallOfferView extends StatelessWidget {
         _ => const NestEmptyView(
           title: SubscriptionCopy.notYetTitle,
           message: SubscriptionCopy.notYetBody,
-          icon: Icons.hourglass_top_outlined,
+          icon: LucideIcons.hourglass,
         ),
       },
       dataBuilder: (context, offer) {

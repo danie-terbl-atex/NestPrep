@@ -150,7 +150,7 @@ class _Steps extends StatelessWidget {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: HomeCareCopy.handIn,
-            icon: Icons.task_alt,
+            icon: LucideIcons.circleCheckBig,
             isLoading: actions.isBusy,
             onPressed: actions.afterPhoto == null || actions.isBusy
                 ? null

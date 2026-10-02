@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -27,18 +28,22 @@ class NestBanner extends StatelessWidget {
     final nest = NestTheme.of(context);
     final c = nest.colors;
     final (fill, ink, icon) = switch (tone) {
-      NestBannerTone.info => (c.accentSoft, c.accentInk, Icons.info_outline),
+      NestBannerTone.info => (c.accentSoft, c.accentInk, LucideIcons.info),
       NestBannerTone.success => (
         c.successSoft,
         c.success,
-        Icons.check_circle_outline,
+        LucideIcons.circleCheck,
       ),
       NestBannerTone.warning => (
         c.warningSoft,
         c.warning,
-        Icons.warning_amber_outlined,
+        LucideIcons.triangleAlert,
       ),
-      NestBannerTone.danger => (c.dangerSoft, c.danger, Icons.error_outline),
+      NestBannerTone.danger => (
+        c.dangerSoft,
+        c.danger,
+        LucideIcons.circleAlert,
+      ),
     };
     final label = actionLabel;
     return Semantics(

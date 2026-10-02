@@ -65,7 +65,7 @@ class _Week extends StatelessWidget {
         if (plan.isEmpty) ...[
           const SizedBox(height: NestSpace.lg),
           const NestEmptyView(
-            icon: Icons.bento_outlined,
+            icon: LucideIcons.sandwich,
             title: PlanWeekCopy.nothingNew,
             message: PlanWeekCopy.nothingNewBody,
           ),
@@ -95,7 +95,7 @@ class _Week extends StatelessWidget {
         PlanWeekStepActions(
           nextKey: const ValueKey('plan-week-use'),
           label: PlanWeekCopy.useAction,
-          icon: Icons.check_rounded,
+          icon: LucideIcons.check,
           isBusy: shop.isSaving,
           onNext: plan.isEmpty ? null : controller.use,
           onBack: shop.isSaving ? null : controller.back,

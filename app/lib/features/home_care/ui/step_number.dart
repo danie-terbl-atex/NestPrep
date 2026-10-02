@@ -31,7 +31,11 @@ class StepNumber extends StatelessWidget {
           color: isDone ? nest.colors.success : nest.colors.accentSoft,
         ),
         child: isDone
-            ? Icon(Icons.check, size: size * 0.6, color: nest.colors.onAccent)
+            ? Icon(
+                LucideIcons.check,
+                size: size * 0.6,
+                color: nest.colors.onAccent,
+              )
             : Text(
                 '$number',
                 style: nest.text.label.copyWith(color: nest.colors.accentInk),

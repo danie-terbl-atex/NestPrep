@@ -68,7 +68,7 @@ class _TagFieldState extends State<TagField> {
           onChanged: (_) => setState(() {}),
           onSubmitted: _add,
           suffix: NestIconButton(
-            icon: Icons.add,
+            icon: LucideIcons.plus,
             label: VaultCopy.addTag,
             variant: NestIconButtonVariant.plain,
             onPressed:
@@ -87,7 +87,7 @@ class _TagFieldState extends State<TagField> {
               NestChip(
                 label: tag,
                 isSelected: true,
-                icon: Icons.close,
+                icon: LucideIcons.x,
                 semanticLabel: VaultCopy.removeTag(tag),
                 onTap: () => widget.onChanged([
                   for (final kept in widget.tags)
@@ -96,7 +96,11 @@ class _TagFieldState extends State<TagField> {
               ),
             if (!_isFull)
               for (final tag in offered)
-                NestChip(label: tag, icon: Icons.add, onTap: () => _add(tag)),
+                NestChip(
+                  label: tag,
+                  icon: LucideIcons.plus,
+                  onTap: () => _add(tag),
+                ),
           ],
         ),
         if (_isFull)

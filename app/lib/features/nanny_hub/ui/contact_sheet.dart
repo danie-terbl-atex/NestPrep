@@ -92,7 +92,7 @@ class _ContactSheetBodyState extends State<_ContactSheetBody> {
                 NestChip(
                   label: NannyCopy.contactKindName(kind),
                   isSelected: kind == _kind,
-                  icon: kind == _kind ? Icons.check : null,
+                  icon: kind == _kind ? LucideIcons.check : null,
                   onTap: () => setState(() => _kind = kind),
                 ),
             ],
@@ -113,7 +113,7 @@ class _ContactSheetBodyState extends State<_ContactSheetBody> {
             hint: NannyCopy.contactPhoneHint,
             controller: _phone,
             keyboardType: TextInputType.phone,
-            prefixIcon: Icons.phone_outlined,
+            prefixIcon: LucideIcons.phone,
             errorText: phoneTyped && !_phoneIsValid
                 ? NannyCopy.phoneNotValid
                 : null,
@@ -143,7 +143,7 @@ class _ContactSheetBodyState extends State<_ContactSheetBody> {
             NestButton(
               label: NannyCopy.delete,
               variant: NestButtonVariant.ghost,
-              icon: Icons.delete_outline,
+              icon: LucideIcons.trash2,
               onPressed: _remove,
             ),
           ],

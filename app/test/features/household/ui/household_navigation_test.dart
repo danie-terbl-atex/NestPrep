@@ -27,7 +27,7 @@ void main() {
     title: AppCopy.householdTitle,
     leading: context.canPop()
         ? NestIconButton(
-            icon: Icons.arrow_back,
+            icon: LucideIcons.arrowLeft,
             label: AppCopy.back,
             onPressed: context.pop,
           )
@@ -82,7 +82,7 @@ void main() {
     expect(find.text(AppCopy.householdTitle), findsOneWidget);
     // The whole point: there is somewhere to go back to. Without this, the
     // system back button closes the app.
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
   });
 
   testWidgets('going back lands on More', (tester) async {
@@ -95,7 +95,7 @@ void main() {
     await tester.tap(find.text(MoreCopy.peopleTitle));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
 
     expect(find.text(moreTitle), findsOneWidget);
@@ -112,6 +112,6 @@ void main() {
 
     expect(find.text(AppCopy.householdTitle), findsOneWidget);
     // Nothing pushed it, so a back button would lead nowhere.
-    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
   });
 }

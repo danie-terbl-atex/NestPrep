@@ -26,7 +26,7 @@ class WeekPager extends StatelessWidget {
     final pager = Row(
       children: [
         NestIconButton(
-          icon: Icons.chevron_left,
+          icon: LucideIcons.chevronLeft,
           label: MentalLoadCopy.previousWeek,
           variant: NestIconButtonVariant.plain,
           onPressed: onPrevious,
@@ -39,7 +39,7 @@ class WeekPager extends StatelessWidget {
           ),
         ),
         NestIconButton(
-          icon: Icons.chevron_right,
+          icon: LucideIcons.chevronRight,
           label: MentalLoadCopy.nextWeek,
           variant: NestIconButtonVariant.plain,
           onPressed: onNext,

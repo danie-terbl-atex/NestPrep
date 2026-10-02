@@ -31,7 +31,7 @@ class KidDeviceRow extends StatelessWidget {
     final day = pairedOn;
     return NestListRow(
       leading: const NestIconTile(
-        icon: Icons.tablet_android_rounded,
+        icon: LucideIcons.tablet,
         tint: NestTileTint.basil,
       ),
       title: device.label.isEmpty ? KidCopy.manageUnnamedDevice : device.label,
@@ -39,7 +39,7 @@ class KidDeviceRow extends StatelessWidget {
           ? null
           : KidCopy.managePairedOn(NestDates.full(day, today)),
       trailing: NestIconButton(
-        icon: Icons.logout_rounded,
+        icon: LucideIcons.logOut,
         label: KidCopy.manageRevoke,
         variant: NestIconButtonVariant.plain,
         onPressed: onRevoke,

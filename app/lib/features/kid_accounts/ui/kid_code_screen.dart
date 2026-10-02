@@ -24,7 +24,7 @@ class KidCodeScreen extends StatelessWidget {
     final failure = controller.failure;
     return NestScaffold(
       leading: NestIconButton(
-        icon: Icons.arrow_back,
+        icon: LucideIcons.arrowLeft,
         label: AppCopy.back,
         variant: NestIconButtonVariant.plain,
         onPressed: () => context.go(SignInScreen.path),
@@ -38,7 +38,7 @@ class KidCodeScreen extends StatelessWidget {
               const NestRiseIn(
                 child: Center(
                   child: NestIconTile(
-                    icon: Icons.waving_hand_rounded,
+                    icon: LucideIcons.hand,
                     tint: NestTileTint.butter,
                     size: NestSize.mark,
                     iconSize: NestSize.iconMark,
@@ -84,7 +84,7 @@ class KidCodeScreen extends StatelessWidget {
                 index: 4,
                 child: NestButton(
                   label: KidCopy.codeSubmit,
-                  icon: Icons.rocket_launch_rounded,
+                  icon: LucideIcons.rocket,
                   isLoading: controller.isSubmitting,
                   onPressed: controller.isComplete ? controller.submit : null,
                 ),

@@ -62,7 +62,7 @@ class PlanActions extends StatelessWidget {
         if (manage != null) ...[
           NestButton(
             label: SubscriptionCopy.manage,
-            icon: Icons.open_in_new,
+            icon: LucideIcons.externalLink,
             variant: NestButtonVariant.outline,
             onPressed: manage,
           ),
@@ -77,7 +77,7 @@ class PlanActions extends StatelessWidget {
           label: isRestoring
               ? SubscriptionCopy.restoring
               : SubscriptionCopy.restore,
-          icon: Icons.restore,
+          icon: LucideIcons.history,
           variant: NestButtonVariant.tonal,
           size: NestButtonSize.medium,
           isLoading: isRestoring,

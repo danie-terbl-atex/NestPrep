@@ -51,7 +51,7 @@ class HouseholdPeopleCard extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  Icons.chevron_right,
+                  LucideIcons.chevronRight,
                   size: NestSize.iconMedium,
                   color: nest.colors.inkTertiary,
                 ),

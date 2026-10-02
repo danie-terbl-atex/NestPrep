@@ -80,7 +80,7 @@ class PlanWeekIdeaRow extends StatelessWidget {
             ),
           ),
           NestIconButton(
-            icon: Icons.close_rounded,
+            icon: LucideIcons.x,
             label: PlanWeekCopy.removeIdea(idea.idea),
             variant: NestIconButtonVariant.plain,
             onPressed: onRemove,
@@ -95,7 +95,7 @@ class PlanWeekIdeaRow extends StatelessWidget {
     IdeaOrigin.aisle => const NestTag(
       label: PlanWeekCopy.originAisle,
       tone: NestTagTone.accent,
-      icon: Icons.storefront_outlined,
+      icon: LucideIcons.store,
     ),
     IdeaOrigin.drafted || IdeaOrigin.usual => null,
   };

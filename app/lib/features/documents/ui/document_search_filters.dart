@@ -49,7 +49,7 @@ class DocumentSearchFilters extends StatelessWidget {
           extraChips: [
             NestChip(
               label: VaultCopy.searchHousehold,
-              icon: Icons.folder_outlined,
+              icon: LucideIcons.folder,
               isSelected: owner is HouseholdOwner,
               onTap: () => onOwner(OwnerFilter.household),
             ),
@@ -63,7 +63,7 @@ class DocumentSearchFilters extends StatelessWidget {
             children: [
               NestChip(
                 label: VaultCopy.searchExpiring,
-                icon: Icons.schedule,
+                icon: LucideIcons.clock,
                 isSelected: query.expiringSoonOnly,
                 onTap: () => onExpiringSoon(!query.expiringSoonOnly),
               ),
@@ -71,7 +71,7 @@ class DocumentSearchFilters extends StatelessWidget {
                 const SizedBox(width: NestSpace.sm),
                 NestChip(
                   label: tag,
-                  icon: Icons.sell_outlined,
+                  icon: LucideIcons.tag,
                   isSelected: query.tag?.toLowerCase() == tag.toLowerCase(),
                   onTap: () => onTag(tag),
                 ),

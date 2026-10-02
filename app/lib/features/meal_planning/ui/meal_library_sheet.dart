@@ -44,7 +44,7 @@ class _MealLibraryBody extends StatelessWidget {
       return const NestEmptyView(
         title: AppCopy.mealsEmptyTitle,
         message: AppCopy.mealsEmptyBody,
-        icon: Icons.restaurant_outlined,
+        icon: LucideIcons.utensils,
       );
     }
     return ConstrainedBox(
@@ -66,7 +66,7 @@ class _MealLibraryBody extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     NestIconButton(
-                      icon: Icons.shopping_basket_outlined,
+                      icon: LucideIcons.shoppingBasket,
                       label: MealIngredientCopy.openFor(meal.name),
                       variant: NestIconButtonVariant.plain,
                       onPressed: () => showMealIngredientsSheet(
@@ -76,7 +76,7 @@ class _MealLibraryBody extends StatelessWidget {
                       ),
                     ),
                     NestIconButton(
-                      icon: Icons.delete_outline,
+                      icon: LucideIcons.trash2,
                       label: AppCopy.mealsDelete,
                       variant: NestIconButtonVariant.plain,
                       onPressed: () => _delete(context, meal),

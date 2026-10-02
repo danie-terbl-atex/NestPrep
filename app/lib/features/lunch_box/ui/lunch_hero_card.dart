@@ -68,7 +68,7 @@ class LunchHeroCard extends StatelessWidget {
             const SizedBox(height: NestSpace.lg),
             NestButton(
               label: LunchCopy.fillWeek,
-              icon: Icons.auto_awesome_rounded,
+              icon: LucideIcons.sparkles,
               isLoading: controller.edit.isFilling,
               onPressed: isFull
                   ? null
@@ -83,7 +83,7 @@ class LunchHeroCard extends StatelessWidget {
             const SizedBox(height: NestSpace.sm),
             NestButton(
               label: LunchCopy.goToBoxCount(childWeek.favourites.length),
-              icon: Icons.favorite_border_rounded,
+              icon: LucideIcons.heart,
               variant: NestButtonVariant.ghost,
               size: NestButtonSize.small,
               onPressed: () => LunchFlows.packFavourite(

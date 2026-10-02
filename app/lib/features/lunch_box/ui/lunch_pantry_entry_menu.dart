@@ -20,19 +20,19 @@ Future<LunchPantryAction?> showLunchPantryEntryMenu({
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       const _Option(
-        icon: Icons.add_shopping_cart_rounded,
+        icon: LucideIcons.shoppingCart,
         label: LunchPantryCopy.topUp,
         subtitle: LunchPantryCopy.aPack,
         action: LunchPantryAction.topUp,
       ),
       if (!isUsedUp)
         const _Option(
-          icon: Icons.check_circle_outline_rounded,
+          icon: LucideIcons.circleCheck,
           label: LunchPantryCopy.markUsedUp,
           action: LunchPantryAction.usedUp,
         ),
       const _Option(
-        icon: Icons.remove_circle_outline_rounded,
+        icon: LucideIcons.circleMinus,
         label: LunchPantryCopy.remove,
         action: LunchPantryAction.remove,
       ),

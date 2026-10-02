@@ -56,7 +56,7 @@ class _BetaNumbersLinkState extends State<BetaNumbersLink> {
       child: NestButton(
         label: copy.openLink,
         variant: NestButtonVariant.outline,
-        icon: Icons.insights_outlined,
+        icon: LucideIcons.chartLine,
         onPressed: () {
           // Taken before the sheet closes, while this context still has a
           // router above it.

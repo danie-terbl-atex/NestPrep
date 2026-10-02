@@ -123,7 +123,7 @@ class _PairingSheetBodyState extends State<_PairingSheetBody> {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: KidCopy.pairMakeCode,
-            icon: Icons.password_rounded,
+            icon: LucideIcons.rectangleEllipsis,
             isLoading: controller.isMakingCode,
             onPressed: () => _makeCode(controller),
           ),
@@ -171,7 +171,7 @@ class _Paired extends StatelessWidget {
         const NestRiseIn(
           child: Center(
             child: NestIconTile(
-              icon: Icons.celebration_rounded,
+              icon: LucideIcons.partyPopper,
               tint: NestTileTint.basil,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,

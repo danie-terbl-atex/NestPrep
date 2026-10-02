@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return NestScaffold(
       title: AppCopy.forgotPasswordTitle,
       leading: NestIconButton(
-        icon: Icons.arrow_back,
+        icon: LucideIcons.arrowLeft,
         label: AppCopy.back,
         onPressed: () => context.go(SignInScreen.path),
       ),
@@ -75,7 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textCapitalization: TextCapitalization.none,
                 textInputAction: TextInputAction.done,
-                prefixIcon: Icons.alternate_email,
+                prefixIcon: LucideIcons.atSign,
                 onChanged: (_) => setState(() {}),
                 onSubmitted: (_) => _submit(controller),
               ),

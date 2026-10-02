@@ -45,7 +45,7 @@ class JobCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NestIconTile(
-                icon: room?.kind.icon ?? Icons.cleaning_services_outlined,
+                icon: room?.kind.icon ?? LucideIcons.sprayCan,
                 tint: room?.kind.tint ?? NestTileTint.accent,
                 size: NestSize.avatarLarge,
                 iconSize: NestSize.iconMedium,

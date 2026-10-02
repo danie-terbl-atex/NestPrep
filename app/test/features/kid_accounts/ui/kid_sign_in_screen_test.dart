@@ -223,7 +223,7 @@ void main() {
       await pump(tester);
       await emit(tester, [tablet()]);
 
-      await tester.tap(find.byIcon(Icons.logout_rounded));
+      await tester.tap(find.byIcon(LucideIcons.logOut));
       await tester.pumpAndSettle();
       expect(find.text(KidCopy.manageRevokeConfirm), findsOneWidget);
       await tester.tap(
@@ -241,7 +241,7 @@ void main() {
       await pump(tester);
       await emit(tester, [tablet()]);
 
-      await tester.tap(find.byIcon(Icons.logout_rounded));
+      await tester.tap(find.byIcon(LucideIcons.logOut));
       await tester.pumpAndSettle();
       await tester.tap(find.text(KidCopy.manageCancel));
       await tester.pumpAndSettle();

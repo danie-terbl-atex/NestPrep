@@ -29,10 +29,10 @@ class AllergySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final edit = onEdit;
     return FamilySectionCard(
-      icon: Icons.health_and_safety_outlined,
+      icon: LucideIcons.shieldPlus,
       tint: NestTileTint.guava,
       title: FamilyCopy.sectionAllergies,
-      actionIcon: Icons.add,
+      actionIcon: LucideIcons.plus,
       actionLabel: FamilyCopy.addAllergy,
       onAction: onAdd,
       child: allergies.isEmpty

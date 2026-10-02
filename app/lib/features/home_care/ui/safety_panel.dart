@@ -37,7 +37,7 @@ class SafetyPanel extends StatelessWidget {
   static List<SafetyLine> linesOf(JobSafety safety) => [
     for (final danger in safety.dangers)
       (
-        icon: Icons.dangerous_outlined,
+        icon: LucideIcons.octagonX,
         tone: NestTagTone.danger,
         title: HomeCareSafetyCopy.neverTogether(
           danger.first.name,
@@ -55,13 +55,13 @@ class SafetyPanel extends StatelessWidget {
         why: HomeCareSafetyCopy.precautionWhy(precaution),
       ),
     (
-      icon: Icons.inventory_2_outlined,
+      icon: LucideIcons.archive,
       tone: NestTagTone.neutral,
       title: HomeCareSafetyCopy.originalBottles,
       why: HomeCareSafetyCopy.originalBottlesWhy,
     ),
     (
-      icon: Icons.local_hospital_outlined,
+      icon: LucideIcons.hospital,
       tone: NestTagTone.neutral,
       title: HomeCareSafetyCopy.accidentTitle,
       why: HomeCareSafetyCopy.accidentBody,
@@ -99,7 +99,7 @@ class SafetyPanel extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: NestButton(
             label: HomeCareSafetyCopy.sourcesLink,
-            icon: Icons.menu_book_outlined,
+            icon: LucideIcons.bookOpen,
             variant: NestButtonVariant.ghost,
             size: NestButtonSize.small,
             isExpanded: false,
@@ -118,14 +118,14 @@ class SafetyPanel extends StatelessWidget {
   };
 
   static IconData _iconFor(Precaution precaution) => switch (precaution) {
-    Precaution.corrosive => Icons.science_outlined,
-    Precaution.flammable => Icons.local_fire_department_outlined,
-    Precaution.onlyWithWater => Icons.water_drop_outlined,
-    Precaution.gloves => Icons.back_hand_outlined,
-    Precaution.eyeProtection => Icons.visibility_outlined,
-    Precaution.freshAir => Icons.air,
-    Precaution.patchTest => Icons.crop_square,
-    Precaution.keepFromChildren => Icons.child_care_outlined,
-    Precaution.keepFromPets => Icons.pets_outlined,
+    Precaution.corrosive => LucideIcons.flaskConical,
+    Precaution.flammable => LucideIcons.flame,
+    Precaution.onlyWithWater => LucideIcons.droplet,
+    Precaution.gloves => LucideIcons.hand,
+    Precaution.eyeProtection => LucideIcons.eye,
+    Precaution.freshAir => LucideIcons.wind,
+    Precaution.patchTest => LucideIcons.square,
+    Precaution.keepFromChildren => LucideIcons.baby,
+    Precaution.keepFromPets => LucideIcons.pawPrint,
   };
 }

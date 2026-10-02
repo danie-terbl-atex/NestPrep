@@ -23,10 +23,10 @@ class KidChoreStars extends StatelessWidget {
       // a done job's green, where a green tag would disappear into it.
       NoStars() ||
       Earns() ||
-      Earned() => (NestTagTone.warning, Icons.star_rounded),
-      TryAgain() => (NestTagTone.warning, Icons.refresh_rounded),
-      Counting() => (NestTagTone.neutral, Icons.more_horiz_rounded),
-      WaitingForGrownUp() => (NestTagTone.accent, Icons.hourglass_top_rounded),
+      Earned() => (NestTagTone.warning, LucideIcons.star),
+      TryAgain() => (NestTagTone.warning, LucideIcons.refreshCw),
+      Counting() => (NestTagTone.neutral, LucideIcons.ellipsis),
+      WaitingForGrownUp() => (NestTagTone.accent, LucideIcons.hourglass),
     };
     return NestTag(label: label, tone: tone, icon: icon);
   }

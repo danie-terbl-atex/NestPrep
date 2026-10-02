@@ -24,15 +24,15 @@ class AdultLoadCard extends StatelessWidget {
   final VoidCallback onShare;
 
   static const _icons = {
-    LoadKind.eventsPlanned: Icons.edit_calendar_outlined,
-    LoadKind.eventsAttended: Icons.directions_car_outlined,
-    LoadKind.todosDone: Icons.check_circle_outline,
-    LoadKind.todosWaiting: Icons.pending_actions_outlined,
-    LoadKind.groceriesBought: Icons.shopping_basket_outlined,
-    LoadKind.groceriesAdded: Icons.playlist_add_outlined,
-    LoadKind.careShifts: Icons.child_care_outlined,
-    LoadKind.lunchesChecked: Icons.lunch_dining_outlined,
-    LoadKind.homeCareJobsSet: Icons.cleaning_services_outlined,
+    LoadKind.eventsPlanned: LucideIcons.calendarCog,
+    LoadKind.eventsAttended: LucideIcons.car,
+    LoadKind.todosDone: LucideIcons.circleCheck,
+    LoadKind.todosWaiting: LucideIcons.clipboardClock,
+    LoadKind.groceriesBought: LucideIcons.shoppingBasket,
+    LoadKind.groceriesAdded: LucideIcons.listPlus,
+    LoadKind.careShifts: LucideIcons.baby,
+    LoadKind.lunchesChecked: LucideIcons.sandwich,
+    LoadKind.homeCareJobsSet: LucideIcons.sprayCan,
   };
 
   @override
@@ -126,7 +126,7 @@ class AdultLoadCard extends StatelessWidget {
             excludeSemantics: true,
             child: NestButton(
               label: MentalLoadCopy.share,
-              icon: Icons.ios_share,
+              icon: LucideIcons.share,
               variant: NestButtonVariant.ghost,
               size: NestButtonSize.small,
               isExpanded: false,

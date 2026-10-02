@@ -83,7 +83,7 @@ class SchoolRunWeek extends StatelessWidget {
       subtitle: look == null
           ? NannyPickupCopy.notSet
           : [look.name, if (details.isNotEmpty) details].join(' · '),
-      trailing: edit == null ? null : const Icon(Icons.chevron_right),
+      trailing: edit == null ? null : const Icon(LucideIcons.chevronRight),
       onTap: edit == null ? null : () => edit(child, weekday),
     );
   }

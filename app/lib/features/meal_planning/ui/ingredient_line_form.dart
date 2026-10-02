@@ -84,7 +84,7 @@ class _IngredientLineFormState extends State<IngredientLineForm> {
         const SizedBox(height: NestSpace.lg),
         NestButton(
           label: MealIngredientCopy.add,
-          icon: Icons.add,
+          icon: LucideIcons.plus,
           variant: NestButtonVariant.tonal,
           onPressed: _name.text.trim().isEmpty ? null : _submit,
         ),

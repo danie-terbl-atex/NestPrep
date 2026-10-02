@@ -44,7 +44,7 @@ class GuideSpotCard extends StatelessWidget {
               ),
               if (edit != null)
                 NestIconButton(
-                  icon: Icons.edit_outlined,
+                  icon: LucideIcons.pencil,
                   label: NannyCopy.editSpot,
                   variant: NestIconButtonVariant.plain,
                   onPressed: edit,

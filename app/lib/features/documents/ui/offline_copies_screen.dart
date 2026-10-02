@@ -29,7 +29,7 @@ class OfflineCopiesScreen extends StatelessWidget {
       leading: backLeading(context),
       trailing: [
         NestIconButton(
-          icon: Icons.lock_outline,
+          icon: LucideIcons.lock,
           label: VaultCopy.lockNow,
           onPressed: controller.lock.lock,
         ),
@@ -59,7 +59,7 @@ class OfflineCopiesScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: OfflineCopiesCopy.emptyTitle,
                 message: OfflineCopiesCopy.emptyBody,
-                icon: Icons.offline_pin_outlined,
+                icon: LucideIcons.circleCheck,
               ),
               dataBuilder: (context, shelf) => _CopyList(shelf: shelf),
             ),
@@ -137,7 +137,7 @@ class _CopyList extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         NestButton(
           label: OfflineCopiesCopy.removeAll,
-          icon: Icons.delete_sweep_outlined,
+          icon: LucideIcons.listX,
           variant: NestButtonVariant.outline,
           onPressed: () => _removeAll(context, controller),
         ),

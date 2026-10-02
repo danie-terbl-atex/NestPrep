@@ -37,7 +37,7 @@ class LunchSwapRow extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: NestButton(
                 label: LunchBudgetCopy.swap,
-                icon: Icons.swap_horiz_rounded,
+                icon: LucideIcons.arrowLeftRight,
                 variant: NestButtonVariant.tonal,
                 size: NestButtonSize.small,
                 isExpanded: false,

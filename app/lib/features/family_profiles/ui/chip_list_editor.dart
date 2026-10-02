@@ -73,7 +73,7 @@ class _ChipListEditorState extends State<ChipListEditor> {
             ),
             const SizedBox(width: NestSpace.sm),
             NestIconButton(
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               label: FamilyCopy.addChip,
               variant: NestIconButtonVariant.accent,
               onPressed: canAdd ? _add : null,
@@ -90,7 +90,7 @@ class _ChipListEditorState extends State<ChipListEditor> {
                 NestChip(
                   key: ValueKey(value),
                   label: value,
-                  trailingIcon: Icons.close,
+                  trailingIcon: LucideIcons.x,
                   semanticLabel: FamilyCopy.removeChip(value),
                   onTap: () => widget.onChanged(
                     widget.values.where((it) => it != value).toList(),

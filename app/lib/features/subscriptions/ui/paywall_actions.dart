@@ -65,7 +65,7 @@ class PaywallActions extends StatelessWidget {
             PurchaseVerifying(isRestore: false) => SubscriptionCopy.unlocking,
             _ => SubscriptionCopy.subscribe,
           },
-          icon: Icons.workspace_premium_outlined,
+          icon: LucideIcons.award,
           isLoading: isBuying,
           onPressed: canSubscribe && !isBusy ? onSubscribe : null,
         ),

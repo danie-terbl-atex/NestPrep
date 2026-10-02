@@ -46,7 +46,7 @@ class LunchSuggestionRow extends StatelessWidget {
             : LunchSlotTile(slot: slot, isEmpty: suggestion.isUnsafe),
         trailing: isCurrent
             ? Icon(
-                Icons.check_circle_rounded,
+                LucideIcons.circleCheck,
                 color: NestTheme.of(context).colors.accent,
                 size: NestSize.iconMedium,
               )

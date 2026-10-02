@@ -20,12 +20,12 @@ class ReferralMention extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: NestListRow(
         leading: const NestIconTile(
-          icon: Icons.card_giftcard_outlined,
+          icon: LucideIcons.gift,
           tint: NestTileTint.butter,
         ),
         title: ReferralCopy.title,
         subtitle: ReferralCopy.mentionBody,
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         onTap: onTap,
       ),
     );

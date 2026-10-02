@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -49,7 +50,7 @@ class NestErrorView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const NestIconTile(
-                icon: Icons.cloud_off_outlined,
+                icon: LucideIcons.cloudOff,
                 tint: NestTileTint.butter,
                 size: NestSize.avatarLarge,
               ),

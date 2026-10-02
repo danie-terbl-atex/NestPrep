@@ -57,14 +57,14 @@ class ReviewScreen extends StatelessWidget {
               if (canReview) ...[
                 NestButton(
                   label: HomeCareCopy.approve,
-                  icon: Icons.verified_outlined,
+                  icon: LucideIcons.badgeCheck,
                   isLoading: isBusy,
                   onPressed: isBusy ? null : () => _approve(context),
                 ),
                 const SizedBox(height: NestSpace.sm),
                 NestButton(
                   label: HomeCareCopy.sendBack,
-                  icon: Icons.replay,
+                  icon: LucideIcons.rotateCcw,
                   variant: NestButtonVariant.outline,
                   onPressed: isBusy ? null : () => _sendBack(context),
                 ),

@@ -40,7 +40,7 @@ class CollectorAvatar extends StatelessWidget {
       );
     }
     return NestIconTile(
-      icon: Icons.person_outline,
+      icon: LucideIcons.user,
       tint: NestTileTint.lilac,
       size: size,
       iconSize: NestSize.iconMedium,

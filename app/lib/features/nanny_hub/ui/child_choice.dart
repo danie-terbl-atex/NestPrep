@@ -37,7 +37,7 @@ class ChildChoice extends StatelessWidget {
               NestChip(
                 label: child.displayName,
                 isSelected: chosen.contains(child.id),
-                icon: chosen.contains(child.id) ? Icons.check : null,
+                icon: chosen.contains(child.id) ? LucideIcons.check : null,
                 onTap: () => onChanged(
                   chosen.contains(child.id)
                       ? ({...chosen}..remove(child.id))

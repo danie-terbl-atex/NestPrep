@@ -85,7 +85,7 @@ class _PickerBody extends StatelessWidget {
       children: [
         NestButton(
           label: LunchCopy.somethingElse,
-          icon: Icons.add_rounded,
+          icon: LucideIcons.plus,
           variant: NestButtonVariant.tonal,
           size: NestButtonSize.medium,
           onPressed: () => _addNew(context),
@@ -94,7 +94,7 @@ class _PickerBody extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: LunchCopy.takeItOut,
-            icon: Icons.remove_circle_outline,
+            icon: LucideIcons.circleMinus,
             variant: NestButtonVariant.ghost,
             size: NestButtonSize.medium,
             onPressed: () =>

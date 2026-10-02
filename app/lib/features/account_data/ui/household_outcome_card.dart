@@ -17,15 +17,15 @@ class HouseholdOutcomeCard extends StatelessWidget {
     final nest = NestTheme.of(context);
     final ends = household.outcome == HouseholdDeletionOutcome.end;
     final (icon, tint) = switch (household.outcome) {
-      HouseholdDeletionOutcome.leave => (Icons.logout, NestTileTint.lilac),
+      HouseholdDeletionOutcome.leave => (
+        LucideIcons.logOut,
+        NestTileTint.lilac,
+      ),
       HouseholdDeletionOutcome.handOver => (
-        Icons.swap_horiz,
+        LucideIcons.arrowLeftRight,
         NestTileTint.basil,
       ),
-      HouseholdDeletionOutcome.end => (
-        Icons.delete_forever_outlined,
-        NestTileTint.guava,
-      ),
+      HouseholdDeletionOutcome.end => (LucideIcons.trash2, NestTileTint.guava),
     };
     return NestCard(
       variant: ends ? NestCardVariant.raised : NestCardVariant.flat,

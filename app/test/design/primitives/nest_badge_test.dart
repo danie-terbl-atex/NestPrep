@@ -15,12 +15,12 @@ void main() {
           const NestBadge(
             label: 'Expired',
             tone: NestBadgeTone.danger,
-            icon: Icons.error_outline,
+            icon: LucideIcons.circleAlert,
           ),
           brightness: brightness,
         );
         expect(find.text('Expired'), findsOneWidget);
-        expect(find.byIcon(Icons.error_outline), findsOneWidget);
+        expect(find.byIcon(LucideIcons.circleAlert), findsOneWidget);
         expect(find.bySemanticsLabel('Expired'), findsOneWidget);
       });
 
@@ -34,7 +34,7 @@ void main() {
             child: NestBadge(
               label: 'Expires on Wednesday the thirtieth of April',
               tone: NestBadgeTone.warning,
-              icon: Icons.schedule,
+              icon: LucideIcons.clock,
             ),
           ),
           brightness: brightness,

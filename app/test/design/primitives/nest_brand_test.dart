@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 

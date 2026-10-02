@@ -52,7 +52,7 @@ class LunchPricesScreen extends StatelessWidget {
                     isEmpty: (week) => week.pricingOrder.isEmpty,
                     onRetry: budget.retry,
                     emptyBuilder: (_) => const NestEmptyView(
-                      icon: Icons.menu_book_outlined,
+                      icon: LucideIcons.bookOpen,
                       title: LunchCopy.libraryTitle,
                       message: LunchCopy.libraryLoadingSeed,
                     ),

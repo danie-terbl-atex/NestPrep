@@ -26,7 +26,7 @@ class CareNotesSection extends StatelessWidget {
     final nest = NestTheme.of(context);
     final known = goodToKnow;
     return FamilySectionCard(
-      icon: Icons.nights_stay_outlined,
+      icon: LucideIcons.moonStar,
       tint: NestTileTint.accent,
       title: NannyCopy.settling,
       actionLabel: NannyCopy.editSettling,

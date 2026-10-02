@@ -29,7 +29,7 @@ class KidSignInScreen extends StatelessWidget {
       title: KidCopy.manageTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -59,7 +59,7 @@ class KidSignInScreen extends StatelessWidget {
               emptyBuilder: (_) => NestEmptyView(
                 title: KidCopy.manageEmptyTitle,
                 message: KidCopy.manageEmptyBody,
-                icon: Icons.child_care_rounded,
+                icon: LucideIcons.baby,
                 actionLabel: KidCopy.manageGoToHousehold,
                 onAction: () => context.go(
                   HouseholdRoute.householdPathFor(controller.householdId),

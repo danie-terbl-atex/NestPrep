@@ -2,6 +2,8 @@
 /// nothing under `design/` directly.
 library;
 
+export 'package:lucide_icons_flutter/lucide_icons.dart' show LucideIcons;
+
 export 'primitives/nest_async_view.dart';
 export 'primitives/nest_avatar.dart';
 export 'primitives/nest_badge.dart';

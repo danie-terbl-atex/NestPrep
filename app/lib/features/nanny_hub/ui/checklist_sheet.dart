@@ -84,7 +84,7 @@ class _ChecklistBodyState extends State<_ChecklistBody> {
                     ),
                   ),
                   NestIconButton(
-                    icon: Icons.delete_outline,
+                    icon: LucideIcons.trash2,
                     label: NannyCopy.removeItem,
                     variant: NestIconButtonVariant.plain,
                     onPressed: () => _remove(line),
@@ -100,7 +100,7 @@ class _ChecklistBodyState extends State<_ChecklistBody> {
           else
             NestButton(
               label: NannyCopy.addItem,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               variant: NestButtonVariant.outline,
               onPressed: () => setState(() => _lines.add(_Line('', ''))),
             ),

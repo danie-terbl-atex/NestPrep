@@ -55,7 +55,7 @@ class JobList extends StatelessWidget {
                 pile,
                 isHelper: !access.canManage,
               ),
-              icon: Icons.cleaning_services_outlined,
+              icon: LucideIcons.sprayCan,
             ),
           )
         else

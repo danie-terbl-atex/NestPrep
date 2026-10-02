@@ -31,7 +31,7 @@ class ShiftSummaryScreen extends StatelessWidget {
       trailing: [
         if (showsPhotos)
           NestIconButton(
-            icon: Icons.photo_library_outlined,
+            icon: LucideIcons.images,
             label: NannyPhotoCopy.shiftPhotos,
             onPressed: () => context.push(
               NannyHubRoute.photosPathFor(controller.householdId, shiftId),
@@ -44,7 +44,7 @@ class ShiftSummaryScreen extends StatelessWidget {
       emptyBuilder: (_) => const NestEmptyView(
         title: NannyShiftCopy.summaryGoneTitle,
         message: NannyShiftCopy.summaryGoneBody,
-        icon: Icons.hourglass_empty,
+        icon: LucideIcons.hourglass,
       ),
       builder: (context, view) => ShiftSummaryView(
         summary: view.hub.summaryOf(shiftId)!,

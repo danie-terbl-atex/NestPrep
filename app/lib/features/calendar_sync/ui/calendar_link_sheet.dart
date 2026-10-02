@@ -56,7 +56,7 @@ class _CalendarLinkFormState extends State<_CalendarLinkForm> {
             keyboardType: TextInputType.url,
             textInputAction: TextInputAction.done,
             textCapitalization: TextCapitalization.none,
-            prefixIcon: Icons.link,
+            prefixIcon: LucideIcons.link,
             onChanged: (_) => setState(() {}),
             onSubmitted: (_) => _submit(),
           ),

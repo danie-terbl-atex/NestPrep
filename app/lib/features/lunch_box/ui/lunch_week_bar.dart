@@ -43,7 +43,7 @@ class LunchWeekBar extends StatelessWidget {
     return Row(
       children: [
         NestIconButton(
-          icon: Icons.chevron_left,
+          icon: LucideIcons.chevronLeft,
           label: LunchCopy.previousWeek,
           variant: NestIconButtonVariant.plain,
           onPressed: onPrevious,
@@ -68,7 +68,7 @@ class LunchWeekBar extends StatelessWidget {
           ),
         ),
         NestIconButton(
-          icon: Icons.chevron_right,
+          icon: LucideIcons.chevronRight,
           label: LunchCopy.nextWeek,
           variant: NestIconButtonVariant.plain,
           onPressed: onNext,

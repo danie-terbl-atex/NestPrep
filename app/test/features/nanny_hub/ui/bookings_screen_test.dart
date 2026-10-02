@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/app/nanny_hub_route.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/nanny_hub/ui/hub_clock.dart';
@@ -118,7 +119,7 @@ void main() {
     // The end: from 22:00 to 16:00, in the picker's typing mode.
     await tester.tap(find.text(NannyBookingCopy.endsAt('22:00')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.keyboard_outlined));
+    await tester.tap(find.byIcon(LucideIcons.keyboard));
     await tester.pumpAndSettle();
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), '4');

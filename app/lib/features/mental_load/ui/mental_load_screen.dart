@@ -51,7 +51,7 @@ class MentalLoadScreen extends StatelessWidget {
               isEmpty: (week) => week.isEmpty && week.adults.length > 1,
               onRetry: controller.retry,
               emptyBuilder: (_) => const NestEmptyView(
-                icon: Icons.volunteer_activism_outlined,
+                icon: LucideIcons.handHeart,
                 title: MentalLoadCopy.emptyTitle,
                 message: MentalLoadCopy.emptyBody,
               ),

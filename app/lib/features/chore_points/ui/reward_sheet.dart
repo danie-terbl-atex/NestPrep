@@ -110,7 +110,7 @@ class _RewardSheetBodyState extends State<_RewardSheetBody> {
               for (final quick in _quickCosts)
                 NestChip(
                   label: PointsCopy.starsCount(quick),
-                  icon: Icons.star_rounded,
+                  icon: LucideIcons.star,
                   isSelected: cost == quick,
                   onTap: () => setState(() => _cost.text = '$quick'),
                 ),

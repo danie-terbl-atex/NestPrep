@@ -11,25 +11,25 @@ class ConsentSummary extends StatelessWidget {
 
   static const _points = [
     (
-      Icons.child_care_outlined,
+      LucideIcons.baby,
       NestTileTint.guava,
       LegalCopy.consentChildren,
       LegalCopy.consentChildrenBody,
     ),
     (
-      Icons.health_and_safety_outlined,
+      LucideIcons.shieldPlus,
       NestTileTint.basil,
       LegalCopy.consentHealth,
       LegalCopy.consentHealthBody,
     ),
     (
-      Icons.folder_shared_outlined,
+      LucideIcons.folderOpen,
       NestTileTint.lilac,
       LegalCopy.consentDocuments,
       LegalCopy.consentDocumentsBody,
     ),
     (
-      Icons.location_on_outlined,
+      LucideIcons.mapPin,
       NestTileTint.butter,
       LegalCopy.consentLocation,
       LegalCopy.consentLocationBody,

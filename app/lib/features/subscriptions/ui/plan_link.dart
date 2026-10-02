@@ -24,10 +24,10 @@ class PlanLink extends StatelessWidget {
         title: SubscriptionCopy.openFromHousehold,
         subtitle: SubscriptionCopy.openFromHouseholdBody(isPremium: isPremium),
         leading: const NestIconTile(
-          icon: Icons.workspace_premium_outlined,
+          icon: LucideIcons.award,
           tint: NestTileTint.butter,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const Icon(LucideIcons.chevronRight),
         // Pushed, so back lands on the household screen (`FE-17`).
         onTap: () => context.push(SubscriptionRoute.pathFor(householdId)),
       ),

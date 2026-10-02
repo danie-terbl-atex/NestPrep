@@ -49,13 +49,13 @@ class HomeCareShortcuts extends StatelessWidget {
               if (hasRoutines && canManage)
                 NestChip(
                   label: HomeCareRoutineCopy.routines,
-                  icon: Icons.event_repeat_outlined,
+                  icon: LucideIcons.calendarSync,
                   onTap: () => open(HomeCareRoute.routinesPathFor(householdId)),
                 ),
               if (hasStock)
                 NestChip(
                   label: HomeCareStockCopy.stock,
-                  icon: Icons.inventory_outlined,
+                  icon: LucideIcons.clipboardList,
                   onTap: () => open(HomeCareRoute.stockPathFor(householdId)),
                 ),
               if (hasLanguage)
@@ -63,7 +63,7 @@ class HomeCareShortcuts extends StatelessWidget {
                   label: canManage
                       ? HomeCareLanguageCopy.languages
                       : language.language.ownName,
-                  icon: Icons.translate,
+                  icon: LucideIcons.languages,
                   onTap: () =>
                       open(HomeCareRoute.languagesPathFor(householdId)),
                 ),
@@ -90,7 +90,7 @@ class _TodayCard extends StatelessWidget {
       child: Row(
         children: [
           const NestIconTile(
-            icon: Icons.meeting_room_outlined,
+            icon: LucideIcons.doorOpen,
             tint: NestTileTint.basil,
           ),
           const SizedBox(width: NestSpace.lg),
@@ -106,7 +106,7 @@ class _TodayCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: nest.colors.inkSecondary),
+          Icon(LucideIcons.chevronRight, color: nest.colors.inkSecondary),
         ],
       ),
     );

@@ -39,7 +39,7 @@ class LunchChooseSlot extends StatelessWidget {
             ),
             if (chosen != null)
               Icon(
-                Icons.star_rounded,
+                LucideIcons.star,
                 size: NestSize.iconMedium,
                 color: nest.colors.warning,
               ),

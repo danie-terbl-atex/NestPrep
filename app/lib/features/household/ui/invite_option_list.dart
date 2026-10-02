@@ -16,31 +16,31 @@ class InviteOptionList extends StatelessWidget {
   static const _options = [
     (
       AccessCopy.setupPartner,
-      Icons.favorite_outline,
+      LucideIcons.heart,
       NestTileTint.guava,
       MemberRole.admin,
     ),
     (
       AccessCopy.setupGrandparent,
-      Icons.elderly_outlined,
+      LucideIcons.personStanding,
       NestTileTint.butter,
       MemberRole.parent,
     ),
     (
       AccessCopy.setupHelper,
-      Icons.cleaning_services_outlined,
+      LucideIcons.sprayCan,
       NestTileTint.lilac,
       MemberRole.helper,
     ),
     (
       AccessCopy.setupCarer,
-      Icons.child_care_outlined,
+      LucideIcons.baby,
       NestTileTint.basil,
       MemberRole.carer,
     ),
     (
       AccessCopy.setupChild,
-      Icons.smartphone_outlined,
+      LucideIcons.smartphone,
       NestTileTint.accent,
       MemberRole.kid,
     ),
@@ -65,7 +65,7 @@ class InviteOptionList extends StatelessWidget {
                   title: label,
                   subtitle: AccessCopy.setupJoinsAs(role),
                   trailing: Icon(
-                    Icons.add_circle_outline,
+                    LucideIcons.circlePlus,
                     size: NestSize.iconMedium,
                     color: nest.colors.accentInk,
                   ),

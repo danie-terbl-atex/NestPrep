@@ -25,7 +25,7 @@ class ReadAloudButton extends StatelessWidget {
     }
     final isSpeaking = voice.isSpeaking(line);
     return NestIconButton(
-      icon: isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined,
+      icon: isSpeaking ? LucideIcons.circleStop : LucideIcons.volume2,
       label: isSpeaking
           ? HomeCareLanguageCopy.stopReadingFor(line.text)
           : HomeCareLanguageCopy.readAloudFor(line.text),

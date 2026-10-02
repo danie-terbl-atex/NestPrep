@@ -94,7 +94,7 @@ class CalendarConnectionRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                isHealthy ? Icons.check_circle_outline : Icons.error_outline,
+                isHealthy ? LucideIcons.circleCheck : LucideIcons.circleAlert,
                 size: NestSize.iconSmall,
                 color: isHealthy ? nest.colors.success : nest.colors.warning,
               ),
@@ -123,7 +123,7 @@ class CalendarConnectionRow extends StatelessWidget {
               children: [
                 NestButton(
                   label: CalendarSyncCopy.syncNow,
-                  icon: Icons.sync,
+                  icon: LucideIcons.refreshCw,
                   variant: NestButtonVariant.tonal,
                   size: NestButtonSize.small,
                   isExpanded: false,
@@ -132,7 +132,7 @@ class CalendarConnectionRow extends StatelessWidget {
                 ),
                 NestButton(
                   label: CalendarSyncCopy.disconnect,
-                  icon: Icons.link_off,
+                  icon: LucideIcons.unlink,
                   variant: NestButtonVariant.ghost,
                   size: NestButtonSize.small,
                   isExpanded: false,

@@ -25,7 +25,7 @@ class RoutineSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     return FamilySectionCard(
-      icon: Icons.schedule_outlined,
+      icon: LucideIcons.clock,
       tint: NestTileTint.lilac,
       title: NannyCopy.routine,
       actionLabel: NannyCopy.editRoutine,
@@ -50,7 +50,7 @@ class RoutineSection extends StatelessWidget {
                           tone: routine.minuteOfDay == null
                               ? NestTagTone.neutral
                               : NestTagTone.accent,
-                          icon: Icons.schedule,
+                          icon: LucideIcons.clock,
                         ),
                         const SizedBox(width: NestSpace.md),
                         Expanded(

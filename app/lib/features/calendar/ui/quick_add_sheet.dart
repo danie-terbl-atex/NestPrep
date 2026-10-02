@@ -96,7 +96,7 @@ class _QuickAddPanelState extends State<_QuickAddPanel> {
               hint: QuickAddCopy.hint,
               controller: _text,
               autofocus: true,
-              prefixIcon: Icons.auto_awesome_outlined,
+              prefixIcon: LucideIcons.sparkles,
               textInputAction: TextInputAction.done,
               onChanged: _read,
               onSubmitted: (_) {
@@ -125,7 +125,7 @@ class _QuickAddPanelState extends State<_QuickAddPanel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.lightbulb_outline,
+                    LucideIcons.lightbulb,
                     size: NestSize.iconSmall,
                     color: nest.colors.inkTertiary,
                   ),

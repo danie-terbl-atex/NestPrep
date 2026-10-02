@@ -64,7 +64,7 @@ class RewardRequestRow extends StatelessWidget {
             children: [
               NestButton(
                 label: PointsCopy.settleGiven,
-                icon: Icons.redeem_rounded,
+                icon: LucideIcons.gift,
                 size: NestButtonSize.small,
                 isExpanded: false,
                 isLoading: isBusy,

@@ -101,13 +101,13 @@ class _NoChildren extends StatelessWidget {
     final access = FamilyAccess.of(view);
     if (!access.seesEveryProfile) {
       return const NestEmptyView(
-        icon: Icons.lock_outline_rounded,
+        icon: LucideIcons.lock,
         title: LunchCopy.noChildrenTitle,
         message: LunchCopy.cannotSeeChildren,
       );
     }
     return NestEmptyView(
-      icon: Icons.bento_outlined,
+      icon: LucideIcons.sandwich,
       title: LunchCopy.noChildrenTitle,
       message: LunchCopy.noChildrenBody,
       actionLabel: LunchCopy.openFamily,

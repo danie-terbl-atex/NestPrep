@@ -27,10 +27,10 @@ class SchoolsCard extends StatelessWidget {
     final nest = NestTheme.of(context);
     final edit = onEdit;
     return FamilySectionCard(
-      icon: Icons.school_outlined,
+      icon: LucideIcons.graduationCap,
       tint: NestTileTint.lilac,
       title: FamilyCopy.schoolsTitle,
-      actionIcon: Icons.add,
+      actionIcon: LucideIcons.plus,
       actionLabel: FamilyCopy.addSchool,
       onAction: onAdd,
       child: schools.isEmpty
@@ -46,12 +46,12 @@ class SchoolsCard extends StatelessWidget {
                         ? const NestTag(
                             label: FamilyCopy.nutFree,
                             tone: NestTagTone.warning,
-                            icon: Icons.no_food_outlined,
+                            icon: LucideIcons.utensilsCrossed,
                           )
                         : edit == null
                         ? null
                         : Icon(
-                            Icons.chevron_right,
+                            LucideIcons.chevronRight,
                             size: NestSize.iconMedium,
                             color: nest.colors.inkTertiary,
                           ),

@@ -156,7 +156,7 @@ class _ShareLinkForm extends StatelessWidget {
           label: composer.isCreating
               ? ShareLinkCopy.creating
               : ShareLinkCopy.create,
-          icon: Icons.link,
+          icon: LucideIcons.link,
           isLoading: composer.isCreating,
           onPressed: composer.canCreate ? () => _create(context) : null,
         ),

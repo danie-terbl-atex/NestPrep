@@ -43,7 +43,7 @@ class PickupChangesSection extends StatelessWidget {
       children: [
         NestSectionHeader(
           title: NannyPickupCopy.changes,
-          actionIcon: onAdd == null ? null : Icons.event_available_outlined,
+          actionIcon: onAdd == null ? null : LucideIcons.calendarCheck,
           actionLabel: onAdd == null ? null : NannyPickupCopy.addChange,
           onAction: onAdd,
         ),
@@ -59,7 +59,7 @@ class PickupChangesSection extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: NestListRow(
                 leading: const NestIconTile(
-                  icon: Icons.event_repeat,
+                  icon: LucideIcons.calendarSync,
                   tint: NestTileTint.butter,
                 ),
                 title:
@@ -75,7 +75,9 @@ class PickupChangesSection extends StatelessWidget {
                     NestDates.timeOfDay(minute),
                   ?change.note,
                 ].join(' · '),
-                trailing: edit == null ? null : const Icon(Icons.chevron_right),
+                trailing: edit == null
+                    ? null
+                    : const Icon(LucideIcons.chevronRight),
                 onTap: edit == null ? null : () => edit(change),
               ),
             ),

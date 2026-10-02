@@ -39,8 +39,8 @@ class SeverityChoice extends StatelessWidget {
                 subtitle: FamilyCopy.severityHelp(severity),
                 trailing: Icon(
                   severity == selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                      ? LucideIcons.circleDot
+                      : LucideIcons.circle,
                   color: nest.colors.ink,
                   size: NestSize.iconMedium,
                 ),

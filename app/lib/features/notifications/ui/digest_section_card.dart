@@ -55,7 +55,7 @@ class DigestSectionCard extends StatelessWidget {
                 label: NotificationsCopy.sectionLink(kind),
                 variant: NestButtonVariant.ghost,
                 size: NestButtonSize.small,
-                icon: Icons.arrow_forward_rounded,
+                icon: LucideIcons.arrowRight,
                 isExpanded: false,
                 onPressed: onOpen,
               ),

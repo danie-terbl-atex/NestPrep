@@ -11,9 +11,9 @@ class FreePlanCard extends StatelessWidget {
   final VoidCallback onUpgrade;
 
   static const _included = [
-    (Icons.calendar_today_outlined, SubscriptionCopy.freeCalendar),
-    (Icons.shopping_basket_outlined, SubscriptionCopy.freeLists),
-    (Icons.child_care_outlined, SubscriptionCopy.freeOneChild),
+    (LucideIcons.calendar, SubscriptionCopy.freeCalendar),
+    (LucideIcons.shoppingBasket, SubscriptionCopy.freeLists),
+    (LucideIcons.baby, SubscriptionCopy.freeOneChild),
   ];
 
   @override
@@ -44,7 +44,7 @@ class FreePlanCard extends StatelessWidget {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: SubscriptionCopy.upgrade,
-            icon: Icons.workspace_premium_outlined,
+            icon: LucideIcons.award,
             onPressed: onUpgrade,
           ),
         ],

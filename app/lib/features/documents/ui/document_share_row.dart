@@ -43,7 +43,10 @@ class DocumentShareRow extends StatelessWidget {
       child: NestListRow(
         title: documentName,
         subtitle: [endsLabel, openedLabel, ?sharedBy].join(' · '),
-        leading: const NestIconTile(icon: Icons.link, tint: NestTileTint.lilac),
+        leading: const NestIconTile(
+          icon: LucideIcons.link,
+          tint: NestTileTint.lilac,
+        ),
         footer: hasPin || isFromVault
             ? Wrap(
                 spacing: NestSpace.xs,
@@ -52,19 +55,19 @@ class DocumentShareRow extends StatelessWidget {
                   if (hasPin)
                     const NestTag(
                       label: ShareLinkCopy.withPin,
-                      icon: Icons.pin_outlined,
+                      icon: LucideIcons.rectangleEllipsis,
                       tone: NestTagTone.accent,
                     ),
                   if (isFromVault)
                     const NestTag(
                       label: ShareLinkCopy.fromVault,
-                      icon: Icons.lock_outline,
+                      icon: LucideIcons.lock,
                     ),
                 ],
               )
             : null,
         trailing: NestIconButton(
-          icon: Icons.link_off,
+          icon: LucideIcons.unlink,
           label: ShareLinkCopy.stopLabel(documentName),
           variant: NestIconButtonVariant.plain,
           onPressed: isStopping ? null : onStop,

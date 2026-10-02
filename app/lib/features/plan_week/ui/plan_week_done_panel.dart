@@ -57,7 +57,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
           child: NestStarBurst(
             burst: _burst,
             child: const NestIconTile(
-              icon: Icons.check_rounded,
+              icon: LucideIcons.check,
               tint: NestTileTint.basil,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
@@ -108,7 +108,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
             NestButton(
               key: const ValueKey('plan-week-groceries'),
               label: PlanWeekCopy.addToGroceries(lines),
-              icon: Icons.add_shopping_cart_rounded,
+              icon: LucideIcons.shoppingCart,
               variant: NestButtonVariant.tonal,
               isLoading: shop.isAddingGroceries,
               onPressed: () => shop.addToGroceries(PlanWeekCopy.packs),
@@ -121,7 +121,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: PlanWeekCopy.seeLunches,
-          icon: Icons.bento_outlined,
+          icon: LucideIcons.sandwich,
           onPressed: () => _toTheBoard(context, controller),
         ),
         const SizedBox(height: NestSpace.xs),

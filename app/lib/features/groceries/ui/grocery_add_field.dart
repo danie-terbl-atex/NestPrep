@@ -46,7 +46,7 @@ class _GroceryAddFieldState extends State<GroceryAddField> {
         Padding(
           padding: const EdgeInsets.only(bottom: NestSpace.xxs),
           child: NestIconButton(
-            icon: Icons.add,
+            icon: LucideIcons.plus,
             label: AppCopy.groceriesAdd,
             variant: NestIconButtonVariant.accent,
             onPressed: canSubmit ? _submit : null,

@@ -39,11 +39,11 @@ class ProductRow extends StatelessWidget {
             ? Semantics(
                 label: HomeCareSafetyCopy.needsCare,
                 child: Icon(
-                  Icons.warning_amber_rounded,
+                  LucideIcons.triangleAlert,
                   color: nest.colors.warning,
                 ),
               )
-            : const Icon(Icons.chevron_right),
+            : const Icon(LucideIcons.chevronRight),
         onTap: onTap,
       ),
     );

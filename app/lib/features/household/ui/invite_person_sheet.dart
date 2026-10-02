@@ -108,7 +108,7 @@ class _InvitePersonBodyState extends State<_InvitePersonBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: AccessCopy.inviteSend,
-            icon: Icons.send_outlined,
+            icon: LucideIcons.send,
             onPressed: _canSend ? _send : null,
           ),
         ],

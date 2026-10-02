@@ -70,14 +70,14 @@ class _SpotMarkerScreenState extends State<SpotMarkerScreen> {
       title: HomeCareCopy.markTitle,
       subtitle: HomeCareCopy.markHint,
       leading: NestIconButton(
-        icon: Icons.close,
+        icon: LucideIcons.x,
         label: HomeCareCopy.markCancel,
         variant: NestIconButtonVariant.plain,
         onPressed: () => Navigator.of(context).pop(),
       ),
       trailing: [
         NestIconButton(
-          icon: Icons.undo,
+          icon: LucideIcons.undo2,
           label: HomeCareCopy.markUndo,
           onPressed: _marks.isEmpty
               ? null
@@ -86,14 +86,14 @@ class _SpotMarkerScreenState extends State<SpotMarkerScreen> {
                 ),
         ),
         NestIconButton(
-          icon: Icons.layers_clear_outlined,
+          icon: LucideIcons.eraser,
           label: HomeCareCopy.markClear,
           onPressed: _marks.isEmpty ? null : () => setState(() => _marks = []),
         ),
       ],
       floatingAction: NestButton(
         label: HomeCareCopy.markDone,
-        icon: Icons.check,
+        icon: LucideIcons.check,
         isExpanded: false,
         onPressed: () => Navigator.of(context).pop(_marks),
       ),

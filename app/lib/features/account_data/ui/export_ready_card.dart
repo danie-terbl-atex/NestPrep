@@ -33,7 +33,7 @@ class ExportReadyCard extends StatelessWidget {
           Row(
             children: [
               const NestIconTile(
-                icon: Icons.task_alt,
+                icon: LucideIcons.circleCheckBig,
                 tint: NestTileTint.basil,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
@@ -62,7 +62,7 @@ class ExportReadyCard extends StatelessWidget {
           const SizedBox(height: NestSpace.lg),
           NestButton(
             label: AccountDataCopy.exportShare,
-            icon: Icons.ios_share,
+            icon: LucideIcons.share,
             isLoading: isSharing,
             onPressed: isSharing ? null : onShare,
           ),

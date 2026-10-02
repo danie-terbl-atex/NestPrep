@@ -132,7 +132,7 @@ class _DayCell extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       child: isHandover
                           ? Icon(
-                              Icons.swap_horiz,
+                              LucideIcons.arrowLeftRight,
                               size: NestSize.iconSmall,
                               color: ink,
                             )

@@ -10,9 +10,9 @@ class ReferralHowItWorks extends StatelessWidget {
   const ReferralHowItWorks({super.key});
 
   static const _steps = [
-    (Icons.ios_share, ReferralCopy.howShare),
-    (Icons.cottage_outlined, ReferralCopy.howJoin),
-    (Icons.card_giftcard_outlined, ReferralCopy.howReward),
+    (LucideIcons.share, ReferralCopy.howShare),
+    (LucideIcons.house, ReferralCopy.howJoin),
+    (LucideIcons.gift, ReferralCopy.howReward),
   ];
 
   @override

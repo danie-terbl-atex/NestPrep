@@ -15,8 +15,8 @@ extension SeverityLook on AllergySeverity {
   };
 
   IconData get icon => switch (this) {
-    AllergySeverity.mild => Icons.info_outline,
-    AllergySeverity.moderate => Icons.warning_amber_rounded,
-    AllergySeverity.severe => Icons.emergency_outlined,
+    AllergySeverity.mild => LucideIcons.info,
+    AllergySeverity.moderate => LucideIcons.triangleAlert,
+    AllergySeverity.severe => LucideIcons.siren,
   };
 }

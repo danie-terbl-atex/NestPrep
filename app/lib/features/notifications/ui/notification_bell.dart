@@ -40,9 +40,7 @@ class _Bell extends StatelessWidget {
   Widget build(BuildContext context) {
     final unread = context.watch<UnreadCountController>().count;
     return NestIconButton(
-      icon: unread == 0
-          ? Icons.notifications_none_rounded
-          : Icons.notifications_rounded,
+      icon: unread == 0 ? LucideIcons.bell : LucideIcons.bell,
       label: NotificationsCopy.bellLabel(unread),
       badge: unread > 0,
       onPressed: () => context.push(NotificationsRoute.pathFor(householdId)),

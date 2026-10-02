@@ -28,7 +28,7 @@ class RoutineList extends StatelessWidget {
       children: [
         NestSectionHeader(
           title: AppCopy.todosRoutines,
-          actionIcon: controller.isAdmin ? Icons.add : null,
+          actionIcon: controller.isAdmin ? LucideIcons.plus : null,
           actionLabel: controller.isAdmin ? AppCopy.todosAddRoutine : null,
           onAction: controller.isAdmin
               ? () => _edit(context, controller, view)

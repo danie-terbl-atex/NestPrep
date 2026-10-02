@@ -36,7 +36,7 @@ class PhoneSettingsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const NestToneRow(
-            icon: Icons.notifications_active_rounded,
+            icon: LucideIcons.bellRing,
             title: NotificationsCopy.onMessage,
             tone: NestTagTone.success,
           ),
@@ -44,7 +44,7 @@ class PhoneSettingsCard extends StatelessWidget {
           NestButton(
             label: NotificationsCopy.sendTest,
             variant: NestButtonVariant.tonal,
-            icon: Icons.send_rounded,
+            icon: LucideIcons.send,
             isLoading: controller.isSendingTest,
             onPressed: () => unawaited(controller.sendTest()),
           ),

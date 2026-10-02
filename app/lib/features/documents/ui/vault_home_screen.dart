@@ -29,7 +29,7 @@ class VaultHomeScreen extends StatelessWidget {
       title: VaultCopy.homeTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -37,19 +37,19 @@ class VaultHomeScreen extends StatelessWidget {
           : null,
       trailing: [
         NestIconButton(
-          icon: Icons.search,
+          icon: LucideIcons.search,
           label: VaultCopy.searchTitle,
           onPressed: () =>
               context.push(DocumentsRoute.searchPathFor(householdId)),
         ),
         NestIconButton(
-          icon: Icons.history,
+          icon: LucideIcons.history,
           label: VaultCopy.viewLog,
           onPressed: () =>
               context.push(DocumentsRoute.vaultLogPathFor(householdId)),
         ),
         NestIconButton(
-          icon: Icons.lock_outline,
+          icon: LucideIcons.lock,
           label: VaultCopy.lockNow,
           onPressed: controller.lock.lock,
         ),
@@ -61,7 +61,7 @@ class VaultHomeScreen extends StatelessWidget {
         emptyBuilder: (_) => const NestEmptyView(
           title: VaultCopy.homeEmptyTitle,
           message: VaultCopy.homeEmptyBody,
-          icon: Icons.lock_person_outlined,
+          icon: LucideIcons.userLock,
         ),
         dataBuilder: (context, shelf) => _VaultList(shelf: shelf),
       ),

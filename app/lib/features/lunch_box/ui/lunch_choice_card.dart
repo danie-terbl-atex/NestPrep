@@ -68,7 +68,7 @@ class LunchChoiceCard extends StatelessWidget {
                           end: -NestSpace.sm,
                           top: -NestSpace.sm,
                           child: Icon(
-                            Icons.check_circle_rounded,
+                            LucideIcons.circleCheck,
                             color: c.accent,
                             size: NestSize.iconLarge,
                           ),

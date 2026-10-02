@@ -153,7 +153,7 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
           NestListRow(
             title: AppCopy.calendarAllDay,
             leading: const NestIconTile(
-              icon: Icons.wb_sunny_outlined,
+              icon: LucideIcons.sun,
               tint: NestTileTint.butter,
               size: NestSize.avatarMedium,
             ),

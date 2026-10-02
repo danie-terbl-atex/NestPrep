@@ -171,13 +171,17 @@ class HouseholdTabBar extends StatelessWidget {
 /// has room for five names and no more (design-system ADR-0005).
 enum HouseholdTab {
   // ---- lunch-box (lunch-box ADR-0004) ----
-  lunch('lunch', Icons.bento_outlined, Icons.bento),
-  week('week', Icons.calendar_today_outlined, Icons.calendar_today),
-  todos('todos', Icons.check_circle_outline, Icons.check_circle),
-  groceries('groceries', Icons.shopping_basket_outlined, Icons.shopping_basket),
-  meals('meals', Icons.restaurant_outlined, Icons.restaurant),
+  lunch('lunch', LucideIcons.sandwich, LucideIcons.sandwich),
+  week('week', LucideIcons.calendar, LucideIcons.calendar),
+  todos('todos', LucideIcons.circleCheck, LucideIcons.circleCheck),
+  groceries(
+    'groceries',
+    LucideIcons.shoppingBasket,
+    LucideIcons.shoppingBasket,
+  ),
+  meals('meals', LucideIcons.utensils, LucideIcons.utensils),
   // ---- the More screen (design-system ADR-0005) ----
-  more('more', Icons.grid_view_outlined, Icons.grid_view_rounded);
+  more('more', LucideIcons.layoutGrid, LucideIcons.layoutGrid);
 
   const HouseholdTab(this.segment, this.icon, this.selectedIcon);
 

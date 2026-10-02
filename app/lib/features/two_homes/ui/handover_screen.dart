@@ -47,7 +47,7 @@ class HandoverScreen extends StatelessWidget {
               isEmpty: (view) => view == null,
               onRetry: controller.retry,
               emptyBuilder: (_) => const NestEmptyView(
-                icon: Icons.link_off,
+                icon: LucideIcons.unlink,
                 title: TwoHomesHandoverCopy.title,
                 message: TwoHomesCopy.linkGone,
               ),

@@ -56,21 +56,21 @@ class MemberRow extends StatelessWidget {
               children: [
                 if (access != null)
                   NestIconButton(
-                    icon: Icons.visibility_outlined,
+                    icon: LucideIcons.eye,
                     label: AccessCopy.peopleAccess,
                     variant: NestIconButtonVariant.plain,
                     onPressed: access,
                   ),
                 if (invite != null)
                   NestIconButton(
-                    icon: Icons.ios_share,
+                    icon: LucideIcons.share,
                     label: AppCopy.householdInvite,
                     variant: NestIconButtonVariant.plain,
                     onPressed: invite,
                   ),
                 if (remove != null)
                   NestIconButton(
-                    icon: Icons.person_remove_outlined,
+                    icon: LucideIcons.userMinus,
                     label: AppCopy.householdRemove,
                     variant: NestIconButtonVariant.plain,
                     onPressed: remove,

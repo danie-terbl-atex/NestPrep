@@ -44,7 +44,7 @@ class _TodoScreenState extends State<TodoScreen> {
         // Stars and rewards are a parent's to run (todos ADR-0003).
         if (view.permissions.isFamily)
           NestIconButton(
-            icon: Icons.stars_rounded,
+            icon: LucideIcons.sparkles,
             label: PointsCopy.screenTitle,
             onPressed: () =>
                 context.push(ChorePointsRoute.pathFor(view.household.id)),
@@ -61,7 +61,7 @@ class _TodoScreenState extends State<TodoScreen> {
               padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
               child: NestButton(
                 label: AppCopy.todosAddTask,
-                icon: Icons.add,
+                icon: LucideIcons.plus,
                 isExpanded: false,
                 onPressed: () => _addTask(context, controller, view),
               ),
@@ -116,7 +116,7 @@ class _TodoScreenState extends State<TodoScreen> {
               emptyBuilder: (_) => const NestEmptyView(
                 title: AppCopy.todosMineEmptyTitle,
                 message: AppCopy.todosMineEmptyBody,
-                icon: Icons.check_circle_outline,
+                icon: LucideIcons.circleCheck,
               ),
               dataBuilder: (_, board) => _showingEveryone
                   ? TodoEveryoneView(board: board)

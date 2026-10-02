@@ -57,7 +57,7 @@ class _PlanWeekSearchRowState extends State<PlanWeekSearchRow> {
               child: NestTag(
                 label: PlanWeekCopy.originAisle,
                 tone: NestTagTone.accent,
-                icon: Icons.storefront_outlined,
+                icon: LucideIcons.store,
               ),
             ),
           ],
@@ -186,7 +186,7 @@ class _ProductLine extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isKept ? Icons.check_circle_outline_rounded : Icons.block_rounded,
+            isKept ? LucideIcons.circleCheck : LucideIcons.ban,
             size: NestSize.iconSmall,
             color: isKept ? nest.colors.success : nest.colors.inkTertiary,
           ),

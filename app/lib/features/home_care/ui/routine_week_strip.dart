@@ -30,9 +30,7 @@ class RoutineWeekStrip extends StatelessWidget {
                   due,
                   isToday: day == board.today,
                 ),
-                icon: due > 0 && done == due
-                    ? Icons.check_circle_outline
-                    : null,
+                icon: due > 0 && done == due ? LucideIcons.circleCheck : null,
                 tone: switch ((due, done)) {
                   (0, _) => NestTagTone.neutral,
                   _ when done == due => NestTagTone.success,

@@ -39,7 +39,7 @@ class KidStarsCard extends StatelessWidget {
                 child: SizedBox.square(
                   dimension: NestSize.mark,
                   child: Icon(
-                    Icons.star_rounded,
+                    LucideIcons.star,
                     size: NestSize.iconMark,
                     color: c.warning,
                   ),
@@ -74,7 +74,7 @@ class KidStarsCard extends StatelessWidget {
                     NestTag(
                       label: PointsCopy.kidStreak(streak),
                       tone: NestTagTone.warning,
-                      icon: Icons.local_fire_department_rounded,
+                      icon: LucideIcons.flame,
                     ),
                   ],
                 ],

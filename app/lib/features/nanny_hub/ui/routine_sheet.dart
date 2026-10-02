@@ -105,7 +105,7 @@ class _RoutineSheetBodyState extends State<_RoutineSheetBody> {
           else
             NestButton(
               label: NannyCopy.addStep,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               variant: NestButtonVariant.outline,
               onPressed: () => setState(() => _steps.add(_Step.blank())),
             ),
@@ -162,7 +162,7 @@ class _StepEditor extends StatelessWidget {
                   ),
                 ),
                 NestIconButton(
-                  icon: Icons.delete_outline,
+                  icon: LucideIcons.trash2,
                   label: NannyCopy.removeStep,
                   variant: NestIconButtonVariant.plain,
                   onPressed: onRemove,
@@ -178,7 +178,7 @@ class _StepEditor extends StatelessWidget {
                   label: minute == null
                       ? NannyCopy.pickTime
                       : NestDates.timeOfDay(minute),
-                  icon: Icons.schedule,
+                  icon: LucideIcons.clock,
                   isSelected: minute != null,
                   semanticLabel: NannyCopy.routineTime,
                   onTap: onPickTime,

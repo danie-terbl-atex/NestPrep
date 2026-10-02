@@ -121,7 +121,7 @@ class ScheduleEditor extends StatelessWidget {
               label: NestDates.timeOfDay(
                 draft.handoverMinute ?? defaultHandoverMinute,
               ),
-              icon: Icons.schedule,
+              icon: LucideIcons.clock,
               isSelected: draft.handoverMinute != null,
               onTap: () => _pickTime(context, draft),
             ),

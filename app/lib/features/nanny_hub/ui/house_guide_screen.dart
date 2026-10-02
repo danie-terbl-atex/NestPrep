@@ -26,7 +26,7 @@ class HouseGuideScreen extends StatelessWidget {
       floatingAction: canEdit
           ? NestButton(
               label: NannyCopy.addSpot,
-              icon: Icons.add_a_photo_outlined,
+              icon: LucideIcons.camera,
               isExpanded: false,
               onPressed: () => _edit(context, controller),
             )
@@ -75,7 +75,7 @@ class _GuideBody extends StatelessWidget {
       return ListView(
         children: [
           HubEmptyNote(
-            icon: Icons.photo_library_outlined,
+            icon: LucideIcons.images,
             title: NannyCopy.guideEmptyTitle,
             message: canEdit
                 ? NannyCopy.guideEmptyBody

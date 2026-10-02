@@ -48,7 +48,7 @@ class EmergencyContactRow extends StatelessWidget {
           ),
           const SizedBox(width: NestSpace.sm),
           NestIconButton(
-            icon: Icons.phone,
+            icon: LucideIcons.phone,
             label: NannyCopy.call(contact.name),
             variant: NestIconButtonVariant.accent,
             onPressed: onCall,

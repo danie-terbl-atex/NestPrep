@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/features/chore_points/model/kid_chore_note.dart';
 import 'package:nestprep/features/chore_points/model/reward_request.dart';
 import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
@@ -111,7 +112,7 @@ void main() {
     // already there.
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text(PointsCopy.kidJustEarned(5)), findsOneWidget);
-    expect(find.byIcon(Icons.star_rounded), findsWidgets);
+    expect(find.byIcon(LucideIcons.star), findsWidgets);
     await tester.pumpAndSettle();
     expect(find.text('10'), findsOneWidget);
   });

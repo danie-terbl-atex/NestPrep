@@ -65,14 +65,14 @@ class AccountCentreScreen extends StatelessWidget {
               child: Column(
                 children: [
                   LinkRow(
-                    icon: Icons.download_outlined,
+                    icon: LucideIcons.download,
                     title: AccountDataCopy.downloadRow,
                     subtitle: AccountDataCopy.downloadRowHint,
                     tint: NestTileTint.lilac,
                     path: AccountExportScreen.path,
                   ),
                   LinkRow(
-                    icon: Icons.person_remove_outlined,
+                    icon: LucideIcons.userMinus,
                     title: AccountDataCopy.deleteRow,
                     subtitle: AccountDataCopy.deleteRowHint,
                     tint: NestTileTint.guava,
@@ -92,22 +92,22 @@ class AccountCentreScreen extends StatelessWidget {
               child: Column(
                 children: [
                   LinkRow(
-                    icon: Icons.info_outline,
+                    icon: LucideIcons.info,
                     title: LegalCopy.aboutTitle,
                     path: AboutScreen.path,
                   ),
                   LinkRow(
-                    icon: Icons.privacy_tip_outlined,
+                    icon: LucideIcons.shieldAlert,
                     title: LegalCopy.privacyTitle,
                     path: LegalDocumentScreen.privacyPath,
                   ),
                   LinkRow(
-                    icon: Icons.gavel_outlined,
+                    icon: LucideIcons.gavel,
                     title: LegalCopy.termsTitle,
                     path: LegalDocumentScreen.termsPath,
                   ),
                   LinkRow(
-                    icon: Icons.description_outlined,
+                    icon: LucideIcons.fileText,
                     title: LegalCopy.licencesTitle,
                     path: LicencesScreen.path,
                   ),

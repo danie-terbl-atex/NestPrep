@@ -52,7 +52,7 @@ class NannyPhoto extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   NestIconButton(
-                    icon: Icons.refresh,
+                    icon: LucideIcons.refreshCw,
                     label: AppCopy.retry,
                     variant: NestIconButtonVariant.plain,
                     onPressed: () => library.retry(photoId),

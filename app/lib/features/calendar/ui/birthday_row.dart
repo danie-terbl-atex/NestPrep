@@ -61,7 +61,7 @@ class BirthdayRow extends StatelessWidget {
                     child: Row(
                       children: [
                         const NestIconTile(
-                          icon: Icons.cake_outlined,
+                          icon: LucideIcons.cake,
                           tint: NestTileTint.guava,
                           size: NestSize.avatarMedium,
                         ),
@@ -92,7 +92,7 @@ class BirthdayRow extends StatelessWidget {
                           ),
                         ),
                         Icon(
-                          Icons.chevron_right,
+                          LucideIcons.chevronRight,
                           color: nest.colors.inkTertiary,
                         ),
                       ],

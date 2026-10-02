@@ -62,7 +62,7 @@ class PlanWeekBudgetCard extends StatelessWidget {
                 label: amount == null
                     ? PlanWeekCopy.setBudget
                     : PlanWeekCopy.changeBudget,
-                icon: Icons.savings_outlined,
+                icon: LucideIcons.piggyBank,
                 variant: NestButtonVariant.ghost,
                 size: NestButtonSize.small,
                 isExpanded: false,

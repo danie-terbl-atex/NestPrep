@@ -82,7 +82,7 @@ class TodayPickupCard extends StatelessWidget {
               child: NestTag(
                 label: NannyPickupCopy.changedToday,
                 tone: NestTagTone.warning,
-                icon: Icons.event_repeat,
+                icon: LucideIcons.calendarSync,
               ),
             ),
           ],
@@ -91,7 +91,7 @@ class TodayPickupCard extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: NannyPickupCopy.checkDoor,
-            icon: Icons.doorbell_outlined,
+            icon: LucideIcons.bellElectric,
             variant: NestButtonVariant.tonal,
             onPressed: onCheck,
           ),

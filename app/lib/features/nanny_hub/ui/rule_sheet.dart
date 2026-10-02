@@ -79,7 +79,7 @@ class _RuleBodyState extends State<_RuleBody> {
           NestButton(
             label: NannyCopy.delete,
             variant: NestButtonVariant.ghost,
-            icon: Icons.delete_outline,
+            icon: LucideIcons.trash2,
             onPressed: _remove,
           ),
         ],

@@ -54,7 +54,7 @@ class PickupTimeChoice extends StatelessWidget {
               label: minute == null
                   ? NannyPickupCopy.pickTime
                   : NestDates.timeOfDay(minute),
-              icon: Icons.schedule,
+              icon: LucideIcons.clock,
               isSelected: minute != null,
               semanticLabel: NannyPickupCopy.pickTime,
               onTap: () => _pick(context),

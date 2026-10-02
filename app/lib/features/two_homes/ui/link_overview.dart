@@ -138,7 +138,7 @@ class LinkOverview extends StatelessWidget {
           NestButton(
             label: TwoHomesCopy.endLink,
             variant: NestButtonVariant.ghost,
-            icon: Icons.link_off,
+            icon: LucideIcons.unlink,
             onPressed: controller.isSending ? null : () => _end(context),
           ),
         ],

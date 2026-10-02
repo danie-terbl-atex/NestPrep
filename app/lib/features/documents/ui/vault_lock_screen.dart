@@ -40,7 +40,7 @@ class _VaultLockScreenState extends State<VaultLockScreen> {
       title: VaultCopy.homeTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -56,7 +56,7 @@ class _VaultLockScreenState extends State<VaultLockScreen> {
               child: Column(
                 children: [
                   const NestIconTile(
-                    icon: Icons.lock_outline,
+                    icon: LucideIcons.lock,
                     size: NestSize.mark,
                     iconSize: NestSize.iconMark,
                   ),
@@ -84,7 +84,7 @@ class _VaultLockScreenState extends State<VaultLockScreen> {
                   const SizedBox(height: NestSpace.xl),
                   NestButton(
                     label: isAsking ? VaultCopy.unlocking : VaultCopy.unlock,
-                    icon: Icons.fingerprint,
+                    icon: LucideIcons.fingerprint,
                     isLoading: isAsking,
                     onPressed: isAsking ? null : lock.unlock,
                   ),

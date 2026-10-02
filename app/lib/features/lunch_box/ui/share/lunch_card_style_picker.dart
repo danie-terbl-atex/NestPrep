@@ -83,7 +83,7 @@ class _Swatch extends StatelessWidget {
                   dimension: NestSize.touchTarget,
                   child: isSelected
                       ? Icon(
-                          Icons.check_rounded,
+                          LucideIcons.check,
                           size: NestSize.iconMedium,
                           color: palette.theme.colors.ink,
                         )

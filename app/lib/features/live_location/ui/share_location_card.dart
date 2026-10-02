@@ -57,7 +57,7 @@ class ShareLocationCard extends StatelessWidget {
             NestButton(
               label: AppCopy.locationStop,
               variant: NestButtonVariant.outline,
-              icon: Icons.location_off_outlined,
+              icon: LucideIcons.mapPinOff,
               onPressed: onStop,
             ),
         ],
@@ -96,7 +96,7 @@ class _ShareDurations extends StatelessWidget {
             for (final duration in ShareDuration.values)
               NestChip(
                 label: _label(duration),
-                icon: Icons.schedule,
+                icon: LucideIcons.clock,
                 onTap: () => onShareFor(duration),
               ),
           ],

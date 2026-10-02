@@ -42,7 +42,7 @@ class ShareAndKeepActions extends StatelessWidget {
         if (showsShare)
           NestButton(
             label: ShareLinkCopy.shareAction,
-            icon: Icons.link,
+            icon: LucideIcons.link,
             variant: NestButtonVariant.tonal,
             onPressed: onShare,
           ),
@@ -52,14 +52,14 @@ class ShareAndKeepActions extends StatelessWidget {
           const SizedBox(height: NestSpace.sm),
           NestButton(
             label: OfflineCopiesCopy.remove,
-            icon: Icons.phonelink_erase_outlined,
+            icon: LucideIcons.smartphone,
             variant: NestButtonVariant.outline,
             onPressed: onRemove,
           ),
         ] else if (showsKeep) ...[
           NestButton(
             label: isSaving ? OfflineCopiesCopy.saving : OfflineCopiesCopy.keep,
-            icon: Icons.download_for_offline_outlined,
+            icon: LucideIcons.circleArrowDown,
             variant: NestButtonVariant.outline,
             isLoading: isSaving,
             onPressed: isSaving ? null : onKeep,

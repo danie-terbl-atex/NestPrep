@@ -59,8 +59,8 @@ class TaskOccurrenceRow extends StatelessWidget {
                 excludeSemantics: true,
                 child: Icon(
                   occurrence.isDone
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
+                      ? LucideIcons.circleCheck
+                      : LucideIcons.circle,
                   color: occurrence.isDone
                       ? nest.colors.success
                       : isOverdue
@@ -103,7 +103,7 @@ class TaskOccurrenceRow extends StatelessWidget {
               ),
               if (_completableForSomebodyElse(view)) ...[
                 NestIconButton(
-                  icon: Icons.how_to_reg_outlined,
+                  icon: LucideIcons.userCheck,
                   label: AppCopy.todosCompleteFor,
                   variant: NestIconButtonVariant.plain,
                   onPressed: () =>

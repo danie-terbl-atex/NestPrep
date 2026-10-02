@@ -45,7 +45,7 @@ class MarkedPhoto extends StatelessWidget {
               errorBuilder: (context, error, stack) => ColoredBox(
                 color: nest.colors.surfaceTint,
                 child: Icon(
-                  Icons.broken_image_outlined,
+                  LucideIcons.imageOff,
                   color: nest.colors.inkTertiary,
                   size: NestSize.iconLarge,
                 ),

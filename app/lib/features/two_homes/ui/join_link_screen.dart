@@ -59,7 +59,7 @@ class _JoinLinkScreenState extends State<JoinLinkScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const NestIconTile(
-                      icon: Icons.hourglass_top,
+                      icon: LucideIcons.hourglass,
                       tint: NestTileTint.basil,
                     ),
                     const SizedBox(height: NestSpace.md),

@@ -11,25 +11,25 @@ class PremiumBenefits extends StatelessWidget {
 
   static const _benefits = [
     (
-      Icons.child_care_outlined,
+      LucideIcons.baby,
       NestTileTint.guava,
       SubscriptionCopy.benefitChildren,
       SubscriptionCopy.benefitChildrenBody,
     ),
     (
-      Icons.insights_outlined,
+      LucideIcons.chartLine,
       NestTileTint.basil,
       SubscriptionCopy.benefitLearning,
       SubscriptionCopy.benefitLearningBody,
     ),
     (
-      Icons.checklist_rtl_outlined,
+      LucideIcons.listChecks,
       NestTileTint.butter,
       SubscriptionCopy.benefitPrep,
       SubscriptionCopy.benefitPrepBody,
     ),
     (
-      Icons.family_restroom_outlined,
+      LucideIcons.users,
       NestTileTint.lilac,
       SubscriptionCopy.benefitHousehold,
       SubscriptionCopy.benefitHouseholdBody,

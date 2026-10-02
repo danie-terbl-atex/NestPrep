@@ -28,7 +28,7 @@ class FamilyMemberScreen extends StatelessWidget {
       title: FamilyCopy.title,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -60,7 +60,7 @@ class FamilyMemberScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: FamilyCopy.memberGoneTitle,
                 message: FamilyCopy.memberGoneBody,
-                icon: Icons.person_off_outlined,
+                icon: LucideIcons.userX,
               ),
               dataBuilder: (_, roster) => FamilyMemberBody(
                 entry: roster.entryFor(memberId)!,

@@ -55,7 +55,7 @@ class BookingsScreen extends StatelessWidget {
       floatingAction: mayBook
           ? NestButton(
               label: NannyBookingCopy.book,
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               isExpanded: false,
               isLoading: controller.isBooking,
               onPressed: controller.isBooking

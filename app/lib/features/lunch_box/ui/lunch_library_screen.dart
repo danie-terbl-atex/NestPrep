@@ -34,7 +34,7 @@ class LunchLibraryScreen extends StatelessWidget {
       trailing: [
         if (canEdit)
           NestIconButton(
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             label: LunchCopy.newItemTitle,
             variant: NestIconButtonVariant.accent,
             onPressed: () => _add(context),
@@ -45,7 +45,7 @@ class LunchLibraryScreen extends StatelessWidget {
         isEmpty: (board) => board.library.isEmpty,
         onRetry: controller.retry,
         emptyBuilder: (_) => const NestEmptyView(
-          icon: Icons.menu_book_outlined,
+          icon: LucideIcons.bookOpen,
           title: LunchCopy.libraryTitle,
           message: LunchCopy.libraryLoadingSeed,
         ),

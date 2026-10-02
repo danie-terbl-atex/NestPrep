@@ -21,7 +21,7 @@ class DueTag extends StatelessWidget {
     final isLate = job.isOverdue(today);
     return NestTag(
       label: isLate ? HomeCareCopy.overdue(day) : HomeCareCopy.due(day),
-      icon: isLate ? Icons.schedule : Icons.event_outlined,
+      icon: isLate ? LucideIcons.clock : LucideIcons.calendarDays,
       tone: isLate ? NestTagTone.danger : NestTagTone.neutral,
     );
   }

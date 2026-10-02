@@ -34,7 +34,7 @@ class PlanWeekWeekHeader extends StatelessWidget {
                   ? PlanWeekCopy.builtByAi
                   : PlanWeekCopy.builtWithoutAi,
               tone: isAi ? NestTagTone.accent : NestTagTone.neutral,
-              icon: Icons.auto_awesome_rounded,
+              icon: LucideIcons.sparkles,
             ),
             if (calls != null) NestTag(label: PlanWeekCopy.callsLeft(calls)),
           ],

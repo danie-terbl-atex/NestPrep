@@ -34,7 +34,7 @@ class DocumentLibraryScreen extends StatelessWidget {
       title: AppCopy.documentsTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -42,14 +42,14 @@ class DocumentLibraryScreen extends StatelessWidget {
           : null,
       trailing: [
         NestIconButton(
-          icon: Icons.search,
+          icon: LucideIcons.search,
           label: VaultCopy.searchTitle,
           onPressed: () =>
               context.push(DocumentsRoute.searchPathFor(householdId)),
         ),
         if (controller.isAdmin)
           NestIconButton(
-            icon: Icons.create_new_folder_outlined,
+            icon: LucideIcons.folderPlus,
             label: AppCopy.documentsAddFolder,
             onPressed: () => _addFolder(context, controller),
           ),
@@ -86,7 +86,7 @@ class DocumentLibraryScreen extends StatelessWidget {
                       message: controller.isAdmin
                           ? AppCopy.documentsEmptyBody
                           : AppCopy.documentsEmptyBodyForMembers,
-                      icon: Icons.folder_outlined,
+                      icon: LucideIcons.folder,
                       actionLabel: controller.isAdmin
                           ? AppCopy.documentsAddFolder
                           : null,

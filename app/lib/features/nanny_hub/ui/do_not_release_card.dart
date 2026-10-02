@@ -55,7 +55,7 @@ class DoNotReleaseCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.front_hand_outlined,
+                    LucideIcons.hand,
                     color: c.danger,
                     size: _isFull ? NestSize.iconMark : NestSize.iconLarge,
                   ),
@@ -87,7 +87,7 @@ class DoNotReleaseCard extends StatelessWidget {
                 const SizedBox(height: NestSpace.sm),
                 NestButton(
                   label: NannyPickupCopy.openEmergency,
-                  icon: Icons.emergency_outlined,
+                  icon: LucideIcons.siren,
                   variant: NestButtonVariant.danger,
                   size: buttonSize,
                   onPressed: onOpenEmergency,
@@ -101,7 +101,7 @@ class DoNotReleaseCard extends StatelessWidget {
                     NestButton(
                       key: ValueKey(parent.id),
                       label: NannyPickupCopy.callParent(parent.name),
-                      icon: Icons.phone_in_talk_outlined,
+                      icon: LucideIcons.phoneCall,
                       variant: NestButtonVariant.danger,
                       size: buttonSize,
                       isExpanded: _isFull,

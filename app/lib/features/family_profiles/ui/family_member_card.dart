@@ -49,7 +49,7 @@ class FamilyMemberCard extends StatelessWidget {
         const NestTag(
           label: FamilyCopy.nutFree,
           tone: NestTagTone.warning,
-          icon: Icons.no_food_outlined,
+          icon: LucideIcons.utensilsCrossed,
         ),
     ];
     return NestCard(
@@ -81,7 +81,7 @@ class FamilyMemberCard extends StatelessWidget {
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                LucideIcons.chevronRight,
                 size: NestSize.iconMedium,
                 color: nest.colors.inkTertiary,
               ),

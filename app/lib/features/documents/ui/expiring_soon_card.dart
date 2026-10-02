@@ -57,7 +57,7 @@ class ExpiringSoonCard extends StatelessWidget {
               title: entry.name,
               subtitle: ownerNames[entry.ownerMemberId],
               leading: const NestIconTile(
-                icon: Icons.event_busy_outlined,
+                icon: LucideIcons.calendarX,
                 tint: NestTileTint.butter,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,

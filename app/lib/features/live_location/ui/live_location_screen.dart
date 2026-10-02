@@ -29,7 +29,7 @@ class LiveLocationScreen extends StatelessWidget {
       title: AppCopy.locationTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -68,7 +68,7 @@ class LiveLocationScreen extends StatelessWidget {
               emptyBuilder: (_) => const NestEmptyView(
                 title: AppCopy.locationAloneTitle,
                 message: AppCopy.locationAloneBody,
-                icon: Icons.person_pin_circle_outlined,
+                icon: LucideIcons.mapPin,
               ),
               dataBuilder: (_, view) => _WhereEverybodyIs(view: view),
             ),

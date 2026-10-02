@@ -48,7 +48,7 @@ class DocumentFolderScreen extends StatelessWidget {
       title: folder?.name ?? AppCopy.documentsFolderFallbackTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -57,7 +57,7 @@ class DocumentFolderScreen extends StatelessWidget {
       trailing: [
         if (canEdit)
           NestIconButton(
-            icon: Icons.upload_file_outlined,
+            icon: LucideIcons.fileUp,
             label: AppCopy.documentsAdd,
             variant: NestIconButtonVariant.accent,
             onPressed: controller.upload != null
@@ -125,13 +125,13 @@ class _EmptyFolder extends StatelessWidget {
       return NestEmptyView(
         title: AppCopy.documentsFolderFallbackTitle,
         message: AppCopy.documentProblem(DocumentProblem.folderNotFound),
-        icon: Icons.folder_off_outlined,
+        icon: LucideIcons.folderX,
       );
     }
     return const NestEmptyView(
       title: AppCopy.documentsFolderEmptyTitle,
       message: AppCopy.documentsFolderEmptyBody,
-      icon: Icons.upload_file_outlined,
+      icon: LucideIcons.fileUp,
     );
   }
 }

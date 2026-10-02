@@ -45,7 +45,7 @@ class HouseholdBody extends StatelessWidget {
             Expanded(
               child: NestSectionHeader(
                 title: view.household.name,
-                actionIcon: view.viewerIsAdmin ? Icons.person_add_alt : null,
+                actionIcon: view.viewerIsAdmin ? LucideIcons.userPlus : null,
                 actionLabel: view.viewerIsAdmin
                     ? AppCopy.householdAddMember
                     : null,
@@ -56,7 +56,7 @@ class HouseholdBody extends StatelessWidget {
             ),
             if (view.viewerIsAdmin)
               NestIconButton(
-                icon: Icons.tune,
+                icon: LucideIcons.slidersHorizontal,
                 label: AppCopy.householdEditHousehold,
                 variant: NestIconButtonVariant.plain,
                 onPressed: () => _editHousehold(context, view),
@@ -110,10 +110,10 @@ class HouseholdBody extends StatelessWidget {
             variant: NestCardVariant.tinted,
             padding: EdgeInsets.zero,
             child: NestListRow(
-              leading: const NestIconTile(icon: Icons.group_add_outlined),
+              leading: const NestIconTile(icon: LucideIcons.userPlus),
               title: AccessCopy.peopleInvite,
               subtitle: AccessCopy.peopleInviteBody,
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const Icon(LucideIcons.chevronRight),
               onTap: () =>
                   context.push(HouseholdRoute.setupPathFor(view.household.id)),
             ),
@@ -129,7 +129,7 @@ class HouseholdBody extends StatelessWidget {
         NestButton(
           label: AppCopy.householdLeave,
           variant: NestButtonVariant.outline,
-          icon: Icons.logout,
+          icon: LucideIcons.logOut,
           onPressed: view.isTheOnlyAdmin ? null : () => _leave(context),
         ),
         if (view.isTheOnlyAdmin)

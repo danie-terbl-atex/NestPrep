@@ -34,9 +34,7 @@ class LunchPackedToday extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NestToneRow(
-            icon: isPacked
-                ? Icons.check_circle_rounded
-                : Icons.backpack_outlined,
+            icon: isPacked ? LucideIcons.circleCheck : LucideIcons.backpack,
             tone: isPacked ? NestTagTone.success : NestTagTone.neutral,
             title: isPacked
                 ? LunchPantryCopy.packedDone
@@ -50,7 +48,7 @@ class LunchPackedToday extends StatelessWidget {
               label: isPacked
                   ? LunchPantryCopy.undoPacked
                   : LunchPantryCopy.markPacked,
-              icon: isPacked ? Icons.undo_rounded : Icons.backpack_outlined,
+              icon: isPacked ? LucideIcons.undo2 : LucideIcons.backpack,
               variant: isPacked
                   ? NestButtonVariant.ghost
                   : NestButtonVariant.tonal,

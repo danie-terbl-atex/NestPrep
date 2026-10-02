@@ -58,7 +58,7 @@ class ShiftHeader extends StatelessWidget {
                   runSpacing: NestSpace.xs,
                   children: [
                     for (final child in children)
-                      NestTag(label: child.displayName, icon: Icons.child_care),
+                      NestTag(label: child.displayName, icon: LucideIcons.baby),
                   ],
                 ),
               ],

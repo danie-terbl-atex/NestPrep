@@ -39,13 +39,13 @@ class HomeCareScreen extends StatelessWidget {
       leading: backLeading(context),
       trailing: [
         NestIconButton(
-          icon: Icons.meeting_room_outlined,
+          icon: LucideIcons.doorOpen,
           label: HomeCareLibraryCopy.rooms,
           onPressed: () =>
               context.push(HomeCareRoute.roomsPathFor(householdId)),
         ),
         NestIconButton(
-          icon: Icons.sanitizer_outlined,
+          icon: LucideIcons.sprayCan,
           label: HomeCareLibraryCopy.products,
           onPressed: () =>
               context.push(HomeCareRoute.productsPathFor(householdId)),
@@ -55,7 +55,7 @@ class HomeCareScreen extends StatelessWidget {
       floatingAction: access.canManage
           ? NestButton(
               label: HomeCareCopy.newJob,
-              icon: Icons.add_a_photo_outlined,
+              icon: LucideIcons.camera,
               isExpanded: false,
               onPressed: () =>
                   context.push(HomeCareRoute.newJobPathFor(householdId)),

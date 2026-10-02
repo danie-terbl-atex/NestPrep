@@ -33,7 +33,7 @@ class ProductsScreen extends StatelessWidget {
       trailing: [
         if (canManage)
           NestIconButton(
-            icon: Icons.add,
+            icon: LucideIcons.plus,
             label: HomeCareLibraryCopy.addProduct,
             onPressed: () => _edit(context, controller, null),
           ),
@@ -61,7 +61,7 @@ class ProductsScreen extends StatelessWidget {
                 message: canManage
                     ? HomeCareLibraryCopy.productsEmptyBody
                     : HomeCareLibraryCopy.productsEmptyHelperBody,
-                icon: Icons.sanitizer_outlined,
+                icon: LucideIcons.sprayCan,
                 actionLabel: canManage ? HomeCareLibraryCopy.addProduct : null,
                 onAction: canManage
                     ? () => _edit(context, controller, null)

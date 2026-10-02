@@ -195,7 +195,7 @@ class ShiftBody extends StatelessWidget {
           NestButton(
             label: NannyShiftCopy.endShift,
             variant: NestButtonVariant.outline,
-            icon: Icons.nights_stay_outlined,
+            icon: LucideIcons.moonStar,
             isLoading: shift.isEnding,
             onPressed: shift.isEnding ? null : () => _end(context, current),
           ),

@@ -22,7 +22,7 @@ class HomeDetailsCard extends StatelessWidget {
     final label = nest.text.label.copyWith(color: nest.colors.inkSecondary);
     final address = sheet.address;
     return FamilySectionCard(
-      icon: Icons.home_outlined,
+      icon: LucideIcons.house,
       tint: NestTileTint.lilac,
       title: NannyCopy.ourAddress,
       actionLabel: NannyCopy.editHomeDetails,

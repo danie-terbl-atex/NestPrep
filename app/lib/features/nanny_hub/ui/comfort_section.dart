@@ -17,7 +17,7 @@ class ComfortSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FamilySectionCard(
-      icon: Icons.toys_outlined,
+      icon: LucideIcons.toyBrick,
       tint: NestTileTint.butter,
       title: NannyCopy.comfort,
       actionLabel: NannyCopy.editComfort,
@@ -32,7 +32,7 @@ class ComfortSection extends StatelessWidget {
                   NestTag(
                     label: item,
                     tone: NestTagTone.accent,
-                    icon: Icons.favorite,
+                    icon: LucideIcons.heart,
                   ),
               ],
             ),

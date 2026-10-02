@@ -93,7 +93,7 @@ class _AccessRow extends StatelessWidget {
             : AppCopy.roleName(member.roleName),
         leading: NestAvatar(name: member.displayName, color: member.color),
         trailing: isFamily
-            ? const Icon(Icons.verified_user_outlined)
+            ? const Icon(LucideIcons.shieldCheck)
             : Switch(value: isGranted, onChanged: onChanged),
       ),
     );

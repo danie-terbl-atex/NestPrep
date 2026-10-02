@@ -90,14 +90,14 @@ class _SchoolingSheetBodyState extends State<_SchoolingSheetBody> {
                 NestChip(
                   key: ValueKey(school.id),
                   label: school.name,
-                  icon: school.nutFree ? Icons.no_food_outlined : null,
+                  icon: school.nutFree ? LucideIcons.utensilsCrossed : null,
                   isSelected: _schoolId == school.id,
                   onTap: () => setState(() => _schoolId = school.id),
                 ),
               if (addSchool != null)
                 NestChip(
                   label: FamilyCopy.addSchool,
-                  icon: Icons.add,
+                  icon: LucideIcons.plus,
                   onTap: () => _add(addSchool),
                 ),
             ],

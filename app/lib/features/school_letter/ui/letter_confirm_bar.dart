@@ -33,7 +33,7 @@ class LetterConfirmBar extends StatelessWidget {
           if (hasItems)
             NestButton(
               label: SchoolLetterCopy.addTicked(ticked),
-              icon: Icons.event_available_outlined,
+              icon: LucideIcons.calendarCheck,
               isLoading: isSaving,
               onPressed: ticked == 0 || isSaving ? null : onConfirm,
             ),
@@ -43,7 +43,7 @@ class LetterConfirmBar extends StatelessWidget {
             variant: hasItems
                 ? NestButtonVariant.ghost
                 : NestButtonVariant.primary,
-            icon: Icons.document_scanner_outlined,
+            icon: LucideIcons.scanText,
             onPressed: isSaving ? null : onStartOver,
           ),
         ],

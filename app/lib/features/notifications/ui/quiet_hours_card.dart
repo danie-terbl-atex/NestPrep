@@ -30,7 +30,7 @@ class QuietHoursCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SettingSwitchRow(
-            icon: Icons.bedtime_outlined,
+            icon: LucideIcons.moon,
             tint: NestTileTint.lilac,
             title: NotificationsCopy.quietSwitch,
             value: quiet.enabled,

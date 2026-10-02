@@ -133,7 +133,7 @@ class _TickRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              isTicked ? Icons.check_circle : Icons.radio_button_unchecked,
+              isTicked ? LucideIcons.circleCheck : LucideIcons.circle,
               color: isTicked ? nest.colors.success : nest.colors.inkTertiary,
               size: NestSize.iconLarge,
             ),

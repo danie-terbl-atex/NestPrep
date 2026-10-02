@@ -11,18 +11,17 @@ extension ProductKindLook on ProductKind {
   IconData get icon => switch (this) {
     ProductKind.bleach ||
     ProductKind.peroxide ||
-    ProductKind.disinfectant => Icons.sanitizer_outlined,
+    ProductKind.disinfectant => LucideIcons.sprayCan,
     ProductKind.ammonia ||
     ProductKind.alcohol ||
-    ProductKind.acidic => Icons.science_outlined,
-    ProductKind.ovenCleaner => Icons.microwave_outlined,
-    ProductKind.drainCleaner => Icons.plumbing_outlined,
-    ProductKind.allPurpose ||
-    ProductKind.floorCleaner => Icons.cleaning_services_outlined,
-    ProductKind.dishSoap => Icons.soap_outlined,
-    ProductKind.bicarbonate => Icons.grain_outlined,
-    ProductKind.polish => Icons.auto_awesome_outlined,
-    ProductKind.other => Icons.inventory_2_outlined,
+    ProductKind.acidic => LucideIcons.flaskConical,
+    ProductKind.ovenCleaner => LucideIcons.microwave,
+    ProductKind.drainCleaner => LucideIcons.wrench,
+    ProductKind.allPurpose || ProductKind.floorCleaner => LucideIcons.sprayCan,
+    ProductKind.dishSoap => LucideIcons.droplets,
+    ProductKind.bicarbonate => LucideIcons.wheat,
+    ProductKind.polish => LucideIcons.sparkles,
+    ProductKind.other => LucideIcons.archive,
   };
 
   NestTileTint get tint => SafetyCatalogue.isHazardous(this)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
@@ -111,9 +112,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(FamilyCopy.children), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
     expect(find.text(MoreCopy.subtitle), findsOneWidget);
   });
@@ -126,7 +127,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(FamilyCopy.sectionAllergies), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
     expect(find.text(FamilyCopy.children), findsOneWidget);
     expect(find.text(FamilyCopy.sectionAllergies), findsNothing);
@@ -140,6 +141,6 @@ void main() {
       FamilyRoute.memberPathFor(Fixtures.householdId, Fixtures.kidMemberId),
     );
     expect(find.text(FamilyCopy.sectionAllergies), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
   });
 }

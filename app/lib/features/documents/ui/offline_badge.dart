@@ -11,7 +11,7 @@ class OfflineBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const NestTag(
     label: OfflineCopiesCopy.badge,
-    icon: Icons.offline_pin_outlined,
+    icon: LucideIcons.circleCheck,
     tone: NestTagTone.success,
   );
 }

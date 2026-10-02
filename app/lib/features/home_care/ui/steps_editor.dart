@@ -68,7 +68,7 @@ class _StepsEditorState extends State<StepsEditor> {
             title: step.text,
             leading: StepNumber(number: index + 1),
             trailing: NestIconButton(
-              icon: Icons.close,
+              icon: LucideIcons.x,
               label: HomeCareCopy.removeStep(step.text),
               variant: NestIconButtonVariant.plain,
               onPressed: () => widget.onRemove(step.id),
@@ -86,7 +86,7 @@ class _StepsEditorState extends State<StepsEditor> {
             onChanged: (_) => setState(() {}),
             onSubmitted: _add,
             suffix: NestIconButton(
-              icon: Icons.add,
+              icon: LucideIcons.plus,
               label: widget.addLabel,
               variant: NestIconButtonVariant.plain,
               onPressed: _next.text.trim().isEmpty
@@ -103,7 +103,7 @@ class _StepsEditorState extends State<StepsEditor> {
                 if (!written.contains(suggestion))
                   NestChip(
                     label: suggestion,
-                    icon: Icons.add,
+                    icon: LucideIcons.plus,
                     onTap: () => _add(suggestion),
                   ),
             ],

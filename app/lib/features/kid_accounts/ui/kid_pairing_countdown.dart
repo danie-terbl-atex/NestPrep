@@ -69,7 +69,7 @@ class _KidPairingCountdownState extends State<KidPairingCountdown> {
           const SizedBox(height: NestSpace.md),
           NestButton(
             label: KidCopy.pairMakeAnother,
-            icon: Icons.refresh_rounded,
+            icon: LucideIcons.refreshCw,
             onPressed: widget.onMakeAnother,
           ),
         ],

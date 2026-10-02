@@ -83,8 +83,8 @@ class LunchSlotRow extends StatelessWidget {
                   if (onTap != null)
                     Icon(
                       packed == null
-                          ? Icons.add_rounded
-                          : Icons.swap_horiz_rounded,
+                          ? LucideIcons.plus
+                          : LucideIcons.arrowLeftRight,
                       size: NestSize.iconSmall,
                       color: c.inkTertiary,
                     ),
@@ -112,7 +112,7 @@ class _VerdictMark extends StatelessWidget {
       child: Semantics(
         label: ate ? LunchCopy.ateIt : LunchCopy.leftIt,
         child: Icon(
-          ate ? Icons.thumb_up_alt_rounded : Icons.thumb_down_alt_rounded,
+          ate ? LucideIcons.thumbsUp : LucideIcons.thumbsDown,
           size: NestSize.iconSmall,
           color: ate ? c.success : c.warning,
         ),

@@ -71,7 +71,7 @@ class OffShiftScreen extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: NestListRow(
                     leading: const NestIconTile(
-                      icon: Icons.event_available_outlined,
+                      icon: LucideIcons.calendarCheck,
                       tint: NestTileTint.basil,
                     ),
                     title: clock.bookingOf(booking),
@@ -84,7 +84,7 @@ class OffShiftScreen extends StatelessWidget {
           NestButton(
             label: NannyBookingCopy.checkAgain,
             variant: NestButtonVariant.tonal,
-            icon: Icons.refresh,
+            icon: LucideIcons.refreshCw,
             onPressed: onCheckAgain,
           ),
         ],

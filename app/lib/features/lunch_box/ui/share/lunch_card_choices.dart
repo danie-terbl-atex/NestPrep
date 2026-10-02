@@ -38,7 +38,7 @@ class LunchCardChoices extends StatelessWidget {
                 ),
               NestChip(
                 label: LunchShareCopy.everyone,
-                icon: Icons.groups_rounded,
+                icon: LucideIcons.users,
                 isSelected: options.isFamily,
                 onTap: () => controller.chooseChild(null),
               ),
@@ -87,7 +87,7 @@ class LunchCardChoices extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         const NestToneRow(
           tone: NestTagTone.accent,
-          icon: Icons.shield_outlined,
+          icon: LucideIcons.shield,
           title: LunchShareCopy.privacyTitle,
           subtitle: LunchShareCopy.privacyNote,
         ),

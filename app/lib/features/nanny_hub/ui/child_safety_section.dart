@@ -38,9 +38,7 @@ class ChildSafetySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FamilySectionCard(
-          icon: food == null
-              ? Icons.lock_outline
-              : Icons.health_and_safety_outlined,
+          icon: food == null ? LucideIcons.lock : LucideIcons.shieldPlus,
           tint: NestTileTint.guava,
           title: NannyCopy.allergies,
           child: switch (food) {
@@ -59,7 +57,7 @@ class ChildSafetySection extends StatelessWidget {
         ),
         const SizedBox(height: NestSpace.lg),
         FamilySectionCard(
-          icon: health == null ? Icons.lock_outline : Icons.medication_outlined,
+          icon: health == null ? LucideIcons.lock : LucideIcons.pill,
           tint: NestTileTint.butter,
           title: NannyCopy.medication,
           child: switch (health) {
@@ -137,7 +135,7 @@ class _NotShared extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => NestToneRow(
-    icon: Icons.lock_outline,
+    icon: LucideIcons.lock,
     tone: tone,
     title: title,
     subtitle: body,

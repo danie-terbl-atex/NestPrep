@@ -42,7 +42,7 @@ class LunchPlannerSection extends StatelessWidget {
         const SizedBox(height: NestSpace.md),
         NestButton(
           label: LunchShareCopy.print,
-          icon: Icons.print_outlined,
+          icon: LucideIcons.printer,
           variant: NestButtonVariant.tonal,
           size: NestButtonSize.medium,
           isLoading: task == LunchShareTask.printingPlanner,
@@ -53,7 +53,7 @@ class LunchPlannerSection extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         NestButton(
           label: LunchShareCopy.sendPdf,
-          icon: Icons.picture_as_pdf_outlined,
+          icon: LucideIcons.fileText,
           variant: NestButtonVariant.outline,
           size: NestButtonSize.medium,
           isLoading: task == LunchShareTask.sendingPlanner,

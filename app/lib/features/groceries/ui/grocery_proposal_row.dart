@@ -67,7 +67,7 @@ class GroceryProposalRow extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(NestSpace.md),
                         child: Icon(
-                          Icons.check_rounded,
+                          LucideIcons.check,
                           size: NestSize.iconSmall,
                           color: nest.colors.success,
                         ),

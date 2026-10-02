@@ -33,7 +33,7 @@ class PushPermissionCard extends StatelessWidget {
           Row(
             children: [
               const NestIconTile(
-                icon: Icons.notifications_active_outlined,
+                icon: LucideIcons.bellRing,
                 tint: NestTileTint.butter,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
@@ -53,7 +53,7 @@ class PushPermissionCard extends StatelessWidget {
             const SizedBox(height: NestSpace.lg),
             NestButton(
               label: NotificationsCopy.turnOn,
-              icon: Icons.notifications_rounded,
+              icon: LucideIcons.bell,
               isLoading: isAsking,
               onPressed: onTurnOn,
             ),

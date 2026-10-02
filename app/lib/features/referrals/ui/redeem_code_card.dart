@@ -54,7 +54,7 @@ class _RedeemCodeCardState extends State<RedeemCodeCard> {
           Row(
             children: [
               const NestIconTile(
-                icon: Icons.redeem_outlined,
+                icon: LucideIcons.gift,
                 tint: NestTileTint.guava,
               ),
               const SizedBox(width: NestSpace.lg),

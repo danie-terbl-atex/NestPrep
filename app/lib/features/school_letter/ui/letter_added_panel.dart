@@ -30,7 +30,7 @@ class LetterAddedPanel extends StatelessWidget {
             children: [
               const Center(
                 child: NestIconTile(
-                  icon: Icons.event_available_outlined,
+                  icon: LucideIcons.calendarCheck,
                   tint: NestTileTint.basil,
                   size: NestSize.avatarLarge,
                 ),
@@ -50,7 +50,7 @@ class LetterAddedPanel extends StatelessWidget {
               const SizedBox(height: NestSpace.xxl),
               NestButton(
                 label: SchoolLetterCopy.seeTheWeek,
-                icon: Icons.calendar_view_week_outlined,
+                icon: LucideIcons.calendarRange,
                 onPressed: onSeeTheWeek,
               ),
               const SizedBox(height: NestSpace.sm),

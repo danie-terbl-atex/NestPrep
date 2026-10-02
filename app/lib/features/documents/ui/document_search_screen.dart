@@ -41,7 +41,7 @@ class DocumentSearchScreen extends StatelessWidget {
       title: VaultCopy.searchTitle,
       leading: context.canPop()
           ? NestIconButton(
-              icon: Icons.arrow_back,
+              icon: LucideIcons.arrowLeft,
               label: AppCopy.back,
               variant: NestIconButtonVariant.plain,
               onPressed: context.pop,
@@ -53,7 +53,7 @@ class DocumentSearchScreen extends StatelessWidget {
           NestTextField(
             label: VaultCopy.searchTitle,
             hint: VaultCopy.searchHint,
-            prefixIcon: Icons.search,
+            prefixIcon: LucideIcons.search,
             autofocus: search.query.isEmpty,
             textInputAction: TextInputAction.search,
             onChanged: search.setText,

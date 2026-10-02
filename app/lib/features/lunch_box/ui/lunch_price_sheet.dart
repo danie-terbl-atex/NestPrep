@@ -101,7 +101,7 @@ class _PriceBodyState extends State<_PriceBody> {
               : LunchBudgetCopy.amountPerBox,
           hint: LunchBudgetCopy.amountHint,
           controller: _amount,
-          prefixIcon: Icons.payments_outlined,
+          prefixIcon: LucideIcons.banknote,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           errorText: _amount.text.isNotEmpty && !_isAmountValid
               ? LunchBudgetCopy.amountInvalid
