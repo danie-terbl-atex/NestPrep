@@ -33,6 +33,7 @@ import {
 } from '../../src/coparent/schemas';
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { buildLunchWeekInput, draftLunchIdeasInput } from '../../src/plan_week/schemas';
+import { lunchPhotoInput } from '../../src/lunch_photos/schemas';
 import { recordActivityInput } from '../../src/product_analytics/record_activity';
 import { recordPaywallOpenedInput } from '../../src/product_analytics/record_paywall_opened';
 import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../src/referrals/schemas';
@@ -222,6 +223,11 @@ const validBodies = {
         },
       ],
     },
+  },
+  // A lunch box's picture: whose box, which day (lunch-box ADR-0015).
+  lunchPhoto: {
+    schema: lunchPhotoInput,
+    body: { householdId: 'h1', childId: 'm-kid', date: '2026-10-05' },
   },
   // Home care: a helper's words in her language (home-care ADR-0006).
   translateHomeCareTexts: {
@@ -653,6 +659,16 @@ describe('a school letter', () => {
   it('is not empty, and not larger than a callable should carry', () => {
     expect(() => parseInput(schema, { ...body, data: '' })).toThrow(HttpsError);
     expect(() => parseInput(schema, { ...body, data: 'A'.repeat(12_000_000) })).toThrow(HttpsError);
+  });
+});
+
+describe('a lunch box’s picture', () => {
+  const { schema, body } = validBodies.lunchPhoto;
+
+  it('is of a day that exists, written as a day', () => {
+    for (const date of ['2026-02-30', '2026-10-5', '05/10/2026', '2026-W41', '']) {
+      expect(() => parseInput(schema, { ...body, date }), date).toThrow(HttpsError);
+    }
   });
 });
 

@@ -50,6 +50,7 @@ export const STORAGE_AREAS: readonly Area[] = [
   'nannyHub',
   'familyProfiles',
   'medical',
+  'lunch',
 ];
 
 /** Roles whose members see and do everything, as every member did before. */

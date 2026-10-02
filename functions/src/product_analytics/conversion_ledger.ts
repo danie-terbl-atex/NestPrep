@@ -31,6 +31,7 @@ export const CONVERSION_TRIGGERS = [
   'prepList',
   'aiPlanning',
   'budgetMode',
+  'lunchPhoto',
   'direct',
 ] as const;
 export type ConversionTrigger = (typeof CONVERSION_TRIGGERS)[number];

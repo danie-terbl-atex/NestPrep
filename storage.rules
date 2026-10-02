@@ -318,6 +318,27 @@ service firebase.storage {
         && isOnShiftIfShiftOnly(householdId);
     }
 
+    // ==== rules/storage/paths/lunch_photos.rules ====
+    // ---- a lunch box's picture (lunch-box ADR-0015) ----
+    //
+    // Made and written only by the `lunchPhoto` Function, under the key of the
+    // box's combination of foods. A box of catalogue foods is the same in every
+    // household, so its picture is shared at the root and anybody signed in may
+    // load it — it shows food, nothing of a family. A picture of a box with
+    // anything of a family's own lives under that household, for whoever may
+    // see its lunches. The app is handed the path; nobody lists either.
+    match /lunchPhotos/{file} {
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow write: if false;
+    }
+
+    match /households/{householdId}/lunchPhotos/{file} {
+      allow get: if canView(householdId, 'lunch');
+      allow list: if false;
+      allow write: if false;
+    }
+
     // ==== rules/storage/paths/nanny_hub.rules ====
     // ---- nanny hub photos (nanny-hub ADR-0003) ----
     //

@@ -7,6 +7,7 @@ import {
   type ModelReply,
   type ModelRequest,
 } from '../../../src/ai/generative_model';
+import type { ImageModel, ImageReply, ImageRequest } from '../../../src/ai/image_model';
 import type { CallClock } from '../../../src/ai/structured_call';
 import type { AiClaim, ClaimRequest, Settlement, UsageLedger } from '../../../src/ai/usage_ledger';
 import { decideClaim, tierFrom, type MonthUsage } from '../../../src/ai/usage_rules';
@@ -48,6 +49,44 @@ export class FakeModel implements GenerativeModel {
       text: next,
       usage: { inputTokens: 100, outputTokens: 20 },
       modelVersion: 'fake-model-001',
+    });
+  }
+}
+
+/** The bytes every scripted picture comes back as. */
+export const FAKE_JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
+
+/** One scripted picture attempt: a picture, a failure, or a wait for the abort. */
+export type ScriptedImage = 'image' | ModelCallError | typeof HANG;
+
+/** [FakeModel], for pictures. */
+export class FakeImageModel implements ImageModel {
+  readonly name = 'fake-image-model';
+  readonly requests: ImageRequest[] = [];
+
+  constructor(private readonly script: ScriptedImage[]) {}
+
+  get calls(): number {
+    return this.requests.length;
+  }
+
+  generate(request: ImageRequest, signal: AbortSignal): Promise<ImageReply> {
+    this.requests.push(request);
+    const next = this.script.shift();
+    if (next === undefined)
+      throw new Error('the fake image model was asked more often than scripted');
+    if (next === HANG) {
+      return new Promise((_resolve, reject) => {
+        signal.addEventListener('abort', () => {
+          reject(new ModelCallError('timeout', 'aborted'));
+        });
+      });
+    }
+    if (next instanceof ModelCallError) return Promise.reject(next);
+    return Promise.resolve({
+      bytes: FAKE_JPEG,
+      mimeType: 'image/jpeg',
+      modelVersion: 'fake-image-model-001',
     });
   }
 }

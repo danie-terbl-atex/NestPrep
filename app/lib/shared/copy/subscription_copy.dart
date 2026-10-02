@@ -25,6 +25,7 @@ abstract final class SubscriptionCopy {
     PremiumFeature.lunchLearning => 'Lunches that learn',
     PremiumFeature.prepList => 'Sunday prep, sorted',
     PremiumFeature.budgetMode => 'Lunches on a budget',
+    PremiumFeature.lunchPhoto => 'Every lunch, photographed',
     PremiumFeature.aiPlanning || PremiumFeature.direct => 'NestPrep Premium',
   };
 
@@ -41,6 +42,9 @@ abstract final class SubscriptionCopy {
     PremiumFeature.budgetMode =>
       'See what each box and the week cost, keep to a weekly budget, and '
           'get cheaper swaps your children will still eat.',
+    PremiumFeature.lunchPhoto =>
+      'See each lunchbox as a photo of the very foods you packed, made '
+          'for your week.',
     PremiumFeature.aiPlanning || PremiumFeature.direct =>
       'Take more of the planning off the family’s plate.',
   };

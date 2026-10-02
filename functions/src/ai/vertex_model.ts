@@ -70,6 +70,22 @@ const BLOCKED_FINISHES = new Set([
 /** HTTP statuses where asking again later can succeed. */
 const TRANSIENT_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
 
+export function failureKindForStatus(status: number): 'transient' | 'permanent' {
+  return TRANSIENT_STATUSES.has(status) ? 'transient' : 'permanent';
+}
+
+/** A Vertex publisher model's regional REST endpoint for [method]. */
+export function vertexEndpoint(
+  project: string,
+  location: string,
+  model: string,
+  method: string,
+): string {
+  const host =
+    location === 'global' ? 'aiplatform.googleapis.com' : `${location}-aiplatform.googleapis.com`;
+  return `https://${host}/v1/projects/${project}/locations/${location}/publishers/google/models/${model}:${method}`;
+}
+
 export class VertexModel implements GenerativeModel {
   constructor(private readonly options: VertexModelOptions) {}
 
@@ -79,9 +95,7 @@ export class VertexModel implements GenerativeModel {
 
   get endpoint(): string {
     const { project, location, model } = this.options;
-    const host =
-      location === 'global' ? 'aiplatform.googleapis.com' : `${location}-aiplatform.googleapis.com`;
-    return `https://${host}/v1/projects/${project}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    return vertexEndpoint(project, location, model, 'generateContent');
   }
 
   async generate(request: ModelRequest, signal: AbortSignal): Promise<ModelReply> {
@@ -97,11 +111,13 @@ export class VertexModel implements GenerativeModel {
       });
     } catch (error) {
       if (signal.aborted) throw new ModelCallError('timeout', 'no answer in time');
-      throw new ModelCallError('transient', `network: ${describe(error)}`);
+      throw new ModelCallError('transient', `network: ${errorName(error)}`);
     }
     if (!response.ok) {
-      const kind = TRANSIENT_STATUSES.has(response.status) ? 'transient' : 'permanent';
-      throw new ModelCallError(kind, `http ${String(response.status)}`);
+      throw new ModelCallError(
+        failureKindForStatus(response.status),
+        `http ${String(response.status)}`,
+      );
     }
     const parsed = vertexReply.safeParse(await readJson(response, signal));
     if (!parsed.success) throw new ModelCallError('permanent', 'reply was not Vertex shaped');
@@ -133,12 +149,12 @@ function vertexPart(part: ModelPart): Record<string, unknown> {
     : { inlineData: { mimeType: part.mimeType, data: part.base64 } };
 }
 
-async function readJson(response: Response, signal: AbortSignal): Promise<unknown> {
+export async function readJson(response: Response, signal: AbortSignal): Promise<unknown> {
   try {
     return await response.json();
   } catch (error) {
     if (signal.aborted) throw new ModelCallError('timeout', 'no answer in time');
-    throw new ModelCallError('transient', `unreadable body: ${describe(error)}`);
+    throw new ModelCallError('transient', `unreadable body: ${errorName(error)}`);
   }
 }
 
@@ -172,6 +188,6 @@ function usageOf(reply: VertexReply): ModelUsage {
   };
 }
 
-function describe(error: unknown): string {
+export function errorName(error: unknown): string {
   return error instanceof Error ? error.name : 'unknown';
 }

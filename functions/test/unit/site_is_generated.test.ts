@@ -185,16 +185,25 @@ describe('the deletion page and its script agree with the request contract', () 
 });
 
 describe('the site wears the app colours', () => {
-  /** `name: Color(0xAARRGGBB)` pairs from one of the two palettes in nest_colors.dart. */
+  /**
+   * The opaque tokens of one palette in nest_colors.dart, written either as
+   * `name: Color(0xFFRRGGBB)` or as `name: oat` naming a `static const` colour.
+   */
   function dartPalette(name: 'light' | 'dark'): Map<string, string> {
     const source = read('app/lib/design/tokens/nest_colors.dart');
+    const named = new Map(
+      [...source.matchAll(/static const (\w+) = Color\(0xFF([0-9A-Fa-f]{6})\);/g)].map((m) => [
+        String(m[1]),
+        String(m[2]),
+      ]),
+    );
     const start = source.indexOf(`static const ${name} = NestColors(`);
     const block = source.slice(start, source.indexOf(');', start));
     return new Map(
-      [...block.matchAll(/(\w+): Color\(0xFF([0-9A-F]{6})\)/g)].map((m) => [
-        String(m[1]),
-        `#${String(m[2]).toLowerCase()}`,
-      ]),
+      [...block.matchAll(/(\w+): (?:Color\(0xFF([0-9A-Fa-f]{6})\)|(\w+),)/g)].flatMap((m) => {
+        const hex = m[2] ?? (m[3] === undefined ? undefined : named.get(m[3]));
+        return hex === undefined ? [] : [[String(m[1]), `#${hex.toLowerCase()}`] as const];
+      }),
     );
   }
 

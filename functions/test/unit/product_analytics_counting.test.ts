@@ -142,6 +142,7 @@ describe('a week summarised from its ledgers', () => {
       prepList: 0,
       aiPlanning: 0,
       budgetMode: 0,
+      lunchPhoto: 0,
       direct: 1,
     });
   });
@@ -154,6 +155,7 @@ describe('a week summarised from its ledgers', () => {
       prepList: 1,
       aiPlanning: 0,
       budgetMode: 0,
+      lunchPhoto: 0,
       direct: 0,
     });
   });

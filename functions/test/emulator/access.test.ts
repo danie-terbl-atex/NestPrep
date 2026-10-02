@@ -303,6 +303,7 @@ describe('syncDocumentAccess carries the grant to Storage', () => {
         nannyHub: 'edit',
         familyProfiles: 'edit',
         medical: 'edit',
+        lunch: 'edit',
       },
     });
   });

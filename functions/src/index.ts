@@ -109,6 +109,8 @@ export { notifyCoParentHandover } from './notifications/notify_coparent';
 // ---- plan my week from the store, in guided steps: proposals, never a write (lunch-box ADR-0012, foundation ADR-0015) ----
 export { draftLunchIdeas } from './plan_week/draft_lunch_ideas';
 export { buildLunchWeek } from './plan_week/build_lunch_week';
+// ---- a picture of the lunch box, made once per combination (lunch-box ADR-0015, foundation ADR-0015) ----
+export { lunchPhoto } from './lunch_photos/lunch_photo';
 // ---- add to Checkers: a member's own Sixty60 cart, linked by SMS code (the Checkers build contract) ----
 export { checkersLinkStatus } from './checkers/checkers_link_status';
 export { checkersRequestOtp } from './checkers/checkers_request_otp';

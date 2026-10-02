@@ -1,0 +1,6 @@
+// ---- lunch box pictures shared by every household (lunch-box ADR-0015) ----
+// How far a picture of a catalogue-only box has got. Only the `lunchPhoto`
+// Function reads or writes it — the app is handed the Storage path.
+match /lunchPhotos/{key} {
+  allow read, write: if false;
+}

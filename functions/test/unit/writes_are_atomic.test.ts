@@ -255,6 +255,10 @@ describe('every callable declares what it may cost', () => {
         // ADR-0012, foundation ADR-0015).
         'buildLunchWeek',
         'draftLunchIdeas',
+        // A picture of a lunch box: an image model reached only from a
+        // Function, behind premium and the same monthly cap, cached by
+        // combination where no client may write (lunch-box ADR-0015).
+        'lunchPhoto',
         // Add to Checkers: a member's Checkers session is held by the server,
         // sealed, and used to fill their own Sixty60 cart — nothing a rule or
         // a phone may hold (the Checkers build contract).

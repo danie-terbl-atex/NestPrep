@@ -96,17 +96,21 @@ export async function callForJson<T>(
   let made = 0;
 
   for (let attempt = 1; attempt <= limits.attempts; attempt += 1) {
-    if (attempt > 1) {
-      if (clock.now() - startedAt >= limits.budgetMs) break;
-      await clock.sleep(limits.backoffMs[attempt - 2] ?? limits.backoffMs.at(-1) ?? 0);
-    }
+    if (!(await mayAttempt(attempt, startedAt, limits, clock))) break;
     made = attempt;
-    const outcome = await attemptOnce(model, request, limits.perAttemptMs);
-    usage = addUsage(usage, outcome.usage);
+    const outcome = await attemptWithin(limits.perAttemptMs, (signal) =>
+      model.generate(request, signal),
+    );
     if (outcome.kind === 'reply') {
-      const parsed = parseReply(outcome.text, schema);
+      usage = addUsage(usage, outcome.reply.usage);
+      const parsed = parseReply(outcome.reply.text, schema);
       if (parsed.success) {
-        return { value: parsed.value, usage, attempts: attempt, modelVersion: outcome.version };
+        return {
+          value: parsed.value,
+          usage,
+          attempts: attempt,
+          modelVersion: outcome.reply.modelVersion,
+        };
       }
       unreadableReplies += 1;
       lastDetail = parsed.detail;
@@ -116,40 +120,61 @@ export async function callForJson<T>(
       }
       continue;
     }
+    usage = addUsage(usage, outcome.error.usage);
     lastDetail = outcome.error.detail;
     lastWasUnreadable = false;
-    if (outcome.error.kind === 'blocked') {
-      throw new StructuredCallFailure('declined', lastDetail, usage, attempt);
-    }
-    if (!outcome.error.isWorthRetrying) {
-      throw new StructuredCallFailure('unavailable', lastDetail, usage, attempt);
-    }
+    const final = finalFailureOf(outcome.error);
+    if (final !== null) throw new StructuredCallFailure(final, lastDetail, usage, attempt);
   }
   const kind = lastWasUnreadable ? 'unreadable' : 'unavailable';
   throw new StructuredCallFailure(kind, lastDetail, usage, made);
 }
 
-type Attempt =
-  | { kind: 'reply'; text: string; usage: ModelUsage; version: string }
-  | { kind: 'failed'; error: ModelCallError; usage: ModelUsage };
+/**
+ * Whether attempt number [attempt] may start, after its backoff: never once
+ * the budget has gone. The first always may, at once.
+ */
+export async function mayAttempt(
+  attempt: number,
+  startedAt: number,
+  limits: CallLimits,
+  clock: CallClock,
+): Promise<boolean> {
+  if (attempt === 1) return true;
+  if (clock.now() - startedAt >= limits.budgetMs) return false;
+  await clock.sleep(limits.backoffMs[attempt - 2] ?? limits.backoffMs.at(-1) ?? 0);
+  return true;
+}
 
-async function attemptOnce(
-  model: GenerativeModel,
-  request: ModelRequest,
+/**
+ * What a model failure ends the call as, or null when it is worth another
+ * attempt: a refusal is `declined`, a bad request `unavailable`.
+ */
+export function finalFailureOf(error: ModelCallError): StructuredFailureKind | null {
+  if (error.kind === 'blocked') return 'declined';
+  return error.isWorthRetrying ? null : 'unavailable';
+}
+
+export type Attempt<R> =
+  | { readonly kind: 'reply'; readonly reply: R }
+  | { readonly kind: 'failed'; readonly error: ModelCallError };
+
+/** One attempt, aborted after [perAttemptMs]. */
+export async function attemptWithin<R>(
   perAttemptMs: number,
-): Promise<Attempt> {
+  run: (signal: AbortSignal) => Promise<R>,
+): Promise<Attempt<R>> {
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort();
   }, perAttemptMs);
   try {
-    const reply = await model.generate(request, controller.signal);
-    return { kind: 'reply', text: reply.text, usage: reply.usage, version: reply.modelVersion };
+    return { kind: 'reply', reply: await run(controller.signal) };
   } catch (error) {
     // Anything that is not the model's own error is a bug in an adapter, and
     // is let through rather than dressed up as a transient failure (ENG-10).
     if (!(error instanceof ModelCallError)) throw error;
-    return { kind: 'failed', error, usage: error.usage };
+    return { kind: 'failed', error };
   } finally {
     clearTimeout(timer);
   }

@@ -101,6 +101,8 @@ cloud because the client redirects every service.
 | `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured  |
 | `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                               |
 | `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)        |
+| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                        |
+| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                   |
 | `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged     |
 | `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                         |
 | `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly        |
@@ -168,7 +170,7 @@ deploy (foundation ADR-0014, ADR-0015), both set by hand in the console and unre
 
 - `appConfig/flags` — one boolean per V2 capability (`snapSchoolLetter`, …). Absent means on under
   the emulator and **off in the cloud**.
-- `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`,
+- `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`, `features.lunchPhoto`,
   `monthlyCalls.free` and `monthlyCalls.premium`. Absent means on, 10 calls a month free and 100
   premium. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
   costs anything.
@@ -184,6 +186,13 @@ POPIA section). Vertex is reached as the Functions' service account — **no API
 runtime service account needs `roles/aiplatform.user`. Under the emulator the model is
 `EmulatorModel`, which answers from `aiEmulator/{feature}.reply` (or fails with `failWith`), so no
 test or local run reaches Vertex or bills anything.
+
+A picture goes through `runImageCall` — the same switch, claim and refund, with an `ImageModel`
+(Imagen in the cloud; under the emulator `EmulatorImageModel`, which returns
+`assets/emulator_lunch_photo.jpg` unless `aiEmulator/{feature}.failWith` says otherwise).
+`lunchPhoto` (lunch-box ADR-0015) caches each box's picture by combination: catalogue-only boxes at
+`lunchPhotos/{key}` (shared by every household), anything else at `households/{h}/lunchPhotos/{key}`
+— a Firestore document no client reads, and a `.jpg` of the same name in Storage.
 
 ## Things that bite on this codebase
 

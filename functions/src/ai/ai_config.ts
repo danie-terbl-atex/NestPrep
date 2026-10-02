@@ -16,6 +16,13 @@ import { defineString } from 'firebase-functions/params';
 export const aiModel = defineString('AI_MODEL', { default: 'gemini-2.5-flash' });
 export const aiLocation = defineString('AI_LOCATION', { default: 'europe-west4' });
 
+/**
+ * The image model and its region (lunch-box ADR-0015): Imagen on Vertex, in
+ * the same GDPR region as the text model. The prompt names foods only.
+ */
+export const aiImageModel = defineString('AI_IMAGE_MODEL', { default: 'imagen-4.0-generate-001' });
+export const aiImageLocation = defineString('AI_IMAGE_LOCATION', { default: 'europe-west4' });
+
 /** The project the Functions run in, which is the one Vertex bills. */
 export function currentProject(): string {
   const project = process.env['GCLOUD_PROJECT'] ?? process.env['GOOGLE_CLOUD_PROJECT'];

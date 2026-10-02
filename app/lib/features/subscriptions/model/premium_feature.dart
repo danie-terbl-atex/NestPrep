@@ -18,6 +18,9 @@ enum PremiumFeature {
   aiPlanning,
   budgetMode,
 
+  /// An AI photo of each lunchbox as it is packed (lunch-box ADR-0015).
+  lunchPhoto,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

@@ -449,6 +449,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ==== rules/firestore/root/lunch_photos.rules ====
+    // ---- lunch box pictures shared by every household (lunch-box ADR-0015) ----
+    // How far a picture of a catalogue-only box has got. Only the `lunchPhoto`
+    // Function reads or writes it — the app is handed the Storage path.
+    match /lunchPhotos/{key} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/notifications.rules ====
     // ---- notifications: the phones an account's pushes go to (notifications ADR-0001) ----
     //
@@ -2490,6 +2498,15 @@ service cloud.firestore {
           && data.itemIds is list
           && data.itemIds.size() <= 5
           && data.by is string;
+      }
+
+      // ==== rules/firestore/household/lunch_photos.rules ====
+      // ---- a household's own lunch box pictures (lunch-box ADR-0015) ----
+      // How far a picture of a box with the family's own food has got. Only the
+      // `lunchPhoto` Function reads or writes it — the app is handed the Storage
+      // path, which `rules/storage/paths/lunch_photos.rules` guards.
+      match /lunchPhotos/{key} {
+        allow read, write: if false;
       }
 
       // ==== rules/firestore/household/meal_planning.rules ====

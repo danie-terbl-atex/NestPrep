@@ -65,7 +65,7 @@ export function renderSharePage(page: SharePage): string {
 <style>${sharePageStyles()}</style>
 </head>
 <body><main>
-<header><img src="${MARK_QUERY}" alt="" width="48" height="37"><span>${escapeHtml(COPY.brand)}</span></header>
+<header><img src="${MARK_QUERY}" alt="" width="40" height="40"><span>${escapeHtml(COPY.brand)}</span></header>
 <section class="card">${bodyOf(page)}</section>
 <footer>${escapeHtml(COPY.footer)}</footer>
 </main></body>

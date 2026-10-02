@@ -74,6 +74,7 @@ describe('what travels to Storage on the token', () => {
       nannyHub: 'edit',
       familyProfiles: 'view',
       medical: 'view',
+      lunch: 'view',
     });
     expect(storageGrant(uniformGrant('none'))).toEqual({});
   });

@@ -31,7 +31,12 @@ export function bucketName(
 export interface ObjectStore {
   /** Deletes every object under the prefix; returns nothing, fails loudly. */
   deletePrefix(prefix: string): Promise<void>;
-  save(path: string, contents: string, contentType: string): Promise<void>;
+  save(
+    path: string,
+    contents: string | Uint8Array,
+    contentType: string,
+    cacheControl?: string,
+  ): Promise<void>;
   /** Objects under the prefix created before the instant, up to `limit`. */
   listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]>;
   deleteObjects(paths: readonly string[]): Promise<void>;
@@ -43,8 +48,17 @@ export function objectStore(): ObjectStore {
     async deletePrefix(prefix: string): Promise<void> {
       await bucket.deleteFiles({ prefix, force: true });
     },
-    async save(path: string, contents: string, contentType: string): Promise<void> {
-      await bucket.file(path).save(contents, { contentType, resumable: false });
+    async save(
+      path: string,
+      contents: string | Uint8Array,
+      contentType: string,
+      cacheControl?: string,
+    ): Promise<void> {
+      await bucket.file(path).save(contents, {
+        contentType,
+        resumable: false,
+        ...(cacheControl === undefined ? {} : { metadata: { cacheControl } }),
+      });
     },
     async listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]> {
       const [files] = await bucket.getFiles({ prefix, maxResults: limit });

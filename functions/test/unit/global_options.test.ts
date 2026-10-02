@@ -53,6 +53,8 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   // Planning a week waits on Vertex the same way, twice (lunch-box ADR-0012).
   draftLunchIdeas: { memoryMb: 512, timeoutSeconds: 60 },
   buildLunchWeek: { memoryMb: 512, timeoutSeconds: 60 },
+  // An image takes far longer than a JSON answer (lunch-box ADR-0015).
+  lunchPhoto: { memoryMb: 512, timeoutSeconds: 120 },
 };
 
 /** A scheduled job sets its own timeout; everything else is a callable. */
@@ -61,7 +63,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are eighty-two of them, so a new one cannot slip past these checks', () => {
+  it('there are eighty-three of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: nine callables (`setMemberAccess` is household
     // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
@@ -91,8 +93,9 @@ describe('every function — callable, trigger or schedule', () => {
     // ADR-0004, household ADR-0004). Plan my week: draftLunchIdeas and
     // buildLunchWeek (lunch-box ADR-0012). Add to Checkers: five callables — link status, send and
     // verify a code, fill the cart, unlink (the Checkers build contract). A
-    // feature adds its count and its line.
-    expect(endpoints()).toHaveLength(82);
+    // lunch box's picture: lunchPhoto (lunch-box ADR-0015). A feature adds
+    // its count and its line.
+    expect(endpoints()).toHaveLength(83);
   });
 
   it('runs in the database region, except a schedule, which runs where Cloud Scheduler does', () => {

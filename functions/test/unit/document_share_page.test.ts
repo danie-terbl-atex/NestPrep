@@ -145,13 +145,20 @@ describe('the file itself', () => {
 describe("the page's look is still the app's", () => {
   const colours = readFileSync(resolve(repoRoot, 'app/lib/design/tokens/nest_colors.dart'), 'utf8');
   // The light block comes first in the Dart file and the dark second.
-  const darkAt = colours.indexOf('canvas:', colours.indexOf('canvas:') + 1);
-  const light = colours.slice(0, darkAt);
+  const darkAt = colours.indexOf('static const dark');
+  const light = colours.slice(colours.indexOf('static const light'), darkAt);
   const dark = colours.slice(darkAt);
 
+  const named = new Map(
+    [...colours.matchAll(/static const (\w+) = Color\(0xFF([0-9A-Fa-f]{6})\);/g)].map(
+      (match) => [match[1], match[2]] as const,
+    ),
+  );
+
   function tokenIn(block: string, name: string): string | undefined {
-    const match = new RegExp(`\\b${name}: Color\\(0xFF([0-9A-Fa-f]{6})\\)`).exec(block);
-    return match?.[1] === undefined ? undefined : `#${match[1].toUpperCase()}`;
+    const match = new RegExp(`\\b${name}: (?:Color\\(0xFF([0-9A-Fa-f]{6})\\)|(\\w+),)`).exec(block);
+    const hex = match?.[1] ?? (match?.[2] === undefined ? undefined : named.get(match[2]));
+    return hex === undefined ? undefined : `#${hex.toUpperCase()}`;
   }
 
   for (const name of SHARE_TOKEN_NAMES) {
@@ -161,13 +168,13 @@ describe("the page's look is still the app's", () => {
     });
   }
 
-  it("the mark is a small copy of the app's nest, bundled with the Functions", () => {
+  it("the mark is a small render of the app's arch mark, bundled with the Functions", () => {
     const mark = readFileSync(MARK_PATH);
     expect(mark.subarray(1, 4).toString('ascii')).toBe('PNG');
     const width = mark.readUInt32BE(16);
     expect(width).toBeLessThanOrEqual(256);
     expect(mark.length).toBeLessThan(100_000);
-    // The source it is cut from (tools/brand/share_page_mark.sh) still exists.
+    // Rendered from the same SVG as the app's (tools/brand/render_brand.sh).
     expect(
       readFileSync(resolve(repoRoot, 'app/assets/brand/nest_mark.png')).length,
     ).toBeGreaterThan(mark.length);
