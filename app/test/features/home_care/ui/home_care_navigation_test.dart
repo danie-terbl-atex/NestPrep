@@ -31,8 +31,9 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (context, state) =>
-                Scaffold(body: HouseholdPlaces(view: view)),
+            builder: (context, state) => Scaffold(
+              body: SingleChildScrollView(child: HouseholdPlaces(view: view)),
+            ),
           ),
           GoRoute(
             path: HomeCareRoute.path,
