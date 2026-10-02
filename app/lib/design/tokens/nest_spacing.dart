@@ -65,6 +65,7 @@ abstract final class NestSize {
   static const double brandMarkSmall = 36;
   static const double wordmarkLarge = 44;
   static const double wordmarkSmall = 26;
+  static const double wordmarkSignature = 18;
 
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;

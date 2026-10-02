@@ -12,6 +12,7 @@ import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 
+import '../../../support/bring_into_view.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_planning_harness.dart';
 import '../../../support/pump_screen.dart';
@@ -151,6 +152,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(LunchPantryCopy.fillFromPantry), findsOneWidget);
 
+    await bringIntoView(
+      tester,
+      find.text(LunchCopy.addToSlot(LunchSlot.fruit)).first,
+    );
     await tester.tap(find.text(LunchCopy.addToSlot(LunchSlot.fruit)).first);
     await tester.pumpAndSettle();
     expect(find.textContaining(LunchPantryCopy.inPantry(3)), findsOneWidget);

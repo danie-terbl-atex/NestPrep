@@ -40,14 +40,20 @@ class LunchCardFooter extends StatelessWidget {
               const SizedBox(width: NestSpace.sm),
               const NestWordmark(
                 semanticsLabel: LunchShareCopy.plannedWithNestPrep,
-                size: NestSize.wordmarkSmall,
+                size: NestSize.wordmarkSignature,
               ),
             ],
           );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        signature,
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: signature,
+          ),
+        ),
         const SizedBox(width: NestSpace.lg),
         if (showsInvite)
           Expanded(

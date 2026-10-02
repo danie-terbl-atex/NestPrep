@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../app/lunch_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/time/calendar_date.dart';
 import '../../family_profiles/ui/food_rules_summary.dart';
 import '../../household/model/household_view.dart';
 import '../../plan_week/ui/plan_week_entry_card.dart';
@@ -13,28 +14,48 @@ import '../state/lunch_board_controller.dart';
 import 'lunch_auto_fill_note.dart';
 import 'lunch_child_switcher.dart';
 import 'lunch_day_card.dart';
+import 'lunch_day_pills.dart';
 import 'lunch_flows.dart';
-import 'lunch_hero_card.dart';
+import 'lunch_hero.dart';
 import 'lunch_planning_tools.dart';
 
-/// One child's week, top to bottom: whose it is, the next box drawn with the
-/// button that packs the rest, their food rules, and the five days. The days
-/// are the empty state too — each empty compartment is a way in (`FE-08`).
+/// One child's week, top to bottom: whose it is, the five days as pills, the
+/// day on show as a photo card with the button that packs the rest, the
+/// tools, their food rules, and the five days in full. The days are the empty
+/// state too — each empty compartment is a way in (`FE-08`).
 ///
 /// It arrives once, top down, and settles (design-system ADR-0002).
-class LunchBoardBody extends StatelessWidget {
+class LunchBoardBody extends StatefulWidget {
   const LunchBoardBody({required this.board, required this.canEdit, super.key});
 
   final LunchBoard board;
   final bool canEdit;
 
   @override
+  State<LunchBoardBody> createState() => _LunchBoardBodyState();
+}
+
+class _LunchBoardBodyState extends State<LunchBoardBody> {
+  CalendarDate? _shown;
+  String? _shownFor;
+
+  @override
   Widget build(BuildContext context) {
+    final board = widget.board;
+    final canEdit = widget.canEdit;
     final controller = context.watch<LunchBoardController>();
     final childWeek =
         board.childWeek(controller.selectedChildId ?? '') ??
         board.children.first;
     final householdId = context.read<HouseholdView>().household.id;
+    final scope = '${childWeek.childId}-${board.week.key}';
+    if (_shownFor != scope) {
+      _shownFor = scope;
+      _shown = board.focusDayOf(childWeek).date;
+    }
+    final day =
+        childWeek.days.where((day) => day.date == _shown).firstOrNull ??
+        board.focusDayOf(childWeek);
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
       children: [
@@ -48,19 +69,27 @@ class LunchBoardBody extends StatelessWidget {
           ),
           const SizedBox(height: NestSpace.md),
         ],
-        // plan my week with AI — the week in one tap (lunch-box ADR-0011).
         NestRiseIn(
-          child: PlanWeekEntryCard(board: board, canEdit: canEdit),
+          child: LunchDayPills(
+            days: childWeek.days,
+            selected: day,
+            onSelect: (day) => setState(() => _shown = day.date),
+          ),
         ),
+        const SizedBox(height: NestSpace.lg),
         NestRiseIn(
           index: 1,
-          child: LunchHeroCard(
+          child: LunchHero(
             key: ValueKey('hero-${childWeek.childId}'),
             board: board,
             childWeek: childWeek,
+            day: day,
             canEdit: canEdit,
           ),
         ),
+        const SizedBox(height: NestSpace.md),
+        // plan my week with AI — the week in one tap (lunch-box ADR-0011).
+        PlanWeekEntryCard(board: board, canEdit: canEdit),
         const SizedBox(height: NestSpace.md),
         NestRiseIn(
           index: 2,
@@ -121,7 +150,9 @@ class LunchBoardBody extends StatelessWidget {
             ),
           ),
         const LunchAutoFillNote(),
-        const SizedBox(height: NestSpace.md),
+        const SizedBox(height: NestSpace.xl),
+        const NestSectionHeader(title: LunchCopy.thisWeek),
+        const SizedBox(height: NestSpace.sm),
         for (final (index, day) in childWeek.days.indexed)
           Padding(
             padding: const EdgeInsets.only(bottom: NestSpace.md),

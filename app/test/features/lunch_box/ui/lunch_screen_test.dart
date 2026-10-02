@@ -10,17 +10,28 @@ import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
+import 'package:provider/provider.dart';
 
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/test_flags.dart';
 
 void main() {
   late LunchHarness harness;
 
-  setUp(() => harness = LunchHarness());
-  tearDown(() => harness.close());
+  late FeatureFlagsController flagsOff;
+
+  setUp(() {
+    harness = LunchHarness();
+    flagsOff = testFlagsController(TestFlags.off);
+  });
+  tearDown(() async {
+    flagsOff.dispose();
+    await harness.close();
+  });
 
   Future<void> pump(
     WidgetTester tester, {
@@ -36,7 +47,10 @@ void main() {
     await pumpScreen(
       tester,
       LunchScreen(onSelectTab: (_) {}),
-      providers: (using ?? harness).providers,
+      providers: [
+        ChangeNotifierProvider<FeatureFlagsController>.value(value: flagsOff),
+        ...(using ?? harness).providers,
+      ],
       view: viewOnly
           ? Fixtures.helperView(
               AccessGrant({
@@ -129,13 +143,16 @@ void main() {
       tester,
       lwaziSlots: {key(2, LunchSlot.main): LunchPick.of(LunchFixtures.wrap)},
     );
-    expect(find.text(LunchCopy.packingFor('Lwazi')), findsOneWidget);
-    expect(find.text(LunchCopy.todaysBox), findsOneWidget);
-    expect(find.text(LunchCopy.packedCount(1)), findsOneWidget);
-    // The picture is one sentence to a screen reader, naming what is packed.
+    expect(
+      find.text(LunchCopy.dayFor('Today', 'Lwazi').toUpperCase()),
+      findsOneWidget,
+    );
+    expect(find.text('Chicken wrap'), findsWidgets);
+    // The photo card is one sentence to a screen reader: whose day, and what
+    // is packed.
     final semantics = tester.ensureSemantics();
     expect(
-      find.bySemanticsLabel(LunchCopy.boxArtLabel('Chicken wrap')),
+      find.bySemanticsLabel(RegExp('for Lwazi. Chicken wrap')),
       findsOneWidget,
     );
     semantics.dispose();
@@ -236,7 +253,10 @@ void main() {
     await arrive(tester);
     await tester.tap(find.text('Ayanda'));
     await tester.pumpAndSettle();
-    expect(find.text(LunchCopy.packingFor('Ayanda')), findsOneWidget);
+    expect(
+      find.textContaining(LunchCopy.dayFor('', 'Ayanda').toUpperCase()),
+      findsOneWidget,
+    );
     expect(harness.controller.selectedChildId, LunchFixtures.ayandaId);
   });
 
@@ -251,7 +271,10 @@ void main() {
       using: viewer,
       lwaziSlots: {key(1, LunchSlot.main): LunchPick.of(LunchFixtures.wrap)},
     );
-    expect(find.text(LunchCopy.packingFor('Lwazi')), findsOneWidget);
+    expect(
+      find.textContaining(LunchCopy.dayFor('', 'Lwazi').toUpperCase()),
+      findsOneWidget,
+    );
     expect(find.text(LunchCopy.fillWeek), findsNothing);
     expect(find.text(LunchCopy.ateIt), findsNothing);
     expect(find.text(LunchCopy.openLibrary), findsNothing);

@@ -9,18 +9,23 @@ import 'family_copy.dart';
 /// features do not edit the same lines.
 abstract final class LunchCopy {
   static const tab = 'Lunch';
-  static const title = 'Lunch boxes';
+  static const title = 'Lunch? Lovely.';
 
   static String weekOf(String range) => 'School week · $range';
   static const previousWeek = 'Previous week';
   static const nextWeek = 'Next week';
   static const backToThisWeek = 'Back to this week';
   static const thisWeek = 'This week';
+  static const viewLunch = 'View lunch';
+  static const planThisLunch = 'Plan this lunch';
+  static String dayFor(String day, String name) => '$day · for $name';
+  static String dayPill(String day, {required bool isPacked}) =>
+      isPacked ? '$day, packed' : '$day, nothing packed yet';
+  static const lunchDetailBack = 'Back to my week';
   static const nextWeekName = 'Next week';
   static const lastWeek = 'Last week';
 
   // Who the lunches are for.
-  static String packingFor(String name) => 'Packing for $name';
   static String chooseChild(String name) => 'Show $name’s lunches';
   static const noChildrenTitle = 'Who are we packing for?';
   static const noChildrenBody =
@@ -33,11 +38,6 @@ abstract final class LunchCopy {
       'you.';
 
   // The hero.
-  static const todaysBox = 'Today’s box';
-  static const tomorrowsBox = 'Tomorrow’s box';
-  static String boxFor(String day) => '$day’s box';
-  static String packedCount(int filled) =>
-      '$filled of ${LunchSlot.values.length} packed';
   static const nothingPackedYet = 'Nothing packed yet';
   static const fillWeek = 'Fill the week';
   static const fillWeekHint =
@@ -82,7 +82,6 @@ abstract final class LunchCopy {
   };
 
   // A day.
-  static const today = 'Today';
   static const dayActions = 'More for this day';
   static const saveAsFavourite = 'Save as a go-to box';
   static const packFavourite = 'Pack a go-to box';

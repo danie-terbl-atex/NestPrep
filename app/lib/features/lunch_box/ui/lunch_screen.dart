@@ -18,8 +18,7 @@ import '../state/lunch_board_controller.dart';
 import 'lunch_board_body.dart';
 import 'lunch_week_bar.dart';
 
-/// The household's home: each child's school lunches for the week
-/// (lunch-box ADR-0001, ADR-0004). One controller joins the children, the
+/// Each child's school lunches for the week (lunch-box ADR-0001, ADR-0014). One controller joins the children, the
 /// library, the plans and the go-to boxes, so this screen has one loading
 /// state and reads offline from cached documents.
 class LunchScreen extends StatelessWidget {
@@ -42,10 +41,10 @@ class LunchScreen extends StatelessWidget {
     };
 
     return NestScaffold(
-      title: LunchCopy.title,
-      subtitle: LunchCopy.weekOf(
+      eyebrow: LunchCopy.weekOf(
         NestDates.schoolWeekRange(controller.week.monday),
       ),
+      title: LunchCopy.title,
       trailing: const [NotificationBell(), AccountMenuButton()],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.lunch,

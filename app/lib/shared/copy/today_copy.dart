@@ -14,9 +14,6 @@ abstract final class TodayCopy {
   static const nothingPacked = 'Nothing packed yet';
   static const planLunch = 'Plan this lunch';
   static const viewLunch = 'View lunch';
-  static const noSchool = 'No school today';
-  static const noSchoolBody = "Next week's lunches are ready when you are.";
-  static const planNextWeek = 'Plan next week';
 
   static const agendaEyebrow = "What's on";
   static const agendaEmpty = 'Nothing on the calendar. A quiet one.';
@@ -34,7 +31,6 @@ abstract final class TodayCopy {
     1 => '1 thing to buy',
     _ => '$count things to buy',
   };
-  static const openGroceries = 'Open groceries';
 
   static const nothingHere = 'Your places are in More';
   static const nothingHereBody =
