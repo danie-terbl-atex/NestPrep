@@ -170,8 +170,12 @@ so the on-screen copy cannot tell you the backend was unreachable.
   exists but is not on the Runner target, because a free Apple team cannot sign
   `aps-environment` — add the Push Notifications capability in Xcode once the Apple Developer
   Program exists, and upload an APNs auth key to the Firebase project.
-- Fonts are bundled under `assets/fonts/` (Plus Jakarta Sans for body, Nunito for headings, both
-  OFL). `flutter pub get` after changing the `fonts:` block or the family is silently absent.
+- Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
+  headings, which keeps its `opsz` axis, so every Fraunces style sets `FontVariation('opsz', size)`;
+  both OFL, Latin and Latin Extended subsets). `flutter pub get` after changing the `fonts:` block
+  or the family is silently absent. The arch mark is drawn in code (`NestMarkPainter`) from
+  `assets/brand/nest_mark.svg`; the launcher icon and splash still come from the old raster and are
+  due to be regenerated from it.
 - The logo's pieces under `assets/brand/` are generated from the vault's logo by
   `tools/brand/extract_brand_assets.py`, then the icons and splash by `dart run
   flutter_launcher_icons` and `dart run flutter_native_splash:create`. **The splash generator puts
