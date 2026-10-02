@@ -10,6 +10,10 @@ abstract final class TodayCopy {
   }
 
   static const lunchEyebrow = 'In the lunchbox';
+  static const firstChildTitle = 'Who are we packing for?';
+  static const firstChildBody =
+      'Add your children and their allergies once. Every lunch follows them.';
+  static const addChild = 'Add a child';
   static String lunchFor(String name) => 'For $name';
   static const nothingPacked = 'Nothing packed yet';
   static const planLunch = 'Plan this lunch';

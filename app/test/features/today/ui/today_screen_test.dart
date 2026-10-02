@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
+import 'package:nestprep/features/family_profiles/model/family_roster.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
@@ -75,6 +76,7 @@ void main() {
     WidgetTester tester, {
     Brightness brightness = Brightness.light,
     double textScale = 1,
+    FamilyRoster? roster,
   }) async {
     await pumpScreen(
       tester,
@@ -89,7 +91,7 @@ void main() {
         ChangeNotifierProvider<GroceryListController>.value(value: groceries),
       ],
     );
-    lunch.emit();
+    lunch.emit(roster: roster);
     todoRepository
       ..emitTasks([])
       ..emitRoutines([])
@@ -121,6 +123,22 @@ void main() {
     }
     expect(find.text(TodayCopy.agendaEmpty), findsOneWidget);
     expect(find.text(TodayCopy.todoDone), findsOneWidget);
+  });
+
+  testWidgets('with nobody to pack for, it asks who to add first', (
+    tester,
+  ) async {
+    await pumpFamily(
+      tester,
+      roster: FamilyRoster(
+        members: [Fixtures.sam],
+        profiles: const [],
+        schools: const [],
+      ),
+    );
+
+    expect(find.text(TodayCopy.firstChildTitle), findsOneWidget);
+    expect(find.text(TodayCopy.addChild), findsOneWidget);
   });
 
   testWidgets('a grant that opens none of them is pointed at More', (

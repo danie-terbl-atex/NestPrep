@@ -23,21 +23,23 @@ class ConsentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<ConsentController>();
-    final nest = NestTheme.of(context);
     final failure = controller.failure;
     final isBusy = controller.isSubmitting;
     return NestScaffold(
-      title: controller.isUpdate
-          ? LegalCopy.consentUpdatedTitle
-          : LegalCopy.consentTitle,
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),
         children: [
-          Text(
-            controller.isUpdate
+          const SizedBox(height: NestSpace.lg),
+          NestIntro(
+            eyebrow: controller.isUpdate
+                ? null
+                : AppCopy.onboardingStep(1, AppCopy.stepPromises),
+            title: controller.isUpdate
+                ? LegalCopy.consentUpdatedTitle
+                : LegalCopy.consentTitle,
+            body: controller.isUpdate
                 ? LegalCopy.consentUpdatedIntro
                 : LegalCopy.consentIntro,
-            style: nest.text.body,
           ),
           const SizedBox(height: NestSpace.lg),
           const NestRiseIn(child: ConsentSummary()),
@@ -45,7 +47,7 @@ class ConsentScreen extends StatelessWidget {
           NestButton(
             label: LegalCopy.consentReadPrivacy,
             variant: NestButtonVariant.outline,
-            icon: LucideIcons.shieldAlert,
+            icon: LucideIcons.shieldCheck,
             onPressed: () => context.push(LegalDocumentScreen.privacyPath),
           ),
           const SizedBox(height: NestSpace.sm),

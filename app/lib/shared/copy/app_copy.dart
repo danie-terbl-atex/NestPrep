@@ -354,6 +354,11 @@ abstract final class AppCopy {
     _ => '$count documents',
   };
 
+  static String onboardingStep(int step, String what) =>
+      'Step $step of 3 · $what';
+  static const stepPromises = 'A few promises';
+  static const stepHousehold = 'Your household';
+  static const stepPeople = 'Your people';
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';

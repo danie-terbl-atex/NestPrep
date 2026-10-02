@@ -33,7 +33,6 @@ class InviteStepScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<InviteStepController>();
     final view = context.watch<HouseholdView>();
-    final nest = NestTheme.of(context);
     final failure = controller.actionFailure;
     final hasInvited = controller.sent.isNotEmpty;
 
@@ -57,19 +56,10 @@ class InviteStepScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: NestSpace.lg),
-                const NestIconTile(
-                  icon: LucideIcons.users,
-                  size: NestSize.mark,
-                  iconSize: NestSize.iconMark,
-                ),
-                const SizedBox(height: NestSpace.xl),
-                Text(AccessCopy.setupTitle, style: nest.text.headline),
-                const SizedBox(height: NestSpace.sm),
-                Text(
-                  AccessCopy.setupBody,
-                  style: nest.text.body.copyWith(
-                    color: nest.colors.inkSecondary,
-                  ),
+                NestIntro(
+                  eyebrow: AppCopy.onboardingStep(3, AppCopy.stepPeople),
+                  title: AccessCopy.setupTitle,
+                  body: AccessCopy.setupBody,
                 ),
               ],
             ),

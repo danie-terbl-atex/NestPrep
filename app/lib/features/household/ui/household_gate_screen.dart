@@ -33,6 +33,7 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
     final failure = controller.failure;
     final motion = NestMotion.of(context);
     return NestScaffold(
+      leading: const NestBrandLockup(semanticsLabel: AppCopy.appName),
       trailing: const [AccountMenuButton()],
       body: SingleChildScrollView(
         child: Column(
@@ -99,38 +100,17 @@ class _HouseholdGateScreenState extends State<HouseholdGateScreen> {
   }
 }
 
-/// The nest, the name, and the question this screen asks — the welcome's
-/// picture at a size that leaves the form on the first screenful.
+/// The step, the question this screen asks and why, short enough to leave
+/// the form on the first screenful.
 class _GateWelcome extends StatelessWidget {
   const _GateWelcome();
 
   @override
   Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
-    return Column(
-      children: [
-        const NestBrandMark(),
-        const SizedBox(height: NestSpace.sm),
-        const NestWordmark(
-          semanticsLabel: AppCopy.appName,
-          size: NestSize.wordmarkSmall,
-        ),
-        const SizedBox(height: NestSpace.xxl),
-        Semantics(
-          header: true,
-          child: Text(
-            AppCopy.householdGateTitle,
-            style: nest.text.headline,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: NestSpace.xs),
-        Text(
-          AppCopy.householdGateBody,
-          style: nest.text.bodySecondary,
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return NestIntro(
+      eyebrow: AppCopy.onboardingStep(2, AppCopy.stepHousehold),
+      title: AppCopy.householdGateTitle,
+      body: AppCopy.householdGateBody,
     );
   }
 }

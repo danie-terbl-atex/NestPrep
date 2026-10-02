@@ -124,7 +124,7 @@ void main() {
 
     expect(repository.setupStepsFinished, 1);
     // Home is lunch, the launch feature (lunch-box ADR-0004).
-    expect(find.text('landed on lunch'), findsOneWidget);
+    expect(find.text('landed on today'), findsOneWidget);
   });
 
   testWidgets('a grandparent is suggested as a parent, and shared at once', (

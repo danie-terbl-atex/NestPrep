@@ -20,6 +20,7 @@ export 'primitives/nest_error_view.dart';
 export 'primitives/nest_eyebrow.dart';
 export 'primitives/nest_icon_button.dart';
 export 'primitives/nest_icon_tile.dart';
+export 'primitives/nest_intro.dart';
 export 'primitives/nest_list_row.dart';
 export 'primitives/nest_loading_view.dart';
 export 'primitives/nest_logo_tile.dart';

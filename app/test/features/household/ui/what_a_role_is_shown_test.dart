@@ -59,8 +59,9 @@ void main() {
       final handle = tester.ensureSemantics();
       await tester.pumpAndSettle();
 
-      expect(find.bySemanticsLabel(AppCopy.tabGroceries), findsOneWidget);
-      expect(find.bySemanticsLabel(AppCopy.tabTodos), findsOneWidget);
+      expect(find.bySemanticsLabel(AppCopy.tabToday), findsOneWidget);
+      expect(find.bySemanticsLabel(AppCopy.tabLists), findsOneWidget);
+      expect(find.bySemanticsLabel(LunchCopy.tab), findsNothing);
       expect(find.bySemanticsLabel(AppCopy.tabWeek), findsNothing);
       expect(find.bySemanticsLabel(AppCopy.tabMeals), findsNothing);
       handle.dispose();
