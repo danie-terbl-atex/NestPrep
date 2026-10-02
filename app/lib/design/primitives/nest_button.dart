@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_pressable.dart';
 
-enum NestButtonVariant { primary, tonal, outline, ghost, danger }
+enum NestButtonVariant { primary, tonal, outline, ghost, danger, onPhoto }
 
 enum NestButtonSize { small, medium, large }
 
@@ -77,23 +78,26 @@ class NestButton extends StatelessWidget {
       button: true,
       enabled: _isEnabled,
       label: label,
-      child: Material(
-        color: look.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(NestRadius.pill),
-          side: look.border ?? BorderSide.none,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: _isEnabled ? onPressed : null,
-          splashColor: look.pressed,
-          highlightColor: look.pressed,
-          child: SizedBox(
-            height: height,
-            width: isExpanded ? double.infinity : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: NestSpace.xxl),
-              child: child,
+      child: NestPressable(
+        enabled: _isEnabled,
+        child: Material(
+          color: look.background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(NestRadius.pill),
+            side: look.border ?? BorderSide.none,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: _isEnabled ? onPressed : null,
+            splashColor: look.pressed,
+            highlightColor: look.pressed,
+            child: SizedBox(
+              height: height,
+              width: isExpanded ? double.infinity : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: NestSpace.xxl),
+                child: child,
+              ),
             ),
           ),
         ),
@@ -128,7 +132,8 @@ class _NestButtonLook {
     return switch (variant) {
       NestButtonVariant.primary ||
       NestButtonVariant.tonal ||
-      NestButtonVariant.danger => _NestButtonLook(
+      NestButtonVariant.danger ||
+      NestButtonVariant.onPhoto => _NestButtonLook(
         background: c.outlineStrong,
         foreground: c.ink,
         pressed: c.outlineStrong,
@@ -175,6 +180,11 @@ class _NestButtonLook {
         background: c.danger,
         foreground: c.onDanger,
         pressed: c.dangerSoft,
+      ),
+      NestButtonVariant.onPhoto => _NestButtonLook(
+        background: c.canvas,
+        foreground: c.ink,
+        pressed: c.surfaceTint,
       ),
     };
   }

@@ -8,10 +8,8 @@ import 'nest_icon_tile.dart';
 
 /// The empty state: what this place is for and what to do next (`FE-08`).
 ///
-/// With an [icon], a tile that says what belongs here. Without one, the nest
-/// from the logo — for the places a new household meets empty on its first
-/// day, where the honest picture is "nothing in the nest yet"
-/// (design-system ADR-0003).
+/// With an [icon], a tile that says what belongs here. Without one, the mark,
+/// for the places a new household meets empty on its first day.
 class NestEmptyView extends StatelessWidget {
   const NestEmptyView({
     required this.title,
@@ -47,9 +45,13 @@ class NestEmptyView extends StatelessWidget {
             if (glyph == null)
               const NestBrandMark()
             else
-              NestIconTile(icon: glyph, size: NestSize.avatarLarge),
+              NestIconTile(
+                icon: glyph,
+                tint: NestTileTint.lilac,
+                size: NestSize.avatarLarge,
+              ),
             const SizedBox(height: NestSpace.lg),
-            Text(title, style: nest.text.title, textAlign: TextAlign.center),
+            Text(title, style: nest.text.headline, textAlign: TextAlign.center),
             const SizedBox(height: NestSpace.sm),
             Text(
               message,
@@ -61,7 +63,6 @@ class NestEmptyView extends StatelessWidget {
               NestButton(
                 label: label,
                 onPressed: onAction,
-                variant: NestButtonVariant.tonal,
                 size: NestButtonSize.medium,
                 isExpanded: false,
               ),

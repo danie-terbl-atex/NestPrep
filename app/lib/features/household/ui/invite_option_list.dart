@@ -17,25 +17,25 @@ class InviteOptionList extends StatelessWidget {
     (
       AccessCopy.setupPartner,
       Icons.favorite_outline,
-      NestTileTint.pink,
+      NestTileTint.guava,
       MemberRole.admin,
     ),
     (
       AccessCopy.setupGrandparent,
       Icons.elderly_outlined,
-      NestTileTint.peach,
+      NestTileTint.butter,
       MemberRole.parent,
     ),
     (
       AccessCopy.setupHelper,
       Icons.cleaning_services_outlined,
-      NestTileTint.sky,
+      NestTileTint.lilac,
       MemberRole.helper,
     ),
     (
       AccessCopy.setupCarer,
       Icons.child_care_outlined,
-      NestTileTint.mint,
+      NestTileTint.basil,
       MemberRole.carer,
     ),
     (

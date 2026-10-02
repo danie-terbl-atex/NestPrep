@@ -47,7 +47,7 @@ class PlanWeekEntryCard extends StatelessWidget {
               children: [
                 const NestIconTile(
                   icon: Icons.auto_awesome_rounded,
-                  tint: NestTileTint.sky,
+                  tint: NestTileTint.lilac,
                 ),
                 const SizedBox(width: NestSpace.md),
                 Expanded(

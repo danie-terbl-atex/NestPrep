@@ -47,7 +47,7 @@ class PhotoCaptureCard extends StatelessWidget {
           if (taken == null) ...[
             const NestIconTile(
               icon: Icons.add_a_photo_outlined,
-              tint: NestTileTint.peach,
+              tint: NestTileTint.butter,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
             ),

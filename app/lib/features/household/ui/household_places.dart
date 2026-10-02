@@ -48,7 +48,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (permissions.canUse(HouseholdArea.meals))
         NestPlaceTile(
           icon: Icons.restaurant_outlined,
-          tint: NestTileTint.mint,
+          tint: NestTileTint.basil,
           title: AppCopy.tabMeals,
           subtitle: MoreCopy.mealsBody,
           onTap: () => open(HouseholdRoute.pathFor(id, HouseholdTab.meals)),
@@ -57,7 +57,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (permissions.isFamily)
         NestPlaceTile(
           icon: Icons.stars_outlined,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
           title: PointsCopy.screenTitle,
           subtitle: MoreCopy.starsBody,
           onTap: () => open(ChorePointsRoute.pathFor(id)),
@@ -67,7 +67,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (permissions.isFamily && flags.isOn(FeatureFlag.mentalLoadView))
         NestPlaceTile(
           icon: Icons.volunteer_activism_outlined,
-          tint: NestTileTint.pink,
+          tint: NestTileTint.guava,
           title: MentalLoadCopy.openFromHousehold,
           subtitle: MentalLoadCopy.openFromHouseholdBody,
           onTap: () => open(CalendarV2Route.sharedWeekPathFor(id)),
@@ -80,7 +80,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (FamilyAccess.of(view).isVisible)
         NestPlaceTile(
           icon: Icons.family_restroom_outlined,
-          tint: NestTileTint.pink,
+          tint: NestTileTint.guava,
           title: FamilyCopy.openFromHousehold,
           subtitle: FamilyCopy.openFromHouseholdBody,
           onTap: () => open(FamilyRoute.pathFor(id)),
@@ -88,7 +88,7 @@ class HouseholdPlaces extends StatelessWidget {
       // Live location: each person's own to share, and it ends on its own.
       NestPlaceTile(
         icon: Icons.person_pin_circle_outlined,
-        tint: NestTileTint.sky,
+        tint: NestTileTint.lilac,
         title: AppCopy.locationTitle,
         subtitle: MoreCopy.locationBody,
         onTap: () => open(HouseholdRoute.wherePathFor(id)),
@@ -99,7 +99,7 @@ class HouseholdPlaces extends StatelessWidget {
           TwoHomesAccess.of(view).showsWayIn)
         NestPlaceTile(
           icon: Icons.cottage_outlined,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
           title: TwoHomesCopy.openFromHousehold,
           subtitle: TwoHomesCopy.openFromHouseholdBody,
           onTap: () => open(TwoHomesRoute.pathFor(id)),
@@ -112,7 +112,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (NannyAccess.of(view).canView)
         NestPlaceTile(
           icon: Icons.child_care,
-          tint: NestTileTint.mint,
+          tint: NestTileTint.basil,
           title: NannyCopy.openFromHousehold,
           subtitle: NannyCopy.openFromHouseholdBody,
           onTap: () => open(NannyHubRoute.pathFor(id)),
@@ -121,7 +121,7 @@ class HouseholdPlaces extends StatelessWidget {
       if (permissions.canUse(HouseholdArea.homeCare))
         NestPlaceTile(
           icon: Icons.cleaning_services_outlined,
-          tint: NestTileTint.sky,
+          tint: NestTileTint.lilac,
           title: HomeCareCopy.openFromHousehold,
           subtitle: permissions.canEdit(HouseholdArea.homeCare)
               ? HomeCareCopy.openFromHouseholdBody

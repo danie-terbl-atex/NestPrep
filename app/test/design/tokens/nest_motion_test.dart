@@ -22,6 +22,8 @@ void main() {
     expect(motion.quick, Duration.zero);
     expect(motion.standard, Duration.zero);
     expect(motion.slow, Duration.zero);
+    expect(motion.photo, Duration.zero);
+    expect(motion.drift, Duration.zero);
   });
 
   testWidgets('durations are set when motion is allowed', (tester) async {
@@ -40,6 +42,10 @@ void main() {
     expect(motion.isReduced, isFalse);
     expect(motion.standard, greaterThan(motion.quick));
     expect(motion.slow, greaterThan(motion.standard));
+    expect(motion.quick.inMilliseconds, inInclusiveRange(120, 160));
+    expect(motion.standard.inMilliseconds, inInclusiveRange(180, 240));
+    expect(motion.photo.inMilliseconds, inInclusiveRange(420, 550));
+    expect(NestMotion.photoZoom, inInclusiveRange(1.04, 1.08));
   });
 
   test('both themes install the extension and derive Material from it', () {

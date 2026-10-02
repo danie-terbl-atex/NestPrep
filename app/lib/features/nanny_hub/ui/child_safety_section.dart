@@ -41,7 +41,7 @@ class ChildSafetySection extends StatelessWidget {
           icon: food == null
               ? Icons.lock_outline
               : Icons.health_and_safety_outlined,
-          tint: NestTileTint.pink,
+          tint: NestTileTint.guava,
           title: NannyCopy.allergies,
           child: switch (food) {
             null => const _NotShared(
@@ -60,7 +60,7 @@ class ChildSafetySection extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         FamilySectionCard(
           icon: health == null ? Icons.lock_outline : Icons.medication_outlined,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
           title: NannyCopy.medication,
           child: switch (health) {
             null => const _NotShared(

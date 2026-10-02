@@ -21,12 +21,12 @@ abstract final class NotificationLook {
 
   static NestTileTint categoryTint(NotificationCategory category) =>
       switch (category) {
-        NotificationCategory.digest => NestTileTint.peach,
-        NotificationCategory.documents => NestTileTint.sky,
-        NotificationCategory.handover => NestTileTint.pink,
-        NotificationCategory.chores => NestTileTint.mint,
-        NotificationCategory.photos => NestTileTint.pink,
-        NotificationCategory.coParenting => NestTileTint.peach,
+        NotificationCategory.digest => NestTileTint.butter,
+        NotificationCategory.documents => NestTileTint.lilac,
+        NotificationCategory.handover => NestTileTint.guava,
+        NotificationCategory.chores => NestTileTint.basil,
+        NotificationCategory.photos => NestTileTint.guava,
+        NotificationCategory.coParenting => NestTileTint.butter,
         NotificationCategory.test => NestTileTint.accent,
       };
 
@@ -41,12 +41,12 @@ abstract final class NotificationLook {
   };
 
   static NestTileTint sectionTint(DigestSectionKind? kind) => switch (kind) {
-    DigestSectionKind.events => NestTileTint.sky,
-    DigestSectionKind.pack => NestTileTint.peach,
-    DigestSectionKind.chores => NestTileTint.mint,
+    DigestSectionKind.events => NestTileTint.lilac,
+    DigestSectionKind.pack => NestTileTint.butter,
+    DigestSectionKind.chores => NestTileTint.basil,
     DigestSectionKind.documents => NestTileTint.accent,
-    DigestSectionKind.shift => NestTileTint.pink,
-    DigestSectionKind.approvals => NestTileTint.mint,
+    DigestSectionKind.shift => NestTileTint.guava,
+    DigestSectionKind.approvals => NestTileTint.basil,
     null => NestTileTint.accent,
   };
 

@@ -62,7 +62,7 @@ class BirthdayRow extends StatelessWidget {
                       children: [
                         const NestIconTile(
                           icon: Icons.cake_outlined,
-                          tint: NestTileTint.pink,
+                          tint: NestTileTint.guava,
                           size: NestSize.avatarMedium,
                         ),
                         const SizedBox(width: NestSpace.md),

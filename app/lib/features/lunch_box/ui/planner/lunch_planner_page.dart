@@ -38,7 +38,7 @@ final class LunchPlannerPage {
   static const _labelSize = 11.0;
   static const _itemSize = 10.5;
   static const _footerSize = 9.0;
-  static const _markWidth = 88.0;
+  static const _markWidth = 56.0;
   static const _wordmarkHeight = 14.0;
   static const _blankLineWidth = 180.0;
   static const _blankLineHeight = 14.0;
@@ -111,7 +111,7 @@ final class LunchPlannerPage {
           ),
         ),
         pw.SizedBox(width: NestSpace.xxl),
-        pw.Image(kit.mark, width: _markWidth),
+        kit.mark(_markWidth),
       ],
     );
   }
@@ -237,7 +237,7 @@ final class LunchPlannerPage {
         '${LunchShareCopy.plannedWith} ',
         style: kit.body(_footerSize, color: kit.inkTertiary),
       ),
-      pw.Image(kit.wordmark, height: _wordmarkHeight),
+      kit.wordmark(_wordmarkHeight),
       pw.Spacer(),
       if (showsInvite)
         pw.Text(

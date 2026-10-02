@@ -38,7 +38,7 @@ class MedicationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FamilySectionCard(
       icon: isVisible ? Icons.medication_outlined : Icons.lock_outline,
-      tint: NestTileTint.peach,
+      tint: NestTileTint.butter,
       title: FamilyCopy.sectionMedication,
       actionIcon: Icons.add,
       actionLabel: FamilyCopy.addMedication,

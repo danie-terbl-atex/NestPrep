@@ -102,7 +102,10 @@ class _OnShift extends StatelessWidget {
       children: [
         Row(
           children: [
-            const NestIconTile(icon: Icons.child_care, tint: NestTileTint.mint),
+            const NestIconTile(
+              icon: Icons.child_care,
+              tint: NestTileTint.basil,
+            ),
             const SizedBox(width: NestSpace.md),
             Expanded(
               child: Column(

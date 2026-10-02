@@ -31,7 +31,7 @@ class LetterAddedPanel extends StatelessWidget {
               const Center(
                 child: NestIconTile(
                   icon: Icons.event_available_outlined,
-                  tint: NestTileTint.mint,
+                  tint: NestTileTint.basil,
                   size: NestSize.avatarLarge,
                 ),
               ),

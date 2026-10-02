@@ -70,10 +70,10 @@ class LunchSlotTile extends StatelessWidget {
 
 /// The pastel a slot's compartment is painted.
 Color slotFill(NestColors colors, LunchSlot slot) => switch (slot) {
-  LunchSlot.main => colors.tilePeach,
-  LunchSlot.fruit => colors.tilePink,
-  LunchSlot.veg => colors.tileMint,
-  LunchSlot.snack => colors.tileSky,
+  LunchSlot.main => colors.tileButter,
+  LunchSlot.fruit => colors.tileGuava,
+  LunchSlot.veg => colors.tileBasil,
+  LunchSlot.snack => colors.tileLilac,
   LunchSlot.treat => colors.accentSoft,
 };
 

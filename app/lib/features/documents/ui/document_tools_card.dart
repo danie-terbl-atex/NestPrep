@@ -35,7 +35,7 @@ class DocumentToolsCard extends StatelessWidget {
               subtitle: ShareLinkCopy.listEntryBody,
               leading: const NestIconTile(
                 icon: Icons.link,
-                tint: NestTileTint.sky,
+                tint: NestTileTint.lilac,
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: onOpenShares,
@@ -46,7 +46,7 @@ class DocumentToolsCard extends StatelessWidget {
               subtitle: OfflineCopiesCopy.entryBody,
               leading: const NestIconTile(
                 icon: Icons.offline_pin_outlined,
-                tint: NestTileTint.mint,
+                tint: NestTileTint.basil,
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: onOpenOffline,

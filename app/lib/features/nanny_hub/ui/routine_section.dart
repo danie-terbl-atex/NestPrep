@@ -26,7 +26,7 @@ class RoutineSection extends StatelessWidget {
     final nest = NestTheme.of(context);
     return FamilySectionCard(
       icon: Icons.schedule_outlined,
-      tint: NestTileTint.sky,
+      tint: NestTileTint.lilac,
       title: NannyCopy.routine,
       actionLabel: NannyCopy.editRoutine,
       onAction: onEdit,

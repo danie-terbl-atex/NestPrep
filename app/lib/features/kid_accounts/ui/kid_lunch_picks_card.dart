@@ -33,7 +33,7 @@ class KidLunchPicksCard extends StatelessWidget {
         children: [
           const NestIconTile(
             icon: Icons.touch_app_rounded,
-            tint: NestTileTint.peach,
+            tint: NestTileTint.butter,
           ),
           const SizedBox(width: NestSpace.md),
           Expanded(

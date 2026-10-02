@@ -28,7 +28,7 @@ Future<HelperLanguage?> showLanguagePicker({
             isSelected: language == current,
             leading: const NestIconTile(
               icon: Icons.translate,
-              tint: NestTileTint.sky,
+              tint: NestTileTint.lilac,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             ),

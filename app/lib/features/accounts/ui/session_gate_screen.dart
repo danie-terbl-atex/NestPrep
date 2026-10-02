@@ -82,7 +82,7 @@ class _SessionGateScreenState extends State<SessionGateScreen> {
           _ => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const NestBrandMark(width: NestSize.brandMarkLarge),
+              const NestBrandMark(size: NestSize.brandMarkLarge),
               const SizedBox(height: NestSpace.xxl),
               Text(
                 AppCopy.sessionStarting,

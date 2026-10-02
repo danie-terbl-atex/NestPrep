@@ -50,7 +50,7 @@ class DocumentRow extends StatelessWidget {
         subtitle: [NestBytes.format(sizeBytes), ?byline].join(' · '),
         leading: NestIconTile(
           icon: isImage ? Icons.image_outlined : Icons.picture_as_pdf_outlined,
-          tint: isImage ? NestTileTint.mint : NestTileTint.peach,
+          tint: isImage ? NestTileTint.basil : NestTileTint.butter,
         ),
         onTap: onOpen,
         trailing: const Icon(Icons.chevron_right),

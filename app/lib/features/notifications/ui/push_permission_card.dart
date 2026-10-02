@@ -34,7 +34,7 @@ class PushPermissionCard extends StatelessWidget {
             children: [
               const NestIconTile(
                 icon: Icons.notifications_active_outlined,
-                tint: NestTileTint.peach,
+                tint: NestTileTint.butter,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
               ),

@@ -72,7 +72,7 @@ class OffShiftScreen extends StatelessWidget {
                   child: NestListRow(
                     leading: const NestIconTile(
                       icon: Icons.event_available_outlined,
-                      tint: NestTileTint.mint,
+                      tint: NestTileTint.basil,
                     ),
                     title: clock.bookingOf(booking),
                     subtitle: booking.note,

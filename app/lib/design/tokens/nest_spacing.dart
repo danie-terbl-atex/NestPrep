@@ -60,21 +60,12 @@ abstract final class NestSize {
   static const double mark = 72;
   static const double iconMark = 36;
 
-  /// The nest from the logo, by width (design-system ADR-0003): the welcome and
-  /// the launch screen, the household gate and a first-run empty state, and
-  /// the home tab's header.
-  static const double brandMarkLarge = 184;
-  static const double brandMarkMedium = 128;
-  static const double brandMarkSmall = 48;
+  static const double brandMarkLarge = 96;
+  static const double brandMarkMedium = 64;
+  static const double brandMarkSmall = 36;
+  static const double wordmarkLarge = 44;
+  static const double wordmarkSmall = 26;
 
-  /// The wordmark, by height, ascenders to descenders: under the welcome's
-  /// nest, and under the household gate's. The script's loops and the p's tail
-  /// take height the old block letters did not, so these run taller.
-  static const double wordmarkLarge = 64;
-  static const double wordmarkSmall = 32;
-
-  /// A satellite on the welcome's orbit (`NestDot`).
-  static const double dot = 12;
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;
   static const double avatarLarge = 56;

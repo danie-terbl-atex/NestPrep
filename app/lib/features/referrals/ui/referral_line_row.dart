@@ -66,7 +66,7 @@ class ReferralLineRow extends StatelessWidget {
       child: NestListRow(
         leading: NestIconTile(
           icon: isReferrer ? Icons.ios_share : Icons.redeem_outlined,
-          tint: isReferrer ? NestTileTint.mint : NestTileTint.pink,
+          tint: isReferrer ? NestTileTint.basil : NestTileTint.guava,
         ),
         title: isReferrer
             ? ReferralCopy.lineReferrer

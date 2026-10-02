@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../nest_kit.dart';
 import 'gallery_group.dart';
@@ -15,11 +16,12 @@ class GallerySurfacesSection extends StatelessWidget {
         const GalleryGroup(
           title: 'Brand',
           children: [
-            Center(child: NestBrandMark(width: NestSize.brandMarkLarge)),
+            Center(child: NestBrandMark(size: NestSize.brandMarkLarge)),
             Center(child: NestWordmark(semanticsLabel: 'NestPrep')),
+            NestBrandLockup(semanticsLabel: 'NestPrep'),
             Row(
               children: [
-                NestBrandMark(width: NestSize.brandMarkSmall),
+                NestBrandMark(size: NestSize.brandMarkSmall),
                 SizedBox(width: NestSpace.md),
                 NestBrandMark(),
               ],
@@ -81,7 +83,7 @@ class GallerySurfacesSection extends StatelessWidget {
             NestListRow(
               leading: const NestIconTile(
                 icon: Icons.checklist_outlined,
-                tint: NestTileTint.mint,
+                tint: NestTileTint.basil,
               ),
               title: 'Laundry day',
               subtitle: 'Routine · Saturdays',
@@ -90,7 +92,7 @@ class GallerySurfacesSection extends StatelessWidget {
             NestListRow(
               leading: const NestIconTile(
                 icon: Icons.picture_as_pdf_outlined,
-                tint: NestTileTint.peach,
+                tint: NestTileTint.butter,
               ),
               title: 'Passport',
               subtitle: 'A row with badges under it',
@@ -121,17 +123,17 @@ class GallerySurfacesSection extends StatelessWidget {
                 NestIconTile(icon: Icons.edit_outlined, label: 'Create'),
                 NestIconTile(
                   icon: Icons.calendar_month_outlined,
-                  tint: NestTileTint.sky,
+                  tint: NestTileTint.lilac,
                   label: 'Plan',
                 ),
                 NestIconTile(
                   icon: Icons.restaurant_outlined,
-                  tint: NestTileTint.peach,
+                  tint: NestTileTint.butter,
                   label: 'Meals',
                 ),
                 NestIconTile(
                   icon: Icons.favorite_outline,
-                  tint: NestTileTint.pink,
+                  tint: NestTileTint.guava,
                   label: 'Family',
                 ),
               ],
@@ -156,44 +158,21 @@ class GallerySurfacesSection extends StatelessWidget {
           ],
         ),
         GalleryGroup(
-          title: 'Welcome',
+          title: 'Photo and motion',
           children: [
-            const NestOrbit(
-              semanticsLabel: 'An orbit of household things',
-              centre: NestIconTile(
-                icon: Icons.home_rounded,
-                size: 72,
-                iconSize: NestSize.iconTile,
+            const NestEyebrow("Monday's little win"),
+            Text('The happy crunch box', style: nest.text.screenTitle),
+            NestPhotoCard(
+              heroTag: 'gallery-photo',
+              actionLabel: 'View lunch',
+              actionIcon: LucideIcons.arrowUpRight,
+              onTap: () {},
+              photo: ColoredBox(
+                color: nest.colors.tileGuava,
+                child: const Center(
+                  child: NestBrandMark(size: NestSize.brandMarkLarge),
+                ),
               ),
-              items: [
-                NestOrbitItem(
-                  ring: NestOrbitRing.inner,
-                  turns: 0.1,
-                  child: NestIconTile(icon: Icons.calendar_month_outlined),
-                ),
-                NestOrbitItem(
-                  ring: NestOrbitRing.inner,
-                  turns: 0.6,
-                  child: NestIconTile(
-                    icon: Icons.restaurant_outlined,
-                    tint: NestTileTint.peach,
-                  ),
-                ),
-                NestOrbitItem(
-                  ring: NestOrbitRing.outer,
-                  turns: 0.35,
-                  child: NestAvatar(name: 'A', color: MemberColor.coral),
-                ),
-                NestOrbitItem(
-                  ring: NestOrbitRing.outer,
-                  turns: 0.85,
-                  child: NestAvatar(name: 'M', color: MemberColor.teal),
-                ),
-              ],
-            ),
-            NestTypewriterText(
-              text: 'A line that types itself out, once.',
-              style: nest.text.body,
             ),
             NestRiseIn(
               index: 1,

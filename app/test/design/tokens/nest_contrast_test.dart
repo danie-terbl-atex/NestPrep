@@ -23,7 +23,8 @@ double contrast(Color a, Color b) {
 const _aaText = 4.5;
 const _aaLarge = 3.0;
 
-/// Card-against-page and border-against-card floors (design-system ADR-0003).
+/// Card-against-page and border-against-card floors (design-system ADR-0003,
+/// carried into ADR-0008).
 const _cardFromPage = 1.12;
 const _cardBorder = 1.4;
 
@@ -63,8 +64,6 @@ void main() {
           ('success', colors.success),
           ('warning', colors.warning),
           ('danger', colors.danger),
-          // The selection teal draws rings and the selected tab's glyph.
-          ('secondary', colors.secondary),
         ]) {
           test('$label on ${bg.key} meets AA for body text', () {
             expect(contrast(tone, bg.value), greaterThanOrEqualTo(_aaText));
@@ -92,22 +91,30 @@ void main() {
         );
       });
 
-      // Design-system ADR-0003. The wordmark is tinted with the accent, and
-      // the tomato is a graphic (a caret, a heart): both are held to the 3:1
-      // WCAG asks of a graphic on everything they can sit on.
-      test('the wordmark and the tomato hold as graphics', () {
+      // Design-system ADR-0008. The wordmark and every primary glyph are the
+      // accent, held to the 3:1 WCAG asks of a graphic.
+      test('the wordmark and primary glyphs hold as graphics', () {
         for (final bg in backgrounds.entries) {
           expect(
             contrast(colors.accent, bg.value),
             greaterThanOrEqualTo(_aaLarge),
-            reason: 'wordmark on ${bg.key}',
-          );
-          expect(
-            contrast(colors.highlight, bg.value),
-            greaterThanOrEqualTo(_aaLarge),
-            reason: 'highlight on ${bg.key}',
+            reason: 'accent on ${bg.key}',
           );
         }
+      });
+
+      // Guava is 2.45:1 on Oat, so it is a fill that carries Ink, never ink
+      // itself. These are the pairs it ships in: the selected day, a selected
+      // chip, the mark's tile.
+      test('guava carries ink at AA wherever it is a fill', () {
+        expect(
+          contrast(colors.onSecondary, colors.secondary),
+          greaterThanOrEqualTo(_aaText),
+        );
+        expect(
+          contrast(colors.onSecondary, colors.highlight),
+          greaterThanOrEqualTo(_aaText),
+        );
       });
 
       // The second open question of the first design review: cards were
@@ -178,15 +185,12 @@ void main() {
 
       test('an icon on every tile tint meets AA for large glyphs', () {
         for (final tint in [
-          colors.tilePink,
-          colors.tileMint,
-          colors.tileSky,
-          colors.tilePeach,
+          colors.tileGuava,
+          colors.tileBasil,
+          colors.tileLilac,
+          colors.tileButter,
         ]) {
-          expect(
-            contrast(colors.accentInk, tint),
-            greaterThanOrEqualTo(_aaText),
-          );
+          expect(contrast(colors.ink, tint), greaterThanOrEqualTo(_aaText));
         }
       });
 

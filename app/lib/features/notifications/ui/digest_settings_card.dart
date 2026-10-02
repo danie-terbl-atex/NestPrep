@@ -36,7 +36,7 @@ class DigestSettingsCard extends StatelessWidget {
         children: [
           SettingSwitchRow(
             icon: Icons.wb_twilight_rounded,
-            tint: NestTileTint.peach,
+            tint: NestTileTint.butter,
             title: NotificationsCopy.digestSwitch,
             value: digest.enabled,
             onChanged: (on) => unawaited(controller.setDigest(enabled: on)),

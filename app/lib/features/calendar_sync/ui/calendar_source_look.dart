@@ -19,7 +19,7 @@ final class CalendarSourceLook {
   }) => switch (provider) {
     CalendarProvider.google => const CalendarSourceLook._(
       Icons.calendar_month_outlined,
-      NestTileTint.sky,
+      NestTileTint.lilac,
     ),
     CalendarProvider.microsoft => const CalendarSourceLook._(
       Icons.work_outline,
@@ -27,7 +27,7 @@ final class CalendarSourceLook {
     ),
     CalendarProvider.ics =>
       label.contains('icloud.com')
-          ? const CalendarSourceLook._(Icons.cloud_outlined, NestTileTint.mint)
-          : const CalendarSourceLook._(Icons.link, NestTileTint.peach),
+          ? const CalendarSourceLook._(Icons.cloud_outlined, NestTileTint.basil)
+          : const CalendarSourceLook._(Icons.link, NestTileTint.butter),
   };
 }

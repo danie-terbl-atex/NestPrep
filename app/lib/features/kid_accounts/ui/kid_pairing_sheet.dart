@@ -172,7 +172,7 @@ class _Paired extends StatelessWidget {
           child: Center(
             child: NestIconTile(
               icon: Icons.celebration_rounded,
-              tint: NestTileTint.mint,
+              tint: NestTileTint.basil,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
             ),

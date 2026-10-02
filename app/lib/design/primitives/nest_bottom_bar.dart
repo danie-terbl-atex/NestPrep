@@ -17,11 +17,9 @@ class NestBottomBarItem {
   final String label;
 }
 
-/// The floating pill navigation bar: an icon over its name for every tab, and
-/// the one you are on carried by a tonal teal pill as well as by colour —
-/// where you are is state, not an action (ADR-0003). The names are on screen,
-/// not only in a tooltip: an icon nobody can name is a tab nobody finds
-/// (design-system ADR-0005, `FE-13`).
+/// The floating Ink bar: an icon over its name for every tab, and the one you
+/// are on carried by a Guava pill and a bolder name, not by colour alone
+/// (design-system ADR-0008, ADR-0009, `FE-13`).
 class NestBottomBar extends StatelessWidget {
   const NestBottomBar({
     required this.items,
@@ -47,10 +45,8 @@ class NestBottomBar extends StatelessWidget {
       ),
       child: DecoratedBox(
         decoration: ShapeDecoration(
-          // Opaque, not glass: with names in it, a list scrolling under a
-          // translucent bar shows through the words (design-system ADR-0005).
-          color: c.surface,
-          shape: StadiumBorder(side: BorderSide(color: c.outline)),
+          color: c.chrome,
+          shape: const StadiumBorder(),
           shadows: nest.shadows.floating,
         ),
         // A floor, not a height: the names grow with the text setting, and
@@ -96,7 +92,7 @@ class _BarButton extends StatelessWidget {
     final nest = NestTheme.of(context);
     final c = nest.colors;
     final motion = NestMotion.of(context);
-    final ink = isSelected ? c.secondaryInk : c.inkSecondary;
+    final ink = isSelected ? c.onChrome : c.onChromeMuted;
     return Semantics(
       button: true,
       selected: isSelected,
@@ -121,14 +117,15 @@ class _BarButton extends StatelessWidget {
                 duration: motion.quick,
                 width: NestSize.barIndicatorWidth,
                 height: NestSize.barIndicatorHeight,
+                curve: NestMotion.standardCurve,
                 decoration: BoxDecoration(
-                  color: isSelected ? c.secondarySoft : Colors.transparent,
+                  color: isSelected ? c.secondary : Colors.transparent,
                   borderRadius: BorderRadius.circular(NestRadius.pill),
                 ),
                 child: Icon(
                   isSelected ? item.selectedIcon : item.icon,
                   size: NestSize.iconMedium,
-                  color: ink,
+                  color: isSelected ? c.onSecondary : ink,
                 ),
               ),
               const SizedBox(height: NestSpace.xs),

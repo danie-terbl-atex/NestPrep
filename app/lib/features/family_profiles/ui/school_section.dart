@@ -29,7 +29,7 @@ class SchoolSection extends StatelessWidget {
     final isEmpty = attending == null && grade == null;
     return FamilySectionCard(
       icon: Icons.school_outlined,
-      tint: NestTileTint.sky,
+      tint: NestTileTint.lilac,
       title: FamilyCopy.sectionSchool,
       actionLabel: FamilyCopy.editSection(FamilyCopy.sectionSchool),
       onAction: onEdit,

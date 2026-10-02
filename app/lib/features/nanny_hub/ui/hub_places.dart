@@ -22,28 +22,28 @@ class HubPlaces extends StatelessWidget {
     final places = [
       (
         Icons.emergency_outlined,
-        NestTileTint.pink,
+        NestTileTint.guava,
         NannyCopy.emergency,
         NannyCopy.emergencyBody(hub.contacts.length),
         NannyHubRoute.emergencyPathFor(householdId),
       ),
       (
         Icons.photo_library_outlined,
-        NestTileTint.sky,
+        NestTileTint.lilac,
         NannyCopy.houseGuide,
         NannyCopy.houseGuideBody(hub.guide.length),
         NannyHubRoute.guidePathFor(householdId),
       ),
       (
         Icons.gavel_outlined,
-        NestTileTint.mint,
+        NestTileTint.basil,
         NannyCopy.houseRules,
         NannyCopy.houseRulesBody(hub.rules.length),
         NannyHubRoute.rulesPathFor(householdId),
       ),
       (
         Icons.checklist_rtl_outlined,
-        NestTileTint.peach,
+        NestTileTint.butter,
         NannyCopy.checklists,
         NannyCopy.checklistsBody(hub.checklistItemCount),
         NannyHubRoute.checklistsPathFor(householdId),
@@ -65,14 +65,14 @@ class HubPlaces extends StatelessWidget {
       )) ...[
         (
           Icons.event_available_outlined,
-          NestTileTint.mint,
+          NestTileTint.basil,
           NannyBookingCopy.bookings,
           NannyBookingCopy.bookingsBody,
           NannyHubRoute.bookingsPathFor(householdId),
         ),
         (
           Icons.key_outlined,
-          NestTileTint.peach,
+          NestTileTint.butter,
           NannyBookingCopy.codes,
           NannyBookingCopy.codesBody,
           NannyHubRoute.codesPathFor(householdId),

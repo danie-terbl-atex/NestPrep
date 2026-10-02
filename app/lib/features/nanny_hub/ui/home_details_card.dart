@@ -23,7 +23,7 @@ class HomeDetailsCard extends StatelessWidget {
     final address = sheet.address;
     return FamilySectionCard(
       icon: Icons.home_outlined,
-      tint: NestTileTint.sky,
+      tint: NestTileTint.lilac,
       title: NannyCopy.ourAddress,
       actionLabel: NannyCopy.editHomeDetails,
       onAction: onEdit,

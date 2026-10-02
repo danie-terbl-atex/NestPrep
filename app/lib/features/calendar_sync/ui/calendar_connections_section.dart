@@ -44,7 +44,7 @@ class CalendarConnectionsSection extends StatelessWidget {
           children: [
             const NestIconTile(
               icon: Icons.event_note_outlined,
-              tint: NestTileTint.sky,
+              tint: NestTileTint.lilac,
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             ),

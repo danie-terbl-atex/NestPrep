@@ -4,9 +4,8 @@ import 'nest_spacing.dart';
 import 'nest_theme.dart';
 import 'nest_typography.dart';
 
-/// Material 3 `ThemeData` derived from the tokens only, so a Material widget
-/// used directly (a switch, a date picker, a snackbar) matches the kit. Kit
-/// widgets read `NestTheme` directly; this is the fallback for the rest.
+/// Material `ThemeData` derived from the tokens, for the few Material widgets
+/// used directly (a switch, a date picker, a snackbar).
 ThemeData nestThemeData(NestTheme nest) {
   final colors = nest.colors;
   final text = nest.text;
@@ -49,7 +48,7 @@ ThemeData nestThemeData(NestTheme nest) {
     fontFamily: NestTextStyles.fontFamily,
     scaffoldBackgroundColor: colors.canvas,
     canvasColor: colors.canvas,
-    splashFactory: InkSparkle.splashFactory,
+    splashFactory: InkRipple.splashFactory,
     extensions: [nest],
     textTheme: TextTheme(
       displaySmall: text.display,
@@ -67,7 +66,7 @@ ThemeData nestThemeData(NestTheme nest) {
       surfaceTintColor: Colors.transparent,
       foregroundColor: colors.ink,
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       titleTextStyle: text.screenTitle,
     ),
     cardTheme: CardThemeData(
@@ -122,7 +121,7 @@ ThemeData nestThemeData(NestTheme nest) {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: colors.surface,
-      selectedColor: colors.secondarySoft,
+      selectedColor: colors.secondary,
       side: BorderSide(color: colors.outline),
       labelStyle: text.label,
       shape: pill,

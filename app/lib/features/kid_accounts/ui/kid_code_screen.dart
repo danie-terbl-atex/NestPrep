@@ -39,7 +39,7 @@ class KidCodeScreen extends StatelessWidget {
                 child: Center(
                   child: NestIconTile(
                     icon: Icons.waving_hand_rounded,
-                    tint: NestTileTint.peach,
+                    tint: NestTileTint.butter,
                     size: NestSize.mark,
                     iconSize: NestSize.iconMark,
                   ),

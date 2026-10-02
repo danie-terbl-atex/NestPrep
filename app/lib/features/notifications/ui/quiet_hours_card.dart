@@ -31,7 +31,7 @@ class QuietHoursCard extends StatelessWidget {
         children: [
           SettingSwitchRow(
             icon: Icons.bedtime_outlined,
-            tint: NestTileTint.sky,
+            tint: NestTileTint.lilac,
             title: NotificationsCopy.quietSwitch,
             value: quiet.enabled,
             onChanged: (on) => unawaited(controller.setQuietHours(enabled: on)),

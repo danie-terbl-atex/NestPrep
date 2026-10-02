@@ -28,7 +28,7 @@ class SchoolsCard extends StatelessWidget {
     final edit = onEdit;
     return FamilySectionCard(
       icon: Icons.school_outlined,
-      tint: NestTileTint.sky,
+      tint: NestTileTint.lilac,
       title: FamilyCopy.schoolsTitle,
       actionIcon: Icons.add,
       actionLabel: FamilyCopy.addSchool,

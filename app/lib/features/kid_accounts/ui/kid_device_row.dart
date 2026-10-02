@@ -32,7 +32,7 @@ class KidDeviceRow extends StatelessWidget {
     return NestListRow(
       leading: const NestIconTile(
         icon: Icons.tablet_android_rounded,
-        tint: NestTileTint.mint,
+        tint: NestTileTint.basil,
       ),
       title: device.label.isEmpty ? KidCopy.manageUnnamedDevice : device.label,
       subtitle: day == null

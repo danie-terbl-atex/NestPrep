@@ -50,7 +50,7 @@ class NestErrorView extends StatelessWidget {
             children: [
               const NestIconTile(
                 icon: Icons.cloud_off_outlined,
-                tint: NestTileTint.peach,
+                tint: NestTileTint.butter,
                 size: NestSize.avatarLarge,
               ),
               const SizedBox(height: NestSpace.lg),

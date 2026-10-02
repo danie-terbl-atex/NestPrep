@@ -26,7 +26,7 @@ class KidsNotificationsCard extends StatelessWidget {
             SettingSwitchRow(
               key: ValueKey('kid-digest-${kid.id}'),
               icon: Icons.child_care_outlined,
-              tint: NestTileTint.pink,
+              tint: NestTileTint.guava,
               title: kid.displayName,
               subtitle: NotificationsCopy.kidDigest,
               value: controller.kidSettings(kid.id).digest.enabled,

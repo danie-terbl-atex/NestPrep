@@ -39,7 +39,7 @@ class GroceryPlanPrompt extends StatelessWidget {
               icon: inStep
                   ? Icons.playlist_add_check_rounded
                   : Icons.playlist_add_rounded,
-              tint: inStep ? NestTileTint.mint : NestTileTint.peach,
+              tint: inStep ? NestTileTint.basil : NestTileTint.butter,
             ),
             const SizedBox(width: NestSpace.md),
             Expanded(

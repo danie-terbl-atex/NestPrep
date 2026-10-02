@@ -57,7 +57,7 @@ class AllowedPersonCard extends StatelessWidget {
               alignment: AlignmentDirectional.centerStart,
               child: NestIconTile(
                 icon: Icons.person_outline,
-                tint: NestTileTint.sky,
+                tint: NestTileTint.lilac,
                 size: NestSize.mark,
                 iconSize: NestSize.iconMark,
               ),

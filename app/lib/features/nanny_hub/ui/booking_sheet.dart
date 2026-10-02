@@ -186,7 +186,7 @@ class _TimeRow extends StatelessWidget {
       child: NestListRow(
         leading: const NestIconTile(
           icon: Icons.schedule,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
           size: NestSize.avatarMedium,
           iconSize: NestSize.iconMedium,
         ),

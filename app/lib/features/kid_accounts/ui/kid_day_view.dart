@@ -62,7 +62,7 @@ class KidDayView extends StatelessWidget {
           if (!day.hasChores)
             const KidMomentCard(
               icon: Icons.wb_sunny_rounded,
-              tint: NestTileTint.sky,
+              tint: NestTileTint.lilac,
               title: KidCopy.choresNone,
               message: KidCopy.choresNoneBody,
             ),
@@ -83,7 +83,7 @@ class KidDayView extends StatelessWidget {
           if (day.isAllDone)
             const KidMomentCard(
               icon: Icons.emoji_events_rounded,
-              tint: NestTileTint.peach,
+              tint: NestTileTint.butter,
               title: KidCopy.choresAllDone,
               message: KidCopy.choresAllDoneBody,
             ),
@@ -113,7 +113,7 @@ class KidDayView extends StatelessWidget {
           const SizedBox(height: NestSpace.xxl),
           const KidMomentCard(
             icon: Icons.lock_clock_rounded,
-            tint: NestTileTint.sky,
+            tint: NestTileTint.lilac,
             title: KidCopy.nothingShownTitle,
             message: KidCopy.nothingShownBody,
           ),

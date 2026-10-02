@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 
-/// Elevation is a soft, wide glow rather than a hard drop; in the dark theme
-/// surfaces separate by tone and shadows nearly vanish.
 @immutable
 class NestShadows {
   const NestShadows({required this.card, required this.floating});
 
-  /// Under a card resting on the canvas.
   final List<BoxShadow> card;
 
-  /// Under a floating bar, sheet or the primary button.
   final List<BoxShadow> floating;
 
   static const light = NestShadows(
     card: [
-      BoxShadow(color: Color(0x1A3B2E1A), blurRadius: 24, offset: Offset(0, 8)),
+      BoxShadow(color: Color(0x1435252E), blurRadius: 24, offset: Offset(0, 8)),
     ],
     floating: [
       BoxShadow(
-        color: Color(0x243B2E1A),
+        color: Color(0x2235252E),
         blurRadius: 32,
         offset: Offset(0, 12),
       ),

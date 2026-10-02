@@ -5,10 +5,10 @@ import '../tokens/nest_theme.dart';
 import 'nest_card.dart';
 import 'nest_icon_tile.dart';
 
-/// One place a person can go, as a card in a grid: a tinted icon, its name and
-/// one line on what is there. The More screen is built from these
-/// (design-system ADR-0005). The name is the signal; the icon and its tint
-/// only help the eye (`FE-13`).
+/// One place a person can go, as a card in a grid: a tinted icon, its name in
+/// the serif and one line on what is there. The More screen is built from
+/// these. The name is the signal; the icon and its tint only help the eye
+/// (`FE-13`).
 ///
 /// It owns nothing outside its own box and never navigates — the caller says
 /// what a tap does (`FE-03`).
@@ -49,7 +49,7 @@ class NestPlaceTile extends StatelessWidget {
               iconSize: NestSize.iconMedium,
             ),
             const SizedBox(height: NestSpace.md),
-            Text(title, style: nest.text.bodyStrong),
+            Text(title, style: nest.text.title),
             if (subtitleText != null) ...[
               const SizedBox(height: NestSpace.xxs),
               Text(

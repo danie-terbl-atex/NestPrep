@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Every colour the app may paint, by role. The only file with hex literals
-/// (`FE-02`); everything else asks `NestTheme.of(context).colors`. Both sets
-/// are checked for WCAG AA in `test/design/tokens/nest_contrast_test.dart`.
+/// Every colour the app may paint, by role (design-system ADR-0008). The only
+/// file with hex literals apart from the member palette and shadows; every
+/// pair that ships is proven AA in `test/design/tokens/nest_contrast_test.dart`.
 ///
-/// The roles are anchored to the logo (design-system ADR-0003): forest green
-/// from the wordmark is the one colour that *acts*; the tick's teal says where
-/// you are and what is selected; the roof's tomato is warmth, never a label;
-/// straw and cream are the page. Dark is the same nest at night — a deep,
-/// green-warm charcoal with the greens lifted — not an inversion.
+/// Ink acts, Guava selects, Basil is the quieter second action, Oat is the
+/// page. Guava is 2.45:1 on Oat, so it is only ever a fill with Ink on it;
+/// selection drawn as text or a lone glyph uses [secondaryInk].
 @immutable
 class NestColors {
   const NestColors({
@@ -39,56 +37,44 @@ class NestColors {
     required this.danger,
     required this.dangerSoft,
     required this.onDanger,
-    required this.tilePink,
-    required this.tileMint,
-    required this.tileSky,
-    required this.tilePeach,
+    required this.tileGuava,
+    required this.tileBasil,
+    required this.tileLilac,
+    required this.tileButter,
     required this.scrim,
     required this.skeleton,
+    required this.chrome,
+    required this.onChrome,
+    required this.onChromeMuted,
   });
 
-  /// The page background behind everything.
   final Color canvas;
-
-  /// The soft straw → cream → leaf wash painted over the canvas.
   final List<Color> canvasWash;
-
-  /// Cards and sheets.
   final Color surface;
-
-  /// A selected row, a tonal button, an icon tile.
   final Color surfaceTint;
-
-  /// The translucent header pills and bottom bar.
   final Color surfaceGlass;
   final Color outline;
   final Color outlineStrong;
-
-  /// Text, from primary to tertiary.
   final Color ink;
   final Color inkSecondary;
   final Color inkTertiary;
 
-  /// The brand forest green — every primary action — its pressed shade, and
-  /// the text drawn on it.
+  /// Ink in light, Oat in dark: the primary action and its glyphs.
   final Color accent;
   final Color accentPressed;
   final Color onAccent;
 
-  /// Pale leaf fill for tonal surfaces, and the green used as text on it.
+  /// Basil: the tonal second action and text links.
   final Color accentSoft;
   final Color accentInk;
 
-  /// The tick's teal: *state*, not action — the selected day, the tab you
-  /// are on, a selected chip, an informational badge. Kept apart from the
-  /// accent so a screen's subject and its selection never compete (ADR-0003).
+  /// Guava, the selected fill. Never text: see the class note.
   final Color secondary;
   final Color onSecondary;
   final Color secondarySoft;
   final Color secondaryInk;
 
-  /// The roof's tomato. Warmth only — a caret, a heart — held to 3:1 as a
-  /// graphic and never used for words or for a warning (that is `danger`).
+  /// Guava as decoration, always with Ink over it.
   final Color highlight;
   final Color success;
   final Color successSoft;
@@ -98,85 +84,104 @@ class NestColors {
   final Color dangerSoft;
   final Color onDanger;
 
-  /// Pastel tints for category icon tiles, drawn from the logo (tomato,
-  /// lunchbox leaf, the nest's blue strand, straw) under their old names so no
-  /// call site moves. Decorative: never the only signal.
-  final Color tilePink;
-  final Color tileMint;
-  final Color tileSky;
-  final Color tilePeach;
+  /// The brand's four accents as icon-tile fills, each carrying Ink.
+  /// Decorative: never the only signal.
+  final Color tileGuava;
+  final Color tileBasil;
+  final Color tileLilac;
+  final Color tileButter;
   final Color scrim;
   final Color skeleton;
 
+  /// The floating bar: Ink in light, a lifted Night in dark.
+  final Color chrome;
+  final Color onChrome;
+  final Color onChromeMuted;
+
+  static const oat = Color(0xFFFFF8ED);
+  static const inkBrand = Color(0xFF35252E);
+  static const guava = Color(0xFFF57B91);
+  static const butter = Color(0xFFF3D886);
+  static const lilac = Color(0xFFC9BCE8);
+  static const basil = Color(0xFF465C48);
+  static const night = Color(0xFF211A20);
+  static const muted = Color(0xFF75666C);
+
   static const light = NestColors(
-    canvas: Color(0xFFF4EDDF),
-    canvasWash: [Color(0xFFF2E8D3), Color(0xFFF6F0E4), Color(0xFFE7EFE3)],
-    surface: Color(0xFFFFFFFF),
-    surfaceTint: Color(0xFFF2ECDF),
-    surfaceGlass: Color(0xD9FFFFFF),
-    outline: Color(0xFFE3D8C4),
-    outlineStrong: Color(0xFFD9CDB7),
-    ink: Color(0xFF1C2920),
-    inkSecondary: Color(0xFF4F5A52),
-    inkTertiary: Color(0xFF5B635C),
-    accent: Color(0xFF32533C),
-    accentPressed: Color(0xFF26422F),
-    onAccent: Color(0xFFFFFFFF),
-    accentSoft: Color(0xFFE2EEDF),
-    accentInk: Color(0xFF2A4A33),
-    secondary: Color(0xFF2F6B70),
-    onSecondary: Color(0xFFFFFFFF),
-    secondarySoft: Color(0xFFDAEDEE),
-    secondaryInk: Color(0xFF205A5F),
-    highlight: Color(0xFFC24E39),
-    success: Color(0xFF1E6B3F),
-    successSoft: Color(0xFFE1F2E4),
-    warning: Color(0xFF83560B),
-    warningSoft: Color(0xFFFAEBCB),
-    danger: Color(0xFFB8283A),
-    dangerSoft: Color(0xFFFBE4E6),
-    onDanger: Color(0xFFFFFFFF),
-    tilePink: Color(0xFFFBE3DA),
-    tileMint: Color(0xFFE2EFD4),
-    tileSky: Color(0xFFDCEAF1),
-    tilePeach: Color(0xFFF7E8C8),
-    scrim: Color(0x66141A16),
-    skeleton: Color(0xFFEDE5D5),
+    canvas: oat,
+    canvasWash: [oat, oat, oat],
+    surface: Color(0xFFF5E9D7),
+    surfaceTint: Color(0xFFEFE1CC),
+    surfaceGlass: Color(0xF2FFF8ED),
+    outline: Color(0xFFD6C2A8),
+    outlineStrong: Color(0xFFCDB89E),
+    ink: inkBrand,
+    inkSecondary: Color(0xFF6E5F65),
+    inkTertiary: Color(0xFF6E5F65),
+    accent: inkBrand,
+    accentPressed: Color(0xFF4A3842),
+    onAccent: oat,
+    accentSoft: Color(0xFFE4EADC),
+    accentInk: basil,
+    secondary: guava,
+    onSecondary: inkBrand,
+    secondarySoft: Color(0xFFFCDDE2),
+    secondaryInk: Color(0xFF9E2F47),
+    highlight: guava,
+    success: Color(0xFF3D6343),
+    successSoft: Color(0xFFE2EBDB),
+    warning: Color(0xFF7A5200),
+    warningSoft: Color(0xFFFAEBC0),
+    danger: Color(0xFFB4232F),
+    dangerSoft: Color(0xFFFBE1DE),
+    onDanger: oat,
+    tileGuava: Color(0xFFF9B6C2),
+    tileBasil: Color(0xFFC4D4BF),
+    tileLilac: lilac,
+    tileButter: butter,
+    scrim: Color(0x6635252E),
+    skeleton: Color(0xFFF1E4D2),
+    chrome: inkBrand,
+    onChrome: oat,
+    onChromeMuted: Color(0xFFD9CBC6),
   );
 
   static const dark = NestColors(
-    canvas: Color(0xFF0F1411),
-    canvasWash: [Color(0xFF121C16), Color(0xFF171512), Color(0xFF0F1A1C)],
-    surface: Color(0xFF212A23),
-    surfaceTint: Color(0xFF2A342D),
-    surfaceGlass: Color(0xD9212A23),
-    outline: Color(0xFF3A443C),
-    outlineStrong: Color(0xFF56625A),
-    ink: Color(0xFFF5F1E6),
-    inkSecondary: Color(0xFFC5C6B8),
-    inkTertiary: Color(0xFFA9AC9F),
-    accent: Color(0xFF9CCFA7),
-    accentPressed: Color(0xFFB2DBBB),
-    onAccent: Color(0xFF0F2317),
-    accentSoft: Color(0xFF253B2C),
-    accentInk: Color(0xFFBCE2C4),
-    secondary: Color(0xFF7DC4C9),
-    onSecondary: Color(0xFF0B2325),
-    secondarySoft: Color(0xFF1D3739),
-    secondaryInk: Color(0xFFA9DEE2),
-    highlight: Color(0xFFFF907A),
-    success: Color(0xFF72D49D),
-    successSoft: Color(0xFF173323),
-    warning: Color(0xFFF2B84B),
-    warningSoft: Color(0xFF3A2D12),
-    danger: Color(0xFFFF8088),
-    dangerSoft: Color(0xFF3D2024),
-    onDanger: Color(0xFF2B0F12),
-    tilePink: Color(0xFF40271F),
-    tileMint: Color(0xFF24371F),
-    tileSky: Color(0xFF1C2F37),
-    tilePeach: Color(0xFF3A301C),
+    canvas: night,
+    canvasWash: [night, night, night],
+    surface: Color(0xFF2E252C),
+    surfaceTint: Color(0xFF3A2F37),
+    surfaceGlass: Color(0xF22E252C),
+    outline: Color(0xFF54444D),
+    outlineStrong: Color(0xFF6A5862),
+    ink: oat,
+    inkSecondary: Color(0xFFCDBFC4),
+    inkTertiary: Color(0xFFB8A9AF),
+    accent: oat,
+    accentPressed: Color(0xFFEADFD0),
+    onAccent: inkBrand,
+    accentSoft: Color(0xFF2F3A30),
+    accentInk: Color(0xFFB3CDB4),
+    secondary: guava,
+    onSecondary: inkBrand,
+    secondarySoft: Color(0xFF4E2C37),
+    secondaryInk: Color(0xFFFFA5B5),
+    highlight: guava,
+    success: Color(0xFF9ACFA3),
+    successSoft: Color(0xFF243327),
+    warning: butter,
+    warningSoft: Color(0xFF3D3420),
+    danger: Color(0xFFFF9B9B),
+    dangerSoft: Color(0xFF4A2529),
+    onDanger: Color(0xFF2A0E12),
+    tileGuava: Color(0xFF5C2F3C),
+    tileBasil: Color(0xFF2F4031),
+    tileLilac: Color(0xFF40375A),
+    tileButter: Color(0xFF4D4227),
     scrim: Color(0x99000000),
-    skeleton: Color(0xFF2C352E),
+    skeleton: Color(0xFF3A2F37),
+    chrome: Color(0xFF3A2F37),
+    onChrome: oat,
+    onChromeMuted: Color(0xFFD9CBC6),
   );
 }

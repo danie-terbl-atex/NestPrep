@@ -58,7 +58,7 @@ class LetterSourcePanel extends StatelessWidget {
               children: [
                 const NestIconTile(
                   icon: Icons.document_scanner_outlined,
-                  tint: NestTileTint.sky,
+                  tint: NestTileTint.lilac,
                 ),
                 const SizedBox(height: NestSpace.md),
                 Text(

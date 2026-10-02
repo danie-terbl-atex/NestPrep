@@ -65,7 +65,7 @@ class HouseRulesScreen extends StatelessWidget {
                 child: NestListRow(
                   leading: const NestIconTile(
                     icon: Icons.check_circle_outline,
-                    tint: NestTileTint.mint,
+                    tint: NestTileTint.basil,
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,
                   ),

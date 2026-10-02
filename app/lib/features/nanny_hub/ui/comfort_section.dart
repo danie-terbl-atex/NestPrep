@@ -18,7 +18,7 @@ class ComfortSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FamilySectionCard(
       icon: Icons.toys_outlined,
-      tint: NestTileTint.peach,
+      tint: NestTileTint.butter,
       title: NannyCopy.comfort,
       actionLabel: NannyCopy.editComfort,
       onAction: onEdit,

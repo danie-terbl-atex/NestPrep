@@ -30,7 +30,7 @@ class AllergySection extends StatelessWidget {
     final edit = onEdit;
     return FamilySectionCard(
       icon: Icons.health_and_safety_outlined,
-      tint: NestTileTint.pink,
+      tint: NestTileTint.guava,
       title: FamilyCopy.sectionAllergies,
       actionIcon: Icons.add,
       actionLabel: FamilyCopy.addAllergy,

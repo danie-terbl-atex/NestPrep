@@ -21,10 +21,10 @@ extension RoomKindLook on RoomKind {
   };
 
   NestTileTint get tint => switch (this) {
-    RoomKind.kitchen || RoomKind.dining => NestTileTint.peach,
-    RoomKind.bathroom || RoomKind.laundry => NestTileTint.sky,
-    RoomKind.bedroom || RoomKind.kidsRoom => NestTileTint.pink,
-    RoomKind.outside || RoomKind.garage => NestTileTint.mint,
+    RoomKind.kitchen || RoomKind.dining => NestTileTint.butter,
+    RoomKind.bathroom || RoomKind.laundry => NestTileTint.lilac,
+    RoomKind.bedroom || RoomKind.kidsRoom => NestTileTint.guava,
+    RoomKind.outside || RoomKind.garage => NestTileTint.basil,
     RoomKind.lounge || RoomKind.office || RoomKind.other => NestTileTint.accent,
   };
 }

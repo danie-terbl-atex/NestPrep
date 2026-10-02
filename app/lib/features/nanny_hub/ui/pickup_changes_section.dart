@@ -60,7 +60,7 @@ class PickupChangesSection extends StatelessWidget {
               child: NestListRow(
                 leading: const NestIconTile(
                   icon: Icons.event_repeat,
-                  tint: NestTileTint.peach,
+                  tint: NestTileTint.butter,
                 ),
                 title:
                     '${NestDates.relative(change.date, today)} · '

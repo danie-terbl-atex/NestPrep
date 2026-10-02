@@ -39,7 +39,7 @@ class BookingRow extends StatelessWidget {
         leading: person == null
             ? const NestIconTile(
                 icon: Icons.event_available_outlined,
-                tint: NestTileTint.mint,
+                tint: NestTileTint.basil,
               )
             : NestAvatar(name: person.displayName, color: person.color),
         title: person == null ? when : person.displayName,

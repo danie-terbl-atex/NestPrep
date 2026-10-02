@@ -47,7 +47,7 @@ class PlanStatusCard extends StatelessWidget {
                 icon: isPremium
                     ? Icons.workspace_premium_outlined
                     : Icons.home_outlined,
-                tint: isPremium ? NestTileTint.accent : NestTileTint.mint,
+                tint: isPremium ? NestTileTint.accent : NestTileTint.basil,
               ),
               const SizedBox(width: NestSpace.lg),
               Expanded(

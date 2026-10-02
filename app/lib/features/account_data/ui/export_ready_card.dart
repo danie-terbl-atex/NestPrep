@@ -34,7 +34,7 @@ class ExportReadyCard extends StatelessWidget {
             children: [
               const NestIconTile(
                 icon: Icons.task_alt,
-                tint: NestTileTint.mint,
+                tint: NestTileTint.basil,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
               ),

@@ -6,8 +6,8 @@ import '../tokens/nest_theme.dart';
 enum NestIconButtonVariant { glass, accent, plain }
 
 /// The round icon button of the header row and the action corners: a hairline
-/// circle on the glass surface, or a solid accent disc. Always the touch-target
-/// floor, and always labelled (`FE-13`).
+/// circle on the page, or a solid Ink disc. Always the touch-target floor, and
+/// always labelled (`FE-13`).
 class NestIconButton extends StatelessWidget {
   const NestIconButton({
     required this.icon,
@@ -23,7 +23,7 @@ class NestIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final NestIconButtonVariant variant;
 
-  /// A small accent dot, for "something new" without a count.
+  /// A small Guava dot, for "something new" without a count.
   final bool badge;
 
   @override
@@ -67,7 +67,7 @@ class NestIconButton extends StatelessWidget {
                       right: NestSpace.md,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: c.accent,
+                          color: c.secondary,
                           shape: BoxShape.circle,
                           border: Border.all(color: background),
                         ),

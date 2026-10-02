@@ -34,7 +34,7 @@ class ShareLinkReady extends StatelessWidget {
       children: [
         const NestRiseIn(
           child: Center(
-            child: NestIconTile(icon: Icons.link, tint: NestTileTint.mint),
+            child: NestIconTile(icon: Icons.link, tint: NestTileTint.basil),
           ),
         ),
         const SizedBox(height: NestSpace.md),

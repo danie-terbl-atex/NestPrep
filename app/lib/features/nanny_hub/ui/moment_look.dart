@@ -15,10 +15,10 @@ extension MomentLook on ShiftMoment {
   };
 
   NestTileTint get tint => switch (this) {
-    ShiftMoment.arrival => NestTileTint.mint,
-    ShiftMoment.afterSchool => NestTileTint.sky,
-    ShiftMoment.dinner => NestTileTint.peach,
+    ShiftMoment.arrival => NestTileTint.basil,
+    ShiftMoment.afterSchool => NestTileTint.lilac,
+    ShiftMoment.dinner => NestTileTint.butter,
     ShiftMoment.bedtime => NestTileTint.accent,
-    ShiftMoment.beforeLeaving => NestTileTint.pink,
+    ShiftMoment.beforeLeaving => NestTileTint.guava,
   };
 }

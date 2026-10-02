@@ -41,7 +41,7 @@ class CollectorAvatar extends StatelessWidget {
     }
     return NestIconTile(
       icon: Icons.person_outline,
-      tint: NestTileTint.sky,
+      tint: NestTileTint.lilac,
       size: size,
       iconSize: NestSize.iconMedium,
     );

@@ -25,7 +25,7 @@ class GroceryPlanEmpty extends StatelessWidget {
         children: [
           const NestIconTile(
             icon: Icons.restaurant_menu_rounded,
-            tint: NestTileTint.peach,
+            tint: NestTileTint.butter,
             size: NestSize.avatarLarge,
           ),
           const SizedBox(height: NestSpace.lg),

@@ -43,7 +43,7 @@ class DocumentShareRow extends StatelessWidget {
       child: NestListRow(
         title: documentName,
         subtitle: [endsLabel, openedLabel, ?sharedBy].join(' · '),
-        leading: const NestIconTile(icon: Icons.link, tint: NestTileTint.sky),
+        leading: const NestIconTile(icon: Icons.link, tint: NestTileTint.lilac),
         footer: hasPin || isFromVault
             ? Wrap(
                 spacing: NestSpace.xs,

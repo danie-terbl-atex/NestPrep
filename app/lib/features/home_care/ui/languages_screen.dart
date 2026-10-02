@@ -127,7 +127,7 @@ class _LanguageRow extends StatelessWidget {
           leading: person == null
               ? const NestIconTile(
                   icon: Icons.translate,
-                  tint: NestTileTint.sky,
+                  tint: NestTileTint.lilac,
                   size: NestSize.avatarMedium,
                   iconSize: NestSize.iconMedium,
                 )

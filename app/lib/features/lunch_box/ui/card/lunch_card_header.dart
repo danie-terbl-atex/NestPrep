@@ -52,7 +52,7 @@ class LunchCardHeader extends StatelessWidget {
         children: [
           Expanded(child: titles),
           SizedBox(width: clearSpace),
-          NestBrandMark(width: layout.markWidth),
+          NestBrandMark(size: layout.markWidth),
         ],
       );
     }
@@ -61,11 +61,11 @@ class LunchCardHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            NestBrandMark(width: layout.markWidth),
+            NestBrandMark(size: layout.markWidth),
             SizedBox(width: clearSpace),
             const NestWordmark(
               semanticsLabel: LunchShareCopy.plannedWithNestPrep,
-              height: NestSize.wordmarkSmall,
+              size: NestSize.wordmarkSmall,
             ),
           ],
         ),

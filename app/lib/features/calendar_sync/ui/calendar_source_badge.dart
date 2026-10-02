@@ -27,10 +27,10 @@ class CalendarSourceBadge extends StatelessWidget {
     final look = CalendarSourceLook.of(provider, label: label);
     final fill = switch (look.tint) {
       NestTileTint.accent => nest.colors.accentSoft,
-      NestTileTint.pink => nest.colors.tilePink,
-      NestTileTint.mint => nest.colors.tileMint,
-      NestTileTint.sky => nest.colors.tileSky,
-      NestTileTint.peach => nest.colors.tilePeach,
+      NestTileTint.guava => nest.colors.tileGuava,
+      NestTileTint.basil => nest.colors.tileBasil,
+      NestTileTint.lilac => nest.colors.tileLilac,
+      NestTileTint.butter => nest.colors.tileButter,
     };
     return DecoratedBox(
       decoration: BoxDecoration(

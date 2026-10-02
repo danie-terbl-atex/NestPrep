@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_pressable.dart';
 
 enum NestCardVariant { raised, flat, tinted }
 
-/// A surface. Raised sits on the canvas with the soft glow; flat is a bordered
-/// panel inside another surface; tinted is the selected or tonal panel.
-/// It owns its inner padding and nothing outside its box (`FE-03`).
+/// A surface. Raised sits on the page with a warm glow; flat is a bordered
+/// panel inside another surface; tinted is the selected or tonal panel. A
+/// tappable card settles under the finger. It owns its inner padding and
+/// nothing outside its box (`FE-03`).
 class NestCard extends StatelessWidget {
   const NestCard({
     required this.child,
@@ -35,7 +37,7 @@ class NestCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(NestRadius.xl),
       side: BorderSide(color: c.outline),
     );
-    return DecoratedBox(
+    final card = DecoratedBox(
       decoration: ShapeDecoration(shape: shape, shadows: shadows),
       child: Material(
         color: color,
@@ -47,5 +49,6 @@ class NestCard extends StatelessWidget {
         ),
       ),
     );
+    return onTap == null ? card : NestPressable(child: card);
   }
 }

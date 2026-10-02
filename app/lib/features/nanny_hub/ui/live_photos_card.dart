@@ -26,7 +26,7 @@ class LivePhotosCard extends StatelessWidget {
             child: NestListRow(
               leading: const NestIconTile(
                 icon: Icons.photo_camera_outlined,
-                tint: NestTileTint.sky,
+                tint: NestTileTint.lilac,
               ),
               title: NannyPhotoCopy.liveFrom(shift.carer),
               subtitle: NannyPhotoCopy.liveFromBody,

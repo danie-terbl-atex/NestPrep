@@ -25,7 +25,7 @@ class PlanLink extends StatelessWidget {
         subtitle: SubscriptionCopy.openFromHouseholdBody(isPremium: isPremium),
         leading: const NestIconTile(
           icon: Icons.workspace_premium_outlined,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
         ),
         trailing: const Icon(Icons.chevron_right),
         // Pushed, so back lands on the household screen (`FE-17`).

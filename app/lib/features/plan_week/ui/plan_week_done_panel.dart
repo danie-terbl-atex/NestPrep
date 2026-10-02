@@ -58,7 +58,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
             burst: _burst,
             child: const NestIconTile(
               icon: Icons.check_rounded,
-              tint: NestTileTint.mint,
+              tint: NestTileTint.basil,
               size: NestSize.mark,
               iconSize: NestSize.iconMark,
             ),

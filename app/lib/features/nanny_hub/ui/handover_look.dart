@@ -19,12 +19,12 @@ extension HandoverLook on HandoverKind {
   };
 
   NestTileTint get tint => switch (this) {
-    HandoverKind.meal => NestTileTint.peach,
-    HandoverKind.nap => NestTileTint.sky,
-    HandoverKind.nappy => NestTileTint.mint,
+    HandoverKind.meal => NestTileTint.butter,
+    HandoverKind.nap => NestTileTint.lilac,
+    HandoverKind.nappy => NestTileTint.basil,
     HandoverKind.mood => NestTileTint.accent,
-    HandoverKind.incident => NestTileTint.pink,
-    HandoverKind.medicine => NestTileTint.pink,
+    HandoverKind.incident => NestTileTint.guava,
+    HandoverKind.medicine => NestTileTint.guava,
     HandoverKind.note => NestTileTint.accent,
   };
 }

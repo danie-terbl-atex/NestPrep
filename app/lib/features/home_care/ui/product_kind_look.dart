@@ -26,6 +26,6 @@ extension ProductKindLook on ProductKind {
   };
 
   NestTileTint get tint => SafetyCatalogue.isHazardous(this)
-      ? NestTileTint.peach
-      : NestTileTint.mint;
+      ? NestTileTint.butter
+      : NestTileTint.basil;
 }

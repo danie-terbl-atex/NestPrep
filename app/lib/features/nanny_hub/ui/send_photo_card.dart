@@ -36,7 +36,7 @@ class SendPhotoCard extends StatelessWidget {
             children: [
               const NestIconTile(
                 icon: Icons.photo_camera_outlined,
-                tint: NestTileTint.sky,
+                tint: NestTileTint.lilac,
               ),
               const SizedBox(width: NestSpace.md),
               Expanded(

@@ -113,7 +113,7 @@ class _GateWelcome extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         const NestWordmark(
           semanticsLabel: AppCopy.appName,
-          height: NestSize.wordmarkSmall,
+          size: NestSize.wordmarkSmall,
         ),
         const SizedBox(height: NestSpace.xxl),
         Semantics(

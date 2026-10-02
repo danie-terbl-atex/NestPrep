@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 
-enum NestTileTint { accent, pink, mint, sky, peach }
+enum NestTileTint { accent, guava, basil, lilac, butter }
 
-/// The rounded pastel square with an icon in it, used as a category marker
-/// and as a row's leading. Tint is decorative; the label or row text is the
-/// signal (`FE-13`).
+/// A rounded square in one of the brand's accents with an Ink glyph, as a
+/// category marker or a row's leading. Tint is decorative (`FE-13`).
 class NestIconTile extends StatelessWidget {
   const NestIconTile({
     required this.icon,
@@ -34,10 +33,10 @@ class NestIconTile extends StatelessWidget {
     final c = nest.colors;
     final fill = switch (tint) {
       NestTileTint.accent => c.accentSoft,
-      NestTileTint.pink => c.tilePink,
-      NestTileTint.mint => c.tileMint,
-      NestTileTint.sky => c.tileSky,
-      NestTileTint.peach => c.tilePeach,
+      NestTileTint.guava => c.tileGuava,
+      NestTileTint.basil => c.tileBasil,
+      NestTileTint.lilac => c.tileLilac,
+      NestTileTint.butter => c.tileButter,
     };
     // A big tile reads as a blob at the row radius; it wants the next one up.
     final radius = size > NestSize.iconTile ? NestRadius.xl : NestRadius.md;
@@ -48,7 +47,11 @@ class NestIconTile extends StatelessWidget {
       ),
       child: SizedBox.square(
         dimension: size,
-        child: Icon(icon, color: c.accentInk, size: iconSize),
+        child: Icon(
+          icon,
+          color: tint == NestTileTint.accent ? c.accentInk : c.ink,
+          size: iconSize,
+        ),
       ),
     );
     final text = label;

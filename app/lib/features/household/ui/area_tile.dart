@@ -34,9 +34,9 @@ class AreaTile extends StatelessWidget {
 
   NestTileTint get _tint => switch (area) {
     HouseholdArea.calendar || HouseholdArea.todos => NestTileTint.accent,
-    HouseholdArea.groceries || HouseholdArea.meals => NestTileTint.mint,
-    HouseholdArea.documents || HouseholdArea.homeCare => NestTileTint.sky,
-    HouseholdArea.lunch || HouseholdArea.familyProfiles => NestTileTint.peach,
-    HouseholdArea.medical || HouseholdArea.nannyHub => NestTileTint.pink,
+    HouseholdArea.groceries || HouseholdArea.meals => NestTileTint.basil,
+    HouseholdArea.documents || HouseholdArea.homeCare => NestTileTint.lilac,
+    HouseholdArea.lunch || HouseholdArea.familyProfiles => NestTileTint.butter,
+    HouseholdArea.medical || HouseholdArea.nannyHub => NestTileTint.guava,
   };
 }

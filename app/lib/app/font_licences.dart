@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// The three typefaces the app bundles are under the SIL Open Font Licence,
+/// The two typefaces the app bundles are under the SIL Open Font Licence,
 /// which asks that the licence travel with the fonts. Flutter lists the
 /// licences of Dart packages by itself; fonts copied into `assets/` it cannot
 /// know about, so they are added here and the Licences screen shows them with
@@ -19,7 +19,6 @@ void registerFontLicences({AssetBundle? bundle}) {
 
 /// Each bundled family and its licence text, as declared in `pubspec.yaml`.
 const fontLicenceFiles = [
-  ('Grand Hotel', 'assets/fonts/GrandHotel-OFL.txt'),
-  ('Nunito', 'assets/fonts/Nunito-OFL.txt'),
-  ('Plus Jakarta Sans', 'assets/fonts/PlusJakartaSans-OFL.txt'),
+  ('DM Sans', 'assets/fonts/DMSans-OFL.txt'),
+  ('Fraunces', 'assets/fonts/Fraunces-OFL.txt'),
 ];

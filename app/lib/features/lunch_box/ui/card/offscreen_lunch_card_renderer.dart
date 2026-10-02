@@ -1,8 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:flutter/widgets.dart';
-
-import '../../../../design/nest_kit.dart';
 import '../../../../shared/failure/app_failure.dart';
 import '../../../../shared/log/app_log.dart';
 import '../../data/lunch_card_renderer.dart';
@@ -12,19 +9,14 @@ import '../../model/lunch_card_format.dart';
 import '../../model/lunch_card_options.dart';
 import 'lunch_share_card.dart';
 
-/// The card drawn offscreen, at its format's export size, with the brand's
-/// nest and wordmark decoded first (lunch-box ADR-0005).
+/// The card drawn offscreen, at its format's export size (lunch-box
+/// ADR-0005).
 final class OffscreenLunchCardRenderer implements LunchCardRenderer {
   const OffscreenLunchCardRenderer({
     this.renderer = const OffscreenWidgetRenderer(),
   });
 
   final OffscreenWidgetRenderer renderer;
-
-  static const _brandImages = <ImageProvider>[
-    AssetImage(NestBrandAssets.mark),
-    AssetImage(NestBrandAssets.wordmark),
-  ];
 
   @override
   Future<Uint8List> render({
@@ -43,7 +35,6 @@ final class OffscreenLunchCardRenderer implements LunchCardRenderer {
         ),
         logicalSize: options.format.logicalSize,
         pixelRatio: LunchCardFormat.pixelRatio,
-        images: _brandImages,
       );
     } on Exception catch (error) {
       // An asset that would not decode or an engine that would not encode:

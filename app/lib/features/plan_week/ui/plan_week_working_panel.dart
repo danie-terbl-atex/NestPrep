@@ -4,11 +4,10 @@ import '../../../design/nest_kit.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/ui/art/lunch_glyph.dart';
 
-/// The model is working: the nest with the five compartments settling round
-/// it, and a line typing out what is happening — so a wait of a few seconds
-/// reads as work being done, not a spinner (`FE-08`). The orbit arrives once
-/// and rests (design-system ADR-0002); under reduce-motion it is simply
-/// there.
+/// The model is working: the mark, the five compartments settling in under it
+/// one by one, and a line on what is happening, so a wait of a few seconds
+/// reads as work being done, not a spinner (`FE-08`). It arrives once and
+/// rests; under reduce-motion it is simply there.
 class PlanWeekWorkingPanel extends StatelessWidget {
   const PlanWeekWorkingPanel({
     required this.title,
@@ -32,25 +31,26 @@ class PlanWeekWorkingPanel extends StatelessWidget {
       child: ListView(
         children: [
           const SizedBox(height: NestSpace.xl),
-          Center(
-            child: NestOrbit(
-              semanticsLabel: title,
-              centre: const NestBrandMark(),
-              items: [
-                for (final (index, slot) in LunchSlot.values.indexed)
-                  NestOrbitItem(
-                    ring: NestOrbitRing.outer,
-                    turns: (index + 0.5) / LunchSlot.values.length,
-                    child: LunchSlotTile(slot: slot),
-                  ),
-              ],
-            ),
+          const Center(child: NestBrandMark()),
+          const SizedBox(height: NestSpace.xl),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: NestSpace.sm,
+            runSpacing: NestSpace.sm,
+            children: [
+              for (final (index, slot) in LunchSlot.values.indexed)
+                NestRiseIn(
+                  index: index,
+                  child: LunchSlotTile(slot: slot),
+                ),
+            ],
           ),
           const SizedBox(height: NestSpace.xl),
           Text(title, textAlign: TextAlign.center, style: nest.text.headline),
           const SizedBox(height: NestSpace.sm),
-          NestTypewriterText(
-            text: line,
+          Text(
+            line,
+            textAlign: TextAlign.center,
             style: nest.text.body.copyWith(color: nest.colors.inkSecondary),
           ),
           if (progress case final progress?) ...[

@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'nest_colors.dart';
 
-/// The type scale, sized for a phone. Three families (design-system ADR-0004,
-/// amending the heading face of ADR-0003): the headings a person reads at a
-/// glance — the greeting, a screen's title, a hero line — are Grand Hotel, the
-/// upright script the wordmark is also set in (design-system ADR-0007); the
-/// headings that must be scanned — a card title, a name in a row, a big
-/// number or code — stay in the wordmark's rounded Nunito; everything read at
-/// length is Plus Jakarta Sans. List titles are light so the content, not the
-/// chrome, carries the weight. Colour comes from the ink roles.
+/// The type scale (design-system ADR-0008): Fraunces 600 heads, DM Sans reads.
+/// Colour comes from the ink roles.
 @immutable
 class NestTextStyles {
   const NestTextStyles({
@@ -24,145 +18,118 @@ class NestTextStyles {
     required this.bodyStrong,
     required this.bodySecondary,
     required this.label,
+    required this.eyebrow,
     required this.caption,
     required this.button,
   });
 
-  /// Change a family here and everything follows. All three are bundled under
-  /// `assets/fonts/` with their OFL licence and declared in `pubspec.yaml`.
-  static const fontFamily = 'PlusJakartaSans';
+  static const fontFamily = 'DMSans';
+  static const displayFamily = 'Fraunces';
 
-  /// The script for glanceable headings and the wordmark. It has one weight,
-  /// so its styles ask for 400 — a heavier request would be faked bold.
-  static const scriptFamily = 'GrandHotel';
-
-  /// What draws a character the script lacks (Š, Ž and the rest of Latin
-  /// Extended-A) in a heading, so a name keeps a rounded face, not the
-  /// platform's.
-  static const scriptFallback = [displayFamily];
-
-  /// The scanned headings' family: the closest open face to the logo's rounded
-  /// wordmark, at the two heavy weights a heading uses.
-  static const displayFamily = 'Nunito';
-
-  /// The greeting on a home screen, or a hero line. Script.
   final TextStyle display;
-
-  /// A heading a screen leads with. Script.
   final TextStyle headline;
-
-  /// The title in a screen's header bar and a section's header. Script.
   final TextStyle screenTitle;
-
-  /// A card, sheet or dialog title, a name in a row. Nunito, because it is
-  /// scanned rather than glanced at.
   final TextStyle title;
 
-  /// A big number or a code somebody reads out or types — never script.
+  /// A number or code somebody reads out or types: sans, tabular.
   final TextStyle figure;
-
-  /// [figure] a step down, for a number beside other content.
   final TextStyle figureSmall;
-
-  /// A big, light list title ("Stand-up").
   final TextStyle titleLight;
   final TextStyle body;
   final TextStyle bodyStrong;
   final TextStyle bodySecondary;
-
-  /// Small emphasised text: chips, tile labels, tab labels.
   final TextStyle label;
+
+  /// The short spaced label above a heading ("Monday's little win"). The
+  /// widget upper-cases it; the words stay sentence case in the copy file.
+  final TextStyle eyebrow;
   final TextStyle caption;
   final TextStyle button;
 
   factory NestTextStyles.from(NestColors colors) {
-    TextStyle style({
+    TextStyle serif({
+      required double size,
+      required double height,
+      required double tracking,
+      Color? color,
+    }) => TextStyle(
+      fontFamily: displayFamily,
+      fontSize: size,
+      fontWeight: FontWeight.w600,
+      height: height,
+      letterSpacing: tracking,
+      color: color ?? colors.ink,
+      // Fraunces keeps its optical-size axis; each style is drawn at its own.
+      fontVariations: [FontVariation('opsz', size)],
+    );
+
+    TextStyle sans({
       required double size,
       required FontWeight weight,
       required double height,
       Color? color,
       double letterSpacing = 0,
-      String family = fontFamily,
-      List<String>? fallback,
+      List<FontFeature>? features,
     }) => TextStyle(
-      fontFamily: family,
-      fontFamilyFallback: fallback,
+      fontFamily: fontFamily,
       fontSize: size,
       fontWeight: weight,
       height: height,
       color: color ?? colors.ink,
       letterSpacing: letterSpacing,
+      fontFeatures: features,
     );
 
+    const tabular = [FontFeature.tabularFigures()];
+
     return NestTextStyles(
-      display: style(
-        size: 34,
-        weight: FontWeight.w400,
-        height: 1.2,
-        family: scriptFamily,
-        fallback: scriptFallback,
-      ),
-      headline: style(
-        size: 28,
-        weight: FontWeight.w400,
-        height: 1.2,
-        family: scriptFamily,
-        fallback: scriptFallback,
-      ),
-      screenTitle: style(
+      display: serif(size: 40, height: 1.05, tracking: -0.8),
+      headline: serif(size: 30, height: 1.1, tracking: -0.45),
+      screenTitle: serif(size: 26, height: 1.15, tracking: -0.3),
+      title: serif(size: 20, height: 1.2, tracking: -0.1),
+      titleLight: serif(
         size: 24,
-        weight: FontWeight.w400,
-        height: 1.2,
-        family: scriptFamily,
-        fallback: scriptFallback,
-      ),
-      figure: style(
-        size: 32,
-        weight: FontWeight.w800,
-        height: 1.2,
-        letterSpacing: -0.3,
-        family: displayFamily,
-      ),
-      figureSmall: style(
-        size: 24,
-        weight: FontWeight.w800,
-        height: 1.25,
-        letterSpacing: -0.2,
-        family: displayFamily,
-      ),
-      title: style(
-        size: 18,
-        weight: FontWeight.w700,
-        height: 1.3,
-        family: displayFamily,
-      ),
-      titleLight: style(
-        size: 24,
-        weight: FontWeight.w400,
-        height: 1.2,
+        height: 1.15,
+        tracking: -0.2,
         color: colors.inkSecondary,
       ),
-      body: style(size: 16, weight: FontWeight.w400, height: 1.5),
-      bodyStrong: style(size: 16, weight: FontWeight.w600, height: 1.5),
-      bodySecondary: style(
+      figure: sans(
+        size: 32,
+        weight: FontWeight.w700,
+        height: 1.15,
+        letterSpacing: -0.5,
+        features: tabular,
+      ),
+      figureSmall: sans(
+        size: 24,
+        weight: FontWeight.w700,
+        height: 1.2,
+        letterSpacing: -0.3,
+        features: tabular,
+      ),
+      body: sans(size: 16, weight: FontWeight.w400, height: 1.5),
+      bodyStrong: sans(size: 16, weight: FontWeight.w600, height: 1.5),
+      bodySecondary: sans(
         size: 15,
         weight: FontWeight.w400,
         height: 1.45,
         color: colors.inkSecondary,
       ),
-      label: style(size: 14, weight: FontWeight.w500, height: 1.3),
-      caption: style(
+      label: sans(size: 14, weight: FontWeight.w500, height: 1.3),
+      eyebrow: sans(
+        size: 12,
+        weight: FontWeight.w700,
+        height: 1.3,
+        letterSpacing: 1.3,
+        color: colors.inkSecondary,
+      ),
+      caption: sans(
         size: 13,
         weight: FontWeight.w400,
         height: 1.35,
         color: colors.inkTertiary,
       ),
-      button: style(
-        size: 16,
-        weight: FontWeight.w600,
-        height: 1.25,
-        letterSpacing: 0.1,
-      ),
+      button: sans(size: 16, weight: FontWeight.w600, height: 1.25),
     );
   }
 }

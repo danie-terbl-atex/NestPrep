@@ -87,7 +87,7 @@ class _Links extends StatelessWidget {
                 children: [
                   const NestIconTile(
                     icon: Icons.cottage_outlined,
-                    tint: NestTileTint.peach,
+                    tint: NestTileTint.butter,
                   ),
                   const SizedBox(height: NestSpace.md),
                   Text(
@@ -164,7 +164,7 @@ class _Links extends StatelessWidget {
           child: NestListRow(
             leading: const NestIconTile(
               icon: Icons.shield_outlined,
-              tint: NestTileTint.mint,
+              tint: NestTileTint.basil,
             ),
             title: TwoHomesSetupCopy.privacyOpen,
             subtitle: TwoHomesSetupCopy.privacyOpenBody,

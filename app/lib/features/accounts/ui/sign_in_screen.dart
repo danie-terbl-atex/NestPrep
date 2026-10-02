@@ -21,18 +21,14 @@ import 'sign_in_welcome.dart';
 /// ([SeededSignIn], foundation ADR-0019), and is a different widget on purpose
 /// — a throwaway password list must never become the production form.
 ///
-/// The picture, the name and the line arrive in that order and then stop
-/// (`FE-15`). A failure banner is **not** part of the choreography: when
-/// something has gone wrong it appears at once, because making somebody wait
-/// for an apology to fade in is the wrong moment for delight.
+/// The welcome arrives once and stops (`FE-15`). A failure banner is not part
+/// of the arrival: it appears at once.
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
   static const path = '/sign-in';
 
-  /// Where the way in sits in the entrance, counted from the welcome's own
-  /// last step so the button follows the tagline rather than racing it.
-  static const _waysInStep = 6;
+  static const _waysInStep = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +39,13 @@ class SignInScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: NestSpace.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SignInWelcome(),
-                const SizedBox(height: NestSpace.xxxl),
+                const SizedBox(height: NestSpace.xxl),
                 if (failure != null) ...[
                   NestBanner(
                     message: AppCopy.failure(failure),

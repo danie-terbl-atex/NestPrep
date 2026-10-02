@@ -45,7 +45,7 @@ class LunchPantryPlanCard extends StatelessWidget {
                 : LunchPantryCopy.planFromPantryOff,
             leading: const NestIconTile(
               icon: Icons.kitchen_outlined,
-              tint: NestTileTint.mint,
+              tint: NestTileTint.basil,
               size: NestSize.avatarMedium,
             ),
             trailing: Switch(

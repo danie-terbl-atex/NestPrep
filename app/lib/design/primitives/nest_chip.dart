@@ -4,7 +4,8 @@ import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 
-/// A pill chip: a filter, a segment, a tag. Selected is the tonal violet.
+/// A pill chip: a filter, a segment, a day. Selected is Guava with Ink on it,
+/// and bold, so selection never rests on colour alone.
 class NestChip extends StatelessWidget {
   const NestChip({
     required this.label,
@@ -33,7 +34,7 @@ class NestChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final c = nest.colors;
-    final foreground = isSelected ? c.secondaryInk : c.inkSecondary;
+    final foreground = isSelected ? c.onSecondary : c.ink;
     // Its own node: a chip beside a name or a heading must not merge into
     // them, or a screen reader announces the heading as the button and a tap
     // anywhere on it toggles the chip (`FE-13`).
@@ -47,10 +48,8 @@ class NestChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: NestMotion.of(context).quick,
         decoration: ShapeDecoration(
-          color: isSelected ? c.secondarySoft : c.surface,
-          shape: StadiumBorder(
-            side: BorderSide(color: isSelected ? c.secondary : c.outline),
-          ),
+          color: isSelected ? c.secondary : c.surface,
+          shape: const StadiumBorder(),
         ),
         child: Material(
           color: Colors.transparent,
@@ -79,7 +78,12 @@ class NestChip extends StatelessWidget {
                         label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: nest.text.label.copyWith(color: foreground),
+                        style: nest.text.label.copyWith(
+                          color: foreground,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
                       ),
                     ),
                     if (trailingIcon != null) ...[

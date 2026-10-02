@@ -1,26 +1,22 @@
 import 'package:flutter/widgets.dart';
 
-import '../tokens/nest_brand_assets.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_brand_mark.dart';
 
-/// The words "Nest Prep" as the logo draws them — set once in the script face
-/// by the brand tool and drawn from that image, never retyped in a [Text]
-/// (design-system ADR-0003, ADR-0007).
-///
-/// The asset is an alpha mask; the colour is the theme's `accent`, which in
-/// light is the wordmark's own forest green and in dark the lifted leaf that
-/// holds on the night canvas. A screen reader hears [semanticsLabel] once, as
-/// the heading it is.
+/// "nestprep" set tight in Fraunces (design-system ADR-0008). Read once, as a
+/// heading, under [semanticsLabel].
 class NestWordmark extends StatelessWidget {
   const NestWordmark({
     required this.semanticsLabel,
-    this.height = NestSize.wordmarkLarge,
+    this.size = NestSize.wordmarkLarge,
     super.key,
   });
 
   final String semanticsLabel;
-  final double height;
+  final double size;
+
+  static const _letters = 'nestprep';
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +25,41 @@ class NestWordmark extends StatelessWidget {
       label: semanticsLabel,
       header: true,
       excludeSemantics: true,
-      child: Image.asset(
-        NestBrandAssets.wordmark,
-        height: height,
-        width: height * NestBrandAssets.wordmarkAspect,
-        fit: BoxFit.contain,
-        color: nest.colors.accent,
-        colorBlendMode: BlendMode.srcIn,
+      child: Text(
+        _letters,
+        textScaler: TextScaler.noScaling,
+        style: nest.text.display.copyWith(
+          fontSize: size,
+          height: 1,
+          letterSpacing: -size * 0.04,
+          color: nest.colors.ink,
+          fontVariations: [FontVariation('opsz', size)],
+        ),
       ),
+    );
+  }
+}
+
+/// The mark beside the wordmark, as the brand board sets them.
+class NestBrandLockup extends StatelessWidget {
+  const NestBrandLockup({
+    required this.semanticsLabel,
+    this.size = NestSize.wordmarkSmall,
+    super.key,
+  });
+
+  final String semanticsLabel;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        NestBrandMark(size: size * 1.25),
+        SizedBox(width: size * 0.35),
+        NestWordmark(semanticsLabel: semanticsLabel, size: size),
+      ],
     );
   }
 }

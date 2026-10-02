@@ -60,7 +60,7 @@ class _JoinLinkScreenState extends State<JoinLinkScreen> {
                   children: [
                     const NestIconTile(
                       icon: Icons.hourglass_top,
-                      tint: NestTileTint.mint,
+                      tint: NestTileTint.basil,
                     ),
                     const SizedBox(height: NestSpace.md),
                     Text(

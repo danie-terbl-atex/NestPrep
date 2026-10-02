@@ -23,25 +23,25 @@ class LunchCardPalette {
       LunchCardStyle.cream => LunchCardPalette._(
         theme: theme,
         ground: c.canvasWash,
-        shapes: (c.tileMint, c.tilePeach),
+        shapes: (c.tileBasil, c.tileButter),
         rowSurface: c.surfaceGlass,
       ),
       LunchCardStyle.leaf => LunchCardPalette._(
         theme: theme,
-        ground: [c.tileMint, c.successSoft, c.accentSoft],
-        shapes: (c.surfaceTint, c.tileSky),
+        ground: [c.tileBasil, c.successSoft, c.accentSoft],
+        shapes: (c.surfaceTint, c.tileLilac),
         rowSurface: c.surfaceGlass,
       ),
       LunchCardStyle.straw => LunchCardPalette._(
         theme: theme,
-        ground: [c.warningSoft, c.tilePeach, c.canvas],
-        shapes: (c.tilePink, c.surfaceTint),
+        ground: [c.warningSoft, c.tileButter, c.canvas],
+        shapes: (c.tileGuava, c.surfaceTint),
         rowSurface: c.surfaceGlass,
       ),
       LunchCardStyle.forest => LunchCardPalette._(
         theme: theme,
         ground: c.canvasWash,
-        shapes: (c.accentSoft, c.tileSky),
+        shapes: (c.accentSoft, c.tileLilac),
         rowSurface: c.surface,
       ),
     };

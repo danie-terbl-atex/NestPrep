@@ -36,7 +36,7 @@ class LanguageBar extends StatelessWidget {
                 children: [
                   const NestIconTile(
                     icon: Icons.translate,
-                    tint: NestTileTint.sky,
+                    tint: NestTileTint.lilac,
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,
                   ),

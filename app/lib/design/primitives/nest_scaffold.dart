@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_eyebrow.dart';
 
-/// Every screen's frame: the canvas with its soft wash, safe areas, an
-/// optional header row (leading, title, trailing), the body, and slots for a
-/// floating bottom bar and a floating action. Screens never paint a
-/// background themselves (`FE-01`).
+/// Every screen's frame: the Oat page, safe areas, an optional header row
+/// (leading, eyebrow and title, trailing), the body, and slots for a floating
+/// bottom bar and a floating action. Screens never paint a background
+/// themselves (`FE-01`).
 class NestScaffold extends StatelessWidget {
   const NestScaffold({
     required this.body,
     this.title,
+    this.eyebrow,
     this.subtitle,
     this.leading,
     this.trailing = const [],
@@ -22,6 +24,7 @@ class NestScaffold extends StatelessWidget {
 
   final Widget body;
   final String? title;
+  final String? eyebrow;
   final String? subtitle;
   final Widget? leading;
   final List<Widget> trailing;
@@ -36,14 +39,8 @@ class NestScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: nest.colors.canvas,
       extendBody: true,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: nest.colors.canvasWash,
-          ),
-        ),
+      body: ColoredBox(
+        color: nest.colors.canvas,
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -51,6 +48,7 @@ class NestScaffold extends StatelessWidget {
               if (hasHeader)
                 _NestHeader(
                   title: title,
+                  eyebrow: eyebrow,
                   subtitle: subtitle,
                   leading: leading,
                   trailing: trailing,
@@ -83,12 +81,14 @@ class NestScaffold extends StatelessWidget {
 class _NestHeader extends StatelessWidget {
   const _NestHeader({
     required this.title,
+    required this.eyebrow,
     required this.subtitle,
     required this.leading,
     required this.trailing,
   });
 
   final String? title;
+  final String? eyebrow;
   final String? subtitle;
   final Widget? leading;
   final List<Widget> trailing;
@@ -98,6 +98,7 @@ class _NestHeader extends StatelessWidget {
     final nest = NestTheme.of(context);
     final titleText = title;
     final subtitleText = subtitle;
+    final eyebrowText = eyebrow;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         NestSpace.gutter,
@@ -111,11 +112,13 @@ class _NestHeader extends StatelessWidget {
           if (leading != null) const SizedBox(width: NestSpace.md),
           Expanded(
             child: Column(
-              crossAxisAlignment: leading == null && trailing.isEmpty
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (eyebrowText != null) ...[
+                  NestEyebrow(eyebrowText),
+                  const SizedBox(height: NestSpace.xs),
+                ],
                 if (titleText != null)
                   Text(
                     titleText,

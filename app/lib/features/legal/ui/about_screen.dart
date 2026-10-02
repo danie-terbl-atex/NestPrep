@@ -31,7 +31,7 @@ class AboutScreen extends StatelessWidget {
                 SizedBox(height: NestSpace.md),
                 NestWordmark(
                   semanticsLabel: AppCopy.appName,
-                  height: NestSize.wordmarkSmall,
+                  size: NestSize.wordmarkSmall,
                 ),
               ],
             ),
@@ -81,7 +81,7 @@ class AboutScreen extends StatelessWidget {
                   NestListRow(
                     leading: NestIconTile(
                       icon: Icons.mail_outline,
-                      tint: NestTileTint.mint,
+                      tint: NestTileTint.basil,
                       size: NestSize.avatarMedium,
                       iconSize: NestSize.iconMedium,
                     ),

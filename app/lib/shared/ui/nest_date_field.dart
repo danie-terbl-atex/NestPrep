@@ -46,7 +46,7 @@ class NestDateField extends StatelessWidget {
           subtitle: NestDates.full(value, today),
           leading: const NestIconTile(
             icon: Icons.event_outlined,
-            tint: NestTileTint.sky,
+            tint: NestTileTint.lilac,
             size: NestSize.avatarMedium,
           ),
           onTap: () => _pick(context),

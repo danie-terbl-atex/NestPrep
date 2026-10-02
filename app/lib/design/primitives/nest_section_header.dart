@@ -27,7 +27,7 @@ class NestSectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(left: NestSpace.xs),
       child: Row(
         children: [
-          Expanded(child: Text(title, style: nest.text.screenTitle)),
+          Expanded(child: Text(title, style: nest.text.title)),
           if (icon != null)
             NestIconButton(
               icon: icon,

@@ -40,8 +40,8 @@ class NestMemberPalette {
 
   MemberSwatch of(MemberColor color) => _swatches[color]!;
 
-  static const _lightInk = Color(0xFF1C2920);
-  static const _darkInk = Color(0xFFF5F1E6);
+  static const _lightInk = Color(0xFF35252E);
+  static const _darkInk = Color(0xFFFFF8ED);
 
   static const light = NestMemberPalette._({
     MemberColor.violet: MemberSwatch(
@@ -50,11 +50,11 @@ class NestMemberPalette {
     ),
     MemberColor.pink: MemberSwatch(fill: Color(0xFFF7BFDD), onFill: _lightInk),
     MemberColor.coral: MemberSwatch(fill: Color(0xFFFFC2B3), onFill: _lightInk),
-    MemberColor.amber: MemberSwatch(fill: Color(0xFFFFD98A), onFill: _lightInk),
-    MemberColor.lime: MemberSwatch(fill: Color(0xFFD3EB9A), onFill: _lightInk),
-    MemberColor.mint: MemberSwatch(fill: Color(0xFFA9E8CF), onFill: _lightInk),
-    MemberColor.teal: MemberSwatch(fill: Color(0xFF9EDDE3), onFill: _lightInk),
-    MemberColor.sky: MemberSwatch(fill: Color(0xFFB5D6FF), onFill: _lightInk),
+    MemberColor.amber: MemberSwatch(fill: Color(0xFFF7C85C), onFill: _lightInk),
+    MemberColor.lime: MemberSwatch(fill: Color(0xFFB9DB72), onFill: _lightInk),
+    MemberColor.mint: MemberSwatch(fill: Color(0xFF86D9B8), onFill: _lightInk),
+    MemberColor.teal: MemberSwatch(fill: Color(0xFF8ED3DA), onFill: _lightInk),
+    MemberColor.sky: MemberSwatch(fill: Color(0xFFA6CCFF), onFill: _lightInk),
     MemberColor.indigo: MemberSwatch(
       fill: Color(0xFFB8C3FF),
       onFill: _lightInk,

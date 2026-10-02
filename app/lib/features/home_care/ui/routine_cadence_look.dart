@@ -13,8 +13,8 @@ extension RoutineCadenceLook on RoutineCadence {
   };
 
   NestTileTint get tint => switch (this) {
-    RoutineCadence.daily => NestTileTint.mint,
-    RoutineCadence.weekly => NestTileTint.sky,
-    RoutineCadence.deepClean => NestTileTint.peach,
+    RoutineCadence.daily => NestTileTint.basil,
+    RoutineCadence.weekly => NestTileTint.lilac,
+    RoutineCadence.deepClean => NestTileTint.butter,
   };
 }

@@ -42,8 +42,8 @@ class BeforeYouStart extends StatelessWidget {
                     ? Icons.dangerous_outlined
                     : Icons.health_and_safety_outlined,
                 tint: safety.hasDangers
-                    ? NestTileTint.peach
-                    : NestTileTint.mint,
+                    ? NestTileTint.butter
+                    : NestTileTint.basil,
               ),
               const SizedBox(width: NestSpace.md),
               Expanded(

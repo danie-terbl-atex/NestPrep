@@ -91,7 +91,7 @@ class _TodayCard extends StatelessWidget {
         children: [
           const NestIconTile(
             icon: Icons.meeting_room_outlined,
-            tint: NestTileTint.mint,
+            tint: NestTileTint.basil,
           ),
           const SizedBox(width: NestSpace.lg),
           Expanded(

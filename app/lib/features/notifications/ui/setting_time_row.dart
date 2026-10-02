@@ -22,7 +22,7 @@ class SettingTimeRow extends StatelessWidget {
       child: NestListRow(
         leading: const NestIconTile(
           icon: Icons.schedule_rounded,
-          tint: NestTileTint.sky,
+          tint: NestTileTint.lilac,
           size: NestSize.avatarMedium,
           iconSize: NestSize.iconMedium,
         ),

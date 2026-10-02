@@ -111,7 +111,7 @@ class AdultLoadCard extends StatelessWidget {
                 const SizedBox(height: NestSpace.md),
                 const Align(
                   alignment: AlignmentDirectional.centerEnd,
-                  child: NestBrandMark(width: NestSize.avatarSmall),
+                  child: NestBrandMark(size: NestSize.avatarSmall),
                 ),
               ],
             ),

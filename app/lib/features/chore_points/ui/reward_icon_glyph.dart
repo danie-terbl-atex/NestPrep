@@ -20,10 +20,10 @@ extension RewardIconGlyph on RewardIcon {
   };
 
   NestTileTint get tint => switch (this) {
-    RewardIcon.gift || RewardIcon.toy => NestTileTint.pink,
-    RewardIcon.treat || RewardIcon.iceCream => NestTileTint.peach,
+    RewardIcon.gift || RewardIcon.toy => NestTileTint.guava,
+    RewardIcon.treat || RewardIcon.iceCream => NestTileTint.butter,
     RewardIcon.screenTime || RewardIcon.game => NestTileTint.accent,
-    RewardIcon.movie || RewardIcon.lateNight => NestTileTint.sky,
-    RewardIcon.outing || RewardIcon.book => NestTileTint.mint,
+    RewardIcon.movie || RewardIcon.lateNight => NestTileTint.lilac,
+    RewardIcon.outing || RewardIcon.book => NestTileTint.basil,
   };
 }

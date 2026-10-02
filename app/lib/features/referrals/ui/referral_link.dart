@@ -22,7 +22,7 @@ class ReferralLink extends StatelessWidget {
         subtitle: ReferralCopy.openFromHouseholdBody,
         leading: const NestIconTile(
           icon: Icons.card_giftcard_outlined,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
         ),
         trailing: const Icon(Icons.chevron_right),
         // Pushed, so back lands where the person was (`FE-17`).

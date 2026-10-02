@@ -30,7 +30,7 @@ class FoodSection extends StatelessWidget {
     final isEmpty = likes.isEmpty && dislikes.isEmpty && diet.isEmpty;
     return FamilySectionCard(
       icon: Icons.restaurant_outlined,
-      tint: NestTileTint.mint,
+      tint: NestTileTint.basil,
       title: FamilyCopy.sectionFood,
       actionLabel: FamilyCopy.editSection(FamilyCopy.sectionFood),
       onAction: onEdit,

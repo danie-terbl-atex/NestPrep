@@ -71,19 +71,14 @@ abstract final class AppCopy {
   static const retry = 'Try again';
   static const back = 'Back';
 
-  static const signInTagline = 'One household, one app.';
-
-  /// What the picture on the sign-in screen says, for somebody who cannot see
-  /// it. The orbiting marks carry no semantics of their own, so this sentence
-  /// is the whole of it.
-  static const signInOrbitLabel =
-      'A nest holding the week, with a household circling it among its '
-      'to-dos, sport, cleaning, places and birthdays.';
-
-  /// The letters on the member marks circling the sign-in screen. They are an
-  /// illustration's initials, not people — one string so they stay together
-  /// and nobody mistakes them for names that need translating.
-  static const signInOrbitInitials = 'AMJKS';
+  static const brandLine = 'Good lunches. Lighter days.';
+  static const signInEyebrow = 'Your week, a little lighter';
+  static const signInTagline =
+      'The family organiser that lightens the daily load, starting with '
+      'school lunches.';
+  static const signInPhotoLabel =
+      'A packed lunchbox: toastie triangles, strawberries, cucumber, carrot '
+      'and a mandarin.';
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';

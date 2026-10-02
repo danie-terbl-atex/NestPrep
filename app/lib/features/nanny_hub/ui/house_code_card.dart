@@ -25,7 +25,7 @@ class HouseCodeCard extends StatelessWidget {
             children: [
               const NestIconTile(
                 icon: Icons.key_outlined,
-                tint: NestTileTint.peach,
+                tint: NestTileTint.butter,
                 size: NestSize.avatarMedium,
                 iconSize: NestSize.iconMedium,
               ),

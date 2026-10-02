@@ -50,9 +50,6 @@ void main() {
   ) async {
     await pump(tester);
 
-    // The name is the logo's own wordmark now, not typed text
-    // (design-system ADR-0003); nest_brand_test.dart proves it reads as the
-    // name, once, as a heading.
     expect(
       find.byWidgetPredicate(
         (widget) =>
@@ -67,6 +64,8 @@ void main() {
   testWidgets('tapping Google asks the gateway exactly once', (tester) async {
     await pump(tester);
 
+    await tester.ensureVisible(find.text(AppCopy.signInWithGoogle));
+
     await tester.tap(find.text(AppCopy.signInWithGoogle));
     await tester.pumpAndSettle();
 
@@ -76,6 +75,8 @@ void main() {
   testWidgets('a refusal is shown as words, never as an error', (tester) async {
     auth.failSignInWith = const SignInFailure(SignInProblem.notConfigured);
     await pump(tester);
+
+    await tester.ensureVisible(find.text(AppCopy.signInWithGoogle));
 
     await tester.tap(find.text(AppCopy.signInWithGoogle));
     await tester.pumpAndSettle();
@@ -94,6 +95,8 @@ void main() {
     auth.failSignInWith = const SignInFailure(SignInProblem.cancelled);
     await pump(tester);
 
+    await tester.ensureVisible(find.text(AppCopy.signInWithGoogle));
+
     await tester.tap(find.text(AppCopy.signInWithGoogle));
     await tester.pumpAndSettle();
 
@@ -109,12 +112,7 @@ void main() {
     await pump(tester);
     await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel(AppCopy.signInOrbitLabel), findsOneWidget);
-    expect(
-      find.bySemanticsLabel(AppCopy.signInOrbitInitials),
-      findsNothing,
-      reason: 'the marks in orbit are an illustration, not nine things to read',
-    );
+    expect(find.bySemanticsLabel(AppCopy.signInPhotoLabel), findsOneWidget);
     handle.dispose();
   });
 
@@ -126,6 +124,7 @@ void main() {
     // No settle: this is the first frame, with the button still faded out and
     // below where it lands. Somebody who taps the moment they see it must not
     // have that tap go nowhere (`FE-15`).
+    await tester.ensureVisible(find.text(AppCopy.signInWithGoogle));
     await tester.tap(find.text(AppCopy.signInWithGoogle));
     await tester.pumpAndSettle();
 

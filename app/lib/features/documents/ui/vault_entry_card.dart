@@ -26,7 +26,7 @@ class VaultEntryCard extends StatelessWidget {
       child: NestListRow(
         title: VaultCopy.entryTitle,
         subtitle: VaultCopy.entryBody,
-        leading: NestIconTile(icon: icon, tint: NestTileTint.pink),
+        leading: NestIconTile(icon: icon, tint: NestTileTint.guava),
         footer: NestBadge(
           label: isUnlocked ? VaultCopy.entryUnlocked : VaultCopy.entryLocked,
           tone: isUnlocked ? NestBadgeTone.info : NestBadgeTone.neutral,

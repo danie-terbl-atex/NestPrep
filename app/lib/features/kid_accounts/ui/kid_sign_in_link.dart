@@ -23,7 +23,7 @@ class KidSignInLink extends StatelessWidget {
         subtitle: KidCopy.manageEntryBody,
         leading: const NestIconTile(
           icon: Icons.child_care_rounded,
-          tint: NestTileTint.peach,
+          tint: NestTileTint.butter,
         ),
         trailing: const Icon(Icons.chevron_right),
         // Pushed, so back lands on the household screen (`FE-17`).

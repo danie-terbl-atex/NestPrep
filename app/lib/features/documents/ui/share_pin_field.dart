@@ -49,7 +49,7 @@ class _SharePinFieldState extends State<SharePinField> {
             subtitle: ShareLinkCopy.pinToggleNote,
             leading: const NestIconTile(
               icon: Icons.pin_outlined,
-              tint: NestTileTint.sky,
+              tint: NestTileTint.lilac,
             ),
             trailing: Switch(
               value: widget.asksForPin,

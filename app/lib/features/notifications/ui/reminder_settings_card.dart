@@ -42,7 +42,7 @@ class ReminderSettingsCard extends StatelessWidget {
               SettingSwitchRow(
                 key: ValueKey('reminder-${category.name}'),
                 icon: NotificationLook.switchableIcon(category),
-                tint: NestTileTint.mint,
+                tint: NestTileTint.basil,
                 title: NotificationsCopy.categorySwitch(category),
                 subtitle: NotificationsCopy.categoryHint(category),
                 value: settings.wants(category),
