@@ -120,40 +120,46 @@ void main() {
       },
     );
 
-    test('a claimed member keeps the old role on the document and moves through the callable', () async {
-      await settle();
+    test(
+      'a claimed member keeps the old role on the document and moves through the callable',
+      () async {
+        await settle();
 
-      await controller.updateMember(
-        memberId: Fixtures.thandiMemberId,
-        displayName: 'Thandi Helper',
-        color: MemberColor.mint,
-        role: MemberRole.admin,
-      );
+        await controller.updateMember(
+          memberId: Fixtures.thandiMemberId,
+          displayName: 'Thandi Helper',
+          color: MemberColor.mint,
+          role: MemberRole.admin,
+        );
 
-      expect(
-        repository.updated.single.role,
-        MemberRole.helper,
-        reason:
-            'the direct write must not move a claimed role — the rules '
-            'refuse it, and the household map would fall out of step',
-      );
-      expect(directory.rolesSet.single.memberId, Fixtures.thandiMemberId);
-      expect(directory.rolesSet.single.role, MemberRole.admin);
-    });
+        expect(
+          repository.updated.single.role,
+          MemberRole.helper,
+          reason:
+              'the direct write must not move a claimed role — the rules '
+              'refuse it, and the household map would fall out of step',
+        );
+        expect(directory.rolesSet.single.memberId, Fixtures.thandiMemberId);
+        expect(directory.rolesSet.single.role, MemberRole.admin);
+      },
+    );
 
-    test('renaming a claimed member without touching their role stays a direct write', () async {
-      await settle();
+    test(
+      'renaming a claimed member without touching their role stays a direct write',
+      () async {
+        await settle();
 
-      await controller.updateMember(
-        memberId: Fixtures.thandiMemberId,
-        displayName: 'Thandi P',
-        color: MemberColor.mint,
-        role: MemberRole.helper,
-      );
+        await controller.updateMember(
+          memberId: Fixtures.thandiMemberId,
+          displayName: 'Thandi P',
+          color: MemberColor.mint,
+          role: MemberRole.helper,
+        );
 
-      expect(repository.updated.single.displayName, 'Thandi P');
-      expect(directory.rolesSet, isEmpty);
-    });
+        expect(repository.updated.single.displayName, 'Thandi P');
+        expect(directory.rolesSet, isEmpty);
+      },
+    );
   });
 
   group('a grant follows the role (household ADR-0003)', () {

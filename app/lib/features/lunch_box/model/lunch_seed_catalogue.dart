@@ -35,23 +35,29 @@ abstract final class LunchSeedCatalogue {
       ..._nuts,
     }),
     _main('chicken-mayo', 'Chicken mayo wrap', {Allergen.wheat, Allergen.egg}),
-    _main('egg-mayo', 'Egg mayo sandwich', {
-      ..._bread,
-      Allergen.egg,
-    }, prep: 'Boil the eggs on Sunday; they keep five days in the fridge.'),
+    _main(
+      'egg-mayo',
+      'Egg mayo sandwich',
+      {..._bread, Allergen.egg},
+      prep: 'Boil the eggs on Sunday; they keep five days in the fridge.',
+    ),
     _main('tuna-sandwich', 'Tuna sandwich', {
       ..._bread,
       Allergen.fish,
       Allergen.egg,
     }),
-    _main('pasta-salad', 'Pasta salad', {
-      Allergen.wheat,
-      Allergen.egg,
-    }, prep: 'Cook a big pot of pasta on Sunday for three days of boxes.'),
-    _main('frikkadels', 'Mini frikkadels', {
-      Allergen.wheat,
-      Allergen.egg,
-    }, prep: 'Bake a tray on Sunday and freeze half.'),
+    _main(
+      'pasta-salad',
+      'Pasta salad',
+      {Allergen.wheat, Allergen.egg},
+      prep: 'Cook a big pot of pasta on Sunday for three days of boxes.',
+    ),
+    _main(
+      'frikkadels',
+      'Mini frikkadels',
+      {Allergen.wheat, Allergen.egg},
+      prep: 'Bake a tray on Sunday and freeze half.',
+    ),
     _main(
       'chicken-drumstick',
       'Roast chicken drumstick',
@@ -64,11 +70,12 @@ abstract final class LunchSeedCatalogue {
       const {},
       prep: 'Cook the rice on Sunday and keep it cold.',
     ),
-    _main('mealie-bread', 'Mealie bread slice', {
-      Allergen.wheat,
-      Allergen.egg,
-      ..._dairy,
-    }, prep: 'Bake a loaf on Sunday and slice it.'),
+    _main(
+      'mealie-bread',
+      'Mealie bread slice',
+      {Allergen.wheat, Allergen.egg, ..._dairy},
+      prep: 'Bake a loaf on Sunday and slice it.',
+    ),
     _main('cheese-rolls', 'Cheese rolls', {Allergen.wheat, ..._dairy}),
     _main('hummus-pita', 'Hummus and pita', {Allergen.wheat, Allergen.sesame}),
     // Fruit.
@@ -112,11 +119,12 @@ abstract final class LunchSeedCatalogue {
     // Treats.
     _treat('rusk', 'Rusk', {Allergen.wheat, Allergen.egg, ..._dairy}),
     _treat('marie-biscuits', 'Marie biscuits', {Allergen.wheat, ..._dairy}),
-    _treat('muffin', 'Banana muffin', {
-      Allergen.wheat,
-      Allergen.egg,
-      ..._dairy,
-    }, prep: 'Bake a dozen on Sunday; freeze what the week will not eat.'),
+    _treat(
+      'muffin',
+      'Banana muffin',
+      {Allergen.wheat, Allergen.egg, ..._dairy},
+      prep: 'Bake a dozen on Sunday; freeze what the week will not eat.',
+    ),
     _treat('crunchie', 'Oat crunchie', {
       Allergen.wheat,
       ..._dairy,

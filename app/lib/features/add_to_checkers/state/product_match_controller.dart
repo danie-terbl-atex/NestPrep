@@ -10,6 +10,7 @@ import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
 import '../data/checkers_catalogue.dart';
 import '../data/checkers_place_resolver.dart';
+import '../data/product_match_ranker.dart';
 import '../model/checkers_area.dart';
 import '../model/checkers_place.dart';
 import '../model/checkers_product.dart';
@@ -34,12 +35,18 @@ final class ProductMatchController extends ChangeNotifier
     required GroceryRepository groceryRepository,
     required this.householdId,
     required this.memberId,
+    this._ranker,
     this.debounce = const Duration(milliseconds: 400),
   }) : _checkers = catalogue,
        _places = placeResolver,
        _repository = groceryRepository;
 
+  /// Jev's score a match needs before it is called the best (foundation
+  /// ADR-0021).
+  static const bestMatchFit = 0.6;
+
   final CheckersCatalogue _checkers;
+  final ProductMatchRanker? _ranker;
   final CheckersPlaceResolver _places;
   final GroceryRepository _repository;
   final String householdId;
@@ -50,6 +57,7 @@ final class ProductMatchController extends ChangeNotifier
 
   ProductMatchTarget? _target;
   AsyncState<List<CheckersProduct>> _matches = const AsyncLoading();
+  String? _bestMatchId;
   CheckersPlace? _place;
   Timer? _timer;
   var _generation = 0;
@@ -60,6 +68,9 @@ final class ProductMatchController extends ChangeNotifier
   ProductMatchTarget? get target => _target;
 
   AsyncState<List<CheckersProduct>> get matches => _matches;
+
+  /// The product Jev is sure the item means; null until it has answered.
+  String? get bestMatchId => _bestMatchId;
 
   /// Where the last search looked, once it is known.
   CheckersPlace? get place => _place;
@@ -128,6 +139,7 @@ final class ProductMatchController extends ChangeNotifier
     _timer?.cancel();
     final generation = ++_generation;
     _matches = const AsyncLoading();
+    _bestMatchId = null;
     notifyListeners();
     _timer = Timer(
       immediately ? Duration.zero : debounce,
@@ -149,6 +161,37 @@ final class ProductMatchController extends ChangeNotifier
     }
     if (_isDisposed || generation != _generation) return;
     _matches = result;
+    notifyListeners();
+    if (result case AsyncData(value: final products) when products.isNotEmpty) {
+      await _rank(generation, target.name, products);
+    }
+  }
+
+  /// Puts Jev's best first. Ranking is a nicety: when it fails the shop's
+  /// order stays and nothing is said.
+  Future<void> _rank(
+    int generation,
+    String item,
+    List<CheckersProduct> products,
+  ) async {
+    final ranker = _ranker;
+    if (ranker == null) return;
+    final Map<String, double> fits;
+    try {
+      fits = await ranker.rank(
+        householdId: householdId,
+        item: item,
+        products: products,
+      );
+    } on AppFailure {
+      return;
+    }
+    if (_isDisposed || generation != _generation) return;
+    final ranked = [...products]
+      ..sort((a, b) => (fits[b.id] ?? 0).compareTo(fits[a.id] ?? 0));
+    final best = ranked.first;
+    _matches = AsyncData(ranked);
+    _bestMatchId = (fits[best.id] ?? 0) >= bestMatchFit ? best.id : null;
     notifyListeners();
   }
 

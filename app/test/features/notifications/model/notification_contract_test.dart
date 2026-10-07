@@ -24,10 +24,9 @@ void main() {
       multiLine: true,
     ).firstMatch(source);
     expect(match, isNotNull, reason: '$name is gone from the contract');
-    return RegExp("'([^']+)'")
-        .allMatches(match!.group(1)!)
-        .map((word) => word.group(1)!)
-        .toList();
+    return RegExp(
+      "'([^']+)'",
+    ).allMatches(match!.group(1)!).map((word) => word.group(1)!).toList();
   }
 
   test('the categories', () {
@@ -63,10 +62,9 @@ void main() {
   });
 
   test('every Android channel the server names is one the app creates', () {
-    final named = RegExp("'(nestprep_\\w+)'")
-        .allMatches(contract)
-        .map((match) => match.group(1)!)
-        .toSet();
+    final named = RegExp(
+      "'(nestprep_\\w+)'",
+    ).allMatches(contract).map((match) => match.group(1)!).toSet();
     expect(named, AndroidChannel.values.map((channel) => channel.id).toSet());
   });
 
@@ -86,13 +84,13 @@ void main() {
   });
 
   test('the answers a test push can give', () {
-    final match = RegExp('export type TestOutcome = ([^;]+);')
-        .firstMatch(testCallable);
+    final match = RegExp(
+      'export type TestOutcome = ([^;]+);',
+    ).firstMatch(testCallable);
     expect(match, isNotNull);
-    final words = RegExp("'(\\w+)'")
-        .allMatches(match!.group(1)!)
-        .map((word) => word.group(1)!)
-        .toSet();
+    final words = RegExp(
+      "'(\\w+)'",
+    ).allMatches(match!.group(1)!).map((word) => word.group(1)!).toSet();
     expect(TestPushOutcome.values.map((value) => value.name).toSet(), words);
   });
 }

@@ -14,8 +14,9 @@ import '../../../support/lunch_fixtures.dart';
 
 /// Checkers' lunchbox aisle read before any idea is drafted (lunch-box
 /// ADR-0013): a shelf at a time, each product judged for each child, the
-/// best kept first, a category when the list is bare, and a shelf that
-/// cannot be read counted rather than lost.
+/// best kept first, a category when the list is bare, a shelf that cannot
+/// be read counted rather than lost, and only the compartments the brief
+/// fills.
 void main() {
   const lwazi = LunchFixtures.lwaziId;
   const ayanda = LunchFixtures.ayandaId;
@@ -24,6 +25,7 @@ void main() {
     ayanda: LunchFixtures.ayandaEntry.foodRules,
   };
   final near = CheckersArea.capeTown.centre;
+  final every = {...LunchSlot.values};
 
   const yoghurtList = CheckersShelf.productList('69d4ebed9cccb04862bcb67f');
   const yoghurtCategory = CheckersShelf.displayCategory(
@@ -74,7 +76,7 @@ void main() {
       planWeekProduct('Baby carrots', id: 'carrots', ingredients: 'Carrots'),
     ];
 
-    await aisle.read(near: near, rulesByChild: rules);
+    await aisle.read(near: near, rulesByChild: rules, slots: every);
 
     expect(aisle.isReading, isFalse);
     expect(aisle.shelvesRead, 3);
@@ -94,7 +96,7 @@ void main() {
       planWeekProduct('Fruit yoghurt', id: 'yog', ingredients: 'Milk'),
     ];
 
-    await aisle.read(near: near, rulesByChild: rules);
+    await aisle.read(near: near, rulesByChild: rules, slots: every);
 
     expect(shop.shelves.take(2), [yoghurtList, yoghurtCategory]);
     expect(aisle.shelves.first.kept.single.productId, 'yog');
@@ -105,7 +107,7 @@ void main() {
       CheckersProblem.catalogueUnreachable,
     );
 
-    await aisle.read(near: near, rulesByChild: rules);
+    await aisle.read(near: near, rulesByChild: rules, slots: every);
 
     expect(aisle.unread, 1);
     expect(
@@ -125,7 +127,11 @@ void main() {
       planWeekProduct('Mystery biscuits', id: 'mb'),
     ];
 
-    await aisle.read(near: near, rulesByChild: {lwazi: rules[lwazi]!});
+    await aisle.read(
+      near: near,
+      rulesByChild: {lwazi: rules[lwazi]!},
+      slots: every,
+    );
 
     final cookies = aisle.shelves[1];
     expect(cookies.idea.isStruckOut, isTrue);
@@ -136,11 +142,33 @@ void main() {
     ]);
   });
 
+  test(
+    'a shelf for a compartment the brief leaves out is never read',
+    () async {
+      shop.byShelf[yoghurtList] = [
+        planWeekProduct('Fruit yoghurt', id: 'yog', ingredients: 'Milk'),
+      ];
+
+      await aisle.read(
+        near: near,
+        rulesByChild: rules,
+        slots: {LunchSlot.snack, LunchSlot.veg},
+      );
+
+      expect(shop.shelves, isNot(contains(biscuitList)));
+      expect(aisle.total, 2);
+      expect(
+        [for (final s in aisle.shelves) s.idea.slot],
+        [LunchSlot.snack, LunchSlot.veg],
+      );
+    },
+  );
+
   test('clearing drops a read on its way', () async {
     shop.byShelf[yoghurtList] = [
       planWeekProduct('Fruit yoghurt', id: 'yog', ingredients: 'Milk'),
     ];
-    final reading = aisle.read(near: near, rulesByChild: rules);
+    final reading = aisle.read(near: near, rulesByChild: rules, slots: every);
     aisle.clear();
     await reading;
     expect(aisle.shelves, isEmpty);

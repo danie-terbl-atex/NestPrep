@@ -3,10 +3,9 @@ import '../../../shared/copy/app_copy.dart';
 /// How an invite leaves the app: the platform's own share sheet, so a parent
 /// sends it the way they send everything else (household ADR-0003).
 abstract interface class InviteSharer {
-  /// Where somebody gets the app, said in the message beside the code. Null
-  /// when no link is configured — the message then says the app's name
-  /// alone. Tapping it never joins anything: the code does that
-  /// (household ADR-0002).
+  /// Where somebody gets the app, for the shares that are not an invite.
+  /// Null when no link is configured. An invite carries its own link
+  /// (household ADR-0005).
   Uri? get appLink;
 
   Future<InviteShareOutcome> share({
@@ -34,10 +33,6 @@ extension ShareInviteCode on InviteSharer {
     required String code,
   }) => share(
     subject: AccessCopy.inviteSubject(householdName),
-    text: AccessCopy.inviteMessage(
-      householdName: householdName,
-      code: code,
-      appLink: appLink,
-    ),
+    text: AccessCopy.inviteMessage(householdName: householdName, code: code),
   );
 }

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/plan_week/data/lunch_ideas_request.dart';
 import 'package:nestprep/features/plan_week/data/lunch_week_request.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
 import 'package:nestprep/features/plan_week/model/idea_search.dart';
@@ -9,6 +10,7 @@ import 'package:nestprep/features/plan_week/model/left_out_reason.dart';
 import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
 import 'package:nestprep/features/plan_week/model/lunch_ideas_reply.dart';
 import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
+import 'package:nestprep/features/plan_week/model/packing_preference.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/checkers_fakes_for_plan_week.dart';
@@ -20,6 +22,10 @@ import '../../../support/lunch_fixtures.dart';
 void main() {
   const lwazi = LunchFixtures.lwaziId;
   const ayanda = LunchFixtures.ayandaId;
+  const PackingChoice packing = (
+    preferences: {PackingPreference.noFridge, PackingPreference.readyMade},
+    slots: {LunchSlot.treat, LunchSlot.main},
+  );
 
   group('draftLunchIdeas answers', () {
     test('ideas with their children and exclusions, the budget and the '
@@ -165,6 +171,7 @@ void main() {
           IdeaSearch(idea: idea, status: IdeaSearchStatus.done, found: found),
           IdeaSearch.waiting(idea),
         ],
+        packing: (preferences: const {}, slots: {...LunchSlot.values}),
       );
       expect(wire['week'], LunchFixtures.week.key);
       expect(wire['childIds'], [ayanda, lwazi]..sort());
@@ -179,6 +186,52 @@ void main() {
       expect(first['allergensKnown'], isTrue);
       expect(first['packQuantity'], 6);
       expect(first['priceCents'], 2500);
+    });
+  });
+
+  group('both callables hear the brief\'s packing choices', () {
+    test('by name, in the order the enums declare them', () {
+      final ideas = LunchIdeasRequest.toWire(
+        householdId: 'h1',
+        week: LunchFixtures.week,
+        childIds: {lwazi},
+        packing: packing,
+        aisle: const [],
+      );
+      final week = LunchWeekRequest.toWire(
+        householdId: 'h1',
+        week: LunchFixtures.week,
+        childIds: {lwazi},
+        searches: const [],
+        packing: packing,
+      );
+      for (final wire in [ideas, week]) {
+        expect(wire['preferences'], ['readyMade', 'noFridge']);
+        expect(wire['slots'], ['main', 'treat']);
+      }
+    });
+
+    test('the aisle stays within its bounds', () {
+      final wire = LunchIdeasRequest.toWire(
+        householdId: 'h1',
+        week: LunchFixtures.week,
+        childIds: {lwazi},
+        packing: packing,
+        aisle: [
+          for (var i = 0; i < 20; i++)
+            (
+              slot: LunchSlot.main,
+              title: 'Shelf $i',
+              products: [for (var p = 0; p < 9; p++) 'Product $p'],
+            ),
+        ],
+      );
+      final aisle = wire['aisle']! as List<Object?>;
+      expect(aisle, hasLength(LunchIdeasRequest.shelfLimit));
+      expect(
+        (aisle.first! as Map<String, Object?>)['products'],
+        hasLength(LunchIdeasRequest.namesPerShelf),
+      );
     });
   });
 }

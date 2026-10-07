@@ -33,13 +33,12 @@ final class FirestoreRewardRepository implements RewardRepository {
       );
 
   @override
-  Stream<List<Reward>> watchRewards(String householdId) =>
-      _rewards(householdId)
-          .orderBy('cost')
-          .limit(RewardRepository.shelfLimit)
-          .snapshots()
-          .map(_docs)
-          .handleError(_failed);
+  Stream<List<Reward>> watchRewards(String householdId) => _rewards(householdId)
+      .orderBy('cost')
+      .limit(RewardRepository.shelfLimit)
+      .snapshots()
+      .map(_docs)
+      .handleError(_failed);
 
   @override
   Stream<List<RewardRequest>> watchWaitingRequests(String householdId) =>
@@ -54,14 +53,13 @@ final class FirestoreRewardRepository implements RewardRepository {
   Stream<List<RewardRequest>> watchRequestsFor(
     String householdId,
     String memberId,
-  ) =>
-      _requests(householdId)
-          .where('memberId', isEqualTo: memberId)
-          .orderBy('requestedAt', descending: true)
-          .limit(RewardRepository.requestLimit)
-          .snapshots()
-          .map(_docs)
-          .handleError(_failed);
+  ) => _requests(householdId)
+      .where('memberId', isEqualTo: memberId)
+      .orderBy('requestedAt', descending: true)
+      .limit(RewardRepository.requestLimit)
+      .snapshots()
+      .map(_docs)
+      .handleError(_failed);
 
   @override
   Future<void> saveReward({

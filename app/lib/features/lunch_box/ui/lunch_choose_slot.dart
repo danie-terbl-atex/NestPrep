@@ -52,8 +52,9 @@ class LunchChooseSlot extends StatelessWidget {
             // As many across as fit a card no narrower than twice its
             // drawing, grown with the text — so a long name at large text
             // gets a row of its own rather than breaking mid-word.
-            final narrowest = MediaQuery.textScalerOf(context)
-                .scale(NestSize.avatarLarge * 2);
+            final narrowest = MediaQuery.textScalerOf(
+              context,
+            ).scale(NestSize.avatarLarge * 2);
             double widthFor(int across) =>
                 (constraints.maxWidth - gap * (across - 1)) / across;
             var across = entry.options.length;

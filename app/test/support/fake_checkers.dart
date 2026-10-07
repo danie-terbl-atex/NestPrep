@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_catalogue.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_directory.dart';
+import 'package:nestprep/features/add_to_checkers/data/product_match_ranker.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_link_status.dart';
@@ -162,11 +163,31 @@ final class FakeCheckersDirectory implements CheckersDirectory {
   }
 }
 
+/// Jev's scores, scripted: [fits] by product id, or [failure] thrown.
+final class FakeProductMatchRanker implements ProductMatchRanker {
+  Map<String, double> fits = const {};
+  AppFailure? failure;
+  final asked = <({String item, List<String> productIds})>[];
+
+  @override
+  Future<Map<String, double>> rank({
+    required String householdId,
+    required String item,
+    required List<CheckersProduct> products,
+  }) async {
+    asked.add((item: item, productIds: [for (final p in products) p.id]));
+    final failing = failure;
+    if (failing != null) throw failing;
+    return fits;
+  }
+}
+
 /// What the app-wide graph registers for Checkers, faked, for a test that
 /// builds the grocery route.
 List<SingleChildWidget> fakeCheckersProviders({
   FakeCheckersCatalogue? catalogue,
   FakeCheckersDirectory? directory,
+  FakeProductMatchRanker? ranker,
 }) => [
   Provider<CheckersCatalogue>.value(
     value: catalogue ?? FakeCheckersCatalogue(),
@@ -176,5 +197,6 @@ List<SingleChildWidget> fakeCheckersProviders({
   Provider<CheckersDirectory>.value(
     value: directory ?? FakeCheckersDirectory(),
   ),
+  Provider<ProductMatchRanker>.value(value: ranker ?? FakeProductMatchRanker()),
   Provider<LocationSource>.value(value: FakeLocationSource()),
 ];

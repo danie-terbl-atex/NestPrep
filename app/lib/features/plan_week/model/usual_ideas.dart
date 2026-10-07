@@ -6,12 +6,17 @@ import 'lunch_idea.dart';
 
 /// Ideas without AI (lunch-box ADR-0012 §6): the household's own library,
 /// ranked for each chosen child as the picker ranks it (lunch-box ADR-0003),
-/// the best few per compartment — then checked like any other idea.
+/// the best few per compartment the brief fills — then checked like any
+/// other idea.
 abstract final class UsualIdeas {
   /// Ideas per compartment: enough to vary a week, few enough to search.
   static const perSlot = 3;
 
-  static List<LunchIdea> from(LunchBoard board, Set<String> childIds) {
+  static List<LunchIdea> from(
+    LunchBoard board,
+    Set<String> childIds,
+    Set<LunchSlot> slots,
+  ) {
     final children = [
       for (final childWeek in board.children)
         if (childIds.contains(childWeek.childId)) childWeek,
@@ -21,7 +26,7 @@ abstract final class UsualIdeas {
         childWeek.childId: childWeek.child.foodRules,
     };
     final ideas = <LunchIdea>[];
-    for (final slot in LunchSlot.values) {
+    for (final slot in LunchSlot.values.where(slots.contains)) {
       final chosen = <String, LunchItem>{};
       for (var rank = 0; chosen.length < perSlot; rank++) {
         var anyLeft = false;

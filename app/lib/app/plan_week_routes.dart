@@ -12,6 +12,7 @@ import '../features/lunch_box/state/lunch_board_controller.dart';
 import '../features/plan_week/data/lunch_aisle_source.dart';
 import '../features/plan_week/data/lunch_idea_drafter.dart';
 import '../features/plan_week/data/lunch_week_builder.dart';
+import '../features/plan_week/data/packing_choice_store.dart';
 import '../features/plan_week/data/shop_week_groceries.dart';
 import '../features/plan_week/state/plan_week_controller.dart';
 import '../features/plan_week/state/shop_week_saver.dart';
@@ -54,6 +55,7 @@ GoRoute planWeekRoute() => GoRoute(
           householdId: householdId,
           memberId: memberId,
         ),
+        packingStore: context.read<PackingChoiceStore>(),
         householdId: householdId,
         week: context.read<LunchBoardController>().week,
       ),

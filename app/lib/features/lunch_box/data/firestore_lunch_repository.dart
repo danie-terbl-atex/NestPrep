@@ -45,28 +45,26 @@ final class FirestoreLunchRepository implements LunchRepository {
       );
 
   @override
-  Stream<List<LunchItem>> watchItems(String householdId) =>
-      _items(householdId)
-          .orderBy('nameKey')
-          .limit(LunchRepository.itemLimit)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  Stream<List<LunchItem>> watchItems(String householdId) => _items(householdId)
+      .orderBy('nameKey')
+      .limit(LunchRepository.itemLimit)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Stream<List<LunchPlan>> watchPlans(
     String householdId, {
     required LunchWeek from,
     required LunchWeek to,
-  }) =>
-      _plans(householdId)
-          .where('weekStart', isGreaterThanOrEqualTo: from.monday.iso)
-          .where('weekStart', isLessThanOrEqualTo: to.monday.iso)
-          .orderBy('weekStart', descending: true)
-          .limit(LunchRepository.planLimit)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  }) => _plans(householdId)
+      .where('weekStart', isGreaterThanOrEqualTo: from.monday.iso)
+      .where('weekStart', isLessThanOrEqualTo: to.monday.iso)
+      .orderBy('weekStart', descending: true)
+      .limit(LunchRepository.planLimit)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Stream<LunchPlan> watchPlan(
@@ -119,10 +117,9 @@ final class FirestoreLunchRepository implements LunchRepository {
     try {
       // The library is deduplicated by name within a slot (lunch-box
       // ADR-0001): typing "apple slices" again picks the household's own.
-      final existing = await _items(householdId)
-          .where('nameKey', isEqualTo: item.nameKey)
-          .limit(5)
-          .get();
+      final existing = await _items(
+        householdId,
+      ).where('nameKey', isEqualTo: item.nameKey).limit(5).get();
       final found = existing.docs
           .where((doc) => doc.data().slotName == item.slotName)
           .firstOrNull;
@@ -209,26 +206,25 @@ final class FirestoreLunchRepository implements LunchRepository {
     required String field,
     required Map<String, Object?> values,
   }) => _guarded(
-    () =>
-        _household(householdId)
-            .collection(plansPath)
-            .doc(LunchPlan.idFor(childId, week))
-            .set(
-              {
-                'childId': childId,
-                'week': week.key,
-                'weekStart': week.monday.iso,
-                field: values,
-              },
-              SetOptions(
-                mergeFields: [
-                  FieldPath(const ['childId']),
-                  FieldPath(const ['week']),
-                  FieldPath(const ['weekStart']),
-                  for (final key in values.keys) FieldPath([field, key]),
-                ],
-              ),
-            ),
+    () => _household(householdId)
+        .collection(plansPath)
+        .doc(LunchPlan.idFor(childId, week))
+        .set(
+          {
+            'childId': childId,
+            'week': week.key,
+            'weekStart': week.monday.iso,
+            field: values,
+          },
+          SetOptions(
+            mergeFields: [
+              FieldPath(const ['childId']),
+              FieldPath(const ['week']),
+              FieldPath(const ['weekStart']),
+              for (final key in values.keys) FieldPath([field, key]),
+            ],
+          ),
+        ),
   );
 
   @override

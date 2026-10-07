@@ -21,8 +21,9 @@ void main() {
   // plan write calls (lunch-box ADR-0010).
   final rules = [
     File('../rules/firestore/household/lunch_box.rules').readAsStringSync(),
-    File('../rules/firestore/household/lunch_box_checks.rules')
-        .readAsStringSync(),
+    File(
+      '../rules/firestore/household/lunch_box_checks.rules',
+    ).readAsStringSync(),
   ].join('\n');
   final analytics = File(
     '../functions/src/product_analytics/analytics_documents.ts',
@@ -30,10 +31,9 @@ void main() {
   final repository = File(
     'lib/features/lunch_box/data/firestore_lunch_repository.dart',
   ).readAsStringSync();
-  String pathNamed(String constant) =>
-      RegExp("static const $constant = '(\\w+)';")
-          .firstMatch(repository)!
-          .group(1)!;
+  String pathNamed(String constant) => RegExp(
+    "static const $constant = '(\\w+)';",
+  ).firstMatch(repository)!.group(1)!;
 
   Set<String> quoted(String text) => {
     for (final match in RegExp("'([\\w-]+)'").allMatches(text)) match.group(1)!,

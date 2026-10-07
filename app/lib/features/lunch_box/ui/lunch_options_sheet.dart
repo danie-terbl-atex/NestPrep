@@ -110,9 +110,9 @@ class _OptionsBodyState extends State<_OptionsBody> {
           NestButton(
             label: LunchKidPicksCopy.clearOptions,
             variant: NestButtonVariant.ghost,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop(const SheetRemoved<List<LunchItem>>()),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop(const SheetRemoved<List<LunchItem>>()),
           ),
         ],
       ],

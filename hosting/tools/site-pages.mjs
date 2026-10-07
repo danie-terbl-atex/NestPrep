@@ -27,6 +27,8 @@ export const COPIED_ASSETS = [
   ['app/assets/fonts/Fraunces-OFL.txt', 'assets/fonts/Fraunces-OFL.txt'],
   ['hosting/src/site.css', 'assets/site.css'],
   ['hosting/src/delete-account.js', 'assets/delete-account.js'],
+  ['hosting/src/invite.js', 'assets/invite.js'],
+  ['hosting/src/well-known/assetlinks.json', 'well-known/assetlinks.json'],
 ];
 
 /** The two documents the app bundles and the site publishes. */
@@ -62,6 +64,15 @@ const PAGES = [
     description: 'How to delete your NestPrep account and what happens to your information.',
     nav: 'delete-account',
     head: '    <script src="/assets/delete-account.js" defer></script>',
+  },
+  {
+    source: 'hosting/src/pages/invite.html',
+    output: 'invite/index.html',
+    title: 'Your invite — NestPrep',
+    description: 'Join your household on NestPrep.',
+    nav: '',
+    robots: 'noindex',
+    head: '    <script src="/assets/invite.js" defer></script>',
   },
   {
     source: 'hosting/src/pages/404.html',

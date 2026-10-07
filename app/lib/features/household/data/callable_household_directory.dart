@@ -42,6 +42,20 @@ final class CallableHouseholdDirectory implements HouseholdDirectory {
   }
 
   @override
+  Future<InvitePreview> previewInvite(String code) async {
+    final result = await _call('previewInvite', {'code': code});
+    final invitedBy = result['invitedBy'];
+    return InvitePreview(
+      code: code,
+      householdName: _requireString(result, 'householdName'),
+      memberName: _requireString(result, 'memberName'),
+      role: MemberRole.fromName(_requireString(result, 'role')),
+      invitedBy: invitedBy is String && invitedBy.isNotEmpty ? invitedBy : null,
+      expiresAt: DateTime.parse(_requireString(result, 'expiresAt')).toUtc(),
+    );
+  }
+
+  @override
   Future<String> redeemInvite(String code) async {
     final result = await _call('redeemInvite', {'code': code});
     return _requireString(result, 'householdId');

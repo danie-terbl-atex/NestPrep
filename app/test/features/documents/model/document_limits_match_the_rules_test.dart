@@ -85,8 +85,9 @@ void main() {
   });
 
   test('the name cap in the rules is the one the keyboard stops at', () {
-    final declared = RegExp(r'value\.size\(\) <= (\d+)')
-        .firstMatch(read(firestoreRules));
+    final declared = RegExp(
+      r'value\.size\(\) <= (\d+)',
+    ).firstMatch(read(firestoreRules));
     expect(declared, isNotNull, reason: 'the name rule changed shape');
     expect(int.parse(declared!.group(1)!), DocumentLimits.nameMaxLength);
   });

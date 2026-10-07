@@ -104,8 +104,9 @@ class GroceryListScreen extends StatelessWidget {
             ),
           // The chips belong to adding, not to the list, so they stay when the
           // list is empty — which is exactly when "the usual" is most useful.
-          if (controller.list case AsyncData(value: final view)
-              when canEdit && view.suggestions.isNotEmpty) ...[
+          if (controller.list case AsyncData(
+            value: final view,
+          ) when canEdit && view.suggestions.isNotEmpty) ...[
             const SizedBox(height: NestSpace.md),
             GrocerySuggestionChips(
               suggestions: view.suggestions,

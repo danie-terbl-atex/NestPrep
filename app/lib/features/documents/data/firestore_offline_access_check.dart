@@ -27,8 +27,9 @@ final class FirestoreOfflineAccessCheck implements OfflineAccessCheck {
   @override
   Future<OfflineAccess> check(OfflineCopy copy) async {
     try {
-      final row = await _rowOf(copy)
-          .get(const GetOptions(source: Source.server));
+      final row = await _rowOf(
+        copy,
+      ).get(const GetOptions(source: Source.server));
       return row.exists ? OfflineAccess.kept : OfflineAccess.lost;
     } on FirebaseException catch (error) {
       if (error.code == 'permission-denied') return OfflineAccess.lost;

@@ -79,8 +79,9 @@ final class EncryptedOfflineCopyStore implements OfflineCopyStore {
           final file = File('${folder.path}/$key.bin');
           if (file.existsSync()) await file.delete();
         }
-        final kept = (await _readIndex(uid))
-            .where((copy) => !going.contains(copy.key));
+        final kept = (await _readIndex(
+          uid,
+        )).where((copy) => !going.contains(copy.key));
         await _writeIndex(uid, kept.toList());
       });
 

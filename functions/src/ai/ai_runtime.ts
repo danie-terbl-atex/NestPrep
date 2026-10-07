@@ -1,15 +1,30 @@
 import type { Firestore } from 'firebase-admin/firestore';
 
 import { applicationDefaultTokens } from './access_token';
-import { aiImageLocation, aiImageModel, aiLocation, aiModel, currentProject } from './ai_config';
+import {
+  aiDecisionModel,
+  aiImageLocation,
+  aiImageModel,
+  aiLocation,
+  aiModel,
+  currentProject,
+  typesafeApiKey,
+} from './ai_config';
 import { AI_SETTINGS_COLLECTION, AI_SETTINGS_DOCUMENT, readAiSettings } from './ai_settings';
+import type { DecisionModel } from './decision_model';
+import { EmulatorDecisionModel } from './emulator_decision_model';
 import { EmulatorImageModel } from './emulator_image_model';
 import { EmulatorModel } from './emulator_model';
 import { FirestoreUsageLedger } from './firestore_usage_ledger';
 import type { GenerativeModel } from './generative_model';
 import type { ImageModel } from './image_model';
 import { GeminiImageModel } from './gemini_image_model';
+import { JevDecisionModel } from './jev_decision_model';
 import type { AiDependencies, ImageDependencies, SpendDependencies } from './run_ai_call';
+import type { DecisionDependencies } from './run_decision_call';
+import { configured } from '../shared/configured_value';
+import { refuseAi } from './ai_refusals';
+import { logger } from 'firebase-functions/v2';
 import { VertexModel } from './vertex_model';
 
 /**
@@ -24,6 +39,10 @@ export async function aiRuntime(store: Firestore): Promise<AiDependencies> {
 /** The same for a picture (lunch-box ADR-0015): the same switch, cap and ledger. */
 export async function imageRuntime(store: Firestore): Promise<ImageDependencies> {
   return { ...(await spendingIn(store)), model: imageModelFor(store) };
+}
+
+export async function decisionRuntime(store: Firestore): Promise<DecisionDependencies> {
+  return { ...(await spendingIn(store)), model: decisionModelFor(store) };
 }
 
 async function spendingIn(store: Firestore): Promise<SpendDependencies> {
@@ -59,4 +78,14 @@ function imageModelFor(store: Firestore): ImageModel {
     model: aiImageModel.value(),
     tokens: applicationDefaultTokens,
   });
+}
+
+function decisionModelFor(store: Firestore): DecisionModel {
+  if (isEmulated()) return new EmulatorDecisionModel(store);
+  const apiKey = configured(typesafeApiKey.value());
+  if (apiKey === null) {
+    logger.error('TYPESAFE_API_KEY is not configured');
+    throw refuseAi('aiUnavailable');
+  }
+  return new JevDecisionModel(apiKey, aiDecisionModel.value());
 }

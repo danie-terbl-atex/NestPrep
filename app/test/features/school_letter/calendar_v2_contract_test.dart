@@ -13,14 +13,18 @@ import 'package:nestprep/shared/flags/feature_flag.dart';
 /// shows as "something went wrong"; a flag renamed is a switch that stops
 /// switching.
 void main() {
-  final aiRefusals = File('../functions/src/ai/ai_refusals.ts')
-      .readAsStringSync();
-  final letterRefusals = File('../functions/src/school_letter/errors.ts')
-      .readAsStringSync();
-  final letterSchemas = File('../functions/src/school_letter/schemas.ts')
-      .readAsStringSync();
-  final flags = File('../functions/src/shared/feature_flags.ts')
-      .readAsStringSync();
+  final aiRefusals = File(
+    '../functions/src/ai/ai_refusals.ts',
+  ).readAsStringSync();
+  final letterRefusals = File(
+    '../functions/src/school_letter/errors.ts',
+  ).readAsStringSync();
+  final letterSchemas = File(
+    '../functions/src/school_letter/schemas.ts',
+  ).readAsStringSync();
+  final flags = File(
+    '../functions/src/shared/feature_flags.ts',
+  ).readAsStringSync();
 
   /// The keys of the `{ … }` block that follows [anchor].
   Set<String> keysAfter(String source, String anchor) {

@@ -7,6 +7,7 @@ import '../../lunch_box/model/lunch_week.dart';
 import '../data/lunch_idea_drafter.dart';
 import '../model/idea_search.dart';
 import '../model/lunch_idea.dart';
+import '../model/packing_preference.dart';
 import '../model/plan_fallback.dart';
 import '../model/usual_ideas.dart';
 
@@ -48,6 +49,7 @@ final class PlanWeekIdeas {
     required LunchWeek week,
     required LunchBoard board,
     required Set<String> childIds,
+    required PackingChoice packing,
     List<IdeaSearch> aisle = const [],
     List<AisleShelfNames> aisleForModel = const [],
   }) async {
@@ -61,12 +63,14 @@ final class PlanWeekIdeas {
         householdId: householdId,
         week: week,
         childIds: childIds,
+        packing: packing,
         aisle: aisleForModel,
       );
       next = AsyncData((
         ideas: [
           ...shelves,
-          for (final idea in reply.ideas) _keptTo(idea, childIds),
+          for (final idea in reply.ideas)
+            if (packing.slots.contains(idea.slot)) _keptTo(idea, childIds),
         ],
         source: PlanSource.ai,
         reason: null,
@@ -77,7 +81,10 @@ final class PlanWeekIdeas {
       next = reason == null
           ? AsyncFailure(failure)
           : AsyncData((
-              ideas: [...shelves, ...UsualIdeas.from(board, childIds)],
+              ideas: [
+                ...shelves,
+                ...UsualIdeas.from(board, childIds, packing.slots),
+              ],
               source: PlanSource.fallback,
               reason: reason,
               callsLeft: null,

@@ -111,10 +111,13 @@ void main() {
       expect(DesignGalleryAccess.isAvailable, isTrue);
     });
 
-    test('the opt-in is a define, so an ordinary release build is unchanged', () {
-      // Named here so that renaming the define breaks a test rather than
-      // quietly turning the crash button on or off for the next release build.
-      expect(DesignGalleryAccess.defineName, 'NESTPREP_CRASH_TEST');
-    });
+    test(
+      'the opt-in is a define, so an ordinary release build is unchanged',
+      () {
+        // Named here so that renaming the define breaks a test rather than
+        // quietly turning the crash button on or off for the next release build.
+        expect(DesignGalleryAccess.defineName, 'NESTPREP_CRASH_TEST');
+      },
+    );
   });
 }

@@ -82,9 +82,9 @@ class _FoodSheetBodyState extends State<_FoodSheetBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: FamilyCopy.save,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop((likes: _likes, dislikes: _dislikes, diet: _diet)),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop((likes: _likes, dislikes: _dislikes, diet: _diet)),
           ),
         ],
       ),

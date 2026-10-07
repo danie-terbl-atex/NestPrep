@@ -83,13 +83,16 @@ void main() {
     expect(lock.isUnlocked, isFalse);
   });
 
-  test('does not lock for the moment the prompt itself takes the screen', () async {
-    // iOS reports `inactive` while Face ID is up; locking on it would make the
-    // vault impossible to open.
-    await lock.unlock();
-    lock.didChangeAppLifecycleState(AppLifecycleState.inactive);
-    expect(lock.isUnlocked, isTrue);
-  });
+  test(
+    'does not lock for the moment the prompt itself takes the screen',
+    () async {
+      // iOS reports `inactive` while Face ID is up; locking on it would make the
+      // vault impossible to open.
+      await lock.unlock();
+      lock.didChangeAppLifecycleState(AppLifecycleState.inactive);
+      expect(lock.isUnlocked, isTrue);
+    },
+  );
 
   test('locks five minutes after the last thing opened, and a touch restarts '
       'the five', () async {

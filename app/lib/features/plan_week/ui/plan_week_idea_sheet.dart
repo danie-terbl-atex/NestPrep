@@ -8,15 +8,26 @@ import '../model/lunch_idea.dart';
 /// A parent's own idea: which compartment, and what to look for.
 typedef OwnIdea = ({LunchSlot slot, String text});
 
-Future<OwnIdea?> showPlanWeekIdeaSheet(BuildContext context) =>
-    showNestSheet<OwnIdea>(
-      context: context,
-      title: PlanWeekCopy.addIdeaTitle,
-      builder: (_) => const _IdeaForm(),
-    );
+/// The sheet offers only the compartments in [slots] — the ones the brief
+/// fills.
+Future<OwnIdea?> showPlanWeekIdeaSheet(
+  BuildContext context, {
+  required Set<LunchSlot> slots,
+}) => showNestSheet<OwnIdea>(
+  context: context,
+  title: PlanWeekCopy.addIdeaTitle,
+  builder: (_) => _IdeaForm(
+    slots: [
+      for (final slot in LunchSlot.values)
+        if (slots.contains(slot)) slot,
+    ],
+  ),
+);
 
 class _IdeaForm extends StatefulWidget {
-  const _IdeaForm();
+  const _IdeaForm({required this.slots});
+
+  final List<LunchSlot> slots;
 
   @override
   State<_IdeaForm> createState() => _IdeaFormState();
@@ -24,7 +35,7 @@ class _IdeaForm extends StatefulWidget {
 
 class _IdeaFormState extends State<_IdeaForm> {
   final _text = TextEditingController();
-  var _slot = LunchSlot.main;
+  late var _slot = widget.slots.first;
 
   @override
   void dispose() {
@@ -44,7 +55,7 @@ class _IdeaFormState extends State<_IdeaForm> {
           spacing: NestSpace.sm,
           runSpacing: NestSpace.sm,
           children: [
-            for (final slot in LunchSlot.values)
+            for (final slot in widget.slots)
               NestChip(
                 key: ValueKey('idea-slot-${slot.name}'),
                 label: LunchCopy.slotName(slot),

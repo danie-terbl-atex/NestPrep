@@ -9,7 +9,8 @@ import {
   type AisleShelf,
   type FoundIdea,
 } from '../../../src/plan_week/schemas';
-import { weekBriefForModel, weekBriefFrom } from '../../../src/plan_week/week_brief';
+import { assembleWeek } from '../../../src/plan_week/week_assembly';
+import { weekBriefFrom } from '../../../src/plan_week/week_brief';
 import type { LunchPlanFacts } from '../../../src/plan_week/week_documents';
 import { productOf, rulesOf } from './fixtures';
 
@@ -67,7 +68,7 @@ describe("the store's lunchbox shelves the model hears (lunch-box ADR-0013)", ()
   });
 });
 
-describe('a shelf sent back with its products is marked for the model', () => {
+describe('a shelf sent back with its products is leaned on in the week', () => {
   const idea = (id: string, fromAisle: boolean): FoundIdea => ({
     id,
     slot: 'snack',
@@ -76,17 +77,17 @@ describe('a shelf sent back with its products is marked for the model', () => {
     products: [productOf({ productId: id })],
   });
 
-  it('as "aisle": true, and a model idea is not', () => {
+  it('so at the same fit and price the aisle product is packed first', () => {
     const brief = weekBriefFrom(
-      [idea('aisle-1', true), idea('idea-1', false)],
+      [idea('idea-1', false), idea('aisle-1', true)],
       [LEO],
       [],
       MONDAY,
       null,
     );
-    const model = weekBriefForModel(brief) as { ideas: Record<string, unknown>[] };
-    expect(model.ideas[0]).toHaveProperty('aisle', true);
-    expect(model.ideas[1]).not.toHaveProperty('aisle');
+    expect(brief.products.map((p) => p.fromAisle)).toEqual([false, true]);
+    const week = assembleWeek(brief, { fit: { 'p-1': 0.9, 'p-2': 0.9 }, boxes: {} });
+    expect(week.lunches.find((l) => l.day === 1)?.productId).toBe('aisle-1');
   });
 });
 

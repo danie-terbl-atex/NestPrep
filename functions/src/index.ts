@@ -8,6 +8,7 @@ import './shared/global_options';
 export { createHousehold } from './household/create_household';
 export { createInvite } from './household/create_invite';
 export { redeemInvite } from './household/redeem_invite';
+export { previewInvite } from './household/preview_invite';
 export { leaveHousehold } from './household/leave_household';
 export { removeMember } from './household/remove_member';
 export { setMemberRole } from './household/set_member_role';
@@ -117,3 +118,5 @@ export { checkersRequestOtp } from './checkers/checkers_request_otp';
 export { checkersVerifyOtp } from './checkers/checkers_verify_otp';
 export { checkersPushToCart } from './checkers/checkers_push_to_cart';
 export { checkersUnlink } from './checkers/checkers_unlink';
+// ---- Jev ranks the matches under a grocery line; the member still picks (foundation ADR-0021) ----
+export { rankProductMatches } from './checkers/rank_product_matches';

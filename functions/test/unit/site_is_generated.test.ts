@@ -32,11 +32,12 @@ describe('the public site is generated', () => {
     ).not.toThrow();
   });
 
-  it('with the landing page, both legal documents, the deletion page and a 404', () => {
+  it('with the landing page, both legal documents, the deletion and invite pages and a 404', () => {
     expect(pages.map((page) => page.path).sort()).toEqual([
       '404.html',
       'delete-account/index.html',
       'index.html',
+      'invite/index.html',
       'privacy/index.html',
       'terms/index.html',
     ]);
@@ -47,7 +48,7 @@ describe('the public site is generated', () => {
       hosting: {
         public: string;
         predeploy: string[];
-        rewrites: { source: string; function: { functionId: string; region: string } }[];
+        rewrites: object[];
       };
     };
     expect(firebase.hosting.public).toBe('hosting/public');
@@ -181,6 +182,54 @@ describe('the deletion page and its script agree with the request contract', () 
   it('keeps the form hidden without JavaScript and says what to do instead', () => {
     expect(page).toMatch(/<form[^>]*\shidden[\s>]/);
     expect(page).toContain('<noscript>');
+  });
+});
+
+describe('an invite link opens the app or says how to join (household ADR-0005)', () => {
+  const page = read('hosting/src/pages/invite.html');
+  const script = read('hosting/src/invite.js');
+  const firebase = JSON.parse(read('firebase.json')) as { hosting: { rewrites: object[] } };
+  const manifest = read('app/android/app/src/main/AndroidManifest.xml');
+
+  it('serves every /invite/<code> from the one page, and the app links file from a path Hosting does not ignore', () => {
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/invite/**',
+      destination: '/invite/index.html',
+    });
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/.well-known/assetlinks.json',
+      destination: '/well-known/assetlinks.json',
+    });
+  });
+
+  it('has words in the page for every state the script can show', () => {
+    const states = [...script.matchAll(/show\('([a-zA-Z]+)'\)/g)].map((match) => match[1]);
+    expect(states.length).toBeGreaterThan(1);
+    for (const state of states) expect(page, state).toContain(`data-state="${String(state)}"`);
+  });
+
+  it('opens the app through the scheme the manifest declares', () => {
+    expect(script).toContain('nestprep://invite/');
+    expect(manifest).toContain('android:scheme="nestprep"');
+    expect(manifest).toContain('android:pathPrefix="/invite/"');
+  });
+
+  it('checks a code against the same letters the server draws from', () => {
+    const alphabet = /READABLE_ALPHABET = '([A-Z0-9]+)'/.exec(
+      read('functions/src/shared/readable_code.ts'),
+    )?.[1];
+    expect(script).toContain(`'${String(alphabet)}'`);
+  });
+
+  it('vouches for the app the manifest builds', () => {
+    const links = JSON.parse(String(site.get('well-known/assetlinks.json'))) as {
+      target: { package_name: string; sha256_cert_fingerprints: string[] };
+    }[];
+    const applicationId = /applicationId = "([^"]+)"/.exec(
+      read('app/android/app/build.gradle.kts'),
+    )?.[1];
+    expect(links[0]?.target.package_name).toBe(applicationId);
+    expect(links[0]?.target.sha256_cert_fingerprints.length).toBeGreaterThan(0);
   });
 });
 

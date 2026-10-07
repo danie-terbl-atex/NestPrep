@@ -27,7 +27,9 @@
       {
         "source": "/api/account-deletion-request",
         "function": { "functionId": "requestAccountDeletion", "region": "europe-west1" }
-      }
+      },
+      { "source": "/invite/**", "destination": "/invite/index.html" },
+      { "source": "/.well-known/assetlinks.json", "destination": "/well-known/assetlinks.json" }
     ],
     "headers": [
       {

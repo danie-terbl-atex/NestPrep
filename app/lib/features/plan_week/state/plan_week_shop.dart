@@ -7,6 +7,7 @@ import '../../lunch_box/model/lunch_week.dart';
 import '../data/lunch_week_builder.dart';
 import '../data/shop_week_groceries.dart';
 import '../model/idea_search.dart';
+import '../model/packing_preference.dart';
 import '../model/plan_fallback.dart';
 import '../model/shop_week.dart';
 import '../model/shop_week_assembly.dart';
@@ -58,6 +59,7 @@ final class PlanWeekShop {
     required LunchBoard board,
     required Set<String> childIds,
     required List<IdeaSearch> searches,
+    required PackingChoice packing,
     required Money? budget,
   }) async {
     final generation = ++_generation;
@@ -70,6 +72,7 @@ final class PlanWeekShop {
         week: week,
         childIds: childIds,
         searches: searches,
+        packing: packing,
       );
       next = AsyncData(
         ShopWeekAssembly.fromReply(
@@ -77,6 +80,7 @@ final class PlanWeekShop {
           childIds: childIds,
           searches: searches,
           reply: reply,
+          slots: packing.slots,
           budget: switch (reply.budgetCents) {
             final cents? => Money(cents),
             null => budget,
@@ -93,6 +97,7 @@ final class PlanWeekShop {
                 childIds: childIds,
                 searches: searches,
                 budget: budget,
+                slots: packing.slots,
                 reason: reason,
               ),
             );
@@ -104,9 +109,6 @@ final class PlanWeekShop {
 
   void swap(String childId, String slotKey, ShopPick? pick) =>
       _edit((week) => week.withPick(childId, slotKey, pick));
-
-  void setBoxesPerPack(String productId, int boxes) =>
-      _edit((week) => week.withBoxesPerPack(productId, boxes));
 
   /// Writes the week; true when it went in.
   Future<bool> use(LunchBoard board) async {

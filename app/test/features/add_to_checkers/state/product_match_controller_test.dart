@@ -36,6 +36,7 @@ final class Harness {
   final areas = FakeCheckersAreaPreference();
   final location = FakeLocationSource();
   final groceries = FakeGroceryRepository();
+  final ranker = FakeProductMatchRanker();
 
   late final controller = ProductMatchController(
     catalogue: catalogue,
@@ -46,9 +47,16 @@ final class Harness {
     groceryRepository: groceries,
     householdId: Fixtures.householdId,
     memberId: Fixtures.samMemberId,
+    ranker: ranker,
     debounce: debounce,
   );
 }
+
+List<String> shownIds(ProductMatchController controller) =>
+    switch (controller.matches) {
+      AsyncData(value: final products) => [for (final p in products) p.id],
+      _ => const [],
+    };
 
 void main() {
   test(
@@ -186,6 +194,50 @@ void main() {
       expect(h.areas.chosen[Fixtures.householdId], CheckersArea.durban);
       expect(h.catalogue.searches.last.near, CheckersArea.durban.centre);
       expect(h.controller.place?.area, CheckersArea.durban);
+    });
+  });
+
+  group("Jev's ranking (foundation ADR-0021)", () {
+    Harness withThree() => Harness()
+      ..catalogue.products = [
+        checkersProduct('Chocolate Milk 1L', id: 'choc'),
+        checkersProduct('Full Cream Milk 2L', id: 'full'),
+        checkersProduct('Condensed Milk 385g', id: 'cond'),
+      ];
+
+    test('puts the best fit first and marks it when Jev is sure', () async {
+      final h = withThree()
+        ..ranker.fits = {'choc': 0.03, 'full': 0.92, 'cond': 0.04};
+      h.controller.lookFor(item('Milk'));
+      await settle();
+      expect(h.ranker.asked.single.item, 'Milk');
+      expect(shownIds(h.controller), ['full', 'cond', 'choc']);
+      expect(h.controller.bestMatchId, 'full');
+    });
+
+    test('reorders without a mark when nothing is a sure fit', () async {
+      final h = withThree()..ranker.fits = {'cond': 0.5, 'full': 0.4};
+      h.controller.lookFor(item('Milk'));
+      await settle();
+      expect(shownIds(h.controller), ['cond', 'full', 'choc']);
+      expect(h.controller.bestMatchId, isNull);
+    });
+
+    test("keeps the shop's order, and says nothing, when Jev fails", () async {
+      final h = withThree()..ranker.failure = const UnavailableFailure();
+      h.controller.lookFor(item('Milk'));
+      await settle();
+      expect(shownIds(h.controller), ['choc', 'full', 'cond']);
+      expect(h.controller.bestMatchId, isNull);
+      expect(h.controller.matches, isA<AsyncData<Object>>());
+    });
+
+    test('drops a mark from an earlier item', () async {
+      final h = withThree()..ranker.fits = {'full': 0.92};
+      h.controller.lookFor(item('Milk'));
+      await settle();
+      h.controller.lookFor(item('Bread', id: 'i2'));
+      expect(h.controller.bestMatchId, isNull);
     });
   });
 }

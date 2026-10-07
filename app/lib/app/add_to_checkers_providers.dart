@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../features/add_to_checkers/data/callable_checkers_directory.dart';
+import '../features/add_to_checkers/data/callable_product_match_ranker.dart';
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
 import '../features/add_to_checkers/data/checkers_catalogue.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/http_checkers_catalogue.dart';
+import '../features/add_to_checkers/data/product_match_ranker.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/add_to_checkers/data/secure_storage_checkers_area_preference.dart';
 import '../features/add_to_checkers/data/secure_storage_retailer_preference.dart';
@@ -26,5 +28,9 @@ List<SingleChildWidget> addToCheckersProviders() => [
   Provider<CheckersDirectory>(
     create: (context) =>
         CallableCheckersDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<ProductMatchRanker>(
+    create: (context) =>
+        CallableProductMatchRanker(context.read<FirebaseFunctions>()),
   ),
 ];

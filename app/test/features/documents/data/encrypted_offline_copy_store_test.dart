@@ -204,8 +204,9 @@ void main() {
         'nestprep_backup_rules.xml',
         'nestprep_data_extraction_rules.xml',
       ]) {
-        final rules = File('android/app/src/main/res/xml/$name')
-            .readAsStringSync();
+        final rules = File(
+          'android/app/src/main/res/xml/$name',
+        ).readAsStringSync();
         expect(
           rules,
           contains('path="${EncryptedOfflineCopyStore.folderName}/"'),
@@ -216,8 +217,9 @@ void main() {
     });
 
     test('and the manifest points at them', () {
-      final manifest = File('android/app/src/main/AndroidManifest.xml')
-          .readAsStringSync();
+      final manifest = File(
+        'android/app/src/main/AndroidManifest.xml',
+      ).readAsStringSync();
       expect(
         manifest,
         contains('android:fullBackupContent="@xml/nestprep_backup_rules"'),

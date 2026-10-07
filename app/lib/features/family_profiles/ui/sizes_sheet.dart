@@ -63,9 +63,9 @@ class _SizesSheetBodyState extends State<_SizesSheetBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: FamilyCopy.save,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop((clothingSize: _clothing.text, shoeSize: _shoes.text)),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop((clothingSize: _clothing.text, shoeSize: _shoes.text)),
           ),
         ],
       ),

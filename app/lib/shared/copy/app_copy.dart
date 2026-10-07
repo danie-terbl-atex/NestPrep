@@ -72,14 +72,15 @@ abstract final class AppCopy {
   static const retry = 'Try again';
   static const back = 'Back';
 
-  static const brandLine = 'Good lunches. Lighter days.';
-  static const signInEyebrow = 'Your week, a little lighter';
   static const signInTagline =
       'The family organiser that lightens the daily load, starting with '
       'school lunches.';
-  static const signInPhotoLabel =
-      'A packed lunchbox: toastie triangles, strawberries, cucumber, carrot '
-      'and a mandarin.';
+  static const signInOrbitLabel =
+      'The NestPrep mark with a household circling it among its to-dos, '
+      'sport, cleaning, places, birthdays and shopping.';
+
+  /// The orbit's member marks: an illustration's letters, not five people.
+  static const signInOrbitInitials = 'AMJKS';
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';

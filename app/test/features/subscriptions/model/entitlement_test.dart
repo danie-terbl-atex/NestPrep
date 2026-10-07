@@ -23,15 +23,18 @@ void main() {
       expect(ended.hasLapsedAt(now), isTrue);
     });
 
-    test('reads a status this build has never heard of as none, and keeps the date', () {
-      final read = Entitlement.fromJson({
-        'status': 'somethingNew',
-        'plan': 'fortnightly',
-        'store': 'webStore',
-      });
-      expect(read.status, EntitlementStatus.none);
-      expect(read.plan, isNull);
-      expect(read.store, isNull);
-    });
+    test(
+      'reads a status this build has never heard of as none, and keeps the date',
+      () {
+        final read = Entitlement.fromJson({
+          'status': 'somethingNew',
+          'plan': 'fortnightly',
+          'store': 'webStore',
+        });
+        expect(read.status, EntitlementStatus.none);
+        expect(read.plan, isNull);
+        expect(read.store, isNull);
+      },
+    );
   });
 }

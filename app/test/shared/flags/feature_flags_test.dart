@@ -27,8 +27,9 @@ void main() {
     test('a field it does not set is the build default — on in debug, off in '
         'release', () {
       expect(
-        const FeatureFlags.defaults(defaultOn: true)
-            .isOn(FeatureFlag.documentShareLinks),
+        const FeatureFlags.defaults(
+          defaultOn: true,
+        ).isOn(FeatureFlag.documentShareLinks),
         isTrue,
       );
       expect(

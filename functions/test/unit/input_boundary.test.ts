@@ -6,6 +6,7 @@ import {
   createHouseholdInput,
   createInviteInput,
   leaveHouseholdInput,
+  previewInviteInput,
   redeemInviteInput,
   removeMemberInput,
   setMemberAccessInput,
@@ -95,6 +96,7 @@ const validBodies = {
     body: { householdId: 'h1', memberId: 'm-kid' },
   },
   redeemInvite: { schema: redeemInviteInput, body: { code: 'ABCD2345' } },
+  previewInvite: { schema: previewInviteInput, body: { code: 'ABCD2345' } },
   leaveHousehold: { schema: leaveHouseholdInput, body: { householdId: 'h1' } },
   removeMember: {
     schema: removeMemberInput,

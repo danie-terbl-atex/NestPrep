@@ -85,27 +85,29 @@ cloud because the client redirects every service.
 
 ## Configuration (`BE-16`)
 
-| Name                                                                            | Kind                                           | Used by                                                                      | Unset means                                                      |
-| ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `CALENDAR_GOOGLE_CLIENT_ID`                                                     | string param, default empty                    | calendar sync                                                                | Google Calendar says _not set up yet_                            |
-| `CALENDAR_MICROSOFT_CLIENT_ID`                                                  | string param, default empty                    | calendar sync                                                                | Outlook says _not set up yet_                                    |
-| `CALENDAR_GOOGLE_CLIENT_SECRET`                                                 | Secret Manager secret                          | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured  |
-| `CALENDAR_MICROSOFT_CLIENT_SECRET`                                              | Secret Manager secret                          | the same three                                                               | the same                                                         |
-| `CALENDAR_FUNCTIONS_BASE_URL`                                                   | string param, default empty                    | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`    |
-| `SUBSCRIPTIONS_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_YEARLY_PRODUCT_ID`           | string params, default empty                   | subscriptions                                                                | premium says _isn't available yet_                               |
-| `SUBSCRIPTIONS_PRICING_TEST`                                                    | string param, default `off`                    | the paywall's offer                                                          | everybody in cohort `a` (yearly first); `on` splits by household |
-| `SUBSCRIPTIONS_TEST_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_TEST_YEARLY_PRODUCT_ID` | string params, default empty                   | cohort `b` of the pricing test                                               | cohort `b` is offered cohort `a`'s products                      |
-| `SUBSCRIPTIONS_ANDROID_PACKAGE`, `SUBSCRIPTIONS_IOS_BUNDLE_ID`                  | string params, default `io.nullstate.nestprep` | verification                                                                 | the app's own ids                                                |
-| `SUBSCRIPTIONS_APPLE_APP_ID`                                                    | string param, default empty                    | App Store notifications                                                      | a production notification's app id is not checked                |
-| `SUBSCRIPTIONS_APPLE_ISSUER_ID`, `SUBSCRIPTIONS_APPLE_KEY_ID`                   | string params, default empty                   | the App Store Server API                                                     | renewal status comes only from notifications                     |
-| `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured  |
-| `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                               |
-| `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)        |
-| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                        |
-| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                   |
-| `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged     |
-| `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                         |
-| `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly        |
+| Name                                                                            | Kind                                           | Used by                                                                      | Unset means                                                        |
+| ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `CALENDAR_GOOGLE_CLIENT_ID`                                                     | string param, default empty                    | calendar sync                                                                | Google Calendar says _not set up yet_                              |
+| `CALENDAR_MICROSOFT_CLIENT_ID`                                                  | string param, default empty                    | calendar sync                                                                | Outlook says _not set up yet_                                      |
+| `CALENDAR_GOOGLE_CLIENT_SECRET`                                                 | Secret Manager secret                          | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured    |
+| `CALENDAR_MICROSOFT_CLIENT_SECRET`                                              | Secret Manager secret                          | the same three                                                               | the same                                                           |
+| `CALENDAR_FUNCTIONS_BASE_URL`                                                   | string param, default empty                    | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`      |
+| `SUBSCRIPTIONS_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_YEARLY_PRODUCT_ID`           | string params, default empty                   | subscriptions                                                                | premium says _isn't available yet_                                 |
+| `SUBSCRIPTIONS_PRICING_TEST`                                                    | string param, default `off`                    | the paywall's offer                                                          | everybody in cohort `a` (yearly first); `on` splits by household   |
+| `SUBSCRIPTIONS_TEST_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_TEST_YEARLY_PRODUCT_ID` | string params, default empty                   | cohort `b` of the pricing test                                               | cohort `b` is offered cohort `a`'s products                        |
+| `SUBSCRIPTIONS_ANDROID_PACKAGE`, `SUBSCRIPTIONS_IOS_BUNDLE_ID`                  | string params, default `io.nullstate.nestprep` | verification                                                                 | the app's own ids                                                  |
+| `SUBSCRIPTIONS_APPLE_APP_ID`                                                    | string param, default empty                    | App Store notifications                                                      | a production notification's app id is not checked                  |
+| `SUBSCRIPTIONS_APPLE_ISSUER_ID`, `SUBSCRIPTIONS_APPLE_KEY_ID`                   | string params, default empty                   | the App Store Server API                                                     | renewal status comes only from notifications                       |
+| `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured    |
+| `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                                 |
+| `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)          |
+| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                          |
+| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                     |
+| `AI_DECISION_MODEL`                                                             | string param                                   | every decision (`src/ai/run_decision_call.ts`)                               | `jev-latest`                                                       |
+| `TYPESAFE_API_KEY`                                                              | Secret Manager secret                          | `buildLunchWeek`, `rankProductMatches` (Jev, foundation ADR-0022)            | must exist to deploy; missing refuses with `aiUnavailable`, logged |
+| `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged       |
+| `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                           |
+| `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly          |
 
 Subscriptions (subscriptions ADR-0001 in the vault) reach Google Play as **the Functions runtime
 service account**, through application-default credentials — there is no key file. It works once
@@ -171,6 +173,7 @@ deploy (foundation ADR-0014, ADR-0015), both set by hand in the console and unre
 - `appConfig/flags` — one boolean per V2 capability (`snapSchoolLetter`, …). Absent means on under
   the emulator and **off in the cloud**.
 - `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`, `features.lunchPhoto`,
+  `features.productMatch` (Jev's grocery ranking, never counted),
   `monthlyCalls.free` and `monthlyCalls.premium`. Absent means on, 10 calls a month free and 100
   premium. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
   costs anything.
@@ -186,6 +189,17 @@ POPIA section). Vertex is reached as the Functions' service account — **no API
 runtime service account needs `roles/aiplatform.user`. Under the emulator the model is
 `EmulatorModel`, which answers from `aiEmulator/{feature}.reply` (or fails with `failWith`), so no
 test or local run reaches Vertex or bills anything.
+
+**A decision goes to Jev, not Gemini** (foundation ADR-0022 in Godfather): choosing or scoring
+among options NestPrep already holds. A feature builds a `DecisionRequest` (`label`, `state`,
+`questions` of `noul`/`choice`) and calls `runDecisionCall` (charged like `runAiCall`) or
+`askDecisions` (switched, uncharged), with `deps = await decisionRuntime(db())`; it reads answers
+with `noulOf`/`choiceOf` and decides in its own code. Jev is TypeSafe `systemOne`, keyed by the
+`TYPESAFE_API_KEY` secret — the same TypeSafe account as the 28 Days app (integration-map C-021);
+a callable that asks Jev declares `secrets: DECISION_SECRETS`. It never receives a person, a name,
+an allergy or a household id. Under the emulator `EmulatorDecisionModel` answers from
+`aiEmulator/{label}.answers` and otherwise says a sure yes or the first choice. `functions/.env.nestprep-643b7`
+must name `AI_DECISION_MODEL`, or a non-interactive deploy stops asking for it.
 
 A picture goes through `runImageCall` — the same switch, claim and refund, with an `ImageModel`
 (Imagen in the cloud; under the emulator `EmulatorImageModel`, which returns

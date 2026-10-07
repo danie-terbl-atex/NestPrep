@@ -39,10 +39,9 @@ void main() {
   /// The reasons the input edge throws, which are not in that map.
   Set<String> reasonsFromTheInputEdge() {
     final source = parseInputFile.readAsStringSync();
-    return RegExp(r"reason:\s*'(\w+)'")
-        .allMatches(source)
-        .map((match) => match.group(1)!)
-        .toSet();
+    return RegExp(
+      r"reason:\s*'(\w+)'",
+    ).allMatches(source).map((match) => match.group(1)!).toSet();
   }
 
   test('the server source is where this test thinks it is', () {
@@ -183,8 +182,9 @@ void main() {
 
     test('details that are not a map are ignored rather than trusted', () {
       expect(
-        failureFromCallable(refusal(code: 'not-found', details: 'a string'))
-            .runtimeType,
+        failureFromCallable(
+          refusal(code: 'not-found', details: 'a string'),
+        ).runtimeType,
         NotFoundFailure,
       );
     });

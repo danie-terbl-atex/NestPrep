@@ -112,9 +112,9 @@ class _RoutineSheetBodyState extends State<_RoutineSheetBody> {
           const SizedBox(height: NestSpace.xl),
           NestButton(
             label: NannyCopy.save,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop([for (final step in _steps) step.routine]),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop([for (final step in _steps) step.routine]),
           ),
         ],
       ),

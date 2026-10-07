@@ -136,8 +136,9 @@ void main() {
       () {
         final access = TwoHomesAccess.of(
           Fixtures.helperView(
-            AccessGrant.uniform(AccessLevel.none)
-                .withLevel(HouseholdArea.calendar, AccessLevel.view),
+            AccessGrant.uniform(
+              AccessLevel.none,
+            ).withLevel(HouseholdArea.calendar, AccessLevel.view),
           ),
         );
         expect(access.canSeeSchedule, isTrue);
@@ -162,8 +163,9 @@ void main() {
     test('requests follow whoever may change the calendar', () {
       final access = TwoHomesAccess.of(
         Fixtures.helperView(
-          AccessGrant.uniform(AccessLevel.none)
-              .withLevel(HouseholdArea.calendar, AccessLevel.edit),
+          AccessGrant.uniform(
+            AccessLevel.none,
+          ).withLevel(HouseholdArea.calendar, AccessLevel.edit),
         ),
       );
       expect(access.canSeeRequests, isTrue);

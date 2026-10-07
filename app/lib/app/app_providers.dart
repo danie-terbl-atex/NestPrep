@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,6 +35,7 @@ import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/data/invite_sharer.dart';
 import '../features/household/data/platform_invite_sharer.dart';
+import '../features/household/state/pending_invite.dart';
 import '../features/kid_accounts/data/callable_kid_sign_in_directory.dart';
 import '../features/kid_accounts/data/firestore_kid_device_repository.dart';
 import '../features/kid_accounts/data/kid_device_repository.dart';
@@ -108,6 +110,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // household phase 2: the invite leaves through the share sheet (household
   // ADR-0003).
   Provider<InviteSharer>(create: (context) => PlatformInviteSharer()),
+  ChangeNotifierProvider<PendingInvite>(
+    create: (context) => PendingInvite(links: AppLinks().uriLinkStream),
+  ),
   Provider<GroceryRepository>(
     create: (context) =>
         FirestoreGroceryRepository(context.read<FirebaseFirestore>()),

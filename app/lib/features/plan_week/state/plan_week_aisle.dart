@@ -2,6 +2,7 @@ import '../../../shared/failure/app_failure.dart';
 import '../../add_to_checkers/data/checkers_catalogue.dart';
 import '../../family_profiles/model/food_rules.dart';
 import '../../live_location/model/coordinates.dart';
+import '../../lunch_box/model/lunch_slot.dart';
 import '../data/lunch_aisle_source.dart';
 import '../data/lunch_idea_drafter.dart';
 import '../model/aisle_shelf.dart';
@@ -12,8 +13,9 @@ import '../model/lunch_idea.dart';
 /// The start of step 2 (lunch-box ADR-0013): Checkers' own Kids Lunchbox
 /// shelves, read one at a time near the household before the model drafts
 /// anything, every product judged for the chosen children as a searched one
-/// is. Each shelf becomes an idea already answered, its best kept products
-/// first; a shelf that cannot be read is counted, said, and left out.
+/// is — only the shelves for the compartments the brief fills. Each shelf
+/// becomes an idea already answered, its best kept products first; a shelf
+/// that cannot be read is counted, said, and left out.
 final class PlanWeekAisle {
   PlanWeekAisle({
     required this._source,
@@ -67,6 +69,7 @@ final class PlanWeekAisle {
   Future<void> read({
     required Coordinates near,
     required Map<String, FoodRules> rulesByChild,
+    required Set<LunchSlot> slots,
   }) async {
     final generation = ++_generation;
     _shelves = [];
@@ -75,7 +78,10 @@ final class PlanWeekAisle {
     _unread = 0;
     _isReading = true;
     onChange();
-    final shelves = await _source.shelves();
+    final shelves = [
+      for (final shelf in await _source.shelves())
+        if (slots.contains(shelf.slot)) shelf,
+    ];
     if (generation != _generation) return;
     _total = shelves.length;
     onChange();

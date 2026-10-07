@@ -13,6 +13,7 @@ import 'package:nestprep/features/plan_week/model/left_out_reason.dart';
 import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
 import 'package:nestprep/features/plan_week/model/lunch_ideas_reply.dart';
 import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
+import 'package:nestprep/features/plan_week/model/packing_preference.dart';
 import 'package:nestprep/features/plan_week/state/plan_week_controller.dart';
 import 'package:nestprep/features/plan_week/state/shop_week_saver.dart';
 import 'package:nestprep/features/plan_week/ui/plan_week_screen.dart';
@@ -132,6 +133,7 @@ void main() {
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
+      packingStore: FakePackingChoiceStore(),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );
@@ -225,7 +227,7 @@ void main() {
     expect(find.text(PlanWeekCopy.draftingTitle), findsWidgets);
     drafter.gate!.complete();
     await tester.pumpAndSettle();
-    expect(find.text(PlanWeekCopy.madeByAi), findsOneWidget);
+    expect(find.text(PlanWeekCopy.ideasHeadline), findsOneWidget);
     expect(find.text('Lwazi: contains peanuts'), findsOneWidget);
     expect(find.text(PlanWeekCopy.forChildren('Ayanda')), findsOneWidget);
   });
@@ -241,23 +243,27 @@ void main() {
     expect(find.text(AppCopy.retry), findsOneWidget);
   });
 
-  testWidgets('the shop step shows each idea found, kept and left out, then '
-      'the week, the basket and the list', (tester) async {
+  testWidgets('the shop step counts the ideas while it works, then goes '
+      'straight on to the week, the basket and the list', (tester) async {
     await pump(tester);
     await tapKey(tester, 'plan-week-ideas');
-    await tapKey(tester, 'plan-week-search');
-    expect(find.text(PlanWeekCopy.found(3, 2)), findsOneWidget);
-    // Kept for Ayanda, and the line says who it is not for.
-    expect(find.text('Lwazi: contains peanuts'), findsOneWidget);
-    await tester.ensureVisible(find.text(PlanWeekCopy.showLeftOut(1)));
-    await tester.tap(find.text(PlanWeekCopy.showLeftOut(1)));
+    shop.gate = Completer<void>();
+    final search = find.byKey(const ValueKey('plan-week-search'));
+    await tester.ensureVisible(search);
+    await tester.tap(search);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text(PlanWeekCopy.storeTitle), findsWidgets);
+    expect(find.text(PlanWeekCopy.storeProgress(0, 2)), findsOneWidget);
+    shop.gate!.complete();
     await tester.pumpAndSettle();
-    expect(find.text('out of stock'), findsOneWidget);
 
-    await tapKey(tester, 'plan-week-build');
-    expect(find.text(PlanWeekCopy.builtByAi), findsOneWidget);
+    expect(find.text(PlanWeekCopy.stepOf(4, 'The week')), findsOneWidget);
+    expect(builder.packed.single.slots, {...LunchSlot.values});
+    expect(find.text(PlanWeekCopy.weekHeadline), findsOneWidget);
     expect(find.text(PlanWeekCopy.basketHeadline), findsOneWidget);
-    expect(find.text(PlanWeekCopy.perPack(6)), findsOneWidget);
+    expect(find.text(LunchBudgetCopy.basketBuy(1)), findsOneWidget);
+    expect(find.text(LunchBudgetCopy.basketCovers(1)), findsOneWidget);
 
     await tapKey(tester, 'plan-week-use');
     expect(find.text(PlanWeekCopy.doneTitle), findsOneWidget);
@@ -276,8 +282,51 @@ void main() {
     expect(find.text(PlanWeekCopy.shelfKept(1)), findsOneWidget);
     expect(drafter.aisles.single.single.products, ['Aisle yoghurt 6 x 100g']);
     await tapKey(tester, 'plan-week-search');
-    expect(find.text('Aisle yoghurt 6 x 100g'), findsOneWidget);
+    expect(builder.sent.single.first.ideaId, 'aisle-1');
     expect(shop.queries, isNot(contains('Yoghurt snack time')));
+  });
+
+  testWidgets('the brief chooses the compartments and how to pack, and the '
+      'last compartment stays on', (tester) async {
+    await pump(tester);
+    expect(find.text(PlanWeekCopy.slotsHeader), findsOneWidget);
+    expect(find.text(PlanWeekCopy.packingHeader), findsOneWidget);
+    for (final slot in LunchSlot.values) {
+      await tapKey(tester, 'plan-slot-${slot.name}');
+    }
+    expect(controller.packing.slots, {LunchSlot.treat});
+    await tapKey(tester, 'plan-packing-airFryer');
+    await tapKey(tester, 'plan-week-ideas');
+    expect(drafter.packed.single.slots, {LunchSlot.treat});
+    expect(drafter.packed.single.preferences, {PackingPreference.airFryer});
+  });
+
+  testWidgets('a shop run that kept nothing says so, and goes back to the '
+      'ideas', (tester) async {
+    shop.byQuery.clear();
+    await pump(tester);
+    await tapKey(tester, 'plan-week-ideas');
+    await tapKey(tester, 'plan-week-search');
+    expect(find.text(PlanWeekCopy.nothingKept), findsOneWidget);
+    await tester.tap(find.text(PlanWeekCopy.back));
+    await tester.pumpAndSettle();
+    expect(find.text(PlanWeekCopy.ideasHeadline), findsOneWidget);
+  });
+
+  testWidgets('back from the week is the ideas', (tester) async {
+    await pump(tester);
+    await tapKey(tester, 'plan-week-ideas');
+    await tapKey(tester, 'plan-week-search');
+    expect(find.text(PlanWeekCopy.weekHeadline), findsOneWidget);
+    final back = find.text(PlanWeekCopy.back);
+    await tester.scrollUntilVisible(
+      back,
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(back);
+    await tester.pumpAndSettle();
+    expect(find.text(PlanWeekCopy.ideasHeadline), findsOneWidget);
   });
 
   testWidgets('every step renders dark at 200% text on a small phone', (
@@ -294,7 +343,6 @@ void main() {
     for (final step in [
       'plan-week-ideas',
       'plan-week-search',
-      'plan-week-build',
       'plan-week-use',
     ]) {
       await tapKey(tester, step);

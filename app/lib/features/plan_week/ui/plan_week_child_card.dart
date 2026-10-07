@@ -94,7 +94,10 @@ class PlanWeekChildCard extends StatelessWidget {
       );
     }
     final added = child.addedAt(day, slot);
-    if (added == null && !slot.isAutoFilledOn(day)) return null;
+    if (added == null &&
+        (!slot.isAutoFilledOn(day) || !plan.slots.contains(slot))) {
+      return null;
+    }
     final product = added == null ? null : plan.productOf(added);
     return PlanWeekItemPill(
       key: ValueKey('plan-pill-${child.childId}-$day-${slot.name}'),

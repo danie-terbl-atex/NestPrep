@@ -55,8 +55,9 @@ void main() {
     );
 
     test('switching one category leaves the others as they were', () {
-      final settings = NotificationSettings.unchosen('m')
-          .withCategory(SwitchableCategory.chores, false);
+      final settings = NotificationSettings.unchosen(
+        'm',
+      ).withCategory(SwitchableCategory.chores, false);
       expect(settings.categories, {
         'documents': true,
         'handover': true,
@@ -163,8 +164,9 @@ void main() {
     });
 
     test('a helper who only cleans: nothing', () {
-      final cleaner = Fixtures.helperView(AccessGrant.uniform(AccessLevel.none))
-          .permissions;
+      final cleaner = Fixtures.helperView(
+        AccessGrant.uniform(AccessLevel.none),
+      ).permissions;
       expect(digestCoverage(cleaner), isEmpty);
     });
 

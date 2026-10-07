@@ -47,13 +47,12 @@ final class FirestoreCalendarRepository implements CalendarRepository {
     String householdId, {
     required CalendarDate from,
     required CalendarDate to,
-  }) =>
-      _exceptions(householdId)
-          .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
-          .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  }) => _exceptions(householdId)
+      .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
+      .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> saveEvent({
@@ -134,10 +133,9 @@ final class FirestoreCalendarRepository implements CalendarRepository {
     required String eventId,
     required CalendarDate occurrenceDate,
   }) => _guarded(
-    () =>
-        _exceptions(householdId)
-            .doc(EventException.idFor(eventId, occurrenceDate))
-            .delete(),
+    () => _exceptions(
+      householdId,
+    ).doc(EventException.idFor(eventId, occurrenceDate)).delete(),
   );
 
   Future<void> _guarded(Future<void> Function() write) async {

@@ -16,10 +16,12 @@ import '../../lunch_box/model/lunch_week.dart';
 import '../data/lunch_aisle_source.dart';
 import '../data/lunch_idea_drafter.dart';
 import '../data/lunch_week_builder.dart';
+import '../data/packing_choice_store.dart';
 import '../data/shop_week_groceries.dart';
 import '../model/lunch_idea.dart';
 import 'plan_week_aisle.dart';
 import 'plan_week_ideas.dart';
+import 'plan_week_packing.dart';
 import 'plan_week_shop.dart';
 import 'shop_week_saver.dart';
 import 'store_search_run.dart';
@@ -31,7 +33,7 @@ enum PlanWeekStep { brief, ideas, store, week, done }
 /// *Plan my week from Checkers*: the brief, the lunchbox aisle and the
 /// ideas, the shop, the week, and using it. This holds which step is
 /// showing, whose lunches and which shop; each step's own state is its
-/// part's — [aisle], [ideas], [store], [shop]. It
+/// part's — [packing], [aisle], [ideas], [store], [shop]. It
 /// follows the lunch board for the children, their rules and the library, so
 /// every check is against what the phone holds now. Nothing is written
 /// before *Use this week*.
@@ -44,9 +46,15 @@ final class PlanWeekController extends ChangeNotifier {
     required CheckersPlaceResolver placeResolver,
     required ShopWeekSaver saver,
     required ShopWeekGroceries groceries,
+    required PackingChoiceStore packingStore,
     required this.householdId,
     required this.week,
   }) : _places = placeResolver {
+    packing = PlanWeekPacking(
+      store: packingStore,
+      householdId: householdId,
+      onChange: _changed,
+    );
     aisle = PlanWeekAisle(
       source: aisleSource,
       catalogue: catalogue,
@@ -61,11 +69,13 @@ final class PlanWeekController extends ChangeNotifier {
       onChange: _changed,
     );
     unawaited(_resolvePlace());
+    unawaited(packing.restore());
   }
 
   final CheckersPlaceResolver _places;
   final String householdId;
   final LunchWeek week;
+  late final PlanWeekPacking packing;
   late final PlanWeekAisle aisle;
   late final PlanWeekIdeas ideas;
   late final StoreSearchRun store;
@@ -75,6 +85,7 @@ final class PlanWeekController extends ChangeNotifier {
   PlanWeekStep _step = PlanWeekStep.brief;
   Set<String>? _childIds;
   CheckersPlace? _place;
+  Money? _budget;
   var _isDisposed = false;
 
   AsyncState<LunchBoard> get board => _board;
@@ -120,13 +131,18 @@ final class PlanWeekController extends ChangeNotifier {
     _go(PlanWeekStep.ideas);
     ideas.clear();
     final place = _place ??= await _placeOrFallback();
-    await aisle.read(near: place.coordinates, rulesByChild: rulesByChild);
+    await aisle.read(
+      near: place.coordinates,
+      rulesByChild: rulesByChild,
+      slots: packing.slots,
+    );
     if (_step != PlanWeekStep.ideas) return;
     await ideas.draft(
       householdId: householdId,
       week: week,
       board: board,
       childIds: childIds,
+      packing: packing.choice,
       aisle: aisle.shelves,
       aisleForModel: aisle.forModel,
     );
@@ -135,13 +151,17 @@ final class PlanWeekController extends ChangeNotifier {
   void addOwnIdea(LunchSlot slot, String text) =>
       ideas.addOwn(slot, text, rulesByChild);
 
-  /// Ideas → the shop: every idea still for a child searched in turn, after
-  /// the aisle's shelves still on the list, which are answered already.
-  Future<void> searchStore() async {
+  /// Ideas → the shop → the week: every idea still for a child searched in
+  /// turn, after the aisle's shelves still on the list, which are answered
+  /// already — then, once something was kept, the week built from it at
+  /// once, read against [budget]: the household's weekly lunch budget as
+  /// this phone last heard it. A search that failed is passed over.
+  Future<void> searchStore({Money? budget}) async {
     final active = ideas.active;
     if (active.isEmpty) return;
     final place = _place ??= await _places.resolve(householdId);
     final kept = {for (final idea in active) idea.id};
+    _budget = budget;
     _go(PlanWeekStep.store);
     await store.start(
       ideas: [
@@ -155,21 +175,12 @@ final class PlanWeekController extends ChangeNotifier {
       near: place.coordinates,
       rulesByChild: rulesByChild,
     );
+    if (_step != PlanWeekStep.store) return;
+    await buildWeek();
   }
 
-  Future<void> retrySearch(String ideaId) async {
-    final place = _place;
-    if (place == null) return;
-    await store.retry(
-      ideaId,
-      near: place.coordinates,
-      rulesByChild: rulesByChild,
-    );
-  }
-
-  /// The shop → the week, read against [budget]: the household's weekly
-  /// lunch budget as this phone last heard it.
-  Future<void> buildWeek({Money? budget}) async {
+  /// The week from what the shop had — again, after a failure.
+  Future<void> buildWeek() async {
     final board = _latestBoard;
     if (board == null || !store.hasKept || !store.isSettled) return;
     _go(PlanWeekStep.week);
@@ -179,7 +190,8 @@ final class PlanWeekController extends ChangeNotifier {
       board: board,
       childIds: childIds,
       searches: store.searches,
-      budget: budget,
+      packing: packing.choice,
+      budget: _budget,
     );
   }
 
@@ -197,8 +209,9 @@ final class PlanWeekController extends ChangeNotifier {
   void back() {
     final previous = switch (_step) {
       PlanWeekStep.brief || PlanWeekStep.ideas => PlanWeekStep.brief,
-      PlanWeekStep.store => PlanWeekStep.ideas,
-      PlanWeekStep.week || PlanWeekStep.done => PlanWeekStep.store,
+      PlanWeekStep.store ||
+      PlanWeekStep.week ||
+      PlanWeekStep.done => PlanWeekStep.ideas,
     };
     if (previous == PlanWeekStep.brief) {
       aisle.clear();

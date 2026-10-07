@@ -63,10 +63,10 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are eighty-three of them, so a new one cannot slip past these checks', () => {
+  it('there are eighty-five of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    // Household and documents: nine callables (`setMemberAccess` is household
-    // ADR-0003's). Product analytics: recordActivity, three Firestore triggers
+    // Household and documents: ten callables (`setMemberAccess` is household
+    // ADR-0003's, `previewInvite` household ADR-0005's). Product analytics: recordActivity, three Firestore triggers
     // that must run in the database's region or never fire, and one schedule
     // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
     // ADR-0003). Calendar sync: ten — seven callables, two HTTP and one
@@ -93,9 +93,10 @@ describe('every function — callable, trigger or schedule', () => {
     // ADR-0004, household ADR-0004). Plan my week: draftLunchIdeas and
     // buildLunchWeek (lunch-box ADR-0012). Add to Checkers: five callables — link status, send and
     // verify a code, fill the cart, unlink (the Checkers build contract). A
-    // lunch box's picture: lunchPhoto (lunch-box ADR-0015). A feature adds
+    // lunch box's picture: lunchPhoto (lunch-box ADR-0015). Jev ranking a
+    // grocery line's matches: rankProductMatches (foundation ADR-0021). A feature adds
     // its count and its line.
-    expect(endpoints()).toHaveLength(83);
+    expect(endpoints()).toHaveLength(85);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite target', () => {

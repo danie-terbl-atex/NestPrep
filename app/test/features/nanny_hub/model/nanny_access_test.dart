@@ -65,8 +65,9 @@ void main() {
       NannyAccess.of(NannyFixtures.carerView()),
       isNot(NannyAccess.of(NannyFixtures.lookOnlyCarerView())),
     );
-    final grant = AccessGrant.uniform(AccessLevel.none)
-        .withLevel(HouseholdArea.nannyHub, AccessLevel.edit);
+    final grant = AccessGrant.uniform(
+      AccessLevel.none,
+    ).withLevel(HouseholdArea.nannyHub, AccessLevel.edit);
     expect(NannyAccess.of(NannyFixtures.carerView(grant)).canEdit, isTrue);
   });
 }

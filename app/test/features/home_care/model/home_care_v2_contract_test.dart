@@ -20,22 +20,26 @@ void main() {
   final languageRules = File(
     '../rules/firestore/household/home_care_language.rules',
   ).readAsStringSync();
-  final productRules = File('../rules/firestore/household/home_care.rules')
-      .readAsStringSync();
-  final languages = File('../functions/src/home_care/languages.ts')
-      .readAsStringSync();
-  final restock = File('../functions/src/home_care/restock_decision.ts')
-      .readAsStringSync();
-  final errors = File('../functions/src/home_care/errors.ts')
-      .readAsStringSync();
+  final productRules = File(
+    '../rules/firestore/household/home_care.rules',
+  ).readAsStringSync();
+  final languages = File(
+    '../functions/src/home_care/languages.ts',
+  ).readAsStringSync();
+  final restock = File(
+    '../functions/src/home_care/restock_decision.ts',
+  ).readAsStringSync();
+  final errors = File(
+    '../functions/src/home_care/errors.ts',
+  ).readAsStringSync();
 
   /// The quoted words of the first `[...]` after [anchor] in [source].
   Set<String> wordsAfter(String source, String anchor) {
     final start = source.indexOf(anchor);
     expect(start, isNot(-1), reason: 'no longer says "$anchor"');
-    final list = RegExp(r'\[([^\]]*)\]')
-        .firstMatch(source.substring(start))!
-        .group(1)!;
+    final list = RegExp(
+      r'\[([^\]]*)\]',
+    ).firstMatch(source.substring(start))!.group(1)!;
     return {
       for (final match in RegExp("'(\\w+)'").allMatches(list)) match.group(1)!,
     };
@@ -48,9 +52,9 @@ void main() {
   });
 
   test('the rules keep as many items as the app offers', () {
-    final limit = RegExp(r'routine\.items\.size\(\) <= (\d+)')
-        .firstMatch(routineRules)!
-        .group(1)!;
+    final limit = RegExp(
+      r'routine\.items\.size\(\) <= (\d+)',
+    ).firstMatch(routineRules)!.group(1)!;
     expect(int.parse(limit), RoomRoutine.itemLimit);
   });
 

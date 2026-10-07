@@ -68,8 +68,9 @@ void main() {
 
   test('a planned item somebody edited is theirs, and stays', () {
     // An edit clears the source fields; to the plans it is typed now.
-    final adopted = plannedItem('Bread')
-        .copyWith(sourceKey: null, sourceWeek: null, sourceNote: null);
+    final adopted = plannedItem(
+      'Bread',
+    ).copyWith(sourceKey: null, sourceWeek: null, sourceNote: null);
     final diff = diffOf(const [], [adopted]);
     expect(diff.toRemove, isEmpty);
   });

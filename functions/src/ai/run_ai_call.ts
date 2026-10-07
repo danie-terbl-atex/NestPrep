@@ -117,7 +117,7 @@ export function runImageCall(
  * Steps 1, 2 and 4 above around any [perform], which throws a
  * `StructuredCallFailure` when the model gave the family nothing.
  */
-async function spendAiCall<T>(
+export async function spendAiCall<T>(
   deps: SpendDependencies,
   spend: AiSpend,
   modelName: string,

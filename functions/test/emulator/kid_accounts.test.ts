@@ -234,6 +234,7 @@ describe('a kid device is refused every household callable', () => {
         { name: 'Mia HQ', timeZone: 'UTC', adminDisplayName: 'Mia', adminColor: 'pink' },
       ],
       ['redeemInvite', { code: 'ABCD2345' }],
+      ['previewInvite', { code: 'ABCD2345' }],
       ['createInvite', { householdId, memberId: leo }],
       ['createKidPairing', { householdId, memberId: leo }],
       ['removeMember', { householdId, memberId: leo }],

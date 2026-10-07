@@ -179,8 +179,9 @@ void main() {
     await open(
       tester,
       view: Fixtures.helperView(
-        AccessGrant.uniform(AccessLevel.none)
-            .withLevel(HouseholdArea.calendar, AccessLevel.edit),
+        AccessGrant.uniform(
+          AccessLevel.none,
+        ).withLevel(HouseholdArea.calendar, AccessLevel.edit),
       ),
     );
     expect(find.text(TwoHomesCopy.adminStartsNote), findsOneWidget);

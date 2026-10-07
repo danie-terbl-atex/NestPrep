@@ -47,8 +47,9 @@ ShellRoute familyRoutes() => ShellRoute(
             familyProfileRepository: context.read<FamilyProfileRepository>(),
             householdId: HouseholdRoute.idFrom(state),
             memberId: memberId,
-            isVisible: FamilyAccess.of(context.read<HouseholdView>())
-                .canSeeHealth(memberId),
+            isVisible: FamilyAccess.of(
+              context.read<HouseholdView>(),
+            ).canSeeHealth(memberId),
           ),
           child: FamilyMemberScreen(memberId: memberId),
         );

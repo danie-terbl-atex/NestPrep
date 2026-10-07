@@ -34,10 +34,9 @@ void main() {
   Set<String> stringsOf(String source, String constant) {
     final start = source.indexOf('$constant = [');
     final block = source.substring(start, source.indexOf('] as const', start));
-    return RegExp("'(\\w+)'")
-        .allMatches(block)
-        .map((match) => match.group(1)!)
-        .toSet();
+    return RegExp(
+      "'(\\w+)'",
+    ).allMatches(block).map((match) => match.group(1)!).toSet();
   }
 
   Set<String> refusals() => keysOf(

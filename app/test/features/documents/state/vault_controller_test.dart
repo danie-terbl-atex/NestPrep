@@ -176,8 +176,9 @@ void main() {
     test('logs the open on the server before a byte is read', () async {
       await lock.unlock();
       await answerAdmin();
-      final passport = vaultDocument('passport')
-          .copyWith(ownerMemberId: 'm-kid');
+      final passport = vaultDocument(
+        'passport',
+      ).copyWith(ownerMemberId: 'm-kid');
 
       final pages = await controller.openPages(passport);
 
@@ -194,8 +195,9 @@ void main() {
       directory.failOpenWith = const DocumentFailure(
         DocumentProblem.vaultNotShared,
       );
-      final passport = vaultDocument('passport')
-          .copyWith(ownerMemberId: 'm-kid');
+      final passport = vaultDocument(
+        'passport',
+      ).copyWith(ownerMemberId: 'm-kid');
 
       await expectLater(
         controller.openPages(passport),
@@ -294,8 +296,9 @@ void main() {
 
   group('changing', () {
     test('edits a document\'s name, tags and expiry', () async {
-      final passport = vaultDocument('passport')
-          .copyWith(ownerMemberId: 'm-kid');
+      final passport = vaultDocument(
+        'passport',
+      ).copyWith(ownerMemberId: 'm-kid');
       await controller.editDocument(
         passport,
         name: ' Emma passport ',
@@ -307,8 +310,9 @@ void main() {
     });
 
     test('deletes the bytes first, then the row', () async {
-      final passport = vaultDocument('passport')
-          .copyWith(ownerMemberId: 'm-kid');
+      final passport = vaultDocument(
+        'passport',
+      ).copyWith(ownerMemberId: 'm-kid');
       await controller.deleteDocument(passport);
       expect(store.removedBytes, ['passport']);
       expect(repository.removed, ['passport']);

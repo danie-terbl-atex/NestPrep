@@ -45,15 +45,13 @@ final class LunchIdeasReply {
   final int? callsLeft;
 
   static LunchIdea? _idea(Object? data) {
-    if (data
-        case {
-          'id': final String id,
-          'slot': final String slotName,
-          'idea': final String idea,
-          'searchTerm': final String searchTerm,
-          'childIds': final List<Object?> childIds,
-        }
-        when id.isNotEmpty && idea.trim().isNotEmpty) {
+    if (data case {
+      'id': final String id,
+      'slot': final String slotName,
+      'idea': final String idea,
+      'searchTerm': final String searchTerm,
+      'childIds': final List<Object?> childIds,
+    } when id.isNotEmpty && idea.trim().isNotEmpty) {
       final slot = LunchSlot.fromName(slotName);
       if (slot == null) return null;
       return LunchIdea(

@@ -22,8 +22,9 @@ void main() {
   });
 
   test('the app and the sweep remind on the same days', () {
-    final match = RegExp(r'EXPIRY_REMINDER_DAYS_BEFORE = \[([\d,\s]+)\]')
-        .firstMatch(schedule.readAsStringSync());
+    final match = RegExp(
+      r'EXPIRY_REMINDER_DAYS_BEFORE = \[([\d,\s]+)\]',
+    ).firstMatch(schedule.readAsStringSync());
     expect(match, isNotNull, reason: 'the constant moved or changed shape');
     final serverDays = match!
         .group(1)!

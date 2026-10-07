@@ -36,12 +36,10 @@ abstract final class CheckersCatalogueParser {
   }
 
   static CheckersStore? _store(Object? json) {
-    if (json
-        case {
-          'storeId': final String storeId,
-          'serviceOptionIds': final List<Object?> serviceOptionIds,
-        }
-        when storeId.isNotEmpty) {
+    if (json case {
+      'storeId': final String storeId,
+      'serviceOptionIds': final List<Object?> serviceOptionIds,
+    } when storeId.isNotEmpty) {
       return CheckersStore(
         storeId: storeId,
         serviceOptionIds: serviceOptionIds.whereType<String>().toList(),
@@ -59,15 +57,13 @@ abstract final class CheckersCatalogueParser {
   }
 
   static CheckersProduct? _product(Object? json) {
-    if (json
-        case {
-          'id': final String id,
-          'storeId': final String storeId,
-          'articleNumber': final String articleNumber,
-          'unitOfMeasure': final String unitOfMeasure,
-          'priceWithoutDecimal': final int rawPrice,
-        }
-        when id.isNotEmpty && unitOfMeasure.isNotEmpty) {
+    if (json case {
+      'id': final String id,
+      'storeId': final String storeId,
+      'articleNumber': final String articleNumber,
+      'unitOfMeasure': final String unitOfMeasure,
+      'priceWithoutDecimal': final int rawPrice,
+    } when id.isNotEmpty && unitOfMeasure.isNotEmpty) {
       final name = _nonEmpty(json['displayName']) ?? _nonEmpty(json['name']);
       final factor = switch (json['priceFactor']) {
         final int factor when factor > 0 => factor,
@@ -114,8 +110,10 @@ abstract final class CheckersCatalogueParser {
   static String? _attribute(Object? attributes, String name) {
     if (attributes is! List<Object?>) return null;
     for (final attribute in attributes) {
-      if (attribute case {'name': final String key, 'value': final String value}
-          when key == name) {
+      if (attribute case {
+        'name': final String key,
+        'value': final String value,
+      } when key == name) {
         return _nonEmpty(_plainText(value));
       }
     }

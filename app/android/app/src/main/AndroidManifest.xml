@@ -51,6 +51,24 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Invite links (household ADR-0005): app_links hands them to the
+                 app, so Flutter's own deep linking stays off. -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"/>
+                <data android:host="nestprep-643b7.web.app"/>
+                <data android:host="nestprep-643b7.firebaseapp.com"/>
+                <data android:pathPrefix="/invite/"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="nestprep" android:host="invite"/>
+            </intent-filter>
         </activity>
         <!-- A push that names no channel, and the status-bar mark and tint every
              push uses (notifications ADR-0001). The channels themselves are

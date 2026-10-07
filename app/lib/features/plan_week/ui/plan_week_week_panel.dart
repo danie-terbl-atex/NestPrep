@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../lunch_box/state/lunch_budget_controller.dart';
 import '../model/shop_week.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_basket_section.dart';
@@ -31,20 +30,12 @@ class PlanWeekWeekPanel extends StatelessWidget {
       AsyncFailure(:final failure) => NestErrorView(
         message: AppCopy.failure(failure),
         retryLabel: AppCopy.retry,
-        onRetry: () => _rebuild(context),
+        onRetry: controller.buildWeek,
         secondaryLabel: PlanWeekCopy.back,
         onSecondary: controller.back,
       ),
       AsyncData(:final value) => _Week(plan: value),
     };
-  }
-
-  static Future<void> _rebuild(BuildContext context) {
-    final budget = switch (context.read<LunchBudgetController>().week) {
-      AsyncData(:final value) => value.budget?.money,
-      _ => null,
-    };
-    return context.read<PlanWeekController>().buildWeek(budget: budget);
   }
 }
 

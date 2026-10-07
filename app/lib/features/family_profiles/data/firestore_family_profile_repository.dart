@@ -59,34 +59,31 @@ final class FirestoreFamilyProfileRepository
               .limit(FamilyProfileRepository.profileLimit)
               .snapshots()
               .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-        : _profiles(householdId)
-              .doc(onlyMemberId)
-              .snapshots()
-              .map((snapshot) => [?snapshot.data()]);
+        : _profiles(
+            householdId,
+          ).doc(onlyMemberId).snapshots().map((snapshot) => [?snapshot.data()]);
     return profiles.handleError(
       (Object error) => throw failureFromFirebase(error),
     );
   }
 
   @override
-  Stream<List<School>> watchSchools(String householdId) =>
-      _schools(householdId)
-          .orderBy('name')
-          .limit(FamilyProfileRepository.schoolLimit)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  Stream<List<School>> watchSchools(String householdId) => _schools(householdId)
+      .orderBy('name')
+      .limit(FamilyProfileRepository.schoolLimit)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Stream<MemberHealth> watchHealth({
     required String householdId,
     required String memberId,
-  }) =>
-      _health(householdId)
-          .doc(memberId)
-          .snapshots()
-          .map((snapshot) => snapshot.data() ?? MemberHealth.empty(memberId))
-          .handleError((Object error) => throw failureFromFirebase(error));
+  }) => _health(householdId)
+      .doc(memberId)
+      .snapshots()
+      .map((snapshot) => snapshot.data() ?? MemberHealth.empty(memberId))
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> saveFood({

@@ -13,8 +13,9 @@ void main() {
   final block = File(
     '${Directory.current.parent.path}/rules/storage/paths/home_care.rules',
   ).readAsStringSync();
-  final storageRules = File('${Directory.current.parent.path}/storage.rules')
-      .readAsStringSync();
+  final storageRules = File(
+    '${Directory.current.parent.path}/storage.rules',
+  ).readAsStringSync();
 
   test('the home-care block is where this test thinks it is', () {
     expect(block, contains('// ---- home care photos'));

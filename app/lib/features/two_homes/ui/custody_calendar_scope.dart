@@ -27,8 +27,9 @@ class CustodyCalendarScope extends StatelessWidget {
     final isOn = context.watch<FeatureFlagsController>().isOn(
       FeatureFlag.coParenting,
     );
-    final canSee = TwoHomesAccess.of(context.watch<HouseholdView>())
-        .canSeeSchedule;
+    final canSee = TwoHomesAccess.of(
+      context.watch<HouseholdView>(),
+    ).canSeeSchedule;
     if (!isOn || !canSee) return child;
     return ChangeNotifierProvider(
       create: (context) => CustodyCalendar(

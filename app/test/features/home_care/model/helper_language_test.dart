@@ -77,8 +77,9 @@ void main() {
     });
 
     test('reads a line nobody has translated yet in English', () {
-      final line = TranslationBook(language: HelperLanguage.isiZulu)
-          .lineFor('Wipe');
+      final line = TranslationBook(
+        language: HelperLanguage.isiZulu,
+      ).lineFor('Wipe');
       expect(line.text, 'Wipe');
       expect(line.isTranslated, isFalse);
     });

@@ -31,8 +31,9 @@ class PrivacyBoundary extends StatelessWidget {
         const SizedBox(height: NestSpace.lg),
         Text(
           TwoHomesSetupCopy.privacyFooter,
-          style: NestTheme.of(context).text.caption
-              .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+          style: NestTheme.of(context).text.caption.copyWith(
+            color: NestTheme.of(context).colors.inkTertiary,
+          ),
         ),
       ],
     );

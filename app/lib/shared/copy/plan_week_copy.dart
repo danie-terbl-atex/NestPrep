@@ -1,5 +1,6 @@
 import '../../features/family_profiles/model/allergen.dart';
 import '../../features/plan_week/model/left_out_reason.dart';
+import '../../features/plan_week/model/packing_preference.dart';
 import '../../features/plan_week/model/plan_fallback.dart';
 import '../failure/app_failure.dart';
 import 'family_copy.dart';
@@ -57,6 +58,23 @@ abstract final class PlanWeekCopy {
       'No budget yet. The plan still says what the basket costs.';
   static const setBudget = 'Set a budget';
   static const changeBudget = 'Change the budget';
+  static const packingHeader = 'How you like to pack';
+  static const packingBody =
+      'Pick what fits your mornings — the ideas follow it.';
+  static String packingPreference(PackingPreference preference) =>
+      switch (preference) {
+        PackingPreference.readyMade => 'Prefer ready-made',
+        PackingPreference.tenMinutes => '10 min prep, max',
+        PackingPreference.airFryer => 'Pop in the air fryer',
+        PackingPreference.nightBefore => 'Prep the night before',
+        PackingPreference.sundayBatch => 'Sunday batch prep',
+        PackingPreference.favourPrice => 'Favour price',
+        PackingPreference.singleServe => 'Single-serve packs',
+        PackingPreference.noFridge => 'No fridge needed',
+        PackingPreference.healthier => 'Healthier picks',
+      };
+  static const slotsHeader = 'What goes in the box';
+  static const slotsBody = 'Only these get filled. One always stays on.';
   static const draftAction = 'Get lunch ideas';
 
   // ---- 2. ideas ----
@@ -74,15 +92,8 @@ abstract final class PlanWeekCopy {
   static const ideasBody =
       'Remove anything you don’t want, or add your own. Struck-out ideas were '
       'left out by NestPrep for the reason shown.';
-  static const madeByAi = 'Ideas from AI';
-  static const madeWithoutAi = 'Ideas from your usuals';
   static String fallbackIdeas(PlanFallbackReason reason) =>
       '${_without(reason)} So these ideas come from your own lunch library.';
-  static String callsLeft(int calls) => switch (calls) {
-    0 => 'That was this month’s last AI call.',
-    1 => '1 AI call left this month.',
-    _ => '$calls AI calls left this month.',
-  };
   static String forChildren(String names) => 'For $names';
   static const leftOutForEveryone = 'Left out for everyone';
   static String removeIdea(String idea) => 'Remove $idea';
@@ -120,20 +131,15 @@ abstract final class PlanWeekCopy {
   static const shelfCookiesAndBiscuits = 'Cookies, chippies and biscuits';
 
   // ---- 3. at the shop ----
-  static const storeHeadline = 'Looking at Checkers';
-  static const storeBody =
-      'One idea at a time. Every product is checked against each child’s '
-      'rules; anything left out says why.';
-  static const waiting = 'Waiting';
-  static const searching = 'Searching…';
-  static String found(int found, int kept) => '$found found · $kept kept';
-  static const nothingFound = 'Checkers has nothing by that name.';
-  static String showLeftOut(int count) =>
-      'Show ${_count(count, 'product', 'products')} left out';
-  static const hideLeftOut = 'Hide';
+  static const storeTitle = 'Shopping at Checkers…';
+  static const storeLine =
+      'Looking for each idea near you and checking every product against '
+      'each child’s rules.';
+  static String storeProgress(int searched, int total) =>
+      'Idea ${searched < total ? searched + 1 : total} of $total';
+  static const nothingKeptTitle = 'Nothing at Checkers fits';
   static const nothingKept =
       'Nothing was kept yet. Go back and try other ideas.';
-  static const buildAction = 'Build the week';
 
   static String reason(LeftOutReason reason, {String? childName}) {
     final words = switch (reason.kind) {
@@ -159,8 +165,6 @@ abstract final class PlanWeekCopy {
   static const buildingLine =
       'Choosing from what Checkers had, for each child, within the budget.';
   static const weekHeadline = 'Your week';
-  static const builtByAi = 'Built with AI';
-  static const builtWithoutAi = 'Built without AI';
   static String fallbackWeek(PlanFallbackReason reason) =>
       '${_without(reason)} So the phone built it: the cheapest kept product '
       'for each idea, ideas taken in turn.';
@@ -176,8 +180,6 @@ abstract final class PlanWeekCopy {
   static const originSwapped = 'Your pick';
   static String swapTitle(String slot, String day) => '$slot on $day';
   static const leaveEmpty = 'Leave it empty';
-  static String perPack(int boxes) =>
-      'A pack does ${_count(boxes, 'box', 'boxes')}';
   static const basketHeadline = 'The basket';
   static const basketBody =
       'Every child’s new lunches together, in whole packs — what you’d pay '
@@ -220,10 +222,10 @@ abstract final class PlanWeekCopy {
   };
 
   static String _without(PlanFallbackReason reason) => switch (reason) {
-    PlanFallbackReason.aiOff => 'AI planning is paused.',
+    PlanFallbackReason.aiOff => 'Smart planning is paused.',
     PlanFallbackReason.aiLimitReached =>
-      'This month’s AI calls are used up — they come back on the 1st.',
-    PlanFallbackReason.aiUnavailable => 'The AI did not answer.',
+      'This month’s smart plans are used up — they come back on the 1st.',
+    PlanFallbackReason.aiUnavailable => 'Our planner didn’t answer just now.',
     PlanFallbackReason.offline => 'You look offline.',
   };
 

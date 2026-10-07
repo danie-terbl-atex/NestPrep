@@ -18,26 +18,26 @@ import 'package:nestprep/features/family_profiles/state/family_edits.dart';
 /// and it is read as free text.
 void main() {
   final rules = File('../firestore.rules').readAsStringSync();
-  final removal = File('../functions/src/family_profiles/member_details.ts')
-      .readAsStringSync();
+  final removal = File(
+    '../functions/src/family_profiles/member_details.ts',
+  ).readAsStringSync();
 
   // Read as text rather than imported: the Firestore repository is kept out
   // of the widget tests' reach on purpose (`coverage_is_honest_test.dart`).
   final repository = File(
     'lib/features/family_profiles/data/firestore_family_profile_repository.dart',
   ).readAsStringSync();
-  String pathNamed(String constant) =>
-      RegExp("static const $constant = '(\\w+)';")
-          .firstMatch(repository)!
-          .group(1)!;
+  String pathNamed(String constant) => RegExp(
+    "static const $constant = '(\\w+)';",
+  ).firstMatch(repository)!.group(1)!;
 
   /// The quoted words in the first `hasOnly([...])` after [anchor].
   Set<String> listAfter(String anchor) {
     final start = rules.indexOf(anchor);
     expect(start, isNot(-1), reason: 'the rules no longer say "$anchor"');
-    final list = RegExp(r'hasOnly\(\s*\[([^\]]*)\]')
-        .firstMatch(rules.substring(start))!
-        .group(1)!;
+    final list = RegExp(
+      r'hasOnly\(\s*\[([^\]]*)\]',
+    ).firstMatch(rules.substring(start))!.group(1)!;
     return {
       for (final match in RegExp("'(\\w+)'").allMatches(list)) match.group(1)!,
     };
@@ -60,9 +60,9 @@ void main() {
   });
 
   test('the rules accept exactly the severities the app writes', () {
-    final severities = RegExp(r"get\('severity', ''\) in \[([^\]]*)\]")
-        .firstMatch(rules)!
-        .group(1)!;
+    final severities = RegExp(
+      r"get\('severity', ''\) in \[([^\]]*)\]",
+    ).firstMatch(rules)!.group(1)!;
     expect(
       {for (final m in RegExp("'(\\w+)'").allMatches(severities)) m.group(1)},
       {for (final severity in AllergySeverity.values) severity.name},

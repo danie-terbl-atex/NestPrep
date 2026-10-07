@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.nullstate.nestprep",
+      "sha256_cert_fingerprints": [
+        "17:94:33:F2:F7:F2:E7:7E:2C:AE:98:80:F2:65:D8:FC:F2:4C:40:3D:0B:03:5D:E9:B4:BE:1F:00:E7:6C:83:92"
+      ]
+    }
+  }
+]

@@ -1,6 +1,12 @@
 import { exclusionFor } from './child_exclusion';
 import type { ChildFoodRules } from './food_safety';
 import { openCompartments } from './open_compartments';
+import {
+  NO_PACKING_CHOICES,
+  packingInstructions,
+  type PackingChoices,
+  type PackingPreference,
+} from './packing_preferences';
 import type { AisleShelf } from './schemas';
 import { tasteFrom } from './taste';
 import { LUNCH_SLOTS, isLunchSlot, type LunchPlanFacts, type LunchSlot } from './week_documents';
@@ -38,6 +44,7 @@ export interface IdeaBrief {
   readonly budgetCents: number | null;
   readonly children: readonly IdeaBriefChild[];
   readonly aisle: readonly IdeaBriefShelf[];
+  readonly preferences: readonly PackingPreference[];
 }
 
 /** Enough history to steer by, and a bounded prompt. */
@@ -49,12 +56,13 @@ export function ideaBriefFrom(
   monday: string,
   budgetCents: number | null,
   aisle: readonly AisleShelf[] = [],
+  choices: PackingChoices = NO_PACKING_CHOICES,
 ): IdeaBrief {
   const briefChildren = children.map((child, index): IdeaBriefChild => {
     const history = plans.filter((plan) => plan.childId === child.memberId);
     const thisWeek = history.find((plan) => plan.weekStart === monday);
     const open: Record<LunchSlot, number> = { main: 0, fruit: 0, veg: 0, snack: 0, treat: 0 };
-    for (const key of openCompartments(thisWeek)) {
+    for (const key of openCompartments(thisWeek, choices.slots)) {
       const slot = key.slice(key.indexOf('_') + 1);
       if (isLunchSlot(slot)) open[slot] += 1;
     }
@@ -68,7 +76,12 @@ export function ideaBriefFrom(
       oftenLeft,
     };
   });
-  return { budgetCents, children: briefChildren, aisle: shelvesFor(aisle, briefChildren) };
+  return {
+    budgetCents,
+    children: briefChildren,
+    aisle: shelvesFor(aisle, briefChildren),
+    preferences: choices.preferences,
+  };
 }
 
 /**
@@ -108,6 +121,7 @@ export function ideaBriefForModel(brief: IdeaBrief): unknown {
     ...(brief.aisle.length > 0 && {
       aisle: brief.aisle.map(({ slot, title, products }) => ({ slot, title, products })),
     }),
+    ...(brief.preferences.length > 0 && { packing: packingInstructions(brief.preferences) }),
   };
 }
 

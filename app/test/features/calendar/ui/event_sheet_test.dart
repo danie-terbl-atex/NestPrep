@@ -155,9 +155,11 @@ void main() {
         find.widgetWithText(NestButton, AppCopy.householdSave),
       );
 
-      expect((result! as EventSaved).memberIds, [
-        Fixtures.kidMemberId,
-      ], reason: 'saving without touching the picker must not empty it');
+      expect(
+        (result! as EventSaved).memberIds,
+        [Fixtures.kidMemberId],
+        reason: 'saving without touching the picker must not empty it',
+      );
     },
   );
 

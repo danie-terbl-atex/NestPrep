@@ -12,6 +12,7 @@ import 'package:nestprep/features/plan_week/model/left_out_reason.dart';
 import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
 import 'package:nestprep/features/plan_week/model/lunch_ideas_reply.dart';
 import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
+import 'package:nestprep/features/plan_week/model/packing_preference.dart';
 import 'package:nestprep/features/plan_week/model/plan_fallback.dart';
 import 'package:nestprep/features/plan_week/model/shop_week.dart';
 import 'package:nestprep/features/plan_week/state/plan_week_controller.dart';
@@ -42,6 +43,7 @@ void main() {
   late FakeShopCatalogue shop;
   late FakeLunchAisleSource aisle;
   late FakeCheckersAreaPreference areas;
+  late FakePackingChoiceStore packingStore;
   late PlanWeekController controller;
 
   setUp(() async {
@@ -51,6 +53,7 @@ void main() {
     shop = FakeShopCatalogue();
     aisle = FakeLunchAisleSource();
     areas = FakeCheckersAreaPreference();
+    packingStore = FakePackingChoiceStore();
     controller = PlanWeekController(
       drafter: drafter,
       aisleSource: aisle,
@@ -71,6 +74,7 @@ void main() {
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
+      packingStore: packingStore,
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );
@@ -175,6 +179,7 @@ void main() {
       week: LunchFixtures.week,
       childIds: controller.childIds,
       searches: controller.store.searches,
+      packing: controller.packing.choice,
     );
     final ideas = wire['ideas']! as List<Object?>;
     expect([for (final i in ideas) (i! as Map)['fromAisle']], [true, false]);
@@ -252,16 +257,6 @@ void main() {
           ingredients: 'Apples',
         ),
       ];
-      await controller.searchStore();
-      expect(controller.step, PlanWeekStep.store);
-      // The struck-out idea is never searched.
-      expect(shop.queries, ['yoghurt', 'Apples']);
-      final yoghurt = controller.store.searches.first;
-      expect(yoghurt.status, IdeaSearchStatus.done);
-      expect(yoghurt.kept.map((p) => p.productId), ['yog', 'mystery']);
-      // No allergen information, and Lwazi has allergies: Ayanda's only.
-      expect(yoghurt.found.last.childIds, {ayanda});
-
       builder.reply = LunchWeekReply(
         lunches: [
           const ReplyLunch(
@@ -284,8 +279,17 @@ void main() {
         dropped: 0,
         callsLeft: 8,
       );
-      await controller.buildWeek();
+      await controller.searchStore();
+      // Straight on to the week once the shop settles.
       expect(controller.step, PlanWeekStep.week);
+      // The struck-out idea is never searched.
+      expect(shop.queries, ['yoghurt', 'Apples']);
+      final yoghurt = controller.store.searches.first;
+      expect(yoghurt.status, IdeaSearchStatus.done);
+      expect(yoghurt.kept.map((p) => p.productId), ['yog', 'mystery']);
+      // No allergen information, and Lwazi has allergies: Ayanda's only.
+      expect(yoghurt.found.last.childIds, {ayanda});
+
       final week = (controller.shop.state as AsyncData<ShopWeek>).value;
       expect(week.pickCount, 2);
       expect(week.basket.total, const Money(3600));
@@ -345,7 +349,28 @@ void main() {
     expect(controller.ideas.state, isA<AsyncFailure<Object?>>());
   });
 
-  test('a failed search says why and can be tried again', () async {
+  test('a failed search is passed over when something else was kept', () async {
+    drafter.reply = LunchIdeasReply(
+      ideas: [
+        idea('idea-1', LunchSlot.fruit, 'Grapes', [ayanda]),
+        idea('idea-2', LunchSlot.snack, 'Rusks', [ayanda]),
+      ],
+      budgetCents: null,
+      callsLeft: null,
+    );
+    shop.failFor['grapes'] = const CheckersFailure(
+      CheckersProblem.catalogueBusy,
+    );
+    shop.byQuery['rusks'] = [planWeekProduct('Rusks', ingredients: 'Oats')];
+    await controller.draftIdeas();
+    await controller.searchStore();
+    expect(controller.step, PlanWeekStep.week);
+    expect(controller.store.searches.first.status, IdeaSearchStatus.failed);
+    expect(builder.sent.single, hasLength(2));
+  });
+
+  test('a shop run that kept nothing stays at the shop, and goes back to '
+      'the ideas', () async {
     drafter.reply = LunchIdeasReply(
       ideas: [
         idea('idea-1', LunchSlot.fruit, 'Grapes', [ayanda]),
@@ -358,12 +383,13 @@ void main() {
     );
     await controller.draftIdeas();
     await controller.searchStore();
-    expect(controller.store.searches.single.status, IdeaSearchStatus.failed);
+    expect(controller.step, PlanWeekStep.store);
+    expect(controller.store.isSettled, isTrue);
     expect(controller.store.hasKept, isFalse);
-    shop.failFor.clear();
-    shop.byQuery['grapes'] = [planWeekProduct('Grapes', ingredients: 'Grapes')];
-    await controller.retrySearch('idea-1');
-    expect(controller.store.hasKept, isTrue);
+    expect(builder.sent, isEmpty);
+    controller.back();
+    expect(controller.step, PlanWeekStep.ideas);
+    expect(controller.ideas.active, hasLength(1));
   });
 
   test('the week is built on the phone when the model cannot help', () async {
@@ -377,8 +403,7 @@ void main() {
     shop.byQuery['grapes'] = [planWeekProduct('Grapes', ingredients: 'Grapes')];
     builder.failWith = const UnavailableFailure();
     await controller.draftIdeas();
-    await controller.searchStore();
-    await controller.buildWeek(budget: const Money(5000));
+    await controller.searchStore(budget: const Money(5000));
     final week = (controller.shop.state as AsyncData<ShopWeek>).value;
     expect(week.source, PlanSource.fallback);
     expect(week.fallbackReason, PlanFallbackReason.offline);
@@ -390,7 +415,8 @@ void main() {
     );
   });
 
-  test('back keeps the earlier step, start over forgets everything', () async {
+  test('back from the week is the ideas, the shop forgotten; start over '
+      'forgets everything', () async {
     drafter.reply = LunchIdeasReply(
       ideas: [
         idea('idea-1', LunchSlot.fruit, 'Grapes', [ayanda]),
@@ -398,14 +424,55 @@ void main() {
       budgetCents: null,
       callsLeft: null,
     );
+    shop.byQuery['grapes'] = [planWeekProduct('Grapes', ingredients: 'Grapes')];
     await controller.draftIdeas();
     await controller.searchStore();
+    expect(controller.step, PlanWeekStep.week);
     controller.back();
     expect(controller.step, PlanWeekStep.ideas);
     expect(controller.ideas.active, hasLength(1));
     expect(controller.store.searches, isEmpty);
+    expect(controller.shop.state, isA<AsyncLoading<Object?>>());
     controller.startOver();
     expect(controller.step, PlanWeekStep.brief);
     expect(controller.ideas.state, isA<AsyncLoading<Object?>>());
+  });
+
+  group('the packing choices', () {
+    test('reach the model, and the phone fills only the chosen '
+        'compartments without it', () async {
+      controller.packing
+        ..togglePreference(PackingPreference.favourPrice)
+        ..toggleSlot(LunchSlot.main)
+        ..toggleSlot(LunchSlot.snack)
+        ..toggleSlot(LunchSlot.veg)
+        ..toggleSlot(LunchSlot.treat);
+      drafter.failWith = const AiFailure(AiProblem.aiLimitReached);
+      await controller.draftIdeas();
+      expect(drafter.packed.single.preferences, {
+        PackingPreference.favourPrice,
+      });
+      expect(drafter.packed.single.slots, {LunchSlot.fruit});
+      final usuals = controller.ideas.active;
+      expect(usuals, isNotEmpty);
+      expect(usuals.every((i) => i.slot == LunchSlot.fruit), isTrue);
+
+      for (final usual in usuals) {
+        shop.byQuery[usual.searchTerm] = [
+          planWeekProduct(usual.idea, id: usual.id, ingredients: usual.idea),
+        ];
+      }
+      builder.failWith = const UnavailableFailure();
+      await controller.searchStore();
+      expect(builder.packed.single.slots, {LunchSlot.fruit});
+      final week = (controller.shop.state as AsyncData<ShopWeek>).value;
+      expect(week.slots, {LunchSlot.fruit});
+      for (final child in week.children) {
+        expect(
+          child.added.keys.every((k) => k.endsWith(LunchSlot.fruit.name)),
+          isTrue,
+        );
+      }
+    });
   });
 }

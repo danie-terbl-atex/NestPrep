@@ -45,8 +45,9 @@ void main() {
   /// household's own rules partial (foundation ADR-0012), where that block is
   /// the last thing in the file.
   List<Set<String>> keysTheMemberRulesAllow() {
-    final source = File('../rules/firestore/household/household.rules')
-        .readAsStringSync();
+    final source = File(
+      '../rules/firestore/household/household.rules',
+    ).readAsStringSync();
     final block = source.substring(
       source.indexOf('match /members/{memberId} {'),
     );
@@ -54,10 +55,9 @@ void main() {
       for (final match in RegExp(
         r'(?:hasOnly|onlyChanged)\(\s*\n?\s*\[([^\]]+)\]',
       ).allMatches(block))
-        RegExp(r"'(\w+)'")
-            .allMatches(match.group(1)!)
-            .map((m) => m.group(1)!)
-            .toSet(),
+        RegExp(
+          r"'(\w+)'",
+        ).allMatches(match.group(1)!).map((m) => m.group(1)!).toSet(),
     ];
   }
 

@@ -92,12 +92,11 @@ final class FirestoreNotificationRepository implements NotificationRepository {
   Stream<NotificationSettings?> watchSettings(
     String householdId,
     String memberId,
-  ) =>
-      _settings(householdId)
-          .doc(memberId)
-          .snapshots()
-          .map((snapshot) => snapshot.data())
-          .handleError(_failed);
+  ) => _settings(householdId)
+      .doc(memberId)
+      .snapshots()
+      .map((snapshot) => snapshot.data())
+      .handleError(_failed);
 
   @override
   Future<void> saveSettings(

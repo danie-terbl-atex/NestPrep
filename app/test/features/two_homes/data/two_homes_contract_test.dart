@@ -31,9 +31,9 @@ void main() {
   Set<String> wordsAfter(String source, String anchor) {
     final start = source.indexOf(anchor);
     expect(start, isNot(-1), reason: 'no longer says "$anchor"');
-    final list = RegExp(r'\[([^\]]*)\]')
-        .firstMatch(source.substring(start))!
-        .group(1)!;
+    final list = RegExp(
+      r'\[([^\]]*)\]',
+    ).firstMatch(source.substring(start))!.group(1)!;
     return {
       for (final match in RegExp("'(\\w+)'").allMatches(list)) match.group(1)!,
     };

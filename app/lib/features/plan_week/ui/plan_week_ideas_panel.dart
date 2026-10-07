@@ -5,7 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../lunch_box/model/lunch_slot.dart';
-import '../model/plan_fallback.dart';
+import '../../lunch_box/state/lunch_budget_controller.dart';
 import '../state/plan_week_controller.dart';
 import '../state/plan_week_ideas.dart';
 import 'plan_week_child_names.dart';
@@ -62,7 +62,6 @@ class _IdeaList extends StatelessWidget {
     final names = childNamesOf(controller.board);
     final active = controller.ideas.active.length;
     final reason = list.reason;
-    final calls = list.callsLeft;
     final unread = controller.aisle.unread;
     final shelves = {
       for (final shelf in controller.aisle.shelves)
@@ -74,23 +73,6 @@ class _IdeaList extends StatelessWidget {
         Text(PlanWeekCopy.ideasHeadline, style: nest.text.headline),
         const SizedBox(height: NestSpace.xs),
         Text(PlanWeekCopy.ideasBody, style: nest.text.bodySecondary),
-        const SizedBox(height: NestSpace.md),
-        Wrap(
-          spacing: NestSpace.sm,
-          runSpacing: NestSpace.sm,
-          children: [
-            NestTag(
-              label: list.source == PlanSource.ai
-                  ? PlanWeekCopy.madeByAi
-                  : PlanWeekCopy.madeWithoutAi,
-              tone: list.source == PlanSource.ai
-                  ? NestTagTone.accent
-                  : NestTagTone.neutral,
-              icon: LucideIcons.sparkles,
-            ),
-            if (calls != null) NestTag(label: PlanWeekCopy.callsLeft(calls)),
-          ],
-        ),
         if (reason != null) ...[
           const SizedBox(height: NestSpace.md),
           NestBanner(message: PlanWeekCopy.fallbackIdeas(reason)),
@@ -142,7 +124,7 @@ class _IdeaList extends StatelessWidget {
           nextKey: const ValueKey('plan-week-search'),
           label: PlanWeekCopy.searchAction(active),
           icon: LucideIcons.store,
-          onNext: active == 0 ? null : controller.searchStore,
+          onNext: active == 0 ? null : () => _search(context, controller),
           onBack: controller.back,
         ),
       ],
@@ -153,8 +135,23 @@ class _IdeaList extends StatelessWidget {
     BuildContext context,
     PlanWeekController controller,
   ) async {
-    final added = await showPlanWeekIdeaSheet(context);
+    final added = await showPlanWeekIdeaSheet(
+      context,
+      slots: controller.packing.slots,
+    );
     if (added == null) return;
     controller.addOwnIdea(added.slot, added.text);
   }
+
+  /// To the shop and on to the week, read against the budget this phone
+  /// last heard.
+  static Future<void> _search(
+    BuildContext context,
+    PlanWeekController controller,
+  ) => controller.searchStore(
+    budget: switch (context.read<LunchBudgetController>().week) {
+      AsyncData(:final value) => value.budget?.money,
+      _ => null,
+    },
+  );
 }

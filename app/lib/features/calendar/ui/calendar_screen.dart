@@ -148,8 +148,9 @@ class CalendarScreen extends StatelessWidget {
             children: [
               Text(
                 AppCopy.calendarWeekFilter,
-                style: NestTheme.of(context).text.label
-                    .copyWith(color: NestTheme.of(context).colors.inkSecondary),
+                style: NestTheme.of(context).text.label.copyWith(
+                  color: NestTheme.of(context).colors.inkSecondary,
+                ),
               ),
               const SizedBox(width: NestSpace.sm),
               Expanded(

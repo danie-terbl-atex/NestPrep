@@ -6,6 +6,7 @@ import '../features/add_to_checkers/data/checkers_area_preference.dart';
 import '../features/add_to_checkers/data/checkers_catalogue.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/checkers_place_resolver.dart';
+import '../features/add_to_checkers/data/product_match_ranker.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/add_to_checkers/state/checkers_push_controller.dart';
 import '../features/add_to_checkers/state/product_match_controller.dart';
@@ -78,6 +79,7 @@ GoRoute groceryRoute() => GoRoute(
             groceryRepository: context.read<GroceryRepository>(),
             householdId: householdId,
             memberId: viewerMemberIdOf(context),
+            ranker: context.read<ProductMatchRanker>(),
           ),
         ),
         // The shop *Find at* asks — Checkers until another is connected.

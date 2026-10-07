@@ -35,13 +35,16 @@ void main() {
       expect(gateway.previewCalls, 1);
     });
 
-    test('keeps the button shut until DELETE is typed — in any case, spaces around it', () {
-      expect(controller.canDelete, isFalse);
-      controller.typeConfirmation('delet');
-      expect(controller.canDelete, isFalse);
-      controller.typeConfirmation('  delete ');
-      expect(controller.canDelete, isTrue);
-    });
+    test(
+      'keeps the button shut until DELETE is typed — in any case, spaces around it',
+      () {
+        expect(controller.canDelete, isFalse);
+        controller.typeConfirmation('delet');
+        expect(controller.canDelete, isFalse);
+        controller.typeConfirmation('  delete ');
+        expect(controller.canDelete, isTrue);
+      },
+    );
 
     test(
       'sends the households it would end, then signs this phone out',
@@ -99,15 +102,18 @@ void main() {
       expect(signOuts, 0);
     });
 
-    test('a preview that cannot be read is the error state, and retry reads it again', () async {
-      gateway.previewError = const UnavailableFailure();
-      await controller.load();
-      expect(controller.preview, isA<AsyncFailure<DeletionPreview>>());
-      expect(controller.canDelete, isFalse);
-      gateway.previewError = null;
-      await controller.load();
-      expect(controller.preview, isA<AsyncData<DeletionPreview>>());
-    });
+    test(
+      'a preview that cannot be read is the error state, and retry reads it again',
+      () async {
+        gateway.previewError = const UnavailableFailure();
+        await controller.load();
+        expect(controller.preview, isA<AsyncFailure<DeletionPreview>>());
+        expect(controller.canDelete, isFalse);
+        gateway.previewError = null;
+        await controller.load();
+        expect(controller.preview, isA<AsyncData<DeletionPreview>>());
+      },
+    );
   });
 
   group('DeletionPreview', () {
@@ -189,18 +195,24 @@ void main() {
       },
     );
 
-    test('a refused export is the error state — three an hour is the server’s rule', () async {
-      gateway.exportError = const AccountDataFailure(
-        AccountDataProblem.tooManyRequests,
-      );
-      await controller.prepare();
-      expect(controller.export, isA<AsyncFailure<DownloadedExport?>>());
-    });
+    test(
+      'a refused export is the error state — three an hour is the server’s rule',
+      () async {
+        gateway.exportError = const AccountDataFailure(
+          AccountDataProblem.tooManyRequests,
+        );
+        await controller.prepare();
+        expect(controller.export, isA<AsyncFailure<DownloadedExport?>>());
+      },
+    );
 
-    test('a download that fails after the export is written is the error state too', () async {
-      gateway.downloadError = const NotFoundFailure();
-      await controller.prepare();
-      expect(controller.export, isA<AsyncFailure<DownloadedExport?>>());
-    });
+    test(
+      'a download that fails after the export is written is the error state too',
+      () async {
+        gateway.downloadError = const NotFoundFailure();
+        await controller.prepare();
+        expect(controller.export, isA<AsyncFailure<DownloadedExport?>>());
+      },
+    );
   });
 }

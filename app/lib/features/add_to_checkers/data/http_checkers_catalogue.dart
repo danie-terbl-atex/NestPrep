@@ -246,8 +246,8 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
   /// Random for each run of the app, so it identifies nobody across runs.
   static String _sessionDeviceId() {
     final random = Random.secure();
-    return [for (var i = 0; i < 16; i++) random.nextInt(256).toRadixString(16)]
-        .map((byte) => byte.padLeft(2, '0'))
-        .join();
+    return [
+      for (var i = 0; i < 16; i++) random.nextInt(256).toRadixString(16),
+    ].map((byte) => byte.padLeft(2, '0')).join();
   }
 }

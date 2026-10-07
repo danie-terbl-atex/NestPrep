@@ -11,8 +11,9 @@ import 'shop_week.dart';
 /// Builds the week the review shows from what the phone holds now
 /// (lunch-box ADR-0012, step 4): the model's answer checked once more — a
 /// product the phone kept for that child, for an idea in that slot, in a
-/// compartment still empty, a treat on Friday only — or, without AI, a week
-/// the phone makes itself from the same products and says so.
+/// compartment still empty and one the brief fills, a treat on Friday only —
+/// or, without AI, a week the phone makes itself from the same products and
+/// says so.
 ///
 /// It never touches a compartment somebody already filled.
 abstract final class ShopWeekAssembly {
@@ -22,9 +23,17 @@ abstract final class ShopWeekAssembly {
     required List<IdeaSearch> searches,
     required LunchWeekReply reply,
     required Money? budget,
+    required Set<LunchSlot> slots,
   }) {
     final byIdea = {for (final search in searches) search.ideaId: search};
-    var result = _empty(board, childIds, searches, budget, PlanSource.ai);
+    var result = _empty(
+      board,
+      childIds,
+      searches,
+      budget,
+      slots,
+      PlanSource.ai,
+    );
     final used = <String>{};
     for (final lunch in reply.lunches) {
       final child = board.childWeek(lunch.childId);
@@ -40,6 +49,7 @@ abstract final class ShopWeekAssembly {
           search == null ||
           product == null ||
           search.idea.slot != lunch.slot ||
+          !slots.contains(lunch.slot) ||
           !lunch.slot.isAutoFilledOn(lunch.day) ||
           !product.childIds.contains(lunch.childId)) {
         continue;
@@ -60,26 +70,36 @@ abstract final class ShopWeekAssembly {
       children: result.children,
       searches: searches,
       boxesPerPack: _packs(result, reply.boxesPerPack),
+      slots: slots,
       budget: budget,
       callsLeft: reply.callsLeft,
       dropped: reply.dropped,
     );
   }
 
-  /// A week made on the phone: for each empty compartment, the slot's ideas
-  /// taken in turn — moved on a place each day and for each child, so the
-  /// week varies — and from the idea the product that costs least a box.
+  /// A week made on the phone: for each empty compartment the brief fills,
+  /// the slot's ideas taken in turn — moved on a place each day, so the week
+  /// varies — and from the idea the product that costs least a box. Children
+  /// who may have the same things get the same box, so it is packed once.
   static ShopWeek fallback({
     required LunchBoard board,
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required Money? budget,
+    required Set<LunchSlot> slots,
     required PlanFallbackReason reason,
   }) {
-    var result = _empty(board, childIds, searches, budget, PlanSource.fallback);
-    for (final (childIndex, child) in result.children.indexed) {
+    var result = _empty(
+      board,
+      childIds,
+      searches,
+      budget,
+      slots,
+      PlanSource.fallback,
+    );
+    for (final child in result.children) {
       for (var day = 1; day <= 5; day++) {
-        for (final slot in LunchSlot.values) {
+        for (final slot in LunchSlot.values.where(slots.contains)) {
           final key = LunchPlan.slotKey(day, slot);
           if (!slot.isAutoFilledOn(day) ||
               child.existing.slots.containsKey(key)) {
@@ -92,7 +112,7 @@ abstract final class ShopWeekAssembly {
                 search,
           ];
           if (ideas.isEmpty) continue;
-          final search = ideas[(day - 1 + childIndex) % ideas.length];
+          final search = ideas[(day - 1) % ideas.length];
           final product = _cheapest(search.keptFor(child.childId));
           result = result.withPick(
             child.childId,
@@ -113,6 +133,7 @@ abstract final class ShopWeekAssembly {
       children: result.children,
       searches: searches,
       boxesPerPack: _packs(result, const {}),
+      slots: slots,
       budget: budget,
     );
   }
@@ -122,6 +143,7 @@ abstract final class ShopWeekAssembly {
     Set<String> childIds,
     List<IdeaSearch> searches,
     Money? budget,
+    Set<LunchSlot> slots,
     PlanSource source,
   ) => ShopWeek(
     week: board.week,
@@ -137,6 +159,7 @@ abstract final class ShopWeekAssembly {
     ],
     searches: searches,
     boxesPerPack: const {},
+    slots: slots,
     budget: budget,
   );
 

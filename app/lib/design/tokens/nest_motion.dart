@@ -12,6 +12,7 @@ class NestMotion {
     required this.photo,
     required this.drift,
     required this.stagger,
+    required this._revolution,
     required this.isReduced,
   });
 
@@ -22,6 +23,7 @@ class NestMotion {
     photo: Duration(milliseconds: 480),
     drift: Duration(seconds: 4),
     stagger: Duration(milliseconds: 60),
+    revolution: Duration(seconds: 60),
     isReduced: false,
   );
 
@@ -32,6 +34,7 @@ class NestMotion {
     photo: Duration.zero,
     drift: Duration.zero,
     stagger: Duration.zero,
+    revolution: Duration.zero,
     isReduced: true,
   );
 
@@ -50,7 +53,18 @@ class NestMotion {
   /// The once-only entrance drift on a hero photo.
   final Duration drift;
   final Duration stagger;
+
+  /// One full turn of the slowest ring of the welcome's orbit
+  /// (design-system ADR-0006). Zero under reduce-motion, and in the widget
+  /// suite (see [debugHoldStill]).
+  Duration get revolution => debugHoldStill ? Duration.zero : _revolution;
+  final Duration _revolution;
+
   final bool isReduced;
+
+  /// Stops the orbit turning so `pumpAndSettle` can settle. Set for the whole
+  /// suite by `test/flutter_test_config.dart`; never set in the app.
+  static bool debugHoldStill = false;
 
   static const double pressScale = 0.98;
   static const double photoZoom = 1.06;

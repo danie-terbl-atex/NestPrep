@@ -79,8 +79,9 @@ class _ChangeBodyState extends State<_ChangeBody> {
   void _pickChild(String childId) => setState(() {
     _childId = childId;
     // Somebody listed for the other child may not be for this one.
-    if (_collector case CollectedByPerson(:final id)
-        when !(widget.pickups.personById(id)?.mayCollect(childId) ?? false)) {
+    if (_collector case CollectedByPerson(
+      :final id,
+    ) when !(widget.pickups.personById(id)?.mayCollect(childId) ?? false)) {
       _collector = null;
     }
   });

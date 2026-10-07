@@ -34,10 +34,9 @@ void main() {
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();
-      final names = RegExp(r'static (?:const|String) (\w+)')
-          .allMatches(source)
-          .map((match) => match.group(1)!)
-          .toSet();
+      final names = RegExp(
+        r'static (?:const|String) (\w+)',
+      ).allMatches(source).map((match) => match.group(1)!).toSet();
       expect(names, isNotEmpty);
 
       final unused = <String>{

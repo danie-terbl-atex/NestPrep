@@ -32,3 +32,22 @@ export const checkersPushToCartInput = z.object({
     .transform((ids) => [...new Set(ids)]),
 });
 export type CheckersPushToCartInput = z.infer<typeof checkersPushToCartInput>;
+
+export const MAX_RANKED_PRODUCTS = 8;
+
+export const rankProductMatchesInput = z.object({
+  householdId: z.string().trim().min(1).max(64),
+  item: z.string().trim().min(1).max(120),
+  products: z
+    .array(
+      z.object({
+        productId: z.string().trim().min(1).max(64),
+        name: z.string().trim().min(1).max(160),
+        brand: z.string().trim().max(60).nullable(),
+        priceCents: z.number().int().min(0).max(500_000),
+      }),
+    )
+    .min(1)
+    .max(MAX_RANKED_PRODUCTS),
+});
+export type RankProductMatchesInput = z.infer<typeof rankProductMatchesInput>;

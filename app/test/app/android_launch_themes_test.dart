@@ -32,9 +32,9 @@ void main() {
   for (final file in styles) {
     final folder = file.parent.path.split('/').last;
     test('$folder keeps every window theme on AppCompat', () {
-      final parents = RegExp(r'<style name="(\w+)" parent="([^"]+)"')
-          .allMatches(file.readAsStringSync())
-          .toList();
+      final parents = RegExp(
+        r'<style name="(\w+)" parent="([^"]+)"',
+      ).allMatches(file.readAsStringSync()).toList();
       expect(parents, isNotEmpty);
       for (final match in parents) {
         expect(

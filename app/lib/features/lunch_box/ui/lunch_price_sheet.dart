@@ -149,9 +149,9 @@ class _PriceBodyState extends State<_PriceBody> {
           NestButton(
             label: LunchBudgetCopy.removePrice,
             variant: NestButtonVariant.ghost,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop(const SheetRemoved<LunchPriceEntry>()),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop(const SheetRemoved<LunchPriceEntry>()),
           ),
         ],
       ],

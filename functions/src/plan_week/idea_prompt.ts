@@ -25,6 +25,8 @@ export const IDEAS_SYSTEM = [
   'Lean on "likes" and "ateWell"; avoid "dislikes" and "oftenLeft".',
   'When "budgetCents" is given it is for every child together for the week, in South African',
   'cents: prefer affordable staples and multi-packs that stretch across the week.',
+  'When "packing" is given, each line is how the parent wants to pack this week. Follow every',
+  'line; it overrides your usual suggestions, and an idea that breaks one does not belong.',
   'Answer with JSON only, in the shape asked for.',
 ].join('\n');
 

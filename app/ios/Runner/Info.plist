@@ -32,6 +32,16 @@
 				<string>com.googleusercontent.apps.388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>io.nullstate.nestprep.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nestprep</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
@@ -56,6 +66,8 @@
 	<string>So a picture you share from NestPrep — a lunchbox card, a scanned page — can be saved to your photos when you choose Save Image.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

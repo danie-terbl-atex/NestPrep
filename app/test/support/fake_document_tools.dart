@@ -91,10 +91,9 @@ final class InMemoryOfflineCopyStore implements OfflineCopyStore {
   AppFailure? failSaveWith;
 
   @override
-  Future<List<OfflineCopy>> list(String uid) async =>
-      [for (final entry in (byAccount[uid] ?? const {}).values) entry.$1]
-          .reversed
-          .toList();
+  Future<List<OfflineCopy>> list(String uid) async => [
+    for (final entry in (byAccount[uid] ?? const {}).values) entry.$1,
+  ].reversed.toList();
 
   @override
   Future<void> save(String uid, OfflineCopy copy, Uint8List bytes) async {

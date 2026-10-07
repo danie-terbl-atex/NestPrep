@@ -60,9 +60,13 @@ void main() {
   }
 
   List<String> functionsPackages() {
-    final manifest = jsonDecode(
-      File('${repoRoot.path}/functions/package.json').readAsStringSync(),
-    ) as Map<String, Object?>;
+    final manifest =
+        jsonDecode(
+              File(
+                '${repoRoot.path}/functions/package.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, Object?>;
     return [
       for (final section in ['dependencies', 'devDependencies'])
         ...(manifest[section] as Map<String, Object?>? ?? const {}).keys,
@@ -80,24 +84,28 @@ void main() {
     );
   }, skip: skipUnlessBesideTheVault);
 
-  test('every package the app depends on is named in the note', () {
-    final text = note.readAsStringSync();
-    final packages = pubspecPackages();
-    expect(packages, isNotEmpty);
+  test(
+    'every package the app depends on is named in the note',
+    () {
+      final text = note.readAsStringSync();
+      final packages = pubspecPackages();
+      expect(packages, isNotEmpty);
 
-    final undeclared = [
-      for (final package in packages)
-        if (!text.contains('`$package`')) package,
-    ];
+      final undeclared = [
+        for (final package in packages)
+          if (!text.contains('`$package`')) package,
+      ];
 
-    expect(
-      undeclared,
-      isEmpty,
-      reason:
-          'adding a package is an ADR and a row in the note, in the same '
-          'change as the dependency (`ENG-17`)',
-    );
-  }, skip: skipUnlessBesideTheVault);
+      expect(
+        undeclared,
+        isEmpty,
+        reason:
+            'adding a package is an ADR and a row in the note, in the same '
+            'change as the dependency (`ENG-17`)',
+      );
+    },
+    skip: skipUnlessBesideTheVault,
+  );
 
   test('and every package the Functions depend on', () {
     final text = note.readAsStringSync();
@@ -112,33 +120,37 @@ void main() {
     expect(undeclared, isEmpty, reason: 'same rule, other half of the repo');
   }, skip: skipUnlessBesideTheVault);
 
-  test('and the note has not kept a row for something that has gone', () {
-    // The note also lists what was deliberately *not* used, which is half its
-    // value — so this only checks the packages it claims are in use, by
-    // looking for them in the two manifests.
-    final text = note.readAsStringSync();
-    final inUse = {...pubspecPackages(), ...functionsPackages()};
-    // That section, and only that section — the Functions toolchain follows
-    // it, and its packages are very much in use.
-    final start = text.indexOf('Deliberately not used');
-    final nextHeading = text.indexOf('\n## ', start);
-    final rejected = text.substring(
-      start,
-      nextHeading == -1 ? text.length : nextHeading,
-    );
+  test(
+    'and the note has not kept a row for something that has gone',
+    () {
+      // The note also lists what was deliberately *not* used, which is half its
+      // value — so this only checks the packages it claims are in use, by
+      // looking for them in the two manifests.
+      final text = note.readAsStringSync();
+      final inUse = {...pubspecPackages(), ...functionsPackages()};
+      // That section, and only that section — the Functions toolchain follows
+      // it, and its packages are very much in use.
+      final start = text.indexOf('Deliberately not used');
+      final nextHeading = text.indexOf('\n## ', start);
+      final rejected = text.substring(
+        start,
+        nextHeading == -1 ? text.length : nextHeading,
+      );
 
-    final ghosts = [
-      for (final match in RegExp(
-        r'^\| `([a-z@][a-z0-9_@/-]+)` \|',
-        multiLine: true,
-      ).allMatches(rejected))
-        if (inUse.contains(match.group(1))) match.group(1)!,
-    ];
+      final ghosts = [
+        for (final match in RegExp(
+          r'^\| `([a-z@][a-z0-9_@/-]+)` \|',
+          multiLine: true,
+        ).allMatches(rejected))
+          if (inUse.contains(match.group(1))) match.group(1)!,
+      ];
 
-    expect(
-      ghosts,
-      isEmpty,
-      reason: 'a package listed as deliberately not used, that is used',
-    );
-  }, skip: skipUnlessBesideTheVault);
+      expect(
+        ghosts,
+        isEmpty,
+        reason: 'a package listed as deliberately not used, that is used',
+      );
+    },
+    skip: skipUnlessBesideTheVault,
+  );
 }

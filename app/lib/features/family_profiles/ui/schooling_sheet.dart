@@ -112,9 +112,9 @@ class _SchoolingSheetBodyState extends State<_SchoolingSheetBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: FamilyCopy.save,
-            onPressed: () =>
-                Navigator.of(context)
-                    .pop((schoolId: _schoolId, grade: _grade.text)),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop((schoolId: _schoolId, grade: _grade.text)),
           ),
         ],
       ),

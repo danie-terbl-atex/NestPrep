@@ -69,9 +69,7 @@ void main() {
     return source;
   }
 
-  testWidgets('a premium household sees the photo of that box', (
-    tester,
-  ) async {
+  testWidgets('a premium household sees the photo of that box', (tester) async {
     final source = await pump(tester, isPremium: true);
 
     expect(source.asked, [
@@ -92,11 +90,7 @@ void main() {
   });
 
   testWidgets('an empty box is never sent for a photo', (tester) async {
-    final source = await pump(
-      tester,
-      isPremium: true,
-      box: LunchBox(const {}),
-    );
+    final source = await pump(tester, isPremium: true, box: LunchBox(const {}));
 
     expect(source.asked, isEmpty);
   });

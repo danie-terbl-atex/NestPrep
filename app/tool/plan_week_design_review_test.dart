@@ -30,8 +30,8 @@ import '../test/support/lunch_planning_harness.dart';
 import 'review_press.dart';
 
 /// *Plan my week from Checkers* in the design-review press (lunch-box
-/// ADR-0012): the way in on the board, then each of the five steps — the
-/// brief, the ideas (with AI and without), the shop, the week and done —
+/// ADR-0012): the way in on the board, then the steps that rest — the
+/// brief, the ideas (with AI and without), the week and done —
 /// light and dark, and the week dark at 200% text. Regenerate with
 ///
 ///     flutter test tool/plan_week_design_review_test.dart --update-goldens
@@ -207,6 +207,7 @@ void main() {
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
+      packingStore: FakePackingChoiceStore(),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );
@@ -242,14 +243,9 @@ void main() {
   Future<void> toIdeas(PlanWeekController controller) =>
       controller.draftIdeas();
 
-  Future<void> toStore(PlanWeekController controller) async {
+  Future<void> toWeek(PlanWeekController controller) async {
     await controller.draftIdeas();
     await controller.searchStore();
-  }
-
-  Future<void> toWeek(PlanWeekController controller) async {
-    await toStore(controller);
-    await controller.buildWeek();
   }
 
   Future<void> toDone(PlanWeekController controller) async {
@@ -273,7 +269,6 @@ void main() {
     for (final (step, act) in [
       ('brief', null),
       ('ideas', toIdeas),
-      ('store', toStore),
       ('week', toWeek),
       ('done', toDone),
     ]) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +13,7 @@ import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/accounts/ui/invite_code_sheet.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
@@ -25,8 +28,10 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/data/invite_sharer.dart';
+import 'package:nestprep/features/household/state/pending_invite.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/join_invite_screen.dart';
 import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
@@ -50,6 +55,7 @@ import 'package:nestprep/features/two_homes/ui/link_setup_screen.dart';
 import 'package:nestprep/features/two_homes/ui/privacy_screen.dart';
 import 'package:nestprep/features/two_homes/ui/schedule_request_screen.dart';
 import 'package:nestprep/features/two_homes/ui/two_homes_screen.dart';
+import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:provider/provider.dart';
@@ -98,8 +104,12 @@ void main() {
   late FakeFamilyProfileRepository familyProfiles;
   late FakeLunchRepository lunches;
   late FakeTwoHomesRepository twoHomes;
+  late StreamController<Uri> links;
+  late PendingInvite pendingInvite;
 
   setUp(() {
+    links = StreamController<Uri>.broadcast();
+    pendingInvite = PendingInvite(links: links.stream);
     twoHomes = FakeTwoHomesRepository();
     activity = FakeActivityRecorder();
     betaNumbers = FakeBetaNumbersRepository(isReader: true);
@@ -117,6 +127,8 @@ void main() {
   });
 
   tearDown(() async {
+    pendingInvite.dispose();
+    await links.close();
     session.dispose();
     await auth.close();
     await accounts.close();
@@ -134,7 +146,7 @@ void main() {
   late GoRouter router;
 
   Future<void> pumpApp(WidgetTester tester) async {
-    router = createAppRouter(session);
+    router = createAppRouter(session, pendingInvite);
     addTearDown(router.dispose);
     await tester.pumpWidget(
       MultiProvider(
@@ -179,6 +191,7 @@ void main() {
           Provider<TwoHomesDirectory>.value(value: FakeTwoHomesDirectory()),
           Provider<InviteSharer>.value(value: FakeInviteSharer()),
           ChangeNotifierProvider<SessionController>.value(value: session),
+          ChangeNotifierProvider<PendingInvite>.value(value: pendingInvite),
         ],
         child: MaterialApp.router(
           theme: nestThemeData(NestTheme.light()),
@@ -310,9 +323,11 @@ void main() {
     await settle(tester);
     expect(tester.takeException(), isNull);
     expect(find.byType(FamilyMemberScreen), findsOneWidget);
-    expect(familyProfiles.healthWatched, [
-      Fixtures.kidMemberId,
-    ], reason: 'an admin reads the medication of the person the route names');
+    expect(
+      familyProfiles.healthWatched,
+      [Fixtures.kidMemberId],
+      reason: 'an admin reads the medication of the person the route names',
+    );
   });
 
   // design-system ADR-0009: the household opens on Today.
@@ -378,5 +393,76 @@ void main() {
       expect(tester.takeException(), isNull, reason: path);
       expect(find.byType(screen), findsOneWidget, reason: path);
     }
+  });
+
+  // household ADR-0005: a tapped invite link opens on the household it
+  // offers, and joining hands the person back to the app.
+  testWidgets('an invite link opens the join screen, and joining moves on', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    links.add(Uri.parse('https://nestprep-643b7.web.app/invite/abcd2345'));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(JoinInviteScreen), findsOneWidget);
+    expect(find.text(AccessCopy.inviteLinkTitle('The Parkers')), findsWidgets);
+
+    await tester.tap(
+      find.widgetWithText(
+        NestButton,
+        AccessCopy.inviteLinkTitle('The Parkers'),
+      ),
+    );
+    await settle(tester);
+    expect(directory.redeemed, ['ABCD2345']);
+    expect(pendingInvite.code, isNull);
+    expect(find.byType(JoinInviteScreen), findsNothing);
+  });
+
+  testWidgets('signed out, the link waits for the way in and says so', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    auth.emit(null);
+    await settle(tester);
+
+    links.add(Uri.parse('nestprep://invite/ABCD2345'));
+    await settle(tester);
+    expect(find.byType(SignInScreen), findsOneWidget);
+    expect(find.text(AccessCopy.inviteLinkSignInFirst), findsOneWidget);
+
+    await signInWithAHousehold(tester);
+    expect(find.byType(JoinInviteScreen), findsOneWidget);
+  });
+
+  testWidgets('signed out, a typed invite code waits for the way in too', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    auth.emit(null);
+    await settle(tester);
+
+    await tester.ensureVisible(find.text(AccessCopy.inviteCodeWayIn));
+    await tester.tap(find.text(AccessCopy.inviteCodeWayIn));
+    await settle(tester);
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(InviteCodeSheet),
+        matching: find.byType(TextField),
+      ),
+      'abcd2345',
+    );
+    await tester.pump();
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await settle(tester);
+
+    expect(pendingInvite.code, 'ABCD2345');
+    expect(find.text(AccessCopy.inviteLinkSignInFirst), findsOneWidget);
+    expect(find.text(AccessCopy.inviteCodeWayIn), findsNothing);
+
+    await signInWithAHousehold(tester);
+    expect(find.byType(JoinInviteScreen), findsOneWidget);
   });
 }

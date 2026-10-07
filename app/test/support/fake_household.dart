@@ -164,6 +164,15 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
   final created = <({String name, String timeZone, String adminDisplayName})>[];
   final invitesMade = <({String householdId, String memberId})>[];
   final redeemed = <String>[];
+  final previewed = <String>[];
+  InvitePreview Function(String code) previewOf = (code) => InvitePreview(
+    code: code,
+    householdName: 'The Parkers',
+    memberName: 'Thandi',
+    role: MemberRole.helper,
+    invitedBy: 'Sam',
+    expiresAt: DateTime.utc(2026, 9, 25),
+  );
   final left = <String>[];
   final removed = <({String householdId, String memberId})>[];
   final rolesSet = <({String memberId, MemberRole role})>[];
@@ -198,6 +207,13 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
     await _checkpoint();
     invitesMade.add((householdId: householdId, memberId: memberId));
     return InviteCode(code: 'ABCD2345', expiresAt: DateTime.utc(2026, 9, 25));
+  }
+
+  @override
+  Future<InvitePreview> previewInvite(String code) async {
+    await _checkpoint();
+    previewed.add(code);
+    return previewOf(code);
   }
 
   @override

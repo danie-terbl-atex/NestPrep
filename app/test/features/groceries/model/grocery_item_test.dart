@@ -12,17 +12,20 @@ void main() {
       expect(item.isStillVisible(now), isTrue);
     });
 
-    test('keeps a bought item for a day, struck through, so a wrong tick can be undone', () {
-      final justBought = GroceryItem(
-        id: 'i',
-        name: 'Milk',
-        addedBy: 'm-sam',
-        boughtAt: now.subtract(const Duration(hours: 23, minutes: 59)),
-        boughtBy: 'm-sam',
-      );
-      expect(justBought.isBought, isTrue);
-      expect(justBought.isStillVisible(now), isTrue);
-    });
+    test(
+      'keeps a bought item for a day, struck through, so a wrong tick can be undone',
+      () {
+        final justBought = GroceryItem(
+          id: 'i',
+          name: 'Milk',
+          addedBy: 'm-sam',
+          boughtAt: now.subtract(const Duration(hours: 23, minutes: 59)),
+          boughtBy: 'm-sam',
+        );
+        expect(justBought.isBought, isTrue);
+        expect(justBought.isStillVisible(now), isTrue);
+      },
+    );
 
     test('drops a bought item after a day without deleting it', () {
       final yesterday = GroceryItem(

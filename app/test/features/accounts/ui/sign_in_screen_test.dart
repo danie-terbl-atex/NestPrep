@@ -112,7 +112,7 @@ void main() {
     await pump(tester);
     await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel(AppCopy.signInPhotoLabel), findsOneWidget);
+    expect(find.bySemanticsLabel(AppCopy.signInOrbitLabel), findsOneWidget);
     handle.dispose();
   });
 

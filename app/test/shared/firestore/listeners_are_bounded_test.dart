@@ -74,9 +74,9 @@ void main() {
 
     final declared = [
       for (final file in interfaces)
-        ...RegExp(r'static const (\w*[Ll]imit) =')
-            .allMatches(file.readAsStringSync())
-            .map((match) => match.group(1)!),
+        ...RegExp(
+          r'static const (\w*[Ll]imit) =',
+        ).allMatches(file.readAsStringSync()).map((match) => match.group(1)!),
     ];
 
     expect(

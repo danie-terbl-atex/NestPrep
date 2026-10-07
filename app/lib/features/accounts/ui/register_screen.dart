@@ -110,8 +110,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: NestSpace.lg),
             Text(
               AppCopy.registerHasAccount,
-              style: NestTheme.of(context).text.caption
-                  .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+              style: NestTheme.of(context).text.caption.copyWith(
+                color: NestTheme.of(context).colors.inkTertiary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: NestSpace.sm),

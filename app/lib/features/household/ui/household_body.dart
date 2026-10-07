@@ -137,8 +137,9 @@ class HouseholdBody extends StatelessWidget {
             padding: const EdgeInsets.only(top: NestSpace.sm),
             child: Text(
               AppCopy.householdProblemLastAdmin,
-              style: NestTheme.of(context).text.caption
-                  .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+              style: NestTheme.of(context).text.caption.copyWith(
+                color: NestTheme.of(context).colors.inkTertiary,
+              ),
               textAlign: TextAlign.center,
             ),
           ),

@@ -45,13 +45,12 @@ final class FirestoreLunchPantryRepository implements LunchPantryRepository {
   Stream<List<LunchPackedDay>> watchPacked(
     String householdId,
     LunchWeek week,
-  ) =>
-      _packed(householdId)
-          .where('week', isEqualTo: week.key)
-          .limit(LunchPantryRepository.packedLimit)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  ) => _packed(householdId)
+      .where('week', isEqualTo: week.key)
+      .limit(LunchPantryRepository.packedLimit)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> setPortions({

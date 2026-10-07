@@ -70,13 +70,15 @@ final class ShopWeek {
     required List<ShopChildWeek> children,
     required List<IdeaSearch> searches,
     required Map<String, int> boxesPerPack,
+    Set<LunchSlot>? slots,
     this.budget,
     this.fallbackReason,
     this.callsLeft,
     this.dropped = 0,
   }) : children = List.unmodifiable(children),
        searches = List.unmodifiable(searches),
-       boxesPerPack = Map.unmodifiable(boxesPerPack);
+       boxesPerPack = Map.unmodifiable(boxesPerPack),
+       slots = Set.unmodifiable(slots ?? LunchSlot.values);
 
   static const packLimit = 100;
 
@@ -98,6 +100,9 @@ final class ShopWeek {
 
   /// The household's weekly lunch budget, when one is set.
   final Money? budget;
+
+  /// The compartments the brief fills; the others are left as they are.
+  final Set<LunchSlot> slots;
 
   int get pickCount =>
       children.fold(0, (total, child) => total + child.added.length);
@@ -165,14 +170,7 @@ final class ShopWeek {
     ],
   );
 
-  ShopWeek withBoxesPerPack(String productId, int boxes) => _copy(
-    boxesPerPack: {...boxesPerPack, productId: boxes.clamp(1, packLimit)},
-  );
-
-  ShopWeek _copy({
-    List<ShopChildWeek>? children,
-    Map<String, int>? boxesPerPack,
-  }) => ShopWeek(
+  ShopWeek _copy({List<ShopChildWeek>? children}) => ShopWeek(
     week: week,
     source: source,
     fallbackReason: fallbackReason,
@@ -180,7 +178,8 @@ final class ShopWeek {
     dropped: dropped,
     children: children ?? this.children,
     searches: searches,
-    boxesPerPack: boxesPerPack ?? this.boxesPerPack,
+    boxesPerPack: boxesPerPack,
+    slots: slots,
     budget: budget,
   );
 }

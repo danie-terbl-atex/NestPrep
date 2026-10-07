@@ -20,9 +20,12 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
+import '../features/household/state/join_invite_controller.dart';
+import '../features/household/state/pending_invite.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/household/ui/join_invite_screen.dart';
 import '../features/legal/ui/consent_screen.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/location_reporter.dart';
@@ -66,11 +69,17 @@ import 'viewer_member.dart';
 /// lifetime is the screen's (foundation ADR-0006). The household shell is the
 /// one exception a level up: the household and its members are read once for
 /// every tab under it.
-GoRouter createAppRouter(SessionController session) => GoRouter(
-  refreshListenable: session,
+GoRouter createAppRouter(
+  SessionController session,
+  PendingInvite pendingInvite,
+) => GoRouter(
+  refreshListenable: Listenable.merge([session, pendingInvite]),
   initialLocation: SessionGateScreen.path,
-  redirect: (context, state) =>
-      redirectForSession(session, state.matchedLocation),
+  redirect: (context, state) => redirectForSession(
+    session,
+    state.matchedLocation,
+    pendingInviteCode: pendingInvite.code,
+  ),
   routes: [
     GoRoute(
       path: SessionGateScreen.path,
@@ -110,6 +119,16 @@ GoRouter createAppRouter(SessionController session) => GoRouter(
           defaultTimeZone: Household.defaultTimeZone,
         ),
         child: const HouseholdGateScreen(),
+      ),
+    ),
+    GoRoute(
+      path: JoinInviteScreen.path,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) => JoinInviteController(
+          householdDirectory: context.read<HouseholdDirectory>(),
+          pendingInvite: pendingInvite,
+        )..load(),
+        child: const JoinInviteScreen(),
       ),
     ),
     ShellRoute(
@@ -271,7 +290,11 @@ void goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
 /// gallery is exempt because it renders no data and debug builds use it before
 /// sign-in.
 @visibleForTesting
-String? redirectForSession(SessionController session, String location) {
+String? redirectForSession(
+  SessionController session,
+  String location, {
+  String? pendingInviteCode,
+}) {
   if (DesignGalleryAccess.isAvailable && location == DesignGalleryScreen.path) {
     return null;
   }
@@ -305,6 +328,10 @@ String? redirectForSession(SessionController session, String location) {
   // licences stay readable meanwhile.
   if (session.needsLegalConsent) return redirectForConsent(location);
 
+  if (pendingInviteCode != null) {
+    return location == JoinInviteScreen.path ? null : JoinInviteScreen.path;
+  }
+
   final householdId = session.activeHouseholdId;
 
   if (householdId == null) {
@@ -319,6 +346,7 @@ String? redirectForSession(SessionController session, String location) {
     RegisterScreen.path,
     ForgotPasswordScreen.path,
     HouseholdGateScreen.path,
+    JoinInviteScreen.path,
     // Agreed, so the consent step is behind them (accounts ADR-0005).
     ConsentScreen.path,
   ];

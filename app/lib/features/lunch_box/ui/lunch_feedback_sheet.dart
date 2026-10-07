@@ -65,8 +65,9 @@ class _FeedbackBodyState extends State<_FeedbackBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: LunchCopy.saveMarks,
-            onPressed: () => Navigator.of(context)
-                .pop(SheetSaved<LunchMarks>((box: _box, items: {..._items}))),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop(SheetSaved<LunchMarks>((box: _box, items: {..._items}))),
           ),
           if (widget.existing != null) ...[
             const SizedBox(height: NestSpace.sm),

@@ -97,9 +97,9 @@ class _RoomBodyState extends State<_RoomBody> {
           NestButton(
             label: AppCopy.householdSave,
             onPressed: canSave
-                ? () =>
-                      Navigator.of(context)
-                          .pop(RoomSaved(name: _name.text.trim(), kind: _kind))
+                ? () => Navigator.of(
+                    context,
+                  ).pop(RoomSaved(name: _name.text.trim(), kind: _kind))
                 : null,
           ),
           if (widget.room != null) ...[

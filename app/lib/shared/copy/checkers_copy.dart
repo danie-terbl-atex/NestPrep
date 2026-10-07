@@ -32,6 +32,7 @@ abstract final class CheckersCopy {
   static const pick = 'Pick';
   static const outOfStock = 'Out of stock';
   static const deal = 'Deal';
+  static const bestMatch = 'Best match';
   static String was(Money oldPrice) => 'was ${oldPrice.display}';
   static String price(Money price, {required bool perKilogram}) =>
       perKilogram ? '${price.display}/kg' : price.display;

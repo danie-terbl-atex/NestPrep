@@ -122,10 +122,9 @@ final class FirestoreGroceryRepository implements GroceryRepository {
     required String householdId,
     required String itemId,
   }) => _guarded(
-    () =>
-        _items(householdId)
-            .doc(itemId)
-            .update({'productMatch': FieldValue.delete()}),
+    () => _items(
+      householdId,
+    ).doc(itemId).update({'productMatch': FieldValue.delete()}),
   );
 
   @override

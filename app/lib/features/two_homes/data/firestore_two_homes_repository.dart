@@ -55,22 +55,20 @@ final class FirestoreTwoHomesRepository implements TwoHomesRepository {
 
   @override
   Stream<List<CoParentLink>> watchLinks(String householdId) => _list(
-    _typedLinks(householdId)
-        .orderBy('createdAt', descending: true)
-        .limit(linkListen)
-        .snapshots(),
+    _typedLinks(
+      householdId,
+    ).orderBy('createdAt', descending: true).limit(linkListen).snapshots(),
   );
 
   @override
   Stream<CoParentLink?> watchLink({
     required String householdId,
     required String linkId,
-  }) =>
-      _typedLinks(householdId)
-          .doc(linkId)
-          .snapshots()
-          .map((snapshot) => snapshot.data())
-          .handleError((Object error) => throw failureFromFirebase(error));
+  }) => _typedLinks(householdId)
+      .doc(linkId)
+      .snapshots()
+      .map((snapshot) => snapshot.data())
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Stream<List<HandoverNote>> watchHandovers({

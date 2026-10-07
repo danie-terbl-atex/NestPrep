@@ -62,9 +62,9 @@ void main() {
     });
 
     test('the swimming rule skips the Thursdays in between', () {
-      final proposal = parse(
-        'Swimming every other Thursday 4pm until December',
-      ) as QuickAddProposal;
+      final proposal =
+          parse('Swimming every other Thursday 4pm until December')
+              as QuickAddProposal;
       final days = expandOccurrences(
         firstDate: proposal.date,
         rule: proposal.recurrence,

@@ -10,9 +10,9 @@ import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_shelf.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
-String fixture(String name) =>
-    File('test/features/add_to_checkers/fixtures/$name.json')
-        .readAsStringSync();
+String fixture(String name) => File(
+  'test/features/add_to_checkers/fixtures/$name.json',
+).readAsStringSync();
 
 /// A Sixty60 catalogue on the far side of a fake network, counting calls.
 final class FakeSixty60 {

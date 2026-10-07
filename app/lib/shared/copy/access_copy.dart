@@ -152,20 +152,38 @@ abstract final class AccessCopy {
   static String inviteSubject(String householdName) =>
       'Join $householdName on NestPrep';
 
-  /// What the share sheet sends. The link, when there is one, only says how
-  /// to get the app: joining is always the code (household ADR-0002).
+  /// What the share sheet sends. No link until the invite page is live
+  /// (household ADR-0006): the code is typed on the sign-in screen.
   static String inviteMessage({
     required String householdName,
     required String code,
-    Uri? appLink,
-  }) {
-    final getTheApp = appLink == null
-        ? 'Get NestPrep'
-        : 'Get NestPrep at $appLink';
-    return 'You are invited to $householdName on NestPrep. $getTheApp, then '
-        'choose "I have an invite code" and type $code. The code works once '
-        'and lasts seven days.';
-  }
+  }) =>
+      'You are invited to $householdName on NestPrep.\n\n'
+      'Get NestPrep, tap "$inviteCodeWayIn" on the sign-in screen and type '
+      '$code. The code works once and lasts seven days.';
 
   static String inviteCodeFor(String name) => 'Code for $name';
+
+  static const inviteLinkEyebrow = 'You are invited';
+  static const inviteLinkChecking = 'Checking your invite';
+  static const inviteLinkNotNow = 'Not now';
+  static const inviteLinkRefused = 'This invite cannot be used';
+  static const inviteLinkClose = 'Close';
+  static const inviteCodeWayInPrompt = 'Invited by family?';
+  static const inviteCodeWayIn = 'I have an invite code';
+  static const inviteCodeContinue = 'Continue';
+  static const inviteCodeInvalid =
+      'That is not an invite code. It is eight letters and numbers.';
+  static const inviteLinkSignInFirst =
+      'Sign in or create an account to accept your household invite.';
+
+  static String inviteLinkTitle(String householdName) => 'Join $householdName';
+
+  static String inviteLinkBody({
+    required String memberName,
+    required MemberRole role,
+    required String? invitedBy,
+  }) =>
+      '${invitedBy ?? 'Somebody'} invited you to join as $memberName '
+      '(${roleName(role)}).';
 }

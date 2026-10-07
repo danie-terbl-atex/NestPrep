@@ -70,6 +70,7 @@ export interface MemberDocument extends DocumentData {
 export interface InviteDocument extends DocumentData {
   readonly householdId: string;
   readonly memberId: string;
+  readonly createdBy: string;
   readonly redeemedBy: string | null;
 }
 

@@ -60,6 +60,7 @@ class ProductMatchPanel extends StatelessWidget {
               ),
             AsyncData(value: final products) => _Products(
               products: products,
+              bestMatchId: controller.bestMatchId,
               onPick: controller.isPicking ? null : controller.pick,
             ),
           },
@@ -165,9 +166,14 @@ class _Message extends StatelessWidget {
 }
 
 class _Products extends StatelessWidget {
-  const _Products({required this.products, required this.onPick});
+  const _Products({
+    required this.products,
+    required this.bestMatchId,
+    required this.onPick,
+  });
 
   final List<CheckersProduct> products;
+  final String? bestMatchId;
   final ValueChanged<CheckersProduct>? onPick;
 
   @override
@@ -180,6 +186,7 @@ class _Products extends StatelessWidget {
           CheckersProductTile(
             key: ValueKey('${product.storeId}/${product.id}'),
             product: product,
+            isBestMatch: product.id == bestMatchId,
             onPick: pick == null ? null : () => pick(product),
           ),
         ],

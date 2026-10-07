@@ -326,3 +326,68 @@ describe('setMemberRole', () => {
     );
   });
 });
+
+describe('previewInvite', () => {
+  beforeEach(clearFirestore);
+
+  async function anInvite(): Promise<{ sam: TestUser; householdId: string; code: string }> {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const memberId = await addMember(householdId, 'Thandi', 'helper');
+    const { code } = await callAs<CreatedInvite>(sam, 'createInvite', { householdId, memberId });
+    return { sam, householdId, code };
+  }
+
+  it('names the household, the profile, its role and who sent it, and spends nothing', async () => {
+    const { householdId, code } = await anInvite();
+    const joiner = await signUp();
+
+    const preview = await callAs<Record<string, unknown>>(joiner, 'previewInvite', {
+      code: code.toLowerCase(),
+    });
+
+    expect(preview).toEqual({
+      householdName: 'The Parkers',
+      memberName: 'Thandi',
+      role: 'helper',
+      invitedBy: 'Sam Parent',
+      expiresAt: expect.any(String) as unknown,
+    });
+    const invite = await adminDb().collection('invites').doc(code).get();
+    expect(invite.get('redeemedBy')).toBeNull();
+    const household = await adminDb().collection('households').doc(householdId).get();
+    expect(membersOf(household)[joiner.uid]).toBeUndefined();
+  });
+
+  it('reads a legacy member profile as a parent', async () => {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const memberId = await addMember(householdId, 'Alex');
+    const { code } = await callAs<CreatedInvite>(sam, 'createInvite', { householdId, memberId });
+
+    const preview = await callAs<{ role: string }>(await signUp(), 'previewInvite', { code });
+    expect(preview.role).toBe('parent');
+  });
+
+  it('refuses what redeeming would refuse', async () => {
+    const { sam, code } = await anInvite();
+    const joiner = await signUp();
+
+    await expectRefusal(callAs(sam, 'previewInvite', { code }), 'alreadyInHousehold');
+    await expectRefusal(callAs(joiner, 'previewInvite', { code: 'ABCD2345' }), 'inviteNotFound');
+    await expectRefusal(callAs(joiner, 'previewInvite', { code: 'O0IL1234' }), 'inviteNotFound');
+
+    await adminDb()
+      .collection('invites')
+      .doc(code)
+      .update({ expiresAt: new Date(Date.now() - 1000) });
+    await expectRefusal(callAs(joiner, 'previewInvite', { code }), 'inviteExpired');
+  });
+
+  it('refuses a code somebody has already used', async () => {
+    const { code } = await anInvite();
+    await callAs(await signUp(), 'redeemInvite', { code });
+
+    await expectRefusal(callAs(await signUp(), 'previewInvite', { code }), 'inviteAlreadyUsed');
+  });
+});

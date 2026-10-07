@@ -196,8 +196,9 @@ void main() {
     // A helper a parent let see the family's profiles, and not their
     // medicine (household ADR-0003, family-profiles ADR-0002).
     final helper = Fixtures.helperView(
-      AccessGrant.uniform(AccessLevel.none)
-          .withLevel(HouseholdArea.familyProfiles, AccessLevel.view),
+      AccessGrant.uniform(
+        AccessLevel.none,
+      ).withLevel(HouseholdArea.familyProfiles, AccessLevel.view),
     );
 
     setUp(() {

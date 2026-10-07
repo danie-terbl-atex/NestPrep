@@ -140,8 +140,9 @@ void main() {
       final controller = make(
         TwoHomesAccess.of(
           Fixtures.helperView(
-            AccessGrant.uniform(AccessLevel.none)
-                .withLevel(HouseholdArea.calendar, AccessLevel.view),
+            AccessGrant.uniform(
+              AccessLevel.none,
+            ).withLevel(HouseholdArea.calendar, AccessLevel.view),
           ),
         ),
       );

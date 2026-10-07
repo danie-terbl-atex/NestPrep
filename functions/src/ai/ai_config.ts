@@ -1,4 +1,4 @@
-import { defineString } from 'firebase-functions/params';
+import { defineSecret, defineString } from 'firebase-functions/params';
 
 /**
  * Which model answers, and where (foundation ADR-0015, BE-16). Parameters
@@ -23,6 +23,11 @@ export const aiLocation = defineString('AI_LOCATION', { default: 'europe-west4' 
  */
 export const aiImageModel = defineString('AI_IMAGE_MODEL', { default: 'gemini-3.1-flash-image' });
 export const aiImageLocation = defineString('AI_IMAGE_LOCATION', { default: 'global' });
+
+/** Jev on TypeSafe makes the decisions (foundation ADR-0021); the key is a secret. */
+export const aiDecisionModel = defineString('AI_DECISION_MODEL', { default: 'jev-latest' });
+export const typesafeApiKey = defineSecret('TYPESAFE_API_KEY');
+export const DECISION_SECRETS = [typesafeApiKey];
 
 /** The project the Functions run in, which is the one Vertex bills. */
 export function currentProject(): string {

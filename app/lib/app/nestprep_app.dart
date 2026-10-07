@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/household/state/pending_invite.dart';
 import '../shared/copy/app_copy.dart';
 import 'app_providers.dart';
 import 'app_router.dart';
@@ -37,6 +38,7 @@ class _NestPrepRouterHost extends StatefulWidget {
 class _NestPrepRouterHostState extends State<_NestPrepRouterHost> {
   late final GoRouter _router = createAppRouter(
     context.read<SessionController>(),
+    context.read<PendingInvite>(),
   );
 
   @override

@@ -67,8 +67,9 @@ class _CareNotesSheetBodyState extends State<_CareNotesSheetBody> {
           const SizedBox(height: NestSpace.xxl),
           NestButton(
             label: NannyCopy.save,
-            onPressed: () => Navigator.of(context)
-                .pop((settling: _settling.text, goodToKnow: _goodToKnow.text)),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop((settling: _settling.text, goodToKnow: _goodToKnow.text)),
           ),
         ],
       ),

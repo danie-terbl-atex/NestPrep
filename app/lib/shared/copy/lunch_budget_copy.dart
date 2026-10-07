@@ -41,9 +41,10 @@ abstract final class LunchBudgetCopy {
       'Every child’s lunches together, in whole packs — what you’d pay at '
       'the till.';
   static const basketEmpty = 'Nothing priced is packed this week yet.';
-  static String basketLine(int boxes, int packs) =>
-      '${boxes == 1 ? '1 box' : '$boxes boxes'} · '
-      '${packs == 1 ? '1 pack' : '$packs packs'}';
+  static String basketBuy(int packs) =>
+      packs == 1 ? 'Buy 1 pack' : 'Buy $packs packs';
+  static String basketCovers(int lunches) =>
+      lunches == 1 ? 'Enough for 1 lunch' : 'Enough for $lunches lunches';
   static String basketTotal(String amount) => 'Altogether $amount';
   static String unpriced(int count) => count == 1
       ? '1 thing this week has no price yet, so the total is at least this.'

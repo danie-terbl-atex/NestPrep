@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your invite — NestPrep</title>
+    <meta name="description" content="Join your household on NestPrep." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/png" href="/assets/nest_mark.png" />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/invite.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <img class="brand__mark" src="/assets/nest_mark.png" width="720" height="720" alt="" />
+          <span class="wordmark">nestprep</span>
+        </a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+            <li><a href="/delete-account">Delete your account</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="wrap wrap--prose">
+        <h1>You are invited to a household on NestPrep</h1>
+        <p class="lead">
+          Somebody in your family has asked you to join them on NestPrep, where the household plans
+          its week.
+        </p>
+
+        <div id="invite-status">
+          <section class="panel panel--accent" data-state="ready" hidden>
+            <h2>Your invite code</h2>
+            <p class="invite-code" id="invite-code"></p>
+            <p class="invite-actions">
+              <a class="button button--accent" id="invite-open" href="/">Open NestPrep</a>
+              <button class="button button--quiet" id="invite-copy" type="button" data-copied-label="Copied">Copy the code</button>
+            </p>
+            <p class="doc-meta">
+              The app opens on your invite and shows the household before you join. The code works
+              once and lasts seven days.
+            </p>
+          </section>
+          <div class="notice notice--error" data-state="invalid" hidden>
+            <p>
+              This link has no invite code in it. Ask whoever invited you to send the invite again.
+            </p>
+          </div>
+        </div>
+
+        <noscript>
+          <div class="notice notice--info">
+            <p>
+              Open NestPrep, choose <strong>I have an invite code</strong>, and type the code from the
+              message you were sent.
+            </p>
+          </div>
+        </noscript>
+
+        <h2>Not got NestPrep yet?</h2>
+        <ul>
+          <li>Install NestPrep and create your account.</li>
+          <li>Come back and tap the link in your message again, or tap <strong>Copy the code</strong>.</li>
+          <li>
+            In NestPrep, choose <strong>I have an invite code</strong> and paste it.
+          </li>
+        </ul>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <nav class="site-nav" aria-label="Legal">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/delete-account">Delete your account</a></li>
+          </ul>
+        </nav>
+        <p>
+          NestPrep is provided by <mark class="placeholder">[legal entity name]</mark>. Questions
+          about your information: <mark class="placeholder">[Information Officer email address]</mark>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

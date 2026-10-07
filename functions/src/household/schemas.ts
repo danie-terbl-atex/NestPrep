@@ -51,6 +51,8 @@ export const redeemInviteInput = z.object({
 });
 export type RedeemInviteInput = z.infer<typeof redeemInviteInput>;
 
+export const previewInviteInput = redeemInviteInput;
+
 export const leaveHouseholdInput = z.object({
   householdId: z.string().trim().min(1).max(64),
 });

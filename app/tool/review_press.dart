@@ -24,9 +24,9 @@ const reviewPhone = Size(390, 844);
 /// this the screenshots are black boxes where the words and the icons should
 /// be, which is the opposite of useful for a design review.
 Future<void> loadEveryFont() async {
-  final manifest = json.decode(
-    await rootBundle.loadString('FontManifest.json'),
-  ) as List<Object?>;
+  final manifest =
+      json.decode(await rootBundle.loadString('FontManifest.json'))
+          as List<Object?>;
   for (final entry in manifest.cast<Map<String, Object?>>()) {
     final family = entry['family'] as String?;
     final assets = (entry['fonts'] as List<Object?>? ?? const [])

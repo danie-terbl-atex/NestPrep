@@ -304,6 +304,11 @@ void main() {
     // catches its own AppFailure and falls back to the resolver's own city,
     // which the brief names; unawaited because it starts in the constructor.
     '_resolvePlace())',
+    // The brief's packing choices on this phone: the store catches its own
+    // PlatformException — unreadable is the defaults, unwritten is only not
+    // remembered next time. Restoring starts in the constructor.
+    'packing.restore());',
+    '_store.write(householdId (',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

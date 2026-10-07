@@ -343,35 +343,38 @@ void main() {
 
   final Object skipWithoutCoverage = staleOrMissing();
 
-  List<String> handWritten() =>
-      Directory('lib')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .map((file) => file.path)
-          .where((path) => path.endsWith('.dart'))
-          .where((path) => !path.endsWith('.g.dart'))
-          .where((path) => !path.endsWith('.freezed.dart'))
-          .toList();
+  List<String> handWritten() => Directory('lib')
+      .listSync(recursive: true)
+      .whereType<File>()
+      .map((file) => file.path)
+      .where((path) => path.endsWith('.dart'))
+      .where((path) => !path.endsWith('.g.dart'))
+      .where((path) => !path.endsWith('.freezed.dart'))
+      .toList();
 
   Set<String> reported() => {
     for (final line in lcov.readAsLinesSync())
       if (line.startsWith('SF:')) line.substring(3).trim(),
   };
 
-  test('every file missing from the report is one we know about', () {
-    final missing = handWritten().toSet().difference(reported());
-    final undeclared = missing.difference(absentByDesign.keys.toSet()).toList()
-      ..sort();
+  test(
+    'every file missing from the report is one we know about',
+    () {
+      final missing = handWritten().toSet().difference(reported());
+      final undeclared =
+          missing.difference(absentByDesign.keys.toSet()).toList()..sort();
 
-    expect(
-      undeclared,
-      isEmpty,
-      reason:
-          'these are in lib/ and no test loads them, so the coverage figure '
-          'says nothing about them — either test them, or add them here with '
-          'the reason they cannot be',
-    );
-  }, skip: skipWithoutCoverage);
+      expect(
+        undeclared,
+        isEmpty,
+        reason:
+            'these are in lib/ and no test loads them, so the coverage figure '
+            'says nothing about them — either test them, or add them here with '
+            'the reason they cannot be',
+      );
+    },
+    skip: skipWithoutCoverage,
+  );
 
   test('and nothing is excused that the tests now reach', () {
     final reachable = reported();

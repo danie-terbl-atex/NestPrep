@@ -7,12 +7,14 @@ import '../../lunch_box/model/lunch_board.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_budget_card.dart';
 import 'plan_week_child_rules_card.dart';
+import 'plan_week_packing_section.dart';
 import 'plan_week_shop_card.dart';
 import 'plan_week_step_actions.dart';
 
 /// Step 1 (lunch-box ADR-0012): whose lunches, what NestPrep will keep out
-/// of each child's box and what they like, the shop, and the household's
-/// budget — then the ideas.
+/// of each child's box and what they like, which compartments to fill and
+/// how the parent likes to pack, the shop, and the household's budget — then
+/// the ideas.
 class PlanWeekBriefPanel extends StatelessWidget {
   const PlanWeekBriefPanel({required this.board, super.key});
 
@@ -74,6 +76,8 @@ class PlanWeekBriefPanel extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: NestSpace.xl),
+        const PlanWeekPackingSection(),
         const SizedBox(height: NestSpace.xl),
         const PlanWeekShopCard(),
         const SizedBox(height: NestSpace.md),

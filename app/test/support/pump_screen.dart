@@ -154,8 +154,9 @@ Future<void> pumpRouter(
         // Above the router rather than inside one route's builder, so every
         // screen a test pushes is scaled, not only the first.
         builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: TextScaler.linear(textScale)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
           child: child ?? const SizedBox.shrink(),
         ),
       ),

@@ -42,8 +42,9 @@ void main() {
 
   group('a grant, written', () {
     test('names every area, so the callable never meets a gap', () {
-      final json = AccessGrant({HouseholdArea.homeCare: AccessLevel.own})
-          .toJson();
+      final json = AccessGrant({
+        HouseholdArea.homeCare: AccessLevel.own,
+      }).toJson();
       expect(json.keys, [for (final area in HouseholdArea.values) area.key]);
       expect(json['homeCare'], 'own');
       expect(json['calendar'], 'none');
@@ -59,8 +60,9 @@ void main() {
   });
 
   test('changing one area leaves the rest alone', () {
-    final grant = AccessGrant.uniform(AccessLevel.view)
-        .withLevel(HouseholdArea.documents, AccessLevel.none);
+    final grant = AccessGrant.uniform(
+      AccessLevel.view,
+    ).withLevel(HouseholdArea.documents, AccessLevel.none);
     expect(grant.levelIn(HouseholdArea.documents), AccessLevel.none);
     expect(grant.levelIn(HouseholdArea.calendar), AccessLevel.view);
     expect(grant.openAreas, isNot(contains(HouseholdArea.documents)));

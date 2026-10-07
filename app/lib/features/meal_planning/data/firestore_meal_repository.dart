@@ -34,13 +34,12 @@ final class FirestoreMealRepository implements MealRepository {
   );
 
   @override
-  Stream<List<Meal>> watchMeals(String householdId) =>
-      _meals(householdId)
-          .orderBy('name')
-          .limit(MealRepository.mealLimit)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  Stream<List<Meal>> watchMeals(String householdId) => _meals(householdId)
+      .orderBy('name')
+      .limit(MealRepository.mealLimit)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Stream<WeekPlan> watchWeek(String householdId, CalendarDate monday) =>
@@ -70,10 +69,9 @@ final class FirestoreMealRepository implements MealRepository {
       // The library is what has been typed before, deduplicated by a normalised
       // name (meal-planning ADR-0001) — so typing "spaghetti" again picks the
       // household's existing Spaghetti rather than making a second one.
-      final existing = await _meals(householdId)
-          .where('nameKey', isEqualTo: normalisedName(name))
-          .limit(1)
-          .get();
+      final existing = await _meals(
+        householdId,
+      ).where('nameKey', isEqualTo: normalisedName(name)).limit(1).get();
       final found = existing.docs.firstOrNull;
       if (found != null) return found.id;
 
@@ -93,10 +91,9 @@ final class FirestoreMealRepository implements MealRepository {
     required String mealId,
     required String name,
   }) => _guarded(
-    () =>
-        _meals(householdId)
-            .doc(mealId)
-            .update({'name': name, 'nameKey': normalisedName(name)}),
+    () => _meals(
+      householdId,
+    ).doc(mealId).update({'name': name, 'nameKey': normalisedName(name)}),
   );
 
   @override

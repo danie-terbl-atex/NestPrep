@@ -42,7 +42,10 @@ export const draftLunchIdeas = onCall(
     const store = db();
     const { caller, monday, facts, children } = await openPlanning(store, input, uid);
 
-    const brief = ideaBriefFrom(children, facts.plans, monday, facts.budgetCents, input.aisle);
+    const brief = ideaBriefFrom(children, facts.plans, monday, facts.budgetCents, input.aisle, {
+      slots: input.slots,
+      preferences: input.preferences,
+    });
     if (!hasOpenCompartments(brief)) {
       // A week already packed is an answer, and costs the household nothing.
       return { week: input.week, budgetCents: facts.budgetCents, ideas: [], callsLeft: null };
@@ -64,6 +67,8 @@ export const draftLunchIdeas = onCall(
       week: input.week,
       children: children.length,
       aisleShelves: brief.aisle.length,
+      slots: input.slots.length,
+      preferences: input.preferences.length,
       ideas: ideas.length,
       struckOut: ideas.reduce((sum, idea) => sum + idea.excluded.length, 0),
     });

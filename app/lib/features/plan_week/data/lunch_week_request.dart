@@ -1,13 +1,16 @@
+import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../model/checked_product.dart';
 import '../model/idea_search.dart';
 import '../model/lunch_idea.dart';
+import '../model/packing_preference.dart';
 
 /// What the phone sends `buildLunchWeek` (lunch-box ADR-0012 §5), within the
 /// contract's bounds: at most [ideaLimit] ideas that found something kept —
 /// the lunchbox aisle's shelves marked so (ADR-0013) —
 /// each with at most [productLimit] kept products, names and brands cut to
-/// the contract's lengths. Pure, so the shape is tested without Functions.
+/// the contract's lengths — and the brief's packing choices. Pure, so the
+/// shape is tested without Functions.
 abstract final class LunchWeekRequest {
   /// The model's 25 ideas and the aisle's 12 shelves.
   static const ideaLimit = 37;
@@ -18,10 +21,13 @@ abstract final class LunchWeekRequest {
     required LunchWeek week,
     required Set<String> childIds,
     required List<IdeaSearch> searches,
+    required PackingChoice packing,
   }) => {
     'householdId': householdId,
     'week': week.key,
     'childIds': [...childIds]..sort(),
+    'slots': wireNames(LunchSlot.values, packing.slots),
+    'preferences': wireNames(PackingPreference.values, packing.preferences),
     'ideas': [
       for (final search
           in searches.where((s) => s.kept.isNotEmpty).take(ideaLimit))

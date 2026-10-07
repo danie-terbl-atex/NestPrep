@@ -52,8 +52,9 @@ void main() {
     });
 
     test('a one-off falls on its own day only', () {
-      final routine = RoutineFixtures.kitchenDaily(firstDate: tuesday)
-          .copyWith(recurrence: null);
+      final routine = RoutineFixtures.kitchenDaily(
+        firstDate: tuesday,
+      ).copyWith(recurrence: null);
       expect(routine.fallsOn(tuesday), isTrue);
       expect(routine.fallsOn(tuesday.addDays(1)), isFalse);
     });
@@ -165,8 +166,9 @@ void main() {
     });
 
     test('a cadence changed starts again from that cadence’s rule', () {
-      final draft = RoutineDraft.startingOn(tuesday)
-          .withCadence(RoutineCadence.deepClean);
+      final draft = RoutineDraft.startingOn(
+        tuesday,
+      ).withCadence(RoutineCadence.deepClean);
       expect(draft.recurrence?.frequency, RecurrenceFrequency.monthly);
       expect(draft.withRecurrence(null).recurrence, isNull);
     });

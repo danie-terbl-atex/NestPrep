@@ -26,10 +26,9 @@ void main() {
     final text = source();
     final start = text.indexOf('[', text.indexOf(marker));
     final end = text.indexOf(']', start);
-    return RegExp(r"'(\w+)'")
-        .allMatches(text.substring(start, end))
-        .map((m) => m.group(1)!)
-        .toList();
+    return RegExp(
+      r"'(\w+)'",
+    ).allMatches(text.substring(start, end)).map((m) => m.group(1)!).toList();
   }
 
   /// `area: 'level'` pairs inside the `{...}` after [marker].
@@ -68,14 +67,13 @@ void main() {
       text.indexOf('};', text.indexOf('AREA_LEVELS')),
     );
     for (final area in HouseholdArea.values) {
-      final line = RegExp('${area.key}: \\[([^\\]]*)\\]')
-          .firstMatch(block)
-          ?.group(1);
+      final line = RegExp(
+        '${area.key}: \\[([^\\]]*)\\]',
+      ).firstMatch(block)?.group(1);
       expect(line, isNotNull, reason: '${area.key} is missing on the server');
-      final levels = RegExp(r"'(\w+)'")
-          .allMatches(line!)
-          .map((m) => m.group(1))
-          .toList();
+      final levels = RegExp(
+        r"'(\w+)'",
+      ).allMatches(line!).map((m) => m.group(1)).toList();
       expect(levels, [
         for (final level in area.levels) level.name,
       ], reason: area.key);

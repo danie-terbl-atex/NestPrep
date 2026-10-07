@@ -154,8 +154,9 @@ class _Links extends StatelessWidget {
           Text(
             TwoHomesCopy.adminStartsNote,
             textAlign: TextAlign.center,
-            style: NestTheme.of(context).text.caption
-                .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+            style: NestTheme.of(context).text.caption.copyWith(
+              color: NestTheme.of(context).colors.inkTertiary,
+            ),
           ),
         const SizedBox(height: NestSpace.lg),
         NestCard(

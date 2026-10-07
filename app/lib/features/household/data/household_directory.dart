@@ -9,6 +9,25 @@ class InviteCode {
   final DateTime expiresAt;
 }
 
+/// What an invite offers before anybody joins (household ADR-0005).
+class InvitePreview {
+  const InvitePreview({
+    required this.code,
+    required this.householdName,
+    required this.memberName,
+    required this.role,
+    required this.invitedBy,
+    required this.expiresAt,
+  });
+
+  final String code;
+  final String householdName;
+  final String memberName;
+  final MemberRole role;
+  final String? invitedBy;
+  final DateTime expiresAt;
+}
+
 /// Everything that changes who is in a household. None of it is a client write:
 /// each one moves several documents at once, which Security Rules cannot do, so
 /// each is a Cloud Function (foundation ADR-0002, household ADR-0002).
@@ -27,6 +46,10 @@ abstract interface class HouseholdDirectory {
     required String householdId,
     required String memberId,
   });
+
+  /// The household, profile and inviter behind a code, refused exactly as
+  /// [redeemInvite] would refuse it. Reads only.
+  Future<InvitePreview> previewInvite(String code);
 
   /// Claims the profile the code was made for. Returns the household joined.
   Future<String> redeemInvite(String code);

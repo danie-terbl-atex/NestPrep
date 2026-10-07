@@ -12,10 +12,12 @@ class CheckersProductTile extends StatelessWidget {
   const CheckersProductTile({
     required this.product,
     required this.onPick,
+    this.isBestMatch = false,
     super.key,
   });
 
   final CheckersProduct product;
+  final bool isBestMatch;
 
   /// Null while a pick is being saved.
   final VoidCallback? onPick;
@@ -50,6 +52,11 @@ class CheckersProductTile extends StatelessWidget {
                 runSpacing: NestSpace.xs,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+                  if (isBestMatch)
+                    const NestTag(
+                      label: CheckersCopy.bestMatch,
+                      tone: NestTagTone.success,
+                    ),
                   Text(
                     CheckersCopy.price(
                       product.price,

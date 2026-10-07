@@ -126,6 +126,7 @@ describe('every callable declares what it may cost', () => {
         'createInvite',
         'deleteDocumentFolder',
         'leaveHousehold',
+        'previewInvite',
         'redeemInvite',
         'removeMember',
         'setMemberAccess',
@@ -267,6 +268,9 @@ describe('every callable declares what it may cost', () => {
         'checkersRequestOtp',
         'checkersUnlink',
         'checkersVerifyOtp',
+        // Jev's ranking of a grocery line's matches: the TypeSafe key is a
+        // server secret (foundation ADR-0021).
+        'rankProductMatches',
       ].sort(),
     );
   });

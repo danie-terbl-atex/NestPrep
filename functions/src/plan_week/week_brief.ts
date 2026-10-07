@@ -1,18 +1,21 @@
 import { exclusionFor, hasAnyAllergy } from './child_exclusion';
 import { isAllergen, type ChildFoodRules } from './food_safety';
 import { openCompartments } from './open_compartments';
+import {
+  NO_PACKING_CHOICES,
+  type PackingChoices,
+  type PackingPreference,
+} from './packing_preferences';
 import type { FoundIdea, FoundProduct } from './schemas';
 import type { LunchPlanFacts, LunchSlot } from './week_documents';
 import type { ChildFacts } from './week_reads';
 
 /**
- * What the model may know when it builds the week from the store's products
- * (lunch-box ADR-0012): children as `child-N` with their open compartments,
- * the ideas as `idea-N`, each product as `p-N` with its name, price,
- * promotion and pack size, and which children it may go to. The phone
- * filtered the products already; this checks each one again against each
- * child's rules before the model sees it, and the mapping back to ids stays
- * here.
+ * The week's products as NestPrep holds them before Jev scores them
+ * (lunch-box ADR-0012, foundation ADR-0021): children as `child-N` with their
+ * open compartments, each product as `p-N` with the children it may go to.
+ * The phone filtered the products already; this checks each one again
+ * against each child's rules, and the mapping back to ids stays here.
  */
 export interface WeekBriefProduct {
   readonly ref: string;
@@ -38,6 +41,7 @@ export interface WeekBrief {
   readonly products: readonly WeekBriefProduct[];
   /** Products the phone sent that no child may have after all. */
   readonly removed: number;
+  readonly preferences: readonly PackingPreference[];
 }
 
 export function weekBriefFrom(
@@ -46,6 +50,7 @@ export function weekBriefFrom(
   plans: readonly LunchPlanFacts[],
   monday: string,
   budgetCents: number | null,
+  choices: PackingChoices = NO_PACKING_CHOICES,
 ): WeekBrief {
   const briefChildren = children.map((child, index) => ({
     ref: `child-${String(index + 1)}`,
@@ -53,6 +58,7 @@ export function weekBriefFrom(
     rules: child.rules,
     open: openCompartments(
       plans.find((plan) => plan.childId === child.memberId && plan.weekStart === monday),
+      choices.slots,
     ),
   }));
   const byMember = new Map(briefChildren.map((child) => [child.memberId, child]));
@@ -60,6 +66,7 @@ export function weekBriefFrom(
   const products: WeekBriefProduct[] = [];
   let removed = 0;
   ideas.forEach((idea, index) => {
+    if (!choices.slots.includes(idea.slot)) return;
     const forWhom = idea.childIds.flatMap((id) => byMember.get(id) ?? []);
     for (const product of idea.products) {
       const childRefs = forWhom
@@ -88,6 +95,7 @@ export function weekBriefFrom(
       .map(({ ref, memberId, open }) => ({ ref, memberId, open })),
     products,
     removed,
+    preferences: choices.preferences,
   };
 }
 
@@ -99,30 +107,4 @@ export function weekBriefFrom(
 export function isProductAllowedFor(rules: ChildFoodRules, product: FoundProduct): boolean {
   if (!product.allergensKnown && hasAnyAllergy(rules)) return false;
   return exclusionFor(rules, product.name, product.allergens.filter(isAllergen)) === null;
-}
-
-/** The brief as the model reads it — placeholders, product names and prices only. */
-export function weekBriefForModel(brief: WeekBrief): unknown {
-  const ideaRefs = [...new Set(brief.products.map((product) => product.ideaRef))];
-  return {
-    budgetCents: brief.budgetCents,
-    boxesToFill: brief.children.reduce((sum, child) => sum + child.open.length, 0),
-    children: brief.children.map((child) => ({ ref: child.ref, open: child.open })),
-    ideas: ideaRefs.map((ref) => {
-      const own = brief.products.filter((product) => product.ideaRef === ref);
-      return {
-        ref,
-        slot: own[0]?.slot,
-        ...(own[0]?.fromAisle === true && { aisle: true }),
-        products: own.map(({ ref: productRef, product, childRefs }) => ({
-          ref: productRef,
-          name: product.name,
-          priceCents: product.priceCents,
-          promo: product.isOnPromotion,
-          packQuantity: product.packQuantity,
-          children: childRefs,
-        })),
-      };
-    }),
-  };
 }

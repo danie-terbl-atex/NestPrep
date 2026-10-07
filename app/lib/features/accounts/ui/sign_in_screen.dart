@@ -7,10 +7,12 @@ import '../../../app/seeded_sign_in.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
+import '../../household/state/pending_invite.dart';
 import '../../kid_accounts/ui/kid_code_screen.dart';
 import '../state/session_controller.dart';
 import 'email_sign_in_form.dart';
 import 'forgot_password_screen.dart';
+import 'invite_code_sheet.dart';
 import 'register_screen.dart';
 import 'seeded_account_picker.dart';
 import 'sign_in_welcome.dart';
@@ -34,6 +36,7 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = context.watch<SessionController>();
     final failure = session.signInFailure;
+    final hasInvite = context.watch<PendingInvite?>()?.code != null;
     final seeded = SeededSignIn.forBuild(BackendTarget.fromEnvironment());
     return NestScaffold(
       body: SafeArea(
@@ -46,6 +49,10 @@ class SignInScreen extends StatelessWidget {
               children: [
                 const SignInWelcome(),
                 const SizedBox(height: NestSpace.xxl),
+                if (hasInvite) ...[
+                  const NestBanner(message: AccessCopy.inviteLinkSignInFirst),
+                  const SizedBox(height: NestSpace.lg),
+                ],
                 if (failure != null) ...[
                   NestBanner(
                     message: AppCopy.failure(failure),
@@ -90,16 +97,37 @@ class SignInScreen extends StatelessWidget {
                         : () => context.go(RegisterScreen.path),
                   ),
                 ),
+                if (!hasInvite) ...[
+                  const SizedBox(height: NestSpace.xxl),
+                  const NestRiseIn(
+                    index: _waysInStep + 4,
+                    child: _WayInPrompt(
+                      label: AccessCopy.inviteCodeWayInPrompt,
+                    ),
+                  ),
+                  const SizedBox(height: NestSpace.sm),
+                  NestRiseIn(
+                    index: _waysInStep + 4,
+                    child: NestButton(
+                      label: AccessCopy.inviteCodeWayIn,
+                      icon: LucideIcons.ticket,
+                      variant: NestButtonVariant.outline,
+                      onPressed: session.isSigningIn
+                          ? null
+                          : () => InviteCodeSheet.show(context),
+                    ),
+                  ),
+                ],
                 // A child has no email and no password: a grown-up makes a
                 // code (accounts ADR-0003).
                 const SizedBox(height: NestSpace.xxl),
                 const NestRiseIn(
-                  index: _waysInStep + 4,
+                  index: _waysInStep + 5,
                   child: _WayInPrompt(label: KidCopy.signInPrompt),
                 ),
                 const SizedBox(height: NestSpace.sm),
                 NestRiseIn(
-                  index: _waysInStep + 4,
+                  index: _waysInStep + 5,
                   child: NestButton(
                     label: KidCopy.signInWithCode,
                     icon: LucideIcons.baby,
@@ -112,7 +140,7 @@ class SignInScreen extends StatelessWidget {
                 if (seeded != null) ...[
                   const SizedBox(height: NestSpace.xxl),
                   NestRiseIn(
-                    index: _waysInStep + 5,
+                    index: _waysInStep + 6,
                     child: SeededAccountPicker(
                       hint: seeded.hint,
                       accounts: seeded.accounts,

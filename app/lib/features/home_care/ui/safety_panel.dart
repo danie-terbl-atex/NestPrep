@@ -9,12 +9,13 @@ import 'safety_sources_sheet.dart';
 /// Draws one safety line. The default is the plain row; the helper's
 /// screens pass one that shows the line in her language with the English
 /// beneath and a read-aloud button (home-care ADR-0006).
-typedef SafetyRowBuilder = Widget Function({
-  required IconData icon,
-  required NestTagTone tone,
-  required String title,
-  String? why,
-});
+typedef SafetyRowBuilder =
+    Widget Function({
+      required IconData icon,
+      required NestTagTone tone,
+      required String title,
+      String? why,
+    });
 
 /// One line of a job's safety, in English, as the copy says it.
 typedef SafetyLine = ({

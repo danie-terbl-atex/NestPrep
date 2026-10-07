@@ -17,11 +17,12 @@ import '../../../support/fake_document_tools.dart';
 void main() {
   group('the lifetimes offered', () {
     test('are exactly the ones createDocumentShare accepts', () {
-      final policy = File('../functions/src/documents/share/share_policy.ts')
-          .readAsStringSync();
-      final declared = RegExp(r'SHARE_LIFETIME_HOURS = \[([^\]]+)\]')
-          .firstMatch(policy)
-          ?.group(1);
+      final policy = File(
+        '../functions/src/documents/share/share_policy.ts',
+      ).readAsStringSync();
+      final declared = RegExp(
+        r'SHARE_LIFETIME_HOURS = \[([^\]]+)\]',
+      ).firstMatch(policy)?.group(1);
       expect(declared, isNotNull, reason: 'share_policy.ts moved or changed');
       final server = declared!
           .split(',')

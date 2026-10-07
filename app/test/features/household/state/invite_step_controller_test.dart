@@ -53,8 +53,8 @@ void main() {
     expect(sharer.sent.single.text, contains('ABCD2345'));
     expect(
       sharer.sent.single.text,
-      contains('https://nestprep.test/get'),
-      reason: 'the link says where to get the app; the code does the joining',
+      isNot(contains('https://')),
+      reason: 'no link until the invite page is live (household ADR-0006)',
     );
   });
 

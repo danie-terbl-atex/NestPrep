@@ -22,6 +22,7 @@ void main() {
   const lwazi = LunchFixtures.lwaziId;
   const ayanda = LunchFixtures.ayandaId;
   String key(int day, LunchSlot slot) => LunchPlan.slotKey(day, slot);
+  final every = {...LunchSlot.values};
   final rules = <String, FoodRules>{
     lwazi: LunchFixtures.lwaziEntry.foodRules,
     ayanda: LunchFixtures.ayandaEntry.foodRules,
@@ -108,6 +109,7 @@ void main() {
         childIds: {lwazi, ayanda},
         searches: searches,
         budget: const Money(10000),
+        slots: every,
         reply: LunchWeekReply(
           lunches: [
             lunch(ayanda, 1, LunchSlot.snack, 'snacks', 'yog'),
@@ -153,6 +155,7 @@ void main() {
         childIds: {lwazi},
         searches: searches,
         budget: null,
+        slots: every,
         reason: PlanFallbackReason.aiLimitReached,
       );
       final lwaziWeek = week.children.single;
@@ -166,22 +169,85 @@ void main() {
       expect(lwaziWeek.added.containsKey(key(1, LunchSlot.snack)), isTrue);
       expect(lwaziWeek.addedAt(1, LunchSlot.main), isNull);
     });
+
+    test('gives children who may have the same things the same box each '
+        'day, so it is packed once', () {
+      final week = ShopWeekAssembly.fallback(
+        board: board(),
+        childIds: {lwazi, ayanda},
+        searches: [
+          searched('yoghurts', LunchSlot.snack, [yoghurt]),
+          searched('rusks', LunchSlot.snack, [rusks]),
+        ],
+        budget: null,
+        slots: {LunchSlot.snack},
+        reason: PlanFallbackReason.offline,
+      );
+      List<String?> snacksOf(String childId) => [
+        for (var day = 1; day <= 5; day++)
+          week.children
+              .singleWhere((child) => child.childId == childId)
+              .addedAt(day, LunchSlot.snack)
+              ?.productId,
+      ];
+      expect(snacksOf(lwazi), everyElement(isNotNull));
+      expect(snacksOf(ayanda), snacksOf(lwazi));
+      expect(snacksOf(lwazi).toSet(), {'yog', 'rusk'});
+    });
+  });
+
+  test('fills only the compartments the brief fills, by the model or '
+      'not', () {
+    final fallback = ShopWeekAssembly.fallback(
+      board: board(),
+      childIds: {lwazi, ayanda},
+      searches: searches,
+      budget: null,
+      slots: {LunchSlot.snack},
+      reason: PlanFallbackReason.offline,
+    );
+    for (final child in fallback.children) {
+      expect(
+        child.added.keys.every((k) => k.endsWith(LunchSlot.snack.name)),
+        isTrue,
+      );
+    }
+    expect(fallback.children.first.added, isNotEmpty);
+    expect(fallback.slots, {LunchSlot.snack});
+
+    final fromModel = ShopWeekAssembly.fromReply(
+      board: board(),
+      childIds: {lwazi, ayanda},
+      searches: searches,
+      budget: null,
+      slots: {LunchSlot.snack},
+      reply: LunchWeekReply(
+        lunches: [
+          lunch(ayanda, 1, LunchSlot.snack, 'snacks', 'yog'),
+          lunch(lwazi, 2, LunchSlot.fruit, 'fruit', 'apples6'),
+        ],
+        boxesPerPack: const {},
+        budgetCents: null,
+        dropped: 0,
+        callsLeft: null,
+      ),
+    );
+    expect(fromModel.pickCount, 1);
   });
 
   group('the basket', () {
-    test('is whole packs across every child, and follows a corrected pack', () {
+    test('is whole packs across every child', () {
       var week = ShopWeekAssembly.fallback(
         board: board(),
         childIds: {lwazi, ayanda},
         searches: [searches[1]],
         budget: const Money(5000),
+        slots: every,
         reason: PlanFallbackReason.offline,
       );
       // Ten fruit boxes, six apples a pack: two packs of R24.
       expect(week.basket.lineFor('apples6')!.boxes, 10);
       expect(week.basket.total, const Money(4800));
-      week = week.withBoxesPerPack('apples6', 10);
-      expect(week.basket.total, const Money(2400));
       week = week.withPick(ayanda, key(1, LunchSlot.fruit), null);
       expect(week.basket.lineFor('apples6')!.boxes, 9);
     });
@@ -192,6 +258,7 @@ void main() {
         childIds: {lwazi, ayanda},
         searches: searches,
         budget: null,
+        slots: every,
         reason: PlanFallbackReason.offline,
       );
       // The 1kg bag says nothing about what is in it; Lwazi has allergies.

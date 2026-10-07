@@ -159,8 +159,9 @@ void main() {
     (tester) async {
       await pumpPlan(
         tester,
-        entitlement: premiumBy(Fixtures.samMemberId)
-            .copyWith(status: EntitlementStatus.inGracePeriod),
+        entitlement: premiumBy(
+          Fixtures.samMemberId,
+        ).copyWith(status: EntitlementStatus.inGracePeriod),
       );
       expect(
         find.textContaining('couldn’t take the last payment'),

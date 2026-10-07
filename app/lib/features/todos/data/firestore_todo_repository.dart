@@ -47,8 +47,9 @@ final class FirestoreTodoRepository implements TodoRepository {
   Stream<List<Task>> watchTasks(String householdId, {String? assignedTo}) =>
       (assignedTo == null
               ? _tasks(householdId)
-              : _tasks(householdId)
-                    .where('assigneeIds', arrayContains: assignedTo))
+              : _tasks(
+                  householdId,
+                ).where('assigneeIds', arrayContains: assignedTo))
           .limit(TodoRepository.taskLimit)
           .snapshots()
           .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
@@ -72,8 +73,9 @@ final class FirestoreTodoRepository implements TodoRepository {
   }) =>
       (completedFor == null
               ? _completions(householdId)
-              : _completions(householdId)
-                    .where('completedFor', isEqualTo: completedFor))
+              : _completions(
+                  householdId,
+                ).where('completedFor', isEqualTo: completedFor))
           // A range on the date string, which sorts the same way the calendar
           // does because the format is YYYY-MM-DD (`ENG-21`).
           .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
@@ -97,14 +99,13 @@ final class FirestoreTodoRepository implements TodoRepository {
     String memberId, {
     required CalendarDate from,
     required CalendarDate to,
-  }) =>
-      _completions(householdId)
-          .where('completedFor', isEqualTo: memberId)
-          .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
-          .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
-          .snapshots()
-          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
-          .handleError((Object error) => throw failureFromFirebase(error));
+  }) => _completions(householdId)
+      .where('completedFor', isEqualTo: memberId)
+      .where('occurrenceDate', isGreaterThanOrEqualTo: from.iso)
+      .where('occurrenceDate', isLessThanOrEqualTo: to.iso)
+      .snapshots()
+      .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> saveTask({
@@ -193,10 +194,9 @@ final class FirestoreTodoRepository implements TodoRepository {
     required String taskId,
     required CalendarDate occurrenceDate,
   }) => _guarded(
-    () =>
-        _completions(householdId)
-            .doc(TaskCompletion.idFor(taskId, occurrenceDate))
-            .delete(),
+    () => _completions(
+      householdId,
+    ).doc(TaskCompletion.idFor(taskId, occurrenceDate)).delete(),
   );
 
   @override

@@ -9,8 +9,7 @@ import '../model/lunch_idea.dart';
 /// Step 3 of *Plan my week* (lunch-box ADR-0012): each idea searched at the
 /// shop **one at a time** — kind to Checkers, whose catalogue client already
 /// remembers and backs off — every answer judged for the idea's children as
-/// it lands, so the screen shows each row go from *waiting* to *searching* to
-/// what was kept and what was left out, live.
+/// it lands, so the screen can count the run as it goes.
 ///
 /// A run that is replaced (the parent went back, or started over) stops
 /// reporting: an answer for an old run is dropped.
@@ -55,13 +54,6 @@ final class StoreSearchRun {
       await _search(idea.id, near, rulesByChild, generation);
     }
   }
-
-  /// Searches one idea again — after a failure, say.
-  Future<void> retry(
-    String ideaId, {
-    required Coordinates near,
-    required Map<String, FoodRules> rulesByChild,
-  }) => _search(ideaId, near, rulesByChild, _generation);
 
   /// Forgets the run; anything still on its way is dropped.
   void clear() {

@@ -49,15 +49,15 @@ void main() {
     });
 
     test('are the same lists the server holds', () {
-      final server = File('../functions/src/plan_week/allergen_words.ts')
-          .readAsStringSync();
+      final server = File(
+        '../functions/src/plan_week/allergen_words.ts',
+      ).readAsStringSync();
       final entries = RegExp(r'(\w+): \[([^\]]*)\]').allMatches(server);
       final serverWords = {
         for (final entry in entries)
-          entry.group(1)!: RegExp("'([^']*)'")
-              .allMatches(entry.group(2)!)
-              .map((word) => word.group(1))
-              .toList(),
+          entry.group(1)!: RegExp(
+            "'([^']*)'",
+          ).allMatches(entry.group(2)!).map((word) => word.group(1)).toList(),
       };
       expect(serverWords, {
         for (final MapEntry(:key, :value) in AllergenWords.byAllergen.entries)

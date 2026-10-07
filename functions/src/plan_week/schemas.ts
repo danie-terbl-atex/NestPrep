@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { PACKING_PREFERENCES } from './packing_preferences';
 import { LUNCH_SLOTS } from './week_documents';
 
 /** A household has a handful of children; this bounds the request (BE-08). */
@@ -17,6 +18,25 @@ const householdId = z.string().trim().min(1).max(64);
 const week = z.string().regex(/^\d{4}-W\d{2}$/);
 const memberId = z.string().trim().min(1).max(128);
 const childIds = z.array(memberId).min(1).max(MAX_PLANNED_CHILDREN);
+
+/**
+ * The parent's step-one choices, each list deduplicated into canonical order.
+ * Optional, so a phone from before them plans every compartment with no
+ * preference.
+ */
+const preferences = z
+  .array(z.enum(PACKING_PREFERENCES))
+  .max(PACKING_PREFERENCES.length)
+  .transform((chosen) => PACKING_PREFERENCES.filter((preference) => chosen.includes(preference)))
+  .optional()
+  .default([]);
+const slots = z
+  .array(z.enum(LUNCH_SLOTS))
+  .min(1)
+  .max(LUNCH_SLOTS.length)
+  .transform((chosen) => LUNCH_SLOTS.filter((slot) => chosen.includes(slot)))
+  .optional()
+  .default([...LUNCH_SLOTS]);
 
 /**
  * One shelf of Checkers' Kids Lunchbox range the phone read (lunch-box
@@ -40,6 +60,8 @@ export const draftLunchIdeasInput = z.object({
   week,
   childIds,
   aisle: z.array(aisleShelf).max(MAX_AISLE_SHELVES).optional().default([]),
+  preferences,
+  slots,
 });
 export type DraftLunchIdeasInput = z.infer<typeof draftLunchIdeasInput>;
 
@@ -75,5 +97,7 @@ export const buildLunchWeekInput = z.object({
   week,
   childIds,
   ideas: z.array(foundIdea).max(MAX_FOUND_IDEAS),
+  preferences,
+  slots,
 });
 export type BuildLunchWeekInput = z.infer<typeof buildLunchWeekInput>;

@@ -10,6 +10,7 @@ import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/accounts/ui/session_gate_screen.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/household/ui/household_gate_screen.dart';
+import 'package:nestprep/features/household/ui/join_invite_screen.dart';
 import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/features/legal/ui/about_screen.dart';
 import 'package:nestprep/features/legal/ui/consent_screen.dart';
@@ -128,6 +129,62 @@ void main() {
       expect(redirectForSession(session, somewhereInside), isNull);
     },
   );
+
+  group('an invite link (household ADR-0005)', () {
+    const code = 'ABCD2345';
+
+    test('signed out, it waits at the way in', () async {
+      await signOut();
+      expect(
+        redirectForSession(session, somewhereInside, pendingInviteCode: code),
+        SignInScreen.path,
+      );
+    });
+
+    test(
+      'signed in, with or without a household, it opens the join screen',
+      () async {
+        for (final households in [
+          const <String>[],
+          const [Fixtures.householdId],
+        ]) {
+          await signIn(households: households);
+          expect(
+            redirectForSession(
+              session,
+              somewhereInside,
+              pendingInviteCode: code,
+            ),
+            JoinInviteScreen.path,
+          );
+          expect(
+            redirectForSession(
+              session,
+              JoinInviteScreen.path,
+              pendingInviteCode: code,
+            ),
+            isNull,
+          );
+        }
+      },
+    );
+
+    test(
+      'once spent, the join screen hands back like any waiting room',
+      () async {
+        await signIn();
+        expect(
+          redirectForSession(session, JoinInviteScreen.path),
+          HouseholdGateScreen.path,
+        );
+        await signIn(households: const [Fixtures.householdId]);
+        expect(
+          redirectForSession(session, JoinInviteScreen.path),
+          HouseholdRoute.homeFor(Fixtures.householdId),
+        );
+      },
+    );
+  });
 
   test("somebody else's household hands back to your own", () async {
     await signIn(households: const [Fixtures.householdId]);

@@ -95,8 +95,9 @@ void main() {
       );
       expect(
         path,
-        HouseholdRoute.homeFor(Fixtures.householdId)
-            .replaceAll(HouseholdTab.today.segment, HouseholdTab.meals.segment),
+        HouseholdRoute.homeFor(
+          Fixtures.householdId,
+        ).replaceAll(HouseholdTab.today.segment, HouseholdTab.meals.segment),
       );
     });
   });

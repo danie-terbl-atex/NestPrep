@@ -41,19 +41,17 @@ final class FirestoreLunchBudgetRepository implements LunchBudgetRepository {
           .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
-  Stream<LunchBudget?> watchBudget(String householdId) =>
-      _budgets(householdId)
-          .doc(LunchBudget.weekly)
-          .snapshots()
-          .map((snapshot) => snapshot.data())
-          .handleError((Object error) => throw failureFromFirebase(error));
+  Stream<LunchBudget?> watchBudget(String householdId) => _budgets(householdId)
+      .doc(LunchBudget.weekly)
+      .snapshots()
+      .map((snapshot) => snapshot.data())
+      .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
   Future<void> setPrice(String householdId, LunchPrice price) => _guarded(
-    () =>
-        _prices(householdId)
-            .doc(price.itemId)
-            .set(price.copyWith(updatedAt: null)),
+    () => _prices(
+      householdId,
+    ).doc(price.itemId).set(price.copyWith(updatedAt: null)),
   );
 
   @override
@@ -64,10 +62,9 @@ final class FirestoreLunchBudgetRepository implements LunchBudgetRepository {
 
   @override
   Future<void> setBudget(String householdId, LunchBudget budget) => _guarded(
-    () =>
-        _budgets(householdId)
-            .doc(LunchBudget.weekly)
-            .set(budget.copyWith(updatedAt: null)),
+    () => _budgets(
+      householdId,
+    ).doc(LunchBudget.weekly).set(budget.copyWith(updatedAt: null)),
   );
 
   @override
