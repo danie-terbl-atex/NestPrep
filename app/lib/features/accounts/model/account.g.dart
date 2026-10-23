@@ -23,6 +23,9 @@ _Account _$AccountFromJson(Map<String, dynamic> json) => _Account(
   legalConsent: json['legalConsent'] == null
       ? null
       : LegalConsent.fromJson(json['legalConsent'] as Map<String, dynamic>),
+  tour: json['tour'] == null
+      ? null
+      : SeenTour.fromJson(json['tour'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{

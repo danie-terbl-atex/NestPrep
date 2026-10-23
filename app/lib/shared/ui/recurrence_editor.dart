@@ -5,6 +5,7 @@ import '../copy/app_copy.dart';
 import '../recurrence/recurrence_rule.dart';
 import '../time/calendar_date.dart';
 import 'nest_date_field.dart';
+import 'weekday_chips.dart';
 
 /// Builds the small subset of recurrence NestPrep supports (foundation
 /// ADR-0005): never, daily, weekly on chosen weekdays, or monthly — with an
@@ -150,20 +151,14 @@ class _WeekdayPicker extends StatelessWidget {
   final ValueChanged<List<int>> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: NestSpace.xs,
-      runSpacing: NestSpace.sm,
-      children: [
-        for (var weekday = Weekday.monday; weekday <= Weekday.sunday; weekday++)
-          NestChip(
-            label: AppCopy.weekdayName(weekday),
-            isSelected: selected.contains(weekday),
-            onTap: () => onChanged(_toggled(weekday)),
-          ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => WeekdayChips(
+    weekdays: [
+      for (var weekday = Weekday.monday; weekday <= Weekday.sunday; weekday++)
+        weekday,
+    ],
+    selected: {...selected},
+    onToggle: (weekday) => onChanged(_toggled(weekday)),
+  );
 
   /// Never leaves the rule with no day at all — a weekly rule that repeats on
   /// nothing repeats on nothing, which nobody means.

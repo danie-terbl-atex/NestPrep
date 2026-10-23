@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/state/retailer_choice_controller.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
+import 'package:nestprep/shared/flags/feature_flag.dart';
 
 import '../../../support/checkers_grocery_harness.dart';
 import '../../../support/fake_checkers.dart';
@@ -10,7 +11,8 @@ import '../../../support/grocery_list_harness.dart';
 import '../../../support/household_fixtures.dart';
 
 /// *Shop at* above the grocery list, and the chosen shop's logo beside an
-/// unmatched item (add-to-checkers ADR-0006).
+/// unmatched item (add-to-checkers ADR-0006), with Checkers and Pick n Pay
+/// each behind its own switch (add-to-pnp ADR-0007).
 void main() {
   Future<CheckersGroceryHarness> open(
     WidgetTester tester, {
@@ -24,40 +26,22 @@ void main() {
     return h;
   }
 
-  testWidgets('offers every shop, with Checkers chosen and the rest soon', (
-    tester,
-  ) async {
+  testWidgets('offers Checkers and Pick n Pay, Checkers chosen, Woolworths '
+      'soon', (tester) async {
     await open(tester);
 
     expect(
       find.text(CheckersCopy.shopAtRetailer(ProductRetailer.checkers)),
       findsOneWidget,
     );
+    for (final shop in [ProductRetailer.checkers, ProductRetailer.pickNPay]) {
+      expect(
+        find.bySemanticsLabel(CheckersCopy.retailerName(shop)),
+        findsOneWidget,
+      );
+    }
     expect(
-      find.bySemanticsLabel(
-        CheckersCopy.retailerName(ProductRetailer.checkers),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.bySemanticsLabel(
-        CheckersCopy.retailerSoon(ProductRetailer.pickNPay),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.bySemanticsLabel(
-        CheckersCopy.retailerSoon(ProductRetailer.woolworths),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.text(
-        CheckersCopy.comingSoon(const [
-          ProductRetailer.pickNPay,
-          ProductRetailer.woolworths,
-        ]),
-      ),
+      find.text(CheckersCopy.comingSoon(const [ProductRetailer.woolworths])),
       findsOneWidget,
     );
     expect(
@@ -74,6 +58,36 @@ void main() {
         hasSelectedState: true,
       ),
     );
+  });
+
+  testWidgets('with Pick n Pay switched off it shows as coming, and cannot be '
+      'chosen', (tester) async {
+    final h = CheckersGroceryHarness();
+    await h.pump(tester, off: {FeatureFlag.addToPnp});
+    h.list.repository.emitItems([groceryItem('milk')]);
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byTooltip(CheckersCopy.retailerSoon(ProductRetailer.pickNPay)),
+    );
+    await tester.pumpAndSettle();
+    expect(h.retailers.chosen, ProductRetailer.checkers);
+  });
+
+  testWidgets('choosing Pick n Pay makes *Find at* look there', (tester) async {
+    final h = await open(tester);
+    await tester.tap(
+      find.bySemanticsLabel(
+        CheckersCopy.retailerName(ProductRetailer.pickNPay),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(h.retailers.chosen, ProductRetailer.pickNPay);
+    await tester.tap(
+      find.byTooltip(CheckersCopy.findAt(ProductRetailer.pickNPay)),
+    );
+    await tester.pumpAndSettle();
+    expect(h.pnpCatalogue.queries, ['milk']);
+    expect(h.catalogue.searches, isEmpty);
   });
 
   testWidgets('a shop that is not connected cannot be chosen', (tester) async {
@@ -114,28 +128,58 @@ void main() {
   });
 
   group('the choice on this phone', () {
-    test('ignores a remembered shop that is not connected', () async {
-      final preference = FakeRetailerPreference()
-        ..chosen[Fixtures.householdId] = ProductRetailer.pickNPay;
+    RetailerChoiceController choiceWith(
+      FakeRetailerPreference preference, {
+      List<ProductRetailer> on = const [
+        ProductRetailer.checkers,
+        ProductRetailer.pickNPay,
+      ],
+    }) {
       final choice = RetailerChoiceController(
         preference: preference,
         householdId: Fixtures.householdId,
+        shopsOn: () => on,
       );
       addTearDown(choice.dispose);
-      await Future<void>.delayed(Duration.zero);
+      return choice;
+    }
 
+    test('takes a remembered Pick n Pay while its switch is on', () async {
+      final preference = FakeRetailerPreference()
+        ..chosen[Fixtures.householdId] = ProductRetailer.pickNPay;
+      final choice = choiceWith(preference);
+      await Future<void>.delayed(Duration.zero);
+      expect(choice.chosen, ProductRetailer.pickNPay);
+    });
+
+    test('a remembered shop switched off reads as the first one on', () async {
+      final preference = FakeRetailerPreference()
+        ..chosen[Fixtures.householdId] = ProductRetailer.pickNPay;
+      final choice = choiceWith(
+        preference,
+        on: const [ProductRetailer.checkers],
+      );
+      await Future<void>.delayed(Duration.zero);
       expect(choice.chosen, ProductRetailer.checkers);
     });
 
-    test('keeps a connected choice per household', () async {
-      final preference = FakeRetailerPreference();
-      final choice = RetailerChoiceController(
-        preference: preference,
-        householdId: Fixtures.householdId,
+    test('with only Pick n Pay on, Pick n Pay is the shop', () {
+      final choice = choiceWith(
+        FakeRetailerPreference(),
+        on: const [ProductRetailer.pickNPay],
       );
-      addTearDown(choice.dispose);
+      expect(choice.chosen, ProductRetailer.pickNPay);
+    });
 
-      choice.choose(ProductRetailer.woolworths);
+    test('never takes a shop that is not connected or switched off', () {
+      final preference = FakeRetailerPreference();
+      final choice = choiceWith(
+        preference,
+        on: const [ProductRetailer.checkers],
+      );
+      choice
+        ..choose(ProductRetailer.woolworths)
+        ..choose(ProductRetailer.pickNPay);
       expect(choice.chosen, ProductRetailer.checkers);
       expect(preference.chosen, isEmpty);
     });

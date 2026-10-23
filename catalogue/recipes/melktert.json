@@ -1,0 +1,156 @@
+{
+  "id": "melktert",
+  "name": "Melktert",
+  "summary": "Milk tart: a crisp sweet pastry shell filled with smooth, cinnamon-scented milk custard and dusted with cinnamon.",
+  "about": "Melktert came to the Cape with Dutch settlers in the 1600s and has been reworked by every generation since; C. Louis Leipoldt noted that almost every cook had their own way of making it. A cinnamon-dusted slice is the bake-sale, church-tea and Sunday-afternoon classic, and 27 February is National Milk Tart Day.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner",
+    "lunch"
+  ],
+  "placement": {
+    "dinner": "dessert",
+    "lunch": "snack"
+  },
+  "tags": [
+    "traditional",
+    "baking"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Butter",
+      "quantity": 125,
+      "unit": "g",
+      "note": "softened",
+      "group": "For the pastry"
+    },
+    {
+      "name": "Castor sugar",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pastry"
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the pastry"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 240,
+      "unit": "g",
+      "note": null,
+      "group": "For the pastry"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pastry"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pastry"
+    },
+    {
+      "name": "Milk",
+      "quantity": 750,
+      "unit": "ml",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Butter",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "to dust",
+      "group": "For the filling"
+    }
+  ],
+  "steps": [
+    "Beat the butter and castor sugar together until pale and creamy, 2–3 minutes, then beat in the egg.",
+    "Sift in the flour, baking powder and salt and mix to a soft dough. Wrap and chill for 30 minutes.",
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Press the dough into a 23 cm pie dish, about 4 mm thick, up the sides too. Prick the base with a fork, line with baking paper and fill with dried beans or rice.",
+    "Bake for 15 minutes, lift out the paper and beans and bake for 10–12 minutes more, until pale golden and dry. Leave to cool.",
+    "For the filling, heat the milk, cinnamon stick and butter in a saucepan over medium heat until small bubbles form at the edge, 5–7 minutes. Remove the cinnamon stick.",
+    "Whisk the eggs, sugar, flour, cornflour and vanilla to a smooth paste. Whisk in a cup of the hot milk, then pour it all back into the saucepan.",
+    "Cook over medium-low heat, whisking all the time, for 5–7 minutes, until it thickens like custard and bubbles. Keep whisking for 1 minute more so it loses any floury taste.",
+    "Pour the hot filling into the pastry shell, smooth the top and dust generously with ground cinnamon. Cool for 30 minutes, then refrigerate for at least 3 hours, until set firm enough to slice cleanly."
+  ],
+  "servings": 10,
+  "prepMinutes": 30,
+  "cookMinutes": 40,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Make it the day before and keep it chilled; dust with fresh cinnamon before serving.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -29,6 +29,18 @@ abstract interface class GroceryRepository {
     required String addedBy,
   });
 
+  /// Adds an item already matched to [match] — the item and its pick in one
+  /// write, so neither lands without the other (groceries ADR-0007). The
+  /// pick is stamped with the server's time. For a list line whose product
+  /// is known before it is added, as *Plan my week*'s basket is.
+  Future<String> addMatched({
+    required String householdId,
+    required String name,
+    String? quantity,
+    required String addedBy,
+    required ProductMatch match,
+  });
+
   /// Ticks or unticks. Ticking stamps the server's time and who did it;
   /// unticking clears both.
   Future<void> setBought({

@@ -77,6 +77,27 @@ final class FakeGroceryRepository implements GroceryRepository {
     return 'added-${added.length}';
   }
 
+  /// Items added with their pick in one write (`addMatched`).
+  final addedMatched = <({String name, String itemId, ProductMatch match})>[];
+
+  @override
+  Future<String> addMatched({
+    required String householdId,
+    required String name,
+    String? quantity,
+    required String addedBy,
+    required ProductMatch match,
+  }) async {
+    final itemId = await add(
+      householdId: householdId,
+      name: name,
+      quantity: quantity,
+      addedBy: addedBy,
+    );
+    addedMatched.add((name: name, itemId: itemId, match: match));
+    return itemId;
+  }
+
   @override
   Future<void> setProductMatch({
     required String householdId,

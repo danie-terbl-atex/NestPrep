@@ -15,10 +15,10 @@ import '../features/today/ui/today_screen.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../shared/time/household_clock.dart';
-import 'app_router.dart';
 import 'calendar_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'household_tab_navigation.dart';
 import 'viewer_member.dart';
 
 /// Today (design-system ADR-0009) reads through the same controllers its tabs

@@ -89,6 +89,7 @@ describe('the export link lives an hour, and no longer', () => {
         deleted.push(...paths);
         return Promise.resolve();
       },
+      exists: () => Promise.resolve(false),
     };
     const removed = await sweepExpiredExports(objects, new Date(Date.UTC(2026, 8, 29, 8, 0)));
     expect(removed).toBe(1);

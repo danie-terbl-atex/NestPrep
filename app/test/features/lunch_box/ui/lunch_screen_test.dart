@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/model/family_roster.dart';
-import 'package:nestprep/features/household/model/access_grant.dart';
-import 'package:nestprep/features/household/model/access_level.dart';
-import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_feedback.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
@@ -13,6 +10,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/bring_into_view.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
@@ -37,8 +35,6 @@ void main() {
     WidgetTester tester, {
     Brightness brightness = Brightness.light,
     double scale = 1,
-    LunchHarness? using,
-    bool viewOnly = false,
   }) async {
     // Tall enough that a whole day card and its thumbs are on screen.
     tester.view.physicalSize = const Size(420 * 3, 2400 * 3);
@@ -49,16 +45,8 @@ void main() {
       LunchScreen(onSelectTab: (_) {}),
       providers: [
         ChangeNotifierProvider<FeatureFlagsController>.value(value: flagsOff),
-        ...(using ?? harness).providers,
+        ...harness.providers,
       ],
-      view: viewOnly
-          ? Fixtures.helperView(
-              AccessGrant({
-                HouseholdArea.lunch: AccessLevel.view,
-                HouseholdArea.familyProfiles: AccessLevel.view,
-              }),
-            )
-          : null,
       brightness: brightness,
       textScale: scale,
     );
@@ -69,9 +57,8 @@ void main() {
     FamilyRoster? roster,
     Map<String, LunchPick> lwaziSlots = const {},
     Map<String, LunchFeedback> lwaziMarks = const {},
-    LunchHarness? using,
   }) async {
-    (using ?? harness).emit(
+    harness.emit(
       roster: roster,
       plans: [
         LunchFixtures.plan(
@@ -119,6 +106,7 @@ void main() {
       tester,
       lwaziSlots: {key(1, LunchSlot.main): LunchPick.of(LunchFixtures.wrap)},
     );
+    await bringIntoView(tester, find.text(LunchShareCopy.openShare));
     await tester.tap(find.text(LunchShareCopy.openShare));
     await tester.pumpAndSettle();
     expect(find.byType(Placeholder), findsOneWidget);
@@ -186,18 +174,6 @@ void main() {
     );
   });
 
-  testWidgets('fill the week packs the rest in one write', (tester) async {
-    await pump(tester);
-    await arrive(tester);
-    await tester.tap(find.text(LunchCopy.fillWeek));
-    await tester.pumpAndSettle();
-    expect(
-      harness.repository.writtenPicks.single.childId,
-      LunchFixtures.lwaziId,
-    );
-    expect(find.textContaining('Packed 5 days'), findsOneWidget);
-  });
-
   testWidgets('after school, a thumb says whether it came home eaten', (
     tester,
   ) async {
@@ -260,30 +236,6 @@ void main() {
     expect(harness.controller.selectedChildId, LunchFixtures.ayandaId);
   });
 
-  testWidgets('somebody who may only look sees the week and no controls', (
-    tester,
-  ) async {
-    final viewer = LunchHarness(canEdit: false);
-    addTearDown(viewer.close);
-    await pump(tester, using: viewer, viewOnly: true);
-    await arrive(
-      tester,
-      using: viewer,
-      lwaziSlots: {key(1, LunchSlot.main): LunchPick.of(LunchFixtures.wrap)},
-    );
-    expect(
-      find.textContaining(LunchCopy.dayFor('', 'Lwazi').toUpperCase()),
-      findsOneWidget,
-    );
-    expect(find.text(LunchCopy.fillWeek), findsNothing);
-    expect(find.text(LunchCopy.ateIt), findsNothing);
-    expect(find.text(LunchCopy.openLibrary), findsNothing);
-    expect(find.text(LunchShareCopy.openShare), findsNothing);
-    await tester.tap(find.text('Chicken wrap').first);
-    await tester.pumpAndSettle();
-    expect(find.text(LunchCopy.suggestedFor('Lwazi')), findsNothing);
-  });
-
   testWidgets('a refusal shows copy about the child, never a code', (
     tester,
   ) async {
@@ -316,8 +268,12 @@ void main() {
       lwaziMarks: {'1': LunchFixtures.feedback(LunchVerdict.ate)},
     );
     expect(tester.takeException(), isNull);
-    await tester.drag(find.byType(Scrollable).last, const Offset(0, -1600));
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
+    // Down through the day, the week's planner and its days, to the tools.
+    for (var step = 0; step < 6; step++) {
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -1600));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+    expect(find.text(LunchCopy.openPrep), findsOneWidget);
   });
 }

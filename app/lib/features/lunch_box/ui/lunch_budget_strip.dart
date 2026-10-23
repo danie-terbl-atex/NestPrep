@@ -9,9 +9,12 @@ import '../../../shared/copy/app_copy.dart';
 import '../../household/model/household_view.dart';
 import '../model/lunch_budget_reading.dart';
 import '../state/lunch_budget_controller.dart';
+import 'lunch_week_name.dart';
 
 /// The week's spend on the lunch board, one line, for a premium household
-/// with prices or a budget (lunch-box ADR-0007). A tap opens budget mode.
+/// with prices or a budget (lunch-box ADR-0007), under the name of the week
+/// it prices (ADR-0019), last in the week's planner (ADR-0022). A tap opens
+/// budget mode.
 /// Silent while it loads and when there is nothing to say — the budget
 /// screen is where its failure is shown with a retry.
 class LunchBudgetStrip extends StatelessWidget {
@@ -31,16 +34,20 @@ class LunchBudgetStrip extends StatelessWidget {
     final reading = week.reading;
     final spent = week.spent.display;
     final householdId = context.read<HouseholdView>().household.id;
-    return NestToneRow(
-      icon: LucideIcons.piggyBank,
-      tone: reading?.band == LunchBudgetBand.over
-          ? NestTagTone.warning
-          : NestTagTone.success,
-      title: reading == null
-          ? LunchBudgetCopy.spentOnly(spent)
-          : LunchBudgetCopy.spentOf(spent, reading.budget.displayShort),
-      subtitle: LunchBudgetCopy.thisWeek,
-      onTap: () => context.push(LunchPlanningRoute.budgetPathFor(householdId)),
+    return Padding(
+      padding: const EdgeInsets.only(top: NestSpace.sm),
+      child: NestToneRow(
+        icon: LucideIcons.piggyBank,
+        tone: reading?.band == LunchBudgetBand.over
+            ? NestTagTone.warning
+            : NestTagTone.success,
+        title: reading == null
+            ? LunchBudgetCopy.spentOnly(spent)
+            : LunchBudgetCopy.spentOf(spent, reading.budget.displayShort),
+        subtitle: LunchWeekName.ofBoard(week.board).label,
+        onTap: () =>
+            context.push(LunchPlanningRoute.budgetPathFor(householdId)),
+      ),
     );
   }
 }

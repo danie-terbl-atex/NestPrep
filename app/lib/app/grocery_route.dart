@@ -3,14 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
-import '../features/add_to_checkers/data/checkers_catalogue.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/checkers_place_resolver.dart';
 import '../features/add_to_checkers/data/product_match_ranker.dart';
+import '../features/add_to_checkers/data/retailer_catalogues.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
-import '../features/add_to_checkers/state/checkers_push_controller.dart';
+import '../features/add_to_checkers/model/retailer_switch.dart';
+import '../features/add_to_checkers/state/cart_push_controller.dart';
 import '../features/add_to_checkers/state/product_match_controller.dart';
 import '../features/add_to_checkers/state/retailer_choice_controller.dart';
+import '../features/add_to_checkers/state/shop_carts.dart';
+import '../features/add_to_pnp/data/pnp_directory.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/data/grocery_suggestion_source.dart';
 import '../features/groceries/data/lunch_plan_grocery_source.dart';
@@ -28,10 +31,14 @@ import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/data/lunch_week_reader.dart';
 import '../features/lunch_box/model/lunch_week.dart';
 import '../features/meal_planning/data/meal_repository.dart';
+import '../features/meal_planning/model/meals_view.dart';
+import '../features/recipes/data/recipe_repository.dart';
+import '../shared/flags/feature_flags_controller.dart';
 import '../shared/time/household_clock.dart';
-import 'app_router.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'household_tab_navigation.dart';
+import 'meals_route.dart';
 import 'viewer_member.dart';
 
 /// Everything that may put things on the grocery list (groceries ADR-0004).
@@ -42,7 +49,10 @@ import 'viewer_member.dart';
 /// keeps in step exactly as it does the plans.
 List<GrocerySuggestionSource> groceryPlanSources(BuildContext context) => [
   MealPlanGrocerySource(context.read<MealRepository>()),
-  LunchPlanGrocerySource(LunchWeekReader(context.read<LunchRepository>())),
+  LunchPlanGrocerySource(
+    LunchWeekReader(context.read<LunchRepository>()),
+    context.read<RecipeRepository>(),
+  ),
   // home-care V2: products running low (home-care ADR-0005).
   HomeCareStockGrocerySource(context.read<HomeCareLibraryRepository>()),
 ];
@@ -66,12 +76,13 @@ GoRoute groceryRoute() => GoRoute(
         ChangeNotifierProvider(
           create: (context) => _planController(context, householdId),
         ),
-        // Checkers product matches and Add to Checkers (the Checkers build
-        // contract). Created whatever the switch says — neither does
-        // anything until the screen, which reads the switch, asks.
+        // Product matches and the carts, at Checkers and Pick n Pay (the
+        // Checkers build contract, add-to-pnp ADR-0007). Created whatever the
+        // switches say — none does anything until the screen, which reads
+        // them, asks.
         ChangeNotifierProvider(
           create: (context) => ProductMatchController(
-            catalogue: context.read<CheckersCatalogue>(),
+            catalogues: context.read<RetailerCatalogues>(),
             placeResolver: CheckersPlaceResolver(
               locationSource: context.read<LocationSource>(),
               areaPreference: context.read<CheckersAreaPreference>(),
@@ -82,22 +93,37 @@ GoRoute groceryRoute() => GoRoute(
             ranker: context.read<ProductMatchRanker>(),
           ),
         ),
-        // The shop *Find at* asks — Checkers until another is connected.
+        // The shop *Find at* asks, among those switched on.
         ChangeNotifierProvider(
-          create: (context) => RetailerChoiceController(
-            preference: context.read<RetailerPreference>(),
-            householdId: householdId,
-          ),
+          create: (context) {
+            final flags = context.read<FeatureFlagsController>();
+            return RetailerChoiceController(
+              preference: context.read<RetailerPreference>(),
+              householdId: householdId,
+              shopsOn: () => shopsOn(flags.isOn),
+            );
+          },
         ),
-        ChangeNotifierProvider(
-          create: (context) => CheckersPushController(
-            directory: context.read<CheckersDirectory>(),
-            householdId: householdId,
+        Provider(
+          create: (context) => ShopCarts(
+            checkers: CartPushController(
+              directory: context.read<CheckersDirectory>(),
+              householdId: householdId,
+            ),
+            pickNPay: CartPushController(
+              directory: context.read<PnpDirectory>(),
+              householdId: householdId,
+            ),
           ),
+          dispose: (context, carts) => carts.dispose(),
         ),
       ],
       child: GroceryListScreen(
-        onSelectTab: (tab) => goToTab(context, state, tab),
+        // The list's "from the meal plan" opens the plan itself — the Meals
+        // tab's week, not its recipes (design-system ADR-0015).
+        onSelectTab: (tab) => tab == HouseholdTab.meals
+            ? context.go(MealsRoute.pathFor(householdId, view: MealsView.week))
+            : goToTab(context, state, tab),
       ),
     );
   },

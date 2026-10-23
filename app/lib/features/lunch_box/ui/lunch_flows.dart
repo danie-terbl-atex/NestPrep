@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/lunch_route.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/ui/rename_sheet.dart';
 import '../../family_profiles/ui/sheet_outcome.dart';
+import '../../household/model/household_view.dart';
+import '../../recipes/model/recipe_link.dart';
+import '../../recipes/ui/linked_recipe_sheet.dart';
 import '../model/lunch_board.dart';
 import '../model/lunch_day.dart';
 import '../model/lunch_feedback.dart';
+import '../model/lunch_pick.dart';
 import '../model/lunch_slot.dart';
 import '../state/lunch_board_controller.dart';
 import 'lunch_day_menu.dart';
@@ -185,15 +190,43 @@ abstract final class LunchFlows {
     }
   }
 
-  /// Packs the rest of the week from what ranks best for the child.
+  /// Opens *Fill the week* for the child (lunch-box ADR-0020) — after the
+  /// free tier's one-child line (ADR-0009), which the rules hold regardless.
   static Future<void> fillWeek(
     BuildContext context, {
     required LunchChildWeek childWeek,
   }) async {
     if (!await LunchPremium.mayPlan(context, childWeek.childId)) return;
     if (!context.mounted) return;
-    await context.read<LunchBoardController>().edit.autoFill(childWeek.childId);
+    final householdId = context.read<HouseholdView>().household.id;
+    await context.push<void>(
+      LunchRoute.fillWeekPathFor(householdId, childId: childWeek.childId),
+    );
   }
+
+  /// *How to make it* for the item packed as [pick], when its library item
+  /// is made from a recipe (lunch-box ADR-0021 §8) — null otherwise, so the
+  /// compartment shows no button. Reading a recipe needs no edit grant.
+  static VoidCallback? recipeFor(
+    BuildContext context, {
+    required LunchBoard board,
+    required LunchPick? pick,
+  }) {
+    final link = board.libraryById[pick?.itemId]?.recipeLink;
+    if (pick == null || link == null) return null;
+    return () => openRecipe(context, link: link, title: pick.name);
+  }
+
+  static Future<void> openRecipe(
+    BuildContext context, {
+    required RecipeLink link,
+    required String title,
+  }) => showLinkedRecipeSheet(
+    context,
+    householdId: context.read<HouseholdView>().household.id,
+    link: link,
+    title: title,
+  );
 
   /// Opens the Sunday prep list, which is premium.
   static Future<void> openPrep(

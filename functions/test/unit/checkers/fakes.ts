@@ -13,7 +13,7 @@ import {
   type StoreContext,
 } from '../../../src/checkers/checkers_api';
 import type { CheckersAppIdentity } from '../../../src/checkers/checkers_config';
-import type { GroceryLine, GroceryLineReader } from '../../../src/checkers/grocery_lines';
+import type { GroceryLine, GroceryLineReader } from '../../../src/cart_push/grocery_lines';
 import type {
   CheckersLink,
   CheckersLinkStore,

@@ -1,17 +1,21 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../shared/failure/app_failure.dart';
-import '../../../shared/text/normalised_name.dart';
 import '../../lunch_box/data/lunch_budget_repository.dart';
 import '../../lunch_box/data/lunch_repository.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/model/lunch_item.dart';
 import '../../lunch_box/model/lunch_pick.dart';
 import '../../lunch_box/model/lunch_price.dart';
-import '../../lunch_box/model/lunch_safety.dart';
 import '../../lunch_box/model/lunch_slot.dart';
+import '../../lunch_box/state/lunch_library_items.dart';
+import '../../lunch_box/state/week_picks_writer.dart';
+import '../data/lunch_recipe_saver.dart';
 import '../model/checked_product.dart';
+import '../model/planned_dish.dart';
+import '../model/shop_product_item.dart';
 import '../model/shop_week.dart';
+import 'shop_dish_items.dart';
 
 /// What using a week wrote.
 @immutable
@@ -42,23 +46,60 @@ final class ShopWeekSaved {
 /// carries every code the library item or the shop's words name, so the
 /// rules check the stricter of the two (lunch-box ADR-0001), and a week
 /// write still carries one school day (ADR-0010, inside `setPicks`).
+///
+/// A dish (ADR-0021 §5) is saved first — its recipe, then its item — and
+/// priced as its ingredient packs for the boxes it fills.
 final class ShopWeekSaver {
   ShopWeekSaver({
     required LunchRepository lunchRepository,
     required LunchBudgetRepository budgetRepository,
+    required LunchRecipeSaver recipeSaver,
     required this.householdId,
     required this.memberId,
-  }) : _lunches = lunchRepository,
-       _budget = budgetRepository;
+  }) : _budget = budgetRepository,
+       _library = LunchLibraryItems(
+         lunchRepository: lunchRepository,
+         householdId: householdId,
+       ),
+       _writer = WeekPicksWriter(
+         lunchRepository: lunchRepository,
+         householdId: householdId,
+       ) {
+    _dishes = ShopDishItems(
+      recipes: recipeSaver,
+      library: _library,
+      householdId: householdId,
+      memberId: memberId,
+    );
+  }
 
-  final LunchRepository _lunches;
   final LunchBudgetRepository _budget;
+  final LunchLibraryItems _library;
+  final WeekPicksWriter _writer;
+  late final ShopDishItems _dishes;
   final String householdId;
   final String memberId;
 
   Future<ShopWeekSaved> save(ShopWeek plan, {required LunchBoard board}) async {
     final picksByProduct = <String, LunchPick>{};
     var pricesSaved = true;
+    // Dishes first: their recipes, then their items (lunch-box ADR-0021 §5).
+    for (final MapEntry(key: ideaId, value: dish) in (await _dishes.save(
+      plan,
+      board,
+    )).entries) {
+      picksByProduct['${PlannedDish.productIdOf(ideaId)}/${LunchSlot.main.name}'] =
+          LunchPick(
+            itemId: dish.item.id,
+            name: dish.item.name,
+            allergens: dish.item.allergens,
+          );
+      pricesSaved &= await _setPrice(
+        dish.item.id,
+        cents: dish.cents,
+        portions: dish.boxes,
+      );
+    }
     for (final child in plan.children) {
       for (final pick in child.added.values) {
         final product = plan.productOf(pick);
@@ -79,48 +120,27 @@ final class ShopWeekSaver {
       }
     }
 
-    var lunches = 0;
-    var skipped = 0;
+    var unresolved = 0;
+    final picksByChild = <String, Map<String, LunchPick>>{};
     for (final planned in plan.children) {
-      final now = board.childWeek(planned.childId);
-      if (now == null) {
-        skipped += planned.added.length;
-        continue;
-      }
-      final picks = <String, LunchPick>{};
       for (final MapEntry(:key, value: shopPick) in planned.added.entries) {
         final slot = plan.searchFor(shopPick.ideaId)?.idea.slot;
         final pick = picksByProduct['${shopPick.productId}/${slot?.name}'];
-        final isSafe =
-            pick != null &&
-            LunchSafety.isSafe(
-              allergens: pick.knownAllergens,
-              rules: now.child.foodRules,
-            );
-        if (now.plan.slots.containsKey(key) || !isSafe) {
-          skipped++;
+        if (pick == null) {
+          unresolved++;
         } else {
-          picks[key] = pick;
+          (picksByChild[planned.childId] ??= {})[key] = pick;
         }
       }
-      if (picks.isEmpty) continue;
-      try {
-        await _lunches.setPicks(
-          householdId: householdId,
-          childId: planned.childId,
-          week: plan.week,
-          picks: picks,
-        );
-        lunches += picks.length;
-      } on PermissionDeniedFailure {
-        // The rules said no — the child's rules changed on another phone.
-        // The other children's weeks still go in.
-        skipped += picks.length;
-      }
     }
+    final written = await _writer.write(
+      board: board,
+      week: plan.week,
+      picksByChild: picksByChild,
+    );
     return ShopWeekSaved(
-      lunches: lunches,
-      skipped: skipped,
+      lunches: written.lunches,
+      skipped: written.skipped + unresolved,
       pricesSaved: pricesSaved,
     );
   }
@@ -129,40 +149,37 @@ final class ShopWeekSaver {
     CheckedProduct product,
     LunchSlot slot,
     LunchBoard board,
-  ) async {
-    final name = _cut(product.product.name.trim(), LunchItem.nameLimit);
-    final key = normalisedName(name);
-    final known = board.library
-        .where((item) => !item.archived && item.slot == slot)
-        .where((item) => item.nameKey == key)
-        .firstOrNull;
-    if (known != null) return known;
-    final item = LunchItem.named(
-      id: '',
-      name: name,
-      slot: slot,
-      allergens: product.allergens,
-      addedBy: memberId,
-    );
-    final id = await _lunches.addItem(householdId, item);
-    return item.copyWith(id: id);
-  }
+  ) =>
+      _library.ensure(shopProductItem(product, slot, addedBy: memberId), board);
 
-  /// The shelf price for a pack of so many boxes; false when it was refused.
-  Future<bool> _price(
-    String itemId,
-    CheckedProduct product,
-    ShopWeek plan,
-  ) async {
-    final cents = product.product.price.cents;
-    if (cents < 0 || cents > LunchPrice.centsLimit) return true;
+  /// The shelf price for a pack of so many boxes.
+  Future<bool> _price(String itemId, CheckedProduct product, ShopWeek plan) =>
+      _setPrice(
+        itemId,
+        cents: product.product.price.cents,
+        portions: plan.boxesPerPackOf(product.productId),
+      );
+
+  /// [cents] for [portions] boxes; false when the rules refused it. A price
+  /// they would refuse anyway is not sent.
+  Future<bool> _setPrice(
+    String itemId, {
+    required int cents,
+    required int portions,
+  }) async {
+    if (cents < 0 ||
+        cents > LunchPrice.centsLimit ||
+        portions < 1 ||
+        portions > LunchPrice.portionLimit) {
+      return true;
+    }
     try {
       await _budget.setPrice(
         householdId,
         LunchPrice(
           id: itemId,
           cents: cents,
-          portions: plan.boxesPerPackOf(product.productId),
+          portions: portions,
           updatedBy: memberId,
         ),
       );
@@ -171,7 +188,4 @@ final class ShopWeekSaver {
       return false;
     }
   }
-
-  static String _cut(String text, int longest) =>
-      text.length <= longest ? text : text.substring(0, longest).trim();
 }

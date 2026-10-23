@@ -1,0 +1,148 @@
+{
+  "id": "sosaties",
+  "name": "Sosaties",
+  "summary": "Curried lamb and apricot kebabs: lamb marinated in a sweet-sour curry sauce, threaded with dried apricots and onion and charred on the braai.",
+  "about": "Sosaties come from the Cape Malay kitchen; the name joins sate, skewered meat, and saus, a spicy sauce. The lamb is marinated overnight or longer in a sweet-sour curry sauce, then threaded with dried apricots and onion and cooked over coals — a fixture of South African braais.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "braai",
+    "capeMalay",
+    "traditional"
+  ],
+  "allergens": [],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the marinade"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the marinade"
+    },
+    {
+      "name": "Medium curry powder",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Smooth apricot jam",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Brown or white vinegar",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Brown sugar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Salt",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the marinade"
+    },
+    {
+      "name": "Lamb leg or shoulder",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "boned, cut into 3 cm cubes, a little fat left on",
+      "group": "For the skewers"
+    },
+    {
+      "name": "Dried apricots",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the skewers"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "cut into wedges and separated into layers",
+      "group": "For the skewers"
+    },
+    {
+      "name": "Skewers",
+      "quantity": 12,
+      "unit": null,
+      "note": "wooden ones soaked in water for 30 minutes",
+      "group": "For the skewers"
+    }
+  ],
+  "steps": [
+    "Heat the oil in a saucepan over medium heat and fry the chopped onion until soft and golden, 6–8 minutes. Add the garlic, curry powder, turmeric and coriander and stir for 1 minute.",
+    "Add the jam, vinegar, sugar, bay leaves and salt and simmer for 5 minutes, until slightly syrupy. Leave to cool completely, about 20 minutes.",
+    "Put the lamb in a glass or ceramic bowl, pour over the cooled marinade and mix well. Cover and refrigerate for 24 hours (at least overnight, up to 2 days), turning the meat once or twice.",
+    "When you are ready to cook, soak the apricots in hot water for 15 minutes and drain. Thread the lamb onto the skewers, alternating with apricots and pieces of onion.",
+    "Pour the leftover marinade into a small pot and boil it for 3–4 minutes; use it for basting and as a sauce.",
+    "Braai over medium-hot coals (you can hold your hand above the grid for 5–6 seconds) for 12–15 minutes, turning every 3 minutes and basting in the last 5, until charred at the edges and just pink in the middle. Cook a few minutes longer if you prefer it well done.",
+    "Rest for 5 minutes. Serve with yellow rice and the warm sauce."
+  ],
+  "servings": 6,
+  "prepMinutes": 40,
+  "cookMinutes": 25,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Marinate the lamb 1–2 days ahead; the flavour gets better.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

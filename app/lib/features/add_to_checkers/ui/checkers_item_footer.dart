@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../groceries/model/grocery_item.dart';
 import '../state/product_match_controller.dart';
+import '../state/retailer_choice_controller.dart';
 import 'product_match_line.dart';
 import 'product_match_panel.dart';
 
-/// What Checkers adds under one grocery item: the picked product and, when
+/// What a shop adds under one grocery item: the picked product and, when
 /// this item is the one being matched, the panel of products itself.
 ///
 /// Selects only whether this item is the target, so the rest of the list does
@@ -37,7 +38,12 @@ class CheckersItemFooter extends StatelessWidget {
         if (match != null)
           ProductMatchLine(
             match: match,
-            onChange: canChange ? () => controller.lookFor(item) : null,
+            onChange: canChange
+                ? () => controller.lookFor(
+                    item,
+                    at: context.read<RetailerChoiceController>().chosen,
+                  )
+                : null,
             onClear: canChange ? () => controller.clear(item) : null,
           ),
         if (isTarget) ...[

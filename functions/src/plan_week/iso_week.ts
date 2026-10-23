@@ -41,6 +41,7 @@ export function mondayOfWeek(key: string): string | null {
 
 /** Monday to Friday, `1` to `5`. */
 export const SCHOOL_DAYS = [1, 2, 3, 4, 5] as const;
+export type SchoolDay = (typeof SCHOOL_DAYS)[number];
 
 /** How many weeks back the learning reads (lunch-box ADR-0003). */
 export const HISTORY_WEEKS = 8;

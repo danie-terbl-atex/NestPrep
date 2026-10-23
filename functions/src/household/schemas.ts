@@ -58,6 +58,17 @@ export const leaveHouseholdInput = z.object({
 });
 export type LeaveHouseholdInput = z.infer<typeof leaveHouseholdInput>;
 
+/** The word an admin types to close a household; the client shows it in capitals. */
+export const CLOSE_CONFIRMATION = 'CLOSE';
+
+export const closeHouseholdInput = z
+  .object({
+    householdId: z.string().trim().min(1).max(64),
+    confirmation: z.string().trim().max(20),
+  })
+  .strict();
+export type CloseHouseholdInput = z.infer<typeof closeHouseholdInput>;
+
 export const removeMemberInput = z.object({
   householdId: z.string().trim().min(1).max(64),
   memberId: z.string().trim().min(1).max(64),

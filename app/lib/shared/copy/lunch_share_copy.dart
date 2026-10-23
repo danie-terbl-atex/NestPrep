@@ -58,8 +58,10 @@ abstract final class LunchShareCopy {
   static const nothingPacked = 'Nothing packed';
 
   /// Items in a row, never breaking a line before a separator.
-  static String itemList(Iterable<String> names) => names.join('\u00A0· ');
+  static String itemList(Iterable<String> names) => names.join(itemSeparator);
+  static const itemSeparator = '\u00A0· ';
   static const inTheBoxes = 'In the boxes';
+  static const mains = 'Mains';
   static String andMore(int count) =>
       count == 1 ? 'and 1 more child' : 'and $count more children';
   static const plannedWith = 'Planned with';

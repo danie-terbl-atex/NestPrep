@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_shelf.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/plan_week/model/lunch_aisle.dart';
 
@@ -14,7 +15,7 @@ void main() {
     for (final shelf in shelves) {
       expect(shelf.sources, isNotEmpty, reason: shelf.title);
       for (final source in shelf.sources) {
-        expect(CheckersShelf.isId(source.id), isTrue, reason: shelf.title);
+        expect(RetailerShelf.isId(source.id), isTrue, reason: shelf.title);
       }
     }
   });
@@ -36,12 +37,12 @@ void main() {
       ],
     })!;
     expect(shelves.first.sources, const [
-      CheckersShelf.productList('69d4ebed9cccb04862bcb67f'),
-      CheckersShelf.displayCategory('67075e37ff987811364007b9'),
+      RetailerShelf.productList('69d4ebed9cccb04862bcb67f'),
+      RetailerShelf.displayCategory('67075e37ff987811364007b9'),
     ]);
     expect(shelves.last.slot, LunchSlot.veg);
     expect(shelves.last.sources, const [
-      CheckersShelf.displayCategory('67075daeff98781136400728'),
+      RetailerShelf.displayCategory('67075daeff98781136400728'),
     ]);
   });
 
@@ -92,5 +93,59 @@ void main() {
       ],
     })!;
     expect(shelves, hasLength(LunchAisle.shelfLimit));
+  });
+
+  group('Pick n Pay (lunch-box ADR-0026)', () {
+    test('its own categories, by code, and no main shelf', () {
+      final shelves = LunchAisle.defaultsFor(ProductRetailer.pickNPay);
+      expect(shelves.length, lessThanOrEqualTo(LunchAisle.shelfLimit));
+      expect(
+        shelves.every(
+          (shelf) => shelf.sources.single.kind == RetailerShelfKind.pnpCategory,
+        ),
+        isTrue,
+      );
+      expect(
+        shelves.map((shelf) => shelf.sources.single.id),
+        contains('lunch-box-snacks-1664414929'),
+      );
+      expect(shelves.where((shelf) => shelf.slot == LunchSlot.main), isEmpty);
+      expect(
+        LunchAisle.defaultsFor(ProductRetailer.checkers),
+        LunchAisle.checkersKidsLunchbox,
+      );
+    });
+
+    test('pnpShelves replaces them; Checkers’ shelves do not', () {
+      const fields = {
+        'shelves': [
+          {
+            'title': 'Checkers',
+            'slot': 'snack',
+            'listId': '69d4ebed9cccb04862bcb67f',
+          },
+        ],
+        'pnpShelves': [
+          {
+            'title': 'Lunch box',
+            'slot': 'snack',
+            'categoryCode': 'lunch-box-snacks-1664414929',
+          },
+          {'title': 'Bad code', 'slot': 'snack', 'categoryCode': 'NOT A CODE'},
+        ],
+      };
+      final pnp = LunchAisle.fromFields(
+        fields,
+        shop: ProductRetailer.pickNPay,
+      )!;
+      expect([for (final shelf in pnp) shelf.title], ['Lunch box']);
+      expect(
+        LunchAisle.fromFields(const {
+          'shelves': [],
+        }, shop: ProductRetailer.pickNPay),
+        isNull,
+      );
+      expect(LunchAisle.fromFields(fields)!.single.title, 'Checkers');
+    });
   });
 }

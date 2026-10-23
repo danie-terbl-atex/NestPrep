@@ -1,0 +1,40 @@
+{
+  "id": "trifle",
+  "name": "Christmas trifle",
+  "summary": "Layers of jam Swiss roll, red jelly, peaches, custard and whipped cream in a glass bowl, the cold pudding that ends a South African Christmas lunch.",
+  "about": "Trifle came to South Africa with British settlers and became the pudding of a hot South African Christmas: made the day before, served cold from a glass bowl so the layers show. Many families splash sweet sherry over the sponge for the adults and make a second bowl with fruit syrup for the children.",
+  "cuisine": "international",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "dessert" },
+  "tags": ["festive", "kidFriendly"],
+  "allergens": ["milk", "egg", "wheat", "soy"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Strawberry jelly powder", "quantity": 2, "unit": "pack", "note": "80 g each", "group": null },
+    { "name": "Boiling water", "quantity": 2, "unit": "cup", "note": null, "group": null },
+    { "name": "Cold water", "quantity": 2, "unit": "cup", "note": null, "group": null },
+    { "name": "Jam Swiss roll", "quantity": 1, "unit": null, "note": "about 300 g, or trifle sponge", "group": null },
+    { "name": "Peach slices in syrup", "quantity": 1, "unit": "tin", "note": "410 g, drained, syrup kept", "group": null },
+    { "name": "Sweet sherry", "quantity": 0.25, "unit": "cup", "note": "optional; or use the peach syrup", "group": null },
+    { "name": "Ready-made custard", "quantity": 1, "unit": "l", "note": "thick, chilled", "group": null },
+    { "name": "Fresh cream", "quantity": 1, "unit": "cup", "note": "250 ml", "group": null },
+    { "name": "Icing sugar", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Glacé cherries", "quantity": 10, "unit": null, "note": "or grated chocolate, to decorate", "group": null }
+  ],
+  "steps": [
+    "Dissolve the jelly powder in the boiling water, stirring for 2 minutes until no grains remain. Stir in the cold water and leave at room temperature for about 20 minutes, until cool but still liquid.",
+    "Cut the Swiss roll into 1.5 cm slices and pack them over the base and a little way up the sides of a large glass bowl (about 3 litres), so the spirals show through the glass.",
+    "Spoon the sherry, or 1/4 cup of the peach syrup, evenly over the sponge so it is moist but not soggy. Scatter over the peach slices.",
+    "Pour the cooled jelly gently over the sponge and peaches. Cover and refrigerate for 3–4 hours, until the jelly is firmly set and does not wobble loose when the bowl is tilted.",
+    "Spoon the custard over the set jelly and smooth it into an even layer.",
+    "Whip the cream with the icing sugar until it holds soft peaks, about 2–3 minutes with an electric beater. Spread it over the custard, then decorate with cherries or grated chocolate.",
+    "Chill for at least 1 hour more before serving, scooping deep so every portion gets all the layers."
+  ],
+  "servings": 10,
+  "prepMinutes": 30,
+  "cookMinutes": 5,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the sponge and jelly layers the day before; add custard and cream on the day. Keeps 2 days in the fridge.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

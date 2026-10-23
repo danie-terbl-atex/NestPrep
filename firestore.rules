@@ -329,16 +329,18 @@ service cloud.firestore {
         && request.resource.data.activeHouseholdId == null
         && isServerTime('createdAt');
 
-      // What Google tells us about the person, and which household is showing.
-      // `householdIds` and `createdAt` are not in the list, so they cannot move.
+      // What Google tells us about the person, which household is showing, what
+      // they agreed to, and which welcome tour they have seen. `householdIds` and
+      // `createdAt` are not in the list, so they cannot move.
       allow update: if isSelf()
         && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt',
-                        'legalConsent'])
+                        'legalConsent', 'tour'])
         && isNonEmptyString(request.resource.data.displayName)
         && (request.resource.data.activeHouseholdId == null
             || request.resource.data.activeHouseholdId in resource.data.householdIds)
         && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'))
-        && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent());
+        && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent())
+        && (!changedKeys().hasAny(['tour']) || isAccountTour());
 
       // What this person agreed to (accounts ADR-0005): the two versions, whole
       // numbers from 1, never lower than what they agreed to before, stamped
@@ -356,6 +358,20 @@ service cloud.firestore {
           && consent.acceptedAt == request.time;
       }
 
+      // The welcome tour this person finished or skipped (welcome-tour
+      // ADR-0001): its version, a whole number from 1 never lower than the one
+      // recorded, stamped with the server's time. Nothing else rides along.
+      function isAccountTour() {
+        let tour = request.resource.data.tour;
+        let before = resource.data.get('tour', {'version': 0});
+        return tour is map
+          && tour.keys().hasOnly(['version', 'seenAt'])
+          && tour.keys().hasAll(['version', 'seenAt'])
+          && tour.version is int && tour.version >= 1
+          && tour.version >= before.version
+          && tour.seenAt == request.time;
+      }
+
       // Deleting an account is a Function, in the phase that ships to a store.
       allow delete: if false;
     }
@@ -368,8 +384,9 @@ service cloud.firestore {
     // switch and the monthly caps, read only by Functions; a client has no
     // reason to know the caps, and must never be able to raise them.
     // `appConfig/lunchAisle` names the Checkers lunchbox shelves *Plan my week*
-    // reads first (lunch-box ADR-0013) — shop ids, nobody's data — read like
-    // the flags and written only in the console. Any other
+    // reads first (lunch-box ADR-0013), and in `pnpShelves` Pick n Pay's
+    // category shelves (lunch-box ADR-0026) — shop ids, nobody's data — read
+    // like the flags and written only in the console. Any other
     // id here is closed too, so the collection cannot quietly grow into a place
     // for data, and nobody lists it.
     // `aiEmulator/{feature}` holds the canned model answers the Functions
@@ -457,6 +474,18 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ==== rules/firestore/root/lunch_starter_boxes.rules ====
+    // ---- ready-made starter boxes for Fill the week (lunch-box ADR-0018, ADR-0020) ----
+    // NestPrep's own boxes, nobody's data: anybody signed in may read them, and
+    // no client writes one — the catalogue seed does. The app lists the published
+    // ones by `order`, twenty at most, so a list asking for more is refused.
+
+    match /lunchStarterBoxes/{boxId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && request.query.limit <= 20;
+      allow write: if false;
+    }
+
     // ==== rules/firestore/root/notifications.rules ====
     // ---- notifications: the phones an account's pushes go to (notifications ADR-0001) ----
     //
@@ -479,6 +508,17 @@ service cloud.firestore {
         && token.size() <= 4096
         && request.resource.data.platform in ['android', 'ios']
         && isServerTime('updatedAt');
+    }
+
+    // ==== rules/firestore/root/pnp_links.rules ====
+    // ---- add to Pick n Pay: a member's own PnP link (add-to-pnp ADR-0003) ----
+    // Written and read by the PnP Functions alone. It holds the member's sealed
+    // PnP tokens and a sealed pending link (PKCE verifier and state) — none of
+    // which a client may read, not even the member it belongs to; the app asks
+    // `pnpLinkStatus` instead.
+
+    match /pnpLinks/{uid} {
+      allow read, write: if false;
     }
 
     // ==== rules/firestore/root/product_analytics.rules ====
@@ -504,6 +544,20 @@ service cloud.firestore {
 
     match /analyticsWeeks/{week} {
       allow read: if isSignedIn() && request.auth.token.get('analyticsReader', false) == true;
+      allow write: if false;
+    }
+
+    // ==== rules/firestore/root/recipes.rules ====
+    // ---- recipes NestPrep publishes (recipes ADR-0001, ADR-0003) ----
+    // A catalogue, nobody's data: anybody signed in may read a recipe, and no
+    // client writes one — the catalogue seed does, as the Admin SDK. A recipe
+    // reaches a household only by being copied into its lunch library or its
+    // meals, where those rules check it. A list is bounded: the recipes view
+    // reads the published catalogue in one query of at most 200 (ADR-0003 §7).
+
+    match /recipes/{recipeId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && request.query.limit <= 200;
       allow write: if false;
     }
 
@@ -1158,10 +1212,13 @@ service cloud.firestore {
       // editor may refresh or remove one; a person's edit adopts it by clearing
       // the three fields; a ticked one is history like any other.
       //
-      // `productMatch` is the product a member picked at Checkers (the Checkers
-      // build contract): absent on a new item, set or cleared by any groceries
-      // editor on its own, and cleared — never required to be — by a rename, so an
-      // app from before the field still renames an item that carries one.
+      // `productMatch` is the product a member picked at a shop — Checkers (the
+      // Checkers build contract) or Pick n Pay (groceries ADR-0007): absent on a
+      // new item or made with it — *Plan my week* creates an item already matched,
+      // so it is never left behind unmatched (add-to-pnp ADR-0004) — set or cleared
+      // by any groceries editor on its own, and cleared
+      // — never required to be — by a rename, so an app from before the field
+      // still renames an item that carries one.
       match /groceryItems/{itemId} {
         allow read: if canView(householdId, 'groceries');
 
@@ -1169,7 +1226,8 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(
                ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy',
                 'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch'])
-          && request.resource.data.get('productMatch', null) == null
+          && (request.resource.data.get('productMatch', null) == null
+                || groceriesIsProductMatch(householdId, request.resource.data.productMatch))
           && isNonEmptyString(request.resource.data.name)
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('addedAt')
@@ -1261,20 +1319,17 @@ service cloud.firestore {
         return value is string && value.size() <= 200;
       }
 
-      // The shape of a pick (the Checkers build contract). The unit is any short
-      // code Checkers sends — `EA`, `KG`, `PK1` — because the server decides what a
-      // weighed item is, not the rules; the price is whole cents in rand.
+      // The shape of a pick (the Checkers build contract; groceries ADR-0007). The
+      // unit is any short code the shop sends — `EA`, `KG`, `PK1`, PnP's `KGM` —
+      // because the server decides what a weighed item is, not the rules; the
+      // price is whole cents in rand. Each shop's own id shape is checked below.
       function groceriesIsProductMatch(householdId, pick) {
         return pick is map
           && pick.keys().hasAll(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                                   'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
           && pick.keys().hasOnly(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                                    'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
-          && pick.retailer == 'checkers'
-          && pick.productId is string
-          && pick.productId.matches('^[0-9a-f]{24}$')
-          && pick.articleCode is string
-          && pick.articleCode.matches('^[0-9A-Za-z]{1,40}$')
+          && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick))
           && pick.unitOfMeasure is string
           && pick.unitOfMeasure.matches('^[A-Z0-9]{1,8}$')
           && isNonEmptyString(pick.name)
@@ -1284,9 +1339,30 @@ service cloud.firestore {
           && pick.priceCents >= 0
           && pick.priceCents <= 100000000
           && pick.currency == 'ZAR'
-          && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 100))
           && isOwnMember(householdId, pick.pickedBy)
           && pick.pickedAt == request.time;
+      }
+
+      // Checkers Sixty60: a 24-hex product id, an image id.
+      function groceriesIsCheckersPick(pick) {
+        return pick.retailer == 'checkers'
+          && pick.productId is string
+          && pick.productId.matches('^[0-9a-f]{24}$')
+          && pick.articleCode is string
+          && pick.articleCode.matches('^[0-9A-Za-z]{1,40}$')
+          && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 100));
+      }
+
+      // Pick n Pay (groceries ADR-0007): its national code with the unit suffix,
+      // the code's digits, and the image's path on PnP's CDN, which the app joins
+      // to the CDN host itself.
+      function groceriesIsPnpPick(pick) {
+        return pick.retailer == 'pickNPay'
+          && pick.productId is string
+          && pick.productId.matches('^[0-9]{6,20}_[A-Z]{2,3}$')
+          && pick.articleCode is string
+          && pick.articleCode.matches('^[0-9]{1,20}$')
+          && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 300));
       }
 
       // ==== rules/firestore/household/grocery_plans.rules ====
@@ -1812,6 +1888,19 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // ==== rules/firestore/household/household_recipes.rules ====
+      // ---- household recipes (recipes ADR-0002) ----
+      // The dishes a household used from Plan my week (lunch-box ADR-0021), saved
+      // as its own recipes. Only the `saveLunchRecipes` Function writes one: their
+      // allergen codes come from word lists no rule can run. Immutable and never
+      // deleted — lunch items link to them. Read one at a time by id, never listed.
+
+      match /recipes/{recipeId} {
+        allow get: if canView(householdId, 'lunch');
+        allow list: if false;
+        allow write: if false;
+      }
+
       // ==== rules/firestore/household/kid_devices.rules ====
       // ---- kid devices (accounts ADR-0003) ----
       // Which devices are signed in as which kid, for the parents who can end
@@ -1905,12 +1994,15 @@ service cloud.firestore {
           && isLunchItem(request.resource.data)
           && request.resource.data.get('archived', false) == false
           && isOwnMember(householdId, request.resource.data.addedBy)
-          && isServerTime('createdAt');
+          && isServerTime('createdAt')
+          && lunchItemHoldsItsRecipe(householdId, request.resource.data);
 
-        // Its slot never moves: boxes hold it under that slot's key.
+        // Its slot never moves: boxes hold it under that slot's key. Neither
+        // recipe link is in the list, so a link is set once and never changes.
         allow update: if canEdit(householdId, 'lunch')
           && onlyChanged(['name', 'nameKey', 'allergens', 'prepAhead', 'prepNote', 'archived'])
-          && isLunchItem(request.resource.data);
+          && isLunchItem(request.resource.data)
+          && lunchItemHoldsItsRecipe(householdId, request.resource.data);
 
         allow delete: if false;
       }
@@ -2000,10 +2092,14 @@ service cloud.firestore {
           && value.hasOnly(['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish', 'shellfish', 'sesame']);
       }
 
+      // `recipeId` names the catalogue recipe an item was made from (recipes
+      // ADR-0001), `householdRecipeId` the household's own (recipes ADR-0002) — one
+      // or neither. The update rule's `onlyChanged` leaves both out, so neither
+      // changes once set.
       function isLunchItem(data) {
         return data.keys().hasOnly(
              ['name', 'nameKey', 'slot', 'allergens', 'prepAhead', 'prepNote', 'archived',
-              'seedKey', 'addedBy', 'createdAt'])
+              'seedKey', 'recipeId', 'householdRecipeId', 'addedBy', 'createdAt'])
           && isLunchText(data.name, 60)
           && data.nameKey is string && data.nameKey.size() > 0 && data.nameKey == data.nameKey.lower()
           && data.slot in ['main', 'fruit', 'veg', 'snack', 'treat']
@@ -2011,7 +2107,20 @@ service cloud.firestore {
           && data.get('prepAhead', false) is bool
           && (data.get('prepNote', null) == null || isLunchText(data.get('prepNote', null), 140))
           && data.get('archived', false) is bool
-          && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60));
+          && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60))
+          && (!('recipeId' in data) || isLunchText(data.recipeId, 60))
+          && (!('householdRecipeId' in data)
+                || (isLunchText(data.householdRecipeId, 60) && !('recipeId' in data)));
+      }
+
+      // An item linked to a household recipe carries at least every allergen code
+      // the recipe does, and the recipe is this household's (recipes ADR-0002 §5):
+      // the Function derived the recipe's codes, and this holds the item to them.
+      // One `get`, and only for an item with the link.
+      function lunchItemHoldsItsRecipe(householdId, data) {
+        return !('householdRecipeId' in data)
+          || data.get('allergens', []).hasAll(
+               get(/databases/$(database)/documents/households/$(householdId)/recipes/$(data.householdRecipeId)).data.allergens);
       }
 
       // What one compartment holds: the item, and a copy of its name and codes.
@@ -2525,15 +2634,18 @@ service cloud.firestore {
 
         allow create: if canEdit(householdId, 'meals')
           && request.resource.data.keys().hasOnly(
-               ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients'])
+               ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients', 'recipeId'])
           && isNonEmptyString(request.resource.data.name)
           && isNormalisedKey(request.resource.data.nameKey)
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('createdAt')
-          && mealsIngredientsAreValid(request.resource.data.get('ingredients', []));
+          && mealsIngredientsAreValid(request.resource.data.get('ingredients', []))
+          && mealsRecipeLinkIsValid(mealId, request.resource.data);
 
         // Renaming is the adder's or an admin's; what goes in a meal is anybody's
         // who edits meals (meal-planning ADR-0002) — the two never share a write.
+        // Neither list names `recipeId`, so the link is never added, changed or
+        // removed after create (recipes ADR-0003 §6).
         allow update: if canEdit(householdId, 'meals')
           && ((onlyChanged(['name', 'nameKey'])
                 && isNonEmptyString(request.resource.data.name)
@@ -2546,6 +2658,17 @@ service cloud.firestore {
         allow delete: if isAdmin(householdId)
           || (canEdit(householdId, 'meals')
                 && isOwnMember(householdId, resource.data.addedBy));
+
+        // A meal made from a catalogue recipe names it once, at create, and lives
+        // at `recipe-<recipeId>`, so adding the same recipe again finds the same
+        // meal instead of a second one (recipes ADR-0003 §6).
+        function mealsRecipeLinkIsValid(mealId, data) {
+          return !('recipeId' in data)
+            || (data.recipeId is string
+                && data.recipeId.size() > 0
+                && data.recipeId.size() <= 60
+                && mealId == 'recipe-' + data.recipeId);
+        }
 
         function isNormalisedKey(value) {
           return value is string && value.size() > 0 && value == value.lower();

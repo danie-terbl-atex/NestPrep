@@ -132,6 +132,23 @@ void main() {
       expect(content.itemNames.first, 'Cheese rolls');
     });
 
+    test('the mains: each day’s first thing, once, in the week’s order', () {
+      final content = LunchCardFixtures.content(
+        const LunchCardOptions(childId: null),
+      );
+      expect(content.mainNames, [
+        'Cheese rolls',
+        'Chicken mayo wrap',
+        'Pasta salad',
+        'Mealie bread slice',
+        'Mini frikkadels',
+        'Hummus and pita',
+        'Egg mayo sandwich',
+        'Tuna sandwich',
+      ]);
+      expect(content.itemNames, containsAll(content.mainNames));
+    });
+
     test('a family card draws four children and counts the rest', () {
       final extra = [
         for (var index = 0; index < 4; index++)

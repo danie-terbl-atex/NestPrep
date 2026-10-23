@@ -1,0 +1,34 @@
+{
+  "id": "umphokoqo",
+  "name": "Umphokoqo",
+  "summary": "Crumbly putu pap: maize meal steamed dry into small crumbs, cooled and eaten with cold, tangy amasi poured over the top.",
+  "about": "Umphokoqo is a favourite of isiXhosa homes, and the same crumbly pap with sour milk is eaten across South Africa (as uphuthu with amasi in isiZulu homes). It is a cooling meal for hot days, eaten at breakfast or lunch or before an afternoon braai. The pap is forked as it steams so it forms small, separate crumbs instead of a smooth porridge.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast", "lunch"],
+  "placement": { "breakfast": "main", "lunch": "main" },
+  "tags": ["traditional", "budget"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Water", "quantity": 2.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Butter", "quantity": 1, "unit": "tsp", "note": "optional", "group": null },
+    { "name": "White maize meal", "quantity": 400, "unit": "g", "note": "about 2.5 cups", "group": null },
+    { "name": "Amasi", "quantity": 1, "unit": "l", "note": "well chilled", "group": null }
+  ],
+  "steps": [
+    "Bring the water, salt and butter to the boil in a heavy-based pot with a lid over high heat.",
+    "Tip in all the maize meal at once, so it sits in a mound in the water. Do not stir yet. Cover, turn the heat to low and leave for 5 minutes.",
+    "Take off the lid and stir and break up the mixture with a large fork, working right to the bottom of the pot, until it is evenly damp and crumbly with no dry flour left, about 2 minutes.",
+    "Cover again and steam over the lowest heat for 30 minutes, forking it through every 5–10 minutes to break up lumps, until the crumbs are cooked, taste of sweet maize rather than raw flour and are about the size of couscous.",
+    "Fluff once more, spread out on a tray or in a wide bowl and leave to cool to room temperature, about 20 minutes.",
+    "Spoon the pap into bowls and pour plenty of cold amasi over each serving. Eat straight away, while the crumbs still have some bite."
+  ],
+  "servings": 4,
+  "prepMinutes": 5,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the pap the night before and keep it covered in the fridge; it is meant to be eaten cool.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

@@ -53,6 +53,7 @@ final class ProductAnalyticsCopy {
     PremiumFeature.aiPlanning => 'Plan my week',
     PremiumFeature.budgetMode => 'Budget mode',
     PremiumFeature.lunchPhoto => 'Lunch photos',
+    PremiumFeature.recipeShopping => 'Recipe shopping',
     PremiumFeature.direct => 'Plan and billing',
   };
   String triggerRate({required int bought, required int shown, int? percent}) =>

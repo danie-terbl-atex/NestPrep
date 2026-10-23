@@ -1,0 +1,39 @@
+{
+  "id": "boerewors-breakfast",
+  "name": "Boerewors breakfast with tomato smoor",
+  "summary": "A coil of boerewors, fried eggs and buttered toast with a sweet, soft tomato and onion smoor: the South African weekend breakfast, in the pan or on the braai.",
+  "about": "Smoor comes from the Dutch smoren, to braise, and the Afrikaans kitchen uses it for onion and tomato cooked down into a soft relish. On weekend mornings, and on camping trips and braai days, families fry or grill boerewors and eggs and spoon smoor over the top, with toast or pap on the side.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast"],
+  "placement": { "breakfast": "main" },
+  "tags": ["braai", "traditional"],
+  "allergens": ["milk", "egg", "wheat", "soy"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": "divided", "group": "For the smoor" },
+    { "name": "Onions", "quantity": 2, "unit": null, "note": "sliced", "group": "For the smoor" },
+    { "name": "Garlic clove", "quantity": 1, "unit": null, "note": "crushed", "group": "For the smoor" },
+    { "name": "Ripe tomatoes", "quantity": 4, "unit": null, "note": "chopped", "group": "For the smoor" },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": "For the smoor" },
+    { "name": "Dried thyme", "quantity": 0.5, "unit": "tsp", "note": null, "group": "For the smoor" },
+    { "name": "Salt and black pepper", "quantity": null, "unit": null, "note": "to taste", "group": "For the smoor" },
+    { "name": "Boerewors", "quantity": 600, "unit": "g", "note": "one coil", "group": "For the plate" },
+    { "name": "Eggs", "quantity": 4, "unit": null, "note": null, "group": "For the plate" },
+    { "name": "Bread slices", "quantity": 4, "unit": null, "note": "toasted", "group": "For the plate" },
+    { "name": "Butter", "quantity": 4, "unit": "tsp", "note": "for the toast", "group": "For the plate" }
+  ],
+  "steps": [
+    "Make the smoor: heat 1 tbsp of the oil in a saucepan over medium heat and fry the onions for 8–10 minutes, until soft and golden. Add the garlic and fry for 1 minute.",
+    "Add the tomatoes, sugar and thyme. Simmer uncovered on low for 12–15 minutes, stirring and squashing the tomatoes now and then, until they have collapsed into a thick, jammy relish. Season with salt and pepper and keep warm.",
+    "Meanwhile cook the boerewors. In a pan: heat a large frying pan over medium heat, add the coil with 2 tbsp of water and cook for 6–8 minutes a side, turning once with a spatula, until browned and firm, with clear juices when pierced. On the braai: grill over medium coals for 12–15 minutes, turning once.",
+    "Lift out the wors and keep it warm. Add the remaining oil to the pan over medium heat and fry the eggs for 3–4 minutes, basting with the fat, until the whites are set and the yolks done how you like them.",
+    "Butter the hot toast. Cut the wors into four portions and serve each with an egg, toast and a generous spoonful of smoor."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "The smoor keeps 3 days in the fridge; warm it while the wors cooks.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

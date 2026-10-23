@@ -24,13 +24,28 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `week-light.png` / `week-dark.png` | the family week: the seven-day strip, today, and the day's agenda in member colours |
 | `school-letter-light.png` / `school-letter-dark.png` | calendar V2, snap a school letter: the three ways a letter comes in, and what leaves the phone — `tool/calendar_v2_design_review_test.dart` (calendar ADR-0005) |
 | `school-letter-review-light.png` / `school-letter-review-dark.png` | what a letter proposed, every event ticked, the chips the week will show, the one button that adds anything |
+| `school-letter-reading-*.png`, `school-letter-added-*.png` | Twig thinking while the model reads, celebrating what was added; `school-letter-failed-light.png` — a failed read, with no Twig (design-system ADR-0012) |
+| `plan-week-entry-*.png` | The board's *Plan my week from Checkers* row up close — titled *Let Twig plan this week*, Twig named in words only — led by the Checkers logo as decoration, light and dark — `tool/plan_week_design_review_test.dart` (lunch-box ADR-0024, design-system ADR-0014) |
+| `plan-week-drafting-*.png`, `plan-week-building-*.png` | Twig on *Plan my week*'s AI surfaces — the model drafting and building (held still, as reduce-motion shows them) — `tool/plan_week_twig_design_review_test.dart`; `plan-week-done-without-ai-light.png` is a phone-built week, with no Twig (design-system ADR-0012) |
+| `lunch-board-how-to-make-it-device.png`, `lunch-board-recipe-sheet-device.png`, `plan-week-ideas-dish-device.png`, `plan-week-dish-recipe-device.png`, `plan-week-week-after-dishes-device.png` | **Screenshots from the Android AVD against the cloud (2026-10-12), not the press:** *How to make it* beside recipe-linked compartments on the board, and the recipe sheet it opens; *Plan my week*'s ideas with an AI main drafted as a dish, its recipe sheet, and the built week (lunch-box ADR-0021, recipes ADR-0002) |
+| `checkers-best-match-*.png` | Checkers matches, Twig beside Jev's *Best match*, light, dark and dark at 200% text — `tool/checkers_design_review_test.dart` (design-system ADR-0012) |
 | `shared-week-light.png` / `shared-week-dark.png` / `shared-week-dark-200-percent-text.png` | calendar V2, this week shared: the bar with names beside the colours, a card per parent, each shareable as a picture (calendar ADR-0006) |
 | `todos-mine-light.png` / `todos-mine-dark.png` | what one person is being asked to do, overdue first |
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked, and the week's plans offering three things above it (groceries phase 2) |
 | `grocery-plans-light.png` / `grocery-plans-dark.png` | *From this week's plans*: keep-in-step, what to add with its reasons and amounts, an amount that changed, something bought yesterday — `tool/grocery_plans_design_review_test.dart` |
 | `meal-ingredients-light.png` / `meal-ingredients-dark.png` | *What goes in* a meal, from the library: its lines, and the form for the next one (meal-planning ADR-0002) |
-| `meals-light.png` / `meals-dark.png` | the week's twenty-one slots, some filled |
+| `meals-light.png` / `meals-dark.png` | the Meals tab's *This week*: the week's twenty-one slots, some filled, under the *Recipes / This week* switch (design-system ADR-0015) |
+| `recipes-light.png` / `recipes-dark.png` | the Meals tab's *Recipes*, which it opens on: search, the meal and kind-of-dish chips, and tonight's dinner large with *Cook this* over its photo — `tool/recipes_design_review_test.dart` (recipes ADR-0003; one generated bobotie photo stands in for every recipe's) |
+| `recipes-shelves-light.png` | further down: the curated shelves, *Sunday classics* and *Braai day*, each a row of cards that scrolls sideways |
+| `recipes-filtered-light.png` | *Dinner* chosen: the editorial page gives way to how many match and a two-column grid |
+| `recipes-dark-200-percent-text.png` | the recipes at the largest text a phone offers |
+| `recipe-light.png` / `recipe-dark.png` | a recipe's page: the photo edge to edge under the status bar with the back button on glass, the canvas lifting over it, the name, prep / cook / total / effort / serves in columns, the allergens as tags and in words, and *Add to this week* |
+| `recipe-scaled-light.png` / `recipe-scaled-dark.png` | *Cooking for 4 people* on a recipe that serves 6: four of six people filled in Guava, ×2/3, *Reset to recipe (serves 6)*, and every amount scaled — 665 g, 1 1/3 tbsp, 1/3 cup, *Salt — to taste* unscaled — with the first line ticked off |
+| `recipe-method-light.png` | the method, a step at arm's-length size, the first marked done, and *Making it ahead* |
+| `recipe-dark-200-percent-text.png` | the recipe's page at the largest text a phone offers |
+| `recipe-add-to-week-light.png` / `recipe-add-to-week-dark.png` | *Add to the week*: for how many, this week or next, a day from today on, the meal the recipe is for chosen already, and the one button that writes it |
+| `meals-week-recipes-light.png` / `meals-week-recipes-dark.png` | the week with recipes planned: each recipe's photo beside its meal and *How to make it* under its name |
 | `launch-light.png` / `launch-dark.png` | what the native splash hands over to while the session is read: the nest at the splash's size, the words, one pulsing bar |
 | `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the logo's nest with the household's five member marks circling it, the wordmark, the tagline, and the way in |
 | `household-gate-light.png` / `household-gate-dark.png` | the screen after it: the nest and wordmark, the question, then making or joining a household |

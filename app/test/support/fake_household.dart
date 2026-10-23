@@ -174,6 +174,7 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
     expiresAt: DateTime.utc(2026, 9, 25),
   );
   final left = <String>[];
+  final closed = <({String householdId, String confirmation})>[];
   final removed = <({String householdId, String memberId})>[];
   final rolesSet = <({String memberId, MemberRole role})>[];
   final accessSet = <({String memberId, AccessGrant access})>[];
@@ -227,6 +228,15 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
   Future<void> leaveHousehold(String householdId) async {
     await _checkpoint();
     left.add(householdId);
+  }
+
+  @override
+  Future<void> closeHousehold({
+    required String householdId,
+    required String confirmation,
+  }) async {
+    await _checkpoint();
+    closed.add((householdId: householdId, confirmation: confirmation));
   }
 
   @override

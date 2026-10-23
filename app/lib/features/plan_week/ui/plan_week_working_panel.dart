@@ -6,16 +6,21 @@ import '../../../design/nest_kit.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/ui/art/lunch_glyph.dart';
 
-/// The model is working: the mark, the five compartments rising in under it
+/// A step is working: the mark, the five compartments rising in under it
 /// one by one, and a line on what is happening, so a wait of a few seconds
 /// reads as work being done, not a spinner (`FE-08`). While it waits the mark
 /// breathes, the compartments bob in a wave and the row turns one place each
 /// beat; under reduce-motion it is simply there, still.
+///
+/// Not every wait is the AI's — the aisle and the shop are read on the phone
+/// — so Twig stands in for the mark only when the step says the model is the
+/// one working, in the [twig] pose it gives (design-system ADR-0012).
 class PlanWeekWorkingPanel extends StatelessWidget {
   const PlanWeekWorkingPanel({
     required this.title,
     required this.line,
     this.progress,
+    this.twig,
     super.key,
   });
 
@@ -24,6 +29,10 @@ class PlanWeekWorkingPanel extends StatelessWidget {
 
   /// How far it has got, when that can be counted.
   final String? progress;
+
+  /// The model is doing this work: Twig, in this pose, in place of the mark.
+  /// Null for a wait the phone does on its own.
+  final NestTwigPose? twig;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +43,7 @@ class PlanWeekWorkingPanel extends StatelessWidget {
       child: ListView(
         children: [
           const SizedBox(height: NestSpace.xl),
-          const _WorkingLoop(),
+          _WorkingLoop(twig: twig),
           const SizedBox(height: NestSpace.xl),
           Text(title, textAlign: TextAlign.center, style: nest.text.headline),
           const SizedBox(height: NestSpace.sm),
@@ -57,11 +66,13 @@ class PlanWeekWorkingPanel extends StatelessWidget {
   }
 }
 
-/// The mark and the row of compartments, kept moving on one repeating
+/// The mark (or Twig) and the row of compartments, kept moving on one repeating
 /// controller: each lap is one beat, and when a lap ends two neighbours trade
 /// places, so there is no timer to outlive the widget.
 class _WorkingLoop extends StatefulWidget {
-  const _WorkingLoop();
+  const _WorkingLoop({required this.twig});
+
+  final NestTwigPose? twig;
 
   @override
   State<_WorkingLoop> createState() => _WorkingLoopState();
@@ -132,7 +143,10 @@ class _WorkingLoopState extends State<_WorkingLoop>
           Center(
             child: Transform.scale(
               scale: still ? 1 : 1 + _breath * _swell(0),
-              child: const NestBrandMark(),
+              child: switch (widget.twig) {
+                final pose? => NestTwig(pose: pose, size: NestSize.twigLarge),
+                null => const NestBrandMark(),
+              },
             ),
           ),
           const SizedBox(height: NestSpace.xl),

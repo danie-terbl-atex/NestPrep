@@ -16,12 +16,21 @@ enum PackingPreference {
   healthier,
 }
 
-/// The brief's packing choices: how the parent likes to pack, and which
-/// compartments get filled — never none.
+/// The brief's packing choices: how the parent likes to pack, which
+/// compartments get filled — never none — and which school days may have a
+/// treat (lunch-box ADR-0025; ISO weekdays, possibly none).
 typedef PackingChoice = ({
   Set<PackingPreference> preferences,
   Set<LunchSlot> slots,
+  Set<int> treatDays,
 });
+
+extension PlannedSlots on PackingChoice {
+  /// The compartments this plan can fill: the chosen ones, less the treat
+  /// when no school day may have one — what the server opens, too.
+  Set<LunchSlot> get plannedSlots =>
+      treatDays.isEmpty ? slots.difference({LunchSlot.treat}) : slots;
+}
 
 /// The [chosen] of [values] by name, in [values]' order — as the wire
 /// carries them.

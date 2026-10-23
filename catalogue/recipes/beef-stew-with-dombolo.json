@@ -1,0 +1,159 @@
+{
+  "id": "beef-stew-with-dombolo",
+  "name": "Beef stew with dombolo",
+  "summary": "Beef stew with steamed bread: tender beef in a rich gravy, with soft yeast dumplings steamed on top in the same pot.",
+  "about": "Dombolo, also called ujeqe or steamed bread, is a yeast dough cooked by steam rather than baked. In many isiZulu and Sesotho homes it goes on top of a Sunday stew, where it soaks up the flavour from the pot below.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "traditional",
+    "comfort",
+    "onePot"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 480,
+      "unit": "g",
+      "note": null,
+      "group": "For the dombolo"
+    },
+    {
+      "name": "Instant dry yeast",
+      "quantity": 10,
+      "unit": "g",
+      "note": "one sachet",
+      "group": "For the dombolo"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dombolo"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dombolo"
+    },
+    {
+      "name": "Lukewarm water",
+      "quantity": 330,
+      "unit": "ml",
+      "note": "about, add slowly",
+      "group": "For the dombolo"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the stew"
+    },
+    {
+      "name": "Stewing beef",
+      "quantity": 1.2,
+      "unit": "kg",
+      "note": "bone-in or cubed chuck",
+      "group": "For the stew"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped",
+      "group": "For the stew"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the stew"
+    },
+    {
+      "name": "Paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the stew"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the stew"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "group": "For the stew"
+    },
+    {
+      "name": "Beef stock",
+      "quantity": 750,
+      "unit": "ml",
+      "note": "made from a cube or powder",
+      "group": "For the stew"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 3,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the stew"
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "peeled and cut into chunks",
+      "group": "For the stew"
+    },
+    {
+      "name": "Salt and black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the stew"
+    }
+  ],
+  "steps": [
+    "Mix the flour, yeast, sugar and salt in a large bowl. Add the lukewarm water a little at a time, mixing, until you have a soft dough that is slightly sticky.",
+    "Knead on a floured surface for 8 to 10 minutes, until smooth and springy. Put it in an oiled bowl, cover and leave somewhere warm for about 1 hour, until doubled in size.",
+    "While the dough rises, heat the oil in a wide heavy pot with a tight lid over medium-high heat. Season the beef and brown it in batches, about 4 minutes a side, until deep brown. Lift out.",
+    "Turn the heat to medium. Fry the onions until soft and golden, about 8 minutes, then add the garlic and paprika and fry for 1 minute.",
+    "Stir in the tomato paste, bay leaves and stock, return the beef, cover and simmer over low heat for 1 hour 15 minutes, until the beef is almost tender.",
+    "Add the carrots and potatoes, top up with a little water if needed so the stew is just covered, season, and bring back to a steady simmer.",
+    "Knock back the dough and shape it into 6 round balls. Set them on top of the stew, a little apart, so they sit on the meat and vegetables rather than sinking.",
+    "Cover tightly and steam over low heat for 30 to 35 minutes without lifting the lid. The dombolo is done when it has puffed up and a skewer pushed into the middle comes out clean.",
+    "Lift the dombolo onto a plate, check the stew is thick and the beef and potatoes are tender, and serve each plate with a dumpling torn open over the gravy."
+  ],
+  "servings": 6,
+  "prepMinutes": 30,
+  "cookMinutes": 130,
+  "difficulty": "medium",
+  "prepAhead": false,
+  "prepNote": "Make the stew a day ahead if you like; reheat to a simmer before steaming fresh dough on top.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

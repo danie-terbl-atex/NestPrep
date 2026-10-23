@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../model/lunch_board.dart';
 import '../model/lunch_day.dart';
-import '../state/lunch_board_controller.dart';
 import 'art/lunch_photo.dart';
 import 'lunch_day_detail_screen.dart';
-import 'lunch_flows.dart';
 
 /// The day on show as the brand's photo card (design-system ADR-0008,
 /// ADR-0010): the box, whose it is and what is in it, opening into the day
-/// with its photo, and the one button that packs the rest of the week.
+/// with its photo. Only the day: what packs the whole week is the week's
+/// planner, further down (lunch-box ADR-0022).
 class LunchHero extends StatelessWidget {
   const LunchHero({
     required this.board,
@@ -34,10 +32,8 @@ class LunchHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final controller = context.watch<LunchBoardController>();
     final name = childWeek.child.member.displayName;
     final picks = [for (final (_, pick) in day.box.filled) pick.name];
-    final isFull = childWeek.filledDays == childWeek.days.length;
     final tag = heroTagFor(childWeek, day);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,34 +76,6 @@ class LunchHero extends StatelessWidget {
         if (picks.length > 1) ...[
           const SizedBox(height: NestSpace.xs),
           Text(picks.skip(1).join(', '), style: nest.text.bodySecondary),
-        ],
-        if (canEdit) ...[
-          const SizedBox(height: NestSpace.lg),
-          NestButton(
-            label: LunchCopy.fillWeek,
-            icon: LucideIcons.sparkles,
-            isLoading: controller.edit.isFilling,
-            onPressed: isFull
-                ? null
-                : () => LunchFlows.fillWeek(context, childWeek: childWeek),
-          ),
-          const SizedBox(height: NestSpace.sm),
-          Text(
-            isFull ? LunchCopy.weekIsFull : LunchCopy.fillWeekHint,
-            textAlign: TextAlign.center,
-            style: nest.text.caption,
-          ),
-          NestButton(
-            label: LunchCopy.goToBoxCount(childWeek.favourites.length),
-            icon: LucideIcons.heart,
-            variant: NestButtonVariant.ghost,
-            size: NestButtonSize.small,
-            onPressed: () => LunchFlows.packFavourite(
-              context,
-              childWeek: childWeek,
-              day: day,
-            ),
-          ),
         ],
       ],
     );

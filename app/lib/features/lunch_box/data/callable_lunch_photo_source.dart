@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../shared/log/app_log.dart';
+import '../../../shared/photos/kept_photo_files.dart';
 import '../../../shared/time/calendar_date.dart';
 import 'lunch_photo_source.dart';
 
@@ -18,7 +17,7 @@ final class CallableLunchPhotoSource implements LunchPhotoSource {
   final FirebaseFunctions _functions;
   final FirebaseStorage _storage;
   final _requests = <String, Future<Uint8List?>>{};
-  final _bytes = <String, Uint8List>{};
+  final _kept = KeptPhotoFiles('lunch_photos');
 
   static const _timeout = Duration(seconds: 130);
   static const _pendingWait = Duration(seconds: 5);
@@ -82,19 +81,6 @@ final class CallableLunchPhotoSource implements LunchPhotoSource {
     return null;
   }
 
-  Future<Uint8List?> _read(String path) async {
-    final kept = _bytes[path];
-    if (kept != null) return kept;
-    final file = File('${(await _folder()).path}/${path.replaceAll('/', '_')}');
-    if (await file.exists()) return _bytes[path] = await file.readAsBytes();
-    final bytes = await _storage.ref(path).getData(_largest);
-    if (bytes == null) return null;
-    await file.writeAsBytes(bytes, flush: true);
-    return _bytes[path] = bytes;
-  }
-
-  Future<Directory> _folder() async {
-    final support = await getApplicationSupportDirectory();
-    return Directory('${support.path}/lunch_photos').create(recursive: true);
-  }
+  Future<Uint8List?> _read(String path) =>
+      _kept.read(path, orFetch: () => _storage.ref(path).getData(_largest));
 }

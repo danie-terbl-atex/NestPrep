@@ -1,0 +1,36 @@
+{
+  "id": "beetroot-salad",
+  "name": "Beetroot salad",
+  "summary": "Boiled beetroot and thin onion rings in a glossy sweet-sour vinegar dressing, the ruby-red salad on every South African Sunday plate.",
+  "about": "Sweet-sour beetroot is one of the 'seven colours' of the traditional South African Sunday lunch, served beside rice, a roast or stew, chakalaka and the other salads. It is also a braai and bring-and-share standby. It keeps for days in the fridge and tastes better on the second day as the dressing soaks in.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner", "lunch"],
+  "placement": { "dinner": "side", "lunch": "side" },
+  "tags": ["vegetableForward", "budget", "traditional"],
+  "allergens": [],
+  "dietTags": ["vegetarian", "vegan"],
+  "ingredients": [
+    { "name": "Fresh beetroot", "quantity": 1, "unit": "kg", "note": "about 5 medium, unpeeled, stalks trimmed to 2 cm", "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "small, very thinly sliced into rings", "group": null },
+    { "name": "White or brown vinegar", "quantity": 0.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Water", "quantity": 0.25, "unit": "cup", "note": null, "group": null },
+    { "name": "Sugar", "quantity": 0.33, "unit": "cup", "note": null, "group": null },
+    { "name": "Cornflour", "quantity": 2, "unit": "tsp", "note": "optional, for a glossy dressing", "group": null },
+    { "name": "Salt", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Wash the beetroot without breaking the skin, which keeps the colour in. Put them in a pot, cover with water and boil over medium heat for 45–60 minutes, until a knife slides into the largest one easily.",
+    "Drain and cover with cold water. When cool enough to handle, about 10 minutes, rub off the skins with your fingers (wear gloves to avoid stained hands) and trim the tops and roots.",
+    "Cut the beetroot into 1.5 cm cubes or thin slices and put them in a glass or ceramic bowl with the onion rings.",
+    "In a small saucepan, stir the vinegar, water, sugar, cornflour and salt together until smooth. Bring to the boil over medium heat, stirring, and boil for 1 minute until the sugar has dissolved and the dressing turns clear and slightly thickened.",
+    "Pour the hot dressing over the beetroot and onion, add a little pepper and toss gently. Leave to cool, then cover and refrigerate for at least 1 hour, until cold and the onion has softened and turned pink. Serve cold."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 55,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make it a day or two ahead; it keeps 5 days covered in the fridge. Short of time, use 2 x 400 g jars of cooked beetroot.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

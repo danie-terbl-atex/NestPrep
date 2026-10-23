@@ -8,12 +8,13 @@ import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/lunch_route.dart';
+import 'package:nestprep/app/meals_route.dart';
 import 'package:nestprep/app/two_homes_route.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
-import 'package:nestprep/features/accounts/ui/invite_code_sheet.dart';
+import 'package:nestprep/features/accounts/ui/code_way_in_sheet.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
@@ -38,11 +39,14 @@ import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
+import 'package:nestprep/features/recipes/data/recipe_photo_source.dart';
+import 'package:nestprep/features/recipes/data/recipe_repository.dart';
+import 'package:nestprep/features/recipes/ui/recipe_screen.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -75,10 +79,13 @@ import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
+import '../support/fake_recipe_photos.dart';
+import '../support/fake_recipe_repository.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/fake_two_homes.dart';
 import '../support/household_fixtures.dart';
 import '../support/pump_subscriptions.dart';
+import '../support/recipe_fixtures.dart';
 
 /// The wiring every screen arrives through.
 ///
@@ -98,6 +105,7 @@ void main() {
   late FakeCalendarRepository calendar;
   late FakeTodoRepository todos;
   late FakeMealRepository meals;
+  late FakeRecipeRepository recipes;
   late FakeGroceryRepository groceries;
   late FakeActivityRecorder activity;
   late FakeBetaNumbersRepository betaNumbers;
@@ -121,6 +129,7 @@ void main() {
     calendar = FakeCalendarRepository();
     todos = FakeTodoRepository();
     meals = FakeMealRepository();
+    recipes = FakeRecipeRepository();
     groceries = FakeGroceryRepository();
     familyProfiles = FakeFamilyProfileRepository();
     lunches = FakeLunchRepository();
@@ -163,6 +172,8 @@ void main() {
           Provider<ExternalLinkOpener>.value(value: FakeLinkOpener()),
           Provider<TodoRepository>.value(value: todos),
           Provider<MealRepository>.value(value: meals),
+          Provider<RecipeRepository>.value(value: recipes),
+          Provider<RecipePhotoSource>.value(value: FakeRecipePhotoSource()),
           Provider<GroceryRepository>.value(value: groceries),
           // Checkers product matches and Add to Checkers, on the grocery tab.
           ...fakeCheckersProviders(),
@@ -244,7 +255,7 @@ void main() {
       (HouseholdTab.week, CalendarScreen),
       (HouseholdTab.todos, TodoScreen),
       (HouseholdTab.groceries, GroceryListScreen),
-      (HouseholdTab.meals, MealPlanScreen),
+      (HouseholdTab.meals, MealsScreen),
       (HouseholdTab.more, HouseholdMoreScreen),
     ]) {
       testWidgets(tab.name, (tester) async {
@@ -262,6 +273,25 @@ void main() {
         expect(find.byType(screen), findsOneWidget);
       });
     }
+  });
+
+  testWidgets('a recipe has a page of its own under Meals, by its address '
+      '(recipes ADR-0003, FE-17)', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(MealsRoute.recipePathFor(Fixtures.householdId, 'bobotie'));
+    await settle(tester);
+    recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(RecipeScreen), findsOneWidget);
+    // Under the photo, so further down than the test's surface shows.
+    expect(
+      find.text(RecipeFixtures.bobotie.name, skipOffstage: false),
+      findsWidgets,
+    );
   });
 
   testWidgets('and so does the household screen under the shell', (
@@ -323,11 +353,9 @@ void main() {
     await settle(tester);
     expect(tester.takeException(), isNull);
     expect(find.byType(FamilyMemberScreen), findsOneWidget);
-    expect(
-      familyProfiles.healthWatched,
-      [Fixtures.kidMemberId],
-      reason: 'an admin reads the medication of the person the route names',
-    );
+    expect(familyProfiles.healthWatched, [
+      Fixtures.kidMemberId,
+    ], reason: 'an admin reads the medication of the person the route names');
   });
 
   // design-system ADR-0009: the household opens on Today.
@@ -444,12 +472,12 @@ void main() {
     auth.emit(null);
     await settle(tester);
 
-    await tester.ensureVisible(find.text(AccessCopy.inviteCodeWayIn));
-    await tester.tap(find.text(AccessCopy.inviteCodeWayIn));
+    await tester.ensureVisible(find.text(AppCopy.codeWayIn));
+    await tester.tap(find.text(AppCopy.codeWayIn));
     await settle(tester);
     await tester.enterText(
       find.descendant(
-        of: find.byType(InviteCodeSheet),
+        of: find.byType(CodeWayInSheet),
         matching: find.byType(TextField),
       ),
       'abcd2345',
@@ -460,7 +488,7 @@ void main() {
 
     expect(pendingInvite.code, 'ABCD2345');
     expect(find.text(AccessCopy.inviteLinkSignInFirst), findsOneWidget);
-    expect(find.text(AccessCopy.inviteCodeWayIn), findsNothing);
+    expect(find.byType(CodeWayInSheet), findsNothing);
 
     await signInWithAHousehold(tester);
     expect(find.byType(JoinInviteScreen), findsOneWidget);

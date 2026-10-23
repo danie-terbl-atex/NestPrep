@@ -51,6 +51,15 @@ class NestChip extends StatelessWidget {
           color: isSelected ? c.secondary : c.surface,
           shape: const StadiumBorder(),
         ),
+        // A hairline round the unselected chip, as a card has: on a sheet or
+        // a card the fill is the ground's own colour, and without it the chip
+        // is only a word. Painted over rather than around, so the chip is
+        // exactly as big as before — tight rows at 200% text depend on it.
+        foregroundDecoration: ShapeDecoration(
+          shape: StadiumBorder(
+            side: BorderSide(color: isSelected ? c.secondary : c.outline),
+          ),
+        ),
         child: Material(
           color: Colors.transparent,
           shape: const StadiumBorder(),

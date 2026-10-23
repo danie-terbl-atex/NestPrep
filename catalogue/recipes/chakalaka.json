@@ -1,0 +1,42 @@
+{
+  "id": "chakalaka",
+  "name": "Chakalaka",
+  "summary": "Chakalaka (spicy vegetable relish): onion, peppers and grated carrot cooked with curry spices, tomato and baked beans, for pap, wors and every braai plate.",
+  "about": "Chakalaka is widely said to have started in the townships around Johannesburg, where mineworkers cooked tinned vegetables with chilli to eat with pap. Every family has its own version, with or without beans, cabbage or extra chilli. It is the relish South Africans name first at a braai and on a plate of pap and wors.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner", "lunch"],
+  "placement": { "dinner": "side", "lunch": "side" },
+  "tags": ["traditional", "vegetableForward", "braai", "budget"],
+  "allergens": [],
+  "dietTags": ["vegetarian", "vegan"],
+  "ingredients": [
+    { "name": "Sunflower oil", "quantity": 3, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "chopped", "group": null },
+    { "name": "Green pepper", "quantity": 1, "unit": null, "note": "diced", "group": null },
+    { "name": "Red pepper", "quantity": 1, "unit": null, "note": "diced", "group": null },
+    { "name": "Garlic cloves", "quantity": 3, "unit": null, "note": "crushed", "group": null },
+    { "name": "Fresh ginger", "quantity": 1, "unit": "tsp", "note": "grated", "group": null },
+    { "name": "Green chillies", "quantity": 2, "unit": null, "note": "chopped; leave out for children", "group": null },
+    { "name": "Curry powder", "quantity": 1, "unit": "tbsp", "note": "medium", "group": null },
+    { "name": "Paprika", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Carrots", "quantity": 3, "unit": null, "note": "coarsely grated", "group": null },
+    { "name": "Chopped tomatoes", "quantity": 1, "unit": "tin", "note": "400 g", "group": null },
+    { "name": "Baked beans in tomato sauce", "quantity": 1, "unit": "tin", "note": "410 g", "group": null },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Salt and black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Heat the oil in a large saucepan over medium heat and fry the onion and both peppers for 6–8 minutes, until soft and starting to colour.",
+    "Add the garlic, ginger, chillies, curry powder and paprika and stir for 1 minute, until fragrant and the spices darken slightly.",
+    "Add the grated carrots and cook for 4–5 minutes, stirring, until they have softened and turned bright orange.",
+    "Stir in the chopped tomatoes and sugar, then cover and simmer on low for 10 minutes, stirring now and then, until the sauce has thickened and the vegetables are tender.",
+    "Add the baked beans and simmer uncovered for 5 minutes, until heated through and thick enough to hold its shape on a spoon. Season with salt and pepper and serve hot, warm or at room temperature."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 28,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Tastes better the next day. Keeps 4 days in the fridge; serve cold or warmed.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

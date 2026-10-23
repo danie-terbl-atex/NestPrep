@@ -13,6 +13,12 @@ import '../features/nanny_hub/ui/carer_scope.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../features/subscriptions/ui/entitlement_scope.dart';
+import '../features/welcome_tour/model/tour_target.dart';
+import '../features/welcome_tour/state/tour_anchor_registry.dart';
+import '../features/welcome_tour/state/tour_controller.dart';
+import '../features/welcome_tour/ui/tour_anchor.dart';
+import '../features/welcome_tour/ui/welcome_tour_gate.dart';
+import '../features/welcome_tour/ui/welcome_tour_layer.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'household_place_redirect.dart';
@@ -47,6 +53,18 @@ class _HouseholdShellState extends State<HouseholdShell> {
   String? _clockTimeZone;
   String? _reportedMemberId;
   String? _redirectingTo;
+
+  /// The welcome tour and the components it can spotlight, kept for the
+  /// shell's whole life so a redirect's loading frame cannot lose a tour in
+  /// progress (welcome-tour ADR-0002).
+  final _tour = TourController();
+  final _anchors = TourAnchorRegistry();
+
+  @override
+  void dispose() {
+    _tour.dispose();
+    super.dispose();
+  }
 
   /// Moves the router off the frame, once per destination: a build is not
   /// where navigation belongs (`FE-05`), and asking twice for the same place
@@ -106,6 +124,8 @@ class _HouseholdShellState extends State<HouseholdShell> {
             Provider<HouseholdClock>.value(
               value: _clockFor(view.household.timeZone),
             ),
+            ChangeNotifierProvider<TourController>.value(value: _tour),
+            Provider<TourAnchorRegistry>.value(value: _anchors),
           ],
           // Counts this household as opened today (product-analytics
           // ADR-0001) — here, where it is known the account is really in it.
@@ -113,11 +133,18 @@ class _HouseholdShellState extends State<HouseholdShell> {
             householdId: view.household.id,
             // The household's entitlement, read once for every screen under
             // it (subscriptions ADR-0001), then the booked-shift window and
-            // offline saving (nanny-hub ADR-0006, ADR-0007).
+            // offline saving (nanny-hub ADR-0006, ADR-0007) — and, once all
+            // of that has answered, the welcome tour (welcome-tour ADR-0001).
             child: EntitlementScope(
               householdId: view.household.id,
               canBuy: view.permissions.isFamily,
-              child: CarerScope(child: widget.child),
+              child: WelcomeTourGate(
+                location: widget.location,
+                child: WelcomeTourLayer(
+                  location: widget.location,
+                  child: CarerScope(child: widget.child),
+                ),
+              ),
             ),
           ),
         );
@@ -148,13 +175,24 @@ class HouseholdTabBar extends StatelessWidget {
         if (tab.isOpenTo(permissions)) tab,
     ];
     final selected = tabs.indexOf(current.barTab);
-    return NestBottomBar(
-      items: [
-        for (final tab in tabs)
-          NestBottomBarItem(icon: tab.icon, label: tab.label),
-      ],
-      selectedIndex: selected < 0 ? tabs.length - 1 : selected,
-      onSelect: (index) => onSelect(tabs[index]),
+    final bottom = MediaQuery.viewPaddingOf(context).bottom;
+    return TourAnchor(
+      target: TourTarget.tabBar,
+      // The bar's own margin, so the tour's window fits the pill.
+      inset: EdgeInsets.fromLTRB(
+        NestSpace.gutter,
+        0,
+        NestSpace.gutter,
+        bottom > NestSpace.lg ? bottom : NestSpace.lg,
+      ),
+      child: NestBottomBar(
+        items: [
+          for (final tab in tabs)
+            NestBottomBarItem(icon: tab.icon, label: tab.label),
+        ],
+        selectedIndex: selected < 0 ? tabs.length - 1 : selected,
+        onSelect: (index) => onSelect(tabs[index]),
+      ),
     );
   }
 }
@@ -162,7 +200,8 @@ class HouseholdTabBar extends StatelessWidget {
 /// The household's top-level places, each with its own address
 /// (design-system ADR-0009). Today is the home. Lists is the bar's name for
 /// To do and Groceries, which keep their own addresses and switch between
-/// each other. Meals is reached from More.
+/// each other. Meals — recipes and this week — is in the bar, and Week, the
+/// family calendar, is reached from More (design-system ADR-0015).
 enum HouseholdTab {
   today('today', LucideIcons.sun),
   lunch('lunch', LucideIcons.sandwich),
@@ -178,11 +217,11 @@ enum HouseholdTab {
   final String segment;
   final IconData icon;
 
-  static const inBar = [today, lunch, week, lists, more];
+  static const inBar = [today, lunch, meals, lists, more];
 
   HouseholdTab get barTab => switch (this) {
     todos || groceries => lists,
-    meals => more,
+    week => more,
     _ => this,
   };
 

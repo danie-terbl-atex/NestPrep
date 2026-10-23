@@ -101,6 +101,20 @@ void main() {
       );
     });
 
+    test('a week with nothing planned from today has no boxes to pack', () {
+      expect(weekOf(entries: [entry('apple', 5)]).hasBoxesToPack, isTrue);
+      final unplanned = LunchPantryWeek.from(
+        week: LunchFixtures.week,
+        today: LunchFixtures.today,
+        entries: [entry('apple', 5)],
+        plans: [LunchFixtures.plan(LunchFixtures.lwaziId, slots: {})],
+        packed: const [],
+        library: library,
+      );
+      expect(unplanned.hasBoxesToPack, isFalse);
+      expect(unplanned.shortfall, isEmpty);
+    });
+
     test('an entry whose item left the library is not listed', () {
       final week = weekOf(entries: [entry('gone', 3), entry('apple', 5)]);
       expect(week.lines.map((line) => line.item.id), ['apple']);

@@ -37,7 +37,10 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(find.text(CheckersCopy.matchesTitle('milk')), findsOneWidget);
+    expect(
+      find.text(CheckersCopy.matchesTitle(ProductRetailer.checkers, 'milk')),
+      findsOneWidget,
+    );
     expect(find.byType(NestSkeleton), findsWidgets);
     h.catalogue.gate!.complete();
     await tester.pumpAndSettle();
@@ -70,7 +73,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(CheckersCopy.matchesEmptyTitle), findsOneWidget);
+    expect(
+      find.text(CheckersCopy.matchesEmptyTitle(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
     expect(find.text('unobtainium'), findsOneWidget);
   });
 
@@ -120,7 +126,10 @@ void main() {
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)).first,
     );
     await tester.pumpAndSettle();
-    expect(find.text(CheckersCopy.matchesTitle('milk')), findsOneWidget);
+    expect(
+      find.text(CheckersCopy.matchesTitle(ProductRetailer.checkers, 'milk')),
+      findsOneWidget,
+    );
     expect(
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
       findsOneWidget,
@@ -147,7 +156,10 @@ void main() {
       h.list.repository.matchesSet.single.match.name,
       'Clover Fresh Full Cream Milk 2L',
     );
-    expect(find.text(CheckersCopy.matchesTitle('milk')), findsNothing);
+    expect(
+      find.text(CheckersCopy.matchesTitle(ProductRetailer.checkers, 'milk')),
+      findsNothing,
+    );
   });
 
   testWidgets('a matched item shows its product, and can change or clear it', (
@@ -179,7 +191,10 @@ void main() {
 
     await tester.tap(find.byTooltip(CheckersCopy.changeMatch));
     await tester.pumpAndSettle();
-    expect(find.text(CheckersCopy.matchesTitle('milk')), findsOneWidget);
+    expect(
+      find.text(CheckersCopy.matchesTitle(ProductRetailer.checkers, 'milk')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('adding an item looks for its matches after it is saved', (
@@ -216,7 +231,7 @@ void main() {
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
       findsNothing,
     );
-    expect(find.text(CheckersCopy.addToCheckers), findsNothing);
+    expect(find.byKey(const ValueKey('add-to-cart-checkers')), findsNothing);
     expect(h.catalogue.searches, isEmpty);
   });
 

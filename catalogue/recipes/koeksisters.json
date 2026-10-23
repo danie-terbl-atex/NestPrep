@@ -1,0 +1,144 @@
+{
+  "id": "koeksisters",
+  "name": "Koeksisters",
+  "summary": "Plaited syrup-soaked doughnuts: twisted dough fried until golden and plunged into ice-cold spiced syrup, crisp outside and syrupy within.",
+  "about": "Koeksisters are the Afrikaans plaited kind, distinct from the spiced, coconut-dusted Cape Malay koesister. They are a fixture of church bazaars, school fêtes and tea tables. The secret is hot dough into ice-cold syrup.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch",
+    "dinner"
+  ],
+  "placement": {
+    "lunch": "snack",
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "baking",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "kg",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Water",
+      "quantity": 500,
+      "unit": "ml",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Cinnamon sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Fresh ginger slices",
+      "quantity": 3,
+      "unit": null,
+      "note": "thin",
+      "group": "For the syrup"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "juice and 2 strips of peel",
+      "group": "For the syrup"
+    },
+    {
+      "name": "Cream of tartar",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the dough"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 4,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dough"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dough"
+    },
+    {
+      "name": "Cold butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": "grated",
+      "group": "For the dough"
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": "large",
+      "group": "For the dough"
+    },
+    {
+      "name": "Buttermilk",
+      "quantity": 250,
+      "unit": "ml",
+      "note": "about",
+      "group": "For the dough"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "l",
+      "note": "for deep-frying",
+      "group": "For the dough"
+    }
+  ],
+  "steps": [
+    "The day before, make the syrup: heat the sugar and water in a saucepan over low heat, stirring, until the sugar dissolves completely. Add the cinnamon, ginger, lemon peel and juice and the cream of tartar.",
+    "Bring to the boil and boil without stirring for 5 minutes. Cool, pour into a bowl and refrigerate overnight. Before frying, divide it between two bowls and put one in the freezer; the syrup must be ice-cold.",
+    "For the dough, sift the flour, baking powder and salt into a bowl and rub in the butter with your fingertips until it looks like fine crumbs.",
+    "Beat the egg with 200 ml of the buttermilk and mix it in with a knife, adding more buttermilk a spoon at a time, until the dough just comes together. It should be soft but not sticky. Cover and rest for 30 minutes.",
+    "Roll the dough out on a floured surface to 1 cm thick and cut into strips 8 cm long and 3 cm wide. Make two cuts along each strip, leaving the top joined, to give three legs.",
+    "Plait the three legs tightly and pinch the ends together firmly so they do not unravel in the oil. Keep the shaped koeksisters covered while you work.",
+    "Heat the oil in a deep pot to 180 °C. Fry 4 or 5 at a time for 1½ to 2 minutes a side, until deep golden and cooked through; break one open to check the inside is not doughy.",
+    "Lift them out with a slotted spoon, let them drip for 2 seconds and drop them straight into one bowl of ice-cold syrup for 1 minute, turning once. Swap to the second bowl when the first warms up.",
+    "Lift onto a wire rack set over a tray to drain and set, about 30 minutes. Store in an airtight container in the fridge."
+  ],
+  "servings": 24,
+  "prepMinutes": 60,
+  "cookMinutes": 40,
+  "difficulty": "involved",
+  "prepAhead": true,
+  "prepNote": "Make the syrup the day before. Koeksisters keep a week in the fridge and freeze well.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

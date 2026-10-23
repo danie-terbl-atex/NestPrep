@@ -201,10 +201,21 @@ void main() {
       expect(directory.removed, hasLength(1));
     });
 
-    testWidgets('the last admin cannot leave, and is told why', (tester) async {
+    testWidgets('the last admin cannot leave while another parent is in', (
+      tester,
+    ) async {
       await pump(tester);
-      // Only Sam is an admin in the fixture household.
-      await emit(tester);
+      // Sam is the only admin; Thandi is a parent who could take it over.
+      await emit(
+        tester,
+        household: const Household(
+          id: Fixtures.householdId,
+          name: 'The Parkers',
+          timeZone: 'Africa/Johannesburg',
+          members: {Fixtures.samUid: 'admin', Fixtures.thandiUid: 'parent'},
+          createdBy: Fixtures.samUid,
+        ),
+      );
 
       await tester.scrollUntilVisible(
         find.text(AppCopy.householdProblemLastAdmin),
@@ -219,6 +230,32 @@ void main() {
         isNull,
         reason: 'a household with no admin is a household nobody can manage',
       );
+      expect(
+        find.text(CloseHouseholdCopy.entry),
+        findsNothing,
+        reason: 'with another parent in it, the household has a way to go on',
+      );
+    });
+
+    testWidgets('the only grown-up is offered Close household instead', (
+      tester,
+    ) async {
+      await pump(tester);
+      // Sam is the only admin, and the only other account is a helper.
+      await emit(tester);
+
+      await tester.scrollUntilVisible(
+        find.text(CloseHouseholdCopy.entryHint),
+        120,
+      );
+      expect(find.text(AppCopy.householdLeave), findsNothing);
+      expect(find.text(AppCopy.householdProblemLastAdmin), findsNothing);
+
+      await tester.tap(
+        find.widgetWithText(NestButton, CloseHouseholdCopy.entry),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsOneWidget);
     });
 
     testWidgets('somebody who is not the last admin may leave, after asking', (

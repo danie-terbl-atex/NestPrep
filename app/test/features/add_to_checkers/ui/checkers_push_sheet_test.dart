@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_push_result.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/cart_push_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/money/money.dart';
@@ -36,9 +38,12 @@ void main() {
     tester,
   ) async {
     final h = await listWithMatches(tester);
-    expect(find.text(CheckersCopy.readyToAdd(2)), findsOneWidget);
+    expect(
+      find.text(CheckersCopy.readyToAdd(ProductRetailer.checkers, 2)),
+      findsOneWidget,
+    );
 
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
     expect(h.directory.pushes.single.itemIds, ['m', 'c']);
   });
@@ -48,11 +53,14 @@ void main() {
   ) async {
     final h = await listWithMatches(tester);
     h.directory.pushGate = Completer<void>();
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text(CheckersCopy.pushing), findsOneWidget);
+    expect(
+      find.text(CartPushCopy.pushing(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
     h.directory.pushGate!.complete();
     await tester.pumpAndSettle();
   });
@@ -61,9 +69,9 @@ void main() {
     tester,
   ) async {
     final h = await listWithMatches(tester);
-    h.directory.pushResult = const CheckersPushResult(
+    h.directory.pushResult = const CartPushResult(
       added: [
-        CheckersAddedLine(
+        CartAddedLine(
           itemId: 'm',
           productId: '5d3af63bf434cf8420737dd6',
           name: 'Clover Fresh Full Cream Milk 2L',
@@ -71,43 +79,46 @@ void main() {
         ),
       ],
       skipped: [
-        CheckersSkippedLine(
-          itemId: 'c',
-          reason: CheckersSkipReason.weighedItem,
-        ),
+        CartSkippedLine(itemId: 'c', reason: CartSkipReason.weighedItem),
       ],
       cartItemCount: 5,
       cartTotal: Money(21450),
     );
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
 
-    expect(find.text(CheckersCopy.addedCount(1)), findsOneWidget);
+    expect(find.text(CartPushCopy.addedCount(1)), findsOneWidget);
     expect(find.text('Clover Fresh Full Cream Milk 2L'), findsWidgets);
-    expect(find.text(CheckersCopy.skippedCount(1)), findsOneWidget);
-    expect(find.text(CheckersCopy.skipWeighed), findsOneWidget);
+    expect(find.text(CartPushCopy.skippedCount(1)), findsOneWidget);
     expect(
-      find.text(CheckersCopy.cartSummary(5, const Money(21450))),
+      find.text(CartPushCopy.skipWeighed(ProductRetailer.checkers)),
       findsOneWidget,
     );
-    expect(find.text(CheckersCopy.finishInCheckers), findsOneWidget);
+    expect(
+      find.text(CartPushCopy.cartSummary(5, const Money(21450))),
+      findsOneWidget,
+    );
+    expect(
+      find.text(CartPushCopy.finishIn(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('nothing added says so, with each reason', (tester) async {
     final h = await listWithMatches(tester);
-    h.directory.pushResult = const CheckersPushResult(
+    h.directory.pushResult = const CartPushResult(
       added: [],
       skipped: [
-        CheckersSkippedLine(itemId: 'm', reason: CheckersSkipReason.outOfStock),
+        CartSkippedLine(itemId: 'm', reason: CartSkipReason.outOfStock),
       ],
       cartItemCount: 0,
       cartTotal: Money.zero(),
     );
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
 
-    expect(find.text(CheckersCopy.pushEmptyTitle), findsOneWidget);
-    expect(find.text(CheckersCopy.skipOutOfStock), findsOneWidget);
+    expect(find.text(CartPushCopy.emptyTitle), findsOneWidget);
+    expect(find.text(CartPushCopy.skipOutOfStock), findsOneWidget);
     expect(find.text('milk'), findsWidgets);
   });
 
@@ -117,14 +128,17 @@ void main() {
     final h = await listWithMatches(tester);
     const failure = CheckersFailure(CheckersProblem.checkersDown);
     h.directory.pushFailures.add(failure);
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
 
     expect(find.text(AppCopy.failure(failure)), findsOneWidget);
     await tester.tap(find.widgetWithText(NestButton, CheckersCopy.retry));
     await tester.pumpAndSettle();
     expect(h.directory.pushes, hasLength(2));
-    expect(find.text(CheckersCopy.finishInCheckers), findsOneWidget);
+    expect(
+      find.text(CartPushCopy.finishIn(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a link that ran out sends them to link, then pushes again', (
@@ -134,7 +148,7 @@ void main() {
     h.directory.pushFailures.add(
       const CheckersFailure(CheckersProblem.linkExpired),
     );
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
     expect(
       find.text(CheckersCopy.problem(CheckersProblem.linkExpired)),
@@ -156,7 +170,10 @@ void main() {
 
     expect(h.directory.pushes, hasLength(2));
     expect(h.directory.pushes.last.itemIds, ['m', 'c']);
-    expect(find.text(CheckersCopy.finishInCheckers), findsOneWidget);
+    expect(
+      find.text(CartPushCopy.finishIn(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('the result survives dark at 200% text on a 360-wide phone', (
@@ -170,25 +187,29 @@ void main() {
       brightness: Brightness.dark,
       scale: 2,
     );
-    h.directory.pushResult = const CheckersPushResult(
+    h.directory.pushResult = const CartPushResult(
       added: [
-        CheckersAddedLine(
+        CartAddedLine(
           itemId: 'm',
           productId: 'p',
           name: 'Clover Fresh Full Cream Milk 2L',
           price: Money(3799),
         ),
       ],
-      skipped: [
-        CheckersSkippedLine(itemId: 'c', reason: CheckersSkipReason.notFound),
-      ],
+      skipped: [CartSkippedLine(itemId: 'c', reason: CartSkipReason.notFound)],
       cartItemCount: 12,
       cartTotal: Money(123456),
     );
-    await bringIntoView(tester, find.text(CheckersCopy.addToCheckers));
-    await tester.tap(find.text(CheckersCopy.addToCheckers));
+    await bringIntoView(
+      tester,
+      find.byKey(const ValueKey('add-to-cart-checkers')),
+    );
+    await tester.tap(find.byKey(const ValueKey('add-to-cart-checkers')));
     await tester.pumpAndSettle();
-    expect(find.text(CheckersCopy.finishInCheckers), findsOneWidget);
+    expect(
+      find.text(CartPushCopy.finishIn(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 }

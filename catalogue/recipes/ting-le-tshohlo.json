@@ -1,0 +1,41 @@
+{
+  "id": "ting-le-tshohlo",
+  "name": "Ting le tshohlo",
+  "summary": "Fermented sorghum pap with a pleasant sour tang, served with slow-boiled beef pulled into salty threads: the Setswana celebration plate.",
+  "about": "Ting is sorghum meal (mabele) left to ferment before it is cooked, which gives the pap its gentle sourness. Tshohlo, like Botswana's seswaa, is beef boiled for hours with just onion and salt, then pounded or pulled apart. Together they are served at Setswana weddings, funerals and family celebrations, often cooked in three-legged pots.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["traditional", "festive"],
+  "allergens": [],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Sorghum meal", "quantity": 375, "unit": "g", "note": "mabele", "group": "For the ting" },
+    { "name": "Lukewarm water", "quantity": 1.5, "unit": "cup", "note": "for the fermenting paste", "group": "For the ting" },
+    { "name": "Water", "quantity": 1, "unit": "l", "note": null, "group": "For the ting" },
+    { "name": "Maize meal", "quantity": 125, "unit": "g", "note": "white", "group": "For the ting" },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": "For the ting" },
+    { "name": "Beef brisket", "quantity": 1.5, "unit": "kg", "note": "on the bone, or beef shin", "group": "For the tshohlo" },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "sliced", "group": "For the tshohlo" },
+    { "name": "Bay leaves", "quantity": 2, "unit": null, "note": null, "group": "For the tshohlo" },
+    { "name": "Water", "quantity": 1.5, "unit": "l", "note": "enough to just cover the meat", "group": "For the tshohlo" },
+    { "name": "Salt", "quantity": 2, "unit": "tsp", "note": "adjust to taste", "group": "For the tshohlo" },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": "For the tshohlo" }
+  ],
+  "steps": [
+    "One or two days ahead, start the ting: stir the sorghum meal and lukewarm water together in a bowl to make a thick, smooth paste. Cover loosely and leave in a warm spot for 24–48 hours, until it smells pleasantly sour and small bubbles appear on top.",
+    "On the day, start the tshohlo: put the brisket, onion and bay leaves in a large heavy pot and add enough water to just cover the meat. Bring to the boil over high heat and skim off any foam.",
+    "Turn the heat to low, cover and simmer for 2½–3 hours, topping up with hot water if the level drops, until the meat is falling off the bone and pulls apart easily with two forks.",
+    "Lift out the meat, discard the bones and bay leaves, and pull the meat into fine threads with two forks (or pound it with a wooden spoon in the pot). Return it to the pot with about 1 cup of the cooking liquid and the salt, and cook uncovered over medium heat for 10 minutes, stirring, until the liquid has been absorbed and the meat is moist but not wet. Season with pepper and keep warm.",
+    "About 40 minutes before serving, cook the ting: bring the 1 litre of water and the salt to the boil in a heavy pot. Stir the fermented paste and whisk it into the boiling water, then cook over medium heat for 5 minutes, stirring, until it thickens into a smooth porridge.",
+    "Sprinkle in the maize meal a little at a time, stirring hard with a wooden spoon to break up any lumps, until the pap is thick. Cover and cook over low heat for 25–30 minutes, stirring and turning it every 10 minutes, until it is smooth, glossy and no longer tastes floury.",
+    "Shape the ting into rounds with a wet wooden spoon and serve it alongside the pulled beef."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 195,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Start the ting 1–2 days ahead. The beef can be cooked and pulled the day before and reheated with a little of its liquid.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

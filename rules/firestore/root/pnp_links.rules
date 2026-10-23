@@ -1,0 +1,9 @@
+// ---- add to Pick n Pay: a member's own PnP link (add-to-pnp ADR-0003) ----
+// Written and read by the PnP Functions alone. It holds the member's sealed
+// PnP tokens and a sealed pending link (PKCE verifier and state) — none of
+// which a client may read, not even the member it belongs to; the app asks
+// `pnpLinkStatus` instead.
+
+match /pnpLinks/{uid} {
+  allow read, write: if false;
+}

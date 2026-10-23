@@ -43,6 +43,8 @@ export const FEATURE_FLAGS = [
   'planMyWeek',
   // ---- add to Checkers: product matches and a member's own cart (the Checkers build contract) ----
   'addToCheckers',
+  // ---- lunch box at Pick n Pay: catalogue, a member's own link and cart (add-to-pnp ADR-0001) ----
+  'addToPnp',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

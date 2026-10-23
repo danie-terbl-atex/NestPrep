@@ -28,6 +28,7 @@ final class FeatureFlagsController extends ChangeNotifier {
   late final StreamSubscription<FeatureFlags> _subscription;
   FeatureFlags _flags;
   var _hasAnswered = false;
+  var _hasSettled = false;
 
   bool isOn(FeatureFlag flag) => _flags.isOn(flag);
 
@@ -40,9 +41,16 @@ final class FeatureFlagsController extends ChangeNotifier {
   /// the document can say "off".
   bool get hasAnswered => _hasAnswered;
 
+  /// Whether the switches are as good as they will get for now: the document
+  /// answered, or its read failed and the defaults stand. Something that only
+  /// *shows* — the welcome tour (welcome-tour ADR-0001) — waits for this, so
+  /// an unreadable document does not hold it back for ever.
+  bool get hasSettled => _hasSettled;
+
   void _onFlags(FeatureFlags flags) {
     _flags = flags;
     _hasAnswered = true;
+    _hasSettled = true;
     notifyListeners();
   }
 
@@ -50,6 +58,9 @@ final class FeatureFlagsController extends ChangeNotifier {
     // The defaults stand; the switch document being unreadable is logged, not
     // shown — nobody using the app can act on it.
     AppLog.failure('feature flags', code: 'unreadable', error: error);
+    if (_hasSettled) return;
+    _hasSettled = true;
+    notifyListeners();
   }
 
   @override

@@ -179,7 +179,7 @@ describe('groceryItems productMatch', () => {
     await assertFails(updateDoc(doc(db, `${ITEMS}/milk`), { productMatch: pick() }));
   });
 
-  it('denies adding an item that arrives already picked, and allows one that says null', async () => {
+  it('allows adding an item already picked by the member adding it, or one that says null', async () => {
     const db = await asUser(THANDI);
     const item = {
       name: 'Bread',
@@ -189,8 +189,28 @@ describe('groceryItems productMatch', () => {
       boughtAt: null,
       boughtBy: null,
     };
-    await assertFails(setDoc(doc(db, `${ITEMS}/bread`), { ...item, productMatch: pick() }));
-    await assertSucceeds(setDoc(doc(db, `${ITEMS}/bread`), { ...item, productMatch: null }));
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/bread`), { ...item, productMatch: pick() }));
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/rolls`), { ...item, productMatch: null }));
+  });
+
+  it('denies adding an item whose pick is somebody else’s, back-dated, or malformed', async () => {
+    const db = await asUser(THANDI);
+    const item = {
+      name: 'Bread',
+      quantity: null,
+      addedBy: THANDI_MEMBER,
+      addedAt: serverTimestamp(),
+      boughtAt: null,
+      boughtBy: null,
+    };
+    for (const bad of [
+      pick({ pickedBy: SAM_MEMBER }),
+      pick({ pickedAt: new Date('2000-01-01') }),
+      pick({ productId: 'not-a-sixty60-id' }),
+      { ...pick(), cartLineId: 'x' },
+    ]) {
+      await assertFails(setDoc(doc(db, `${ITEMS}/bread`), { ...item, productMatch: bad }));
+    }
   });
 });
 

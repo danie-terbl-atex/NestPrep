@@ -1,0 +1,148 @@
+{
+  "id": "durban-dhal",
+  "name": "Durban dhal",
+  "summary": "Spiced red lentils simmered with turmeric and tomato, finished with a sizzling braise of mustard seeds, cumin and curry leaves.",
+  "about": "Dhal is everyday food in Durban's Indian homes, eaten with rice, roti or alongside a curry. The final step, which Durban cooks call the braise, fries whole spices and curry leaves in hot oil and pours them over the lentils, and it is what gives the dish its aroma.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "budget",
+    "vegetableForward"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan"
+  ],
+  "ingredients": [
+    {
+      "name": "Red lentils",
+      "quantity": 300,
+      "unit": "g",
+      "note": "rinsed until the water runs clear",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Water",
+      "quantity": 1,
+      "unit": "l",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Green chilli",
+      "quantity": 1,
+      "unit": null,
+      "note": "slit lengthways",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the braise"
+    },
+    {
+      "name": "Mustard seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the braise"
+    },
+    {
+      "name": "Cumin seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the braise"
+    },
+    {
+      "name": "Dried red chillies",
+      "quantity": 2,
+      "unit": null,
+      "note": "broken in half",
+      "group": "For the braise"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the braise"
+    },
+    {
+      "name": "Curry leaves",
+      "quantity": 12,
+      "unit": null,
+      "note": "one sprig",
+      "group": "For the braise"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the braise"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the braise"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the braise"
+    }
+  ],
+  "steps": [
+    "Put the lentils, water and turmeric in a saucepan and bring to the boil over high heat. Skim off the foam, then turn the heat to low and simmer, half covered, for 15 minutes, stirring now and then.",
+    "Add the grated tomatoes, green chilli and salt and simmer for another 8 to 10 minutes, until the lentils have broken down to a thick, pourable purée. Whisk to smooth it and add a splash of hot water if it is too thick.",
+    "While the lentils cook, heat the oil in a small frying pan over medium-high heat. Add the mustard and cumin seeds; when the mustard seeds start to pop, after about 30 seconds, add the dried chillies and onion.",
+    "Fry the onion, stirring, until golden, about 6 minutes. Add the curry leaves, garlic and ginger and fry for 1 minute, until the leaves crackle and the garlic smells nutty but has not burnt.",
+    "Pour the hot braise over the dhal, stir it through and simmer together for 2 minutes. Taste for salt, scatter over the coriander and serve with rice or roti."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge; it thickens as it cools, so loosen with hot water when reheating.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

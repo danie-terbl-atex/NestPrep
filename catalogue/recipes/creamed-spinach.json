@@ -1,0 +1,116 @@
+{
+  "id": "creamed-spinach",
+  "name": "Creamed spinach",
+  "summary": "Chopped spinach softened with onion and folded through a smooth, nutmeg-scented white sauce, the green side no South African Sunday roast is without.",
+  "about": "Creamed spinach is a fixture of the South African Sunday lunch, beside roast chicken or lamb, butternut and rice. Local cooks make it with the big-leaved Swiss chard sold as spinach in every supermarket.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "side"
+  },
+  "tags": [
+    "vegetableForward",
+    "quick",
+    "comfort"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Spinach (Swiss chard)",
+      "quantity": 2,
+      "unit": "bunch",
+      "note": "about 800 g, washed",
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 40,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Milk",
+      "quantity": 1.5,
+      "unit": "cup",
+      "note": "warm",
+      "group": null
+    },
+    {
+      "name": "Fresh cream",
+      "quantity": 0.25,
+      "unit": "cup",
+      "note": "optional, for extra richness",
+      "group": null
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Cut the thick white stalks out of the spinach and slice the leaves into thin ribbons.",
+    "Put the wet leaves in a large pot over medium heat, cover and cook for 4 to 5 minutes, stirring once, until wilted and bright green. Tip into a colander, press out as much water as you can with a spoon, then chop finely on a board.",
+    "Melt the butter in the same pot over medium heat and fry the onion until soft and see-through, about 5 minutes. Add the garlic for 1 minute.",
+    "Stir in the flour and cook for 1 minute, then add the warm milk a little at a time, stirring constantly, until you have a smooth sauce. Simmer for 2 to 3 minutes, still stirring, until thick enough to coat a spoon.",
+    "Stir in the spinach, cream (if using), nutmeg, salt and pepper and heat through for 3 minutes, until hot and creamy. Serve straight away."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make up to a day ahead and reheat gently with a splash of milk; it also freezes well.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

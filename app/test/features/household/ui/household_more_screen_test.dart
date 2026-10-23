@@ -60,7 +60,7 @@ void main() {
     expect(find.text(MoreCopy.peopleCount(3)), findsOneWidget);
     for (final text in [
       MoreCopy.sectionWeek,
-      AppCopy.tabMeals,
+      AppCopy.tabWeek,
       PointsCopy.screenTitle,
       MoreCopy.sectionFamily,
       FamilyCopy.openFromHousehold,
@@ -89,7 +89,7 @@ void main() {
     await scrollTo(tester, AppCopy.locationTitle);
 
     for (final text in [
-      AppCopy.tabMeals,
+      AppCopy.tabWeek,
       PointsCopy.screenTitle,
       FamilyCopy.openFromHousehold,
       AppCopy.documentsOpenLibrary,

@@ -6,10 +6,13 @@
 // editor may refresh or remove one; a person's edit adopts it by clearing
 // the three fields; a ticked one is history like any other.
 //
-// `productMatch` is the product a member picked at Checkers (the Checkers
-// build contract): absent on a new item, set or cleared by any groceries
-// editor on its own, and cleared — never required to be — by a rename, so an
-// app from before the field still renames an item that carries one.
+// `productMatch` is the product a member picked at a shop — Checkers (the
+// Checkers build contract) or Pick n Pay (groceries ADR-0007): absent on a
+// new item or made with it — *Plan my week* creates an item already matched,
+// so it is never left behind unmatched (add-to-pnp ADR-0004) — set or cleared
+// by any groceries editor on its own, and cleared
+// — never required to be — by a rename, so an app from before the field
+// still renames an item that carries one.
 match /groceryItems/{itemId} {
   allow read: if canView(householdId, 'groceries');
 
@@ -17,7 +20,8 @@ match /groceryItems/{itemId} {
     && request.resource.data.keys().hasOnly(
          ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy',
           'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch'])
-    && request.resource.data.get('productMatch', null) == null
+    && (request.resource.data.get('productMatch', null) == null
+          || groceriesIsProductMatch(householdId, request.resource.data.productMatch))
     && isNonEmptyString(request.resource.data.name)
     && isOwnMember(householdId, request.resource.data.addedBy)
     && isServerTime('addedAt')
@@ -109,20 +113,17 @@ function groceriesIsSourceNote(value) {
   return value is string && value.size() <= 200;
 }
 
-// The shape of a pick (the Checkers build contract). The unit is any short
-// code Checkers sends — `EA`, `KG`, `PK1` — because the server decides what a
-// weighed item is, not the rules; the price is whole cents in rand.
+// The shape of a pick (the Checkers build contract; groceries ADR-0007). The
+// unit is any short code the shop sends — `EA`, `KG`, `PK1`, PnP's `KGM` —
+// because the server decides what a weighed item is, not the rules; the
+// price is whole cents in rand. Each shop's own id shape is checked below.
 function groceriesIsProductMatch(householdId, pick) {
   return pick is map
     && pick.keys().hasAll(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                             'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
     && pick.keys().hasOnly(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                              'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
-    && pick.retailer == 'checkers'
-    && pick.productId is string
-    && pick.productId.matches('^[0-9a-f]{24}$')
-    && pick.articleCode is string
-    && pick.articleCode.matches('^[0-9A-Za-z]{1,40}$')
+    && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick))
     && pick.unitOfMeasure is string
     && pick.unitOfMeasure.matches('^[A-Z0-9]{1,8}$')
     && isNonEmptyString(pick.name)
@@ -132,7 +133,28 @@ function groceriesIsProductMatch(householdId, pick) {
     && pick.priceCents >= 0
     && pick.priceCents <= 100000000
     && pick.currency == 'ZAR'
-    && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 100))
     && isOwnMember(householdId, pick.pickedBy)
     && pick.pickedAt == request.time;
+}
+
+// Checkers Sixty60: a 24-hex product id, an image id.
+function groceriesIsCheckersPick(pick) {
+  return pick.retailer == 'checkers'
+    && pick.productId is string
+    && pick.productId.matches('^[0-9a-f]{24}$')
+    && pick.articleCode is string
+    && pick.articleCode.matches('^[0-9A-Za-z]{1,40}$')
+    && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 100));
+}
+
+// Pick n Pay (groceries ADR-0007): its national code with the unit suffix,
+// the code's digits, and the image's path on PnP's CDN, which the app joins
+// to the CDN host itself.
+function groceriesIsPnpPick(pick) {
+  return pick.retailer == 'pickNPay'
+    && pick.productId is string
+    && pick.productId.matches('^[0-9]{6,20}_[A-Z]{2,3}$')
+    && pick.articleCode is string
+    && pick.articleCode.matches('^[0-9]{1,20}$')
+    && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 300));
 }

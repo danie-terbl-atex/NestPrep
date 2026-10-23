@@ -11,7 +11,6 @@ import '../state/plan_week_ideas.dart';
 import 'plan_week_child_names.dart';
 import 'plan_week_idea_row.dart';
 import 'plan_week_idea_sheet.dart';
-import 'plan_week_step_actions.dart';
 import 'plan_week_working_panel.dart';
 
 /// Step 2 (lunch-box ADR-0012): the lunchbox aisle's shelves (ADR-0013) and
@@ -29,14 +28,15 @@ class PlanWeekIdeasPanel extends StatelessWidget {
       AsyncLoading() when aisle.isReading => PlanWeekWorkingPanel(
         key: const ValueKey('plan-week-aisle-reading'),
         title: PlanWeekCopy.aisleTitle,
-        line: PlanWeekCopy.aisleLine,
+        line: PlanWeekCopy.aisleLine(controller.retailer.shop),
         progress: aisle.total == 0
             ? null
             : PlanWeekCopy.aisleProgress(aisle.shelvesRead, aisle.total),
       ),
-      AsyncLoading() => const PlanWeekWorkingPanel(
+      AsyncLoading() => PlanWeekWorkingPanel(
         title: PlanWeekCopy.draftingTitle,
         line: PlanWeekCopy.draftingLine,
+        twig: controller.ideas.isDrafting ? NestTwigPose.thinking : null,
       ),
       AsyncFailure(:final failure) => NestErrorView(
         message: AppCopy.failure(failure),
@@ -70,7 +70,10 @@ class _IdeaList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
-        Text(PlanWeekCopy.ideasHeadline, style: nest.text.headline),
+        Text(
+          PlanWeekCopy.ideasHeadline(controller.retailer.shop),
+          style: nest.text.headline,
+        ),
         const SizedBox(height: NestSpace.xs),
         Text(PlanWeekCopy.ideasBody, style: nest.text.bodySecondary),
         if (reason != null) ...[
@@ -94,6 +97,7 @@ class _IdeaList extends StatelessWidget {
                 key: ValueKey('idea-${idea.id}'),
                 idea: idea,
                 shelfKept: shelves[idea.id],
+                shop: controller.retailer.shop,
                 childNames: names,
                 onRemove: () => controller.ideas.remove(idea.id),
               ),
@@ -120,11 +124,15 @@ class _IdeaList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: NestSpace.xl),
-        PlanWeekStepActions(
+        NestStepActions(
           nextKey: const ValueKey('plan-week-search'),
-          label: PlanWeekCopy.searchAction(active),
-          icon: LucideIcons.store,
+          nextLabel: PlanWeekCopy.searchAction(
+            active,
+            controller.retailer.shop,
+          ),
+          nextIcon: LucideIcons.store,
           onNext: active == 0 ? null : () => _search(context, controller),
+          backLabel: PlanWeekCopy.back,
           onBack: controller.back,
         ),
       ],
@@ -137,20 +145,20 @@ class _IdeaList extends StatelessWidget {
   ) async {
     final added = await showPlanWeekIdeaSheet(
       context,
-      slots: controller.packing.slots,
+      slots: controller.packing.plannedSlots,
     );
     if (added == null) return;
     controller.addOwnIdea(added.slot, added.text);
   }
 
-  /// To the shop and on to the week, read against the budget this phone
-  /// last heard.
+  /// To the shop and on to the week, read against the household's week as
+  /// budget mode last heard it — what is packed already and the budget.
   static Future<void> _search(
     BuildContext context,
     PlanWeekController controller,
   ) => controller.searchStore(
-    budget: switch (context.read<LunchBudgetController>().week) {
-      AsyncData(:final value) => value.budget?.money,
+    budgetWeek: switch (context.read<LunchBudgetController>().week) {
+      AsyncData(:final value) => value,
       _ => null,
     },
   );

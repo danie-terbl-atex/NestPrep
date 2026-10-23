@@ -181,9 +181,23 @@ class LunchBoard {
   LunchChildWeek? childWeek(String childId) =>
       children.where((entry) => entry.childId == childId).firstOrNull;
 
-  /// Whether this is the week being planned now — see
-  /// `LunchWeek.planningFor`.
-  bool get isThisWeek => week == LunchWeek.planningFor(today);
+  /// The week being planned today — see `LunchWeek.planningFor`.
+  LunchWeek get planningWeek => LunchWeek.planningFor(today);
+
+  /// Whether this is the week being planned now.
+  bool get isThisWeek => week == planningWeek;
+
+  /// The library's item, in use, that [candidate] would be: the same slot
+  /// and the same name once normalised — as typing a name again picks the
+  /// household's own (lunch-box ADR-0012 §3).
+  LunchItem? itemLike(LunchItem candidate) => library
+      .where(
+        (item) =>
+            !item.archived &&
+            item.slot == candidate.slot &&
+            item.nameKey == candidate.nameKey,
+      )
+      .firstOrNull;
 
   /// The box that matters next in a child's week: today's on a school day,
   /// Monday's for a week still to come, Friday's for one that has gone.

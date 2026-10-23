@@ -18,19 +18,41 @@ bool _isAControl(SemanticsData data) =>
     data.flagsCollection.isButton ||
     data.flagsCollection.isTextField;
 
-/// Walks the semantics tree, keeping each node's rect in screen coordinates.
+/// Whether a node is a list that scrolls, whose rect is the window its
+/// children are seen through.
+bool _scrolls(SemanticsData data) =>
+    data.flagsCollection.hasImplicitScrolling ||
+    data.hasAction(SemanticsAction.scrollUp) ||
+    data.hasAction(SemanticsAction.scrollDown);
+
+/// Walks the semantics tree, keeping each node's rect in screen coordinates
+/// and the window of the nearest list it scrolls in.
 void _visit(
   SemanticsNode node,
   Matrix4 inherited,
-  void Function(SemanticsData data, Rect onScreen) found,
+  Rect? viewport,
+  void Function(SemanticsData data, Rect onScreen, Rect? viewport) found,
 ) {
   final transform = inherited.multiplied(node.transform ?? Matrix4.identity());
   final data = node.getSemanticsData();
-  found(data, MatrixUtils.transformRect(transform, node.rect));
+  final onScreen = MatrixUtils.transformRect(transform, node.rect);
+  found(data, onScreen, viewport);
+  final window = _scrolls(data) ? onScreen : viewport;
   node.visitChildren((child) {
-    _visit(child, transform, found);
+    _visit(child, transform, window, found);
     return true;
   });
+}
+
+/// A control the list's edge cuts through is partly scrolled into view: what
+/// shows of it is a sliver, not its size. Only the top or bottom edge counts,
+/// and only a control that is short there — one narrow everywhere is still
+/// caught.
+bool _cutByTheEdge(Rect onScreen, Rect? viewport) {
+  if (viewport == null) return false;
+  const touching = 0.5;
+  return (onScreen.bottom - viewport.bottom).abs() < touching ||
+      (onScreen.top - viewport.top).abs() < touching;
 }
 
 ({List<String> unlabelled, List<String> tooSmall}) _auditOf(
@@ -50,7 +72,7 @@ void _visit(
       // ignore: deprecated_member_use
       tester.binding.pipelineOwner.semanticsOwner!.rootSemanticsNode!;
 
-  _visit(root, Matrix4.identity(), (data, onScreen) {
+  _visit(root, Matrix4.identity(), null, (data, onScreen, viewport) {
     if (!_isAControl(data)) return;
     // A node scrolled out of view has no size worth measuring — whether it
     // is gone entirely or only kept in the list's cache, clipped to a
@@ -67,6 +89,11 @@ void _visit(
     }
     final width = onScreen.width / ratio;
     final height = onScreen.height / ratio;
+    if (width >= _floor &&
+        height < _floor &&
+        _cutByTheEdge(onScreen, viewport)) {
+      return;
+    }
     if (width < _floor || height < _floor) {
       tooSmall.add(
         '"$label" is ${width.toStringAsFixed(0)}×${height.toStringAsFixed(0)}',

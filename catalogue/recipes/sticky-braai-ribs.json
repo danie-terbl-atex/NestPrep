@@ -1,0 +1,42 @@
+{
+  "id": "sticky-braai-ribs",
+  "name": "Sticky braai ribs",
+  "summary": "Pork spare ribs baked low and slow until tender, then finished over hot coals with a sweet, tangy basting until sticky and charred at the edges.",
+  "about": "Basted pork ribs are a steakhouse and braai favourite across South Africa. Cooking them gently first and finishing them on the fire is how home braaiers get meat that comes off the bone and a glaze that caramelises instead of burning. Serve with chips, coleslaw or a potato salad.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["braai", "kidFriendly", "festive"],
+  "allergens": ["wheat", "soy", "fish"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Pork spare ribs", "quantity": 2, "unit": "kg", "note": "in whole racks", "group": "For the ribs" },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": "For the ribs" },
+    { "name": "Black pepper", "quantity": 1, "unit": "tsp", "note": null, "group": "For the ribs" },
+    { "name": "Water", "quantity": 1, "unit": "cup", "note": null, "group": "For the ribs" },
+    { "name": "Tomato sauce", "quantity": 0.75, "unit": "cup", "note": null, "group": "For the basting" },
+    { "name": "Chutney", "quantity": 0.5, "unit": "cup", "note": null, "group": "For the basting" },
+    { "name": "Brown sugar", "quantity": 4, "unit": "tbsp", "note": "or honey", "group": "For the basting" },
+    { "name": "Worcestershire sauce", "quantity": 2, "unit": "tbsp", "note": null, "group": "For the basting" },
+    { "name": "Soy sauce", "quantity": 2, "unit": "tbsp", "note": null, "group": "For the basting" },
+    { "name": "Garlic cloves", "quantity": 3, "unit": null, "note": "crushed", "group": "For the basting" },
+    { "name": "Smoked paprika", "quantity": 2, "unit": "tsp", "note": null, "group": "For the basting" },
+    { "name": "Lemon juice", "quantity": 2, "unit": "tbsp", "note": null, "group": "For the basting" }
+  ],
+  "steps": [
+    "Heat the oven to 160 °C (140 °C fan). Season the rib racks all over with the salt and pepper and lay them meaty side up in a large roasting tin.",
+    "Pour the water into the tin, cover tightly with foil and bake for 1 hour 30 minutes, until the meat is tender and has started to shrink back from the ends of the bones.",
+    "While the ribs bake, stir all the basting ingredients together in a small pot over medium heat and simmer for 5 minutes, stirring, until slightly thickened and glossy. Set aside to cool.",
+    "Light the fire and let it burn down to medium-hot coals, when you can hold your hand at grid height for about 4 seconds.",
+    "Lift the ribs out of the tin and brush both sides thickly with the basting.",
+    "Braai the racks for 12 to 15 minutes, turning and basting every 2 to 3 minutes, until the basting is sticky and the edges are dark and charred in places. Move them to a cooler spot if the sugar starts to burn.",
+    "Rest the racks on a board for 5 minutes, then cut between the bones into single ribs and serve with any leftover basting warmed for dipping."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 110,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Bake the ribs and make the basting up to a day ahead; keep both in the fridge and braai just before serving.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

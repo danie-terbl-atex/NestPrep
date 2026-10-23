@@ -32,7 +32,8 @@ class FindAtCheckersButton extends StatelessWidget {
     return RetailerLogo(
       retailer: retailer,
       label: CheckersCopy.findAt(retailer),
-      onTap: () => context.read<ProductMatchController>().lookFor(item),
+      onTap: () =>
+          context.read<ProductMatchController>().lookFor(item, at: retailer),
     );
   }
 }

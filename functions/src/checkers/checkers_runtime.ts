@@ -10,7 +10,7 @@ import { EmulatorCheckers } from './emulator_checkers';
 import { refuseCheckers } from './errors';
 import { HttpCheckersLogin } from './http_checkers_login';
 import { HttpCheckersShop } from './http_checkers_shop';
-import { sessionKeyFrom } from './session_crypto';
+import { sessionKeyFrom } from '../shared/session_crypto';
 
 /**
  * The emulator's session key when none is configured locally — for sealing

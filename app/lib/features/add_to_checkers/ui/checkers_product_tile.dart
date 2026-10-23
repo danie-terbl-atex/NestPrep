@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../../shared/copy/ai_copy.dart';
 import '../../../shared/copy/checkers_copy.dart';
-import '../model/checkers_product.dart';
-import 'checkers_product_image.dart';
+import '../model/retailer_product.dart';
+import 'retailer_product_image.dart';
 
 /// One Checkers product under a grocery item: picture, name, brand, price,
 /// and whether it is on a deal or out of stock — in words, never by colour
@@ -16,7 +17,7 @@ class CheckersProductTile extends StatelessWidget {
     super.key,
   });
 
-  final CheckersProduct product;
+  final RetailerProduct product;
   final bool isBestMatch;
 
   /// Null while a pick is being saved.
@@ -32,7 +33,11 @@ class CheckersProductTile extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CheckersProductImage(imageId: product.imageId, size: imageSize),
+        RetailerProductImage(
+          retailer: product.retailer,
+          imageId: product.imageId,
+          size: imageSize,
+        ),
         const SizedBox(width: NestSpace.md),
         Expanded(
           child: Column(
@@ -52,10 +57,25 @@ class CheckersProductTile extends StatelessWidget {
                 runSpacing: NestSpace.xs,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+                  // Jev ranked it, so Twig stands beside the words
+                  // (design-system ADR-0012); the two wrap as one.
                   if (isBestMatch)
-                    const NestTag(
-                      label: CheckersCopy.bestMatch,
-                      tone: NestTagTone.success,
+                    const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        NestTwig(
+                          pose: NestTwigPose.waving,
+                          size: NestSize.twigSmall,
+                          semanticsLabel: AiCopy.twigBestMatch,
+                        ),
+                        SizedBox(width: NestSpace.xs),
+                        Flexible(
+                          child: NestTag(
+                            label: CheckersCopy.bestMatch,
+                            tone: NestTagTone.success,
+                          ),
+                        ),
+                      ],
                     ),
                   Text(
                     CheckersCopy.price(

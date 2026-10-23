@@ -25,7 +25,13 @@ mixin _$LunchItem {
  bool get prepAhead;/// How to make it ahead, shown on the prep list.
  String? get prepNote; bool get archived;/// Set on the items the library was seeded with, so re-seeding recognises
 /// them; null for the household's own.
- String? get seedKey; String get addedBy;@ServerTimestampConverter() DateTime? get createdAt;
+ String? get seedKey;/// Set on an item made from one of NestPrep's recipes (`recipes/{id}`),
+/// so it opens that recipe; null for everything else. Left out of the
+/// write when null, so an item without one is stored as it always was.
+@JsonKey(includeIfNull: false) String? get recipeId;/// Set on a dish *Plan my week* drafted, naming the household's own
+/// recipe (`households/{id}/recipes/{id}`, recipes ADR-0002); never with
+/// [recipeId]. Left out of the write when null, like [recipeId].
+@JsonKey(includeIfNull: false) String? get householdRecipeId; String get addedBy;@ServerTimestampConverter() DateTime? get createdAt;
 /// Create a copy of LunchItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -39,20 +45,20 @@ $LunchItemCopyWith<LunchItem> get copyWith => _$LunchItemCopyWithImpl<LunchItem>
 @override
 bool operator ==(Object other) {
   final _this = this as LunchItem;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LunchItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.nameKey, _this.nameKey) || other.nameKey == _this.nameKey)&&(identical(other.slotName, _this.slotName) || other.slotName == _this.slotName)&&const DeepCollectionEquality().equals(other.allergens, _this.allergens)&&(identical(other.prepAhead, _this.prepAhead) || other.prepAhead == _this.prepAhead)&&(identical(other.prepNote, _this.prepNote) || other.prepNote == _this.prepNote)&&(identical(other.archived, _this.archived) || other.archived == _this.archived)&&(identical(other.seedKey, _this.seedKey) || other.seedKey == _this.seedKey)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LunchItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.nameKey, _this.nameKey) || other.nameKey == _this.nameKey)&&(identical(other.slotName, _this.slotName) || other.slotName == _this.slotName)&&const DeepCollectionEquality().equals(other.allergens, _this.allergens)&&(identical(other.prepAhead, _this.prepAhead) || other.prepAhead == _this.prepAhead)&&(identical(other.prepNote, _this.prepNote) || other.prepNote == _this.prepNote)&&(identical(other.archived, _this.archived) || other.archived == _this.archived)&&(identical(other.seedKey, _this.seedKey) || other.seedKey == _this.seedKey)&&(identical(other.recipeId, _this.recipeId) || other.recipeId == _this.recipeId)&&(identical(other.householdRecipeId, _this.householdRecipeId) || other.householdRecipeId == _this.householdRecipeId)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as LunchItem;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.nameKey,_this.slotName,const DeepCollectionEquality().hash(_this.allergens),_this.prepAhead,_this.prepNote,_this.archived,_this.seedKey,_this.addedBy,_this.createdAt);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.nameKey,_this.slotName,const DeepCollectionEquality().hash(_this.allergens),_this.prepAhead,_this.prepNote,_this.archived,_this.seedKey,_this.recipeId,_this.householdRecipeId,_this.addedBy,_this.createdAt);
 }
 
 @override
 String toString() {
   final _this = this as LunchItem;
-  return 'LunchItem(id: ${_this.id}, name: ${_this.name}, nameKey: ${_this.nameKey}, slotName: ${_this.slotName}, allergens: ${_this.allergens}, prepAhead: ${_this.prepAhead}, prepNote: ${_this.prepNote}, archived: ${_this.archived}, seedKey: ${_this.seedKey}, addedBy: ${_this.addedBy}, createdAt: ${_this.createdAt})';
+  return 'LunchItem(id: ${_this.id}, name: ${_this.name}, nameKey: ${_this.nameKey}, slotName: ${_this.slotName}, allergens: ${_this.allergens}, prepAhead: ${_this.prepAhead}, prepNote: ${_this.prepNote}, archived: ${_this.archived}, seedKey: ${_this.seedKey}, recipeId: ${_this.recipeId}, householdRecipeId: ${_this.householdRecipeId}, addedBy: ${_this.addedBy}, createdAt: ${_this.createdAt})';
 }
 
 
@@ -63,7 +69,7 @@ abstract mixin class $LunchItemCopyWith<$Res>  {
   factory $LunchItemCopyWith(LunchItem value, $Res Function(LunchItem) _then) = _$LunchItemCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String nameKey,@JsonKey(name: 'slot') String slotName, List<String> allergens, bool prepAhead, String? prepNote, bool archived, String? seedKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String nameKey,@JsonKey(name: 'slot') String slotName, List<String> allergens, bool prepAhead, String? prepNote, bool archived, String? seedKey,@JsonKey(includeIfNull: false) String? recipeId,@JsonKey(includeIfNull: false) String? householdRecipeId, String addedBy,@ServerTimestampConverter() DateTime? createdAt
 });
 
 
@@ -80,7 +86,7 @@ class _$LunchItemCopyWithImpl<$Res>
 
 /// Create a copy of LunchItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? slotName = null,Object? allergens = null,Object? prepAhead = null,Object? prepNote = freezed,Object? archived = null,Object? seedKey = freezed,Object? addedBy = null,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? slotName = null,Object? allergens = null,Object? prepAhead = null,Object? prepNote = freezed,Object? archived = null,Object? seedKey = freezed,Object? recipeId = freezed,Object? householdRecipeId = freezed,Object? addedBy = null,Object? createdAt = freezed,}) {
   return _then(LunchItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -91,6 +97,8 @@ as List<String>,prepAhead: null == prepAhead ? _self.prepAhead : prepAhead // ig
 as bool,prepNote: freezed == prepNote ? _self.prepNote : prepNote // ignore: cast_nullable_to_non_nullable
 as String?,archived: null == archived ? _self.archived : archived // ignore: cast_nullable_to_non_nullable
 as bool,seedKey: freezed == seedKey ? _self.seedKey : seedKey // ignore: cast_nullable_to_non_nullable
+as String?,recipeId: freezed == recipeId ? _self.recipeId : recipeId // ignore: cast_nullable_to_non_nullable
+as String?,householdRecipeId: freezed == householdRecipeId ? _self.householdRecipeId : householdRecipeId // ignore: cast_nullable_to_non_nullable
 as String?,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
 as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -178,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey, @JsonKey(includeIfNull: false)  String? recipeId, @JsonKey(includeIfNull: false)  String? householdRecipeId,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LunchItem() when $default != null:
-return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.recipeId,_that.householdRecipeId,_that.addedBy,_that.createdAt);case _:
   return orElse();
 
 }
@@ -199,10 +207,10 @@ return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey, @JsonKey(includeIfNull: false)  String? recipeId, @JsonKey(includeIfNull: false)  String? householdRecipeId,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _LunchItem():
-return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.recipeId,_that.householdRecipeId,_that.addedBy,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +227,10 @@ return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String nameKey, @JsonKey(name: 'slot')  String slotName,  List<String> allergens,  bool prepAhead,  String? prepNote,  bool archived,  String? seedKey, @JsonKey(includeIfNull: false)  String? recipeId, @JsonKey(includeIfNull: false)  String? householdRecipeId,  String addedBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _LunchItem() when $default != null:
-return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.addedBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens,_that.prepAhead,_that.prepNote,_that.archived,_that.seedKey,_that.recipeId,_that.householdRecipeId,_that.addedBy,_that.createdAt);case _:
   return null;
 
 }
@@ -234,7 +242,7 @@ return $default(_that.id,_that.name,_that.nameKey,_that.slotName,_that.allergens
 @JsonSerializable()
 
 class _LunchItem extends LunchItem {
-  const _LunchItem({@JsonKey(includeToJson: false) required this.id, required this.name, required this.nameKey, @JsonKey(name: 'slot') required this.slotName,  List<String> allergens = const <String>[], this.prepAhead = false, this.prepNote, this.archived = false, this.seedKey, required this.addedBy, @ServerTimestampConverter() this.createdAt}): _allergens = allergens,super._();
+  const _LunchItem({@JsonKey(includeToJson: false) required this.id, required this.name, required this.nameKey, @JsonKey(name: 'slot') required this.slotName,  List<String> allergens = const <String>[], this.prepAhead = false, this.prepNote, this.archived = false, this.seedKey, @JsonKey(includeIfNull: false) this.recipeId, @JsonKey(includeIfNull: false) this.householdRecipeId, required this.addedBy, @ServerTimestampConverter() this.createdAt}): _allergens = allergens,super._();
   factory _LunchItem.fromJson(Map<String, dynamic> json) => _$LunchItemFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -263,6 +271,14 @@ class _LunchItem extends LunchItem {
 /// Set on the items the library was seeded with, so re-seeding recognises
 /// them; null for the household's own.
 @override final  String? seedKey;
+/// Set on an item made from one of NestPrep's recipes (`recipes/{id}`),
+/// so it opens that recipe; null for everything else. Left out of the
+/// write when null, so an item without one is stored as it always was.
+@override@JsonKey(includeIfNull: false) final  String? recipeId;
+/// Set on a dish *Plan my week* drafted, naming the household's own
+/// recipe (`households/{id}/recipes/{id}`, recipes ADR-0002); never with
+/// [recipeId]. Left out of the write when null, like [recipeId].
+@override@JsonKey(includeIfNull: false) final  String? householdRecipeId;
 @override final  String addedBy;
 @override@ServerTimestampConverter() final  DateTime? createdAt;
 
@@ -279,18 +295,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LunchItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameKey, nameKey) || other.nameKey == nameKey)&&(identical(other.slotName, slotName) || other.slotName == slotName)&&const DeepCollectionEquality().equals(other.allergens, _allergens)&&(identical(other.prepAhead, prepAhead) || other.prepAhead == prepAhead)&&(identical(other.prepNote, prepNote) || other.prepNote == prepNote)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.seedKey, seedKey) || other.seedKey == seedKey)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LunchItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameKey, nameKey) || other.nameKey == nameKey)&&(identical(other.slotName, slotName) || other.slotName == slotName)&&const DeepCollectionEquality().equals(other.allergens, _allergens)&&(identical(other.prepAhead, prepAhead) || other.prepAhead == prepAhead)&&(identical(other.prepNote, prepNote) || other.prepNote == prepNote)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.seedKey, seedKey) || other.seedKey == seedKey)&&(identical(other.recipeId, recipeId) || other.recipeId == recipeId)&&(identical(other.householdRecipeId, householdRecipeId) || other.householdRecipeId == householdRecipeId)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,nameKey,slotName,const DeepCollectionEquality().hash(_allergens),prepAhead,prepNote,archived,seedKey,addedBy,createdAt);
+    return Object.hash(runtimeType,id,name,nameKey,slotName,const DeepCollectionEquality().hash(_allergens),prepAhead,prepNote,archived,seedKey,recipeId,householdRecipeId,addedBy,createdAt);
 }
 
 @override
 String toString() {
-    return 'LunchItem(id: $id, name: $name, nameKey: $nameKey, slotName: $slotName, allergens: $allergens, prepAhead: $prepAhead, prepNote: $prepNote, archived: $archived, seedKey: $seedKey, addedBy: $addedBy, createdAt: $createdAt)';
+    return 'LunchItem(id: $id, name: $name, nameKey: $nameKey, slotName: $slotName, allergens: $allergens, prepAhead: $prepAhead, prepNote: $prepNote, archived: $archived, seedKey: $seedKey, recipeId: $recipeId, householdRecipeId: $householdRecipeId, addedBy: $addedBy, createdAt: $createdAt)';
 }
 
 
@@ -301,7 +317,7 @@ abstract mixin class _$LunchItemCopyWith<$Res> implements $LunchItemCopyWith<$Re
   factory _$LunchItemCopyWith(_LunchItem value, $Res Function(_LunchItem) _then) = __$LunchItemCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String nameKey,@JsonKey(name: 'slot') String slotName, List<String> allergens, bool prepAhead, String? prepNote, bool archived, String? seedKey, String addedBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String nameKey,@JsonKey(name: 'slot') String slotName, List<String> allergens, bool prepAhead, String? prepNote, bool archived, String? seedKey,@JsonKey(includeIfNull: false) String? recipeId,@JsonKey(includeIfNull: false) String? householdRecipeId, String addedBy,@ServerTimestampConverter() DateTime? createdAt
 });
 
 
@@ -318,7 +334,7 @@ class __$LunchItemCopyWithImpl<$Res>
 
 /// Create a copy of LunchItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? slotName = null,Object? allergens = null,Object? prepAhead = null,Object? prepNote = freezed,Object? archived = null,Object? seedKey = freezed,Object? addedBy = null,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? nameKey = null,Object? slotName = null,Object? allergens = null,Object? prepAhead = null,Object? prepNote = freezed,Object? archived = null,Object? seedKey = freezed,Object? recipeId = freezed,Object? householdRecipeId = freezed,Object? addedBy = null,Object? createdAt = freezed,}) {
   return _then(_LunchItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -329,6 +345,8 @@ as List<String>,prepAhead: null == prepAhead ? _self.prepAhead : prepAhead // ig
 as bool,prepNote: freezed == prepNote ? _self.prepNote : prepNote // ignore: cast_nullable_to_non_nullable
 as String?,archived: null == archived ? _self.archived : archived // ignore: cast_nullable_to_non_nullable
 as bool,seedKey: freezed == seedKey ? _self.seedKey : seedKey // ignore: cast_nullable_to_non_nullable
+as String?,recipeId: freezed == recipeId ? _self.recipeId : recipeId // ignore: cast_nullable_to_non_nullable
+as String?,householdRecipeId: freezed == householdRecipeId ? _self.householdRecipeId : householdRecipeId // ignore: cast_nullable_to_non_nullable
 as String?,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
 as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_fraction_span.dart';
 
 enum NestTagTone { neutral, accent, success, warning, danger }
 
@@ -17,12 +18,17 @@ class NestTag extends StatelessWidget {
     required this.label,
     this.tone = NestTagTone.neutral,
     this.icon,
+    this.isFigure = false,
     super.key,
   });
 
   final String label;
   final NestTagTone tone;
   final IconData? icon;
+
+  /// The label is a number to read as one — a scale such as ×2/3 — so its
+  /// fractions are set as kitchen fractions (`nestFractionSpan`).
+  final bool isFigure;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,7 @@ class NestTag extends StatelessWidget {
       NestTagTone.danger => (c.dangerSoft, c.danger),
     };
     final glyph = icon;
+    final style = nest.text.label.copyWith(color: ink);
     return DecoratedBox(
       decoration: ShapeDecoration(color: fill, shape: const StadiumBorder()),
       child: Padding(
@@ -53,12 +60,18 @@ class NestTag extends StatelessWidget {
             // A tag sits in a wrap beside others and grows with the text
             // setting, so its label yields rather than overflowing (`FE-13`).
             Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: nest.text.label.copyWith(color: ink),
-              ),
+              child: isFigure
+                  ? Text.rich(
+                      nestFractionSpan(label, style),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: style,
+                    ),
             ),
           ],
         ),

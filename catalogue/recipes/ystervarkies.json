@@ -1,0 +1,43 @@
+{
+  "id": "ystervarkies",
+  "name": "Ystervarkies",
+  "summary": "Ystervarkies (\"little porcupines\"): squares of light vanilla sponge dipped in chocolate icing and rolled in coconut, for bake sales and birthday tables.",
+  "about": "Ystervarkie is Afrikaans for porcupine, after the spiky look the coconut gives these sponge squares. They are South Africa's name for the lamington, which comes from Australia, and they have been a favourite of school bake sales, church fêtes and children's parties for generations.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch"],
+  "placement": { "lunch": "snack" },
+  "tags": ["baking", "kidFriendly", "festive"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Eggs", "quantity": 4, "unit": null, "note": "large, at room temperature", "group": "For the sponge" },
+    { "name": "Sugar", "quantity": 200, "unit": "g", "note": "castor sugar", "group": "For the sponge" },
+    { "name": "Vanilla essence", "quantity": 1, "unit": "tsp", "note": null, "group": "For the sponge" },
+    { "name": "Cake flour", "quantity": 200, "unit": "g", "note": null, "group": "For the sponge" },
+    { "name": "Baking powder", "quantity": 1.5, "unit": "tsp", "note": null, "group": "For the sponge" },
+    { "name": "Salt", "quantity": null, "unit": null, "note": "a pinch", "group": "For the sponge" },
+    { "name": "Butter", "quantity": 100, "unit": "g", "note": "melted and cooled, plus extra for greasing", "group": "For the sponge" },
+    { "name": "Icing sugar", "quantity": 300, "unit": "g", "note": "sifted", "group": "For the coating" },
+    { "name": "Cocoa powder", "quantity": 40, "unit": "g", "note": "about ⅓ cup, sifted", "group": "For the coating" },
+    { "name": "Butter", "quantity": 2, "unit": "tbsp", "note": "melted", "group": "For the coating" },
+    { "name": "Milk", "quantity": 0.5, "unit": "cup", "note": "hot", "group": "For the coating" },
+    { "name": "Desiccated coconut", "quantity": 200, "unit": "g", "note": null, "group": "For the coating" }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C for a fan oven). Grease a 23 cm square cake tin and line it with baking paper.",
+    "Beat the eggs, sugar and vanilla with an electric beater on high for 6–8 minutes, until pale, thick and tripled in volume; a ribbon of batter should sit on the surface for a few seconds.",
+    "Sift the flour, baking powder and salt over the eggs and fold in gently with a large metal spoon, in two batches, until no flour streaks remain. Fold in the melted butter.",
+    "Pour into the tin and bake for 25–30 minutes, until golden, springy when pressed and a skewer comes out clean. Cool in the tin for 5 minutes, then turn out onto a rack and cool completely.",
+    "Trim the edges and cut the sponge into 16 squares. For neater dipping, chill the squares for 30 minutes so they firm up.",
+    "Whisk the icing sugar, cocoa, melted butter and hot milk in a bowl until smooth and runny, like pouring cream. Tip the coconut into a shallow dish.",
+    "Using two forks, dip each square into the chocolate icing, turning to coat all sides, let the excess drip off for a few seconds, then roll it in coconut until covered. If the icing thickens, stand the bowl in hot water for a minute.",
+    "Set the squares on a rack for about 1 hour, until the icing has firmed."
+  ],
+  "servings": 16,
+  "prepMinutes": 45,
+  "cookMinutes": 30,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Bake the sponge a day ahead: day-old sponge cuts and dips more neatly. Keeps 3 days in an airtight tin.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

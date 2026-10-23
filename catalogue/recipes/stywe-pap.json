@@ -1,0 +1,68 @@
+{
+  "id": "stywe-pap",
+  "name": "Stywe pap",
+  "summary": "Stiff maize porridge: firm, smooth pap that holds its shape, made to scoop up stew, gravy and tomato-and-onion sauce at a braai.",
+  "about": "Stywe pap — stiff porridge — is the firm maize-meal porridge eaten across South Africa, the everyday staple in many homes and the essential partner to braaivleis, stews and tomato-and-onion sauce. It is cooked thick enough to shape and is often eaten by hand.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner",
+    "lunch"
+  ],
+  "placement": {
+    "dinner": "side",
+    "lunch": "side"
+  },
+  "tags": [
+    "traditional",
+    "budget",
+    "braai"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan"
+  ],
+  "ingredients": [
+    {
+      "name": "Water",
+      "quantity": 1.1,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "White maize meal",
+      "quantity": 420,
+      "unit": "g",
+      "note": "super or special maize meal",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Bring the water and salt to a rolling boil in a heavy pot, cast iron if you have it, over high heat.",
+    "Pour half the maize meal into the centre in a heap and do not stir. Cover, turn the heat to medium-low and cook for 8–10 minutes.",
+    "Uncover and stir hard with a wooden spoon, pressing the lumps against the side of the pot, for about 2 minutes, until smooth.",
+    "Add the rest of the maize meal a little at a time, stirring and cutting through the pap, until it is stiff and pulls away from the side of the pot. If it turns crumbly, add a splash of boiling water.",
+    "Cover and steam on the lowest heat for 15–20 minutes, stirring once halfway, until it no longer tastes raw and holds its shape.",
+    "Shape into rounds with a wet spoon or small bowl and serve hot with tomato-and-onion sauce, braaivleis or stew."
+  ],
+  "servings": 6,
+  "prepMinutes": 5,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

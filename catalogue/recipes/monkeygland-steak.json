@@ -1,0 +1,41 @@
+{
+  "id": "monkeygland-steak",
+  "name": "Monkeygland steak",
+  "summary": "Pan-seared rump steak under a dark, sweet-and-tangy sauce of onion, chutney, tomato sauce and Worcestershire, the South African steakhouse classic made at home.",
+  "about": "Monkeygland sauce is a South African invention with no monkey in it: a thick sauce of fried onion, fruit chutney, tomato sauce and Worcestershire. It is usually traced to Johannesburg's hotel kitchens in the early 20th century and became a fixture of steakhouse menus and family steak nights alike.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["quick", "kidFriendly"],
+  "allergens": ["fish"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": "divided", "group": "For the sauce" },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "finely chopped", "group": "For the sauce" },
+    { "name": "Garlic cloves", "quantity": 2, "unit": null, "note": "crushed", "group": "For the sauce" },
+    { "name": "Tomato sauce", "quantity": 0.5, "unit": "cup", "note": "ketchup", "group": "For the sauce" },
+    { "name": "Fruit chutney", "quantity": 0.5, "unit": "cup", "note": "peach or apricot", "group": "For the sauce" },
+    { "name": "Worcestershire sauce", "quantity": 3, "unit": "tbsp", "note": "contains anchovy", "group": "For the sauce" },
+    { "name": "Brown vinegar", "quantity": 1, "unit": "tbsp", "note": null, "group": "For the sauce" },
+    { "name": "Brown sugar", "quantity": 1, "unit": "tbsp", "note": null, "group": "For the sauce" },
+    { "name": "Water", "quantity": 0.25, "unit": "cup", "note": null, "group": "For the sauce" },
+    { "name": "Hot sauce", "quantity": null, "unit": null, "note": "a few drops, optional", "group": "For the sauce" },
+    { "name": "Rump steaks", "quantity": 4, "unit": null, "note": "about 200 g each, 2 cm thick", "group": "For the steak" },
+    { "name": "Salt and black pepper", "quantity": null, "unit": null, "note": "to taste", "group": "For the steak" }
+  ],
+  "steps": [
+    "Take the steaks out of the fridge 20 minutes before cooking, pat them dry and season both sides with salt and pepper.",
+    "Make the sauce: heat 1 tbsp of the oil in a small saucepan over medium heat and fry the onion for 5–6 minutes, until soft and golden. Add the garlic and fry for 30 seconds, until fragrant.",
+    "Stir in the tomato sauce, chutney, Worcestershire sauce, vinegar, brown sugar, water and hot sauce, if using. Bring to a simmer, then cook on low for 8–10 minutes, stirring now and then, until thick and glossy. Keep warm.",
+    "Heat the remaining oil in a heavy frying pan or griddle over high heat until it just begins to smoke. Sear the steaks for 3–4 minutes a side for medium-rare (firm at the edges, springy in the middle) or 5 minutes a side for medium, turning once.",
+    "Spoon a little sauce over each steak in the pan for the last minute so it bubbles and clings, then lift the steaks onto a board and rest for 5 minutes.",
+    "Serve the steaks with the rest of the warm sauce poured over, with chips or mash and a green salad."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "The sauce keeps a week in a jar in the fridge; warm it while the steak cooks.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

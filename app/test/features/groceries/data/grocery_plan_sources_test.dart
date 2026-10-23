@@ -16,6 +16,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_lunch_repository.dart';
 import '../../../support/fake_meal_repository.dart';
+import '../../../support/fake_recipe_repository.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
 
@@ -113,7 +114,10 @@ void main() {
     test('one need per item, counted in boxes across every child', () async {
       final lunches = FakeLunchRepository();
       addTearDown(lunches.close);
-      final source = LunchPlanGrocerySource(LunchWeekReader(lunches));
+      final source = LunchPlanGrocerySource(
+        LunchWeekReader(lunches),
+        FakeRecipeRepository(),
+      );
       expect(source.area, HouseholdArea.lunch);
 
       final emitted = <List<GroceryNeed>>[];
@@ -156,9 +160,13 @@ void main() {
       final lunches = FakeLunchRepository();
       addTearDown(lunches.close);
       final errors = <Object>[];
-      final subscription = LunchPlanGrocerySource(LunchWeekReader(lunches))
-          .watchNeeds(Fixtures.householdId, LunchFixtures.week)
-          .listen((_) {}, onError: errors.add);
+      final subscription =
+          LunchPlanGrocerySource(
+                LunchWeekReader(lunches),
+                FakeRecipeRepository(),
+              )
+              .watchNeeds(Fixtures.householdId, LunchFixtures.week)
+              .listen((_) {}, onError: errors.add);
       addTearDown(subscription.cancel);
 
       lunches.failItemsWith(const PermissionDeniedFailure());

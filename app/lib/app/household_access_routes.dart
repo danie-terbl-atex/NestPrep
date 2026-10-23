@@ -7,14 +7,18 @@ import '../features/household/data/invite_sharer.dart';
 import '../features/household/model/access_grant.dart';
 import '../features/household/model/access_level.dart';
 import '../features/household/model/household_view.dart';
+import '../features/household/state/close_household_controller.dart';
 import '../features/household/state/invite_step_controller.dart';
 import '../features/household/state/member_access_controller.dart';
+import '../features/household/ui/close_household_screen.dart';
 import '../features/household/ui/invite_step_screen.dart';
 import '../features/household/ui/member_access_screen.dart';
 import 'household_route.dart';
 
-/// The two routes household phase 2 adds under the household shell (household
-/// ADR-0003), kept in their own file so the route table gains one line.
+/// The routes the people screen opens under the household shell — the invite
+/// step and the access editor (household ADR-0003), closing the household
+/// (household ADR-0007) — kept in their own file so the route table gains
+/// one line.
 ///
 /// Each creates the controller its screen reads, like every other route
 /// (foundation ADR-0006).
@@ -56,5 +60,16 @@ List<GoRoute> householdAccessRoutes() => [
         child: MemberAccessScreen(memberId: memberId),
       );
     },
+  ),
+  // Closing the household for good (household ADR-0007).
+  GoRoute(
+    path: '${HouseholdRoute.path}/${HouseholdRoute.closeSegment}',
+    builder: (context, state) => ChangeNotifierProvider(
+      create: (context) => CloseHouseholdController(
+        householdDirectory: context.read<HouseholdDirectory>(),
+        householdId: HouseholdRoute.idFrom(state),
+      ),
+      child: const CloseHouseholdScreen(),
+    ),
   ),
 ];

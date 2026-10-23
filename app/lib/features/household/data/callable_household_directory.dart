@@ -67,6 +67,17 @@ final class CallableHouseholdDirectory implements HouseholdDirectory {
   }
 
   @override
+  Future<void> closeHousehold({
+    required String householdId,
+    required String confirmation,
+  }) async {
+    await _call('closeHousehold', {
+      'householdId': householdId,
+      'confirmation': confirmation,
+    });
+  }
+
+  @override
   Future<void> removeMember({
     required String householdId,
     required String memberId,

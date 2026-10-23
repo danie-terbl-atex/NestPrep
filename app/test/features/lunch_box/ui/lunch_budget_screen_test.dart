@@ -82,14 +82,14 @@ void main() {
     await arrive(tester);
     expect(find.text(LunchBudgetCopy.lockedTitle), findsOneWidget);
     expect(find.text(LunchBudgetCopy.seePremium), findsOneWidget);
-    expect(find.text(LunchBudgetCopy.thisWeek), findsNothing);
+    expect(find.text(LunchCopy.thisWeek), findsNothing);
   });
 
   testWidgets('holds the layout while it loads', (tester) async {
     await pump(tester, const LunchBudgetScreen());
     await tester.pump();
     expect(find.text(LunchBudgetCopy.title), findsOneWidget);
-    expect(find.text(LunchBudgetCopy.thisWeek), findsNothing);
+    expect(find.text(LunchCopy.thisWeek), findsNothing);
   });
 
   testWidgets('shows a failure in words, with a retry', (tester) async {

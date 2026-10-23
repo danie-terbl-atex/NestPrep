@@ -22,9 +22,10 @@ import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/live_location/model/member_location.dart';
 import 'package:nestprep/features/live_location/state/live_location_controller.dart';
 import 'package:nestprep/features/live_location/ui/live_location_screen.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -312,7 +313,12 @@ void main() {
 
     await pumpScreen(
       tester,
-      MealPlanScreen(onSelectTab: (_) {}),
+      MealsScreen(
+        view: MealsView.week,
+        onSelectView: (_) {},
+        onSelectTab: (_) {},
+        onOpenRecipe: (_) {},
+      ),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),
       ],

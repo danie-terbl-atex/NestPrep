@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../shared/log/app_log.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../model/packing_preference.dart';
+import '../model/treat_days.dart';
 import 'packing_choice_store.dart';
 
 /// The packing choices in `flutter_secure_storage`, the app's one key-value
@@ -44,10 +45,13 @@ final class SecureStoragePackingChoiceStore implements PackingChoiceStore {
   static String toStored(PackingChoice choice) => jsonEncode({
     'preferences': wireNames(PackingPreference.values, choice.preferences),
     'slots': wireNames(LunchSlot.values, choice.slots),
+    'treatDays': TreatDays.inOrder(choice.treatDays),
   });
 
   /// Names this build does not know are dropped; a choice with no
-  /// compartment left is no choice.
+  /// compartment left is no choice. A choice kept before treat days existed
+  /// has none stored and keeps Friday (lunch-box ADR-0025); an empty list
+  /// stored is a deliberate "no treats".
   static PackingChoice? fromStored(String stored) {
     final Object? decoded;
     try {
@@ -61,6 +65,10 @@ final class SecureStoragePackingChoiceStore implements PackingChoiceStore {
     return (
       preferences: _named(decoded['preferences'], PackingPreference.values),
       slots: slots,
+      treatDays: switch (decoded['treatDays']) {
+        final List<Object?> days => TreatDays.schoolDaysIn(days),
+        _ => {...TreatDays.fridayOnly},
+      },
     );
   }
 

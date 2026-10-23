@@ -1,0 +1,89 @@
+{
+  "id": "cremora-tart",
+  "name": "Cremora tart",
+  "summary": "A retro no-bake fridge tart: creamer powder whipped with condensed milk and lemon juice into a tangy, mousse-like filling in a biscuit crust.",
+  "about": "Cremora tart is named after the coffee creamer it is made with, a South African pantry staple since the 1960s. The no-bake tart spread through community and school-bazaar recipe books and is now a retro classic.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "kidFriendly",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Tea biscuits",
+      "quantity": 200,
+      "unit": "g",
+      "note": "coconut tea biscuits, finely crushed",
+      "group": "For the base"
+    },
+    {
+      "name": "Butter",
+      "quantity": 100,
+      "unit": "g",
+      "note": "melted",
+      "group": "For the base"
+    },
+    {
+      "name": "Non-dairy creamer powder",
+      "quantity": 250,
+      "unit": "g",
+      "note": "coffee creamer; it contains milk protein",
+      "group": "For the filling"
+    },
+    {
+      "name": "Boiling water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Condensed milk",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "385 g",
+      "group": "For the filling"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "about 3 lemons",
+      "group": "For the filling"
+    }
+  ],
+  "steps": [
+    "Mix the biscuit crumbs with the melted butter. Keep back 2 tbsp of crumbs and press the rest firmly over the base and sides of a 23 cm pie dish. Chill for 20 minutes, until firm.",
+    "Beat the creamer powder with the boiling water using an electric mixer for 1–2 minutes, until smooth with no lumps. Refrigerate for 30 minutes, until completely cold.",
+    "Beat the condensed milk while adding the lemon juice in a thin stream; it will thicken as you go.",
+    "Add the cold creamer mixture and beat on high for 10–15 minutes, until thick, pale and holding soft peaks.",
+    "Spread the filling into the crust, sprinkle over the reserved crumbs and refrigerate for at least 6 hours, or overnight, until set.",
+    "Slice with a knife dipped in hot water and serve cold."
+  ],
+  "servings": 10,
+  "prepMinutes": 30,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make it the day before; it keeps 3 days in the fridge.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

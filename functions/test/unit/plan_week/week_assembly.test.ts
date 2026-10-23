@@ -13,9 +13,8 @@ import {
 } from '../../../src/plan_week/week_decisions';
 import type { FoundIdea } from '../../../src/plan_week/schemas';
 import type { LunchPlanFacts } from '../../../src/plan_week/week_documents';
-import { productOf, rulesOf } from './fixtures';
+import { MONDAY, productOf, rulesOf, weekOf } from './fixtures';
 
-const MONDAY = '2026-10-05';
 const MIA = rulesOf({ allergyCodes: ['milk'] });
 const LEO = rulesOf();
 
@@ -57,9 +56,7 @@ function brief(): WeekBrief {
       { memberId: 'mia', rules: MIA },
       { memberId: 'leo', rules: LEO },
     ],
-    [PACKED_MONDAY_FRUIT],
-    MONDAY,
-    20000,
+    weekOf([PACKED_MONDAY_FRUIT], 20000),
   );
 }
 
@@ -88,7 +85,7 @@ describe('a product the phone found, checked again before Jev sees it', () => {
       fromAisle: false,
       products: [productOf({ name: 'Yoghurt 6 x 100g', allergens: ['milk'] })],
     };
-    const onlyMilk = weekBriefFrom([milkIdea], [{ memberId: 'mia', rules: MIA }], [], MONDAY, null);
+    const onlyMilk = weekBriefFrom([milkIdea], [{ memberId: 'mia', rules: MIA }], weekOf([], null));
     expect(onlyMilk.products).toEqual([]);
     expect(onlyMilk.removed).toBe(1);
   });
@@ -126,9 +123,10 @@ describe('what Jev is asked about the week', () => {
 
   it('carries the packing lines only when the parent chose some', () => {
     expect(weekDecisionRequest(brief()).state).not.toHaveProperty('packing');
-    const packed = weekBriefFrom(IDEAS, twoKids, [], MONDAY, null, {
+    const packed = weekBriefFrom(IDEAS, twoKids, weekOf([], null), {
       slots: ['fruit', 'snack', 'treat'],
       preferences: ['noFridge'],
+      treatDays: [5],
     });
     expect(weekDecisionRequest(packed).state).toHaveProperty('packing');
   });
@@ -174,9 +172,7 @@ describe('the week NestPrep builds from what Jev said', () => {
     const b = weekBriefFrom(
       [fruitIdea({ productId: 'apples' }, { productId: 'pears', name: 'Pears 1kg' })],
       twoKids,
-      [],
-      MONDAY,
-      null,
+      weekOf([], null),
     );
     const week = assembleWeek(b, fits(b, {}));
     for (const day of [1, 2, 3, 4, 5]) {
@@ -190,9 +186,7 @@ describe('the week NestPrep builds from what Jev said', () => {
     const b = weekBriefFrom(
       [fruitIdea({ productId: 'apples' }, { productId: 'pears', name: 'Pears 1kg' })],
       [{ memberId: 'leo', rules: LEO }],
-      [],
-      MONDAY,
-      null,
+      weekOf([], null),
     );
     const week = assembleWeek(b, fits(b, { 'p-1': 0.95, 'p-2': 0.6 }));
     const apples = week.lunches.filter((l) => l.productId === 'apples').length;
@@ -204,9 +198,7 @@ describe('the week NestPrep builds from what Jev said', () => {
     const b = weekBriefFrom(
       [fruitIdea({ productId: 'apples' })],
       [{ memberId: 'leo', rules: LEO }],
-      [],
-      MONDAY,
-      null,
+      weekOf([], null),
     );
     expect(assembleWeek(b, fits(b, {})).lunches).toHaveLength(5);
   });
@@ -219,11 +211,11 @@ describe('the week NestPrep builds from what Jev said', () => {
       ),
     ];
     const kids = [{ memberId: 'leo', rules: LEO }];
-    const rich = weekBriefFrom(ideas, kids, [], MONDAY, null);
+    const rich = weekBriefFrom(ideas, kids, weekOf([], null));
     const generous = assembleWeek(rich, fits(rich, { 'p-1': 0.99, 'p-2': 0.7 }));
     expect(generous.lunches.filter((l) => l.productId === 'berries')).toHaveLength(3);
 
-    const tight = weekBriefFrom(ideas, kids, [], MONDAY, 5000);
+    const tight = weekBriefFrom(ideas, kids, weekOf([], 5000));
     const week = assembleWeek(tight, fits(tight, { 'p-1': 0.99, 'p-2': 0.7 }));
     expect(week.lunches.every((l) => l.productId === 'apples')).toBe(true);
   });

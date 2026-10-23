@@ -3,6 +3,7 @@ import { FieldValue, type Firestore } from 'firebase-admin/firestore';
 import type { KidAuthAccounts } from '../accounts/kid_auth_accounts';
 import { KID_PAIRINGS } from '../accounts/kid_documents';
 import { FEED_TOKENS } from '../calendar_sync/sync_documents';
+import { endHouseholdLinks } from '../coparent/end_household_links';
 import { pushAccountClaims } from '../household/access_claim';
 import { type HouseholdDocument, INVITES, householdRef, userRef } from '../household/documents';
 import { STORE_PURCHASES } from '../subscriptions/subscription_documents';
@@ -21,7 +22,7 @@ export interface HouseholdEnding {
 
 /**
  * Ends a household whose last adult is deleting their account (accounts
- * ADR-0006): everything in it goes — profiles, children's details, documents
+ * ADR-0006) or closing it (household ADR-0007): everything in it goes — profiles, children's details, documents
  * and vaults with their bytes, plans, lists — and everybody else who was in it
  * loses it cleanly.
  *
@@ -52,6 +53,8 @@ export async function endHousehold(
   await deleteWhereHousehold(store, KID_PAIRINGS, householdId);
   await deleteWhereHousehold(store, FEED_TOKENS, householdId);
   await unlinkPurchases(store, householdId);
+  // The other home of a child in two homes is told, and keeps what it saw.
+  await endHouseholdLinks(store, householdId);
 
   await store.recursiveDelete(householdRef(store, householdId));
   await objects.deletePrefix(householdObjectPrefix(householdId));

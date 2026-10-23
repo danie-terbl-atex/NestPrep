@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_budget.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_budget_week.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_price.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
@@ -54,6 +56,49 @@ void main() {
       expect(week().reading?.budget, const Money(25000));
     },
   );
+
+  test('follows the board to next week, and prices that week alone', () async {
+    await arrive(
+      prices: [
+        const LunchPrice(
+          id: 'apple',
+          cents: 450,
+          updatedBy: Fixtures.samMemberId,
+        ),
+      ],
+    );
+    harness.board.goToNextWeek();
+    // Never last week's money under next week's name while it loads.
+    expect(harness.budget.week, isA<AsyncLoading<LunchBudgetWeek>>());
+    await pumpEventQueue();
+    harness.lunch.emit(
+      plans: [
+        LunchFixtures.plan(
+          LunchFixtures.ayandaId,
+          slots: {
+            LunchFixtures.key(1, LunchSlot.fruit): LunchPick.of(
+              LunchFixtures.apple,
+            ),
+            LunchFixtures.key(2, LunchSlot.fruit): LunchPick.of(
+              LunchFixtures.apple,
+            ),
+          },
+        ),
+        LunchFixtures.plan(
+          LunchFixtures.ayandaId,
+          week: LunchFixtures.week.next,
+          slots: {
+            LunchFixtures.key(1, LunchSlot.fruit): LunchPick.of(
+              LunchFixtures.apple,
+            ),
+          },
+        ),
+      ],
+    );
+    await pumpEventQueue();
+    expect(week().board.week, LunchFixtures.week.next);
+    expect(week().spent, const Money(450));
+  });
 
   test(
     'a price and a budget are written in whole cents, in the viewer’s name',

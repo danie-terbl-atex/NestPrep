@@ -56,6 +56,14 @@ abstract interface class HouseholdDirectory {
 
   Future<void> leaveHousehold(String householdId);
 
+  /// Ends the household for good, with everything in it, and keeps the
+  /// caller's account (household ADR-0007). Only its last adult may; the
+  /// server checks that, and the typed [confirmation], again.
+  Future<void> closeHousehold({
+    required String householdId,
+    required String confirmation,
+  });
+
   Future<void> removeMember({
     required String householdId,
     required String memberId,

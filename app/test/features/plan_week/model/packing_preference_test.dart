@@ -9,15 +9,14 @@ import 'package:nestprep/features/plan_week/model/packing_preference.dart';
 /// the names, the Function reads them.
 void main() {
   test('are the same names, in the same order, as the server holds', () {
-    final server = File(
-      '../functions/src/plan_week/packing_preferences.ts',
-    ).readAsStringSync();
-    final literal = RegExp(
-      r'PACKING_PREFERENCES = \[([^\]]*)\]',
-    ).firstMatch(server)!;
-    final names = RegExp(
-      "'([^']*)'",
-    ).allMatches(literal.group(1)!).map((name) => name.group(1)).toList();
+    final server = File('../functions/src/plan_week/packing_preferences.ts')
+        .readAsStringSync();
+    final literal = RegExp(r'PACKING_PREFERENCES = \[([^\]]*)\]')
+        .firstMatch(server)!;
+    final names = RegExp("'([^']*)'")
+        .allMatches(literal.group(1)!)
+        .map((name) => name.group(1))
+        .toList();
     expect(names, [for (final value in PackingPreference.values) value.name]);
   });
 
@@ -26,12 +25,14 @@ void main() {
       const PackingChoice choice = (
         preferences: {PackingPreference.airFryer, PackingPreference.healthier},
         slots: {LunchSlot.main, LunchSlot.snack},
+        treatDays: {DateTime.monday, DateTime.friday},
       );
       final back = SecureStoragePackingChoiceStore.fromStored(
         SecureStoragePackingChoiceStore.toStored(choice),
       )!;
       expect(back.preferences, choice.preferences);
       expect(back.slots, choice.slots);
+      expect(back.treatDays, choice.treatDays);
     });
 
     test('drops names this build does not know, and is no choice with no '

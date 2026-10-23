@@ -1,0 +1,39 @@
+{
+  "id": "roosterkoek",
+  "name": "Roosterkoek",
+  "summary": "Braai-grilled bread rolls: soft white dough baked on the grid over gentle coals until crusty and charred, eaten hot with butter, apricot jam and cheese.",
+  "about": "Roosterkoek means grid cake: a simple yeast dough baked straight on the braai grid, as farm families and campers have long done over the last coals. Split and eaten warm with butter, jam and cheese, roosterkoek are as much a part of a South African braai as the meat, and leftover rolls make the next morning's breakfast.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast", "lunch"],
+  "placement": { "breakfast": "main", "lunch": "side" },
+  "tags": ["braai", "traditional", "baking"],
+  "allergens": ["milk", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 500, "unit": "g", "note": "plus extra for shaping", "group": "For the dough" },
+    { "name": "Instant dry yeast", "quantity": 10, "unit": "g", "note": "1 sachet", "group": "For the dough" },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": "For the dough" },
+    { "name": "Salt", "quantity": 1.5, "unit": "tsp", "note": null, "group": "For the dough" },
+    { "name": "Lukewarm water", "quantity": 325, "unit": "ml", "note": null, "group": "For the dough" },
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": "plus extra for the bowl", "group": "For the dough" },
+    { "name": "Butter", "quantity": 80, "unit": "g", "note": null, "group": "To serve" },
+    { "name": "Apricot jam", "quantity": 0.5, "unit": "cup", "note": null, "group": "To serve" },
+    { "name": "Cheddar cheese", "quantity": 150, "unit": "g", "note": "grated or sliced", "group": "To serve" }
+  ],
+  "steps": [
+    "Mix the flour, yeast, sugar and salt in a large bowl. Add the water and oil and mix with your hand into a soft, slightly sticky dough.",
+    "Turn the dough out onto a floured surface and knead for 8 to 10 minutes, until smooth and springy.",
+    "Put the dough in an oiled bowl, cover with a damp cloth and leave in a warm spot for about 1 hour, until doubled in size.",
+    "Knock the dough back and divide it into 8 pieces. Shape each into a ball, flatten slightly to about 3 cm thick and place on a floured tray. Cover and leave to rise again for 15 minutes.",
+    "Meanwhile, get the coals down to low heat: you should be able to hold your hand at grid height for 8 to 10 seconds. Too hot and the rolls burn before the middle cooks.",
+    "Place the rolls on the grid (a hinged grid makes turning easy) and bake for 15 to 20 minutes, turning every 3 to 4 minutes, until golden and charred in places, and the rolls sound hollow when tapped underneath.",
+    "Rest for 5 minutes, then split open while warm and fill with butter, apricot jam and cheese."
+  ],
+  "servings": 8,
+  "prepMinutes": 25,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the dough in the morning and keep it covered in the fridge; let it come to room temperature for 30 minutes before shaping.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

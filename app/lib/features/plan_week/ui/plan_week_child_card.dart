@@ -94,16 +94,15 @@ class PlanWeekChildCard extends StatelessWidget {
       );
     }
     final added = child.addedAt(day, slot);
-    if (added == null &&
-        (!slot.isAutoFilledOn(day) || !plan.slots.contains(slot))) {
-      return null;
-    }
+    if (added == null && !plan.fills(day, slot)) return null;
     final product = added == null ? null : plan.productOf(added);
     return PlanWeekItemPill(
       key: ValueKey('plan-pill-${child.childId}-$day-${slot.name}'),
       slot: slot,
       look: added == null ? PillLook.empty : PillLook.added,
-      name: product?.product.name,
+      name:
+          product?.product.name ??
+          (added == null ? null : plan.dishOf(added)?.draft.name),
       origin: added?.origin,
       onTap: isEditable
           ? () => _swap(context, day: day, slot: slot, dayName: name)

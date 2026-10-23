@@ -1,0 +1,125 @@
+{
+  "id": "boeber",
+  "name": "Boeber",
+  "summary": "Spiced vermicelli and sago milk pudding: toasted vermicelli and sago simmered in milk with cardamom, cinnamon and rose water, served warm.",
+  "about": "Boeber is a Cape Malay sweet milk drink-pudding traditionally served on the fifteenth night of Ramadan to mark the middle of the fast. Families make a big pot to share with neighbours; some make it thick enough for a spoon, others thin enough to drink from a glass.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "capeMalay",
+    "traditional",
+    "comfort"
+  ],
+  "allergens": [
+    "treeNut",
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Sago",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "for soaking the sago",
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Fine vermicelli",
+      "quantity": 80,
+      "unit": "g",
+      "note": "broken into short pieces",
+      "group": null
+    },
+    {
+      "name": "Cinnamon sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cardamom pods",
+      "quantity": 6,
+      "unit": null,
+      "note": "lightly crushed",
+      "group": null
+    },
+    {
+      "name": "Milk",
+      "quantity": 1.5,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sultanas",
+      "quantity": 50,
+      "unit": "g",
+      "note": "optional",
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 125,
+      "unit": "g",
+      "note": "more to taste",
+      "group": null
+    },
+    {
+      "name": "Rose water",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Flaked almonds",
+      "quantity": 40,
+      "unit": "g",
+      "note": "toasted",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Soak the sago in the water for 20 minutes, until the pearls swell.",
+    "Melt the butter in a large heavy saucepan over medium heat. Add the vermicelli, cinnamon and cardamom and fry, stirring constantly, for 3 to 4 minutes, until the vermicelli is evenly golden brown.",
+    "Pour in the milk, add the soaked sago with its water and the sultanas, and bring slowly to a simmer over medium heat, stirring so it does not boil over or catch.",
+    "Turn the heat to low and simmer for 25 to 30 minutes, stirring often, until the sago pearls are clear and the boeber has thickened to the texture of pouring cream.",
+    "Stir in the sugar until dissolved, then the rose water. Taste and add more sugar if you like. If it is too thick, loosen with a little hot milk.",
+    "Fish out the cinnamon sticks and cardamom pods, pour into glasses or bowls, scatter with toasted almonds and serve warm."
+  ],
+  "servings": 8,
+  "prepMinutes": 10,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Thickens as it stands; reheat gently with extra milk. Keeps 2 days in the fridge.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

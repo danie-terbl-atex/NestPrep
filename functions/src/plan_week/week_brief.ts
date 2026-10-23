@@ -1,14 +1,17 @@
-import { exclusionFor, hasAnyAllergy } from './child_exclusion';
-import { isAllergen, type ChildFoodRules } from './food_safety';
-import { openCompartments } from './open_compartments';
+import { inWeekItems, type InWeekItem } from './basket';
+import { isProductAllowedFor } from './child_exclusion';
+import { openCompartments, type SchoolWeek } from './open_compartments';
 import {
   NO_PACKING_CHOICES,
   type PackingChoices,
   type PackingPreference,
 } from './packing_preferences';
 import type { FoundIdea, FoundProduct } from './schemas';
-import type { LunchPlanFacts, LunchSlot } from './week_documents';
+import { dishEntryFor, type WeekBriefPart } from './week_dishes';
+import type { LunchPlanFacts, LunchSlot, StoredPrice } from './week_documents';
 import type { ChildFacts } from './week_reads';
+
+export { isProductAllowedFor } from './child_exclusion';
 
 /**
  * The week's products as NestPrep holds them before Jev scores them
@@ -27,6 +30,14 @@ export interface WeekBriefProduct {
   readonly product: FoundProduct;
   /** Children this product may go to — refs, after NestPrep's check. */
   readonly childRefs: readonly string[];
+  /**
+   * Present when this entry is a dish (lunch-box ADR-0021): [product] is then
+   * the dish itself (`dish:<ideaId>`, no price of its own) and these are the
+   * ingredient products it is bought as — one per ingredient the store had.
+   */
+  readonly parts?: readonly WeekBriefPart[];
+  /** A dish's every ingredient name, bought or not — what Jev reads it as. */
+  readonly madeWith?: readonly string[];
 }
 
 export interface WeekBriefChild {
@@ -35,8 +46,19 @@ export interface WeekBriefChild {
   readonly open: readonly string[];
 }
 
+/** The week being planned, as the household holds it now. */
+export interface PlannedWeek extends SchoolWeek {
+  /** This week's plans and the weeks before; only this week's are read here. */
+  readonly plans: readonly LunchPlanFacts[];
+  readonly budgetCents: number | null;
+  /** Item id → price, for what is already packed this week. */
+  readonly prices: Readonly<Record<string, StoredPrice>>;
+}
+
 export interface WeekBrief {
   readonly budgetCents: number | null;
+  /** What every child's week already holds — the basket starts there (ADR-0012 §4). */
+  readonly alreadyInWeek: readonly InWeekItem[];
   readonly children: readonly WeekBriefChild[];
   readonly products: readonly WeekBriefProduct[];
   /** Products the phone sent that no child may have after all. */
@@ -47,9 +69,7 @@ export interface WeekBrief {
 export function weekBriefFrom(
   ideas: readonly FoundIdea[],
   children: readonly ChildFacts[],
-  plans: readonly LunchPlanFacts[],
-  monday: string,
-  budgetCents: number | null,
+  week: PlannedWeek,
   choices: PackingChoices = NO_PACKING_CHOICES,
 ): WeekBrief {
   const briefChildren = children.map((child, index) => ({
@@ -57,8 +77,10 @@ export function weekBriefFrom(
     memberId: child.memberId,
     rules: child.rules,
     open: openCompartments(
-      plans.find((plan) => plan.childId === child.memberId && plan.weekStart === monday),
+      week.plans.find((plan) => plan.childId === child.memberId && plan.weekStart === week.monday),
+      week,
       choices.slots,
+      choices.treatDays,
     ),
   }));
   const byMember = new Map(briefChildren.map((child) => [child.memberId, child]));
@@ -68,6 +90,16 @@ export function weekBriefFrom(
   ideas.forEach((idea, index) => {
     if (!choices.slots.includes(idea.slot)) return;
     const forWhom = idea.childIds.flatMap((id) => byMember.get(id) ?? []);
+    if (idea.dish !== undefined && idea.slot === 'main') {
+      const entry = dishEntryFor(idea, idea.dish, forWhom, {
+        ref: `p-${String(products.length + 1)}`,
+        ideaRef: `idea-${String(index + 1)}`,
+        partsSoFar: products.reduce((sum, product) => sum + (product.parts?.length ?? 0), 0),
+      });
+      if (entry === null) removed += 1;
+      else products.push(entry);
+      return;
+    }
     for (const product of idea.products) {
       const childRefs = forWhom
         .filter((child) => isProductAllowedFor(child.rules, product))
@@ -89,7 +121,8 @@ export function weekBriefFrom(
   });
 
   return {
-    budgetCents,
+    budgetCents: week.budgetCents,
+    alreadyInWeek: inWeekItems(week.plans, week.monday, week.prices),
     children: briefChildren
       .filter((child) => child.open.length > 0)
       .map(({ ref, memberId, open }) => ({ ref, memberId, open })),
@@ -97,14 +130,4 @@ export function weekBriefFrom(
     removed,
     preferences: choices.preferences,
   };
-}
-
-/**
- * Whether a product may go in this child's box: nothing it is known or named
- * to contain that they must avoid, no free-text allergy or dislike in its
- * name — and, for a child with any allergy, the store said what is in it.
- */
-export function isProductAllowedFor(rules: ChildFoodRules, product: FoundProduct): boolean {
-  if (!product.allergensKnown && hasAnyAllergy(rules)) return false;
-  return exclusionFor(rules, product.name, product.allergens.filter(isAllergen)) === null;
 }

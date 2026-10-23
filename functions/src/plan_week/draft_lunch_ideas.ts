@@ -40,12 +40,16 @@ export const draftLunchIdeas = onCall(
     const uid = requireUid(request.auth);
     const input = parseInput(draftLunchIdeasInput, request.data);
     const store = db();
-    const { caller, monday, facts, children } = await openPlanning(store, input, uid);
+    const { caller, monday, today, facts, children } = await openPlanning(store, input, uid);
 
-    const brief = ideaBriefFrom(children, facts.plans, monday, facts.budgetCents, input.aisle, {
-      slots: input.slots,
-      preferences: input.preferences,
-    });
+    const brief = ideaBriefFrom(
+      children,
+      facts.plans,
+      { monday, today },
+      facts.budgetCents,
+      input.aisle,
+      { slots: input.slots, preferences: input.preferences, treatDays: input.treatDays },
+    );
     if (!hasOpenCompartments(brief)) {
       // A week already packed is an answer, and costs the household nothing.
       return { week: input.week, budgetCents: facts.budgetCents, ideas: [], callsLeft: null };
@@ -69,7 +73,9 @@ export const draftLunchIdeas = onCall(
       aisleShelves: brief.aisle.length,
       slots: input.slots.length,
       preferences: input.preferences.length,
+      treatDays: input.treatDays.length,
       ideas: ideas.length,
+      dishes: ideas.filter((idea) => idea.recipe !== undefined).length,
       struckOut: ideas.reduce((sum, idea) => sum + idea.excluded.length, 0),
     });
     return {

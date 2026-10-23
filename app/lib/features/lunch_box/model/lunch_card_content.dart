@@ -86,6 +86,18 @@ class LunchCardContent {
     ];
   }
 
+  /// Each main in the week's boxes once, in the order the week packs them —
+  /// what a card says when [itemNames] is more than it has room for.
+  List<String> get mainNames {
+    final seen = <String>{};
+    return [
+      for (final child in children)
+        for (final day in child.days)
+          if (day.itemNames.firstOrNull case final name?)
+            if (seen.add(name)) name,
+    ];
+  }
+
   static String? _labelFor(Member member, LunchCardNaming naming) =>
       switch (naming) {
         LunchCardNaming.none => null,

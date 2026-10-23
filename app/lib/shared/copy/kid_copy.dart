@@ -9,10 +9,6 @@ import '../failure/app_failure.dart';
 /// shorter, warmer and never blames: a seven-year-old who typed a letter wrong
 /// is told to try again, not that a credential was invalid.
 abstract final class KidCopy {
-  // ---- the way in, on the sign-in screen ----
-  static const signInPrompt = 'Are you a kid?';
-  static const signInWithCode = 'I have a code from a grown-up';
-
   // ---- the code screen, read by a child ----
   static const codeTitle = 'Hello there!';
   static const codeBody =

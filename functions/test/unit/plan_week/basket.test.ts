@@ -1,26 +1,25 @@
 import { describe, expect, it } from 'vitest';
 
-import { basketCents, basketLines } from '../../../src/plan_week/basket';
+import { weekBasketCents, type NewBox } from '../../../src/plan_week/basket';
+
+const box = (productId: string, name = productId): NewBox => ({ productId, slot: 'snack', name });
 
 describe('the basket is what the till charges, in whole packs (lunch-box ADR-0012)', () => {
   it('rounds boxes up to whole packs, for every child together', () => {
-    const lunches = Array.from({ length: 10 }, () => ({ productId: 'yoghurt' }));
-    const lines = basketLines(lunches, [
-      { productId: 'yoghurt', boxesPerPack: 6, priceCents: 4599 },
-    ]);
-    expect(lines).toEqual([{ productId: 'yoghurt', boxes: 10, packs: 2, cents: 9198 }]);
+    const boxes = Array.from({ length: 10 }, () => box('yoghurt'));
+    expect(weekBasketCents([], boxes, () => ({ boxesPerPack: 6, priceCents: 4599 }))).toBe(9198);
   });
 
-  it('leaves out a pack nobody uses, and sums the rest', () => {
-    const lines = basketLines(
-      [{ productId: 'apples' }, { productId: 'wraps' }],
-      [
-        { productId: 'apples', boxesPerPack: 1, priceCents: 800 },
-        { productId: 'wraps', boxesPerPack: 8, priceCents: 3299 },
-        { productId: 'unused', boxesPerPack: 1, priceCents: 999 },
-      ],
-    );
-    expect(lines.map((line) => line.productId)).toEqual(['apples', 'wraps']);
-    expect(basketCents(lines)).toBe(4099);
+  it('sums every product, each rounded on its own', () => {
+    const packs: Record<string, { boxesPerPack: number; priceCents: number }> = {
+      apples: { boxesPerPack: 1, priceCents: 800 },
+      wraps: { boxesPerPack: 8, priceCents: 3299 },
+    };
+    const cents = weekBasketCents([], [box('apples'), box('wraps')], (id) => {
+      const pack = packs[id];
+      if (pack === undefined) throw new Error(id);
+      return pack;
+    });
+    expect(cents).toBe(4099);
   });
 });

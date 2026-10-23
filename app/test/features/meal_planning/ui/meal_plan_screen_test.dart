@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -46,7 +47,12 @@ void main() {
     double scale = 1,
   }) => pumpScreen(
     tester,
-    MealPlanScreen(onSelectTab: (_) {}),
+    MealsScreen(
+      view: MealsView.week,
+      onSelectView: (_) {},
+      onSelectTab: (_) {},
+      onOpenRecipe: (_) {},
+    ),
     providers: [
       ChangeNotifierProvider<MealPlanController>.value(value: controller),
     ],
@@ -67,7 +73,9 @@ void main() {
   testWidgets('holds the layout while it loads', (tester) async {
     await pump(tester);
     await tester.pump();
-    expect(find.text(AppCopy.mealsTitle), findsOneWidget);
+    // The header and the switch stay while the week loads under them.
+    expect(find.text(AppCopy.mealsCopyLastWeek), findsOneWidget);
+    expect(find.text(MealsCopy.thisWeek), findsOneWidget);
   });
 
   testWidgets('offers copying last week when nothing is planned', (

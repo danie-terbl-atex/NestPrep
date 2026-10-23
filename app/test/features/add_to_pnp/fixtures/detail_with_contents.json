@@ -1,0 +1,83 @@
+{
+ "code": "000000000000838685_EA",
+ "classifications": [
+  {
+   "code": "Silo/allergens_warnings",
+   "features": [
+    {
+     "code": "PnPClassification/1.0/Silo/allergens_warnings.silo/allergens_warnings/allergen_warning",
+     "comparable": true,
+     "featureValues": [
+      {
+       "value": "May contain soya"
+      },
+      {
+       "value": "Contains barley"
+      }
+     ],
+     "name": "allergen_warning",
+     "range": false,
+     "type": "Silo/allergens_warnings/allergen_warning"
+    }
+   ],
+   "name": "Allergen Warnings"
+  },
+  {
+   "code": "Silo/allergens",
+   "features": [
+    {
+     "code": "PnPClassification/1.0/Silo/allergens.silo/allergens/allergen",
+     "comparable": true,
+     "featureValues": [
+      {
+       "value": "Gluten"
+      }
+     ],
+     "name": "allergen",
+     "range": false,
+     "type": "Silo/allergens/allergen"
+    }
+   ],
+   "name": "Allergens"
+  },
+  {
+   "code": "Silo/endorsements",
+   "features": [
+    {
+     "code": "PnPClassification/1.0/Silo/endorsements.silo/endorsements/endorsement",
+     "comparable": true,
+     "featureValues": [
+      {
+       "value": "Kosher"
+      },
+      {
+       "value": "Halaal"
+      }
+     ],
+     "name": "endorsement",
+     "range": false,
+     "type": "Silo/endorsements/endorsement"
+    }
+   ],
+   "name": "Endorsements"
+  },
+  {
+   "code": "Silo/ingredients",
+   "features": [
+    {
+     "code": "PnPClassification/1.0/Silo/ingredients.silo/ingredients/ingredient",
+     "comparable": true,
+     "featureValues": [
+      {
+       "value": "Potatoes, Vegetable Oil (Palm Fruit and/or Maize Germ or Sunflower Seed) With Antioxidant (TBHQ), Corn Flour, Acidity Regulators (E262, E330, E296), Sugars, Salt, Potassium Chloride (E508), Vegetable Powders (Onion, Garlic), MSG [Flavour Enhancer (E621)], Yeast Extract (Barley Gluten), Fruit Powder, Anticaking Agent (E551), Flavourings, Colourants [E150(C), E160(C), E110, E122, E124, E1331 Flavour Enhancers (E627, E631), Spices (Irradiated), Sodium Saccharin [(E954) Non-Nutritive Sweetener], Aspartame* ((E951) Non-Nutitive Sweetener, *Contains Phenylalanine"
+      }
+     ],
+     "name": "ingredient",
+     "range": false,
+     "type": "Silo/ingredients/ingredient"
+    }
+   ],
+   "name": "Ingredients"
+  }
+ ]
+}

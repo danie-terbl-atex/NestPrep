@@ -1,0 +1,124 @@
+{
+  "id": "flapjacks",
+  "name": "Flapjacks",
+  "summary": "Small, thick South African pancakes, light and golden, stacked with butter, golden syrup and berries.",
+  "about": "Flapjacks are what South Africans call small, thick pancakes — also called crumpets in many homes — made for weekend breakfasts, tea time and school cake sales.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "quick"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Milk",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Butter",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "melted, plus a little for the pan",
+      "group": "For the batter"
+    },
+    {
+      "name": "Butter",
+      "quantity": null,
+      "unit": null,
+      "note": "to serve",
+      "group": "To serve"
+    },
+    {
+      "name": "Golden syrup",
+      "quantity": null,
+      "unit": null,
+      "note": "to serve",
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh berries",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Sift the flour, baking powder and salt into a bowl and stir in the sugar.",
+    "In a jug, whisk the eggs, milk, vanilla and melted butter together.",
+    "Make a well in the flour, pour in the egg mixture and stir just until you have a smooth, thick batter that drops slowly from the spoon. A few small lumps are fine; overmixing makes them tough. Leave it for 5 minutes.",
+    "Heat a non-stick frying pan over medium-low heat and wipe it with a little butter. Drop in tablespoons of batter, 4 or 5 at a time, so they spread to about 8 cm.",
+    "Cook for 1½–2 minutes, until bubbles pop on the surface and the edges look dry, then flip and cook for 1 minute more, until golden and springy. Turn the heat down if they brown too fast. Keep them warm under a clean tea towel.",
+    "Serve stacked with butter, golden syrup and berries, or with jam and cream."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

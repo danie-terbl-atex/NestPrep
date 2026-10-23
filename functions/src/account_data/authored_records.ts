@@ -16,6 +16,7 @@ export const AUTHORED_RECORDS: readonly { collection: string; authorField: strin
   { collection: 'meals', authorField: 'addedBy' },
   { collection: 'lunchItems', authorField: 'addedBy' },
   { collection: 'lunchFavourites', authorField: 'createdBy' },
+  { collection: 'recipes', authorField: 'addedBy' },
   { collection: 'documentFolders', authorField: 'createdBy' },
   { collection: 'documents', authorField: 'uploadedBy' },
   { collection: 'rewards', authorField: 'createdBy' },

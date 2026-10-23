@@ -1,0 +1,10 @@
+// ---- ready-made starter boxes for Fill the week (lunch-box ADR-0018, ADR-0020) ----
+// NestPrep's own boxes, nobody's data: anybody signed in may read them, and
+// no client writes one — the catalogue seed does. The app lists the published
+// ones by `order`, twenty at most, so a list asking for more is refused.
+
+match /lunchStarterBoxes/{boxId} {
+  allow get: if isSignedIn();
+  allow list: if isSignedIn() && request.query.limit <= 20;
+  allow write: if false;
+}

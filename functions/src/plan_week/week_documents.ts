@@ -17,6 +17,7 @@ export const LUNCH_PLANS = 'lunchPlans';
 export const SCHOOLS = 'schools';
 export const LUNCH_BUDGET = 'lunchBudget';
 export const WEEKLY_BUDGET = 'weekly';
+export const LUNCH_PRICES = 'lunchPrices';
 
 /** The bounds the app's repositories read with (BE-08). */
 export const PLAN_LIMIT = 120;
@@ -84,6 +85,16 @@ export const storedSchool = z.object({ nutFree: z.boolean().optional().default(f
 
 /** The household's weekly lunch budget, whole rand cents (lunch-box ADR-0007). */
 export const storedBudget = z.object({ cents: z.number().int().min(0) });
+
+/**
+ * What the household pays for a library item (`lunchPrices/{itemId}`,
+ * lunch-box ADR-0007): `cents` for a pack that does `portions` boxes.
+ */
+export const storedPrice = z.object({
+  cents: z.number().int().min(0),
+  portions: z.number().int().min(1).optional().default(1),
+});
+export type StoredPrice = z.infer<typeof storedPrice>;
 
 /** `{isoWeekday}_{slot}`, as a lunch plan keys its slots. */
 export function slotKey(day: number, slot: string): string {

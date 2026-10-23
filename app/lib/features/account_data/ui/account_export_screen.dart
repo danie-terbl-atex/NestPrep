@@ -5,9 +5,9 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/ui/back_leading.dart';
+import '../../../shared/ui/fact_list.dart';
 import '../state/account_export_controller.dart';
 import 'export_ready_card.dart';
-import 'fact_list.dart';
 
 /// Download my data (accounts ADR-0006 — POPIA's right of access): what the
 /// file holds, then one button that gathers it, and once it is on the phone,

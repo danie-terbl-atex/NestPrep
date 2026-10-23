@@ -1,0 +1,109 @@
+{
+  "id": "chutney-chicken",
+  "name": "Chutney chicken",
+  "summary": "Chicken pieces baked under a sauce of fruit chutney, mayonnaise and brown onion soup until sticky and caramelised.",
+  "about": "Chutney chicken is a long-standing South African family supper, also called vra-na-meer-hoender, “ask-for-more chicken”. Chicken portions bake under fruit chutney, mayonnaise and onion soup powder until sticky, and go to the table with rice and salad.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "budget",
+    "comfort"
+  ],
+  "allergens": [
+    "egg",
+    "wheat",
+    "soy",
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Chicken portions",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "thighs and drumsticks, bone-in and skin-on",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chutney",
+      "quantity": 250,
+      "unit": "ml",
+      "note": "peach or original fruit chutney",
+      "group": null
+    },
+    {
+      "name": "Mayonnaise",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Brown onion soup powder",
+      "quantity": 1,
+      "unit": "pack",
+      "note": "50 g",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Worcestershire sauce",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, grated",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Season the chicken with the salt and pepper and arrange it skin side up in a single layer in an ovenproof dish of about 30 × 25 cm.",
+    "Whisk the chutney, mayonnaise, soup powder, water, Worcestershire sauce and grated onion together until smooth. Pour it over the chicken, turning the pieces to coat, and finish skin side up.",
+    "Cover with foil and bake for 45 minutes.",
+    "Uncover, spoon the sauce over the chicken and turn the oven up to 200 °C. Bake for 20–25 minutes more, until the sauce is bubbling, sticky and dark at the edges and the juices run clear when you pierce the thickest piece. Watch it in the last 10 minutes; the sugar can catch.",
+    "Rest for 5 minutes. Serve with rice, a green salad or cinnamon butternut."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 70,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

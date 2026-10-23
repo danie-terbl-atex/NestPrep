@@ -50,6 +50,7 @@ void main() {
     store.kept[Fixtures.householdId] = (
       preferences: {PackingPreference.healthier},
       slots: {LunchSlot.fruit},
+      treatDays: {DateTime.monday},
     );
     final next = packing();
     await next.restore();
@@ -66,6 +67,7 @@ void main() {
     store.kept[Fixtures.householdId] = (
       preferences: const {},
       slots: {LunchSlot.fruit},
+      treatDays: const {},
     );
     final choices = packing();
     final restoring = choices.restore();

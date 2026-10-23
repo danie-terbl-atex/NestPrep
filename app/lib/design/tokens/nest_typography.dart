@@ -11,10 +11,12 @@ class NestTextStyles {
     required this.headline,
     required this.screenTitle,
     required this.title,
+    required this.cardTitle,
     required this.figure,
     required this.figureSmall,
     required this.titleLight,
     required this.body,
+    required this.reading,
     required this.bodyStrong,
     required this.bodySecondary,
     required this.label,
@@ -31,11 +33,19 @@ class NestTextStyles {
   final TextStyle screenTitle;
   final TextStyle title;
 
+  /// The name on a card in a grid or a shelf — a recipe, two to a row: the
+  /// heading face, a size under [title] so two lines still fit the card.
+  final TextStyle cardTitle;
+
   /// A number or code somebody reads out or types: sans, tabular.
   final TextStyle figure;
   final TextStyle figureSmall;
   final TextStyle titleLight;
   final TextStyle body;
+
+  /// Text read at arm's length while the hands are busy — a recipe's method
+  /// beside the stove: a size up from [body], with more air between lines.
+  final TextStyle reading;
   final TextStyle bodyStrong;
   final TextStyle bodySecondary;
   final TextStyle label;
@@ -87,6 +97,7 @@ class NestTextStyles {
       headline: serif(size: 30, height: 1.1, tracking: -0.45),
       screenTitle: serif(size: 26, height: 1.15, tracking: -0.3),
       title: serif(size: 20, height: 1.2, tracking: -0.1),
+      cardTitle: serif(size: 17, height: 1.25, tracking: -0.1),
       titleLight: serif(
         size: 24,
         height: 1.15,
@@ -108,6 +119,7 @@ class NestTextStyles {
         features: tabular,
       ),
       body: sans(size: 16, weight: FontWeight.w400, height: 1.5),
+      reading: sans(size: 18, weight: FontWeight.w400, height: 1.55),
       bodyStrong: sans(size: 16, weight: FontWeight.w600, height: 1.5),
       bodySecondary: sans(
         size: 15,

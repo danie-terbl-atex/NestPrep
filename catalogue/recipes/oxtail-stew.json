@@ -1,0 +1,142 @@
+{
+  "id": "oxtail-stew",
+  "name": "Oxtail stew",
+  "summary": "Oxtail browned and braised low and slow with onion, carrots and tomato until the meat falls off the bone into a dark, glossy gravy.",
+  "about": "Oxtail is one of South Africa's favourite winter dishes. It takes hours but little work, and families serve it over pap, rice or mash so nothing of the rich gravy is wasted.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "comfort",
+    "traditional",
+    "onePot"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Oxtail",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "cut into pieces",
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "for dusting",
+      "group": null
+    },
+    {
+      "name": "Salt and black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 3,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": null
+    },
+    {
+      "name": "Celery sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced, optional",
+      "group": null
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": null
+    },
+    {
+      "name": "Beef stock",
+      "quantity": 1,
+      "unit": "l",
+      "note": "made from a cube or powder",
+      "group": null
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Dried thyme",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Brown sugar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    }
+  ],
+  "steps": [
+    "Season the oxtail with salt and pepper and toss it in the flour until lightly coated, shaking off the excess.",
+    "Heat the oil in a large heavy pot over medium-high heat. Brown the oxtail in batches, about 3 minutes a side, until deep brown all over. Lift out onto a plate.",
+    "Turn the heat to medium. Fry the onions in the same pot until soft and golden, about 8 minutes, then add the garlic, carrots and celery and fry for 3 minutes more.",
+    "Stir in the tomato paste and cook for 1 minute, then add the tinned tomatoes, stock, bay leaves, thyme and sugar, scraping the bottom of the pot. Return the oxtail and bring to the boil.",
+    "Turn the heat to low, cover and simmer for 3 to 3½ hours, stirring every 30 minutes and adding a splash of water if the gravy gets too thick or starts to catch.",
+    "It is ready when the meat slides off the bone with a fork and the gravy is thick and glossy. If the gravy is still thin, simmer uncovered for 10 to 15 minutes. Skim off the fat on top, taste for salt and serve with pap, rice or mash."
+  ],
+  "servings": 4,
+  "prepMinutes": 25,
+  "cookMinutes": 210,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook it a day ahead; chill overnight, lift off the set fat and reheat gently for 20 minutes.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

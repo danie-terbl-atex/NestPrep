@@ -1,0 +1,41 @@
+{
+  "id": "kota",
+  "name": "Kota",
+  "summary": "A hollowed quarter loaf of white bread stuffed with hot slap chips, fried polony, a Russian, cheese, a fried egg and atchar, the township lunch you eat with both hands.",
+  "about": "Kota takes its name from the quarter loaf that holds it; it is also called spatlo, sphatlho or skhambane. It started at township schools and spaza shops as an affordable, filling lunch and is now sold in every province, each shop with its own build. At home everyone can choose their own fillings.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch"],
+  "placement": { "lunch": "main" },
+  "tags": ["streetFood", "budget", "kidFriendly"],
+  "allergens": ["milk", "egg", "wheat", "soy"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Potatoes", "quantity": 1, "unit": "kg", "note": "peeled, cut into thick chips", "group": null },
+    { "name": "Sunflower oil", "quantity": 1, "unit": "l", "note": "for deep-frying", "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Chip spice", "quantity": 1, "unit": "tsp", "note": "or paprika", "group": null },
+    { "name": "Russian sausages", "quantity": 4, "unit": null, "note": "split lengthways", "group": null },
+    { "name": "Polony slices", "quantity": 8, "unit": null, "note": null, "group": null },
+    { "name": "Eggs", "quantity": 4, "unit": null, "note": null, "group": null },
+    { "name": "Unsliced white bread", "quantity": 1, "unit": "loaf", "note": "cut into 4 quarters", "group": null },
+    { "name": "Processed cheese slices", "quantity": 4, "unit": null, "note": null, "group": null },
+    { "name": "Mango atchar", "quantity": 0.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Tomato sauce", "quantity": 4, "unit": "tbsp", "note": "optional", "group": null }
+  ],
+  "steps": [
+    "Rinse the chips in cold water and dry them very well on a clean tea towel.",
+    "Heat the oil in a deep pot to about 160 °C (a chip dropped in sizzles gently). Fry the chips in two batches for 6 to 8 minutes each, until soft and pale gold, then drain on paper towel and sprinkle with the salt and chip spice. Keep warm.",
+    "Spoon 1 tbsp of the hot frying oil into a frying pan over medium heat (leave the rest to cool before storing) and fry the Russians for 3 to 4 minutes a side until browned and blistered, then fry the polony for about 1 minute a side until the edges curl. Keep warm.",
+    "Fry the eggs in the same pan over medium heat for 3 minutes, until the whites are set but the yolks are still soft.",
+    "Cut a lid from the top of each quarter loaf and scoop out most of the soft crumb, leaving a shell about 1.5 cm thick. Set the lids aside.",
+    "Fill each loaf: a handful of chips, then 2 slices of polony and a Russian, more chips, a cheese slice so it melts on the hot chips, a fried egg and 2 tbsp atchar. Add tomato sauce if you like.",
+    "Put the lid back on and serve at once, while the chips are hot and the cheese is soft."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

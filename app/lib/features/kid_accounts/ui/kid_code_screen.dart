@@ -17,6 +17,14 @@ class KidCodeScreen extends StatelessWidget {
 
   static const path = '/sign-in/kid';
 
+  /// The query a code typed on the sign-in screen's code sheet arrives in.
+  static const codeParameter = 'code';
+
+  /// The screen with [code] already typed, redeemed as it opens (accounts
+  /// ADR-0009): the child typed it once, on the sign-in screen.
+  static String pathWithCode(String code) =>
+      Uri(path: path, queryParameters: {codeParameter: code}).toString();
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<KidCodeController>();

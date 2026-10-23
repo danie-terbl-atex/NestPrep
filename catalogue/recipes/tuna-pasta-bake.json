@@ -1,0 +1,42 @@
+{
+  "id": "tuna-pasta-bake",
+  "name": "Tuna pasta bake",
+  "summary": "Penne, tinned tuna and sweetcorn folded through a cheesy white sauce and baked until bubbling and golden on top, a cupboard-staple family dinner.",
+  "about": "Made from what is already in the cupboard, tuna pasta bake is one of the weeknight dinners South African families come back to most. It stretches a few tins to feed a crowd and reheats well for lunch the next day.",
+  "cuisine": "international",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["budget", "kidFriendly", "comfort"],
+  "allergens": ["milk", "wheat", "fish"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Penne pasta", "quantity": 500, "unit": "g", "note": null, "group": null },
+    { "name": "Butter", "quantity": 60, "unit": "g", "note": null, "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "finely chopped", "group": null },
+    { "name": "Cake flour", "quantity": 4, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Milk", "quantity": 1, "unit": "l", "note": null, "group": null },
+    { "name": "Cheddar cheese", "quantity": 200, "unit": "g", "note": "grated, divided", "group": null },
+    { "name": "Mustard powder", "quantity": 1, "unit": "tsp", "note": "optional", "group": null },
+    { "name": "Tuna in brine", "quantity": 3, "unit": "tin", "note": "170 g tins, drained and flaked", "group": null },
+    { "name": "Whole-kernel sweetcorn", "quantity": 1, "unit": "tin", "note": "410 g, drained", "group": null },
+    { "name": "Frozen peas", "quantity": 1, "unit": "cup", "note": null, "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Black pepper", "quantity": 0.5, "unit": "tsp", "note": null, "group": null }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan) and grease a large ovenproof dish, about 30 × 20 cm.",
+    "Cook the penne in a big pot of salted boiling water for 2 minutes less than the packet says, so it is still firm in the middle. Drain.",
+    "Meanwhile melt the butter in a large saucepan over medium heat and fry the onion until soft but not brown, about 5 minutes.",
+    "Stir in the flour and cook for 1 minute, then pour in the milk a little at a time, whisking constantly. Simmer, still whisking, for 4 to 5 minutes, until the sauce is smooth and thick enough to coat a spoon.",
+    "Take the pot off the heat and stir in three-quarters of the cheese, the mustard powder, salt and pepper until the cheese has melted.",
+    "Fold in the pasta, tuna, sweetcorn and peas and spoon everything into the dish. Scatter the rest of the cheese over the top.",
+    "Bake for 20 to 25 minutes, until the sauce is bubbling at the edges and the cheese is golden. Rest for 5 minutes before serving."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Assemble up to a day ahead and refrigerate; bake from cold for 35 to 40 minutes.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

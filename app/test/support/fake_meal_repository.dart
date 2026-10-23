@@ -19,12 +19,25 @@ final class FakeMealRepository implements MealRepository {
   /// What `readWeek` answers with, keyed by that week's Monday.
   final storedWeeks = <String, WeekPlan>{};
 
+  /// While set, `addRecipeMeal` waits for it — the add-to-week sheet's
+  /// pending state.
+  Completer<void>? holdRecipeMeal;
+
   /// The library `addMeal` deduplicates against.
   final knownMeals = <Meal>[];
 
   final watchedWeeks = <String>[];
   final addedMeals = <String>[];
   final renamedMeals = <({String mealId, String name})>[];
+  final recipeMeals =
+      <
+        ({
+          String recipeId,
+          String name,
+          List<MealIngredient> ingredients,
+          String addedBy,
+        })
+      >[];
   final ingredientWrites =
       <({String mealId, List<MealIngredient> ingredients})>[];
   final deletedMeals = <({String mealId, List<String> weeks})>[];
@@ -77,6 +90,25 @@ final class FakeMealRepository implements MealRepository {
     );
     knownMeals.add(meal);
     return meal.id;
+  }
+
+  @override
+  Future<String> addRecipeMeal({
+    required String householdId,
+    required String recipeId,
+    required String name,
+    required List<MealIngredient> ingredients,
+    required String addedBy,
+  }) async {
+    await holdRecipeMeal?.future;
+    _refuseIfAsked();
+    recipeMeals.add((
+      recipeId: recipeId,
+      name: name,
+      ingredients: ingredients,
+      addedBy: addedBy,
+    ));
+    return Meal.idForRecipe(recipeId);
   }
 
   @override

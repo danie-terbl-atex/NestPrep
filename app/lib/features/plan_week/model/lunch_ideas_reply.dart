@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../family_profiles/model/allergen.dart';
 import '../../lunch_box/model/lunch_slot.dart';
+import 'dish_draft.dart';
 import 'left_out_reason.dart';
 import 'lunch_idea.dart';
 
@@ -45,13 +46,15 @@ final class LunchIdeasReply {
   final int? callsLeft;
 
   static LunchIdea? _idea(Object? data) {
-    if (data case {
-      'id': final String id,
-      'slot': final String slotName,
-      'idea': final String idea,
-      'searchTerm': final String searchTerm,
-      'childIds': final List<Object?> childIds,
-    } when id.isNotEmpty && idea.trim().isNotEmpty) {
+    if (data
+        case {
+          'id': final String id,
+          'slot': final String slotName,
+          'idea': final String idea,
+          'searchTerm': final String searchTerm,
+          'childIds': final List<Object?> childIds,
+        }
+        when id.isNotEmpty && idea.trim().isNotEmpty) {
       final slot = LunchSlot.fromName(slotName);
       if (slot == null) return null;
       return LunchIdea(
@@ -71,6 +74,10 @@ final class LunchIdeasReply {
           _ => const [],
         },
         origin: IdeaOrigin.drafted,
+        // Only a main is a dish; anything else the reply says is ignored.
+        dish: slot == LunchSlot.main
+            ? DishDraft.fromWire(data['recipe'])
+            : null,
       );
     }
     return null;

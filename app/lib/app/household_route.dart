@@ -25,6 +25,10 @@ abstract final class HouseholdRoute {
   static const memberParameter = 'memberId';
   static const accessSegment = '$householdSegment/access/:$memberParameter';
 
+  /// Closing the household for good, from the people screen (household
+  /// ADR-0007).
+  static const closeSegment = '$householdSegment/close';
+
   static String pathFor(String householdId, HouseholdTab tab) =>
       '/households/$householdId/${tab.segment}';
 
@@ -39,6 +43,9 @@ abstract final class HouseholdRoute {
 
   static String accessPathFor(String householdId, String memberId) =>
       '${householdPathFor(householdId)}/access/$memberId';
+
+  static String closePathFor(String householdId) =>
+      '${householdPathFor(householdId)}/close';
 
   /// The member this access route was matched with.
   static String memberIdFrom(GoRouterState state) {

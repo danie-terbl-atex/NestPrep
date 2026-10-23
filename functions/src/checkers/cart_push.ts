@@ -8,18 +8,12 @@ import {
   type ShopContext,
 } from './checkers_api';
 import { refuseCheckers } from './errors';
-import type { GroceryLineReader } from './grocery_lines';
+import type { GroceryLineReader } from '../cart_push/grocery_lines';
 import type { CheckersLinkStore } from './link_store';
 import { liveSession } from './link_status';
-import {
-  itemCountOf,
-  planLines,
-  sortItems,
-  type Added,
-  type Skipped,
-  type Wanted,
-} from './push_plan';
+import { itemCountOf, planLines, sortItems, type Wanted } from './push_plan';
 import { openSession } from './sealed_values';
+import type { PushResult } from '../cart_push/push_outcome';
 
 /** Products not found by id that are looked for again by article code, at most. */
 export const MAX_ARTICLE_LOOKUPS = 5;
@@ -33,12 +27,7 @@ export interface CartPushDeps {
 }
 
 /** What `checkersPushToCart` answers (the Checkers build contract). */
-export interface PushResult {
-  readonly added: readonly Added[];
-  readonly skipped: readonly Skipped[];
-  readonly cartItemCount: number;
-  readonly cartTotalCents: number;
-}
+export type { PushResult } from '../cart_push/push_outcome';
 
 /**
  * The matched items of a grocery list into the member's own Sixty60 cart —

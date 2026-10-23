@@ -1,19 +1,24 @@
 import '../../../shared/money/money.dart';
 import '../../lunch_box/model/lunch_board.dart';
+import '../../lunch_box/model/lunch_budget_week.dart';
 import '../../lunch_box/model/lunch_plan.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import 'checked_product.dart';
 import 'idea_search.dart';
 import 'lunch_week_reply.dart';
+import 'packing_preference.dart';
 import 'plan_fallback.dart';
+import 'planned_dish.dart';
 import 'shop_week.dart';
 
 /// Builds the week the review shows from what the phone holds now
 /// (lunch-box ADR-0012, step 4): the model's answer checked once more — a
 /// product the phone kept for that child, for an idea in that slot, in a
-/// compartment still empty and one the brief fills, a treat on Friday only —
+/// compartment still empty and one the brief fills, on a school day that
+/// has not gone, a treat only on one of the brief's treat days (ADR-0025) —
 /// or, without AI, a week the phone makes itself from the same products and
-/// says so.
+/// says so. A dish (ADR-0021) goes in only from the server's week, for a
+/// child its idea is still for; a phone-built week has no dishes.
 ///
 /// It never touches a compartment somebody already filled.
 abstract final class ShopWeekAssembly {
@@ -23,22 +28,24 @@ abstract final class ShopWeekAssembly {
     required List<IdeaSearch> searches,
     required LunchWeekReply reply,
     required Money? budget,
-    required Set<LunchSlot> slots,
+    required PackingChoice packing,
+    LunchBudgetWeek? weekSoFar,
   }) {
     final byIdea = {for (final search in searches) search.ideaId: search};
-    var result = _empty(
-      board,
-      childIds,
-      searches,
-      budget,
-      slots,
-      PlanSource.ai,
-    );
+    final dishes = _dishes(reply, byIdea);
+    var result = _empty(board, childIds, searches, packing, PlanSource.ai);
     final used = <String>{};
     for (final lunch in reply.lunches) {
       final child = board.childWeek(lunch.childId);
       final search = byIdea[lunch.ideaId];
-      final product = search?.keptProduct(lunch.productId);
+      final dish = dishes[lunch.ideaId];
+      final mayHave = dish != null && lunch.productId == dish.productId
+          ? search!.dishChildIds.contains(lunch.childId)
+          : search
+                    ?.keptProduct(lunch.productId)
+                    ?.childIds
+                    .contains(lunch.childId) ??
+                false;
       final key = LunchPlan.slotKey(lunch.day, lunch.slot);
       final isOpen =
           child != null &&
@@ -46,12 +53,11 @@ abstract final class ShopWeekAssembly {
           !child.plan.slots.containsKey(key) &&
           used.add('${lunch.childId}/$key');
       if (!isOpen ||
+          _hasGone(child, lunch.day) ||
           search == null ||
-          product == null ||
+          !mayHave ||
           search.idea.slot != lunch.slot ||
-          !slots.contains(lunch.slot) ||
-          !lunch.slot.isAutoFilledOn(lunch.day) ||
-          !product.childIds.contains(lunch.childId)) {
+          !result.fills(lunch.day, lunch.slot)) {
         continue;
       }
       result = result.withPick(
@@ -59,7 +65,7 @@ abstract final class ShopWeekAssembly {
         key,
         ShopPick(
           ideaId: search.ideaId,
-          productId: product.productId,
+          productId: lunch.productId,
           origin: PickOrigin.suggested,
         ),
       );
@@ -69,9 +75,21 @@ abstract final class ShopWeekAssembly {
       source: PlanSource.ai,
       children: result.children,
       searches: searches,
-      boxesPerPack: _packs(result, reply.boxesPerPack),
-      slots: slots,
+      dishes: dishes,
+      boxesPerPack: {
+        ..._packs(result, reply.boxesPerPack),
+        for (final dish in dishes.values)
+          for (final part in dish.parts)
+            part.product.productId:
+                (reply.boxesPerPack[part.product.productId] ??
+                        part.product.product.packCount ??
+                        1)
+                    .clamp(1, ShopWeek.packLimit),
+      },
+      slots: packing.slots,
+      treatDays: packing.treatDays,
       budget: budget,
+      weekSoFar: _sameWeek(weekSoFar, board),
       callsLeft: reply.callsLeft,
       dropped: reply.dropped,
     );
@@ -86,22 +104,24 @@ abstract final class ShopWeekAssembly {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required Money? budget,
-    required Set<LunchSlot> slots,
+    required PackingChoice packing,
     required PlanFallbackReason reason,
+    LunchBudgetWeek? weekSoFar,
   }) {
     var result = _empty(
       board,
       childIds,
       searches,
-      budget,
-      slots,
+      packing,
       PlanSource.fallback,
     );
     for (final child in result.children) {
+      final childWeek = board.childWeek(child.childId);
       for (var day = 1; day <= 5; day++) {
-        for (final slot in LunchSlot.values.where(slots.contains)) {
+        if (childWeek == null || _hasGone(childWeek, day)) continue;
+        for (final slot in LunchSlot.values) {
           final key = LunchPlan.slotKey(day, slot);
-          if (!slot.isAutoFilledOn(day) ||
+          if (!result.fills(day, slot) ||
               child.existing.slots.containsKey(key)) {
             continue;
           }
@@ -133,17 +153,47 @@ abstract final class ShopWeekAssembly {
       children: result.children,
       searches: searches,
       boxesPerPack: _packs(result, const {}),
-      slots: slots,
+      slots: packing.slots,
+      treatDays: packing.treatDays,
       budget: budget,
+      weekSoFar: _sameWeek(weekSoFar, board),
     );
   }
+
+  /// Each dish the server placed (lunch-box ADR-0021 §4), with the products
+  /// it is bought as — only ones this phone found for that ingredient.
+  static Map<String, PlannedDish> _dishes(
+    LunchWeekReply reply,
+    Map<String, IdeaSearch> byIdea,
+  ) => {
+    for (final MapEntry(key: ideaId, value: parts) in reply.dishes.entries)
+      if (byIdea[ideaId] case final search?)
+        if (search.idea.dish case final draft?)
+          ideaId: PlannedDish(
+            ideaId: ideaId,
+            draft: draft,
+            parts: [
+              for (final part in parts)
+                if (search.ingredientProduct(part.productId) case final p?)
+                  (ingredient: part.ingredient, product: p),
+            ],
+          ),
+  };
+
+  /// A school day the board says has happened — today or earlier — is
+  /// never planned (lunch-box ADR-0019; the server's `hasGone`).
+  static bool _hasGone(LunchChildWeek childWeek, int day) =>
+      childWeek.dayOn(day)?.hasHappened ?? true;
+
+  /// Budget mode's week only when it is the week being planned.
+  static LunchBudgetWeek? _sameWeek(LunchBudgetWeek? week, LunchBoard board) =>
+      week != null && week.board.week == board.week ? week : null;
 
   static ShopWeek _empty(
     LunchBoard board,
     Set<String> childIds,
     List<IdeaSearch> searches,
-    Money? budget,
-    Set<LunchSlot> slots,
+    PackingChoice packing,
     PlanSource source,
   ) => ShopWeek(
     week: board.week,
@@ -159,8 +209,8 @@ abstract final class ShopWeekAssembly {
     ],
     searches: searches,
     boxesPerPack: const {},
-    slots: slots,
-    budget: budget,
+    slots: packing.slots,
+    treatDays: packing.treatDays,
   );
 
   /// Boxes a pack does for every product in the week: the model's, else

@@ -1,7 +1,7 @@
 name: nestprep
 description: "NestPrep — one household on one app. NullState app `nestprep`."
 publish_to: 'none'
-version: 0.9.0+2
+version: 0.9.0+10
 
 environment:
   sdk: ^3.13.3
@@ -44,6 +44,7 @@ dependencies:
   share_plus: ^13.3.0
   timezone: ^0.11.1
   url_launcher: ^6.3.2
+  webview_flutter: ^4.14.1
 
 dev_dependencies:
   build_runner: ^2.16.1
@@ -76,6 +77,8 @@ flutter:
           weight: 600
   assets:
     - assets/brand/
+    # Twig, the mascot: one pose per moment (design-system nestprep-brand.md).
+    - assets/brand/twig/
     - assets/legal/
     # The shops' own marks, shown as they are (add-to-checkers ADR-0006).
     - assets/retailers/

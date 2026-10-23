@@ -7,6 +7,7 @@ import '../../model/lunch_card_format.dart';
 import '../../model/lunch_card_style.dart';
 import 'lunch_card_backdrop.dart';
 import 'lunch_card_day_row.dart';
+import 'lunch_card_day_words.dart';
 import 'lunch_card_family_grid.dart';
 import 'lunch_card_footer.dart';
 import 'lunch_card_frame.dart';
@@ -88,7 +89,9 @@ class LunchShareCard extends StatelessWidget {
   }
 }
 
-/// One child's five days, sharing the height between them.
+/// One child's five days, sharing the height between them, every box drawn
+/// the same size: as tall as a row, or as much shorter as it takes for every
+/// day's words to fit beside it.
 class _WeekRows extends StatelessWidget {
   const _WeekRows({
     required this.content,
@@ -100,16 +103,60 @@ class _WeekRows extends StatelessWidget {
   final LunchCardLayout layout;
   final Color surface;
 
+  /// Smaller than this and the compartments stop reading as a box.
+  static const _minArtHeight = NestSize.avatarSmall;
+
+  /// The box gives up this much height at a time.
+  static const _artStep = NestSpace.xs;
+
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      for (final (index, day) in content.children.first.days.indexed) ...[
-        if (index > 0) SizedBox(height: layout.gap),
-        Expanded(
-          child: LunchCardDayRow(day: day, layout: layout, surface: surface),
-        ),
-      ],
-    ],
-  );
+  Widget build(BuildContext context) {
+    final days = content.children.first.days;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final rowHeight =
+            (constraints.maxHeight - layout.gap * (days.length - 1)) /
+                days.length -
+            layout.rowInset * 2;
+        final artHeight = _artHeight(context, days, rowHeight, constraints);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final (index, day) in days.indexed) ...[
+              if (index > 0) SizedBox(height: layout.gap),
+              Expanded(
+                child: LunchCardDayRow(
+                  day: day,
+                  layout: layout,
+                  surface: surface,
+                  artHeight: artHeight,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  double _artHeight(
+    BuildContext context,
+    List<LunchCardDay> days,
+    double rowHeight,
+    BoxConstraints constraints,
+  ) {
+    bool fitsBeside(double artHeight) {
+      final room = Size(
+        constraints.maxWidth - LunchCardDayRow.widthBesideWords(artHeight),
+        rowHeight,
+      );
+      return days.every((day) => LunchCardDayWords.fits(context, day, room));
+    }
+
+    final smallest = rowHeight < _minArtHeight ? rowHeight : _minArtHeight;
+    for (var height = rowHeight; height > smallest; height -= _artStep) {
+      if (fitsBeside(height)) return height;
+    }
+    return smallest;
+  }
 }

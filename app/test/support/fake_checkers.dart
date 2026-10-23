@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
-import 'package:nestprep/features/add_to_checkers/data/checkers_catalogue.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_directory.dart';
 import 'package:nestprep/features/add_to_checkers/data/product_match_ranker.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_catalogue.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_link_status.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_product.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_push_result.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_shelf.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_product.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/live_location/data/location_source.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
@@ -21,7 +21,7 @@ import 'package:provider/single_child_widget.dart';
 import 'fake_live_location.dart';
 
 /// A Checkers product for a test, priced in cents.
-CheckersProduct checkersProduct(
+RetailerProduct checkersProduct(
   String name, {
   String id = '5d3af63bf434cf8420737dd6',
   int cents = 3799,
@@ -30,11 +30,13 @@ CheckersProduct checkersProduct(
   bool isOnPromotion = false,
   bool isInStock = true,
   int? oldCents,
-}) => CheckersProduct(
+}) => RetailerProduct(
+  retailer: ProductRetailer.checkers,
   id: id,
   storeId: '62dabd7f832d656087c747d8',
-  articleNumber: '10136729',
+  articleCode: '10136729$unitOfMeasure',
   unitOfMeasure: unitOfMeasure,
+  isSoldByWeight: unitOfMeasure == 'KG',
   name: name,
   brand: brand,
   price: Money(cents),
@@ -45,17 +47,17 @@ CheckersProduct checkersProduct(
 
 /// The catalogue, answered by the test. A search waits on [gate] when one is
 /// set, so a test can see the loading state before letting it finish.
-final class FakeCheckersCatalogue implements CheckersCatalogue {
-  List<CheckersProduct> products = const [];
+final class FakeCheckersCatalogue implements RetailerCatalogue {
+  List<RetailerProduct> products = const [];
   AppFailure? failWith;
   Completer<void>? gate;
   final searches = <({String query, Coordinates near})>[];
 
   @override
-  Future<List<CheckersProduct>> search({
+  Future<List<RetailerProduct>> search({
     required String query,
     required Coordinates near,
-    int limit = CheckersCatalogue.defaultLimit,
+    int limit = RetailerCatalogue.defaultLimit,
   }) async {
     searches.add((query: query, near: near));
     await gate?.future;
@@ -65,10 +67,10 @@ final class FakeCheckersCatalogue implements CheckersCatalogue {
   }
 
   @override
-  Future<List<CheckersProduct>> shelf({
-    required CheckersShelf shelf,
+  Future<List<RetailerProduct>> shelf({
+    required RetailerShelf shelf,
     required Coordinates near,
-    int limit = CheckersCatalogue.defaultLimit,
+    int limit = RetailerCatalogue.defaultLimit,
   }) async => const [];
 }
 
@@ -98,7 +100,7 @@ final class FakeRetailerPreference implements RetailerPreference {
 /// The five callables, answered by the test.
 final class FakeCheckersDirectory implements CheckersDirectory {
   CheckersLinkStatus status = const CheckersLinkStatus.unlinked();
-  CheckersPushResult? pushResult;
+  CartPushResult? pushResult;
 
   /// Failures handed out, first in first out, before any answer.
   final pushFailures = <AppFailure>[];
@@ -140,15 +142,16 @@ final class FakeCheckersDirectory implements CheckersDirectory {
   }
 
   @override
-  Future<CheckersPushResult> pushToCart({
+  Future<CartPushResult> pushToCart({
     required String householdId,
     required List<String> itemIds,
+    Map<String, int> quantities = const {},
   }) async {
     pushes.add((householdId: householdId, itemIds: itemIds));
     await pushGate?.future;
     if (pushFailures.isNotEmpty) throw pushFailures.removeAt(0);
     return pushResult ??
-        const CheckersPushResult(
+        const CartPushResult(
           added: [],
           skipped: [],
           cartItemCount: 0,
@@ -173,7 +176,7 @@ final class FakeProductMatchRanker implements ProductMatchRanker {
   Future<Map<String, double>> rank({
     required String householdId,
     required String item,
-    required List<CheckersProduct> products,
+    required List<RetailerProduct> products,
   }) async {
     asked.add((item: item, productIds: [for (final p in products) p.id]));
     final failing = failure;
@@ -189,7 +192,7 @@ List<SingleChildWidget> fakeCheckersProviders({
   FakeCheckersDirectory? directory,
   FakeProductMatchRanker? ranker,
 }) => [
-  Provider<CheckersCatalogue>.value(
+  Provider<RetailerCatalogue>.value(
     value: catalogue ?? FakeCheckersCatalogue(),
   ),
   Provider<CheckersAreaPreference>.value(value: FakeCheckersAreaPreference()),

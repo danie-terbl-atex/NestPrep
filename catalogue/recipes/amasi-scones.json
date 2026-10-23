@@ -1,0 +1,106 @@
+{
+  "id": "amasi-scones",
+  "name": "Amasi scones",
+  "summary": "Tall, tender scones made with tangy amasi instead of buttermilk, baked hot and fast, and split for butter, jam and grated cheese.",
+  "about": "Many South African home bakers make scones with amasi, the thick fermented milk most households keep in the fridge. Its acidity reacts with the baking powder for a good rise and a soft crumb. They are a weekend breakfast, a tea-time treat and a lunch-box filler, eaten with butter, apricot jam and cheese or with cream.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "breakfast",
+    "lunch"
+  ],
+  "placement": {
+    "breakfast": "snack",
+    "lunch": "snack"
+  },
+  "tags": [
+    "baking",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 420,
+      "unit": "g",
+      "note": "3 cups, plus extra for dusting",
+      "group": null
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 4,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cold butter",
+      "quantity": 125,
+      "unit": "g",
+      "note": "cubed",
+      "group": null
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Amasi",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "plus a little extra if needed",
+      "group": null
+    },
+    {
+      "name": "Butter, jam and grated cheese",
+      "quantity": null,
+      "unit": null,
+      "note": "to serve",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C fan) and line a baking tray with baking paper.",
+    "Sift the flour, baking powder, sugar and salt into a large bowl. Add the butter and rub it in with your fingertips for 3–4 minutes, until the mixture looks like fine breadcrumbs with no large lumps of butter.",
+    "Beat the egg and amasi together in a jug, then set aside 1 tablespoon of the mixture for glazing.",
+    "Make a well in the flour, pour in the rest of the amasi mixture and cut it through with a table knife until it just comes together into a soft, slightly sticky dough. Add a spoonful more amasi if dry crumbs remain. Do not knead; overworking makes tough scones.",
+    "Turn onto a floured surface and pat gently into a round about 3 cm thick. Cut out scones with a floured 6 cm cutter, pressing straight down without twisting, and set them close together on the tray. Gather the scraps lightly and cut again, to make about 12.",
+    "Brush the tops with the reserved glaze and bake for 12–15 minutes, until well risen and golden and they sound hollow when tapped underneath.",
+    "Cool on a rack for 5 minutes, wrapped in a clean tea towel to keep the crust soft. Serve warm, split, with butter, jam and grated cheese."
+  ],
+  "servings": 12,
+  "prepMinutes": 15,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": "Best on the day; freeze extras and warm them for 5 minutes in a 180 °C oven.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

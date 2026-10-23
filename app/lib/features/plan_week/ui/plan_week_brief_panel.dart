@@ -3,13 +3,16 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../groceries/model/product_match.dart';
+import '../../household/model/household_area.dart';
+import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_budget_card.dart';
 import 'plan_week_child_rules_card.dart';
+import 'plan_week_list_cart_card.dart';
 import 'plan_week_packing_section.dart';
 import 'plan_week_shop_card.dart';
-import 'plan_week_step_actions.dart';
 
 /// Step 1 (lunch-box ADR-0012): whose lunches, what NestPrep will keep out
 /// of each child's box and what they like, which compartments to fill and
@@ -25,6 +28,13 @@ class PlanWeekBriefPanel extends StatelessWidget {
     final nest = NestTheme.of(context);
     final controller = context.watch<PlanWeekController>();
     final chosen = controller.childIds;
+    final retailer = controller.retailer;
+    final mayPushToPnp =
+        retailer.canChoose &&
+        retailer.shop == ProductRetailer.pickNPay &&
+        context.watch<HouseholdView>().permissions.canEdit(
+          HouseholdArea.groceries,
+        );
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -80,13 +90,17 @@ class PlanWeekBriefPanel extends StatelessWidget {
         const PlanWeekPackingSection(),
         const SizedBox(height: NestSpace.xl),
         const PlanWeekShopCard(),
+        if (mayPushToPnp) ...[
+          const SizedBox(height: NestSpace.md),
+          const PlanWeekListCartCard(),
+        ],
         const SizedBox(height: NestSpace.md),
         const PlanWeekBudgetCard(),
         const SizedBox(height: NestSpace.xl),
-        PlanWeekStepActions(
+        NestStepActions(
           nextKey: const ValueKey('plan-week-ideas'),
-          label: PlanWeekCopy.draftAction,
-          icon: LucideIcons.sparkles,
+          nextLabel: PlanWeekCopy.draftAction,
+          nextIcon: LucideIcons.sparkles,
           onNext: chosen.isEmpty ? null : controller.draftIdeas,
         ),
       ],

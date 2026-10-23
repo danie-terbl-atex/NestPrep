@@ -1,0 +1,94 @@
+{
+  "id": "soetpatats",
+  "name": "Soetpatats",
+  "summary": "Glazed sweet potatoes: thick slices simmered with butter, brown sugar and cinnamon until tender and coated in a sticky caramel syrup.",
+  "about": "Soetpatats is an old Afrikaans side dish, a favourite of the poet and cook C. Louis Leipoldt. It is made in a heavy pot on the stove or in the oven, and it appears beside Sunday roasts, at Christmas and next to braaied snoek.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "side"
+  },
+  "tags": [
+    "traditional",
+    "vegetableForward",
+    "festive"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Sweet potatoes",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "peeled and cut into 2 cm rounds",
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 80,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Brown sugar",
+      "quantity": 150,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "juice",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Melt the butter in a wide heavy pot over medium heat. Lay the sweet potato rounds in it in one or two layers.",
+    "Sprinkle over the brown sugar and salt, tuck in the cinnamon stick and pour the water down the side of the pot.",
+    "Bring to a simmer, cover and cook over low heat for 20 minutes, until the slices are almost tender when pierced with a knife. Shake the pot gently now and then rather than stirring, so the slices stay whole.",
+    "Take the lid off, add the lemon juice and simmer uncovered for 10 to 15 minutes more, carefully turning the slices once, until the liquid has cooked down to a thick, glossy syrup that coats them. Watch closely at the end so it does not burn.",
+    "Remove the cinnamon stick and serve warm, spooning the syrup over the top."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make a day ahead and reheat gently in the pot with a splash of water.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

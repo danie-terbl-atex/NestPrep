@@ -5,10 +5,10 @@ import 'package:provider/single_child_widget.dart';
 import '../features/add_to_checkers/data/callable_checkers_directory.dart';
 import '../features/add_to_checkers/data/callable_product_match_ranker.dart';
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
-import '../features/add_to_checkers/data/checkers_catalogue.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/http_checkers_catalogue.dart';
 import '../features/add_to_checkers/data/product_match_ranker.dart';
+import '../features/add_to_checkers/data/retailer_catalogue.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/add_to_checkers/data/secure_storage_checkers_area_preference.dart';
 import '../features/add_to_checkers/data/secure_storage_retailer_preference.dart';
@@ -18,7 +18,7 @@ import '../features/add_to_checkers/data/secure_storage_retailer_preference.dart
 /// memory lasts the whole run — the area and the shop chosen on this phone,
 /// and the five callables. Its own list, spread into `appProviders`.
 List<SingleChildWidget> addToCheckersProviders() => [
-  Provider<CheckersCatalogue>(create: (context) => HttpCheckersCatalogue()),
+  Provider<RetailerCatalogue>(create: (context) => HttpCheckersCatalogue()),
   Provider<CheckersAreaPreference>(
     create: (context) => SecureStorageCheckersAreaPreference(),
   ),

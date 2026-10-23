@@ -4,6 +4,7 @@ import { logger } from 'firebase-functions/v2';
 import { type KidAuthAccounts, kidAuthAccounts } from '../accounts/kid_auth_accounts';
 import { OAUTH_STATES } from '../calendar_sync/sync_documents';
 import { checkersLinkRef } from '../checkers/firestore_link_store';
+import { pnpLinkRef } from '../pnp/firestore_pnp_link_store';
 import { userRef } from '../household/documents';
 import { STORE_PURCHASES } from '../subscriptions/subscription_documents';
 import { db } from '../shared/firestore';
@@ -106,6 +107,8 @@ export async function eraseAccount(
   await deleteOAuthStates(store, uid);
   // The member's Checkers link: a sealed session and a masked number.
   await store.recursiveDelete(checkersLinkRef(store, uid));
+  // The member's Pick n Pay link: sealed tokens (add-to-pnp ADR-0003).
+  await store.recursiveDelete(pnpLinkRef(store, uid));
   await objects.deletePrefix(exportObjectPrefix(uid));
   await store.recursiveDelete(userRef(store, uid));
 

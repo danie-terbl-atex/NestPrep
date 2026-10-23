@@ -85,7 +85,13 @@ enum FeatureFlag {
 
   /// Product matches under a grocery item, linking a member's own Checkers
   /// account, and pushing the list into their Sixty60 cart.
-  addToCheckers('addToCheckers');
+  addToCheckers('addToCheckers'),
+
+  // ---- lunch box: Pick n Pay (add-to-pnp ADR-0001) ----
+
+  /// *Plan my week* at Pick n Pay, linking a member's own Pick n Pay
+  /// account, and pushing the week's basket into their own cart.
+  addToPnp('addToPnp');
 
   const FeatureFlag(this.field);
 

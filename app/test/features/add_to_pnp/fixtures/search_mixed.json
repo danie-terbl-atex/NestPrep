@@ -1,0 +1,449 @@
+{
+ "type": "productCategorySearchPageWsDTO",
+ "freeTextSearch": "",
+ "pagination": {
+  "currentPage": 0,
+  "pageSize": 6,
+  "sort": "relevance",
+  "totalPages": 1,
+  "totalResults": 6
+ },
+ "products": [
+  {
+   "available": true,
+   "categoryNames": [
+    "All Products",
+    "Chocolates, Chips & Snacks",
+    "Lunch Box Snacks"
+   ],
+   "code": "000000000000539078_EA",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h57/h35/11268776099870/silo-product-image-v2-22Sep2023-180615-6001056414524-Straight_on-175412-359_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/hf0/hb1/11268778623006/silo-product-image-v2-22Sep2023-180615-6001056414524-Straight_on-175412-359_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/he7/h8a/11268775673886/silo-product-image-v2-22Sep2023-180615-6001056414524-Straight_on-175412-359_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/haf/hf1/11268779245598/silo-product-image-v2-22Sep2023-180615-6001056414524-Straight_on-175412-359_140Wx140H"
+    }
+   ],
+   "inStockIndicator": true,
+   "name": "Bakers Fruit Chutney Mini Cheddars 6 x 33g",
+   "price": {
+    "average": false,
+    "currencyIso": "ZAR",
+    "formattedValue": "R48.99",
+    "oldPrice": 0,
+    "oldPriceFormattedValue": "R0.00",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "SELLING",
+    "priceType": "BUY",
+    "savings": 0,
+    "savingsFormattedValue": "R0.00",
+    "value": 48.99
+   },
+   "quantityType": "NORMAL",
+   "stock": {
+    "stockLevelStatus": "inStock"
+   }
+  },
+  {
+   "available": true,
+   "categoryNames": [
+    "All Products",
+    "Chocolates, Chips & Snacks",
+    "Lunch Box Snacks"
+   ],
+   "code": "000000000000781204_EA",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/hba/h95/45755264532510/silo-product-image-v2-12Mar2026-180027-6001000017313-Straight_on-413864-169_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h75/hf6/45755265810462/silo-product-image-v2-12Mar2026-180027-6001000017313-Straight_on-413864-169_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h2b/h8b/45755264204830/silo-product-image-v2-12Mar2026-180027-6001000017313-Straight_on-413864-169_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h15/h9a/45755266433054/silo-product-image-v2-12Mar2026-180027-6001000017313-Straight_on-413864-169_140Wx140H"
+    }
+   ],
+   "inStockIndicator": true,
+   "name": "PnP Biltong 25g",
+   "price": {
+    "average": false,
+    "currencyIso": "ZAR",
+    "formattedValue": "R23.99",
+    "oldPrice": 0,
+    "oldPriceFormattedValue": "R0.00",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "SELLING",
+    "priceType": "BUY",
+    "savings": 0,
+    "savingsFormattedValue": "R0.00",
+    "value": 23.99
+   },
+   "quantityType": "NORMAL",
+   "stock": {
+    "stockLevelStatus": "inStock"
+   }
+  },
+  {
+   "available": true,
+   "categoryNames": [
+    "All Products",
+    "Chocolates, Chips & Snacks",
+    "Lunch Box Snacks"
+   ],
+   "code": "000000000000210944_EA",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h7e/hbf/17564408512542/silo-product-image-v2-03Oct2025-180028-6001020013142-Straight_on-357638-236_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h69/h4e/17564409757726/silo-product-image-v2-03Oct2025-180028-6001020013142-Straight_on-357638-236_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/hf5/hc8/17564408283166/silo-product-image-v2-03Oct2025-180028-6001020013142-Straight_on-357638-236_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/ha6/hb7/17564410216478/silo-product-image-v2-03Oct2025-180028-6001020013142-Straight_on-357638-236_140Wx140H"
+    }
+   ],
+   "inStockIndicator": true,
+   "name": "Safari Jungle Bites Berry Chews 4 x 32g",
+   "potentialPromotions": [
+    {
+     "code": "SCRIPT20261006182116-3000719723",
+     "endDate": "2026-10-22T21:59:59+0000",
+     "promotionDisplayType": "SMART_SHOPPER",
+     "promotionTextMessage": "2 For R68.00 ",
+     "startDate": "2026-10-06T22:00:00+0000"
+    }
+   ],
+   "price": {
+    "average": false,
+    "currencyIso": "ZAR",
+    "formattedValue": "R49.99",
+    "oldPrice": 0,
+    "oldPriceFormattedValue": "R0.00",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "SELLING",
+    "priceType": "BUY",
+    "savings": 0,
+    "savingsFormattedValue": "R0.00",
+    "value": 49.99
+   },
+   "quantityType": "NORMAL",
+   "stock": {
+    "stockLevelStatus": "inStock"
+   }
+  },
+  {
+   "available": true,
+   "categoryNames": [
+    "All Products",
+    "Chocolates, Chips & Snacks",
+    "Lunch Box Snacks"
+   ],
+   "code": "000000000000347577_EA",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/had/h90/11208356102174/silo-product-image-v2-23Jun2023-180809-6009808070127-Straight_on-155754-2368_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h9e/hed/11208357806110/silo-product-image-v2-23Jun2023-180809-6009808070127-Straight_on-155754-2368_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h74/h2d/11208354791454/silo-product-image-v2-23Jun2023-180809-6009808070127-Straight_on-155754-2368_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/ha4/h97/11208358264862/silo-product-image-v2-23Jun2023-180809-6009808070127-Straight_on-155754-2368_140Wx140H"
+    }
+   ],
+   "inStockIndicator": false,
+   "name": "Kara Nichhas Murkhu Spring Onion 85g",
+   "price": {
+    "average": false,
+    "currencyIso": "ZAR",
+    "formattedValue": "R9.99",
+    "oldPrice": 0,
+    "oldPriceFormattedValue": "R0.00",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "SELLING",
+    "priceType": "BUY",
+    "savings": 0,
+    "savingsFormattedValue": "R0.00",
+    "value": 9.99
+   },
+   "quantityType": "NORMAL",
+   "stock": {
+    "stockLevel": 0,
+    "stockLevelStatus": "outOfStock"
+   }
+  },
+  {
+   "allowedQuantities": [
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "400g",
+     "maxWeightDisplayQuantity": "440g",
+     "minWeightDisplayQuantity": "360g",
+     "quantity": 400,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "500g",
+     "maxWeightDisplayQuantity": "550g",
+     "minWeightDisplayQuantity": "450g",
+     "quantity": 500,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "600g",
+     "maxWeightDisplayQuantity": "660g",
+     "minWeightDisplayQuantity": "540g",
+     "quantity": 600,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "700g",
+     "maxWeightDisplayQuantity": "770g",
+     "minWeightDisplayQuantity": "630g",
+     "quantity": 700,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": true,
+     "displayQuantity": "800g",
+     "maxWeightDisplayQuantity": "880g",
+     "minWeightDisplayQuantity": "720g",
+     "quantity": 800,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "900g",
+     "maxWeightDisplayQuantity": "990g",
+     "minWeightDisplayQuantity": "810g",
+     "quantity": 900,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "1kg",
+     "maxWeightDisplayQuantity": "1.1Kg",
+     "minWeightDisplayQuantity": "900g",
+     "quantity": 1000,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "2kg",
+     "maxWeightDisplayQuantity": "2.2Kg",
+     "minWeightDisplayQuantity": "1.8Kg",
+     "quantity": 2000,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "3kg",
+     "maxWeightDisplayQuantity": "3.3Kg",
+     "minWeightDisplayQuantity": "2.7Kg",
+     "quantity": 3000,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "4kg",
+     "maxWeightDisplayQuantity": "4.4Kg",
+     "minWeightDisplayQuantity": "3.6Kg",
+     "quantity": 4000,
+     "unitCode": "GRM"
+    },
+    {
+     "defaultQuantity": false,
+     "displayQuantity": "5kg",
+     "maxWeightDisplayQuantity": "5.5Kg",
+     "minWeightDisplayQuantity": "4.5Kg",
+     "quantity": 5000,
+     "unitCode": "GRM"
+    }
+   ],
+   "available": true,
+   "categoryNames": [
+    "All Products",
+    "Fresh Meat, Poultry & Seafood",
+    "Fresh Meat",
+    "Fresh Beef",
+    "Steaks"
+   ],
+   "code": "000000000000263689_KGM",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h98/h15/51285515534366/silo-product-image-v2-20May2026-180052-2009035000000-Straight_on-431748-110_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h27/h58/51285516681246/silo-product-image-v2-20May2026-180052-2009035000000-Straight_on-431748-110_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h90/h23/51285515108382/silo-product-image-v2-20May2026-180052-2009035000000-Straight_on-431748-110_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h09/had/51285517041694/silo-product-image-v2-20May2026-180052-2009035000000-Straight_on-431748-110_140Wx140H"
+    }
+   ],
+   "inStockIndicator": true,
+   "name": "PnP Bone-in Chuck Steak",
+   "price": {
+    "average": false,
+    "currencyIso": "ZAR",
+    "formattedValue": "R109.99/kg",
+    "informationalPrice": {
+     "defaultQuantity": false,
+     "displayQuantity": "1kg",
+     "price": {
+      "currencyIso": "ZAR",
+      "formattedValue": "R109.99/kg",
+      "oldPrice": 149.99,
+      "oldPriceFormattedValue": "R149.99/kg",
+      "priceType": "BUY",
+      "value": 109.99
+     },
+     "quantity": 1,
+     "unitCode": "KGM"
+    },
+    "oldPrice": 149.99,
+    "oldPriceFormattedValue": "R149.99/kg",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "PROMOTION",
+    "priceType": "BUY",
+    "savings": 40.0,
+    "savingsFormattedValue": "R40.00",
+    "value": 109.99
+   },
+   "quantityType": "RESTRICTED_ALLOWED_QUANTITY",
+   "stock": {
+    "stockLevelStatus": "inStock"
+   }
+  },
+  {
+   "available": true,
+   "averageWeight": {
+    "formatedAverageWeight": "587g",
+    "value": 0.587
+   },
+   "categoryNames": [
+    "All Products",
+    "Fresh Meat, Poultry & Seafood",
+    "Fresh Meat",
+    "Fresh Beef",
+    "Steaks"
+   ],
+   "code": "000000000000741260_EA",
+   "images": [
+    {
+     "format": "thumbnail",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h41/h55/10770900484126/silo-product-image-v2-15Mar2022-180216-6001007050382-Straight_on-7476-18219_96Wx96H"
+    },
+    {
+     "format": "product",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h1e/he5/10770902056990/silo-product-image-v2-15Mar2022-180216-6001007050382-Straight_on-7476-18219_400Wx400H"
+    },
+    {
+     "format": "carousel",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h80/h40/10770899894302/silo-product-image-v2-15Mar2022-180216-6001007050382-Straight_on-7476-18219_300Wx300H"
+    },
+    {
+     "format": "listing",
+     "imageType": "PRIMARY",
+     "url": "https://cdn-prd-02.pnp.co.za/sys-master/images/h76/h78/10770903105566/silo-product-image-v2-15Mar2022-180216-6001007050382-Straight_on-7476-18219_140Wx140H"
+    }
+   ],
+   "inStockIndicator": true,
+   "name": "PnP 28 Days Aged Porterhouse Steak",
+   "price": {
+    "average": true,
+    "currencyIso": "ZAR",
+    "formattedValue": "R152.61",
+    "informationalPrice": {
+     "defaultQuantity": false,
+     "displayQuantity": "1kg",
+     "price": {
+      "currencyIso": "ZAR",
+      "formattedValue": "R259.99/kg",
+      "oldPrice": 0,
+      "oldPriceFormattedValue": "R0.00/kg",
+      "priceType": "BUY",
+      "value": 259.99
+     },
+     "quantity": 1,
+     "unitCode": "KGM"
+    },
+    "oldPrice": 0,
+    "oldPriceFormattedValue": "R0.00",
+    "onlineOnlyPrice": false,
+    "priceDisplayType": "SELLING",
+    "priceType": "BUY",
+    "savings": 0,
+    "savingsFormattedValue": "R0.00",
+    "value": 152.61413
+   },
+   "quantityType": "AVERAGE_WEIGHT",
+   "stock": {
+    "stockLevelStatus": "inStock"
+   }
+  }
+ ]
+}

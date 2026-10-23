@@ -1,6 +1,7 @@
 import '../../../shared/failure/app_failure.dart';
-import '../../add_to_checkers/data/checkers_catalogue.dart';
+import '../../add_to_checkers/data/retailer_catalogue.dart';
 import '../../family_profiles/model/food_rules.dart';
+import '../../groceries/model/product_match.dart';
 import '../../live_location/model/coordinates.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../data/lunch_aisle_source.dart';
@@ -10,18 +11,14 @@ import '../model/checked_product.dart';
 import '../model/idea_search.dart';
 import '../model/lunch_idea.dart';
 
-/// The start of step 2 (lunch-box ADR-0013): Checkers' own Kids Lunchbox
-/// shelves, read one at a time near the household before the model drafts
+/// The start of step 2 (lunch-box ADR-0013, ADR-0026): the chosen shop's own
+/// lunchbox shelves, read one at a time near the household before the model drafts
 /// anything, every product judged for the chosen children as a searched one
 /// is — only the shelves for the compartments the brief fills. Each shelf
 /// becomes an idea already answered, its best kept products first; a shelf
 /// that cannot be read is counted, said, and left out.
 final class PlanWeekAisle {
-  PlanWeekAisle({
-    required this._source,
-    required this._catalogue,
-    required this.onChange,
-  });
+  PlanWeekAisle({required this._source, required this.onChange});
 
   /// What one shelf brings home to choose from: its best sellers.
   static const perShelf = 24;
@@ -30,7 +27,9 @@ final class PlanWeekAisle {
   static const namesPerShelf = 6;
 
   final LunchAisleSource _source;
-  final CheckersCatalogue _catalogue;
+
+  /// The chosen shop's catalogue, for the read in hand.
+  late RetailerCatalogue _catalogue;
   final void Function() onChange;
 
   var _shelves = <IdeaSearch>[];
@@ -66,12 +65,16 @@ final class PlanWeekAisle {
         ),
   ];
 
+  /// Reads [shop]'s shelves from [catalogue], [shop]'s own catalogue.
   Future<void> read({
+    required ProductRetailer shop,
+    required RetailerCatalogue catalogue,
     required Coordinates near,
     required Map<String, FoodRules> rulesByChild,
     required Set<LunchSlot> slots,
   }) async {
     final generation = ++_generation;
+    _catalogue = catalogue;
     _shelves = [];
     _read = 0;
     _total = 0;
@@ -79,7 +82,7 @@ final class PlanWeekAisle {
     _isReading = true;
     onChange();
     final shelves = [
-      for (final shelf in await _source.shelves())
+      for (final shelf in await _source.shelves(shop))
         if (slots.contains(shelf.slot)) shelf,
     ];
     if (generation != _generation) return;

@@ -15,6 +15,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/checkers_fakes_for_plan_week.dart';
 import '../../../support/lunch_fixtures.dart';
+import '../../../support/plan_week_packing.dart';
 
 /// The two callables' wire, as the contract in lunch-box ADR-0012 spells it:
 /// replies parsed and never cast, a wrong shape an unreadable answer, and
@@ -25,6 +26,7 @@ void main() {
   const PackingChoice packing = (
     preferences: {PackingPreference.noFridge, PackingPreference.readyMade},
     slots: {LunchSlot.treat, LunchSlot.main},
+    treatDays: {DateTime.friday},
   );
 
   group('draftLunchIdeas answers', () {
@@ -171,7 +173,7 @@ void main() {
           IdeaSearch(idea: idea, status: IdeaSearchStatus.done, found: found),
           IdeaSearch.waiting(idea),
         ],
-        packing: (preferences: const {}, slots: {...LunchSlot.values}),
+        packing: packingFor({...LunchSlot.values}),
       );
       expect(wire['week'], LunchFixtures.week.key);
       expect(wire['childIds'], [ayanda, lwazi]..sort());

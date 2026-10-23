@@ -1,0 +1,233 @@
+{
+  "id": "sunday-roast-chicken",
+  "name": "Sunday roast chicken and seven colours",
+  "summary": "Spiced roast chicken with rice and gravy, sweet-sour beetroot, cinnamon butternut, coleslaw and potato salad: the colourful South African Sunday plate.",
+  "about": "Seven colours is the name South African families give the Sunday lunch plate piled with meat, rice and gravy and a rainbow of sides: beetroot, pumpkin or butternut, something green, coleslaw or cabbage, potato or bean salad. It is cooked after church and shared with whoever comes to visit. Creamed spinach or chakalaka are popular extra colours.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "festive",
+    "kidFriendly",
+    "traditional"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Chicken pieces",
+      "quantity": 2,
+      "unit": "kg",
+      "note": "thighs, drumsticks and breasts, skin on",
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Chicken spice",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Gravy powder",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "Water",
+      "quantity": 1.5,
+      "unit": "cup",
+      "note": "cold, for the gravy",
+      "group": "For the chicken and gravy"
+    },
+    {
+      "name": "White rice",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 4,
+      "unit": "cup",
+      "note": "for the rice",
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "peeled, in 2 cm cubes",
+      "group": "For the potato salad"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "group": "For the potato salad"
+    },
+    {
+      "name": "Mayonnaise",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": null,
+      "group": "For the potato salad"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 3,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the potato salad"
+    },
+    {
+      "name": "Beetroot",
+      "quantity": 500,
+      "unit": "g",
+      "note": "cooked and peeled, grated",
+      "group": "For the beetroot"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "very finely chopped",
+      "group": "For the beetroot"
+    },
+    {
+      "name": "Brown vinegar",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beetroot"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beetroot"
+    },
+    {
+      "name": "Butternut",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "peeled, in chunks",
+      "group": "For the butternut"
+    },
+    {
+      "name": "Butter",
+      "quantity": 30,
+      "unit": "g",
+      "note": null,
+      "group": "For the butternut"
+    },
+    {
+      "name": "Brown sugar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the butternut"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the butternut"
+    },
+    {
+      "name": "Green cabbage",
+      "quantity": 0.25,
+      "unit": null,
+      "note": "small head, finely shredded",
+      "group": "For the coleslaw"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the coleslaw"
+    },
+    {
+      "name": "Mayonnaise",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "for the coleslaw",
+      "group": "For the coleslaw"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the coleslaw"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C fan). Rub the chicken with the oil, the chicken spice, paprika and garlic and spread it skin-side up in a roasting tin.",
+    "Roast the chicken for 50 to 60 minutes, until the skin is golden and crisp and the juices run clear when the thickest thigh is pierced.",
+    "While the chicken roasts, put the potatoes and the whole eggs in a pot of salted cold water, bring to the boil and lift the eggs out after 10 minutes into cold water. Cook the potatoes until just tender, about 12 minutes in all, then drain and cool.",
+    "Mix the grated beetroot with the red onion, vinegar and sugar, cover and refrigerate so the flavours soak in.",
+    "Boil the butternut in a little salted water, covered, until soft, about 15 minutes. Drain well, then mash roughly with the butter, brown sugar and cinnamon. Keep warm.",
+    "Bring the rice, 4 cups water and salt to the boil, cover, turn the heat to the lowest setting and cook for 18 minutes, until the water is absorbed. Leave covered off the heat until serving.",
+    "Peel and chop the eggs, then fold them gently through the cooled potatoes with the mayonnaise and spring onions. Season and chill.",
+    "Toss the cabbage and carrots with the mayonnaise, a pinch of salt and some pepper until evenly coated. Chill until serving.",
+    "Lift the chicken onto a platter to rest. Pour off most of the fat from the tin, stir the gravy powder into the cold water, add it to the pan juices and simmer on the stove over medium heat for 2 to 3 minutes, stirring and scraping, until thick and glossy.",
+    "Serve each plate with chicken, rice and gravy and a spoonful of every side, so the plate shows all its colours."
+  ],
+  "servings": 6,
+  "prepMinutes": 40,
+  "cookMinutes": 70,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Make the beetroot, potato salad and coleslaw the day before and keep them chilled; roast the chicken on the day.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

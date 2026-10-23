@@ -1,0 +1,39 @@
+{
+  "id": "soji",
+  "name": "Soji",
+  "summary": "Semolina pudding the Durban way: semolina toasted in ghee, then cooked with milk, sugar and cardamom into a soft, fragrant pudding with sultanas and almonds.",
+  "about": "Soji (also spelled sojee) is the sweet of South African Indian homes, cooked for Diwali, prayer days, weddings and birthdays and shared with neighbours. It came with the indentured families who settled in Natal from 1860, and Durban households each have their own version, scented with rose water or saffron, or heaped with extra almonds.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "dessert" },
+  "tags": ["festive", "traditional"],
+  "allergens": ["treeNut", "milk", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Sultanas", "quantity": 0.33, "unit": "cup", "note": null, "group": null },
+    { "name": "Ghee or butter", "quantity": 125, "unit": "g", "note": null, "group": null },
+    { "name": "Semolina", "quantity": 170, "unit": "g", "note": "1 cup", "group": null },
+    { "name": "Cardamom pods", "quantity": 4, "unit": null, "note": "bruised", "group": null },
+    { "name": "Cinnamon stick", "quantity": 1, "unit": null, "note": null, "group": null },
+    { "name": "Milk", "quantity": 3, "unit": "cup", "note": "warm", "group": null },
+    { "name": "Sugar", "quantity": 150, "unit": "g", "note": null, "group": null },
+    { "name": "Ground cardamom", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Rose water", "quantity": 1, "unit": "tsp", "note": "optional", "group": null },
+    { "name": "Flaked almonds", "quantity": 3, "unit": "tbsp", "note": "toasted", "group": null }
+  ],
+  "steps": [
+    "Cover the sultanas with boiling water and leave to plump for 10 minutes, then drain.",
+    "Melt the ghee in a heavy-based pot over medium-low heat. Add the semolina, cardamom pods and cinnamon stick and stir constantly for 6 to 8 minutes, until the semolina smells nutty and turns a pale biscuit colour. Do not walk away; it burns quickly.",
+    "Pour in the warm milk a little at a time, whisking hard, so no lumps form. The mixture will bubble and spit at first.",
+    "Keep stirring over low heat for about 5 minutes, until it thickens like porridge, then add the sugar and ground cardamom.",
+    "Cook for another 8 to 10 minutes, stirring often, until the soji is thick, glossy and pulls away from the sides of the pot, and the ghee starts to show at the edges.",
+    "Stir in the rose water and half the sultanas, remove the whole spices, and spoon into a serving dish. Scatter over the rest of the sultanas and the almonds and serve warm."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

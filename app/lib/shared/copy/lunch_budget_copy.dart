@@ -13,7 +13,6 @@ abstract final class LunchBudgetCopy {
   static const seePremium = 'See Premium';
 
   // The meter.
-  static const thisWeek = 'This week';
   static String spentOf(String spent, String budget) => '$spent of $budget';
   static String spentAtLeast(String spent) => 'At least $spent';
   static String spentOnly(String spent) => spent;

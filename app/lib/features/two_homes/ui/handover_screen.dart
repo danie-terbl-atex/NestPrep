@@ -56,9 +56,8 @@ class HandoverScreen extends StatelessWidget {
                   : HandoverForm(
                       view: view,
                       canEdit:
-                          TwoHomesAccess.of(
-                            context.watch<HouseholdView>(),
-                          ).isFamily &&
+                          TwoHomesAccess.of(context.watch<HouseholdView>())
+                              .isFamily &&
                           view.link.isActive,
                     ),
             ),

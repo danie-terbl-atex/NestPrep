@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { PACKING_PREFERENCES } from './packing_preferences';
+import { SCHOOL_DAYS } from './iso_week';
+import { DEFAULT_TREAT_DAYS, PACKING_PREFERENCES } from './packing_preferences';
 import { LUNCH_SLOTS } from './week_documents';
 
 /** A household has a handful of children; this bounds the request (BE-08). */
@@ -37,6 +38,17 @@ const slots = z
   .transform((chosen) => LUNCH_SLOTS.filter((slot) => chosen.includes(slot)))
   .optional()
   .default([...LUNCH_SLOTS]);
+/**
+ * The school days a treat may be planned on (lunch-box ADR-0025), deduplicated
+ * into Monday-first order; empty plans no treat. A phone from before the
+ * choice gets Friday, as *Plan my week* always did (ADR-0003).
+ */
+const treatDays = z
+  .array(z.number().int().min(1).max(SCHOOL_DAYS.length))
+  .max(SCHOOL_DAYS.length)
+  .transform((chosen) => SCHOOL_DAYS.filter((day) => chosen.includes(day)))
+  .optional()
+  .default([...DEFAULT_TREAT_DAYS]);
 
 /**
  * One shelf of Checkers' Kids Lunchbox range the phone read (lunch-box
@@ -62,6 +74,7 @@ export const draftLunchIdeasInput = z.object({
   aisle: z.array(aisleShelf).max(MAX_AISLE_SHELVES).optional().default([]),
   preferences,
   slots,
+  treatDays,
 });
 export type DraftLunchIdeasInput = z.infer<typeof draftLunchIdeasInput>;
 
@@ -81,6 +94,31 @@ export const foundProduct = z.object({
 });
 export type FoundProduct = z.infer<typeof foundProduct>;
 
+/** Kept products the phone sends per dish ingredient, in the store's order (lunch-box ADR-0021). */
+export const MAX_PRODUCTS_PER_INGREDIENT = 3;
+export const MAX_DISH_INGREDIENTS = 8;
+
+/**
+ * A main idea's dish as the phone found it at the store (lunch-box
+ * ADR-0021 §3): its name and each ingredient's, with the products the phone
+ * kept for it. An ingredient with none is left to the household.
+ */
+export const foundDish = z.object({
+  name: z.string().trim().min(1).max(60),
+  ingredients: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1).max(60),
+        /** Read with the name (lunch-box ADR-0023); optional for a phone from before it. */
+        searchTerm: z.string().trim().max(40).optional(),
+        products: z.array(foundProduct).max(MAX_PRODUCTS_PER_INGREDIENT),
+      }),
+    )
+    .min(1)
+    .max(MAX_DISH_INGREDIENTS),
+});
+export type FoundDish = z.infer<typeof foundDish>;
+
 export const foundIdea = z.object({
   id: z.string().trim().min(1).max(32),
   slot: z.enum(LUNCH_SLOTS),
@@ -88,6 +126,8 @@ export const foundIdea = z.object({
   products: z.array(foundProduct).max(MAX_PRODUCTS_PER_IDEA),
   /** A shelf of Checkers' lunchbox range rather than a model idea (lunch-box ADR-0013). */
   fromAisle: z.boolean().optional().default(false),
+  /** Optional, so a phone from before dishes sends products only (BE-17). */
+  dish: foundDish.optional(),
 });
 export type FoundIdea = z.infer<typeof foundIdea>;
 
@@ -99,5 +139,6 @@ export const buildLunchWeekInput = z.object({
   ideas: z.array(foundIdea).max(MAX_FOUND_IDEAS),
   preferences,
   slots,
+  treatDays,
 });
 export type BuildLunchWeekInput = z.infer<typeof buildLunchWeekInput>;

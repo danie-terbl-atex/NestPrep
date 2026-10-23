@@ -1,14 +1,16 @@
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/money/money.dart';
-import '../../add_to_checkers/model/checkers_product.dart';
+import '../../groceries/model/product_match.dart';
 import '../../lunch_box/model/lunch_board.dart';
+import '../../lunch_box/model/lunch_budget_week.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../data/lunch_week_builder.dart';
 import '../data/shop_week_groceries.dart';
 import '../model/idea_search.dart';
 import '../model/packing_preference.dart';
 import '../model/plan_fallback.dart';
+import '../model/shop_list_entry.dart';
 import '../model/shop_week.dart';
 import '../model/shop_week_assembly.dart';
 import 'shop_week_saver.dart';
@@ -32,7 +34,7 @@ final class PlanWeekShop {
   AsyncState<ShopWeek> _state = const AsyncLoading();
   ShopWeekSaved? _saved;
   bool _isSaving = false;
-  int? _groceriesAdded;
+  List<ShopListEntry>? _listed;
   bool _isAddingGroceries = false;
   AppFailure? _failure;
   var _generation = 0;
@@ -40,19 +42,32 @@ final class PlanWeekShop {
   AsyncState<ShopWeek> get state => _state;
   ShopWeekSaved? get saved => _saved;
   bool get isSaving => _isSaving;
-  int? get groceriesAdded => _groceriesAdded;
+
+  /// How many products the basket added to the list — null until it has.
+  int? get groceriesAdded => _listed?.where((entry) => entry.isNew).length;
+
+  /// The basket as it stands on the grocery list, once it is there — what a
+  /// cart push names (lunch-box ADR-0026 §6).
+  List<ShopListEntry>? get listed => _listed;
   bool get isAddingGroceries => _isAddingGroceries;
 
   /// What went wrong saving or adding to the list, for a banner.
   AppFailure? get failure => _failure;
+
+  /// The week was built by the model, not on the phone — so the done step
+  /// may say the AI did it (design-system ADR-0012). False for a week the
+  /// phone built because the AI could not help.
+  bool get isFromAi => _week?.source == PlanSource.ai;
 
   ShopWeek? get _week => switch (_state) {
     AsyncData(:final value) => value,
     _ => null,
   };
 
-  /// The week from [searches], read against [budget] — the household's, as
-  /// this phone last heard it, when the server does not say.
+  /// The week from [searches], read against the household's whole week:
+  /// [budgetWeek] is budget mode's picture of it as this phone last heard —
+  /// what is packed already, the prices, and the budget when the server does
+  /// not say.
   Future<void> build({
     required String householdId,
     required LunchWeek week,
@@ -60,8 +75,9 @@ final class PlanWeekShop {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
-    required Money? budget,
+    required LunchBudgetWeek? budgetWeek,
   }) async {
+    final budget = budgetWeek?.budget?.money;
     final generation = ++_generation;
     _state = const AsyncLoading();
     onChange();
@@ -80,11 +96,12 @@ final class PlanWeekShop {
           childIds: childIds,
           searches: searches,
           reply: reply,
-          slots: packing.slots,
+          packing: packing,
           budget: switch (reply.budgetCents) {
             final cents? => Money(cents),
             null => budget,
           },
+          weekSoFar: budgetWeek,
         ),
       );
     } on AppFailure catch (failure) {
@@ -97,8 +114,9 @@ final class PlanWeekShop {
                 childIds: childIds,
                 searches: searches,
                 budget: budget,
-                slots: packing.slots,
+                packing: packing,
                 reason: reason,
+                weekSoFar: budgetWeek,
               ),
             );
     }
@@ -128,25 +146,42 @@ final class PlanWeekShop {
   }
 
   /// The basket onto the grocery list, matched to its products; [quantityOf]
-  /// says a number of packs in words.
-  Future<void> addToGroceries(String Function(int packs) quantityOf) async {
+  /// says a number of packs in words. Answers the basket as it stands on the
+  /// list — at once when it is there already — or null when it is not.
+  Future<List<ShopListEntry>?> addToGroceries(
+    String Function(int packs) quantityOf,
+  ) async {
     final plan = _week;
-    if (plan == null || _isAddingGroceries) return;
+    if (_listed case final listed?) return listed;
+    if (plan == null || _isAddingGroceries) return null;
     _isAddingGroceries = true;
     _failure = null;
     onChange();
     try {
-      _groceriesAdded = await _groceries.add([
+      _listed = await _groceries.add([
         for (final line in plan.basket.lines)
-          if (_productOf(plan, line.key) case final product?)
-            (product: product, quantity: quantityOf(line.packs)),
+          if (plan.basketProduct(line.key) case final checked?)
+            (
+              product: checked.product,
+              name: plan.shoppingName(line.key),
+              quantity: quantityOf(line.packs),
+              packs: line.packs,
+            ),
       ]);
     } on AppFailure catch (failure) {
       _failure = failure;
     }
     _isAddingGroceries = false;
     onChange();
+    return _listed;
   }
+
+  /// What is waiting on the list at [shop], to push again (lunch-box
+  /// ADR-0027); [packsOf] reads packs back from quantity words.
+  Future<List<ShopListEntry>> waitingOnList(
+    ProductRetailer shop,
+    int Function(String? quantity) packsOf,
+  ) => _groceries.waitingAt(shop, packsOf);
 
   void dismissFailure() {
     _failure = null;
@@ -158,7 +193,7 @@ final class PlanWeekShop {
     _generation++;
     _state = const AsyncLoading();
     _saved = null;
-    _groceriesAdded = null;
+    _listed = null;
     _failure = null;
   }
 
@@ -167,12 +202,5 @@ final class PlanWeekShop {
     if (plan == null || _saved != null) return;
     _state = AsyncData(edit(plan));
     onChange();
-  }
-
-  static CheckersProduct? _productOf(ShopWeek plan, String productId) {
-    for (final search in plan.searches) {
-      if (search.keptProduct(productId) case final kept?) return kept.product;
-    }
-    return null;
   }
 }

@@ -64,7 +64,7 @@ function portIsOpen(port) {
   });
 }
 
-/** Waits until Auth, Firestore and Functions all answer, or gives up after five minutes. */
+/** Waits until every port answers (the seed writes Storage too), or gives up after five minutes. */
 async function waitForSuite(ports) {
   const deadline = Date.now() + 5 * 60_000;
   while (Date.now() < deadline) {
@@ -100,7 +100,12 @@ process.on('SIGTERM', () => suite.kill('SIGTERM'));
 suite.on('exit', (code) => process.exit(code ?? 0));
 
 try {
-  await waitForSuite([emulators.auth.port, emulators.firestore.port, emulators.functions.port]);
+  await waitForSuite([
+    emulators.auth.port,
+    emulators.firestore.port,
+    emulators.functions.port,
+    emulators.storage.port,
+  ]);
   await run('node', ['tools/seed-emulator.mjs'], { cwd: functionsDir });
   console.log(
     lan

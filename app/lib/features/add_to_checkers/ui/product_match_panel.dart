@@ -5,7 +5,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/checkers_copy.dart';
-import '../model/checkers_product.dart';
+import '../../groceries/model/product_match.dart';
+import '../model/retailer_product.dart';
 import '../state/product_match_controller.dart';
 import 'checkers_area_sheet.dart';
 import 'checkers_product_tile.dart';
@@ -32,7 +33,7 @@ class ProductMatchPanel extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  CheckersCopy.matchesTitle(target.name),
+                  CheckersCopy.matchesTitle(target.shop, target.name),
                   style: nest.text.bodyStrong,
                 ),
               ),
@@ -47,17 +48,16 @@ class ProductMatchPanel extends StatelessWidget {
           _PlaceLine(controller: controller),
           const SizedBox(height: NestSpace.sm),
           switch (controller.matches) {
-            AsyncLoading() => const _Loading(),
+            AsyncLoading() => _Loading(shop: target.shop),
             AsyncFailure(:final failure) => _Message(
               message: AppCopy.failure(failure),
               actionLabel: CheckersCopy.retry,
               onAction: controller.retry,
             ),
-            AsyncData(value: final products) when products.isEmpty =>
-              const _Message(
-                title: CheckersCopy.matchesEmptyTitle,
-                message: CheckersCopy.matchesEmptyBody,
-              ),
+            AsyncData(value: final products) when products.isEmpty => _Message(
+              title: CheckersCopy.matchesEmptyTitle(target.shop),
+              message: CheckersCopy.matchesEmptyBody(target.shop),
+            ),
             AsyncData(value: final products) => _Products(
               products: products,
               bestMatchId: controller.bestMatchId,
@@ -81,7 +81,7 @@ class _PlaceLine extends StatelessWidget {
     final place = controller.place;
     final area = place?.area;
     final label = switch (place) {
-      null => CheckersCopy.matchesLoading,
+      null => CheckersCopy.matchesLoading(controller.target!.shop),
       _ when area != null => CheckersCopy.nearArea(area.label),
       _ => CheckersCopy.nearYou,
     };
@@ -110,11 +110,13 @@ class _PlaceLine extends StatelessWidget {
 }
 
 class _Loading extends StatelessWidget {
-  const _Loading();
+  const _Loading({required this.shop});
+
+  final ProductRetailer shop;
 
   @override
   Widget build(BuildContext context) => Semantics(
-    label: CheckersCopy.matchesLoading,
+    label: CheckersCopy.matchesLoading(shop),
     child: const Column(
       children: [
         NestSkeleton(height: CheckersProductTile.imageSize),
@@ -172,9 +174,9 @@ class _Products extends StatelessWidget {
     required this.onPick,
   });
 
-  final List<CheckersProduct> products;
+  final List<RetailerProduct> products;
   final String? bestMatchId;
-  final ValueChanged<CheckersProduct>? onPick;
+  final ValueChanged<RetailerProduct>? onPick;
 
   @override
   Widget build(BuildContext context) {

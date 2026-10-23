@@ -5,8 +5,10 @@ import 'package:nestprep/features/accounts/data/auth_gateway.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/model/legal_consent.dart';
+import 'package:nestprep/features/accounts/model/seen_tour.dart';
 import 'package:nestprep/features/accounts/model/session_check.dart';
 import 'package:nestprep/features/legal/model/legal_versions.dart';
+import 'package:nestprep/features/welcome_tour/model/tour_version.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 /// Firebase Auth, without a platform channel. A test drives who is signed in by
@@ -126,6 +128,7 @@ final class FakeAccountRepository implements AccountRepository {
   final ensured = <String>[];
   final activeHouseholds = <String>[];
   final acceptedLegal = <LegalConsent>[];
+  final seenTours = <int>[];
 
   /// What this build asks people to agree to, as an account that has.
   static const currentConsent = LegalConsent(
@@ -137,11 +140,21 @@ final class FakeAccountRepository implements AccountRepository {
   /// emitted as one that has agreed to the current documents, so the tests
   /// written before the consent step keep testing what they were written for
   /// (accounts ADR-0005); pass [consented] false to meet the consent step.
-  void emit(Account? account, {bool consented = true}) => _accounts.add(
-    consented && account != null && account.legalConsent == null
-        ? account.copyWith(legalConsent: currentConsent)
-        : account,
-  );
+  /// The same for the welcome tour (welcome-tour ADR-0001): pass [seenTour]
+  /// false to meet it.
+  void emit(Account? account, {bool consented = true, bool seenTour = true}) {
+    var emitted = account;
+    if (emitted != null && consented && emitted.legalConsent == null) {
+      emitted = emitted.copyWith(legalConsent: currentConsent);
+    }
+    if (emitted != null && seenTour && emitted.tour == null) {
+      emitted = emitted.copyWith(
+        tour: const SeenTour(version: TourVersion.current),
+      );
+    }
+    _accounts.add(emitted);
+  }
+
   void failStreamWith(Object error) => _accounts.addError(error);
   Future<void> close() => _accounts.close();
 
@@ -176,5 +189,12 @@ final class FakeAccountRepository implements AccountRepository {
     acceptedLegal.add(
       LegalConsent(termsVersion: termsVersion, privacyVersion: privacyVersion),
     );
+  }
+
+  @override
+  Future<void> markTourSeen({required String uid, required int version}) async {
+    final failure = failWritesWith;
+    if (failure != null) throw failure;
+    seenTours.add(version);
   }
 }

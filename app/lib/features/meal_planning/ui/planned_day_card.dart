@@ -7,6 +7,7 @@ import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
+import '../../recipes/ui/planned_recipe_thumb.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
@@ -15,18 +16,22 @@ import 'meal_ingredients_sheet.dart';
 import 'slot_picker_sheet.dart';
 
 /// One day, with its three slots. An empty slot is a tap target that says it is
-/// empty rather than a gap, so the week always reads as a grid (`FE-08`).
+/// empty rather than a gap, so the week always reads as a grid (`FE-08`). A
+/// meal planned from a recipe shows the recipe's photo and a way into it,
+/// *How to make it*, of its own beside the slot's tap (recipes ADR-0003 §6).
 class PlannedDayCard extends StatelessWidget {
   const PlannedDayCard({
     required this.day,
     required this.today,
     required this.library,
+    required this.onOpenRecipe,
     super.key,
   });
 
   final PlannedDay day;
   final CalendarDate today;
   final List<Meal> library;
+  final ValueChanged<String> onOpenRecipe;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +55,7 @@ class PlannedDayCard extends StatelessWidget {
               slot: slot,
               meal: day.meals[slot],
               library: library,
+              onOpenRecipe: onOpenRecipe,
             ),
         ],
       ),
@@ -63,17 +69,20 @@ class _SlotRow extends StatelessWidget {
     required this.slot,
     required this.meal,
     required this.library,
+    required this.onOpenRecipe,
   });
 
   final CalendarDate date;
   final MealSlot slot;
   final Meal? meal;
   final List<Meal> library;
+  final ValueChanged<String> onOpenRecipe;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final planned = meal;
+    final recipeId = planned?.recipeId;
     final canEdit = context.watch<HouseholdView>().permissions.canEdit(
       HouseholdArea.meals,
     );
@@ -93,15 +102,33 @@ class _SlotRow extends StatelessWidget {
                 ),
               ),
             ),
+            if (recipeId != null) ...[
+              PlannedRecipeThumb(recipeId: recipeId),
+              const SizedBox(width: NestSpace.md),
+            ],
             Expanded(
-              child: Text(
-                planned?.name ?? AppCopy.mealsNothingPlanned,
-                style: nest.text.body.copyWith(
-                  color: planned == null
-                      ? nest.colors.inkTertiary
-                      : nest.colors.ink,
-                  fontStyle: planned == null ? FontStyle.italic : null,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    planned?.name ?? AppCopy.mealsNothingPlanned,
+                    style: nest.text.body.copyWith(
+                      color: planned == null
+                          ? nest.colors.inkTertiary
+                          : nest.colors.ink,
+                      fontStyle: planned == null ? FontStyle.italic : null,
+                    ),
+                  ),
+                  if (recipeId != null)
+                    NestButton(
+                      label: RecipeCopy.howToMakeShort,
+                      icon: LucideIcons.chefHat,
+                      variant: NestButtonVariant.link,
+                      size: NestButtonSize.small,
+                      isExpanded: false,
+                      onPressed: () => onOpenRecipe(recipeId),
+                    ),
+                ],
               ),
             ),
             Icon(

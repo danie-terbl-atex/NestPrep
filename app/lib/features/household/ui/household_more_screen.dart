@@ -6,6 +6,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../welcome_tour/model/tour_target.dart';
+import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/household_view.dart';
 import 'household_people_card.dart';
 import 'household_places.dart';
@@ -33,7 +35,10 @@ class HouseholdMoreScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          HouseholdPeopleCard(view: view),
+          TourAnchor(
+            target: TourTarget.morePeople,
+            child: HouseholdPeopleCard(view: view),
+          ),
           HouseholdPlaces(view: view),
           // Clear of the floating bar, so the last tile can be scrolled into
           // reach (`FE-14`).

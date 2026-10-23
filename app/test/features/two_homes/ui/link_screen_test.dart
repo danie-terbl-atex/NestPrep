@@ -204,9 +204,8 @@ void main() {
     await open(
       tester,
       view: Fixtures.helperView(
-        AccessGrant.uniform(
-          AccessLevel.none,
-        ).withLevel(HouseholdArea.calendar, AccessLevel.view),
+        AccessGrant.uniform(AccessLevel.none)
+            .withLevel(HouseholdArea.calendar, AccessLevel.view),
       ),
     );
     expect(repository.readsOpened, ['link']);

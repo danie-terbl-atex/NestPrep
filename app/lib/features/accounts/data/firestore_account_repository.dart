@@ -102,4 +102,15 @@ final class FirestoreAccountRepository implements AccountRepository {
       throw failureFromFirebase(error);
     }
   }
+
+  @override
+  Future<void> markTourSeen({required String uid, required int version}) async {
+    try {
+      await _accounts.doc(uid).update({
+        'tour': {'version': version, 'seenAt': FieldValue.serverTimestamp()},
+      });
+    } on FirebaseException catch (error) {
+      throw failureFromFirebase(error);
+    }
+  }
 }

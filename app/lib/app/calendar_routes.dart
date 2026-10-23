@@ -15,11 +15,11 @@ import '../features/household/model/household_view.dart';
 import '../features/two_homes/ui/custody_calendar_scope.dart';
 import '../shared/links/external_link_opener.dart';
 import '../shared/time/household_clock.dart';
-import 'app_router.dart';
 import 'calendar_sync_route.dart';
 import 'calendar_v2_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'household_tab_navigation.dart';
 import 'viewer_member.dart';
 
 /// The calendar's routes under the household shell — the week tab, and the

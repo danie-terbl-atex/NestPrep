@@ -1,5 +1,6 @@
 import { allergensMentionedIn } from './allergen_words';
-import { ALLERGENS, mentions, type Allergen, type ChildFoodRules } from './food_safety';
+import { ALLERGENS, isAllergen, mentions, type Allergen, type ChildFoodRules } from './food_safety';
+import type { FoundProduct } from './schemas';
 
 /**
  * Why something may not go in one child's box (lunch-box ADR-0012), or null
@@ -34,4 +35,14 @@ export function exclusionFor(
 /** Whether a child has any allergy at all — then a product nobody can read is not offered. */
 export function hasAnyAllergy(rules: ChildFoodRules): boolean {
   return rules.avoid.size > 0 || rules.otherAllergies.length > 0;
+}
+
+/**
+ * Whether a product may go in this child's box: nothing it is known or named
+ * to contain that they must avoid, no free-text allergy or dislike in its
+ * name — and, for a child with any allergy, the store said what is in it.
+ */
+export function isProductAllowedFor(rules: ChildFoodRules, product: FoundProduct): boolean {
+  if (!product.allergensKnown && hasAnyAllergy(rules)) return false;
+  return exclusionFor(rules, product.name, product.allergens.filter(isAllergen)) === null;
 }

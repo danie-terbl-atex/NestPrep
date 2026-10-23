@@ -12,6 +12,7 @@ import '../../../shared/copy/calendar_sync_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../../shared/ui/member_filter.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
@@ -52,9 +53,9 @@ class CalendarScreen extends StatelessWidget {
     );
 
     return NestScaffold(
-      // The home tab carries the brand: the small nest where a back button
-      // would be on a screen that has one (design-system ADR-0003).
-      leading: const NestBrandMark(size: NestSize.brandMarkSmall),
+      // Opened from More, so it carries the way back (design-system
+      // ADR-0015, `FE-17`); a deep link straight here has none.
+      leading: backLeading(context),
       title: AppCopy.calendarTitle,
       subtitle: NestDates.weekRange(controller.weekStart),
       trailing: const [NotificationBell(), AccountMenuButton()],
@@ -148,9 +149,8 @@ class CalendarScreen extends StatelessWidget {
             children: [
               Text(
                 AppCopy.calendarWeekFilter,
-                style: NestTheme.of(context).text.label.copyWith(
-                  color: NestTheme.of(context).colors.inkSecondary,
-                ),
+                style: NestTheme.of(context).text.label
+                    .copyWith(color: NestTheme.of(context).colors.inkSecondary),
               ),
               const SizedBox(width: NestSpace.sm),
               Expanded(

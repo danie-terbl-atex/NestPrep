@@ -129,6 +129,10 @@ void main() {
   const accountedFor = {
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
+    // Decoding Twig's poses ahead of time (design-system ADR-0012).
+    // `precacheImage` reports a failed decode to FlutterError itself and its
+    // future always completes, so there is nothing to escape into the zone.
+    'precacheImage(AssetImage(pose.asset) context)',
     // The same, for the listener sets documents phase 2 keeps apart from its
     // controllers — and for a vault listener closed because its grant was
     // revoked, whose documents have already left the screen (documents
@@ -147,6 +151,10 @@ void main() {
     // swallows an error, and it catches `Object` — so nothing escapes into
     // the zone, which is where reporting would report itself.
     "bestEffort('crashlytics report'",
+    // Recording the welcome tour as seen (welcome-tour ADR-0001): through
+    // `bestEffort`, which logs a refusal and never throws; leaving the tour
+    // must not wait on a write that offline completes only on reconnect.
+    '_record(uid)',
     // `signOut` catches its own AppFailure.
     '_failSession(error is AppFailure ? error : UnknownFailure(error))',
     // Controllers that keep a refusal instead of throwing it.
@@ -231,6 +239,9 @@ void main() {
     // failures. Cancelling a listener in dispose has nobody left to tell.
     '_verify(',
     'load())',
+    // Fill the week's ready-made boxes (lunch-box ADR-0020): `load` catches
+    // its own AppFailure and holds it as the list's failed state, with a retry.
+    'readyMade.load())',
     'showPaywall(context',
     '_subscription.cancel())',
     '_subscription?.cancel())',
@@ -303,12 +314,31 @@ void main() {
     // Plan my week finding where the shop is (lunch-box ADR-0012): it
     // catches its own AppFailure and falls back to the resolver's own city,
     // which the brief names; unawaited because it starts in the constructor.
-    '_resolvePlace())',
+    'places.restore())',
     // The brief's packing choices on this phone: the store catches its own
     // PlatformException — unreadable is the defaults, unwritten is only not
     // remembered next time. Restoring starts in the constructor.
     'packing.restore());',
     '_store.write(householdId (',
+    // Pick n Pay's sign-in page (add-to-pnp ADR-0005): opening it starts in
+    // `initState` (and on a retry), which cannot wait; `_open` catches its
+    // own failure into the frame's error state with a retry. The cookies
+    // are cleared again as the page closes, with no screen left to tell — a
+    // failure there leaves only PnP's own sign-in cookie in the web view.
+    '_open());',
+    'WebViewCookieManager().clearCookies());',
+    // A kid code typed on the sign-in screen's code sheet, redeemed as the
+    // kid's screen opens (accounts ADR-0009): `submit` catches its own
+    // AppFailure into the screen's banner, as it does from the button.
+    'controller.submit());',
+    // Add to grocer (recipes ADR-0005): a run catches every search's
+    // AppFailure into that line's failed state and a place it cannot find as
+    // the fallback city, so starting one — or again at another shop — from
+    // the sheet cannot fail; the shop choice's store catches its own
+    // PlatformException and only forgets the choice.
+    'controller.start(',
+    'controller.chooseShop(shop));',
+    'preference.write(householdId shop));',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

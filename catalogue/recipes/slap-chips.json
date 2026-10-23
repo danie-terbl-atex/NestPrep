@@ -1,0 +1,74 @@
+{
+  "id": "slap-chips",
+  "name": "Slap chips",
+  "summary": "Soft vinegar chips: thick-cut potatoes fried until tender rather than crisp, then doused in vinegar and salt and left to steam soft.",
+  "about": "Slap is Afrikaans for soft or limp. These are the chips of every South African corner takeaway, sold in a paper parcel soaked with vinegar, and they are the chips inside a Cape Town Gatsby.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch",
+    "dinner"
+  ],
+  "placement": {
+    "lunch": "side",
+    "dinner": "side"
+  },
+  "tags": [
+    "streetFood",
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan"
+  ],
+  "ingredients": [
+    {
+      "name": "Large potatoes",
+      "quantity": 1.2,
+      "unit": "kg",
+      "note": "about 5, a starchy kind such as Mondial",
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1.5,
+      "unit": "l",
+      "note": "for deep-frying",
+      "group": null
+    },
+    {
+      "name": "Brown spirit vinegar",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Peel the potatoes and cut them into thick chips, about 1.5 cm square. Soak them in cold water for 10 minutes to rinse off the starch, then drain and dry them well on a clean cloth.",
+    "Heat the oil in a large deep pot over medium heat to 160 °C; a chip dropped in should fizz steadily, not violently. Never fill the pot more than a third full of oil.",
+    "Fry the chips in three batches for 8 to 10 minutes each, stirring gently now and then, until they are soft right through and only lightly golden. Lift out with a slotted spoon onto paper towel.",
+    "While they are still hot, tip the chips into a bowl, sprinkle with the vinegar and salt and toss gently.",
+    "Cover the bowl with a plate or wrap the chips in paper for 3 to 5 minutes; the steam makes them soft and soaks in the vinegar. Serve straight away with more vinegar and salt at the table."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

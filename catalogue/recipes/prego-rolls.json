@@ -1,0 +1,40 @@
+{
+  "id": "prego-rolls",
+  "name": "Prego rolls",
+  "summary": "Thin garlicky steak seared hot and fast, then tucked into a soft Portuguese roll with the peri-peri pan juices: the Portuguese-South African café steak roll.",
+  "about": "Prego means \"nail\" in Portuguese. The steak roll came to South Africa with Portuguese and Mozambican-Portuguese families and settled into cafés and takeaways, where it gained a spicy peri-peri sauce. Families make it at home on a Saturday, with chips on the side.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch"],
+  "placement": { "lunch": "main" },
+  "tags": ["quick"],
+  "allergens": ["milk", "wheat", "soy"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Thin rump or minute steaks", "quantity": 600, "unit": "g", "note": "4 steaks, about 1 cm thick", "group": null },
+    { "name": "Garlic cloves", "quantity": 6, "unit": null, "note": "crushed", "group": null },
+    { "name": "Olive oil", "quantity": 3, "unit": "tbsp", "note": "divided", "group": null },
+    { "name": "Peri-peri sauce", "quantity": 2, "unit": "tbsp", "note": "mild or hot, plus extra to serve", "group": null },
+    { "name": "Smoked paprika", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Bay leaves", "quantity": 2, "unit": null, "note": "torn", "group": null },
+    { "name": "Lemon juice", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Salt and black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null },
+    { "name": "Butter", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Dry white wine", "quantity": 0.25, "unit": "cup", "note": "or water with 1 tsp vinegar", "group": null },
+    { "name": "Portuguese rolls", "quantity": 4, "unit": null, "note": "soft white bread rolls, halved", "group": null }
+  ],
+  "steps": [
+    "Lay the steaks between two sheets of baking paper and flatten them with a rolling pin to about 5 mm thick. Trim off any fat.",
+    "Mix the garlic, 2 tbsp of the oil, the peri-peri sauce, paprika, bay leaves and lemon juice in a dish. Turn the steaks in it to coat and leave for at least 10 minutes (or up to overnight in the fridge). Season with salt and pepper just before cooking.",
+    "Heat a large heavy frying pan over high heat until very hot. Add the rest of the oil and half the butter, then sear the steaks two at a time for 1–1½ minutes a side, until browned outside and still slightly pink inside. Move them to a plate.",
+    "Turn the heat down to medium, scrape the leftover marinade (without the bay leaves) into the pan with the wine and the remaining butter, and let it bubble for 2 minutes, scraping up the browned bits, until slightly reduced and glossy.",
+    "Toast the cut sides of the rolls in a dry pan or under the oven grill for 1–2 minutes, until golden.",
+    "Return the steaks to the pan for 30 seconds to coat them in the sauce. Fill each roll with a steak, spoon over the pan juices and add extra peri-peri sauce to taste. Serve straight away with chips."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 12,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Flatten and marinate the steaks the night before; cook just before serving.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

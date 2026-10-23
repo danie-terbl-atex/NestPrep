@@ -1,3 +1,4 @@
+import type { SchoolDay } from './iso_week';
 import { LUNCH_SLOTS, type LunchSlot } from './week_documents';
 
 /**
@@ -31,14 +32,26 @@ export const PACKING_INSTRUCTIONS: Readonly<Record<PackingPreference, string>> =
     'Healthier picks: wholegrain, less sugar and salt, more fruit and veg; keep treats small.',
 };
 
+/**
+ * The school days *Plan my week* may plan a treat on when the parent does not
+ * say (lunch-box ADR-0003's Friday, kept by ADR-0025 as the default).
+ */
+export const DEFAULT_TREAT_DAYS: readonly SchoolDay[] = [5];
+
 /** The parent's step-one choices, as both callables receive them. */
 export interface PackingChoices {
   readonly slots: readonly LunchSlot[];
   readonly preferences: readonly PackingPreference[];
+  /** ISO weekdays a treat may be planned on; empty plans none (lunch-box ADR-0025). */
+  readonly treatDays: readonly SchoolDay[];
 }
 
-/** What a phone that sends no choices gets: every compartment, no preference. */
-export const NO_PACKING_CHOICES: PackingChoices = { slots: LUNCH_SLOTS, preferences: [] };
+/** What a phone that sends no choices gets: every compartment, no preference, a Friday treat. */
+export const NO_PACKING_CHOICES: PackingChoices = {
+  slots: LUNCH_SLOTS,
+  preferences: [],
+  treatDays: DEFAULT_TREAT_DAYS,
+};
 
 export function packingInstructions(preferences: readonly PackingPreference[]): string[] {
   return preferences.map((preference) => PACKING_INSTRUCTIONS[preference]);

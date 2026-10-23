@@ -13,6 +13,8 @@ import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../welcome_tour/model/tour_target.dart';
+import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/lunch_board.dart';
 import '../state/lunch_board_controller.dart';
 import 'lunch_board_body.dart';
@@ -105,12 +107,15 @@ class _NoChildren extends StatelessWidget {
         message: LunchCopy.cannotSeeChildren,
       );
     }
-    return NestEmptyView(
-      icon: LucideIcons.sandwich,
-      title: LunchCopy.noChildrenTitle,
-      message: LunchCopy.noChildrenBody,
-      actionLabel: LunchCopy.openFamily,
-      onAction: () => context.push(FamilyRoute.pathFor(view.household.id)),
+    return TourAnchor(
+      target: TourTarget.lunchNoChildren,
+      child: NestEmptyView(
+        icon: LucideIcons.sandwich,
+        title: LunchCopy.noChildrenTitle,
+        message: LunchCopy.noChildrenBody,
+        actionLabel: LunchCopy.openFamily,
+        onAction: () => context.push(FamilyRoute.pathFor(view.household.id)),
+      ),
     );
   }
 }

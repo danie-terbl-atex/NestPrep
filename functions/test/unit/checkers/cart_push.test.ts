@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { pushToCheckersCart, type CartPushDeps } from '../../../src/checkers/cart_push';
 import { CheckersSessionExpired, CheckersUnavailable } from '../../../src/checkers/checkers_api';
 import { requireGroceryReader } from '../../../src/checkers/checkers_caller';
-import { groceryLineOf } from '../../../src/checkers/grocery_lines';
+import { groceryLineOf } from '../../../src/cart_push/grocery_lines';
 import { sealSession } from '../../../src/checkers/sealed_values';
 import { ROLE_DEFAULTS, uniformGrant } from '../../../src/household/access';
 import {

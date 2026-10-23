@@ -1,0 +1,43 @@
+{
+  "id": "peri-peri-chicken",
+  "name": "Peri-peri chicken",
+  "summary": "A whole flattened chicken marinated in a fiery lemon, garlic and bird's-eye chilli sauce, then grilled over coals until charred, sticky and juicy.",
+  "about": "Peri-peri is the African bird's-eye chilli, and the sauce of chilli, garlic, lemon and oil came out of Mozambique's Portuguese kitchens. Portuguese and Mozambican South Africans brought it to braais and corner restaurants here, and it became a national favourite. Make the sauce as hot or as mild as your family likes; the lemon and garlic carry it.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["braai", "kidFriendly"],
+  "allergens": [],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Whole chicken", "quantity": 1.6, "unit": "kg", "note": null, "group": "For the chicken" },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": "For the chicken" },
+    { "name": "Lemons", "quantity": 2, "unit": null, "note": "halved, to serve", "group": "For the chicken" },
+    { "name": "Red bird's-eye chillies", "quantity": 6, "unit": null, "note": "use 2 for a mild, child-friendly sauce", "group": "For the peri-peri sauce" },
+    { "name": "Red sweet pepper", "quantity": 1, "unit": null, "note": "deseeded and chopped", "group": "For the peri-peri sauce" },
+    { "name": "Garlic cloves", "quantity": 6, "unit": null, "note": "peeled", "group": "For the peri-peri sauce" },
+    { "name": "Lemon juice", "quantity": 0.33, "unit": "cup", "note": "about 2 lemons, plus the grated zest of 1", "group": "For the peri-peri sauce" },
+    { "name": "Sunflower or olive oil", "quantity": 0.5, "unit": "cup", "note": null, "group": "For the peri-peri sauce" },
+    { "name": "White vinegar", "quantity": 2, "unit": "tbsp", "note": null, "group": "For the peri-peri sauce" },
+    { "name": "Paprika", "quantity": 2, "unit": "tsp", "note": "smoked or sweet", "group": "For the peri-peri sauce" },
+    { "name": "Dried oregano", "quantity": 1, "unit": "tsp", "note": null, "group": "For the peri-peri sauce" },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": "For the peri-peri sauce" },
+    { "name": "Salt", "quantity": 1.5, "unit": "tsp", "note": null, "group": "For the peri-peri sauce" }
+  ],
+  "steps": [
+    "Spatchcock the chicken: set it breast-down on a board, cut along both sides of the backbone with kitchen scissors and remove it, then turn the bird over and press firmly on the breastbone until it lies flat. Make a few deep slashes in the thighs and drumsticks and rub with the salt.",
+    "Blend all the peri-peri sauce ingredients in a blender for about 1 minute until smooth. Pour a third of it into a jar and keep it in the fridge for serving.",
+    "Rub the rest of the sauce all over the chicken and into the slashes. Cover and marinate in the fridge for at least 2 hours, or overnight; take it out 30 minutes before cooking.",
+    "Prepare a braai fire with medium coals (you can hold your hand at grid height for 5–6 seconds). Put the chicken in a hinged grid and braai bone-side down, well above the coals, for 25 minutes, turning only once or twice so it does not burn.",
+    "Turn skin-side down and braai for another 20–25 minutes, brushing with the marinade left in the bowl for the first 10 minutes only, until the skin is charred in places and the juices run clear when the thickest part of the thigh is pierced (75 °C on a thermometer).",
+    "Oven method: roast flat on a rack in a roasting tin at 200 °C (180 °C fan) for 45–50 minutes, basting once halfway, then grill for 3–4 minutes until blistered.",
+    "Rest the chicken on a board for 10 minutes, then cut into portions. Squeeze over grilled lemon halves and serve with the reserved sauce, chips or rice and a green salad."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 50,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Marinate overnight for the best flavour; the sauce keeps a week in a jar in the fridge.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

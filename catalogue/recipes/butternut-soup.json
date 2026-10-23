@@ -1,0 +1,124 @@
+{
+  "id": "butternut-soup",
+  "name": "Butternut soup",
+  "summary": "Velvety butternut soup with onion, a little curry spice and a swirl of cream, blended smooth and served with toast.",
+  "about": "Butternut is in every South African vegetable rack year-round, and this soup is the country's default winter supper: cheap, filling, and made in one pot. The gentle curry and nutmeg are a local habit.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "vegetableForward",
+    "budget",
+    "comfort"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Mild curry powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butternut",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "one large, peeled, seeded and cubed",
+      "group": null
+    },
+    {
+      "name": "Potato",
+      "quantity": 1,
+      "unit": null,
+      "note": "medium, peeled and cubed",
+      "group": null
+    },
+    {
+      "name": "Vegetable stock",
+      "quantity": 1.2,
+      "unit": "l",
+      "note": "made from a cube or powder",
+      "group": null
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt and black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    },
+    {
+      "name": "Fresh cream",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "plus extra to swirl on top",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large pot over medium-low heat and cook the onions slowly, stirring now and then, until soft and see-through, about 10 minutes.",
+    "Stir in the garlic, ginger and curry powder and cook for 1 minute, until fragrant.",
+    "Add the butternut, potato and stock and bring to the boil over high heat. Turn the heat to low, cover and simmer for 20 to 25 minutes, until the butternut is soft enough to crush against the side of the pot.",
+    "Take the pot off the heat and blend with a stick blender until completely smooth. A potato masher works if there is no power; the soup will just be more rustic.",
+    "Stir in the nutmeg and cream, season with salt and pepper and warm through over low heat for 2 minutes without boiling. Add a little hot water if it is thicker than you like.",
+    "Ladle into bowls, swirl a spoon of cream on each, grind over black pepper and serve with toast."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Freeze before adding the cream for up to 3 months; stir the cream in when you reheat.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "crunchies",
+  "name": "Crunchies",
+  "summary": "Golden oat and coconut bars sweetened with golden syrup, crisp at the edges and chewy in the middle, the tin-cupboard bake of South African homes.",
+  "about": "Crunchies are a South African baking classic: oats, coconut and flour bound with butter and golden syrup, baked in a tray and cut into squares. They keep for weeks in an airtight tin, which is why they turn up in lunch boxes, bake sales, road-trip padkos and church fêtes.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch", "breakfast"],
+  "placement": { "lunch": "snack", "breakfast": "snack" },
+  "tags": ["baking", "kidFriendly", "budget"],
+  "allergens": ["milk", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Rolled oats", "quantity": 180, "unit": "g", "note": "2 cups, not instant", "group": null },
+    { "name": "Cake flour", "quantity": 140, "unit": "g", "note": "1 cup", "group": null },
+    { "name": "Desiccated coconut", "quantity": 80, "unit": "g", "note": "1 cup", "group": null },
+    { "name": "Brown sugar", "quantity": 180, "unit": "g", "note": "1 cup", "group": null },
+    { "name": "Salt", "quantity": 0.25, "unit": "tsp", "note": null, "group": null },
+    { "name": "Butter", "quantity": 200, "unit": "g", "note": "plus extra for the tin", "group": null },
+    { "name": "Golden syrup", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Bicarbonate of soda", "quantity": 1, "unit": "tsp", "note": null, "group": null }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan). Grease a baking tray of about 30 × 20 cm and line it with baking paper.",
+    "Mix the oats, flour, coconut, sugar and salt in a large bowl.",
+    "Melt the butter and golden syrup together in a pot over medium heat until bubbling, about 3 minutes. Take it off the heat and stir in the bicarbonate of soda; it will foam up and turn pale.",
+    "Pour the foaming butter into the dry ingredients straight away and stir until every oat is coated.",
+    "Tip into the tray and press down firmly and evenly with the back of a metal spoon.",
+    "Bake for 20 to 25 minutes, until evenly golden brown all over; it will still feel soft but firms as it cools.",
+    "Cut into 24 squares while still warm, then leave in the tray until completely cool and crisp, about 30 minutes, before lifting them out."
+  ],
+  "servings": 24,
+  "prepMinutes": 15,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps up to 2 weeks in an airtight tin.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

@@ -5,6 +5,8 @@ import '../design/nest_kit.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_permissions.dart';
 import '../features/household/model/household_view.dart';
+import '../features/welcome_tour/model/tour_target.dart';
+import '../features/welcome_tour/ui/tour_anchor.dart';
 import '../shared/copy/app_copy.dart';
 import 'household_shell.dart';
 
@@ -32,23 +34,26 @@ class ListsSwitch extends StatelessWidget {
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: NestSpace.lg),
-      child: Wrap(
-        spacing: NestSpace.sm,
-        runSpacing: NestSpace.sm,
-        children: [
-          for (final (tab, icon) in [
-            (HouseholdTab.todos, LucideIcons.circleCheck),
-            (HouseholdTab.groceries, LucideIcons.shoppingBasket),
-          ])
-            NestChip(
-              label: tab == HouseholdTab.todos
-                  ? AppCopy.tabTodos
-                  : AppCopy.tabGroceries,
-              icon: icon,
-              isSelected: tab == current,
-              onTap: () => onSelect(tab),
-            ),
-        ],
+      child: TourAnchor(
+        target: TourTarget.listsSwitch,
+        child: Wrap(
+          spacing: NestSpace.sm,
+          runSpacing: NestSpace.sm,
+          children: [
+            for (final (tab, icon) in [
+              (HouseholdTab.todos, LucideIcons.circleCheck),
+              (HouseholdTab.groceries, LucideIcons.shoppingBasket),
+            ])
+              NestChip(
+                label: tab == HouseholdTab.todos
+                    ? AppCopy.tabTodos
+                    : AppCopy.tabGroceries,
+                icon: icon,
+                isSelected: tab == current,
+                onTap: () => onSelect(tab),
+              ),
+          ],
+        ),
       ),
     );
   }

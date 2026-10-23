@@ -1,7 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../shared/failure/app_failure.dart';
-import '../model/checkers_product.dart';
+import '../model/retailer_product.dart';
 import 'checkers_failure_mapper.dart';
 import 'product_match_ranker.dart';
 
@@ -17,7 +17,7 @@ final class CallableProductMatchRanker implements ProductMatchRanker {
   Future<Map<String, double>> rank({
     required String householdId,
     required String item,
-    required List<CheckersProduct> products,
+    required List<RetailerProduct> products,
   }) async {
     final Object? data;
     try {

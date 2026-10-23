@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
 import 'package:nestprep/features/add_to_checkers/state/product_match_controller.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
@@ -13,12 +14,14 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import '../../../support/fake_checkers.dart';
 import '../../../support/fake_grocery_repository.dart';
 import '../../../support/fake_live_location.dart';
+import '../../../support/fake_plan_week.dart';
 import '../../../support/household_fixtures.dart';
 
 GroceryItem item(String name, {String id = 'i1'}) =>
     GroceryItem(id: id, name: name, addedBy: Fixtures.samMemberId);
 
 const debounce = Duration(milliseconds: 40);
+const checkers = ProductRetailer.checkers;
 
 /// Real time, a little past the debounce, then every answer after it.
 Future<void> settle() async {
@@ -33,13 +36,14 @@ final class Harness {
 
   final catalogue = FakeCheckersCatalogue()
     ..products = [checkersProduct('Clover Fresh Full Cream Milk 2L')];
+  final pnp = FakeShopCatalogue();
   final areas = FakeCheckersAreaPreference();
   final location = FakeLocationSource();
   final groceries = FakeGroceryRepository();
   final ranker = FakeProductMatchRanker();
 
   late final controller = ProductMatchController(
-    catalogue: catalogue,
+    catalogues: RetailerCatalogues(checkers: catalogue, pickNPay: pnp),
     placeResolver: CheckersPlaceResolver(
       locationSource: location,
       areaPreference: areas,
@@ -66,7 +70,7 @@ void main() {
       await pumpEventQueue();
       expect(h.catalogue.searches, isEmpty);
 
-      h.controller.lookFor(item('milk'));
+      h.controller.lookFor(item('milk'), at: checkers);
       expect(h.controller.matches, isA<AsyncLoading<Object>>());
       await pumpEventQueue();
       expect(h.catalogue.searches, isEmpty);
@@ -80,8 +84,8 @@ void main() {
   test('items added quickly in a row search only for the last one', () async {
     final h = Harness();
     h.controller
-      ..lookFor(item('milk'))
-      ..lookFor(item('bread', id: 'i2'));
+      ..lookFor(item('milk'), at: checkers)
+      ..lookFor(item('bread', id: 'i2'), at: checkers);
     await settle();
     expect(
       [for (final search in h.catalogue.searches) search.query],
@@ -92,7 +96,7 @@ void main() {
 
   test('nothing close is an empty answer, not a failure', () async {
     final h = Harness()..catalogue.products = const [];
-    h.controller.lookFor(item('unobtainium'));
+    h.controller.lookFor(item('unobtainium'), at: checkers);
     await settle();
     expect(
       h.controller.matches,
@@ -105,7 +109,7 @@ void main() {
       ..catalogue.failWith = const CheckersFailure(
         CheckersProblem.catalogueBusy,
       );
-    h.controller.lookFor(item('milk'));
+    h.controller.lookFor(item('milk'), at: checkers);
     await settle();
     expect(h.controller.matches, isA<AsyncFailure<Object>>());
 
@@ -118,7 +122,7 @@ void main() {
 
   test('an answer for a panel somebody closed is dropped', () async {
     final h = Harness()..catalogue.gate = Completer<void>();
-    h.controller.lookFor(item('milk'));
+    h.controller.lookFor(item('milk'), at: checkers);
     await settle();
     h.controller.dismiss();
     h.catalogue.gate!.complete();
@@ -131,7 +135,7 @@ void main() {
     'picking stores the product on the item as the picker, and closes',
     () async {
       final h = Harness();
-      h.controller.lookFor(item('milk'));
+      h.controller.lookFor(item('milk'), at: checkers);
       await settle();
       await h.controller.pick(h.catalogue.products.single);
 
@@ -149,7 +153,7 @@ void main() {
   test('a refused pick keeps the panel open and says why', () async {
     final h = Harness()
       ..groceries.failWritesWith = const PermissionDeniedFailure();
-    h.controller.lookFor(item('milk'));
+    h.controller.lookFor(item('milk'), at: checkers);
     await settle();
     await h.controller.pick(h.catalogue.products.single);
     expect(h.controller.target?.itemId, 'i1');
@@ -167,7 +171,7 @@ void main() {
       'Cape Town, when nothing is chosen and location is not allowed',
       () async {
         final h = Harness();
-        h.controller.lookFor(item('milk'));
+        h.controller.lookFor(item('milk'), at: checkers);
         await settle();
         expect(h.catalogue.searches.single.near, CheckersArea.capeTown.centre);
         expect(h.controller.place?.area, CheckersArea.capeTown);
@@ -177,7 +181,7 @@ void main() {
     test('the phone, when its owner already allowed location', () async {
       const here = Coordinates(latitude: -26.1, longitude: 28);
       final h = Harness()..location.alreadyAllowedAt = here;
-      h.controller.lookFor(item('milk'));
+      h.controller.lookFor(item('milk'), at: checkers);
       await settle();
       expect(h.catalogue.searches.single.near, here);
       expect(h.controller.place?.isDevice, isTrue);
@@ -187,7 +191,7 @@ void main() {
 
     test('a chosen area is remembered and searched at once', () async {
       final h = Harness();
-      h.controller.lookFor(item('milk'));
+      h.controller.lookFor(item('milk'), at: checkers);
       await settle();
       await h.controller.chooseArea(CheckersArea.durban);
       await settle();
@@ -208,7 +212,7 @@ void main() {
     test('puts the best fit first and marks it when Jev is sure', () async {
       final h = withThree()
         ..ranker.fits = {'choc': 0.03, 'full': 0.92, 'cond': 0.04};
-      h.controller.lookFor(item('Milk'));
+      h.controller.lookFor(item('Milk'), at: checkers);
       await settle();
       expect(h.ranker.asked.single.item, 'Milk');
       expect(shownIds(h.controller), ['full', 'cond', 'choc']);
@@ -217,7 +221,7 @@ void main() {
 
     test('reorders without a mark when nothing is a sure fit', () async {
       final h = withThree()..ranker.fits = {'cond': 0.5, 'full': 0.4};
-      h.controller.lookFor(item('Milk'));
+      h.controller.lookFor(item('Milk'), at: checkers);
       await settle();
       expect(shownIds(h.controller), ['cond', 'full', 'choc']);
       expect(h.controller.bestMatchId, isNull);
@@ -225,7 +229,7 @@ void main() {
 
     test("keeps the shop's order, and says nothing, when Jev fails", () async {
       final h = withThree()..ranker.failure = const UnavailableFailure();
-      h.controller.lookFor(item('Milk'));
+      h.controller.lookFor(item('Milk'), at: checkers);
       await settle();
       expect(shownIds(h.controller), ['choc', 'full', 'cond']);
       expect(h.controller.bestMatchId, isNull);
@@ -234,9 +238,9 @@ void main() {
 
     test('drops a mark from an earlier item', () async {
       final h = withThree()..ranker.fits = {'full': 0.92};
-      h.controller.lookFor(item('Milk'));
+      h.controller.lookFor(item('Milk'), at: checkers);
       await settle();
-      h.controller.lookFor(item('Bread', id: 'i2'));
+      h.controller.lookFor(item('Bread', id: 'i2'), at: checkers);
       expect(h.controller.bestMatchId, isNull);
     });
   });

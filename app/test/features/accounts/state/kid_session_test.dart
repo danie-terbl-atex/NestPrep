@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nestprep/app/app_router.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/kid_routes.dart';
+import 'package:nestprep/app/session_redirect.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/model/kid_identity.dart';
 import 'package:nestprep/features/accounts/model/session.dart';

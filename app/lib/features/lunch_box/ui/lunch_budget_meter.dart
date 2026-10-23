@@ -4,8 +4,10 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../model/lunch_budget_reading.dart';
 import '../model/lunch_budget_week.dart';
+import 'lunch_week_name.dart';
 
-/// The week against its budget, gently (lunch-box ADR-0007): the spend, a
+/// The week against its budget, gently (lunch-box ADR-0007), named — "This
+/// week", "Next week" — as the week bar names it (ADR-0019): the spend, a
 /// bar that fills, and one calm sentence — green while there is room, the
 /// warning tone past it, never red. Without a budget it says what was spent
 /// and offers to set one.
@@ -26,7 +28,10 @@ class LunchBudgetMeter extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(LunchBudgetCopy.thisWeek, style: nest.text.caption),
+          Text(
+            LunchWeekName.ofBoard(week.board).label,
+            style: nest.text.caption,
+          ),
           const SizedBox(height: NestSpace.xs),
           Text(switch (reading) {
             null when week.cost.isAtLeast => LunchBudgetCopy.spentAtLeast(

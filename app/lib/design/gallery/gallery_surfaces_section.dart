@@ -28,6 +28,26 @@ class GallerySurfacesSection extends StatelessWidget {
           ],
         ),
         GalleryGroup(
+          title: 'Twig, the AI mascot',
+          children: [
+            Wrap(
+              spacing: NestSpace.md,
+              runSpacing: NestSpace.md,
+              children: [
+                for (final pose in NestTwigPose.values)
+                  NestTwig(pose: pose, size: NestSize.twigLarge),
+              ],
+            ),
+            const Row(
+              children: [
+                NestTwig(pose: NestTwigPose.waving, size: NestSize.twigSmall),
+                SizedBox(width: NestSpace.md),
+                NestTwig(pose: NestTwigPose.thinking),
+              ],
+            ),
+          ],
+        ),
+        GalleryGroup(
           title: 'Cards',
           children: [
             NestCard(
@@ -172,6 +192,11 @@ class GallerySurfacesSection extends StatelessWidget {
                   child: NestBrandMark(size: NestSize.brandMarkLarge),
                 ),
               ),
+            ),
+            NestPhotoHero(
+              backLabel: 'Back',
+              onBack: () {},
+              photo: ColoredBox(color: nest.colors.tileButter),
             ),
             NestRiseIn(
               index: 1,

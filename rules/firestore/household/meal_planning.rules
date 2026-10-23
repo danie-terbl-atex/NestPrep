@@ -13,15 +13,18 @@ match /meals/{mealId} {
 
   allow create: if canEdit(householdId, 'meals')
     && request.resource.data.keys().hasOnly(
-         ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients'])
+         ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients', 'recipeId'])
     && isNonEmptyString(request.resource.data.name)
     && isNormalisedKey(request.resource.data.nameKey)
     && isOwnMember(householdId, request.resource.data.addedBy)
     && isServerTime('createdAt')
-    && mealsIngredientsAreValid(request.resource.data.get('ingredients', []));
+    && mealsIngredientsAreValid(request.resource.data.get('ingredients', []))
+    && mealsRecipeLinkIsValid(mealId, request.resource.data);
 
   // Renaming is the adder's or an admin's; what goes in a meal is anybody's
   // who edits meals (meal-planning ADR-0002) — the two never share a write.
+  // Neither list names `recipeId`, so the link is never added, changed or
+  // removed after create (recipes ADR-0003 §6).
   allow update: if canEdit(householdId, 'meals')
     && ((onlyChanged(['name', 'nameKey'])
           && isNonEmptyString(request.resource.data.name)
@@ -34,6 +37,17 @@ match /meals/{mealId} {
   allow delete: if isAdmin(householdId)
     || (canEdit(householdId, 'meals')
           && isOwnMember(householdId, resource.data.addedBy));
+
+  // A meal made from a catalogue recipe names it once, at create, and lives
+  // at `recipe-<recipeId>`, so adding the same recipe again finds the same
+  // meal instead of a second one (recipes ADR-0003 §6).
+  function mealsRecipeLinkIsValid(mealId, data) {
+    return !('recipeId' in data)
+      || (data.recipeId is string
+          && data.recipeId.size() > 0
+          && data.recipeId.size() <= 60
+          && mealId == 'recipe-' + data.recipeId);
+  }
 
   function isNormalisedKey(value) {
     return value is string && value.size() > 0 && value == value.lower();

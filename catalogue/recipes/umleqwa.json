@@ -1,0 +1,128 @@
+{
+  "id": "umleqwa",
+  "name": "Umleqwa",
+  "summary": "Hardbody (free-range) chicken simmered slowly until tender, then browned in its own fat and finished in a rich onion and tomato gravy.",
+  "about": "Umleqwa is the isiXhosa name for a free-range “hardbody” chicken; the word comes from chasing, because the birds run when you try to catch them. Tougher than a supermarket bird, it is cooked long and slow, and in many isiXhosa and isiZulu homes it is the Sunday and celebration chicken, served with samp, pap or dombolo.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "traditional",
+    "comfort",
+    "onePot"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Hardbody chicken",
+      "quantity": 1.8,
+      "unit": "kg",
+      "note": "free-range or village chicken, cut into portions",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 1,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "only if the pot is dry",
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Medium curry powder",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Ripe tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Chicken stock cube",
+      "quantity": 1,
+      "unit": null,
+      "note": "dissolved in 500 ml boiling water",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    }
+  ],
+  "steps": [
+    "Rinse the chicken portions and put them in a heavy pot with the water, salt and bay leaves. Bring to the boil over high heat, then cover and simmer on medium-low for 1 hour, turning the pieces now and then. (A supermarket chicken needs only 20 minutes here.)",
+    "Take off the lid, turn the heat to medium and let the water boil away completely, 20–30 minutes, until the chicken starts to sizzle in its own fat.",
+    "Fry the pieces in that fat, turning them, until browned all over, 5–8 minutes. Add 1 tbsp oil only if the pot is dry and catching.",
+    "Add the onions and cook, stirring, until soft and golden, about 5 minutes. Stir in the garlic, curry powder and paprika and cook for 1 minute, until fragrant.",
+    "Add the tomatoes and the stock and scrape up the browned bits from the bottom. Cover and simmer on low for 45–60 minutes, adding a splash of water if it starts to catch, until the meat comes away from the bone and the gravy is thick and glossy.",
+    "Season with the pepper and taste for salt. Serve hot with pap, samp or dombolo and steamed cabbage."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 150,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "It tastes even better the next day; reheat gently with a splash of water.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

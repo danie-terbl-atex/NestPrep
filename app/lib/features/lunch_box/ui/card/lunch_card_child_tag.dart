@@ -18,6 +18,9 @@ class LunchCardChildTag extends StatelessWidget {
   final Color surface;
   final String? text;
 
+  /// The tallest a tag is: the avatar, on its pill.
+  static const height = NestSize.avatarSmall + NestSpace.xxs * 2;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);

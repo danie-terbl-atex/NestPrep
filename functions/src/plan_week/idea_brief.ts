@@ -1,6 +1,6 @@
 import { exclusionFor } from './child_exclusion';
 import type { ChildFoodRules } from './food_safety';
-import { openCompartments } from './open_compartments';
+import { openCompartments, type SchoolWeek } from './open_compartments';
 import {
   NO_PACKING_CHOICES,
   packingInstructions,
@@ -53,20 +53,20 @@ export const MAX_REMEMBERED_FOODS = 12;
 export function ideaBriefFrom(
   children: readonly ChildFacts[],
   plans: readonly LunchPlanFacts[],
-  monday: string,
+  week: SchoolWeek,
   budgetCents: number | null,
   aisle: readonly AisleShelf[] = [],
   choices: PackingChoices = NO_PACKING_CHOICES,
 ): IdeaBrief {
   const briefChildren = children.map((child, index): IdeaBriefChild => {
     const history = plans.filter((plan) => plan.childId === child.memberId);
-    const thisWeek = history.find((plan) => plan.weekStart === monday);
+    const thisWeek = history.find((plan) => plan.weekStart === week.monday);
     const open: Record<LunchSlot, number> = { main: 0, fruit: 0, veg: 0, snack: 0, treat: 0 };
-    for (const key of openCompartments(thisWeek, choices.slots)) {
+    for (const key of openCompartments(thisWeek, week, choices.slots, choices.treatDays)) {
       const slot = key.slice(key.indexOf('_') + 1);
       if (isLunchSlot(slot)) open[slot] += 1;
     }
-    const { ateWell, oftenLeft } = rememberedFoods(history, monday);
+    const { ateWell, oftenLeft } = rememberedFoods(history, week.monday);
     return {
       ref: `child-${String(index + 1)}`,
       memberId: child.memberId,

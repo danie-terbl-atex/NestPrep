@@ -12,6 +12,7 @@ class GalleryControlsSection extends StatefulWidget {
 
 class _GalleryControlsSectionState extends State<GalleryControlsSection> {
   int _chip = 0;
+  int _segment = 0;
   bool _loading = false;
 
   @override
@@ -27,9 +28,14 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
             Text('How may I help?', style: nest.text.headline),
             Text('Screen title', style: nest.text.screenTitle),
             Text('Card title', style: nest.text.title),
+            Text('Bobotie', style: nest.text.cardTitle),
             Text('4 812', style: nest.text.figure),
             Text('Stand-up', style: nest.text.titleLight),
             Text('Body copy at sixteen.', style: nest.text.body),
+            Text(
+              'A method step, read at arm’s length.',
+              style: nest.text.reading,
+            ),
             Text('Secondary body copy.', style: nest.text.bodySecondary),
             Text('Label', style: nest.text.label),
             Text('Caption · 2 min ago', style: nest.text.caption),
@@ -122,6 +128,38 @@ class _GalleryControlsSectionState extends State<GalleryControlsSection> {
                     onTap: () => setState(() => _chip = index),
                   ),
               ],
+            ),
+          ],
+        ),
+        GalleryGroup(
+          title: 'Segmented control',
+          children: [
+            NestSegmentedControl<int>(
+              segments: const [
+                NestSegment(value: 0, label: 'Recipes'),
+                NestSegment(value: 1, label: 'This week'),
+              ],
+              selected: _segment,
+              onSelect: (value) => setState(() => _segment = value),
+            ),
+          ],
+        ),
+        GalleryGroup(
+          title: 'Steps',
+          children: [
+            const NestStepsBar(
+              count: 3,
+              index: 1,
+              label: 'Step 2 of 3: Review',
+            ),
+            NestStepActions(
+              nextLabel: 'Fill the week',
+              nextIcon: LucideIcons.check,
+              onNext: () {},
+              secondaryLabel: 'Skip — fill it all for me',
+              onSecondary: () {},
+              backLabel: 'Back',
+              onBack: () {},
             ),
           ],
         ),

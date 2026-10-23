@@ -24,6 +24,20 @@ abstract interface class MealRepository {
     required String addedBy,
   });
 
+  /// The household meal a catalogue recipe becomes (recipes ADR-0003 §6):
+  /// `meals/recipe-<recipeId>`, made with [name], [ingredients] and an
+  /// immutable `recipeId` the first time, and after that only its
+  /// [ingredients] rewritten — so planning it for a different number of
+  /// people changes the amounts and keeps whatever the family renamed it to.
+  /// Returns the meal's id.
+  Future<String> addRecipeMeal({
+    required String householdId,
+    required String recipeId,
+    required String name,
+    required List<MealIngredient> ingredients,
+    required String addedBy,
+  });
+
   Future<void> renameMeal({
     required String householdId,
     required String mealId,

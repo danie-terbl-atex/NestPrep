@@ -1,0 +1,37 @@
+{
+  "id": "mieliebrood",
+  "name": "Mieliebrood",
+  "summary": "Sweetcorn bread: a moist, golden loaf packed with creamed sweetcorn, baked in a loaf tin and sliced warm with butter, alongside a braai or a bowl of soup.",
+  "about": "Mieliebrood (mielie bread) belongs to the Afrikaans farm kitchen, where it was traditionally made from freshly grated green mielies and steamed in a covered tin over a pot of boiling water. Today most home cooks bake it with tinned creamed sweetcorn. It goes to the braai as a side, and leftover slices are toasted for breakfast.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast", "lunch"],
+  "placement": { "breakfast": "snack", "lunch": "side" },
+  "tags": ["baking", "traditional", "budget"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 280, "unit": "g", "note": "2 cups", "group": null },
+    { "name": "Baking powder", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Sugar", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Eggs", "quantity": 2, "unit": null, "note": null, "group": null },
+    { "name": "Milk", "quantity": 0.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Butter", "quantity": 60, "unit": "g", "note": "melted and cooled, plus extra for the tin", "group": null },
+    { "name": "Creamed sweetcorn", "quantity": 1, "unit": "tin", "note": "410 g", "group": null }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan). Grease a 22 × 11 cm loaf tin with butter and line the base with baking paper.",
+    "Sift the flour, baking powder and salt into a large bowl and stir in the sugar.",
+    "In another bowl whisk the eggs, milk and melted butter together, then stir in the creamed sweetcorn.",
+    "Pour the wet mixture into the dry ingredients and fold together with a spoon until just combined with no dry flour showing. Do not overmix; the batter will be thick and slightly lumpy.",
+    "Spoon the batter into the tin, level the top and bake for 50 to 60 minutes, until risen and golden brown and a skewer pushed into the centre comes out clean.",
+    "Cool in the tin for 10 minutes, then turn out onto a rack. Slice thickly and serve warm with butter."
+  ],
+  "servings": 10,
+  "prepMinutes": 15,
+  "cookMinutes": 55,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 2 days wrapped at room temperature; toast or warm slices before serving.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

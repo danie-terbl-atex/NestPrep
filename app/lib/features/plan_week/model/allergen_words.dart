@@ -1,3 +1,4 @@
+import '../../../shared/text/normalised_name.dart';
 import '../../family_profiles/model/allergen.dart';
 import '../../lunch_box/model/lunch_safety.dart';
 
@@ -49,6 +50,8 @@ abstract final class AllergenWords {
       'rusk',
       'muffin',
       'couscous',
+      'tortilla',
+      'wholewheat',
     ],
     Allergen.soy: ['soy', 'soya'],
     Allergen.fish: [
@@ -76,10 +79,29 @@ abstract final class AllergenWords {
     Allergen.sesame: ['sesame', 'tahini', 'hummus'],
   };
 
+  /// Whole-word food names that contain an allergen word but never the
+  /// allergen (recipes ADR-0004), taken out before the words are read:
+  /// butternut squash is not milk, nutmeg is not a tree nut, and "peanut
+  /// butter" is still milk. The server holds the same list.
+  static const notAllergens = [
+    'butternut',
+    'butter bean',
+    'butter beans',
+    'nutmeg',
+    'cream of tartar',
+    'cream soda',
+  ];
+
   /// Every allergen whose words [text] mentions, matched the way the lunch
   /// library matches a dislike (`LunchSafety.mentions`).
-  static Set<Allergen> mentionedIn(String text) => {
-    for (final MapEntry(key: allergen, value: words) in byAllergen.entries)
-      if (words.any((word) => LunchSafety.mentions(text, word))) allergen,
-  };
+  static Set<Allergen> mentionedIn(String text) {
+    final read = notAllergens.fold<String>(
+      normalisedName(text),
+      (remaining, phrase) => remaining.replaceAll(RegExp('\\b$phrase\\b'), ' '),
+    );
+    return {
+      for (final MapEntry(key: allergen, value: words) in byAllergen.entries)
+        if (words.any((word) => LunchSafety.mentions(read, word))) allergen,
+    };
+  }
 }

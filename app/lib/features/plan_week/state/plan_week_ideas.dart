@@ -32,8 +32,15 @@ final class PlanWeekIdeas {
   AsyncState<IdeaList> _state = const AsyncLoading();
   var _ownIdeas = 0;
   var _generation = 0;
+  var _isDrafting = false;
 
   AsyncState<IdeaList> get state => _state;
+
+  /// The model has the brief and has not answered yet — the one part of this
+  /// step that is the AI's work rather than the phone's (design-system
+  /// ADR-0012). False while the aisle is read before it, and once a list is
+  /// in, whoever made it.
+  bool get isDrafting => _isDrafting;
 
   /// Ideas still for a child, in the order they are searched.
   List<LunchIdea> get active => switch (_state) {
@@ -56,6 +63,7 @@ final class PlanWeekIdeas {
     final generation = ++_generation;
     final shelves = [for (final shelf in aisle) shelf.idea];
     _state = const AsyncLoading();
+    _isDrafting = true;
     onChange();
     AsyncState<IdeaList> next;
     try {
@@ -70,7 +78,8 @@ final class PlanWeekIdeas {
         ideas: [
           ...shelves,
           for (final idea in reply.ideas)
-            if (packing.slots.contains(idea.slot)) _keptTo(idea, childIds),
+            if (packing.plannedSlots.contains(idea.slot))
+              _keptTo(idea, childIds),
         ],
         source: PlanSource.ai,
         reason: null,
@@ -83,7 +92,7 @@ final class PlanWeekIdeas {
           : AsyncData((
               ideas: [
                 ...shelves,
-                ...UsualIdeas.from(board, childIds, packing.slots),
+                ...UsualIdeas.from(board, childIds, packing.plannedSlots),
               ],
               source: PlanSource.fallback,
               reason: reason,
@@ -91,6 +100,7 @@ final class PlanWeekIdeas {
             ));
     }
     if (generation != _generation) return;
+    _isDrafting = false;
     _state = next;
     onChange();
   }
@@ -123,6 +133,7 @@ final class PlanWeekIdeas {
   /// Forgets the list; an answer still on its way is dropped.
   void clear() {
     _generation++;
+    _isDrafting = false;
     _state = const AsyncLoading();
   }
 
@@ -149,5 +160,6 @@ final class PlanWeekIdeas {
     childIds: idea.childIds.where(childIds.contains).toList(),
     excluded: idea.excluded,
     origin: idea.origin,
+    dish: idea.dish,
   );
 }

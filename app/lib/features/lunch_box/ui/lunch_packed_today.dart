@@ -2,32 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../model/lunch_board.dart';
-import '../model/lunch_pantry_week.dart';
+import '../model/lunch_day.dart';
 import '../state/lunch_pantry_controller.dart';
 
 /// Today's box, in the bag (lunch-box ADR-0006): one tap takes what is in it
-/// out of the pantry, once, and can be undone. Only on a school day, and
-/// only when today's box has something in it.
+/// out of the pantry, once, and can be undone. It sits with the day on show
+/// (ADR-0022), so only when that day is today and its box has something in
+/// it. Silent while the pantry loads or fails — the week's pantry planning
+/// is where that failure is shown with a retry.
 class LunchPackedToday extends StatelessWidget {
   const LunchPackedToday({
-    required this.board,
     required this.childWeek,
-    required this.pantry,
+    required this.day,
     super.key,
   });
 
-  final LunchBoard board;
   final LunchChildWeek childWeek;
-  final LunchPantryWeek pantry;
+  final LunchDay day;
 
   @override
   Widget build(BuildContext context) {
-    final today = childWeek.days.where((day) => day.isToday).firstOrNull;
-    if (today == null || today.box.isEmpty) return const SizedBox.shrink();
-    final controller = context.read<LunchPantryController>();
-    final isPacked = pantry.isPacked(childWeek.childId, today.date);
+    final controller = context.watch<LunchPantryController>();
+    final pantry = switch (controller.pantry) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    if (pantry == null || !day.isToday || day.box.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final isPacked = pantry.isPacked(childWeek.childId, day.date);
     return Padding(
       padding: const EdgeInsets.only(top: NestSpace.md),
       child: Column(
@@ -57,12 +63,12 @@ class LunchPackedToday extends StatelessWidget {
               onPressed: isPacked
                   ? () => controller.unmarkPacked(
                       childId: childWeek.childId,
-                      date: today.date,
+                      date: day.date,
                     )
                   : () => controller.markPacked(
                       childId: childWeek.childId,
-                      date: today.date,
-                      box: today.box,
+                      date: day.date,
+                      box: day.box,
                     ),
             ),
           ),

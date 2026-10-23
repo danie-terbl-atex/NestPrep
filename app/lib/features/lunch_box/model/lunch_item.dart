@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/text/normalised_name.dart';
 import '../../family_profiles/model/allergen.dart';
+import '../../recipes/model/recipe_link.dart';
 import 'lunch_slot.dart';
 
 part 'lunch_item.freezed.dart';
@@ -43,6 +44,16 @@ abstract class LunchItem with _$LunchItem {
     /// Set on the items the library was seeded with, so re-seeding recognises
     /// them; null for the household's own.
     String? seedKey,
+
+    /// Set on an item made from one of NestPrep's recipes (`recipes/{id}`),
+    /// so it opens that recipe; null for everything else. Left out of the
+    /// write when null, so an item without one is stored as it always was.
+    @JsonKey(includeIfNull: false) String? recipeId,
+
+    /// Set on a dish *Plan my week* drafted, naming the household's own
+    /// recipe (`households/{id}/recipes/{id}`, recipes ADR-0002); never with
+    /// [recipeId]. Left out of the write when null, like [recipeId].
+    @JsonKey(includeIfNull: false) String? householdRecipeId,
     required String addedBy,
     @ServerTimestampConverter() DateTime? createdAt,
   }) = _LunchItem;
@@ -63,6 +74,8 @@ abstract class LunchItem with _$LunchItem {
     bool prepAhead = false,
     String? prepNote,
     String? seedKey,
+    String? recipeId,
+    String? householdRecipeId,
   }) {
     final note = prepNote?.trim();
     return LunchItem(
@@ -77,6 +90,8 @@ abstract class LunchItem with _$LunchItem {
       prepAhead: prepAhead,
       prepNote: note == null || note.isEmpty ? null : note,
       seedKey: seedKey,
+      recipeId: recipeId,
+      householdRecipeId: householdRecipeId,
       addedBy: addedBy,
     );
   }
@@ -85,6 +100,10 @@ abstract class LunchItem with _$LunchItem {
   static const prepNoteLimit = 140;
 
   LunchSlot? get slot => LunchSlot.fromName(slotName);
+
+  /// The recipe this item opens, of either kind, or null for most items.
+  RecipeLink? get recipeLink =>
+      RecipeLink.of(recipeId: recipeId, householdRecipeId: householdRecipeId);
 
   /// The allergens this build knows; see [allergens] for the rest.
   Set<Allergen> get knownAllergens => {

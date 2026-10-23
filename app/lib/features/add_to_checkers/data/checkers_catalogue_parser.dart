@@ -1,7 +1,9 @@
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/money/money.dart';
-import '../model/checkers_product.dart';
+import '../../groceries/model/product_match.dart';
 import '../model/checkers_store.dart';
+import '../model/pack_count.dart';
+import '../model/retailer_product.dart';
 
 /// Turns the catalogue's decoded JSON into typed stores and products — the
 /// one place the raw shape exists (`ENG-09`).
@@ -10,6 +12,9 @@ import '../model/checkers_store.dart';
 /// single product missing something it needs is left out, so one odd entry
 /// never costs a person the other four.
 abstract final class CheckersCatalogueParser {
+  /// Checkers' unit for a product priced and sold per kilogram.
+  static const _weighedUnit = 'KG';
+
   static const _priceFactor = 100;
 
   /// The stores in a `store-contexts` answer that deliver within the hour.
@@ -27,7 +32,7 @@ abstract final class CheckersCatalogueParser {
 
   /// The products in a `products/filter` answer, in the order Checkers ranked
   /// them.
-  static List<CheckersProduct> products(Object? json) {
+  static List<RetailerProduct> products(Object? json) {
     final products = switch (json) {
       {'products': final List<Object?> products} => products,
       _ => throw const CheckersFailure(CheckersProblem.catalogueChanged),
@@ -36,10 +41,12 @@ abstract final class CheckersCatalogueParser {
   }
 
   static CheckersStore? _store(Object? json) {
-    if (json case {
-      'storeId': final String storeId,
-      'serviceOptionIds': final List<Object?> serviceOptionIds,
-    } when storeId.isNotEmpty) {
+    if (json
+        case {
+          'storeId': final String storeId,
+          'serviceOptionIds': final List<Object?> serviceOptionIds,
+        }
+        when storeId.isNotEmpty) {
       return CheckersStore(
         storeId: storeId,
         serviceOptionIds: serviceOptionIds.whereType<String>().toList(),
@@ -56,14 +63,16 @@ abstract final class CheckersCatalogueParser {
     return null;
   }
 
-  static CheckersProduct? _product(Object? json) {
-    if (json case {
-      'id': final String id,
-      'storeId': final String storeId,
-      'articleNumber': final String articleNumber,
-      'unitOfMeasure': final String unitOfMeasure,
-      'priceWithoutDecimal': final int rawPrice,
-    } when id.isNotEmpty && unitOfMeasure.isNotEmpty) {
+  static RetailerProduct? _product(Object? json) {
+    if (json
+        case {
+          'id': final String id,
+          'storeId': final String storeId,
+          'articleNumber': final String articleNumber,
+          'unitOfMeasure': final String unitOfMeasure,
+          'priceWithoutDecimal': final int rawPrice,
+        }
+        when id.isNotEmpty && unitOfMeasure.isNotEmpty) {
       final name = _nonEmpty(json['displayName']) ?? _nonEmpty(json['name']);
       final factor = switch (json['priceFactor']) {
         final int factor when factor > 0 => factor,
@@ -75,11 +84,13 @@ abstract final class CheckersCatalogueParser {
         final int old => _cents(old, factor),
         _ => null,
       };
-      return CheckersProduct(
+      return RetailerProduct(
+        retailer: ProductRetailer.checkers,
         id: id,
         storeId: storeId,
-        articleNumber: articleNumber,
+        articleCode: '$articleNumber$unitOfMeasure',
         unitOfMeasure: unitOfMeasure,
+        isSoldByWeight: unitOfMeasure == _weighedUnit,
         name: name,
         brand: _nonEmpty(json['brand']),
         price: Money(price),
@@ -110,10 +121,8 @@ abstract final class CheckersCatalogueParser {
   static String? _attribute(Object? attributes, String name) {
     if (attributes is! List<Object?>) return null;
     for (final attribute in attributes) {
-      if (attribute case {
-        'name': final String key,
-        'value': final String value,
-      } when key == name) {
+      if (attribute case {'name': final String key, 'value': final String value}
+          when key == name) {
         return _nonEmpty(_plainText(value));
       }
     }
@@ -127,18 +136,8 @@ abstract final class CheckersCatalogueParser {
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
 
-  static final _timesPattern = RegExp(
-    r'(\d{1,3})\s*[x×]\s*\d',
-    caseSensitive: false,
-  );
-  static final _packPattern = RegExp(
-    r'(\d{1,3})\s*(?:-\s*)?(?:pack|pk|\x27s)\b',
-    caseSensitive: false,
-  );
-
-  /// How many units a pack holds, when the shop says so plainly: a pack
-  /// quantity above one, or "6 x 100g" / "6 pack" / "6's" in the name or
-  /// the box contents. Never guessed past that.
+  /// A pack quantity above one, else what the name or the box contents
+  /// say (`packCountIn`).
   static int? _packCount(Map<Object?, Object?> json, String name) {
     if (json['packQuantity'] case final int quantity when quantity > 1) {
       return quantity;
@@ -147,13 +146,7 @@ abstract final class CheckersCatalogueParser {
       final String text => _plainText(text),
       _ => '',
     };
-    for (final text in [name, contents]) {
-      final match =
-          _timesPattern.firstMatch(text) ?? _packPattern.firstMatch(text);
-      final count = int.tryParse(match?.group(1) ?? '');
-      if (count != null && count > 1) return count;
-    }
-    return null;
+    return packCountIn([name, contents]);
   }
 
   static String? _nonEmpty(Object? value) => switch (value) {

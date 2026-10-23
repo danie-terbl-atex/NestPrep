@@ -1,0 +1,40 @@
+{
+  "id": "banana-bread",
+  "name": "Banana bread",
+  "summary": "A moist, golden loaf made from over-ripe bananas, sliced thick for breakfast on the run or a lunchbox treat, plain or spread with butter.",
+  "about": "Banana bread is the bake that rescues the brown bananas in the fruit bowl. It is a one-bowl loaf children can help make, and a slice freezes well for school mornings.",
+  "cuisine": "international",
+  "contexts": ["breakfast", "lunch"],
+  "placement": { "breakfast": "snack", "lunch": "snack" },
+  "tags": ["baking", "kidFriendly", "budget"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Butter", "quantity": 125, "unit": "g", "note": "melted, plus extra for greasing", "group": null },
+    { "name": "Ripe bananas", "quantity": 3, "unit": null, "note": "very ripe, with brown skins", "group": null },
+    { "name": "Brown sugar", "quantity": 150, "unit": "g", "note": "about ¾ cup", "group": null },
+    { "name": "Eggs", "quantity": 2, "unit": null, "note": null, "group": null },
+    { "name": "Vanilla essence", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Milk", "quantity": 0.25, "unit": "cup", "note": null, "group": null },
+    { "name": "Cake flour", "quantity": 250, "unit": "g", "note": "about 2 cups", "group": null },
+    { "name": "Bicarbonate of soda", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Baking powder", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground cinnamon", "quantity": 0.5, "unit": "tsp", "note": "optional", "group": null },
+    { "name": "Salt", "quantity": null, "unit": null, "note": "a pinch", "group": null }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C for a fan oven). Grease a 22 × 12 cm loaf tin and line the base and long sides with baking paper.",
+    "Mash the bananas in a large bowl with a fork until mostly smooth, with a few small lumps.",
+    "Whisk in the melted butter, brown sugar, eggs, vanilla and milk until well combined.",
+    "Sift the flour, bicarbonate of soda, baking powder, cinnamon and salt over the banana mixture and fold together with a spatula until no dry flour remains. Do not overmix; a few lumps are fine.",
+    "Scrape the batter into the tin, smooth the top and bake for 55–60 minutes, until risen, deep golden and a skewer pushed into the centre comes out clean. If the top browns too fast, cover it loosely with foil for the last 15 minutes.",
+    "Cool in the tin for 10 minutes, then lift out onto a rack and cool for at least 30 minutes before slicing into 10 thick slices."
+  ],
+  "servings": 10,
+  "prepMinutes": 15,
+  "cookMinutes": 60,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days wrapped at room temperature. Freeze slices separately and toast or thaw them for school mornings.",
+  "photo": { "credit": "Shisma", "licence": "CC BY 4.0", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Banana_bread_slices.jpg", "generated": false }
+}

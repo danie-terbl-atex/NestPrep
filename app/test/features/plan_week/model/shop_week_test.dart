@@ -14,6 +14,7 @@ import 'package:nestprep/shared/money/money.dart';
 
 import '../../../support/checkers_fakes_for_plan_week.dart';
 import '../../../support/lunch_fixtures.dart';
+import '../../../support/plan_week_packing.dart';
 
 /// The week built from the shop's products (lunch-box ADR-0012, step 4):
 /// the model's answer checked again on the phone, a week made without AI
@@ -28,10 +29,12 @@ void main() {
     ayanda: LunchFixtures.ayandaEntry.foodRules,
   };
 
+  // Seen from the Saturday before, so every school day can be planned;
+  // days that have gone are `shop_week_gone_days_test.dart`'s.
   LunchBoard board({Map<String, LunchPick> lwaziSlots = const {}}) =>
       LunchBoard.from(
         week: LunchFixtures.week,
-        today: LunchFixtures.today,
+        today: LunchFixtures.week.monday.addDays(-2),
         roster: LunchFixtures.roster(),
         library: LunchFixtures.library,
         favourites: const [],
@@ -109,7 +112,7 @@ void main() {
         childIds: {lwazi, ayanda},
         searches: searches,
         budget: const Money(10000),
-        slots: every,
+        packing: packingFor(every),
         reply: LunchWeekReply(
           lunches: [
             lunch(ayanda, 1, LunchSlot.snack, 'snacks', 'yog'),
@@ -155,7 +158,7 @@ void main() {
         childIds: {lwazi},
         searches: searches,
         budget: null,
-        slots: every,
+        packing: packingFor(every),
         reason: PlanFallbackReason.aiLimitReached,
       );
       final lwaziWeek = week.children.single;
@@ -180,7 +183,7 @@ void main() {
           searched('rusks', LunchSlot.snack, [rusks]),
         ],
         budget: null,
-        slots: {LunchSlot.snack},
+        packing: packingFor({LunchSlot.snack}),
         reason: PlanFallbackReason.offline,
       );
       List<String?> snacksOf(String childId) => [
@@ -203,7 +206,7 @@ void main() {
       childIds: {lwazi, ayanda},
       searches: searches,
       budget: null,
-      slots: {LunchSlot.snack},
+      packing: packingFor({LunchSlot.snack}),
       reason: PlanFallbackReason.offline,
     );
     for (final child in fallback.children) {
@@ -220,7 +223,7 @@ void main() {
       childIds: {lwazi, ayanda},
       searches: searches,
       budget: null,
-      slots: {LunchSlot.snack},
+      packing: packingFor({LunchSlot.snack}),
       reply: LunchWeekReply(
         lunches: [
           lunch(ayanda, 1, LunchSlot.snack, 'snacks', 'yog'),
@@ -242,7 +245,7 @@ void main() {
         childIds: {lwazi, ayanda},
         searches: [searches[1]],
         budget: const Money(5000),
-        slots: every,
+        packing: packingFor(every),
         reason: PlanFallbackReason.offline,
       );
       // Ten fruit boxes, six apples a pack: two packs of R24.
@@ -258,7 +261,7 @@ void main() {
         childIds: {lwazi, ayanda},
         searches: searches,
         budget: null,
-        slots: every,
+        packing: packingFor(every),
         reason: PlanFallbackReason.offline,
       );
       // The 1kg bag says nothing about what is in it; Lwazi has allergies.

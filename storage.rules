@@ -371,6 +371,19 @@ service firebase.storage {
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 
+    // ==== rules/storage/paths/recipes.rules ====
+    // ---- a catalogue recipe's photos (recipes ADR-0003 §4) ----
+    //
+    // NestPrep's own pictures of its own recipes: nobody's data, so anybody
+    // signed in may load one. Only the catalogue seed writes them, as the Admin
+    // SDK; each name carries a hash of its content, so the app is handed the
+    // path from the recipe document and never lists.
+    match /recipes/{recipeId}/{file} {
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow write: if false;
+    }
+
     // Everything not named above (BE-05).
     match /{allPaths=**} {
       allow read, write: if false;

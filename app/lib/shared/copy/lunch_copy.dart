@@ -24,6 +24,10 @@ abstract final class LunchCopy {
   static const lunchDetailBack = 'Back to my week';
   static const nextWeekName = 'Next week';
   static const lastWeek = 'Last week';
+  static const thisWeekInSentence = 'this week';
+  static const nextWeekInSentence = 'next week';
+  static const lastWeekInSentence = 'last week';
+  static String weekOfDates(String dates) => 'the week of $dates';
 
   // Who the lunches are for.
   static String chooseChild(String name) => 'Show $name’s lunches';
@@ -37,17 +41,17 @@ abstract final class LunchCopy {
       'been given their profiles. Ask a parent to share Family profiles with '
       'you.';
 
-  // The hero.
+  // The board, by scope: the day on show, the whole week, then the tools
+  // (lunch-box ADR-0022).
   static const nothingPackedYet = 'Nothing packed yet';
+  static const planWholeWeek = 'Plan the whole week';
+  static const toolsTitle = 'Lunch tools';
+  static const prepBody = 'What to make ahead for the week';
+  static const shareBody = 'A card to share or a planner to print';
   static const fillWeek = 'Fill the week';
   static const fillWeekHint =
-      'Uses go-to boxes first, then what they eat. Never replaces what you '
-      'packed.';
-  static String goToBoxCount(int count) => switch (count) {
-    0 => 'No go-to boxes yet',
-    1 => '1 go-to box in rotation',
-    _ => '$count go-to boxes in rotation',
-  };
+      'Pick go-to or ready-made boxes first, then NestPrep fills the rest. '
+      'Never replaces what you packed.';
   static String boxArtLabel(String items) =>
       items.isEmpty ? 'An empty lunch box' : 'A lunch box with $items';
   static const weekIsFull = 'Every day is packed.';

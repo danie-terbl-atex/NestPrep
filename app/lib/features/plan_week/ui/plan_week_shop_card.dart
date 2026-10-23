@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
-import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/lunch_shop_copy.dart';
 import '../../add_to_checkers/ui/checkers_area_sheet.dart';
 import '../state/plan_week_controller.dart';
+import 'plan_week_shop_picker.dart';
 
-/// The shop in the brief: Checkers Sixty60, where the search will look, and
-/// a way to choose the area — the same area the grocery list's matches use,
-/// kept on this phone (add-to-checkers ADR-0003).
+/// The shop in the brief: which shop — Checkers, or Pick n Pay while its
+/// switch is on (lunch-box ADR-0026) — where the search will look, and a way
+/// to choose the area, the same area the grocery list's matches use, kept on
+/// this phone (add-to-checkers ADR-0003).
 class PlanWeekShopCard extends StatelessWidget {
   const PlanWeekShopCard({super.key});
 
@@ -16,11 +18,13 @@ class PlanWeekShopCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final controller = context.watch<PlanWeekController>();
-    final place = controller.place;
+    final retailer = controller.retailer;
+    final shop = retailer.shop;
+    final place = controller.places.place;
     final where = switch (place) {
-      null => PlanWeekCopy.shopFinding,
-      _ when place.isDevice => PlanWeekCopy.shopNearYou,
-      _ => PlanWeekCopy.shopNear(place.area!.label),
+      null => LunchShopCopy.shopFinding(shop),
+      _ when place.isDevice => LunchShopCopy.shopNearYou(shop),
+      _ => LunchShopCopy.shopNear(shop, place.area!.label),
     };
     return NestCard(
       variant: NestCardVariant.flat,
@@ -28,15 +32,24 @@ class PlanWeekShopCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(PlanWeekCopy.shopHeader, style: nest.text.caption),
+          Text(LunchShopCopy.shopHeader, style: nest.text.caption),
           const SizedBox(height: NestSpace.xs),
+          if (retailer.canChoose) ...[
+            PlanWeekShopPicker(
+              shops: retailer.choices,
+              chosen: shop,
+              onChoose: retailer.choose,
+            ),
+            const SizedBox(height: NestSpace.sm),
+          ],
           Text(where, style: nest.text.title),
-          Text(PlanWeekCopy.shopOnly, style: nest.text.bodySecondary),
+          if (!retailer.canChoose)
+            Text(LunchShopCopy.shopOnly, style: nest.text.bodySecondary),
           const SizedBox(height: NestSpace.sm),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: NestButton(
-              label: PlanWeekCopy.changeArea,
+              label: LunchShopCopy.changeArea,
               icon: LucideIcons.mapPin,
               variant: NestButtonVariant.ghost,
               size: NestButtonSize.small,
@@ -44,7 +57,7 @@ class PlanWeekShopCard extends StatelessWidget {
               onPressed: () => showCheckersAreaSheet(
                 context: context,
                 current: place?.area,
-                onChoose: controller.chooseArea,
+                onChoose: controller.places.choose,
               ),
             ),
           ),

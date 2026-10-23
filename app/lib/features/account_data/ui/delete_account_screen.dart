@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/failure/app_failure.dart';
 import '../../../shared/ui/back_leading.dart';
+import '../../../shared/ui/fact_list.dart';
+import '../../../shared/ui/typed_confirm.dart';
 import '../model/deletion_preview.dart';
 import '../state/account_deletion_controller.dart';
 import 'account_export_screen.dart';
-import 'deletion_confirm.dart';
-import 'fact_list.dart';
 import 'household_outcome_card.dart';
 
 /// Delete my account (accounts ADR-0006; both stores require it in the app).
@@ -106,12 +107,21 @@ class _ThePlan extends StatelessWidget {
           onPressed: () => context.push(AccountExportScreen.path),
         ),
         const SizedBox(height: NestSpace.xxl),
-        DeletionConfirm(
-          canDelete: controller.canDelete,
-          isDeleting: controller.isDeleting,
+        TypedConfirm(
+          label: AccountDataCopy.deleteConfirmLabel,
+          hint: AccountDataCopy.deleteConfirmHint,
+          buttonLabel: AccountDataCopy.deleteButton,
+          busyLabel: AccountDataCopy.deleteDeleting,
+          icon: LucideIcons.trash2,
+          canConfirm: controller.canDelete,
+          isBusy: controller.isDeleting,
           failure: controller.deleteFailure,
           onTyped: controller.typeConfirmation,
-          onDelete: controller.delete,
+          onConfirm: controller.delete,
+          // A changed plan is read again, so the word is typed again.
+          clearsTyped: (failure) =>
+              failure is AccountDataFailure &&
+              failure.problem == AccountDataProblem.deletionPlanChanged,
         ),
       ],
     );

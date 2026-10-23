@@ -66,6 +66,13 @@ abstract final class NestSize {
   static const double wordmarkLarge = 44;
   static const double wordmarkSmall = 26;
 
+  /// Twig, the AI mascot, on its tile (design-system ADR-0012): beside a tag
+  /// or a caption; in place of a row's icon tile; and as a step's picture —
+  /// a loader, a celebration, a way in.
+  static const double twigSmall = 32;
+  static const double twigMedium = 52;
+  static const double twigLarge = 96;
+
   /// A satellite on the welcome's orbit (`NestDot`).
   static const double dot = 12;
   static const double wordmarkSignature = 18;
@@ -85,6 +92,10 @@ abstract final class NestSize {
   /// The widest a place tile on the More screen grows before the grid adds a
   /// column — two on a phone, more on a tablet.
   static const double placeTileMaxWidth = 220;
+
+  /// A card on a shelf that scrolls sideways — a recipe on *Braai day* —
+  /// about two and a half to a phone's width, so the third says "scroll".
+  static const double shelfCardWidth = 168;
 
   /// How much of a document's own image a sheet shows before it would be a
   /// screen of its own. Tall enough to recognise a letter, short enough to

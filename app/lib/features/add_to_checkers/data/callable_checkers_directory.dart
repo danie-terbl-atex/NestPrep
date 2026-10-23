@@ -1,11 +1,11 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../shared/failure/app_failure.dart';
+import '../model/cart_push_result.dart';
 import '../model/checkers_link_status.dart';
-import '../model/checkers_push_result.dart';
+import 'cart_push_result_parser.dart';
 import 'checkers_directory.dart';
 import 'checkers_failure_mapper.dart';
-import 'checkers_push_result_parser.dart';
 
 /// The Checkers callables over the Functions SDK. Each answer is parsed rather
 /// than cast (`ENG-09`): an answer of the wrong shape is a Function newer or
@@ -41,15 +41,16 @@ final class CallableCheckersDirectory implements CheckersDirectory {
   );
 
   @override
-  Future<CheckersPushResult> pushToCart({
+  Future<CartPushResult> pushToCart({
     required String householdId,
     required List<String> itemIds,
+    Map<String, int> quantities = const {},
   }) async {
     final result = await _call(pushCallable, {
       'householdId': householdId,
       'itemIds': itemIds,
     });
-    return CheckersPushResultParser.parse(result) ??
+    return CartPushResultParser.parse(result) ??
         (throw _malformed(pushCallable));
   }
 

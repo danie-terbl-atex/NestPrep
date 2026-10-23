@@ -53,9 +53,8 @@ List<GoRoute> calendarV2Routes() => [
               lunchRepository: context.read<LunchRepository>(),
               cleaningJobRepository: context.read<CleaningJobRepository>(),
               householdId: HouseholdRoute.idFrom(state),
-              includeCare: NannyAccess.of(
-                context.read<HouseholdView>(),
-              ).canView,
+              includeCare: NannyAccess.of(context.read<HouseholdView>())
+                  .canView,
             ),
             cardImageSharer: context.read<CardImageSharer>(),
             householdClock: context.read<HouseholdClock>(),

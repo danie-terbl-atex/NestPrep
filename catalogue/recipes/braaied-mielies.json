@@ -1,0 +1,32 @@
+{
+  "id": "braaied-mielies",
+  "name": "Braaied mielies",
+  "summary": "Mielies (corn on the cob) cooked over the coals until sweet and charred in spots, then brushed with butter and chicken spice.",
+  "about": "Mielie is the South African word for maize. Roasted cobs, umbhona in isiZulu and isiXhosa, are sold from street-side fires across the country in summer, and at home they go on the braai grid beside the meat. Butter and salt, or a shake of chicken spice, is all they need.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch", "dinner"],
+  "placement": { "lunch": "side", "dinner": "side" },
+  "tags": ["braai", "kidFriendly", "quick"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Fresh mielies", "quantity": 6, "unit": null, "note": "corn cobs, husks and silk removed", "group": null },
+    { "name": "Butter", "quantity": 4, "unit": "tbsp", "note": "melted", "group": null },
+    { "name": "Chicken spice", "quantity": 1, "unit": "tsp", "note": "or salt", "group": null },
+    { "name": "Paprika", "quantity": 0.5, "unit": "tsp", "note": "optional", "group": null },
+    { "name": "Lemon wedges", "quantity": 2, "unit": null, "note": "optional, to serve", "group": null }
+  ],
+  "steps": [
+    "Light the braai and let the coals burn down to medium heat: you should be able to hold your hand above the grid for 5–6 seconds. Indoors, heat a griddle pan over medium-high heat.",
+    "Brush the mielies lightly with some of the melted butter.",
+    "Cook the mielies on the grid for 15–20 minutes, turning a quarter turn every 3–4 minutes, until the kernels are bright yellow, tender when pressed and charred in patches all round.",
+    "Stir the chicken spice and paprika into the remaining butter. Brush it over the hot mielies and serve straight away, with a squeeze of lemon if you like."
+  ],
+  "servings": 6,
+  "prepMinutes": 5,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

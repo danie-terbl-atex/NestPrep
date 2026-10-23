@@ -1,0 +1,128 @@
+{
+  "id": "mosbolletjies",
+  "name": "Mosbolletjies",
+  "summary": "Aniseed sweet bread buns: soft, sweet yeast buns flavoured with aniseed and grape juice, baked close together so they pull apart.",
+  "about": "Mosbolletjies come from the Cape winelands, where they were made at harvest time with fermenting grape must (mos) as the leaven, a practice linked to the French Huguenots who settled Franschhoek in 1688. Today most cooks use yeast and grape juice. They are eaten warm with butter, or dried into rusks.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "breakfast",
+    "lunch"
+  ],
+  "placement": {
+    "breakfast": "snack",
+    "lunch": "snack"
+  },
+  "tags": [
+    "baking",
+    "traditional"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 750,
+      "unit": "g",
+      "note": "plus extra for kneading",
+      "group": "For the buns"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 120,
+      "unit": "g",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Instant dry yeast",
+      "quantity": 10,
+      "unit": "g",
+      "note": "one sachet",
+      "group": "For the buns"
+    },
+    {
+      "name": "Aniseed",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "lightly crushed",
+      "group": "For the buns"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Red or white grape juice",
+      "quantity": 300,
+      "unit": "ml",
+      "note": "lukewarm",
+      "group": "For the buns"
+    },
+    {
+      "name": "Milk",
+      "quantity": 150,
+      "unit": "ml",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Butter",
+      "quantity": 80,
+      "unit": "g",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, beaten",
+      "group": "For the buns"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the glaze"
+    },
+    {
+      "name": "Water",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the glaze"
+    }
+  ],
+  "steps": [
+    "Mix the flour, sugar, yeast, aniseed and salt in a large bowl.",
+    "Warm the milk and butter in a small saucepan over low heat just until the butter melts, then let it cool until lukewarm. Stir it into the grape juice with the beaten egg.",
+    "Pour the liquid into the flour and mix to a soft, slightly sticky dough. Knead on a lightly floured surface for 10 minutes, until smooth and elastic.",
+    "Put the dough in an oiled bowl, cover and leave somewhere warm for 1½ to 2 hours, until doubled in size.",
+    "Grease a 23 × 33 cm baking tin. Knock back the dough and divide it into 20 equal pieces. Roll each into a smooth ball and pack them into the tin in rows, just touching.",
+    "Cover and leave to rise again for 45 minutes to 1 hour, until the buns have puffed up and press into each other. Meanwhile heat the oven to 180 °C (160 °C fan).",
+    "Bake for 30 to 35 minutes, until deep golden and the base of the tin sounds hollow when tapped underneath.",
+    "While they bake, heat the glaze sugar and water in a small pan until the sugar dissolves. Brush it over the buns as soon as they come out of the oven, then cool in the tin for 10 minutes and pull apart to serve."
+  ],
+  "servings": 20,
+  "prepMinutes": 30,
+  "cookMinutes": 35,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Keep 2 days in a tin. For rusks, pull apart and dry in a 90 °C oven overnight.",
+  "photo": {
+    "credit": "Lucinda jolly",
+    "licence": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mosbolletjies_with_green_fig_preserve.JPG",
+    "generated": false
+  }
+}

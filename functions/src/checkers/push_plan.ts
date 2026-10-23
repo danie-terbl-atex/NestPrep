@@ -1,55 +1,30 @@
+import type { Added, Skipped, Wanted } from '../cart_push/push_outcome';
+import { sortPushedItems } from '../cart_push/sort_pushed_items';
+import type { GroceryLine } from '../cart_push/grocery_lines';
 import type { Cart, CatalogProduct, NewCartLine } from './checkers_api';
-import type { GroceryLine, PickedProduct } from './grocery_lines';
 
 /**
  * Which grocery items go into the member's Checkers cart, and as what (the
  * Checkers build contract) — decided without Checkers or Firestore, so every
  * rule here is a unit test.
  */
-export type SkipReason = 'no-match' | 'out-of-stock' | 'not-found' | 'weighed-item';
-
-export interface Skipped {
-  readonly itemId: string;
-  readonly reason: SkipReason;
-}
-
-export interface Added {
-  readonly itemId: string;
-  readonly productId: string;
-  readonly name: string;
-  readonly priceCents: number;
-}
-
-export interface Wanted {
-  readonly itemId: string;
-  readonly pick: PickedProduct;
-}
+export type { Added, SkipReason, Skipped, Wanted } from '../cart_push/push_outcome';
 
 /** Sold by the kilogram: its cart line needs a weight choice the app captures and we do not. */
 export const WEIGHED_UNIT = 'KG';
 
 /**
- * The items worth asking Checkers about. An item that is gone or already
- * bought is `not-found` — it is no longer on the list to buy; one with no
- * Checkers pick is `no-match`; a weighed pick is `weighed-item`, because a
- * weighed line needs a weight range nobody has captured the shape of.
+ * The items worth asking Checkers about. A weighed pick is `weighed-item`,
+ * because a weighed line needs a weight range nobody has captured the shape of.
  */
 export function sortItems(
   itemIds: readonly string[],
   lines: Readonly<Record<string, GroceryLine>>,
 ): { wanted: Wanted[]; skipped: Skipped[] } {
-  const wanted: Wanted[] = [];
-  const skipped: Skipped[] = [];
-  for (const itemId of itemIds) {
-    const line = lines[itemId];
-    if (line === undefined || line.isBought) skipped.push({ itemId, reason: 'not-found' });
-    else if (line.pick === null || line.pick.retailer !== 'checkers') {
-      skipped.push({ itemId, reason: 'no-match' });
-    } else if (line.pick.unitOfMeasure === WEIGHED_UNIT) {
-      skipped.push({ itemId, reason: 'weighed-item' });
-    } else wanted.push({ itemId, pick: line.pick });
-  }
-  return { wanted, skipped };
+  return sortPushedItems(itemIds, lines, {
+    retailer: 'checkers',
+    isWeighedUnit: (unit) => unit === WEIGHED_UNIT,
+  });
 }
 
 /**
@@ -89,7 +64,7 @@ export function planLines(
   return { lines, added, skipped };
 }
 
-function skipReasonFor(product: CatalogProduct | undefined): SkipReason | null {
+function skipReasonFor(product: CatalogProduct | undefined): Skipped['reason'] | null {
   if (product === undefined) return 'not-found';
   if (product.isSoldByWeight) return 'weighed-item';
   if (!product.isInStock) return 'out-of-stock';

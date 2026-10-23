@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,12 @@ void main() {
     final controller = controllerFor(memberId);
     await pumpScreen(
       tester,
-      MealPlanScreen(onSelectTab: (_) {}),
+      MealsScreen(
+        view: MealsView.week,
+        onSelectView: (_) {},
+        onSelectTab: (_) {},
+        onOpenRecipe: (_) {},
+      ),
       view: Fixtures.view(viewerUid: viewerUid),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),

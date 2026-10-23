@@ -16,21 +16,33 @@ enum NestLogoTileTone { idle, selected, muted }
 /// something not available yet — the caller says why in words beside it
 /// (`FE-13`). Tappable when [onTap] is given, always at the touch-target
 /// floor however small the logo is drawn.
+///
+/// [NestLogoTile.decorative] is the logo alone, for a row whose words already
+/// name the shop and which is itself the tap target: not read, no tooltip, no
+/// tap of its own, and exactly [size] across, so it lines up as a leading.
 class NestLogoTile extends StatelessWidget {
   const NestLogoTile({
     required this.asset,
-    required this.label,
+    required String this.label,
     this.onTap,
     this.size = NestSize.logoSmall,
     this.tone = NestLogoTileTone.idle,
     super.key,
   });
 
+  const NestLogoTile.decorative({
+    required this.asset,
+    this.size = NestSize.logoSmall,
+    super.key,
+  }) : label = null,
+       onTap = null,
+       tone = NestLogoTileTone.idle;
+
   /// A square image under `assets/`.
   final String asset;
 
-  /// What a screen reader says, and the tooltip.
-  final String label;
+  /// What a screen reader says, and the tooltip; null only when decorative.
+  final String? label;
   final VoidCallback? onTap;
   final double size;
   final NestLogoTileTone tone;
@@ -75,6 +87,8 @@ class NestLogoTile extends StatelessWidget {
       ),
       child: ClipRRect(borderRadius: radius, child: logo),
     );
+    final label = this.label;
+    if (label == null) return ExcludeSemantics(child: tile);
     final extent = size < NestSize.touchTarget ? NestSize.touchTarget : size;
     return Semantics(
       container: true,

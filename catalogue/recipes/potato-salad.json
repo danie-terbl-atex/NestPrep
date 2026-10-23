@@ -1,0 +1,39 @@
+{
+  "id": "potato-salad",
+  "name": "Potato salad",
+  "summary": "Tender potatoes and chopped boiled egg folded through a tangy mayonnaise dressing with spring onion and parsley: the salad no braai is complete without.",
+  "about": "Potato salad, aartappelslaai in Afrikaans, is the salad most South African families bring to a braai, a Christmas table or a church lunch. Recipes differ from home to home: some sweeten the dressing, others add mustard, gherkins or crispy bacon, but egg and mayonnaise are almost always in.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner", "lunch"],
+  "placement": { "dinner": "side", "lunch": "side" },
+  "tags": ["braai", "kidFriendly"],
+  "allergens": ["egg"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Potatoes", "quantity": 1.2, "unit": "kg", "note": "waxy, peeled and cut into 3 cm cubes", "group": null },
+    { "name": "Salt", "quantity": 2, "unit": "tsp", "note": "for the cooking water", "group": null },
+    { "name": "Eggs", "quantity": 4, "unit": null, "note": null, "group": null },
+    { "name": "White vinegar", "quantity": 2, "unit": "tbsp", "note": "divided", "group": null },
+    { "name": "Mayonnaise", "quantity": 1, "unit": "cup", "note": null, "group": null },
+    { "name": "Prepared mustard", "quantity": 2, "unit": "tsp", "note": null, "group": null },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Spring onions", "quantity": 4, "unit": null, "note": "finely sliced", "group": null },
+    { "name": "Fresh parsley", "quantity": 3, "unit": "tbsp", "note": "chopped", "group": null },
+    { "name": "Salt and black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Put the potatoes in a large pot, cover with cold water and add the salt. Bring to the boil over high heat, then simmer for 10–12 minutes, until a knife slides in easily but the cubes still hold their shape.",
+    "At the same time, lower the eggs into a small pot of boiling water and boil for 10 minutes. Move them to a bowl of cold water for 5 minutes, then peel and chop.",
+    "Drain the potatoes well, tip them into a large bowl and sprinkle over 1 tbsp of the vinegar while hot, so they soak it up. Leave to cool for about 30 minutes, until just warm.",
+    "Whisk the mayonnaise, mustard, sugar and the remaining vinegar together until smooth.",
+    "Add the dressing, chopped eggs, spring onions and most of the parsley to the potatoes and fold gently until everything is coated. Season with salt and pepper.",
+    "Chill for at least 30 minutes so the flavours settle, then scatter with the rest of the parsley and serve cold."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make up to a day ahead and keep covered in the fridge. Don't leave it in the sun for more than an hour.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

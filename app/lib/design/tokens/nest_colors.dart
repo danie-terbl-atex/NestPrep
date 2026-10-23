@@ -107,6 +107,19 @@ class NestColors {
   static const night = Color(0xFF211A20);
   static const muted = Color(0xFF75666C);
 
+  /// The soft light pink of a selected-but-quiet fill, and Twig's tile in
+  /// both themes (design-system ADR-0012): the mascot's dark outline needs a
+  /// light ground on either canvas.
+  static const blush = Color(0xFFFCDDE2);
+
+  /// Google's "G" in its own four colours (design-system rules for a
+  /// third-party mark: never themed, never recoloured). Only
+  /// `NestProviderMark` paints them.
+  static const googleRed = Color(0xFFEA4335);
+  static const googleBlue = Color(0xFF4285F4);
+  static const googleYellow = Color(0xFFFBBC05);
+  static const googleGreen = Color(0xFF34A853);
+
   static const light = NestColors(
     canvas: oat,
     canvasWash: [oat, oat, oat],
@@ -125,7 +138,7 @@ class NestColors {
     accentInk: basil,
     secondary: guava,
     onSecondary: inkBrand,
-    secondarySoft: Color(0xFFFCDDE2),
+    secondarySoft: blush,
     secondaryInk: Color(0xFF9E2F47),
     highlight: guava,
     success: Color(0xFF3D6343),

@@ -3,20 +3,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/checkers_link_route.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_switch.dart';
+import 'package:nestprep/features/add_to_checkers/state/cart_push_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/checkers_link_controller.dart';
-import 'package:nestprep/features/add_to_checkers/state/checkers_push_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/product_match_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/retailer_choice_controller.dart';
+import 'package:nestprep/features/add_to_checkers/state/shop_carts.dart';
 import 'package:nestprep/features/add_to_checkers/ui/checkers_link_screen.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/shared/flags/feature_flag.dart';
+import 'package:nestprep/shared/flags/feature_flags.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:nestprep/shared/money/money.dart';
 import 'package:provider/provider.dart';
 
 import 'fake_checkers.dart';
 import 'fake_feature_flag_source.dart';
 import 'fake_live_location.dart';
+import 'fake_plan_week.dart';
+import 'fake_pnp.dart';
 import 'grocery_list_harness.dart';
 import 'household_fixtures.dart';
 import 'pump_screen.dart';
@@ -39,7 +47,10 @@ const pickedMilk = ProductMatch(
 final class CheckersGroceryHarness {
   CheckersGroceryHarness() {
     matches = ProductMatchController(
-      catalogue: catalogue,
+      catalogues: RetailerCatalogues(
+        checkers: catalogue,
+        pickNPay: pnpCatalogue,
+      ),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),
@@ -49,18 +60,23 @@ final class CheckersGroceryHarness {
       memberId: Fixtures.samMemberId,
       debounce: Duration.zero,
     );
-    push = CheckersPushController(
+    push = CartPushController(
       directory: directory,
+      householdId: Fixtures.householdId,
+    );
+    pnpPush = CartPushController(
+      directory: pnpDirectory,
       householdId: Fixtures.householdId,
     );
     retailers = RetailerChoiceController(
       preference: retailerPreference,
       householdId: Fixtures.householdId,
+      shopsOn: () => shopsOn(flags.isOn),
     );
     addTearDown(() {
       matches.dispose();
-      push.dispose();
       retailers.dispose();
+      ShopCarts(checkers: push, pickNPay: pnpPush).dispose();
     });
   }
 
@@ -78,16 +94,38 @@ final class CheckersGroceryHarness {
       ),
     ];
   final directory = FakeCheckersDirectory();
+  final pnpCatalogue = FakeShopCatalogue();
+  final pnpDirectory = FakePnpDirectory();
   late final ProductMatchController matches;
-  late final CheckersPushController push;
+
+  /// The Checkers cart push.
+  late final CartPushController push;
+  late final CartPushController pnpPush;
+
+  /// The switches the pumped screen sees; set by [pump].
+  FeatureFlags flags = TestFlags.on;
   final retailerPreference = FakeRetailerPreference();
   late final RetailerChoiceController retailers;
 
+  /// [isOn] every switch, less those in [off].
   Future<void> pump(
     WidgetTester tester, {
     bool isOn = true,
+    Set<FeatureFlag> off = const {},
     Brightness brightness = Brightness.light,
     double scale = 1,
+  }) {
+    flags = FeatureFlags(
+      defaultOn: isOn,
+      stored: {for (final flag in off) flag: false},
+    );
+    return _pump(tester, brightness: brightness, scale: scale);
+  }
+
+  Future<void> _pump(
+    WidgetTester tester, {
+    required Brightness brightness,
+    required double scale,
   }) => pumpRouter(
     tester,
     router: GoRouter(
@@ -111,9 +149,13 @@ final class CheckersGroceryHarness {
       ),
       list.plans.provider,
       ChangeNotifierProvider<ProductMatchController>.value(value: matches),
-      ChangeNotifierProvider<CheckersPushController>.value(value: push),
+      Provider<ShopCarts>.value(
+        value: ShopCarts(checkers: push, pickNPay: pnpPush),
+      ),
       ChangeNotifierProvider<RetailerChoiceController>.value(value: retailers),
-      featureFlagsProvider(defaultOn: isOn),
+      ChangeNotifierProvider<FeatureFlagsController>(
+        create: (_) => testFlagsController(flags),
+      ),
     ],
     brightness: brightness,
     textScale: scale,

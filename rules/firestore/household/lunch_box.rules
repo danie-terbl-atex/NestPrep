@@ -26,12 +26,15 @@ match /lunchItems/{itemId} {
     && isLunchItem(request.resource.data)
     && request.resource.data.get('archived', false) == false
     && isOwnMember(householdId, request.resource.data.addedBy)
-    && isServerTime('createdAt');
+    && isServerTime('createdAt')
+    && lunchItemHoldsItsRecipe(householdId, request.resource.data);
 
-  // Its slot never moves: boxes hold it under that slot's key.
+  // Its slot never moves: boxes hold it under that slot's key. Neither
+  // recipe link is in the list, so a link is set once and never changes.
   allow update: if canEdit(householdId, 'lunch')
     && onlyChanged(['name', 'nameKey', 'allergens', 'prepAhead', 'prepNote', 'archived'])
-    && isLunchItem(request.resource.data);
+    && isLunchItem(request.resource.data)
+    && lunchItemHoldsItsRecipe(householdId, request.resource.data);
 
   allow delete: if false;
 }
@@ -121,10 +124,14 @@ function isLunchAllergens(value) {
     && value.hasOnly(['peanut', 'treeNut', 'milk', 'egg', 'wheat', 'soy', 'fish', 'shellfish', 'sesame']);
 }
 
+// `recipeId` names the catalogue recipe an item was made from (recipes
+// ADR-0001), `householdRecipeId` the household's own (recipes ADR-0002) — one
+// or neither. The update rule's `onlyChanged` leaves both out, so neither
+// changes once set.
 function isLunchItem(data) {
   return data.keys().hasOnly(
        ['name', 'nameKey', 'slot', 'allergens', 'prepAhead', 'prepNote', 'archived',
-        'seedKey', 'addedBy', 'createdAt'])
+        'seedKey', 'recipeId', 'householdRecipeId', 'addedBy', 'createdAt'])
     && isLunchText(data.name, 60)
     && data.nameKey is string && data.nameKey.size() > 0 && data.nameKey == data.nameKey.lower()
     && data.slot in ['main', 'fruit', 'veg', 'snack', 'treat']
@@ -132,7 +139,20 @@ function isLunchItem(data) {
     && data.get('prepAhead', false) is bool
     && (data.get('prepNote', null) == null || isLunchText(data.get('prepNote', null), 140))
     && data.get('archived', false) is bool
-    && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60));
+    && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60))
+    && (!('recipeId' in data) || isLunchText(data.recipeId, 60))
+    && (!('householdRecipeId' in data)
+          || (isLunchText(data.householdRecipeId, 60) && !('recipeId' in data)));
+}
+
+// An item linked to a household recipe carries at least every allergen code
+// the recipe does, and the recipe is this household's (recipes ADR-0002 §5):
+// the Function derived the recipe's codes, and this holds the item to them.
+// One `get`, and only for an item with the link.
+function lunchItemHoldsItsRecipe(householdId, data) {
+  return !('householdRecipeId' in data)
+    || data.get('allergens', []).hasAll(
+         get(/databases/$(database)/documents/households/$(householdId)/recipes/$(data.householdRecipeId)).data.allergens);
 }
 
 // What one compartment holds: the item, and a copy of its name and codes.

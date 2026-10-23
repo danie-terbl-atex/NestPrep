@@ -6,8 +6,10 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../account_data/ui/account_centre_screen.dart';
+import '../../household/model/household_view.dart';
 import '../../household/ui/switch_household_sheet.dart';
 import '../../product_analytics/ui/beta_numbers_link.dart';
+import '../../welcome_tour/ui/start_welcome_tour.dart';
 import '../model/session.dart';
 import '../state/session_controller.dart';
 
@@ -36,6 +38,9 @@ class AccountMenuButton extends StatelessWidget {
         ? session.value as SignedIn
         : null;
     if (signedIn == null) return;
+    // Only inside a household: the tour describes one (welcome-tour
+    // ADR-0001).
+    final householdId = context.read<HouseholdView?>()?.household.id;
     await showNestSheet<void>(
       context: context,
       title: AppCopy.account,
@@ -82,6 +87,21 @@ class AccountMenuButton extends StatelessWidget {
               router.push<void>(AccountCentreScreen.path);
             },
           ),
+          // The welcome tour again over the real screens, whether or not it
+          // was seen (welcome-tour ADR-0002).
+          if (householdId != null) ...[
+            const SizedBox(height: NestSpace.md),
+            NestButton(
+              key: const ValueKey('account-replay-tour'),
+              label: TourCopy.replay,
+              variant: NestButtonVariant.outline,
+              icon: LucideIcons.sparkles,
+              onPressed: () {
+                Navigator.of(sheetContext).pop();
+                startWelcomeTour(context);
+              },
+            ),
+          ],
           // Offered only to a holder of the reader claim (product-analytics
           // ADR-0001); for everybody else it takes no space.
           BetaNumbersLink(onOpen: () => Navigator.of(sheetContext).pop()),

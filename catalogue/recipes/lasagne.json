@@ -1,0 +1,179 @@
+{
+  "id": "lasagne",
+  "name": "Lasagne",
+  "summary": "Layers of pasta, slow-simmered beef and tomato sauce and creamy white sauce, baked under golden cheese.",
+  "about": "Lasagne came to South African family tables from Italian cooking. Made ahead and cut into squares, it is a birthday-dinner and bring-a-dish favourite.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "comfort",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely grated",
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Beef mince",
+      "quantity": 750,
+      "unit": "g",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Dried mixed herbs",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Beef stock",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "made with 1 stock cube",
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the meat sauce"
+    },
+    {
+      "name": "Butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": "For the white sauce"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the white sauce"
+    },
+    {
+      "name": "Milk",
+      "quantity": 750,
+      "unit": "ml",
+      "note": null,
+      "group": "For the white sauce"
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the white sauce"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the white sauce"
+    },
+    {
+      "name": "Dried lasagne sheets",
+      "quantity": 250,
+      "unit": "g",
+      "note": "the kind that needs no pre-cooking",
+      "group": "To assemble"
+    },
+    {
+      "name": "Grated cheddar",
+      "quantity": 200,
+      "unit": "g",
+      "note": null,
+      "group": "To assemble"
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large pot over medium heat and cook the onions and carrots, stirring, until soft, 8–10 minutes. Add the garlic and cook for 1 minute.",
+    "Turn the heat to high, add the mince and break it up with a wooden spoon. Cook until browned and the liquid has cooked away, 8–10 minutes.",
+    "Add the herbs, tomatoes, tomato paste, stock, sugar, salt and pepper. Simmer, partly covered, on low for 30 minutes, stirring now and then, until thick. Keep it a little saucier than for spaghetti, because the pasta drinks up liquid.",
+    "For the white sauce, melt the butter in a saucepan over medium heat, stir in the flour and cook for 1 minute until bubbling. Take it off the heat and whisk in the milk a little at a time. Return to medium heat and whisk for 5–6 minutes, until it boils and thickly coats a spoon. Season with the nutmeg and salt and stir in a third of the cheese.",
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Spread a thin layer of meat sauce in a deep 30 × 20 cm dish. Cover with lasagne sheets, broken to fit and not overlapping, then a third of the remaining meat and a quarter of the white sauce. Repeat twice more, then finish with a layer of sheets, the last of the white sauce and the remaining cheese.",
+    "Bake for 40–45 minutes, until the top is golden and bubbling and a knife slides easily through the pasta. Cover loosely with foil if the top browns too fast.",
+    "Let it stand for 10–15 minutes so the layers hold when you cut it. Serve with a green salad."
+  ],
+  "servings": 6,
+  "prepMinutes": 30,
+  "cookMinutes": 95,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Assemble up to a day ahead and refrigerate; add 15 minutes to the baking time.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -33,6 +33,12 @@ abstract class Meal with _$Meal {
     @MealIngredientsConverter()
     @Default(<MealIngredient>[])
     List<MealIngredient> ingredients,
+
+    /// The catalogue recipe this meal was planned from (recipes ADR-0003 §6),
+    /// set once when it is made and never changed — the meal plan shows the
+    /// recipe's photo and *How to make it* for it. Never written as null: the
+    /// rules allow the field only on a meal made from a recipe.
+    @JsonKey(includeIfNull: false) String? recipeId,
   }) = _Meal;
 
   const Meal._();
@@ -49,6 +55,10 @@ abstract class Meal with _$Meal {
     nameKey: normalisedName(name),
     addedBy: addedBy,
   );
+
+  /// The meal a recipe becomes in this household's library: one per recipe,
+  /// by id, so planning it again finds the same meal (recipes ADR-0003 §6).
+  static String idForRecipe(String recipeId) => 'recipe-$recipeId';
 
   factory Meal.fromJson(Map<String, Object?> json) => _$MealFromJson(json);
 }

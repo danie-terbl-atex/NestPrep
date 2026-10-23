@@ -6,14 +6,20 @@ import '../../../app/lunch_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../groceries/model/product_match.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../state/plan_week_controller.dart';
+import 'plan_week_cart_button.dart';
 
 /// Step 5 (lunch-box ADR-0012): the week is in — a moment's celebration,
 /// what was written, anything left out and why, then the basket onto the
-/// grocery list, each line matched at Checkers. A tap, never automatic, and
-/// only for somebody the `groceries` grant lets add to the list.
+/// grocery list, each line matched at the shop the week was planned at — and
+/// at Pick n Pay, straight into the member's own cart (ADR-0026 §6). A tap,
+/// never automatic, and only for somebody the `groceries` grant lets add to
+/// the list. Twig
+/// celebrates only a week the model built; a week the phone built keeps the
+/// plain tick (design-system ADR-0012).
 class PlanWeekDonePanel extends StatefulWidget {
   const PlanWeekDonePanel({super.key});
 
@@ -49,6 +55,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
     final lines = plan.basket.lines.length;
     final added = shop.groceriesAdded;
     final failure = shop.failure;
+    final retailer = controller.retailer.shop;
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -56,12 +63,18 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
         Center(
           child: NestStarBurst(
             burst: _burst,
-            child: const NestIconTile(
-              icon: LucideIcons.check,
-              tint: NestTileTint.basil,
-              size: NestSize.mark,
-              iconSize: NestSize.iconMark,
-            ),
+            child: shop.isFromAi
+                ? const NestTwig(
+                    pose: NestTwigPose.celebrate,
+                    size: NestSize.twigLarge,
+                    semanticsLabel: AiCopy.twigPlannedWeek,
+                  )
+                : const NestIconTile(
+                    icon: LucideIcons.check,
+                    tint: NestTileTint.basil,
+                    size: NestSize.mark,
+                    iconSize: NestSize.iconMark,
+                  ),
           ),
         ),
         const SizedBox(height: NestSpace.xl),
@@ -103,6 +116,10 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
           ),
         ],
         const SizedBox(height: NestSpace.xl),
+        if (mayShop && lines > 0 && retailer == ProductRetailer.pickNPay) ...[
+          const PlanWeekCartButton(),
+          const SizedBox(height: NestSpace.sm),
+        ],
         if (mayShop && lines > 0)
           if (added == null)
             NestButton(
@@ -115,7 +132,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
             )
           else
             NestBanner(
-              message: PlanWeekCopy.groceriesAdded(added),
+              message: PlanWeekCopy.groceriesAdded(added, retailer),
               tone: NestBannerTone.success,
             ),
         const SizedBox(height: NestSpace.xl),

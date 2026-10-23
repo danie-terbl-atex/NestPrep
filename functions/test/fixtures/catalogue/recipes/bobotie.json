@@ -1,0 +1,45 @@
+{
+  "id": "bobotie",
+  "name": "Bobotie",
+  "summary": "Spiced, fruity Cape Malay mince baked under a golden egg custard.",
+  "about": "A test fixture shaped like the authoring guide's example, not a published recipe.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["capeMalay", "traditional", "comfort"],
+  "allergens": ["milk", "egg", "wheat", "soy"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Beef mince", "quantity": 1, "unit": "kg", "note": "lean", "group": "For the mince" },
+    { "name": "Onions", "quantity": 2, "unit": null, "note": "chopped", "group": "For the mince" },
+    {
+      "name": "White bread slices",
+      "quantity": 2,
+      "unit": null,
+      "note": "soaked in the milk",
+      "group": "For the mince"
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the mince"
+    },
+    { "name": "Milk", "quantity": 1, "unit": "cup", "note": null, "group": "For the topping" },
+    { "name": "Eggs", "quantity": 2, "unit": null, "note": null, "group": "For the topping" },
+    { "name": "Bay leaves", "quantity": 4, "unit": null, "note": null, "group": "For the topping" }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan).",
+    "Fry the onions until soft and golden, about 8 minutes, then brown the mince.",
+    "Pour over the beaten eggs and milk, top with the bay leaves and bake for 35 minutes, until set."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 60,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the mince the day before; add the custard just before baking.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

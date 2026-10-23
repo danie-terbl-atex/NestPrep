@@ -1,0 +1,170 @@
+{
+  "id": "gatsby",
+  "name": "Gatsby",
+  "summary": "Cape Town's sharing roll: a long loaf stuffed with masala steak, soft vinegar chips, lettuce, tomato and sauce, cut into four.",
+  "about": "The Gatsby was first made in 1976 by Rashaad Pandy at his shop in Athlone on the Cape Flats, and named after the film The Great Gatsby. It is built in one long loaf and cut crosswise, usually four ways, so it is a meal people share. Masala steak is one of the classic fillings.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "streetFood"
+  ],
+  "allergens": [
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Potatoes",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "peeled and cut into thick chips",
+      "group": "For the chips"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1.5,
+      "unit": "l",
+      "note": "for deep-frying",
+      "group": "For the chips"
+    },
+    {
+      "name": "Brown spirit vinegar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chips"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the chips"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the steak"
+    },
+    {
+      "name": "Garlic and ginger paste",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Roasted masala",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "or a hot curry powder",
+      "group": "For the steak"
+    },
+    {
+      "name": "Turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Minute steaks",
+      "quantity": 500,
+      "unit": "g",
+      "note": "sliced into thin strips",
+      "group": "For the steak"
+    },
+    {
+      "name": "Tomato",
+      "quantity": 1,
+      "unit": null,
+      "note": "grated",
+      "group": "For the steak"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Long French loaf",
+      "quantity": 1,
+      "unit": "loaf",
+      "note": "about 60 cm, or 2 long rolls",
+      "group": "To build"
+    },
+    {
+      "name": "Iceberg lettuce",
+      "quantity": 0.25,
+      "unit": null,
+      "note": "shredded",
+      "group": "To build"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": "To build"
+    },
+    {
+      "name": "Mango atchar",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": "optional",
+      "group": "To build"
+    },
+    {
+      "name": "Tomato sauce",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "To build"
+    },
+    {
+      "name": "Peri-peri or chilli sauce",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "to taste",
+      "group": "To build"
+    }
+  ],
+  "steps": [
+    "Rinse the chips in cold water and dry them very well on a clean cloth.",
+    "Heat the oil in a deep pot to 160 °C, or until a chip dropped in fizzes steadily. Fry the chips in two batches for 8 to 10 minutes each, until soft right through and pale golden. Drain on paper towel.",
+    "While they are hot, put the chips in a bowl, sprinkle with the vinegar and salt, toss and cover with a cloth or paper for 5 minutes so they steam and go soft.",
+    "For the steak, heat the 2 tbsp oil in a frying pan over medium heat and fry the onion until golden, about 7 minutes. Add the garlic and ginger paste, masala and turmeric and fry for 1 minute.",
+    "Turn the heat to high, add the steak strips and salt and stir-fry for 2 to 3 minutes until browned. Add the grated tomato and cook for 3 to 4 minutes more, until the steak is cooked through and coated in a thick, spicy sauce.",
+    "Split the loaf lengthways without cutting all the way through and open it out. Spread with atchar, then layer the lettuce, tomato slices, chips and the masala steak with its sauce.",
+    "Squeeze over the tomato sauce and chilli sauce, close the loaf, press down gently and cut crosswise into four portions. Serve at once, wrapped in paper."
+  ],
+  "servings": 4,
+  "prepMinutes": 25,
+  "cookMinutes": 35,
+  "difficulty": "medium",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

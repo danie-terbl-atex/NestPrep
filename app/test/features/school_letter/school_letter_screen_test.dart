@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/school_letter/model/letter_reading.dart';
 import 'package:nestprep/features/school_letter/state/school_letter_controller.dart';
 import 'package:nestprep/features/school_letter/ui/school_letter_screen.dart';
@@ -188,7 +189,49 @@ void main() {
     expect(find.text(SchoolLetterCopy.addTicked(1)), findsOneWidget);
   });
 
-  for (final step in ['choosing', 'review', 'done', 'failure']) {
+  group('Twig is there only where the AI reads (design-system ADR-0012)', () {
+    Finder twig([NestTwigPose? pose]) => find.byWidgetPredicate(
+      (widget) => widget is NestTwig && (pose == null || widget.pose == pose),
+    );
+
+    testWidgets('welcomes on the way in, thinks while the letter is read, '
+        'and celebrates what was added', (tester) async {
+      reader.gate = Completer<void>();
+      await pump(tester);
+      expect(twig(NestTwigPose.welcome), findsOneWidget);
+      await tester.tap(find.text(SchoolLetterCopy.takePhoto));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(twig(NestTwigPose.thinking), findsOneWidget);
+      reader.complete();
+      await tester.pumpAndSettle();
+      await tap(tester, SchoolLetterCopy.addTicked(2));
+      expect(twig(NestTwigPose.celebrate), findsOneWidget);
+    });
+
+    for (final problem in AiProblem.values) {
+      testWidgets('a read that failed (${problem.name}) comes back without '
+          'Twig', (tester) async {
+        reader.failWith = AiFailure(problem);
+        await pump(tester);
+        await tap(tester, SchoolLetterCopy.takePhoto);
+        expect(find.text(AiCopy.problem(problem)), findsOneWidget);
+        expect(twig(), findsNothing);
+        expect(find.byIcon(LucideIcons.scanText), findsOneWidget);
+      });
+    }
+
+    testWidgets('a letter that could not be picked comes back without Twig', (
+      tester,
+    ) async {
+      picker.failWith = const UnavailableFailure();
+      await pump(tester);
+      await tap(tester, SchoolLetterCopy.takePhoto);
+      expect(twig(), findsNothing);
+    });
+  });
+
+  for (final step in ['choosing', 'reading', 'review', 'done', 'failure']) {
     testWidgets('the $step step survives dark at 200% text on a 360-wide '
         'phone', (tester) async {
       tester.view.physicalSize = const Size(360 * 3, 800 * 3);
@@ -198,6 +241,22 @@ void main() {
         reader.failWith = const AiFailure(AiProblem.aiUnavailable);
       }
       await pump(tester, brightness: Brightness.dark, textScale: 2);
+      if (step == 'reading') reader.gate = Completer<void>();
+      if (step == 'reading') {
+        await tester.scrollUntilVisible(
+          find.text(SchoolLetterCopy.takePhoto),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(SchoolLetterCopy.takePhoto));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(tester.takeException(), isNull);
+        reader.complete();
+        await tester.pumpAndSettle();
+        return;
+      }
       if (step != 'choosing') await tap(tester, SchoolLetterCopy.takePhoto);
       if (step == 'done') await tap(tester, SchoolLetterCopy.addTicked(2));
       expect(tester.takeException(), isNull);

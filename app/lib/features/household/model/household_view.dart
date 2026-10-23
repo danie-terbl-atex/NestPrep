@@ -42,6 +42,21 @@ class HouseholdView {
               .length ==
           1;
 
+  /// Whether the viewer may close the household (household ADR-0007): they
+  /// are its only admin and no other family adult has joined, so there is
+  /// nobody to hand it to. The server decides again; this only chooses
+  /// which way out the screen offers.
+  bool get viewerCanClose =>
+      isTheOnlyAdmin &&
+      !household.members.entries.any(
+        (entry) =>
+            entry.key != viewerUid && MemberRole.fromName(entry.value).isFamily,
+      );
+
+  /// Accounts other than the viewer's that lose the household if it closes.
+  int get othersInHousehold =>
+      household.members.keys.where((uid) => uid != viewerUid).length;
+
   /// Whether the viewer sees this household only during a shift a parent
   /// booked for them (nanny-hub ADR-0006). Family never is.
   bool get viewerIsShiftOnly {

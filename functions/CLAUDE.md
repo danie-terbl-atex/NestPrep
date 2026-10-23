@@ -21,6 +21,7 @@ npm run test:rules     # builds the rules, then firestore.rules *and* storage.ru
 npm run test:emulator  # the callables end to end, around the emulator
 npm run test:all       # all three, in that order
 npm run seed           # three fixed-uid users and the demo household, against a running suite (build first)
+npm run seed:catalogue       # dry run; `-- --confirm` publishes recipes and starter boxes to the real project (build first)
 npm run seed:cloud-demo      # the live demo family in the real project (build first; foundation ADR-0019)
 npm run teardown:cloud-demo  # dry run; `-- --confirm` removes exactly what seed:cloud-demo made
 npm run emulators      # build, start the suite importing/exporting ../emulator-data, then seed (foundation ADR-0018)
@@ -85,29 +86,30 @@ cloud because the client redirects every service.
 
 ## Configuration (`BE-16`)
 
-| Name                                                                            | Kind                                           | Used by                                                                      | Unset means                                                        |
-| ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `CALENDAR_GOOGLE_CLIENT_ID`                                                     | string param, default empty                    | calendar sync                                                                | Google Calendar says _not set up yet_                              |
-| `CALENDAR_MICROSOFT_CLIENT_ID`                                                  | string param, default empty                    | calendar sync                                                                | Outlook says _not set up yet_                                      |
-| `CALENDAR_GOOGLE_CLIENT_SECRET`                                                 | Secret Manager secret                          | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured    |
-| `CALENDAR_MICROSOFT_CLIENT_SECRET`                                              | Secret Manager secret                          | the same three                                                               | the same                                                           |
-| `CALENDAR_FUNCTIONS_BASE_URL`                                                   | string param, default empty                    | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`      |
-| `SUBSCRIPTIONS_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_YEARLY_PRODUCT_ID`           | string params, default empty                   | subscriptions                                                                | premium says _isn't available yet_                                 |
-| `SUBSCRIPTIONS_PRICING_TEST`                                                    | string param, default `off`                    | the paywall's offer                                                          | everybody in cohort `a` (yearly first); `on` splits by household   |
-| `SUBSCRIPTIONS_TEST_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_TEST_YEARLY_PRODUCT_ID` | string params, default empty                   | cohort `b` of the pricing test                                               | cohort `b` is offered cohort `a`'s products                        |
-| `SUBSCRIPTIONS_ANDROID_PACKAGE`, `SUBSCRIPTIONS_IOS_BUNDLE_ID`                  | string params, default `io.nullstate.nestprep` | verification                                                                 | the app's own ids                                                  |
-| `SUBSCRIPTIONS_APPLE_APP_ID`                                                    | string param, default empty                    | App Store notifications                                                      | a production notification's app id is not checked                  |
-| `SUBSCRIPTIONS_APPLE_ISSUER_ID`, `SUBSCRIPTIONS_APPLE_KEY_ID`                   | string params, default empty                   | the App Store Server API                                                     | renewal status comes only from notifications                       |
-| `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured    |
-| `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                                 |
-| `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)          |
-| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                          |
-| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                     |
-| `AI_DECISION_MODEL`                                                             | string param                                   | every decision (`src/ai/run_decision_call.ts`)                               | `jev-latest`                                                       |
-| `TYPESAFE_API_KEY`                                                              | Secret Manager secret                          | `buildLunchWeek`, `rankProductMatches` (Jev, foundation ADR-0022)            | must exist to deploy; missing refuses with `aiUnavailable`, logged |
-| `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged       |
-| `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                           |
-| `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly          |
+| Name                                                                            | Kind                                           | Used by                                                                      | Unset means                                                           |
+| ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `CALENDAR_GOOGLE_CLIENT_ID`                                                     | string param, default empty                    | calendar sync                                                                | Google Calendar says _not set up yet_                                 |
+| `CALENDAR_MICROSOFT_CLIENT_ID`                                                  | string param, default empty                    | calendar sync                                                                | Outlook says _not set up yet_                                         |
+| `CALENDAR_GOOGLE_CLIENT_SECRET`                                                 | Secret Manager secret                          | `calendarOAuthCallback`, `syncCalendarConnection`, `syncCalendarsOnSchedule` | must exist to deploy; the value `unset` reads as not configured       |
+| `CALENDAR_MICROSOFT_CLIENT_SECRET`                                              | Secret Manager secret                          | the same three                                                               | the same                                                              |
+| `CALENDAR_FUNCTIONS_BASE_URL`                                                   | string param, default empty                    | the OAuth redirect and the feed link                                         | derived: `https://africa-south1-<project>.cloudfunctions.net`         |
+| `SUBSCRIPTIONS_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_YEARLY_PRODUCT_ID`           | string params, default empty                   | subscriptions                                                                | premium says _isn't available yet_                                    |
+| `SUBSCRIPTIONS_PRICING_TEST`                                                    | string param, default `off`                    | the paywall's offer                                                          | everybody in cohort `a` (yearly first); `on` splits by household      |
+| `SUBSCRIPTIONS_TEST_MONTHLY_PRODUCT_ID`, `SUBSCRIPTIONS_TEST_YEARLY_PRODUCT_ID` | string params, default empty                   | cohort `b` of the pricing test                                               | cohort `b` is offered cohort `a`'s products                           |
+| `SUBSCRIPTIONS_ANDROID_PACKAGE`, `SUBSCRIPTIONS_IOS_BUNDLE_ID`                  | string params, default `io.nullstate.nestprep` | verification                                                                 | the app's own ids                                                     |
+| `SUBSCRIPTIONS_APPLE_APP_ID`                                                    | string param, default empty                    | App Store notifications                                                      | a production notification's app id is not checked                     |
+| `SUBSCRIPTIONS_APPLE_ISSUER_ID`, `SUBSCRIPTIONS_APPLE_KEY_ID`                   | string params, default empty                   | the App Store Server API                                                     | renewal status comes only from notifications                          |
+| `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured       |
+| `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                                    |
+| `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)             |
+| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                             |
+| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                        |
+| `AI_DECISION_MODEL`                                                             | string param                                   | every decision (`src/ai/run_decision_call.ts`)                               | `jev-latest`                                                          |
+| `TYPESAFE_API_KEY`                                                              | Secret Manager secret                          | `buildLunchWeek`, `rankProductMatches` (Jev, foundation ADR-0022)            | must exist to deploy; missing refuses with `aiUnavailable`, logged    |
+| `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged          |
+| `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                              |
+| `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly             |
+| `PNP_SESSION_KEY`                                                               | Secret Manager secret (32 bytes, base64)       | `pnpStartLink`, `pnpCompleteLink`, `pnpPushToCart`                           | must exist to deploy; missing or malformed refuses `pnp-down`, logged |
 
 Subscriptions (subscriptions ADR-0001 in the vault) reach Google Play as **the Functions runtime
 service account**, through application-default credentials — there is no key file. It works once
@@ -139,6 +141,28 @@ under the emulator `EmulatorCheckers` answers instead (code `123456`, no SMS, no
 the `addToCheckers` flag, except link status and unlink. Codes are limited to three per account and
 three per number per fifteen minutes (`rateLimits`). Weighed (`KG`) products are skipped, not
 guessed at. Rotating the key signs every member out of Checkers (their links stop opening).
+
+Add to Pick n Pay (`src/pnp/`, add-to-pnp ADR-0001 to ADR-0005 in the vault) links a member's own
+pnp.co.za account and fills **their** cart from the lunch box's _Plan my week_ — cart only, never a
+slot, fulfilment option, checkout or payment. The member signs in on PnP's own page in the app's web
+view; the app relays only the code and the `state`. `pnpStartLink` keeps the PKCE verifier, state and
+nonce sealed for 15 minutes; `pnpCompleteLink` swaps the code for tokens and seals the access and
+refresh tokens under `PNP_SESSION_KEY` in `pnpLinks/{uid}`, which no client may read. **PnP's OIDC
+client id and secret are not configuration**: they are read at runtime from PnP's own
+`/pnphybris/v2/pnp-spa/config` (served to every browser), remembered an hour per instance, never
+logged. Only `http_pnp_login.ts` and `http_pnp_shop.ts` talk to PnP, through `shared/http_client.ts`;
+under the emulator `EmulatorPnp` answers instead (code `emulator-code`, nothing reaches PnP). A push
+raises each product's line to at least the asked packs by entry guid (PnP's add increments), within
+the cart's item cap and each product's order limit; weighed (`_KGM`, average-weight) products are
+skipped, and a line PnP takes short (`noStock`, `lowStock`, `maxOrderQuantityExceeded`) or refuses with
+a 4xx is that item's skip, never the whole push's. A cart with no store refuses
+`pnp-no-delivery-address`. **A token refresh saves only by compare-and-swap** on the sealed session it
+refreshed from, so an unlink or an erasure that lands mid-push stays done, and a rival refresh's rotated
+token is adopted, never lost. Sealed values carry their purpose in the AAD (`pnp:pending:<uid>`,
+`pnp:session:<uid>`); Checkers keeps its plain-uid AAD. Behind the `addToPnp`
+flag, except link status and unlink. Rotating the key signs every member out of PnP. Shared with
+Checkers: `shared/session_crypto.ts`, `shared/sealed_json.ts` and `src/cart_push/` (reading the list,
+the push's answer shape).
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
@@ -221,6 +245,20 @@ A picture goes through `runImageCall` — the same switch, claim and refund, wit
 - **The seed reads `lib/`** (`tools/demo-household.mjs` takes grants, claims, the entitlement and the
   flag list from the Functions' own code), so it writes the shapes the callables write. Change a
   household-level shape in `src/` and the seed follows on the next build — no second copy.
+- **The catalogue** — `recipes/` and `lunchStarterBoxes/` (recipes ADR-0001, ADR-0003, lunch-box
+  ADR-0018) — has one source: the lunch box's recipes and the starter boxes in `src/recipes/` and
+  `src/lunch_starter_boxes/`, and the meal recipes as one JSON file each in the repo's
+  `../catalogue/recipes/<id>.json` with their photos in `../catalogue/recipe-photos/<id>/{hero,card}.jpg`
+  (outside `functions/`, so a deploy carries neither; the authoring guide is in the vault). Published by
+  `src/catalogue/publish_catalogue.ts`: photos first, to Storage at
+  `recipes/<id>/<size>-<8 hex of SHA-256>.jpg`, skipped when already there; then fixed ids, `version`
+  raised only when content changes, an entry removed from source retired, never deleted. A file
+  that does not parse, is not named after its id, or misses a photo stops the seed. The emulator seed publishes it on every start;
+  the cloud gets it from `seed:catalogue -- --confirm` after a change, never from
+  `seed:cloud-demo`. A starter box copies names and allergen codes from its recipes and from
+  `SEED_FOODS`, which `seed_foods.test.ts` holds to the app's `LunchSeedCatalogue`. Without
+  application-default credentials, `GOOGLE_APPLICATION_CREDENTIALS` may point at gcloud's own
+  `~/.config/gcloud/legacy_credentials/<account>/adc.json` for the run.
 - **The cloud demo seed** (`tools/seed-cloud-demo.mjs`, one module per area in `tools/cloud-demo/`)
   writes five `demo-` accounts and the household `demo-oak-street` into the real project, through
   the same `lib/` code, around the current week; its password comes only from the gitignored
@@ -238,7 +276,7 @@ A picture goes through `runImageCall` — the same switch, claim and refund, wit
   emulator tests assert.
   To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset`,
   `CALENDAR_MICROSOFT_CLIENT_SECRET=unset`, `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` and
-  `CHECKERS_SESSION_KEY=unset` (the emulator then seals with a fixed local key) in
+  `CHECKERS_SESSION_KEY=unset` and `PNP_SESSION_KEY=unset` (the emulator then seals with a fixed local key) in
   `functions/.secret.local` (git-ignored).
 - **Two emulator suites on one machine share project id `nestprep-643b7`.** The rules and emulator
   harnesses read `FIRESTORE_EMULATOR_HOST`, `FIREBASE_STORAGE_EMULATOR_HOST` and

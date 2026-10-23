@@ -174,11 +174,14 @@ so the on-screen copy cannot tell you the backend was unreachable.
   headings, which keeps its `opsz` axis, so every Fraunces style sets `FontVariation('opsz', size)`;
   both OFL, Latin and Latin Extended subsets). `flutter pub get` after changing the `fonts:` block
   or the family is silently absent. The arch mark is drawn in code (`NestMarkPainter`) from
-  `assets/brand/nest_mark.svg`; the launcher icon and splash still come from the old raster and are
-  due to be regenerated from it.
-- The logo's pieces under `assets/brand/` are generated from the vault's logo by
-  `tools/brand/extract_brand_assets.py`, then the icons and splash by `dart run
-  flutter_launcher_icons` and `dart run flutter_native_splash:create`. **The splash generator puts
+  `assets/brand/nest_mark.svg`, and the launcher icons and splash are rendered from the same SVG.
+- Every raster of the mark under `assets/brand/` is rendered from `nest_mark.svg` by
+  `../tools/brand/render_brand.sh` (design-system ADR-0008), then the icons and splash by `dart run
+  flutter_launcher_icons` and `dart run flutter_native_splash:create`. The Android adaptive
+  foreground carries its own safe-zone padding, so `adaptive_icon_foreground_inset` stays `0` —
+  the generator's default 16% shrank the mark to 40% of the icon (design-system ADR-0011). Bump the
+  build number after an icon change: a phone keeps showing the icon it cached until a newer build
+  is installed (an iPhone sometimes until it reboots). **The splash generator puts
   Android 12's styles on non-AppCompat themes**, which stops `FlutterFragmentActivity` (the vault's
   lock) starting on Android 12+; put them back — `test/app/android_launch_themes_test.dart` fails
   until you do. Revert its Info.plist re-indent and the icon tool's pbxproj edit.

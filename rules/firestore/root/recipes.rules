@@ -1,0 +1,12 @@
+// ---- recipes NestPrep publishes (recipes ADR-0001, ADR-0003) ----
+// A catalogue, nobody's data: anybody signed in may read a recipe, and no
+// client writes one — the catalogue seed does, as the Admin SDK. A recipe
+// reaches a household only by being copied into its lunch library or its
+// meals, where those rules check it. A list is bounded: the recipes view
+// reads the published catalogue in one query of at most 200 (ADR-0003 §7).
+
+match /recipes/{recipeId} {
+  allow get: if isSignedIn();
+  allow list: if isSignedIn() && request.query.limit <= 200;
+  allow write: if false;
+}

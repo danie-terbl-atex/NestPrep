@@ -1,0 +1,34 @@
+{
+  "id": "mabele-porridge",
+  "name": "Mabele porridge",
+  "summary": "Sorghum breakfast porridge: smooth, earthy and pinkish-brown, served hot with milk, a knob of butter and sugar or honey.",
+  "about": "Mabele is the Sesotho, Setswana and Sepedi word for sorghum, a grain grown in southern Africa long before maize arrived. Soft mabele porridge is the breakfast many grandmothers raised families on; some leave the paste to ferment overnight for a sour version called ting, others cook it fresh for a mild, wholesome bowl.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast"],
+  "placement": { "breakfast": "main" },
+  "tags": ["traditional", "budget", "quick"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Sorghum meal", "quantity": 1, "unit": "cup", "note": "mabele meal, about 160 g", "group": null },
+    { "name": "Cold water", "quantity": 1, "unit": "cup", "note": null, "group": null },
+    { "name": "Boiling water", "quantity": 3, "unit": "cup", "note": "plus extra to loosen", "group": null },
+    { "name": "Salt", "quantity": 0.25, "unit": "tsp", "note": null, "group": null },
+    { "name": "Milk", "quantity": 1, "unit": "cup", "note": "warm or cold, to serve", "group": null },
+    { "name": "Butter", "quantity": 4, "unit": "tsp", "note": "to serve", "group": null },
+    { "name": "Sugar or honey", "quantity": 4, "unit": "tsp", "note": "to serve", "group": null }
+  ],
+  "steps": [
+    "Stir the sorghum meal and cold water together in a bowl to make a smooth, lump-free paste.",
+    "Bring the boiling water and salt to the boil in a medium saucepan over high heat. Pour in the paste, whisking constantly, and keep whisking for 1–2 minutes as it comes back to the boil and thickens.",
+    "Turn the heat to low, half-cover the pan and simmer for 15–20 minutes, stirring every few minutes and scraping the bottom, until the porridge is thick, smooth and no longer tastes raw. If it gets too stiff, whisk in a little more boiling water.",
+    "Spoon into bowls and top each with milk, a knob of butter and a teaspoon of sugar or honey."
+  ],
+  "servings": 4,
+  "prepMinutes": 5,
+  "cookMinutes": 22,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": "For a sour ting version, mix the paste the night before, cover and leave it on the counter to ferment.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_push_result.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_push_state.dart';
-import 'package:nestprep/features/add_to_checkers/state/checkers_push_controller.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_state.dart';
+import 'package:nestprep/features/add_to_checkers/state/cart_push_controller.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/money/money.dart';
 
@@ -10,11 +10,11 @@ import '../../../support/household_fixtures.dart';
 
 void main() {
   late FakeCheckersDirectory directory;
-  late CheckersPushController controller;
+  late CartPushController controller;
 
   setUp(() {
     directory = FakeCheckersDirectory();
-    controller = CheckersPushController(
+    controller = CartPushController(
       directory: directory,
       householdId: Fixtures.householdId,
     );
@@ -23,13 +23,10 @@ void main() {
   tearDown(() => controller.dispose());
 
   test('the phone names the items; the answer is the result', () async {
-    directory.pushResult = const CheckersPushResult(
+    directory.pushResult = const CartPushResult(
       added: [],
       skipped: [
-        CheckersSkippedLine(
-          itemId: 'i2',
-          reason: CheckersSkipReason.weighedItem,
-        ),
+        CartSkippedLine(itemId: 'i2', reason: CartSkipReason.weighedItem),
       ],
       cartItemCount: 3,
       cartTotal: Money(9000),
@@ -37,7 +34,7 @@ void main() {
     await controller.push(['i1', 'i2']);
     expect(directory.pushes.single.itemIds, ['i1', 'i2']);
     expect(directory.pushes.single.householdId, Fixtures.householdId);
-    expect(controller.state, isA<CheckersPushed>());
+    expect(controller.state, isA<CartPushed>());
   });
 
   test(
@@ -47,12 +44,12 @@ void main() {
         const CheckersFailure(CheckersProblem.linkExpired),
       );
       await controller.push(['i1']);
-      expect(controller.state, isA<CheckersPushNeedsLink>());
+      expect(controller.state, isA<CartPushNeedsLink>());
 
       await controller.retry();
       expect(directory.pushes, hasLength(2));
       expect(directory.pushes.last.itemIds, ['i1']);
-      expect(controller.state, isA<CheckersPushed>());
+      expect(controller.state, isA<CartPushed>());
     },
   );
 
@@ -63,7 +60,7 @@ void main() {
     await controller.push(['i1']);
     expect(
       controller.state,
-      isA<CheckersPushFailed>().having(
+      isA<CartPushFailed>().having(
         (state) => state.failure,
         'failure',
         isA<CheckersFailure>(),
@@ -74,6 +71,6 @@ void main() {
   test('nothing to push asks nobody', () async {
     await controller.push(const []);
     expect(directory.pushes, isEmpty);
-    expect(controller.state, isA<CheckersPushIdle>());
+    expect(controller.state, isA<CartPushIdle>());
   });
 }

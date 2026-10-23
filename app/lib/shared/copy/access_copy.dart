@@ -1,6 +1,7 @@
 import '../../features/household/model/access_level.dart';
 import '../../features/household/model/household_area.dart';
 import '../../features/household/model/member_role.dart';
+import 'app_copy.dart';
 
 /// The words of household phase 2: roles, what each area is, the levels a
 /// parent chooses between, and the invite step (household ADR-0003).
@@ -159,7 +160,7 @@ abstract final class AccessCopy {
     required String code,
   }) =>
       'You are invited to $householdName on NestPrep.\n\n'
-      'Get NestPrep, tap "$inviteCodeWayIn" on the sign-in screen and type '
+      'Get NestPrep, tap "${AppCopy.codeWayIn}" on the sign-in screen and type '
       '$code. The code works once and lasts seven days.';
 
   static String inviteCodeFor(String name) => 'Code for $name';
@@ -169,11 +170,6 @@ abstract final class AccessCopy {
   static const inviteLinkNotNow = 'Not now';
   static const inviteLinkRefused = 'This invite cannot be used';
   static const inviteLinkClose = 'Close';
-  static const inviteCodeWayInPrompt = 'Invited by family?';
-  static const inviteCodeWayIn = 'I have an invite code';
-  static const inviteCodeContinue = 'Continue';
-  static const inviteCodeInvalid =
-      'That is not an invite code. It is eight letters and numbers.';
   static const inviteLinkSignInFirst =
       'Sign in or create an account to accept your household invite.';
 

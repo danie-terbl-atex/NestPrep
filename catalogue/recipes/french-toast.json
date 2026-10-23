@@ -1,0 +1,105 @@
+{
+  "id": "french-toast",
+  "name": "French toast",
+  "summary": "Thick slices of bread soaked in a cinnamon egg and milk mix, fried in butter until golden and finished with cinnamon sugar.",
+  "about": "Many South African families call it eggy bread or egg bread, and it is the weekend breakfast that uses up yesterday's loaf. It is eaten sweet with cinnamon sugar or syrup, or savoury with salt, a fried tomato and grated cheese.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "quick",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Eggs",
+      "quantity": 4,
+      "unit": null,
+      "note": "large",
+      "group": null
+    },
+    {
+      "name": "Milk",
+      "quantity": 160,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "divided",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": null
+    },
+    {
+      "name": "White bread slices",
+      "quantity": 8,
+      "unit": null,
+      "note": "thick, a day old",
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 40,
+      "unit": "g",
+      "note": "for frying",
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "for the cinnamon sugar",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Whisk the eggs, milk, vanilla, half the cinnamon and the salt together in a wide, shallow dish until no streaks of egg white remain.",
+    "Mix the sugar with the rest of the cinnamon in a small bowl and set aside.",
+    "Melt a quarter of the butter in a large frying pan over medium heat until it foams.",
+    "Dip two slices of bread into the egg mix for about 10 seconds a side, until soaked but not falling apart, and lay them in the pan.",
+    "Fry for 2 to 3 minutes a side, until deep golden and the middle springs back when pressed. Turn the heat down if the outside browns before the inside sets.",
+    "Repeat with the remaining butter and bread, keeping the cooked slices warm in a low oven. Sprinkle with cinnamon sugar and serve hot."
+  ],
+  "servings": 4,
+  "prepMinutes": 5,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

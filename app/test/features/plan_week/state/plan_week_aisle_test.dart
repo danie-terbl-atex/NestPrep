@@ -1,7 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_shelf.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/plan_week/model/aisle_shelf.dart';
 import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
@@ -27,12 +28,12 @@ void main() {
   final near = CheckersArea.capeTown.centre;
   final every = {...LunchSlot.values};
 
-  const yoghurtList = CheckersShelf.productList('69d4ebed9cccb04862bcb67f');
-  const yoghurtCategory = CheckersShelf.displayCategory(
+  const yoghurtList = RetailerShelf.productList('69d4ebed9cccb04862bcb67f');
+  const yoghurtCategory = RetailerShelf.displayCategory(
     '67075e37ff987811364007b9',
   );
-  const biscuitList = CheckersShelf.productList('65bb4f576a79cdbcd449b7b7');
-  const vegCategory = CheckersShelf.displayCategory('67075daeff98781136400728');
+  const biscuitList = RetailerShelf.productList('65bb4f576a79cdbcd449b7b7');
+  const vegCategory = RetailerShelf.displayCategory('67075daeff98781136400728');
 
   late FakeShopCatalogue shop;
   late FakeLunchAisleSource source;
@@ -57,11 +58,7 @@ void main() {
         ),
       ];
     changes = 0;
-    aisle = PlanWeekAisle(
-      source: source,
-      catalogue: shop,
-      onChange: () => changes++,
-    );
+    aisle = PlanWeekAisle(source: source, onChange: () => changes++);
   });
 
   test('every shelf becomes an answered idea, best kept first', () async {
@@ -76,7 +73,13 @@ void main() {
       planWeekProduct('Baby carrots', id: 'carrots', ingredients: 'Carrots'),
     ];
 
-    await aisle.read(near: near, rulesByChild: rules, slots: every);
+    await aisle.read(
+      shop: ProductRetailer.checkers,
+      catalogue: shop,
+      near: near,
+      rulesByChild: rules,
+      slots: every,
+    );
 
     expect(aisle.isReading, isFalse);
     expect(aisle.shelvesRead, 3);
@@ -96,7 +99,13 @@ void main() {
       planWeekProduct('Fruit yoghurt', id: 'yog', ingredients: 'Milk'),
     ];
 
-    await aisle.read(near: near, rulesByChild: rules, slots: every);
+    await aisle.read(
+      shop: ProductRetailer.checkers,
+      catalogue: shop,
+      near: near,
+      rulesByChild: rules,
+      slots: every,
+    );
 
     expect(shop.shelves.take(2), [yoghurtList, yoghurtCategory]);
     expect(aisle.shelves.first.kept.single.productId, 'yog');
@@ -107,7 +116,13 @@ void main() {
       CheckersProblem.catalogueUnreachable,
     );
 
-    await aisle.read(near: near, rulesByChild: rules, slots: every);
+    await aisle.read(
+      shop: ProductRetailer.checkers,
+      catalogue: shop,
+      near: near,
+      rulesByChild: rules,
+      slots: every,
+    );
 
     expect(aisle.unread, 1);
     expect(
@@ -128,6 +143,8 @@ void main() {
     ];
 
     await aisle.read(
+      shop: ProductRetailer.checkers,
+      catalogue: shop,
       near: near,
       rulesByChild: {lwazi: rules[lwazi]!},
       slots: every,
@@ -150,6 +167,8 @@ void main() {
       ];
 
       await aisle.read(
+        shop: ProductRetailer.checkers,
+        catalogue: shop,
         near: near,
         rulesByChild: rules,
         slots: {LunchSlot.snack, LunchSlot.veg},
@@ -168,7 +187,13 @@ void main() {
     shop.byShelf[yoghurtList] = [
       planWeekProduct('Fruit yoghurt', id: 'yog', ingredients: 'Milk'),
     ];
-    final reading = aisle.read(near: near, rulesByChild: rules, slots: every);
+    final reading = aisle.read(
+      shop: ProductRetailer.checkers,
+      catalogue: shop,
+      near: near,
+      rulesByChild: rules,
+      slots: every,
+    );
     aisle.clear();
     await reading;
     expect(aisle.shelves, isEmpty);

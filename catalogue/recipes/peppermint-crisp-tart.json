@@ -1,0 +1,75 @@
+{
+  "id": "peppermint-crisp-tart",
+  "name": "Peppermint Crisp tart",
+  "summary": "A no-bake fridge tart of coconut tea biscuits layered with whipped caramel cream and finished with a thick scattering of grated mint-crisp chocolate.",
+  "about": "This fridge tart is one of South Africa's most-loved desserts. It is built from pantry staples: tinned caramel, coconut tea biscuits, fresh cream and the mint-crisp chocolate bar it is named after. It turns up at braais, birthdays and Christmas, and it needs no oven, just a night in the fridge for the biscuits to soften.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "kidFriendly",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Fresh cream",
+      "quantity": 500,
+      "unit": "ml",
+      "note": "well chilled",
+      "group": null
+    },
+    {
+      "name": "Caramel condensed milk",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "360 g each",
+      "group": null
+    },
+    {
+      "name": "Mint-crisp chocolate bars",
+      "quantity": 150,
+      "unit": "g",
+      "note": "about 3 bars, grated or finely chopped",
+      "group": null
+    },
+    {
+      "name": "Coconut tea biscuits",
+      "quantity": 400,
+      "unit": "g",
+      "note": "2 packets",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Whip the cream in a large bowl with an electric beater on medium-high speed for 2–3 minutes, until it holds soft peaks that just flop over at the tips.",
+    "Spoon the caramel into a second bowl and beat for 1 minute until smooth and loose. Fold in a third of the whipped cream to lighten it, then gently fold in the rest until no streaks remain. Fold in a third of the grated chocolate.",
+    "Cover the base of a 20 x 30 cm glass or ceramic dish with a single layer of biscuits, breaking some to fill the gaps.",
+    "Spread half the caramel cream evenly over the biscuits. Add a second layer of biscuits, then spread the rest of the caramel cream over the top, smoothing it right to the edges.",
+    "Scatter the remaining grated chocolate thickly over the top. Cover and refrigerate for at least 4 hours, preferably overnight, until the biscuits have softened enough to cut cleanly with a spoon.",
+    "Cut into 12 squares and serve straight from the fridge."
+  ],
+  "servings": 12,
+  "prepMinutes": 20,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make it the day before; it keeps 3 days covered in the fridge.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

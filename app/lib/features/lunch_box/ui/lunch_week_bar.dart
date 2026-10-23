@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../../shared/format/nest_dates.dart';
 import '../model/lunch_week.dart';
+import 'lunch_week_name.dart';
 
 /// The school week on show, with a step either side and a way back to this
 /// week when somebody has wandered.
@@ -30,12 +30,7 @@ class LunchWeekBar extends StatelessWidget {
 
   /// "This week", "Next week", "Last week", or the dates of one further off
   /// — the header already says the dates, so the bar says where you are.
-  String get _name => switch (planningWeek.weeksUntil(week)) {
-    0 => LunchCopy.thisWeek,
-    1 => LunchCopy.nextWeekName,
-    -1 => LunchCopy.lastWeek,
-    _ => NestDates.schoolWeekRange(week.monday),
-  };
+  String get _name => LunchWeekName.of(week, planningWeek: planningWeek).label;
 
   @override
   Widget build(BuildContext context) {

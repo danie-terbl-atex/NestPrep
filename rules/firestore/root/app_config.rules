@@ -5,8 +5,9 @@
 // switch and the monthly caps, read only by Functions; a client has no
 // reason to know the caps, and must never be able to raise them.
 // `appConfig/lunchAisle` names the Checkers lunchbox shelves *Plan my week*
-// reads first (lunch-box ADR-0013) — shop ids, nobody's data — read like
-// the flags and written only in the console. Any other
+// reads first (lunch-box ADR-0013), and in `pnpShelves` Pick n Pay's
+// category shelves (lunch-box ADR-0026) — shop ids, nobody's data — read
+// like the flags and written only in the console. Any other
 // id here is closed too, so the collection cannot quietly grow into a place
 // for data, and nobody lists it.
 // `aiEmulator/{feature}` holds the canned model answers the Functions

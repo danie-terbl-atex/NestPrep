@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { ALLERGEN_WORDS } from '../../../src/plan_week/allergen_words';
+import { ALLERGEN_WORDS, NOT_ALLERGEN_PHRASES } from '../../../src/plan_week/allergen_words';
 import { ALLERGENS } from '../../../src/plan_week/food_safety';
 
 /**
@@ -29,5 +29,11 @@ describe('the allergen words', () => {
     for (const code of ALLERGENS) {
       expect(dartWordsFor(source, code), code).toEqual([...ALLERGEN_WORDS[code]]);
     }
+  });
+
+  it('skip the same phrases that are not allergens, in the same order (recipes ADR-0004)', () => {
+    const list = /notAllergens\s*=\s*(?:const\s*)?\[([^\]]*)\]/.exec(readFileSync(DART, 'utf8'));
+    const dartPhrases = [...(list?.[1] ?? '').matchAll(/'([^']*)'/g)].map((match) => match[1]);
+    expect(dartPhrases).toEqual([...NOT_ALLERGEN_PHRASES]);
   });
 });

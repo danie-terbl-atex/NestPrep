@@ -1,0 +1,118 @@
+{
+  "id": "pannekoek",
+  "name": "Pannekoek",
+  "summary": "Thin cinnamon-sugar pancakes: soft, lacy pancakes sprinkled with cinnamon sugar and lemon and rolled up while warm.",
+  "about": "Pannekoek came to the Cape with Dutch settlers and became an Afrikaans favourite: thin, soft pancakes rolled with cinnamon sugar and a squeeze of lemon, made by the dozen at church bazaars and school fêtes and on rainy afternoons at home.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Milk",
+      "quantity": 500,
+      "unit": "ml",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the batter"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 60,
+      "unit": "ml",
+      "note": "plus a little for the pan",
+      "group": "For the batter"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Lemons",
+      "quantity": 2,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Sift the flour, baking powder and salt into a bowl.",
+    "Whisk the eggs, milk and water together, then whisk them gradually into the flour to a smooth, thin batter like pouring cream. Whisk in the oil. If you have time, rest it in the fridge for 30 minutes.",
+    "Mix the sugar and cinnamon. Set a plate over a pot of barely simmering water to keep the pancakes warm.",
+    "Heat a 20–22 cm non-stick pan over medium-high heat and brush it with a thin film of oil. Pour in about 80 ml of batter and swirl at once to coat the base thinly.",
+    "Cook for about 1 minute, until the edges lift and the underside is golden in patches, then flip and cook for 30 seconds more.",
+    "Slide onto the warm plate, sprinkle with cinnamon sugar and a squeeze of lemon, and roll up. Repeat with the rest of the batter, stacking the rolled pancakes, and serve warm."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the batter up to a day ahead and keep it in the fridge; whisk before using.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

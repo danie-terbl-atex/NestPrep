@@ -8,44 +8,49 @@ import '../../../shared/state/action_failure.dart';
 import '../../groceries/data/grocery_repository.dart';
 import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
-import '../data/checkers_catalogue.dart';
 import '../data/checkers_place_resolver.dart';
 import '../data/product_match_ranker.dart';
+import '../data/retailer_catalogues.dart';
 import '../model/checkers_area.dart';
 import '../model/checkers_place.dart';
-import '../model/checkers_product.dart';
+import '../model/product_match_from.dart';
+import '../model/retailer_product.dart';
 
-/// The item whose Checkers matches are showing.
-typedef ProductMatchTarget = ({String itemId, String name});
+/// The item whose matches are showing, and the shop they are from.
+typedef ProductMatchTarget = ({
+  String itemId,
+  String name,
+  ProductRetailer shop,
+});
 
-/// The Checkers products under one grocery item at a time (the Checkers build
-/// contract), for the grocery screen.
+/// A shop's products under one grocery item at a time — Checkers' or Pick n
+/// Pay's, whichever *Shop at* named when the search began (the Checkers
+/// build contract, add-to-pnp ADR-0007) — for the grocery screen.
 ///
 /// The search starts only after the item is on the list, and never from a
 /// build: the screen calls [lookFor] when an item is added or when somebody
-/// taps *Find at Checkers*. Quick additions in a row are debounced, so only
+/// taps *Find at*. Quick additions in a row are debounced, so only
 /// the last one searches, and an answer for an item no longer showing is
 /// dropped. Nothing is copied from the list: a pick is written to the item
 /// and arrives back through the list's own listener (`FE-07`).
 final class ProductMatchController extends ChangeNotifier
     with ActionFailureHolder {
   ProductMatchController({
-    required CheckersCatalogue catalogue,
+    required this._catalogues,
     required CheckersPlaceResolver placeResolver,
     required GroceryRepository groceryRepository,
     required this.householdId,
     required this.memberId,
     this._ranker,
     this.debounce = const Duration(milliseconds: 400),
-  }) : _checkers = catalogue,
-       _places = placeResolver,
+  }) : _places = placeResolver,
        _repository = groceryRepository;
 
   /// Jev's score a match needs before it is called the best (foundation
   /// ADR-0021).
   static const bestMatchFit = 0.6;
 
-  final CheckersCatalogue _checkers;
+  final RetailerCatalogues _catalogues;
   final ProductMatchRanker? _ranker;
   final CheckersPlaceResolver _places;
   final GroceryRepository _repository;
@@ -56,7 +61,7 @@ final class ProductMatchController extends ChangeNotifier
   final Duration debounce;
 
   ProductMatchTarget? _target;
-  AsyncState<List<CheckersProduct>> _matches = const AsyncLoading();
+  AsyncState<List<RetailerProduct>> _matches = const AsyncLoading();
   String? _bestMatchId;
   CheckersPlace? _place;
   Timer? _timer;
@@ -67,7 +72,7 @@ final class ProductMatchController extends ChangeNotifier
   /// The item the panel is for; null when no panel is showing.
   ProductMatchTarget? get target => _target;
 
-  AsyncState<List<CheckersProduct>> get matches => _matches;
+  AsyncState<List<RetailerProduct>> get matches => _matches;
 
   /// The product Jev is sure the item means; null until it has answered.
   String? get bestMatchId => _bestMatchId;
@@ -77,10 +82,10 @@ final class ProductMatchController extends ChangeNotifier
 
   bool get isPicking => _isPicking;
 
-  /// Shows the panel for [item] and searches for its name after the
-  /// debounce.
-  void lookFor(GroceryItem item) {
-    _target = (itemId: item.id, name: item.name);
+  /// Shows the panel for [item] and searches for its name at [at] after the
+  /// debounce. The item's own match is untouched until somebody picks.
+  void lookFor(GroceryItem item, {required ProductRetailer at}) {
+    _target = (itemId: item.id, name: item.name, shop: at);
     _schedule();
   }
 
@@ -106,7 +111,7 @@ final class ProductMatchController extends ChangeNotifier
   }
 
   /// Stores [product] as the target item's match and closes the panel.
-  Future<void> pick(CheckersProduct product) async {
+  Future<void> pick(RetailerProduct product) async {
     final target = _target;
     if (target == null || _isPicking) return;
     _isPicking = true;
@@ -115,7 +120,7 @@ final class ProductMatchController extends ChangeNotifier
       () => _repository.setProductMatch(
         householdId: householdId,
         itemId: target.itemId,
-        match: _matchFrom(product),
+        match: productMatchFrom(product, pickedBy: memberId),
       ),
     );
     _isPicking = false;
@@ -150,11 +155,13 @@ final class ProductMatchController extends ChangeNotifier
   Future<void> _search(int generation) async {
     final target = _target;
     if (target == null) return;
-    AsyncState<List<CheckersProduct>> result;
+    AsyncState<List<RetailerProduct>> result;
     try {
       final place = _place ??= await _places.resolve(householdId);
       result = AsyncData(
-        await _checkers.search(query: target.name, near: place.coordinates),
+        await _catalogues
+            .of(target.shop)
+            .search(query: target.name, near: place.coordinates),
       );
     } on AppFailure catch (failure) {
       result = AsyncFailure(failure);
@@ -172,7 +179,7 @@ final class ProductMatchController extends ChangeNotifier
   Future<void> _rank(
     int generation,
     String item,
-    List<CheckersProduct> products,
+    List<RetailerProduct> products,
   ) async {
     final ranker = _ranker;
     if (ranker == null) return;
@@ -194,18 +201,6 @@ final class ProductMatchController extends ChangeNotifier
     _bestMatchId = (fits[best.id] ?? 0) >= bestMatchFit ? best.id : null;
     notifyListeners();
   }
-
-  ProductMatch _matchFrom(CheckersProduct product) => ProductMatch(
-    retailer: ProductRetailer.checkers,
-    productId: product.id,
-    articleCode: product.articleCode,
-    unitOfMeasure: product.unitOfMeasure,
-    name: product.name,
-    brand: product.brand,
-    price: product.price,
-    imageId: product.imageId,
-    pickedBy: memberId,
-  );
 
   @override
   void dispose() {

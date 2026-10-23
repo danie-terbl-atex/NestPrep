@@ -1,0 +1,125 @@
+{
+  "id": "sago-pudding",
+  "name": "Baked sago pudding",
+  "summary": "Sago simmered in milk until clear, baked into a soft custard over apricot jam and topped with golden meringue.",
+  "about": "Baked sago pudding is a thrifty Afrikaans family dessert from the days when milk, eggs and a packet of sago made Sunday pudding. Grandmothers' versions differ on cinnamon or nutmeg and on the meringue, but apricot jam is almost always there.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "comfort",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Milk",
+      "quantity": 1,
+      "unit": "l",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sago",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 80,
+      "unit": "g",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Butter",
+      "quantity": 30,
+      "unit": "g",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 3,
+      "unit": null,
+      "note": "large, separated",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Apricot jam",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 90,
+      "unit": "g",
+      "note": "castor sugar if you have it",
+      "group": "For the meringue"
+    }
+  ],
+  "steps": [
+    "Put the milk, sago, cinnamon stick and salt in a heavy saucepan and leave to soak for 30 minutes.",
+    "Bring slowly to a simmer over medium-low heat, stirring often, then simmer gently for 15 to 20 minutes, stirring all the time near the end so it does not catch, until the sago pearls are clear and the milk has thickened.",
+    "Heat the oven to 180 °C (160 °C fan) and grease a 1.5 litre ovenproof dish.",
+    "Take the pan off the heat, remove the cinnamon stick and stir in the 80 g sugar, butter and vanilla. Cool for 10 minutes, then beat in the egg yolks one at a time.",
+    "Spread the jam over the base of the dish, pour the sago mixture over it and dust with nutmeg. Bake for 25 minutes, until just set at the edges with a slight wobble in the middle.",
+    "Meanwhile whisk the egg whites in a clean bowl until they hold soft peaks, then add the 90 g sugar a spoon at a time, whisking until thick and glossy.",
+    "Spread the meringue over the pudding right to the edges, turn the oven down to 160 °C (140 °C fan) and bake for 15 to 20 minutes more, until the meringue is golden and crisp on top. Serve warm."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 65,
+  "difficulty": "medium",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

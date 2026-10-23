@@ -1,8 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_shelf.dart';
+import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_board.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_budget.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_budget_week.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/plan_week/data/lunch_week_request.dart';
 import 'package:nestprep/features/plan_week/data/shop_week_groceries.dart';
@@ -39,6 +42,7 @@ void main() {
 
   late LunchPlanningHarness harness;
   late FakeLunchIdeaDrafter drafter;
+  final recipeSaver = FakeLunchRecipeSaver();
   late FakeLunchWeekBuilder builder;
   late FakeShopCatalogue shop;
   late FakeLunchAisleSource aisle;
@@ -58,7 +62,9 @@ void main() {
       drafter: drafter,
       aisleSource: aisle,
       weekBuilder: builder,
-      catalogue: shop,
+      catalogues: planWeekCatalogues(shop),
+      shopChoice: planWeekShopChoice(Fixtures.householdId),
+      isPnpOn: () => false,
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: areas,
@@ -66,6 +72,7 @@ void main() {
       saver: ShopWeekSaver(
         lunchRepository: harness.lunch.repository,
         budgetRepository: harness.budgetRepository,
+        recipeSaver: recipeSaver,
         householdId: Fixtures.householdId,
         memberId: Fixtures.samMemberId,
       ),
@@ -113,15 +120,15 @@ void main() {
       expect(controller.childIds, {lwazi});
       controller.toggleChild(ayanda);
       expect(controller.childIds, {lwazi, ayanda});
-      await controller.chooseArea(CheckersArea.durban);
-      expect(controller.place!.area, CheckersArea.durban);
+      await controller.places.choose(CheckersArea.durban);
+      expect(controller.places.place!.area, CheckersArea.durban);
     },
   );
 
   test('the lunchbox aisle leads the ideas, the model hears of it, and the '
       'shop is not asked for it again', () async {
-    const yoghurtList = CheckersShelf.productList('69d4ebed9cccb04862bcb67f');
-    const biscuitList = CheckersShelf.productList('65bb4f576a79cdbcd449b7b7');
+    const yoghurtList = RetailerShelf.productList('69d4ebed9cccb04862bcb67f');
+    const biscuitList = RetailerShelf.productList('65bb4f576a79cdbcd449b7b7');
     aisle.answer = const [
       AisleShelf(
         title: 'Yoghurt snack time',
@@ -186,7 +193,7 @@ void main() {
   });
 
   test('without AI the aisle still leads, beside the usuals', () async {
-    const yoghurtList = CheckersShelf.productList('69d4ebed9cccb04862bcb67f');
+    const yoghurtList = RetailerShelf.productList('69d4ebed9cccb04862bcb67f');
     aisle.answer = const [
       AisleShelf(
         title: 'Yoghurt snack time',
@@ -259,16 +266,17 @@ void main() {
       ];
       builder.reply = LunchWeekReply(
         lunches: [
+          // Wednesday: the harness's today is Tuesday, which has gone.
           const ReplyLunch(
             childId: lwazi,
-            day: 2,
+            day: 3,
             slot: LunchSlot.snack,
             ideaId: 'idea-1',
             productId: 'yog',
           ),
           const ReplyLunch(
             childId: ayanda,
-            day: 2,
+            day: 3,
             slot: LunchSlot.snack,
             ideaId: 'idea-1',
             productId: 'yog',
@@ -311,7 +319,7 @@ void main() {
       harness.groceries.emitItems(const []);
       await adding;
       expect(harness.groceries.added.single.quantity, '1 pack');
-      expect(harness.groceries.matchesSet.single.match.productId, 'yog');
+      expect(harness.groceries.addedMatched.single.match.productId, 'yog');
       expect(controller.shop.groceriesAdded, 1);
     },
   );
@@ -403,15 +411,22 @@ void main() {
     shop.byQuery['grapes'] = [planWeekProduct('Grapes', ingredients: 'Grapes')];
     builder.failWith = const UnavailableFailure();
     await controller.draftIdeas();
-    await controller.searchStore(budget: const Money(5000));
+    await controller.searchStore(
+      budgetWeek: LunchBudgetWeek(
+        board: (controller.board as AsyncData<LunchBoard>).value,
+        prices: const {},
+        budget: const LunchBudget(id: 'weekly', cents: 5000, updatedBy: 'm'),
+      ),
+    );
     final week = (controller.shop.state as AsyncData<ShopWeek>).value;
     expect(week.source, PlanSource.fallback);
     expect(week.fallbackReason, PlanFallbackReason.offline);
     expect(week.budget, const Money(5000));
-    // Ayanda's five fruit compartments.
+    // Ayanda's fruit, Wednesday to Friday: the harness's today is Tuesday,
+    // and a school day that has gone is never planned (lunch-box ADR-0019).
     expect(
       week.children.firstWhere((c) => c.childId == ayanda).added,
-      hasLength(5),
+      hasLength(3),
     );
   });
 

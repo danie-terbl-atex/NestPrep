@@ -5,7 +5,8 @@ import '../../../shared/copy/app_copy.dart';
 
 /// The letter is with the model: what is happening, in words, over the shape
 /// of the list that is coming — so the screen holds its layout rather than
-/// collapsing to a spinner (`FE-08`).
+/// collapsing to a spinner (`FE-08`). Twig, thinking, is the AI at work
+/// (design-system ADR-0012); the words say so, so it is decoration.
 class LetterReadingPanel extends StatelessWidget {
   const LetterReadingPanel({super.key});
 
@@ -20,10 +21,7 @@ class LetterReadingPanel extends StatelessWidget {
         children: [
           Row(
             children: [
-              const NestIconTile(
-                icon: LucideIcons.sparkles,
-                tint: NestTileTint.lilac,
-              ),
+              const NestTwig(pose: NestTwigPose.thinking),
               const SizedBox(width: NestSpace.md),
               Expanded(
                 child: Column(

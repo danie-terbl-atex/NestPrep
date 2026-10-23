@@ -4,6 +4,7 @@ import { choiceOf, noulOf, type Answers } from '../ai/decision_call';
 import type { DecisionQuestions, DecisionRequest } from '../ai/decision_model';
 import { packingInstructions } from './packing_preferences';
 import type { WeekBrief, WeekBriefProduct } from './week_brief';
+import type { WeekBriefPart } from './week_dishes';
 import type { LunchSlot } from './week_documents';
 
 /** What Jev is asked about the store's products (foundation ADR-0021): names, prices, packing lines — never a child. */
@@ -12,7 +13,7 @@ export const COMPARTMENTS: Readonly<Record<LunchSlot, string>> = {
   fruit: 'a portion of fruit',
   veg: 'a portion of vegetables',
   snack: 'a small snack, such as yoghurt, crackers, cheese or a muesli bar',
-  treat: 'a small Friday treat',
+  treat: 'a small treat',
 };
 
 export const FIT_QUESTION =
@@ -24,6 +25,17 @@ export const BOXES_QUESTION =
   "One child's portion goes in each lunch box. How many lunch boxes does one pack of `product` fill? A 6-pack of yoghurts fills 6, a loaf of bread about 8, a bag of apples about 6, a single fruit cup 1.";
 export const BOX_COUNTS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 30] as const;
 
+/** A dish's ingredient pack (lunch-box ADR-0021 §4): how many boxes of the dish it makes. */
+export const INGREDIENT_BOXES_QUESTION =
+  "One child's portion of `dish` goes in each lunch box. How many lunch boxes of `dish` does one pack of `product` make? A pack of 8 wraps makes 8, a 400 g pack of sliced chicken about 6, a 1 kg bag of carrots about 20.";
+
+const BOX_CRITERIA: Record<string, string> = Object.fromEntries(
+  BOX_COUNTS.map((count) => [
+    String(count),
+    count === 1 ? 'one lunch box' : `${String(count)} lunch boxes`,
+  ]),
+);
+
 export interface WeekDecisions {
   readonly fit: Readonly<Record<string, number>>;
   readonly boxes: Readonly<Record<string, number>>;
@@ -33,7 +45,7 @@ export function fitId(product: WeekBriefProduct): string {
   return `fit|${product.ref}`;
 }
 
-export function boxesId(product: WeekBriefProduct): string {
+export function boxesId(product: { readonly ref: string }): string {
   return `boxes|${product.ref}`;
 }
 
@@ -42,7 +54,15 @@ export function weekDecisionRequest(brief: WeekBrief): DecisionRequest {
   const questions: Record<string, DecisionQuestions[string]> = {};
   for (const product of brief.products) {
     questions[fitId(product)] = fitQuestion(product, packing.length > 0);
-    if (product.product.packQuantity === null) questions[boxesId(product)] = boxesQuestion(product);
+    if (product.parts !== undefined) {
+      for (const part of product.parts) {
+        if (part.product.packQuantity === null) {
+          questions[boxesId(part)] = ingredientBoxesQuestion(product, part);
+        }
+      }
+    } else if (product.product.packQuantity === null) {
+      questions[boxesId(product)] = boxesQuestion(product);
+    }
   }
   return {
     label: 'lunchWeek',
@@ -59,8 +79,10 @@ export function weekDecisionsFrom(answers: Answers, brief: WeekBrief): WeekDecis
   const boxes: Record<string, number> = {};
   for (const product of brief.products) {
     fit[product.ref] = noulOf(answers, fitId(product)) ?? 0;
-    const count = Number(choiceOf(answers, boxesId(product)));
-    if (Number.isInteger(count) && count > 0) boxes[product.ref] = count;
+    for (const priced of product.parts ?? [product]) {
+      const count = Number(choiceOf(answers, boxesId(priced)));
+      if (Number.isInteger(count) && count > 0) boxes[priced.ref] = count;
+    }
   }
   return { fit, boxes };
 }
@@ -71,7 +93,7 @@ function fitQuestion(product: WeekBriefProduct, withPacking: boolean): NoulQuest
     instructions: {
       question: withPacking ? FIT_QUESTION_PACKING : FIT_QUESTION,
       compartment: COMPARTMENTS[product.slot],
-      product: describe(product),
+      product: describeEntry(product),
     },
   };
 }
@@ -80,16 +102,33 @@ function boxesQuestion(product: WeekBriefProduct): ChoiceQuestion {
   return {
     type: 'choice',
     instructions: { question: BOXES_QUESTION, product: describe(product) },
-    criteria: Object.fromEntries(
-      BOX_COUNTS.map((count) => [
-        String(count),
-        count === 1 ? 'one lunch box' : `${String(count)} lunch boxes`,
-      ]),
-    ),
+    criteria: BOX_CRITERIA,
   };
 }
 
-function describe({ product }: WeekBriefProduct): Record<string, string> {
+function ingredientBoxesQuestion(dish: WeekBriefProduct, part: WeekBriefPart): ChoiceQuestion {
+  return {
+    type: 'choice',
+    instructions: {
+      question: INGREDIENT_BOXES_QUESTION,
+      dish: dish.product.name,
+      product: describe(part),
+    },
+    criteria: BOX_CRITERIA,
+  };
+}
+
+/** A dish is described by what it is made of — it has no price or brand of its own. */
+function describeEntry(entry: WeekBriefProduct): Record<string, string> {
+  if (entry.parts === undefined) return describe(entry);
+  return { dish: entry.product.name, madeWith: (entry.madeWith ?? []).join(', ') };
+}
+
+function describe({
+  product,
+}: {
+  readonly product: WeekBriefProduct['product'];
+}): Record<string, string> {
   return {
     name: product.name,
     ...(product.brand !== null && product.brand !== '' && { brand: product.brand }),

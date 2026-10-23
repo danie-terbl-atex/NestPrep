@@ -11,7 +11,7 @@ abstract final class MoreCopy {
   static const sectionHome = 'Around the house';
   static const sectionPlan = 'Your plan';
 
-  static const mealsBody = 'Breakfast, lunch and dinner for the week.';
+  static const weekBody = 'The family calendar, day by day.';
   static const starsBody = 'Stars the kids earn for chores, and their rewards.';
   static const locationBody = 'See who is where, while they share it.';
   static const documentsBody = 'Folders, private vaults and scans.';

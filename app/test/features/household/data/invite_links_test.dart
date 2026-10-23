@@ -38,20 +38,17 @@ void main() {
   });
 
   test('the letters and length are the server code\'s', () {
-    final server = File(
-      '../functions/src/shared/readable_code.ts',
-    ).readAsStringSync();
+    final server = File('../functions/src/shared/readable_code.ts')
+        .readAsStringSync();
     expect(server, contains("READABLE_ALPHABET = '${InviteLinks.alphabet}'"));
-    final invite = File(
-      '../functions/src/household/invite_code.ts',
-    ).readAsStringSync();
+    final invite = File('../functions/src/household/invite_code.ts')
+        .readAsStringSync();
     expect(invite, contains('CODE_LENGTH = ${InviteLinks.codeLength};'));
   });
 
   test('the platforms open exactly the links this reads', () {
-    final manifest = File(
-      'android/app/src/main/AndroidManifest.xml',
-    ).readAsStringSync();
+    final manifest = File('android/app/src/main/AndroidManifest.xml')
+        .readAsStringSync();
     for (final host in InviteLinks.hosts) {
       expect(manifest, contains('android:host="$host"'));
     }

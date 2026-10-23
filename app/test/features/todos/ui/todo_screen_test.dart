@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/todos/model/routine.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -66,9 +67,13 @@ void main() {
     textScale: scale,
   );
 
-  Future<void> emit(WidgetTester tester, {List<Task> tasks = const []}) async {
+  Future<void> emit(
+    WidgetTester tester, {
+    List<Task> tasks = const [],
+    List<Routine> routines = const [],
+  }) async {
     repository.emitTasks(tasks);
-    repository.emitRoutines([]);
+    repository.emitRoutines(routines);
     repository.emitCompletions([]);
     await tester.pumpAndSettle();
   }
@@ -172,6 +177,47 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('permission-denied'), findsNothing);
+  });
+
+  testWidgets('the routines scroll away with the household week', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(
+      tester,
+      tasks: [task(title: 'Last of the week')],
+      routines: [
+        for (var i = 0; i < 12; i++)
+          Routine(
+            id: 'r$i',
+            name: 'Routine $i',
+            firstDate: CalendarDate.parse('2026-09-18'),
+            createdBy: Fixtures.samMemberId,
+          ),
+      ],
+    );
+    await tester.tap(find.text(AppCopy.todosEveryone));
+    await tester.pumpAndSettle();
+
+    final header = find.text(AppCopy.todosRoutines);
+    final before = tester.getTopLeft(header).dy;
+    await tester.drag(find.text('Routine 0'), const Offset(0, -300));
+    await tester.pumpAndSettle();
+
+    expect(tester.getTopLeft(header).dy, lessThan(before));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the household week still says so when it is empty', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(tester);
+    await tester.tap(find.text(AppCopy.todosEveryone));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppCopy.todosEveryoneEmptyTitle), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('renders in dark and at 200% text without overflowing', (

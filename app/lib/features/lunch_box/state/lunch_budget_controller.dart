@@ -144,6 +144,10 @@ final class LunchBudgetController extends ChangeNotifier
       _week = AsyncFailure(failure);
     } else if (board is AsyncFailure<LunchBoard>) {
       _week = AsyncFailure(board.failure);
+    } else if (board is AsyncLoading<LunchBoard>) {
+      // A week being moved to: the last week's money must not stand in
+      // for it under its name.
+      _week = const AsyncLoading();
     } else if (board is AsyncData<LunchBoard> && prices != null && _hasBudget) {
       _week = AsyncData(
         LunchBudgetWeek(

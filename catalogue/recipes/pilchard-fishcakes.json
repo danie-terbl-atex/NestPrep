@@ -1,0 +1,129 @@
+{
+  "id": "pilchard-fishcakes",
+  "name": "Pilchard fishcakes",
+  "summary": "Soft-centred, crisp-edged fishcakes made from one tin of pilchards in tomato sauce, with onion, carrot and parsley.",
+  "about": "Tinned pilchards are a pantry staple in South African homes, and turning one tin into a plate of fishcakes is how many families stretch it for Fish Friday. Mashed with egg, onion, a little flour and oats, the fish and its tomato sauce fry up soft inside and golden outside.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "budget",
+    "kidFriendly",
+    "quick"
+  ],
+  "allergens": [
+    "egg",
+    "wheat",
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Pilchards in tomato sauce",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400–425 g",
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, grated",
+      "group": null
+    },
+    {
+      "name": "Carrot",
+      "quantity": 1,
+      "unit": null,
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Rolled oats",
+      "quantity": 0.33,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": "for frying",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Tip the pilchards and their sauce into a bowl and mash with a fork. The soft bones crush easily and are good for you; lift out the spines if your family prefers.",
+    "Add the onion, carrot, eggs, flour, baking powder, oats, parsley, lemon juice, salt and pepper and mix to a thick, soft batter that holds its shape on a spoon. If it is runny, stir in 1–2 tbsp more oats and leave it for 5 minutes.",
+    "Heat 2 tbsp of the oil in a large frying pan over medium heat until it shimmers.",
+    "Drop in heaped tablespoons of the mixture, about 6 at a time, and flatten each to 1.5 cm thick. Fry for 3–4 minutes a side, until deep golden and firm when pressed in the middle. Add the rest of the oil for the second batch.",
+    "Drain on paper towel. Serve hot with mashed potato, peas and tomato sauce or chutney, and lemon wedges."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

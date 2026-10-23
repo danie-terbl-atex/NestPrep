@@ -1,0 +1,164 @@
+{
+  "id": "trinchado",
+  "name": "Trinchado",
+  "summary": "Portuguese-style beef: cubes of rump simmered in a garlicky red-wine and peri-peri sauce, with crusty rolls to mop it up.",
+  "about": "Trinchado — Portuguese for “carved” or “cut up” — came to South Africa with the Portuguese and Mozambican communities and became a fixture of Portuguese cafés, bars and family kitchens: tender beef in a garlicky, chilli and red-wine sauce, always with bread to mop up the sauce.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "comfort",
+    "onePot"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Beef rump steak",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "trimmed, cut into 2–3 cm cubes",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Olive or sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "large, sliced",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 6,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Fresh red chillies",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped; use bird’s eye chillies for more heat",
+      "group": null
+    },
+    {
+      "name": "Paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Dry red wine",
+      "quantity": 250,
+      "unit": "ml",
+      "note": "or 250 ml extra stock with 1 tbsp red wine vinegar",
+      "group": null
+    },
+    {
+      "name": "Beef stock",
+      "quantity": 250,
+      "unit": "ml",
+      "note": "made with 1 stock cube",
+      "group": null
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Peri-peri sauce",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "or 1 tsp dried chilli flakes",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Portuguese rolls",
+      "quantity": 5,
+      "unit": null,
+      "note": "to serve",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Season the beef with the salt and pepper and toss it in the flour.",
+    "Heat the oil and half the butter in a heavy pot over high heat. Brown the beef in 2 or 3 batches, 3–4 minutes a batch, until well browned on all sides, then lift it out.",
+    "Turn the heat to medium, add the rest of the butter and the onions and cook until soft and golden, 8–10 minutes. Add the garlic, chillies and paprika and stir for 1 minute.",
+    "Stir in the tomato paste for 1 minute, then pour in the wine and scrape up the browned bits. Let it bubble for 2 minutes.",
+    "Add the stock, bay leaves, peri-peri sauce and the beef with its juices. Bring to a simmer, cover and cook on low for 1 hour to 1 hour 15 minutes, stirring now and then, until the beef is tender when pressed with a spoon. If the sauce is thin, simmer uncovered for the last 10 minutes until it coats the back of a spoon.",
+    "Taste for salt, scatter over the parsley and serve in the pot with warm Portuguese rolls, or with chips."
+  ],
+  "servings": 5,
+  "prepMinutes": 20,
+  "cookMinutes": 95,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make it a day ahead and reheat gently; the sauce deepens overnight.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

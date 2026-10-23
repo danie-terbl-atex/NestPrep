@@ -1,0 +1,89 @@
+{
+  "id": "braaied-lamb-chops",
+  "name": "Braaied lamb chops",
+  "summary": "Lamb loin chops in a garlic, lemon and rosemary marinade, cooked fast over hot coals until crisp at the fat and pink in the middle.",
+  "about": "Lamb chops are the braai's quickest crowd-pleaser, and Karoo lamb, raised on veld herbs, is the one South Africans ask their butchers for by name. Chops go on last, once the coals are hot, and come off in minutes.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "braai",
+    "traditional"
+  ],
+  "allergens": [],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Lamb loin chops",
+      "quantity": 8,
+      "unit": null,
+      "note": "about 1.2 kg, 2 cm thick",
+      "group": null
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Fresh rosemary",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "zest and juice",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "coarse, for just before cooking",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Mix the oil, garlic, rosemary, lemon zest, lemon juice and pepper in a large dish. Turn the chops in it to coat and leave for 30 minutes at room temperature, or up to 6 hours in the fridge.",
+    "Get the braai going until the coals are hot and covered in white ash; you should be able to hold your hand at grid height for only 3 to 4 seconds.",
+    "Shake the excess marinade off the chops and sprinkle with the salt. Stand them up on their fat edge with tongs for 2 minutes to crisp the fat.",
+    "Lay them flat and braai for 3 to 4 minutes a side for pink in the middle, or 5 minutes a side for well done. Move them to a cooler spot if the dripping fat flares up.",
+    "Rest the chops on a board for 5 minutes, so the juices settle, then serve with salad, pap or braaibroodjies."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Marinate in the morning and keep covered in the fridge; take out 30 minutes before the braai.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

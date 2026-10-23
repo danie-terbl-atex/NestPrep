@@ -6,19 +6,20 @@ import '../../../app/backend_target.dart';
 import '../../../app/seeded_sign_in.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../../shared/copy/kid_copy.dart';
 import '../../household/state/pending_invite.dart';
-import '../../kid_accounts/ui/kid_code_screen.dart';
 import '../state/session_controller.dart';
+import 'code_way_in_sheet.dart';
 import 'email_sign_in_form.dart';
 import 'forgot_password_screen.dart';
-import 'invite_code_sheet.dart';
 import 'register_screen.dart';
 import 'seeded_account_picker.dart';
+import 'sign_in_providers.dart';
 import 'sign_in_welcome.dart';
 
-/// The way in (accounts ADR-0001, ADR-0002). Two providers: Google, and an
-/// address with a password. The seeded shortcut below them exists only on an
+/// The way in (accounts ADR-0001, ADR-0002, ADR-0009). An address with a
+/// password first, then the providers as their marks — Google, and Apple ahead
+/// of its sign-in — then one way in for a code. The seeded shortcut below them
+/// exists only on an
 /// emulator build or a cloud build compiled with the demo-login defines
 /// ([SeededSignIn], foundation ADR-0019), and is a different widget on purpose
 /// — a throwaway password list must never become the production form.
@@ -62,18 +63,6 @@ class SignInScreen extends StatelessWidget {
                 ],
                 NestRiseIn(
                   index: _waysInStep,
-                  child: NestButton(
-                    label: AppCopy.signInWithGoogle,
-                    icon: LucideIcons.logIn,
-                    isLoading: session.isSigningIn,
-                    onPressed: session.signInWithGoogle,
-                  ),
-                ),
-                const SizedBox(height: NestSpace.xl),
-                const NestRiseIn(index: _waysInStep + 1, child: _OrDivider()),
-                const SizedBox(height: NestSpace.xl),
-                NestRiseIn(
-                  index: _waysInStep + 2,
                   child: EmailSignInForm(
                     isBusy: session.isSigningIn,
                     onSubmit: session.signInWithEmail,
@@ -82,6 +71,16 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: NestSpace.lg),
+                const NestRiseIn(index: _waysInStep + 1, child: _OrDivider()),
+                const SizedBox(height: NestSpace.lg),
+                NestRiseIn(
+                  index: _waysInStep + 2,
+                  child: SignInProviders(
+                    isBusy: session.isSigningIn,
+                    onGoogle: session.signInWithGoogle,
+                  ),
+                ),
+                const SizedBox(height: NestSpace.xxl),
                 const NestRiseIn(
                   index: _waysInStep + 3,
                   child: _WayInPrompt(label: AppCopy.signInNoAccount),
@@ -97,50 +96,30 @@ class SignInScreen extends StatelessWidget {
                         : () => context.go(RegisterScreen.path),
                   ),
                 ),
-                if (!hasInvite) ...[
-                  const SizedBox(height: NestSpace.xxl),
-                  const NestRiseIn(
-                    index: _waysInStep + 4,
-                    child: _WayInPrompt(
-                      label: AccessCopy.inviteCodeWayInPrompt,
-                    ),
-                  ),
-                  const SizedBox(height: NestSpace.sm),
-                  NestRiseIn(
-                    index: _waysInStep + 4,
-                    child: NestButton(
-                      label: AccessCopy.inviteCodeWayIn,
-                      icon: LucideIcons.ticket,
-                      variant: NestButtonVariant.outline,
-                      onPressed: session.isSigningIn
-                          ? null
-                          : () => InviteCodeSheet.show(context),
-                    ),
-                  ),
-                ],
-                // A child has no email and no password: a grown-up makes a
-                // code (accounts ADR-0003).
+                // A household invite from family and a kid's code from a
+                // grown-up are one way in; the sheet tells them apart
+                // (accounts ADR-0009).
                 const SizedBox(height: NestSpace.xxl),
                 const NestRiseIn(
-                  index: _waysInStep + 5,
-                  child: _WayInPrompt(label: KidCopy.signInPrompt),
+                  index: _waysInStep + 4,
+                  child: _WayInPrompt(label: AppCopy.codeWayInPrompt),
                 ),
                 const SizedBox(height: NestSpace.sm),
                 NestRiseIn(
-                  index: _waysInStep + 5,
+                  index: _waysInStep + 4,
                   child: NestButton(
-                    label: KidCopy.signInWithCode,
-                    icon: LucideIcons.baby,
+                    label: AppCopy.codeWayIn,
+                    icon: LucideIcons.ticket,
                     variant: NestButtonVariant.tonal,
                     onPressed: session.isSigningIn
                         ? null
-                        : () => context.go(KidCodeScreen.path),
+                        : () => CodeWayInSheet.show(context),
                   ),
                 ),
                 if (seeded != null) ...[
                   const SizedBox(height: NestSpace.xxl),
                   NestRiseIn(
-                    index: _waysInStep + 6,
+                    index: _waysInStep + 5,
                     child: SeededAccountPicker(
                       hint: seeded.hint,
                       accounts: seeded.accounts,
@@ -161,8 +140,8 @@ class SignInScreen extends StatelessWidget {
   }
 }
 
-/// The line between the two providers. A hairline and a word, so neither way in
-/// reads as the fallback for the other.
+/// The line between the address form and the providers. A hairline and a word,
+/// so neither way in reads as the fallback for the other.
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
 

@@ -126,20 +126,40 @@ class HouseholdBody extends StatelessWidget {
           const SizedBox(height: NestSpace.lg),
         ],
         const SizedBox(height: NestSpace.lg),
-        NestButton(
-          label: AppCopy.householdLeave,
-          variant: NestButtonVariant.outline,
-          icon: LucideIcons.logOut,
-          onPressed: view.isTheOnlyAdmin ? null : () => _leave(context),
-        ),
-        if (view.isTheOnlyAdmin)
+        // The last adult cannot leave — nobody would be left to run the
+        // household — so they close it instead (household ADR-0007).
+        if (view.viewerCanClose)
+          NestButton(
+            label: CloseHouseholdCopy.entry,
+            variant: NestButtonVariant.outline,
+            icon: LucideIcons.doorClosed,
+            onPressed: () =>
+                context.push(HouseholdRoute.closePathFor(view.household.id)),
+          )
+        else
+          NestButton(
+            label: AppCopy.householdLeave,
+            variant: NestButtonVariant.outline,
+            icon: LucideIcons.logOut,
+            onPressed: view.isTheOnlyAdmin ? null : () => _leave(context),
+          ),
+        if (view.viewerCanClose)
+          Padding(
+            padding: const EdgeInsets.only(top: NestSpace.sm),
+            child: Text(
+              CloseHouseholdCopy.entryHint,
+              style: NestTheme.of(context).text.caption
+                  .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+              textAlign: TextAlign.center,
+            ),
+          )
+        else if (view.isTheOnlyAdmin)
           Padding(
             padding: const EdgeInsets.only(top: NestSpace.sm),
             child: Text(
               AppCopy.householdProblemLastAdmin,
-              style: NestTheme.of(context).text.caption.copyWith(
-                color: NestTheme.of(context).colors.inkTertiary,
-              ),
+              style: NestTheme.of(context).text.caption
+                  .copyWith(color: NestTheme.of(context).colors.inkTertiary),
               textAlign: TextAlign.center,
             ),
           ),

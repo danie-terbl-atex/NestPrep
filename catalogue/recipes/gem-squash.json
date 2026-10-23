@@ -1,0 +1,87 @@
+{
+  "id": "gem-squash",
+  "name": "Baked gem squash",
+  "summary": "Halved gem squash boiled until tender, then filled with butter and creamed sweetcorn and baked until bubbling.",
+  "about": "Gem squash — small, round and dark green, about the size of a tennis ball — is a vegetable South Africans grow up on and one that is hard to find in many other countries. Filled with butter and sweetcorn, it is a side children happily eat straight from the shell.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "side"
+  },
+  "tags": [
+    "vegetableForward",
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Gem squash",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Creamed sweetcorn",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": null
+    },
+    {
+      "name": "Grated cheddar",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "optional",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Cut each squash in half around its middle and scoop out the seeds with a spoon.",
+    "Put the halves cut side down in a large pot of salted boiling water, cover and simmer over medium heat for 12–15 minutes, until the flesh is soft when pierced. Drain them upside down.",
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven). Set the halves cut side up on a baking tray and put a knob of butter, a pinch of salt and some pepper in each hollow.",
+    "Fill the hollows with creamed sweetcorn and top with the cheese, if using.",
+    "Bake for 10–12 minutes, until bubbling and golden on top. Serve in the shell with a spoon for scooping out the flesh."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 27,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

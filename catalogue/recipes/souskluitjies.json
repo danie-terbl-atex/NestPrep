@@ -1,0 +1,140 @@
+{
+  "id": "souskluitjies",
+  "name": "Souskluitjies",
+  "summary": "Dumplings in cinnamon syrup: light spoon dumplings poached until puffed, then drenched in a buttery cinnamon-sugar syrup.",
+  "about": "Souskluitjies — “sauce dumplings” — are an old Afrikaans winter pudding with Dutch roots: little spoon dumplings poached in water, then soaked in a cinnamon-sugar syrup made from the cooking liquid. Made from pantry staples, they are a thrifty farmhouse dessert for a cold evening.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "comfort",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Cake flour",
+      "quantity": 240,
+      "unit": "g",
+      "note": null,
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 4,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Butter",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "softened",
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Milk",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the dumplings"
+    },
+    {
+      "name": "Water",
+      "quantity": 2,
+      "unit": "l",
+      "note": "for poaching",
+      "group": "For the syrup"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 200,
+      "unit": "g",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Butter",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the cinnamon sugar"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the cinnamon sugar"
+    }
+  ],
+  "steps": [
+    "Bring the water to the boil with a pinch of salt in a wide pot that has a tight lid. Mix the cinnamon sugar and set it aside.",
+    "Sift the flour, baking powder and salt into a bowl and rub in the butter with your fingertips until it looks like fine crumbs.",
+    "Whisk the eggs and milk together and stir them into the flour to make a thick, smooth batter that drops from a spoon in a blob.",
+    "Turn the water down to a steady simmer. Dip a tablespoon in the hot water, then drop in spoonfuls of batter, 8–10 at a time, leaving room for them to double. Cover tightly and simmer for 8–10 minutes without lifting the lid, until puffed and a skewer comes out clean.",
+    "Lift the dumplings into a warm serving dish with a slotted spoon, sprinkling cinnamon sugar between the layers. Cook the rest of the batter the same way.",
+    "For the syrup, pour off all but 500 ml of the cooking water. Add the sugar, butter, cinnamon stick and ground cinnamon and boil over medium-high heat for 8–10 minutes, until syrupy and reduced by about a third.",
+    "Pour the hot syrup over the dumplings and serve straight away, with custard if you like."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -40,6 +40,8 @@ export interface ObjectStore {
   /** Objects under the prefix created before the instant, up to `limit`. */
   listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]>;
   deleteObjects(paths: readonly string[]): Promise<void>;
+  /** Whether an object is at the path — the catalogue seed skips a photo already published. */
+  exists(path: string): Promise<boolean>;
 }
 
 export function objectStore(): ObjectStore {
@@ -74,6 +76,10 @@ export function objectStore(): ObjectStore {
       // call shape for every delete here, and none that a scan for Firestore
       // writes outside a transaction mistakes for one (writes_are_atomic).
       await Promise.all(paths.map((path) => bucket.deleteFiles({ prefix: path, force: true })));
+    },
+    async exists(path: string): Promise<boolean> {
+      const [found] = await bucket.file(path).exists();
+      return found;
     },
   };
 }

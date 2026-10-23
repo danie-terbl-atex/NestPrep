@@ -9,9 +9,10 @@ import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
 import 'package:nestprep/features/meal_planning/model/ingredient_unit.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meal_ingredient.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/grocery_plan_copy.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -82,7 +83,12 @@ void main() {
     );
     await pumpScreen(
       tester,
-      MealPlanScreen(onSelectTab: (_) {}),
+      MealsScreen(
+        view: MealsView.week,
+        onSelectView: (_) {},
+        onSelectTab: (_) {},
+        onOpenRecipe: (_) {},
+      ),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),
       ],

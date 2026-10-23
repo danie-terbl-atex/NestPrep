@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../legal/model/legal_versions.dart';
 import 'legal_consent.dart';
+import 'seen_tour.dart';
 
 part 'account.freezed.dart';
 part 'account.g.dart';
@@ -30,6 +31,11 @@ abstract class Account with _$Account {
     /// written with the rest of the document: the create rule does not allow
     /// it, and `acceptLegal` writes it on its own with the server's time.
     @JsonKey(includeToJson: false) LegalConsent? legalConsent,
+
+    /// The welcome tour this person last finished or skipped (welcome-tour
+    /// ADR-0001). Read here, written on its own by `markTourSeen`, like
+    /// [legalConsent].
+    @JsonKey(includeToJson: false) SeenTour? tour,
   }) = _Account;
 
   const Account._();
@@ -51,6 +57,11 @@ abstract class Account with _$Account {
   /// Whether this person agreed to an earlier version — the consent screen
   /// says "we have updated" rather than "before you start".
   bool get hasAcceptedEarlierLegal => legalConsent != null;
+
+  /// Whether this person has finished or skipped the welcome tour at version
+  /// [current] or later — the shell opens it by itself until they have
+  /// (welcome-tour ADR-0001).
+  bool hasSeenTour(int current) => (tour?.version ?? 0) >= current;
 
   /// The household the app should show: the chosen one while it is still one of
   /// ours, otherwise the first we belong to. A stale `activeHouseholdId` — the

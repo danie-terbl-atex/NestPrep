@@ -1,0 +1,37 @@
+{
+  "id": "morogo",
+  "name": "Morogo",
+  "summary": "Wild spinach cooked down with soft onion and fresh tomato into a savoury, deep-green side for stiff pap and meat.",
+  "about": "Morogo is the Sepedi, Setswana and Sesotho name for edible wild greens such as amaranth (thepe), cowpea leaves and blackjack, called imifino or umfino in isiXhosa and isiZulu. Families pick them in summer or dry them for winter. Spinach, or a mix of spinach with kale or pumpkin leaves, is the everyday substitute.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "side" },
+  "tags": ["traditional", "vegetableForward", "quick", "budget"],
+  "allergens": [],
+  "dietTags": ["vegetarian", "vegan"],
+  "ingredients": [
+    { "name": "Morogo or spinach leaves", "quantity": 600, "unit": "g", "note": "washed well, stalks removed", "group": null },
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "chopped", "group": null },
+    { "name": "Garlic clove", "quantity": 1, "unit": null, "note": "crushed", "group": null },
+    { "name": "Tomatoes", "quantity": 2, "unit": null, "note": "chopped", "group": null },
+    { "name": "Green chilli", "quantity": 1, "unit": null, "note": "chopped, optional", "group": null },
+    { "name": "Water", "quantity": 0.25, "unit": "cup", "note": null, "group": null },
+    { "name": "Salt", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Wash the leaves in two or three changes of cold water until no sand settles in the bottom of the bowl, then chop them roughly.",
+    "Heat the oil in a large pot over medium heat and fry the onion until soft and golden, about 6 minutes. Add the garlic and chilli and fry for 1 minute.",
+    "Add the tomatoes and cook, stirring, for 3 to 4 minutes, until they soften into a chunky sauce.",
+    "Add the greens a handful at a time, stirring each lot in as it wilts, then pour in the water. Cover and simmer over low heat for 10 minutes, until the leaves are dark and tender (true wild greens may need 5 minutes more).",
+    "Take the lid off, season with the salt and pepper and cook for 2 to 3 minutes more, stirring, until most of the liquid has evaporated. Serve hot with stiff pap."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

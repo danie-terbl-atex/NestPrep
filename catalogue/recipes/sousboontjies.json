@@ -1,0 +1,35 @@
+{
+  "id": "sousboontjies",
+  "name": "Sousboontjies",
+  "summary": "Sweet-sour sugar beans: speckled beans simmered soft, then cooked down with vinegar, sugar and butter into a thick, glossy sauce, served hot or cold.",
+  "about": "Sousboontjies ('sauce beans') have been part of Afrikaans home cooking since at least the 1940s. They are served beside yellow rice and roast meat or venison on Sunday and festive tables, and as a cold salad at braais. Cookbooks have long noted that they keep well in the fridge, which makes them a make-ahead favourite.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner", "lunch"],
+  "placement": { "dinner": "side", "lunch": "side" },
+  "tags": ["traditional", "budget", "vegetableForward"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Dried sugar beans", "quantity": 500, "unit": "g", "note": "soaked overnight in plenty of cold water", "group": null },
+    { "name": "Water", "quantity": 8, "unit": "cup", "note": "for cooking", "group": null },
+    { "name": "Salt", "quantity": 1.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Brown vinegar", "quantity": 0.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Brown sugar", "quantity": 0.75, "unit": "cup", "note": "adjust to taste", "group": null },
+    { "name": "Butter", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Drain and rinse the soaked beans, picking out any discoloured ones or small stones. Put them in a large pot with the water and bring to the boil over high heat.",
+    "Turn the heat to low, half-cover and simmer for 1–1.5 hours, until the beans are completely soft and creamy inside when squashed against the side of the pot. Add salt only now, as salting early keeps beans hard. Top up with boiling water if they peep above the liquid.",
+    "Drain off all but about 1 cup of the cooking liquid. Using a potato masher, lightly crush about a quarter of the beans in the pot to thicken the sauce.",
+    "Add the vinegar, sugar, butter and pepper and stir over low heat for 10–15 minutes, stirring often so it does not catch, until the sugar has dissolved and the sauce is thick and glossy and coats the beans.",
+    "Taste and balance with a little more sugar or vinegar; it should be clearly sweet and clearly sour. Serve hot with roast meat and yellow rice, or cool and refrigerate for at least 2 hours to serve cold as a salad."
+  ],
+  "servings": 8,
+  "prepMinutes": 10,
+  "cookMinutes": 105,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Soak the beans the night before. Keeps a week in the fridge. Quick version: 3 x 400 g tins of sugar beans, drained, from step 3.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

@@ -5,8 +5,16 @@
 flutter_launcher_icons:
   image_path: "assets/brand/launcher/app_icon.png"
   android: "ic_launcher"
-  ios: true
+  # iOS is rendered by tools/brand/render_brand.sh from app_icon_ios.svg
+  # (design-system ADR-0013); this tool would overwrite it.
+  ios: false
   remove_alpha_ios: true
   # Guava, NestColors.guava: the tile the strokes sit on.
   adaptive_icon_background: "#F57B91"
   adaptive_icon_foreground: "assets/brand/launcher/app_icon_foreground.png"
+  # The foreground already carries its safe-zone padding; the generator's
+  # default 16% inset on top of it shrank the mark to 40% of the icon
+  # (design-system ADR-0011).
+  adaptive_icon_foreground_inset: 0
+  # Android 13+ themed icons: the launcher tints this alpha-only silhouette.
+  adaptive_icon_monochrome: "assets/brand/launcher/app_icon_foreground.png"

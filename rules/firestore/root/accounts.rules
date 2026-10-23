@@ -21,16 +21,18 @@ match /users/{userId} {
     && request.resource.data.activeHouseholdId == null
     && isServerTime('createdAt');
 
-  // What Google tells us about the person, and which household is showing.
-  // `householdIds` and `createdAt` are not in the list, so they cannot move.
+  // What Google tells us about the person, which household is showing, what
+  // they agreed to, and which welcome tour they have seen. `householdIds` and
+  // `createdAt` are not in the list, so they cannot move.
   allow update: if isSelf()
     && onlyChanged(['displayName', 'photoUrl', 'activeHouseholdId', 'lastSignedInAt',
-                    'legalConsent'])
+                    'legalConsent', 'tour'])
     && isNonEmptyString(request.resource.data.displayName)
     && (request.resource.data.activeHouseholdId == null
         || request.resource.data.activeHouseholdId in resource.data.householdIds)
     && (!changedKeys().hasAny(['lastSignedInAt']) || isServerTime('lastSignedInAt'))
-    && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent());
+    && (!changedKeys().hasAny(['legalConsent']) || isAccountConsent())
+    && (!changedKeys().hasAny(['tour']) || isAccountTour());
 
   // What this person agreed to (accounts ADR-0005): the two versions, whole
   // numbers from 1, never lower than what they agreed to before, stamped
@@ -46,6 +48,20 @@ match /users/{userId} {
       && consent.termsVersion >= before.termsVersion
       && consent.privacyVersion >= before.privacyVersion
       && consent.acceptedAt == request.time;
+  }
+
+  // The welcome tour this person finished or skipped (welcome-tour
+  // ADR-0001): its version, a whole number from 1 never lower than the one
+  // recorded, stamped with the server's time. Nothing else rides along.
+  function isAccountTour() {
+    let tour = request.resource.data.tour;
+    let before = resource.data.get('tour', {'version': 0});
+    return tour is map
+      && tour.keys().hasOnly(['version', 'seenAt'])
+      && tour.keys().hasAll(['version', 'seenAt'])
+      && tour.version is int && tour.version >= 1
+      && tour.version >= before.version
+      && tour.seenAt == request.time;
   }
 
   // Deleting an account is a Function, in the phase that ships to a store.

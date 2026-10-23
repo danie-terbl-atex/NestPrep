@@ -1,32 +1,40 @@
 import '../../features/family_profiles/model/allergen.dart';
+import '../../features/groceries/model/product_match.dart';
 import '../../features/plan_week/model/left_out_reason.dart';
 import '../../features/plan_week/model/packing_preference.dart';
 import '../../features/plan_week/model/plan_fallback.dart';
+import '../../features/plan_week/model/treat_days.dart';
+import '../../features/plan_week/model/treat_days_shortcut.dart';
 import '../failure/app_failure.dart';
+import 'app_copy.dart' show AppCopy;
+import 'checkers_copy.dart';
 import 'family_copy.dart';
 
-/// Every word *Plan my week from Checkers* says (`FE-19`, lunch-box
-/// ADR-0012). Each step says what it is doing and what NestPrep decided.
+/// Every word *Plan my week* says (`FE-19`, lunch-box ADR-0012). Each step
+/// says what it is doing and what NestPrep decided; the shop is the one the
+/// brief chose (lunch-box ADR-0026), named in words.
 abstract final class PlanWeekCopy {
   // ---- the way in, on the lunch board ----
-  static const entryTitle = 'Plan my week from Checkers';
-  static const entryBody =
-      'Lunches for every child, from what Checkers sells — within your '
-      'budget, one step at a time.';
-  static const entryAction = 'Plan my week';
+  /// Twig is named as the one who plans, in words only: the row's picture is
+  /// the chosen shop's logo (lunch-box ADR-0024, ADR-0026, design-system
+  /// ADR-0014), so the body names the shop the title no longer does.
+  static String entryTitle(String week) => 'Let Twig plan $week';
+  static String entryBody(ProductRetailer shop) =>
+      'Lunches for every child from what ${_name(shop)} sells, within your '
+      'budget — you check each step.';
   static const premiumTag = 'Premium';
 
   // ---- the steps ----
   static const title = 'Plan my week';
-  static const stepNames = [
+  static String namedWeek(String name, String dates) => '$name · $dates';
+  static List<String> stepNames(ProductRetailer shop) => [
     'Brief',
     'Ideas',
-    'At Checkers',
+    'At ${_name(shop)}',
     'The week',
     'Done',
   ];
-  static String stepOf(int number, String name) =>
-      'Step $number of ${stepNames.length}: $name';
+  static String stepOf(int number, String name) => 'Step $number of 5: $name';
   static const back = 'Back';
 
   // ---- 1. the brief ----
@@ -44,12 +52,6 @@ abstract final class PlanWeekCopy {
   static const aiNeverSees =
       'The AI never sees allergies. NestPrep checks every idea and every '
       'product against them itself, before and after.';
-  static const shopHeader = 'Shop';
-  static String shopNear(String area) => 'Checkers Sixty60 near $area';
-  static const shopNearYou = 'Checkers Sixty60 near you';
-  static const shopFinding = 'Finding your nearest Checkers…';
-  static const shopOnly = 'Checkers is the only shop for now.';
-  static const changeArea = 'Change area';
   static const budgetHeader = 'Weekly lunch budget';
   static const budgetBody =
       'For every child’s lunches together — what you’d pay at the till.';
@@ -75,20 +77,33 @@ abstract final class PlanWeekCopy {
       };
   static const slotsHeader = 'What goes in the box';
   static const slotsBody = 'Only these get filled. One always stays on.';
+
+  /// Which school days this plan packs a treat on (lunch-box ADR-0025).
+  static const treatDaysHeader = 'Treat days';
+  static const treatDaysBody =
+      'Which school days get a treat in this plan. You can still add one to '
+      'any day on the lunch board.';
+  static String treatDaysShortcut(TreatDaysShortcut shortcut) =>
+      switch (shortcut) {
+        TreatDaysShortcut.none => 'No treats',
+        TreatDaysShortcut.fridaysOnly => 'Fridays only',
+        TreatDaysShortcut.everyDay => 'Every day',
+      };
   static const draftAction = 'Get lunch ideas';
 
   // ---- 2. ideas ----
   static const aisleTitle = 'Walking the lunchbox aisle…';
-  static const aisleLine =
-      'Reading Checkers’ own Kids Lunchbox shelves near you and checking '
-      'every product against each child’s rules.';
+  static String aisleLine(ProductRetailer shop) =>
+      'Reading ${_possessive(shop)} own lunchbox shelves near you and '
+      'checking every product against each child’s rules.';
   static String aisleProgress(int read, int total) =>
       'Shelf ${read < total ? read + 1 : total} of $total';
   static const draftingTitle = 'Thinking up lunch ideas…';
   static const draftingLine =
       'Reading what each child likes and eats, the open compartments and the '
       'budget.';
-  static const ideasHeadline = 'What we’ll look for at Checkers';
+  static String ideasHeadline(ProductRetailer shop) =>
+      'What we’ll look for at ${_name(shop)}';
   static const ideasBody =
       'Remove anything you don’t want, or add your own. Struck-out ideas were '
       'left out by NestPrep for the reason shown.';
@@ -104,7 +119,8 @@ abstract final class PlanWeekCopy {
   static const ideaTooLong = 'Keep it under 60 letters.';
   static const ideaSave = 'Add';
   static const originOwn = 'Yours';
-  static const originAisle = 'Checkers lunchbox aisle';
+  static String originAisle(ProductRetailer shop) =>
+      '${_name(shop)} lunchbox aisle';
   static String shelfKept(int count) =>
       '${_count(count, 'product', 'products')} kept from this shelf';
   static const shelfNothingKept = 'Nothing on this shelf suits anyone';
@@ -113,31 +129,19 @@ abstract final class PlanWeekCopy {
       'be read, so the other ideas are searched instead.';
   static const noIdeas = 'No ideas left to look for';
   static const noIdeasBody = 'Add one of your own, or go back and try again.';
-  static String searchAction(int count) =>
-      'Look for ${_count(count, 'idea', 'ideas')} at Checkers';
-
-  // ---- the lunchbox aisle's shelves (lunch-box ADR-0013) ----
-  static const shelfTummyFillers = 'Tummy fillers';
-  static const shelfCrunchTheColours = 'Crunch the colours';
-  static const shelfBabyVeg = 'Baby veg';
-  static const shelfYoghurtSnackTime = 'Yoghurt snack time';
-  static const shelfUnwrapASmile = 'Unwrap a smile';
-  static const shelfJunkFreeFillers = '100% junk-free fillers';
-  static const shelfMindfulSnacking = 'Mindful snacking';
-  static const shelfSqueezeSnackGo = 'Squeeze. Snack. Go';
-  static const shelfFreshlyBaked = 'Freshly baked';
-  static const shelfProteinFillers = 'Protein fillers';
-  static const shelfDriedFruitAndNuts = 'Dried fruit and nuts';
-  static const shelfCookiesAndBiscuits = 'Cookies, chippies and biscuits';
+  static String searchAction(int count, ProductRetailer shop) =>
+      'Look for ${_count(count, 'idea', 'ideas')} at ${_name(shop)}';
 
   // ---- 3. at the shop ----
-  static const storeTitle = 'Shopping at Checkers…';
+  static String storeTitle(ProductRetailer shop) =>
+      'Shopping at ${_name(shop)}…';
   static const storeLine =
       'Looking for each idea near you and checking every product against '
       'each child’s rules.';
   static String storeProgress(int searched, int total) =>
       'Idea ${searched < total ? searched + 1 : total} of $total';
-  static const nothingKeptTitle = 'Nothing at Checkers fits';
+  static String nothingKeptTitle(ProductRetailer shop) =>
+      'Nothing at ${_name(shop)} fits';
   static const nothingKept =
       'Nothing was kept yet. Go back and try other ideas.';
 
@@ -162,17 +166,50 @@ abstract final class PlanWeekCopy {
 
   // ---- 4. the week ----
   static const buildingTitle = 'Building your week…';
-  static const buildingLine =
-      'Choosing from what Checkers had, for each child, within the budget.';
-  static const weekHeadline = 'Your week';
+  static String buildingLine(ProductRetailer shop) =>
+      'Choosing from what ${_name(shop)} had, for each child, within the '
+      'budget.';
+  static String weekHeadline(String week) => 'Lunches for $week';
   static String fallbackWeek(PlanFallbackReason reason) =>
       '${_without(reason)} So the phone built it: the cheapest kept product '
       'for each idea, ideas taken in turn.';
+
+  /// A phone-built week has no dishes: they need the AI's pack counts
+  /// (lunch-box ADR-0021 §7).
+  static const dishesNeedAi =
+      'Dishes with recipes need the AI to cost their ingredients, so this '
+      'week has products only.';
+
+  /// A drafted main on the ideas list (ADR-0021 §3): what its recipe uses.
+  static String dishMadeWith(int count, ProductRetailer shop) =>
+      'A recipe with ${_count(count, 'ingredient', 'ingredients')}, '
+      'each searched at ${_name(shop)}.';
   static String dropped(int count) =>
       '${_count(count, 'choice was', 'choices were')} left out because it '
       'did not fit a child’s rules.';
   static const alreadyPacked = 'Already packed';
   static const tapToSwap = 'Tap anything new to swap it or clear it.';
+
+  /// Why the week shows no treat before Friday (lunch-box ADR-0003). The
+  /// *balanced* reason is this line's framing, not the ADR's — it awaits
+  /// Daniel's confirmation with ADR-0003.
+  static const treatsFridaysOnly =
+      'Treats go in on Fridays only, to keep the week’s lunches balanced. '
+      'You can add one to any day on the lunch board.';
+
+  /// Which days the week packs a treat on, once the brief chose other days
+  /// than Friday (lunch-box ADR-0025); Friday alone keeps the line above.
+  static String treatsOn(Set<int> treatDays) {
+    if (TreatDaysShortcut.fridaysOnly.isChosenFor(treatDays)) {
+      return treatsFridaysOnly;
+    }
+    final days = _and([
+      for (final day in TreatDays.inOrder(treatDays)) AppCopy.weekdayName(day),
+    ]);
+    return 'Treats go in on $days, the days you chose. You can add one to any '
+        'day on the lunch board.';
+  }
+
   static String newForChild(int count) =>
       count == 0 ? 'Nothing new' : '$count new';
   static const originSuggested = 'Suggested';
@@ -184,10 +221,9 @@ abstract final class PlanWeekCopy {
   static const basketBody =
       'Every child’s new lunches together, in whole packs — what you’d pay '
       'at the till.';
-  static const nothingNew = 'Nothing new for this week';
-  static const nothingNewBody =
-      'Every compartment is packed already, or nothing kept fits. Go back and '
-      'try other ideas.';
+  static String alreadyPlanned(String amount, String week) =>
+      'Counted with the $amount already planned for $week.';
+  static String nothingNew(String week) => 'Nothing new for $week';
   static const useAction = 'Use this week';
 
   // ---- 5. done ----
@@ -203,10 +239,10 @@ abstract final class PlanWeekCopy {
   static String addToGroceries(int count) =>
       'Add ${_count(count, 'product', 'products')} to the grocery list';
   static String packs(int count) => _count(count, 'pack', 'packs');
-  static String groceriesAdded(int count) => count == 0
+  static String groceriesAdded(int count, ProductRetailer shop) => count == 0
       ? 'Everything was on the grocery list already.'
       : '${_count(count, 'product', 'products')} added to the grocery list, '
-            'matched at Checkers.';
+            'matched at ${_name(shop)}.';
   static const seeLunches = 'See the lunches';
   static const planAgain = 'Plan again';
 
@@ -221,11 +257,13 @@ abstract final class PlanWeekCopy {
       'Some of the week could not be saved. The rest is in.',
   };
 
+  /// Why the phone stood in. Twig is named in words, never shown, on a
+  /// fallback (design-system ADR-0012, ADR-0014).
   static String _without(PlanFallbackReason reason) => switch (reason) {
-    PlanFallbackReason.aiOff => 'Smart planning is paused.',
+    PlanFallbackReason.aiOff => 'Twig’s planning is paused for now.',
     PlanFallbackReason.aiLimitReached =>
-      'This month’s smart plans are used up — they come back on the 1st.',
-    PlanFallbackReason.aiUnavailable => 'Our planner didn’t answer just now.',
+      'Twig’s plans for this month are used up — they come back on the 1st.',
+    PlanFallbackReason.aiUnavailable => 'Twig didn’t answer just now.',
     PlanFallbackReason.offline => 'You look offline.',
   };
 
@@ -233,6 +271,17 @@ abstract final class PlanWeekCopy {
     final allergen? => FamilyCopy.allergenName(allergen).toLowerCase(),
     null => 'an allergen',
   };
+
+  static String _and(List<String> words) => words.length < 2
+      ? words.join()
+      : '${words.sublist(0, words.length - 1).join(', ')} and ${words.last}';
+
+  static String _name(ProductRetailer shop) => CheckersCopy.retailerName(shop);
+
+  static String _possessive(ProductRetailer shop) {
+    final name = _name(shop);
+    return name.endsWith('s') ? '$name’' : '$name’s';
+  }
 
   static String _count(int count, String one, String many) =>
       count == 1 ? '1 $one' : '$count $many';

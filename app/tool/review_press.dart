@@ -1,12 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:provider/single_child_widget.dart';
 
 import '../test/support/pump_screen.dart';
+
+export '../test/support/real_fonts.dart' show loadEveryFont;
 
 /// The shutter every design-review press shares: one screen at phone size,
 /// with the real fonts and the real shadows, written to `design-review/`.
@@ -18,34 +17,6 @@ import '../test/support/pump_screen.dart';
 /// than a copy in each (`ENG-02`). A new press imports this; it never writes a
 /// second shutter.
 const reviewPhone = Size(390, 844);
-
-/// Every font the app ships, read from the bundle's own manifest — the type
-/// family *and* the icon font. A test renders in Ahem by default, so without
-/// this the screenshots are black boxes where the words and the icons should
-/// be, which is the opposite of useful for a design review.
-Future<void> loadEveryFont() async {
-  final manifest =
-      json.decode(await rootBundle.loadString('FontManifest.json'))
-          as List<Object?>;
-  for (final entry in manifest.cast<Map<String, Object?>>()) {
-    final family = entry['family'] as String?;
-    final assets = (entry['fonts'] as List<Object?>? ?? const [])
-        .cast<Map<String, Object?>>();
-    if (family == null || assets.isEmpty) continue;
-    final loader = FontLoader(family);
-    for (final asset in assets) {
-      final path = asset['asset'] as String?;
-      if (path != null) loader.addFont(rootBundle.load(path));
-    }
-    // A family the bundle names but does not carry — cupertino_icons is one —
-    // must not take the whole press down with it.
-    try {
-      await loader.load();
-    } on Exception {
-      continue;
-    }
-  }
-}
 
 /// Decodes every image on screen for real, then repaints. A test's fake clock
 /// never lets an asset image finish decoding, so without this the brand's nest
@@ -112,6 +83,17 @@ Future<void> captureScreen(
     debugDisableShadows = true;
   }
 }
+
+/// [screen] as somebody with reduce-motion on sees it: a wait that loops for
+/// as long as it lasts — *Plan my week*'s working loop, a skeleton — holds
+/// still, so the shutter's `pumpAndSettle` can settle and the picture is of
+/// the state rather than a frame of its motion.
+Widget heldStill(Widget screen) => Builder(
+  builder: (context) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(disableAnimations: true),
+    child: screen,
+  ),
+);
 
 /// The screen's own vertical list, never a horizontal row of chips inside it.
 Finder screenList() => find

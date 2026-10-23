@@ -1,0 +1,34 @@
+{
+  "id": "mieliepap",
+  "name": "Mieliepap",
+  "summary": "Soft maize porridge: smooth, warm white maize meal cooked slowly until creamy, served with cold milk, a little butter and sugar.",
+  "about": "Pap made from white maize meal is South Africa's everyday staple, eaten across every community. Cooked soft and runny (slap pap or soft porridge) it is the breakfast generations of children have grown up on, cheap and filling before school, while stiff and crumbly versions go with meat and gravy later in the day.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast"],
+  "placement": { "breakfast": "main" },
+  "tags": ["budget", "traditional", "kidFriendly", "quick"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Water", "quantity": 4, "unit": "cup", "note": "divided", "group": null },
+    { "name": "Salt", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "White maize meal", "quantity": 1, "unit": "cup", "note": "super or special maize meal", "group": null },
+    { "name": "Milk", "quantity": 1, "unit": "cup", "note": "cold, to serve", "group": null },
+    { "name": "Butter", "quantity": 4, "unit": "tsp", "note": "to serve", "group": null },
+    { "name": "Sugar", "quantity": 4, "unit": "tsp", "note": "or honey, to serve", "group": null }
+  ],
+  "steps": [
+    "Bring 3 cups of the water and the salt to the boil in a medium heavy-based pot over high heat.",
+    "Meanwhile stir the maize meal into the remaining 1 cup of cold water in a jug to make a smooth paste with no dry lumps.",
+    "Turn the heat down to medium and pour the paste into the boiling water in a thin stream, whisking all the time. Keep whisking for 2 minutes, until the porridge thickens and starts to bubble.",
+    "Turn the heat to low, cover with the lid slightly open (the porridge spits) and cook for 15 to 20 minutes, stirring every 3 to 4 minutes and scraping the bottom, until it is smooth, glossy and no longer tastes raw or gritty. Add a splash of boiling water if it gets thicker than you like.",
+    "Spoon into bowls and top each with cold milk, a teaspoon of butter and a teaspoon of sugar. Serve hot."
+  ],
+  "servings": 4,
+  "prepMinutes": 5,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

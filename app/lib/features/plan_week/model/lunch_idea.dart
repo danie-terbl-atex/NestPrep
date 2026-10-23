@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../family_profiles/model/food_rules.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import 'allergen_words.dart';
+import 'dish_draft.dart';
 import 'food_text_check.dart';
 import 'left_out_reason.dart';
 
@@ -24,7 +25,8 @@ enum IdeaOrigin {
 
 /// One thing to look for at the shop, for one compartment (lunch-box
 /// ADR-0012): what it is, what to search, why, which children it is for, and
-/// for which it was struck out and why.
+/// for which it was struck out and why — or, for a drafted main, the dish
+/// and its recipe (ADR-0021).
 @immutable
 final class LunchIdea {
   LunchIdea({
@@ -36,6 +38,7 @@ final class LunchIdea {
     required List<String> childIds,
     required List<LeftOutReason> excluded,
     required this.origin,
+    this.dish,
   }) : childIds = List.unmodifiable(childIds),
        excluded = List.unmodifiable(excluded);
 
@@ -95,6 +98,10 @@ final class LunchIdea {
   /// For whom NestPrep struck it out, and why.
   final List<LeftOutReason> excluded;
   final IdeaOrigin origin;
+
+  /// The dish a drafted main is, with its recipe (lunch-box ADR-0021); null
+  /// for a product idea. A dish is searched ingredient by ingredient.
+  final DishDraft? dish;
 
   /// Struck out for every child: shown, never searched.
   bool get isStruckOut => childIds.isEmpty;

@@ -19,6 +19,7 @@ class NestScaffold extends StatelessWidget {
     this.bottomBar,
     this.floatingAction,
     this.bodyPadding = const EdgeInsets.symmetric(horizontal: NestSpace.gutter),
+    this.isUnderStatusBar = false,
     super.key,
   });
 
@@ -32,6 +33,11 @@ class NestScaffold extends StatelessWidget {
   final Widget? floatingAction;
   final EdgeInsetsGeometry bodyPadding;
 
+  /// The body starts at the very top of the screen, under the status bar —
+  /// for a page that opens on a full-bleed photo, which then keeps its own
+  /// controls clear of the system's (`NestPhotoHero`).
+  final bool isUnderStatusBar;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
@@ -42,6 +48,7 @@ class NestScaffold extends StatelessWidget {
       body: ColoredBox(
         color: nest.colors.canvas,
         child: SafeArea(
+          top: !isUnderStatusBar,
           bottom: false,
           child: Column(
             children: [

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../design/gallery/design_gallery_screen.dart';
 import '../design/nest_kit.dart';
 import '../features/accounts/data/auth_gateway.dart';
-import '../features/accounts/model/session.dart';
 import '../features/accounts/state/password_reset_controller.dart';
 import '../features/accounts/state/register_controller.dart';
 import '../features/accounts/state/session_controller.dart';
@@ -26,21 +25,16 @@ import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
 import '../features/household/ui/join_invite_screen.dart';
-import '../features/legal/ui/consent_screen.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/location_reporter.dart';
 import '../features/live_location/state/live_location_controller.dart';
 import '../features/live_location/ui/live_location_screen.dart';
-import '../features/meal_planning/data/meal_repository.dart';
-import '../features/meal_planning/state/meal_plan_controller.dart';
-import '../features/meal_planning/ui/meal_plan_screen.dart';
 import '../features/product_analytics/data/beta_numbers_repository.dart';
 import '../features/product_analytics/state/beta_numbers_controller.dart';
 import '../features/product_analytics/ui/beta_numbers_screen.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
-import '../shared/async/async_state.dart';
 import '../shared/time/household_clock.dart';
 import 'account_routes.dart';
 import 'calendar_routes.dart';
@@ -54,12 +48,15 @@ import 'home_care_routes.dart';
 import 'household_access_routes.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
+import 'household_tab_navigation.dart';
 import 'kid_routes.dart';
-import 'legal_routes.dart';
 import 'lunch_routes.dart';
+import 'meals_routes.dart';
 import 'nanny_hub_routes.dart';
 import 'notifications_routes.dart';
+import 'pnp_link_routes.dart';
 import 'referral_routes.dart';
+import 'session_redirect.dart';
 import 'subscription_routes.dart';
 import 'today_route.dart';
 import 'two_homes_routes.dart';
@@ -175,6 +172,8 @@ GoRouter createAppRouter(
         // Linking a Checkers account, for Add to Checkers (the Checkers build
         // contract).
         checkersLinkRoute(),
+        // Linking a Pick n Pay account, for its cart (add-to-pnp ADR-0003).
+        pnpLinkRoute(),
         // notifications: the inbox, its settings and one notification opened
         // (notifications ADR-0001 to ADR-0003).
         ...notificationsRoutes(),
@@ -218,20 +217,9 @@ GoRouter createAppRouter(
             ),
           ),
         ),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.meals.segment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => MealPlanController(
-              mealRepository: context.read<MealRepository>(),
-              householdClock: context.read<HouseholdClock>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: viewerMemberIdOf(context),
-            ),
-            child: MealPlanScreen(
-              onSelectTab: (tab) => goToTab(context, state, tab),
-            ),
-          ),
-        ),
+        // The Meals tab: recipes, a recipe's page and this week
+        // (design-system ADR-0015, recipes ADR-0003).
+        mealsRoutes(),
         // groceries phase 2: the list and the week's plans against it
         // (groceries ADR-0002).
         groceryRoute(),
@@ -270,95 +258,3 @@ GoRouter createAppRouter(
       ),
   ],
 );
-
-/// Moves between the tabs of one household.
-void goToTab(BuildContext context, GoRouterState state, HouseholdTab tab) {
-  final permissions = context.read<HouseholdView>().permissions;
-  context.go(
-    HouseholdRoute.pathFor(
-      HouseholdRoute.idFrom(state),
-      tab.landingFor(permissions),
-    ),
-  );
-}
-
-/// Where a caller in this session belongs, or null to leave them where they are.
-///
-/// Signed out, only the three ways in exist; signed in with an address nobody
-/// has proved and no household, only the confirm screen; signed in with no
-/// household, only the gate; signed in with one, everything under it. The design
-/// gallery is exempt because it renders no data and debug builds use it before
-/// sign-in.
-@visibleForTesting
-String? redirectForSession(
-  SessionController session,
-  String location, {
-  String? pendingInviteCode,
-}) {
-  if (DesignGalleryAccess.isAvailable && location == DesignGalleryScreen.path) {
-    return null;
-  }
-
-  final state = session.session;
-  if (state is! AsyncData<Session>) {
-    return location == SessionGateScreen.path ? null : SessionGateScreen.path;
-  }
-  if (state.value is SignedOut) {
-    const waysIn = [
-      SignInScreen.path,
-      RegisterScreen.path,
-      ForgotPasswordScreen.path,
-      KidRoute.codePath,
-    ];
-    return waysIn.contains(location) ? null : SignInScreen.path;
-  }
-  // A kid device has one screen (accounts ADR-0003).
-  if (state.value is KidSignedIn) return redirectForKid(location);
-
-  // ---- account data (accounts ADR-0006) ----
-  // The account centre — download, delete, the legal pages — is open to any
-  // signed-in person whatever else is unfinished: no household, terms not yet
-  // agreed. Somebody who will not agree to new
-  // terms must still be able to delete their account.
-  if (isAccountLocation(location)) return null;
-
-  // ---- consent (accounts ADR-0005) ----
-  // Nothing else opens until this account has agreed to the terms and the
-  // privacy policy this build ships; the two documents, About and the
-  // licences stay readable meanwhile.
-  if (session.needsLegalConsent) return redirectForConsent(location);
-
-  if (pendingInviteCode != null) {
-    return location == JoinInviteScreen.path ? null : JoinInviteScreen.path;
-  }
-
-  final householdId = session.activeHouseholdId;
-
-  if (householdId == null) {
-    return location == HouseholdGateScreen.path
-        ? null
-        : HouseholdGateScreen.path;
-  }
-
-  const waitingRooms = [
-    SessionGateScreen.path,
-    SignInScreen.path,
-    RegisterScreen.path,
-    ForgotPasswordScreen.path,
-    HouseholdGateScreen.path,
-    JoinInviteScreen.path,
-    // Agreed, so the consent step is behind them (accounts ADR-0005).
-    ConsentScreen.path,
-  ];
-  if (waitingRooms.contains(location)) {
-    return HouseholdRoute.homeFor(householdId);
-  }
-
-  // A household route for a household this account no longer belongs to — it
-  // was left on another device, or the link is somebody else's.
-  if (location.startsWith('/households/') &&
-      !location.startsWith('/households/$householdId/')) {
-    return HouseholdRoute.homeFor(householdId);
-  }
-  return null;
-}

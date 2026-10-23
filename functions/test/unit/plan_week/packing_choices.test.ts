@@ -23,9 +23,8 @@ import {
 import { weekBriefFrom } from '../../../src/plan_week/week_brief';
 import { weekDecisionRequest } from '../../../src/plan_week/week_decisions';
 import type { LunchPlanFacts } from '../../../src/plan_week/week_documents';
-import { productOf, rulesOf } from './fixtures';
+import { MONDAY, SCHOOL_WEEK, productOf, rulesOf, weekOf } from './fixtures';
 
-const MONDAY = '2026-10-05';
 const MIA = {
   memberId: 'mia',
   rules: rulesOf({
@@ -92,14 +91,14 @@ describe('the preference names the app mirrors', () => {
 
 describe('compartments the parent chose not to plan', () => {
   it('are never open', () => {
-    expect(openCompartments(undefined, ['fruit'])).toEqual([
+    expect(openCompartments(undefined, SCHOOL_WEEK, ['fruit'])).toEqual([
       '1_fruit',
       '2_fruit',
       '3_fruit',
       '4_fruit',
       '5_fruit',
     ]);
-    expect(openCompartments(undefined, ['treat'])).toEqual(['5_treat']);
+    expect(openCompartments(undefined, SCHOOL_WEEK, ['treat'])).toEqual(['5_treat']);
   });
 
   it('count nothing in the idea brief, and their shelves are dropped', () => {
@@ -108,9 +107,10 @@ describe('compartments the parent chose not to plan', () => {
       title: slot,
       products: ['Rice cakes 30g'],
     });
-    const brief = ideaBriefFrom([MIA], [], MONDAY, null, [shelf('snack'), shelf('fruit')], {
+    const brief = ideaBriefFrom([MIA], [], SCHOOL_WEEK, null, [shelf('snack'), shelf('fruit')], {
       slots: ['fruit', 'veg'],
       preferences: [],
+      treatDays: [5],
     });
     expect(brief.children[0]?.open).toEqual({ main: 0, fruit: 5, veg: 5, snack: 0, treat: 0 });
     expect(brief.aisle.map((s) => s.slot)).toEqual(['fruit']);
@@ -128,9 +128,9 @@ describe('compartments the parent chose not to plan', () => {
       ),
       feedback: {},
     };
-    const choices = { slots: ['fruit'] as const, preferences: [] };
+    const choices = { slots: ['fruit'] as const, preferences: [], treatDays: [5] as const };
     expect(
-      hasOpenCompartments(ideaBriefFrom([MIA], [fruitPacked], MONDAY, null, [], choices)),
+      hasOpenCompartments(ideaBriefFrom([MIA], [fruitPacked], SCHOOL_WEEK, null, [], choices)),
     ).toBe(false);
     const idea: FoundIdea = {
       id: 'fruit',
@@ -139,7 +139,7 @@ describe('compartments the parent chose not to plan', () => {
       fromAisle: false,
       products: [productOf()],
     };
-    const week = weekBriefFrom([idea], [MIA], [fruitPacked], MONDAY, null, choices);
+    const week = weekBriefFrom([idea], [MIA], weekOf([fruitPacked], null), choices);
     expect(week.children).toEqual([]);
   });
 
@@ -151,9 +151,10 @@ describe('compartments the parent chose not to plan', () => {
       fromAisle: false,
       products: [productOf({ productId: slot })],
     });
-    const brief = weekBriefFrom([idea('snack'), idea('fruit')], [MIA], [], MONDAY, null, {
+    const brief = weekBriefFrom([idea('snack'), idea('fruit')], [MIA], weekOf([], null), {
       slots: ['fruit'],
       preferences: [],
+      treatDays: [5],
     });
     expect(brief.products.map((p) => p.slot)).toEqual(['fruit']);
     expect(brief.removed).toBe(0);
@@ -162,7 +163,11 @@ describe('compartments the parent chose not to plan', () => {
 });
 
 describe('the packing preferences the model reads', () => {
-  const choices = { slots: ['fruit'] as const, preferences: ['readyMade', 'favourPrice'] as const };
+  const choices = {
+    slots: ['fruit'] as const,
+    preferences: ['readyMade', 'favourPrice'] as const,
+    treatDays: [5] as const,
+  };
   const idea: FoundIdea = {
     id: 'fruit',
     slot: 'fruit',
@@ -171,8 +176,8 @@ describe('the packing preferences the model reads', () => {
     products: [productOf()],
   };
   const briefs = [
-    ideaBriefForModel(ideaBriefFrom([MIA], [], MONDAY, null, [], choices)),
-    weekDecisionRequest(weekBriefFrom([idea], [MIA], [], MONDAY, null, choices)).state,
+    ideaBriefForModel(ideaBriefFrom([MIA], [], SCHOOL_WEEK, null, [], choices)),
+    weekDecisionRequest(weekBriefFrom([idea], [MIA], weekOf([], null), choices)).state,
   ];
 
   it('are the instructions for only what the parent chose', () => {
@@ -185,9 +190,11 @@ describe('the packing preferences the model reads', () => {
   });
 
   it('are absent when none was chosen', () => {
-    expect(ideaBriefForModel(ideaBriefFrom([MIA], [], MONDAY, null))).not.toHaveProperty('packing');
+    expect(ideaBriefForModel(ideaBriefFrom([MIA], [], SCHOOL_WEEK, null))).not.toHaveProperty(
+      'packing',
+    );
     expect(
-      weekDecisionRequest(weekBriefFrom([idea], [MIA], [], MONDAY, null)).state,
+      weekDecisionRequest(weekBriefFrom([idea], [MIA], weekOf([], null))).state,
     ).not.toHaveProperty('packing');
   });
 
@@ -202,7 +209,7 @@ describe('the packing preferences the model reads', () => {
 
   it('are explained to the idea model, and asked of every product Jev judges', () => {
     expect(IDEAS_SYSTEM).toContain('"packing"');
-    const request = weekDecisionRequest(weekBriefFrom([idea], [MIA], [], MONDAY, null, choices));
+    const request = weekDecisionRequest(weekBriefFrom([idea], [MIA], weekOf([], null), choices));
     expect(JSON.stringify(request.questions)).toContain('every line in `packing`');
   });
 });

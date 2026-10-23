@@ -1,0 +1,42 @@
+{
+  "id": "soetkoekies",
+  "name": "Soetkoekies",
+  "summary": "Old-fashioned spiced wine biscuits: thin, crisp rounds fragrant with cinnamon, ginger, cloves and nutmeg, with a splash of sweet wine in the dough.",
+  "about": "Soetkoekies, 'sweet little cakes', are among the oldest Afrikaans biscuits, with roots in the spiced baking of the Dutch at the Cape. Old recipes used butter and sometimes lard, warm spices and a little sweet wine. They are baked in big batches for the Christmas biscuit tin and for visitors at tea time.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch"],
+  "placement": { "lunch": "snack" },
+  "tags": ["baking", "traditional", "festive"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 280, "unit": "g", "note": "2 cups, plus extra for rolling", "group": null },
+    { "name": "Bicarbonate of soda", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Salt", "quantity": 0.25, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground cinnamon", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground ginger", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground cloves", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground nutmeg", "quantity": 0.25, "unit": "tsp", "note": null, "group": null },
+    { "name": "Soft butter", "quantity": 100, "unit": "g", "note": null, "group": null },
+    { "name": "Brown sugar", "quantity": 125, "unit": "g", "note": "about 0.66 cup, packed", "group": null },
+    { "name": "Egg", "quantity": 1, "unit": null, "note": null, "group": null },
+    { "name": "Orange zest", "quantity": 1, "unit": "tsp", "note": "finely grated, optional", "group": null },
+    { "name": "Sweet wine or sherry", "quantity": 2, "unit": "tbsp", "note": "or strong rooibos tea with a few drops of vanilla", "group": null }
+  ],
+  "steps": [
+    "Sift the flour, bicarbonate of soda, salt, cinnamon, ginger, cloves and nutmeg into a bowl.",
+    "In a large bowl, beat the butter and brown sugar with a wooden spoon or electric beater for 3 minutes until pale and creamy. Beat in the egg and orange zest until smooth.",
+    "Add the flour mixture and the wine and mix, then knead lightly in the bowl for a minute until it forms a firm, smooth dough. Flatten into a disc, wrap and refrigerate for 1 hour, until firm enough to roll.",
+    "Heat the oven to 180 °C (160 °C fan) and line two baking trays with baking paper.",
+    "Roll the dough out on a floured surface to about 4 mm thick. Cut out rounds with a 6 cm cutter and set them 2 cm apart on the trays, re-rolling the scraps to make about 24. Press a pattern into each with a biscuit stamp or the back of a fork.",
+    "Bake one tray at a time for 12–14 minutes, until the biscuits are lightly browned at the edges and firm to the touch.",
+    "Cool on the tray for 5 minutes, then move to a rack; they crisp as they cool, in about 20 minutes. Store in an airtight tin."
+  ],
+  "servings": 24,
+  "prepMinutes": 25,
+  "cookMinutes": 28,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 weeks in an airtight tin; the dough can be made a day ahead and kept in the fridge.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

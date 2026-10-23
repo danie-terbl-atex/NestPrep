@@ -6,10 +6,12 @@ import '../../../shared/copy/app_copy.dart';
 import '../model/lunch_item.dart';
 import '../state/lunch_board_controller.dart';
 import 'art/lunch_glyph.dart';
+import 'lunch_flows.dart';
 import 'lunch_item_sheet.dart';
 
 /// One library item: its name, what is in it, whether it is a Sunday-prep
-/// thing, and a way to put it away or bring it back.
+/// thing, *How to make it* when it is made from a recipe (lunch-box
+/// ADR-0021 §8), and a way to put it away or bring it back.
 class LunchLibraryRow extends StatelessWidget {
   const LunchLibraryRow({required this.item, required this.canEdit, super.key});
 
@@ -19,6 +21,7 @@ class LunchLibraryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final slot = item.slot;
+    final link = item.recipeLink;
     final allergens = [
       for (final allergen in item.knownAllergens)
         FamilyCopy.allergenName(allergen).toLowerCase(),
@@ -29,14 +32,33 @@ class LunchLibraryRow extends StatelessWidget {
       leading: slot == null
           ? null
           : LunchSlotTile(slot: slot, isEmpty: item.archived),
-      footer: item.prepAhead
-          ? const Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: NestTag(
-                label: LunchCopy.prepAheadTag,
-                tone: NestTagTone.accent,
-                icon: LucideIcons.soup,
-              ),
+      footer: item.prepAhead || link != null
+          ? Wrap(
+              spacing: NestSpace.sm,
+              runSpacing: NestSpace.xs,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (item.prepAhead)
+                  const NestTag(
+                    label: LunchCopy.prepAheadTag,
+                    tone: NestTagTone.accent,
+                    icon: LucideIcons.soup,
+                  ),
+                // Readers may open a recipe too; the row's tap is the edit.
+                if (link != null)
+                  NestButton(
+                    label: RecipeCopy.howToMakeShort,
+                    icon: LucideIcons.chefHat,
+                    variant: NestButtonVariant.ghost,
+                    size: NestButtonSize.medium,
+                    isExpanded: false,
+                    onPressed: () => LunchFlows.openRecipe(
+                      context,
+                      link: link,
+                      title: item.name,
+                    ),
+                  ),
+              ],
             )
           : null,
       // An icon, not a word: a row at 200% text on a phone has no room for

@@ -12,9 +12,8 @@ import {
 import { assembleWeek } from '../../../src/plan_week/week_assembly';
 import { weekBriefFrom } from '../../../src/plan_week/week_brief';
 import type { LunchPlanFacts } from '../../../src/plan_week/week_documents';
-import { productOf, rulesOf } from './fixtures';
+import { MONDAY, SCHOOL_WEEK, productOf, rulesOf, weekOf } from './fixtures';
 
-const MONDAY = '2026-10-05';
 const MIA = { memberId: 'mia', rules: rulesOf({ allergyCodes: ['milk'] }) };
 const LEO = { memberId: 'leo', rules: rulesOf() };
 
@@ -37,33 +36,33 @@ function snacksPacked(childId: string): LunchPlanFacts {
 
 describe("the store's lunchbox shelves the model hears (lunch-box ADR-0013)", () => {
   it('drops a name that names the allergen of the only child it could go to', () => {
-    const brief = ideaBriefFrom([MIA], [], MONDAY, null, [YOGHURTS]);
+    const brief = ideaBriefFrom([MIA], [], SCHOOL_WEEK, null, [YOGHURTS]);
     expect(brief.aisle).toEqual([{ ...YOGHURTS, products: ['Rice cakes 30g'] }]);
   });
 
   it('keeps that name when another child with the compartment open may have it', () => {
-    const brief = ideaBriefFrom([MIA, LEO], [], MONDAY, null, [YOGHURTS]);
+    const brief = ideaBriefFrom([MIA, LEO], [], SCHOOL_WEEK, null, [YOGHURTS]);
     expect(brief.aisle[0]?.products).toEqual(YOGHURTS.products);
   });
 
   it('drops the name when the child who may have it has no room for it', () => {
-    const brief = ideaBriefFrom([MIA, LEO], [snacksPacked('leo')], MONDAY, null, [YOGHURTS]);
+    const brief = ideaBriefFrom([MIA, LEO], [snacksPacked('leo')], SCHOOL_WEEK, null, [YOGHURTS]);
     expect(brief.aisle[0]?.products).toEqual(['Rice cakes 30g']);
   });
 
   it('drops a shelf for a compartment nobody has open, and a shelf left with no names', () => {
-    const packed = ideaBriefFrom([LEO], [snacksPacked('leo')], MONDAY, null, [YOGHURTS]);
+    const packed = ideaBriefFrom([LEO], [snacksPacked('leo')], SCHOOL_WEEK, null, [YOGHURTS]);
     expect(packed.aisle).toEqual([]);
-    const allMilk = ideaBriefFrom([MIA], [], MONDAY, null, [
+    const allMilk = ideaBriefFrom([MIA], [], SCHOOL_WEEK, null, [
       { slot: 'snack', title: 'Cheese', products: ['Cheese wedges'] },
     ]);
     expect(allMilk.aisle).toEqual([]);
   });
 
   it('reaches the model only when there is a shelf to tell it about', () => {
-    const without = ideaBriefForModel(ideaBriefFrom([LEO], [], MONDAY, null));
+    const without = ideaBriefForModel(ideaBriefFrom([LEO], [], SCHOOL_WEEK, null));
     expect(without).not.toHaveProperty('aisle');
-    const withShelf = ideaBriefForModel(ideaBriefFrom([LEO], [], MONDAY, null, [YOGHURTS]));
+    const withShelf = ideaBriefForModel(ideaBriefFrom([LEO], [], SCHOOL_WEEK, null, [YOGHURTS]));
     expect(withShelf).toHaveProperty('aisle', [YOGHURTS]);
   });
 });
@@ -81,9 +80,7 @@ describe('a shelf sent back with its products is leaned on in the week', () => {
     const brief = weekBriefFrom(
       [idea('idea-1', false), idea('aisle-1', true)],
       [LEO],
-      [],
-      MONDAY,
-      null,
+      weekOf([], null),
     );
     expect(brief.products.map((p) => p.fromAisle)).toEqual([false, true]);
     const week = assembleWeek(brief, { fit: { 'p-1': 0.9, 'p-2': 0.9 }, boxes: {} });

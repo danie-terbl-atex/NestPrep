@@ -15,6 +15,8 @@ import { isOffShift } from '../household/shift_window';
 export interface PlanCaller {
   readonly uid: string;
   readonly timeZone: string;
+  /** The profile this account claimed — who a saved recipe says added it (recipes ADR-0002). */
+  readonly memberId: string | null;
 }
 
 // `member` is household ADR-0001's family adult, still stored on households
@@ -23,6 +25,7 @@ const householdShape = z.object({
   timeZone: z.string(),
   members: z.record(z.string(), z.enum([...ROLES, 'member'])),
   access: z.record(z.string(), z.unknown()).optional(),
+  profiles: z.record(z.string(), z.string()).optional(),
 });
 
 export async function planCallerIn(
@@ -41,5 +44,9 @@ export async function planCallerIn(
   if (await isOffShift(store, householdId, snapshot.data(), uid, new Date())) {
     throw refusePlanWeek('lunchNotShared');
   }
-  return { uid, timeZone: household.data.timeZone };
+  return {
+    uid,
+    timeZone: household.data.timeZone,
+    memberId: household.data.profiles?.[uid] ?? null,
+  };
 }

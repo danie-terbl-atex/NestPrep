@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../recipes/model/recipe_link.dart';
 import 'lunch_item.dart';
 import 'lunch_plan.dart';
 import 'lunch_slot.dart';
@@ -18,6 +19,7 @@ class LunchWeekItem {
     required this.allergens,
     this.prepAhead = false,
     this.prepNote,
+    this.recipeLink,
   });
 
   final String itemId;
@@ -39,6 +41,10 @@ class LunchWeekItem {
   final List<String> allergens;
   final bool prepAhead;
   final String? prepNote;
+
+  /// The recipe the library item is made from, when it is — groceries then
+  /// buys its ingredients rather than the dish (groceries ADR-0006).
+  final RecipeLink? recipeLink;
 }
 
 /// Sums a week's plans into what the household needs, one row per item.
@@ -94,6 +100,7 @@ abstract final class LunchWeekItems {
     allergens: List.unmodifiable(item?.allergens ?? pick.allergens),
     prepAhead: item?.prepAhead ?? false,
     prepNote: item?.prepNote,
+    recipeLink: item?.recipeLink,
   );
 
   static int _bySlotThenName(LunchWeekItem a, LunchWeekItem b) {

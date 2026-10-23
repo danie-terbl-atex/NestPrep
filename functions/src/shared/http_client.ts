@@ -6,7 +6,7 @@
  * it; subscriptions is its second user, which is why it lives here (`ENG-02`).
  */
 export interface HttpRequest {
-  readonly method: 'GET' | 'POST';
+  readonly method: 'GET' | 'POST' | 'PATCH';
   readonly headers?: Readonly<Record<string, string>>;
   readonly body?: string;
 }

@@ -1,0 +1,36 @@
+{
+  "id": "roti",
+  "name": "Roti",
+  "summary": "Soft, flaky flatbread made by coiling buttered dough into layers, rolled thin and pan-fried, for tearing and scooping up curry.",
+  "about": "Roti is the everyday bread of both Cape Malay and Durban Indian homes, made to go with curries, dhal and bean dishes, and rolled around curry as a 'salomie' in Cape Town. The South African style is soft and layered: the dough is spread with butter, rolled up into a coil and rested before rolling out, and the cooked roti is clapped between the hands to open the layers.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner", "lunch"],
+  "placement": { "dinner": "side", "lunch": "side" },
+  "tags": ["traditional", "capeMalay"],
+  "allergens": ["milk", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 480, "unit": "g", "note": "plus extra for dusting", "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Lukewarm water", "quantity": 1.25, "unit": "cup", "note": "you may need a little more", "group": null },
+    { "name": "Butter", "quantity": 100, "unit": "g", "note": "very soft, for the layers", "group": null },
+    { "name": "Melted butter and oil", "quantity": 3, "unit": "tbsp", "note": "mixed half and half, for frying", "group": null }
+  ],
+  "steps": [
+    "Mix the flour and salt in a large bowl. Add the oil and most of the water and mix with your hand into a soft dough, adding the rest of the water a spoonful at a time if dry flour remains.",
+    "Knead on a lightly floured surface for 5 minutes until smooth and stretchy, like soft earlobe. Cover with a damp cloth and rest for 20 minutes so the gluten relaxes.",
+    "Divide into 8 equal balls. On a lightly oiled surface, roll one ball into a very thin circle, about 25 cm across, and spread it thinly with soft butter.",
+    "Roll the circle up tightly into a long sausage, then coil the sausage into a flat spiral like a snail shell, tucking the end underneath. Repeat with the rest, cover and rest for 20 minutes (or refrigerate for up to a day).",
+    "Heat a large heavy frying pan or flat griddle over medium-high heat for 3 minutes. Roll a coil out thinly into a 20 cm circle without pressing too hard, so the layers stay separate.",
+    "Cook the roti for about 1 minute until bubbles appear and the underside has golden spots. Turn, brush the top with the butter-and-oil mix, turn again and brush the other side, cooking 30–60 seconds a side until golden-spotted and cooked through with no doughy patches.",
+    "Lift it off and, while still hot, scrunch or clap it between your hands to open up the flaky layers. Stack the cooked roti in a clean tea towel to keep them soft while you cook the rest."
+  ],
+  "servings": 8,
+  "prepMinutes": 40,
+  "cookMinutes": 20,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Coil the dough up to a day ahead and refrigerate; cooked roti freeze well between sheets of baking paper.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

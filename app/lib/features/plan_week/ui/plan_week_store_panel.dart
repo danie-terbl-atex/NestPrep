@@ -7,7 +7,7 @@ import '../model/lunch_idea.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_working_panel.dart';
 
-/// Step 3 (lunch-box ADR-0012): each idea searched at Checkers in turn,
+/// Step 3 (lunch-box ADR-0012): each idea searched at the shop in turn,
 /// counted while it works; the week is built from what was kept as soon as
 /// the run settles. Only a run that kept nothing stops here, and says so.
 class PlanWeekStorePanel extends StatelessWidget {
@@ -21,7 +21,7 @@ class PlanWeekStorePanel extends StatelessWidget {
       return NestEmptyView(
         key: const ValueKey('plan-week-nothing-kept'),
         icon: LucideIcons.searchX,
-        title: PlanWeekCopy.nothingKeptTitle,
+        title: PlanWeekCopy.nothingKeptTitle(controller.retailer.shop),
         message: PlanWeekCopy.nothingKept,
         actionLabel: PlanWeekCopy.back,
         onAction: controller.back,
@@ -33,7 +33,7 @@ class PlanWeekStorePanel extends StatelessWidget {
     ];
     return PlanWeekWorkingPanel(
       key: const ValueKey('plan-week-shopping'),
-      title: PlanWeekCopy.storeTitle,
+      title: PlanWeekCopy.storeTitle(controller.retailer.shop),
       line: PlanWeekCopy.storeLine,
       progress: searched.isEmpty
           ? null

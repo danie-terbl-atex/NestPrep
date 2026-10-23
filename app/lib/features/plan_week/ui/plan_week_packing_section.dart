@@ -6,10 +6,12 @@ import '../../../shared/copy/app_copy.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../model/packing_preference.dart';
 import '../state/plan_week_controller.dart';
+import 'plan_week_treat_days_section.dart';
 
 /// The brief's packing choices: which compartments get filled — the last one
-/// on cannot be switched off — and how the parent likes to pack, any number
-/// or none.
+/// on cannot be switched off — the treat days when a treat is filled
+/// (lunch-box ADR-0025), and how the parent likes to pack, any number or
+/// none.
 class PlanWeekPackingSection extends StatelessWidget {
   const PlanWeekPackingSection({super.key});
 
@@ -42,6 +44,7 @@ class PlanWeekPackingSection extends StatelessWidget {
               ),
           ],
         ),
+        const PlanWeekTreatDaysSection(),
         const SizedBox(height: NestSpace.xl),
         const NestSectionHeader(title: PlanWeekCopy.packingHeader),
         const SizedBox(height: NestSpace.xs),

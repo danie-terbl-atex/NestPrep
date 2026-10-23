@@ -1,0 +1,111 @@
+{
+  "id": "macaroni-cheese",
+  "name": "Macaroni cheese",
+  "summary": "Macaroni in a mustardy cheddar sauce, baked under more cheese and sliced tomato until the top is golden and bubbling.",
+  "about": "Macaroni cheese is a weeknight staple that South African kids ask for by name. Families often bake it with tomato slices on top and serve it on its own or beside sausages.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "budget",
+    "comfort"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Macaroni",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Milk",
+      "quantity": 1,
+      "unit": "l",
+      "note": "warmed",
+      "group": null
+    },
+    {
+      "name": "Mustard powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "or 1 tbsp prepared mustard",
+      "group": null
+    },
+    {
+      "name": "Cheddar cheese",
+      "quantity": 300,
+      "unit": "g",
+      "note": "grated, divided",
+      "group": null
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt and black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan) and grease a large ovenproof dish, about 30 × 20 cm.",
+    "Cook the macaroni in a large pot of well-salted boiling water for 2 minutes less than the packet says, so it is still firm. Drain.",
+    "While the pasta cooks, melt the butter in a saucepan over medium heat. Stir in the flour and cook, stirring, for 1 minute until it bubbles and smells biscuity.",
+    "Pour in the warm milk a little at a time, whisking all the time so no lumps form. Bring to a gentle simmer and cook for 5 minutes, stirring, until the sauce coats the back of a spoon.",
+    "Take the pan off the heat and stir in the mustard, nutmeg and 200 g of the cheese until melted. Season well with salt and pepper.",
+    "Fold the macaroni into the sauce and tip it into the dish. Lay the tomato slices on top and scatter over the rest of the cheese.",
+    "Bake for 25 to 30 minutes, until the sauce bubbles at the edges and the top is golden brown. Leave to stand for 5 minutes before serving."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Assemble up to a day ahead and refrigerate; bake from cold for 40 minutes.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

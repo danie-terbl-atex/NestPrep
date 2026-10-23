@@ -5,7 +5,19 @@ import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 import 'nest_pressable.dart';
 
-enum NestButtonVariant { primary, tonal, outline, ghost, danger, onPhoto }
+enum NestButtonVariant {
+  primary,
+  tonal,
+  outline,
+  ghost,
+  danger,
+  onPhoto,
+
+  /// A ghost that sits in a line of text — *How to make it* under a meal's
+  /// name — without the pill's inset, so its words start where the line's
+  /// do. Still the touch-target floor tall.
+  link,
+}
 
 enum NestButtonSize { small, medium, large }
 
@@ -96,7 +108,11 @@ class NestButton extends StatelessWidget {
               height: height,
               width: isExpanded ? double.infinity : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: NestSpace.xxl),
+                padding: EdgeInsets.symmetric(
+                  horizontal: variant == NestButtonVariant.link
+                      ? 0
+                      : NestSpace.xxl,
+                ),
                 child: child,
               ),
             ),
@@ -145,7 +161,7 @@ class _NestButtonLook {
         pressed: c.surface,
         border: BorderSide(color: c.outline),
       ),
-      NestButtonVariant.ghost => _NestButtonLook(
+      NestButtonVariant.ghost || NestButtonVariant.link => _NestButtonLook(
         background: Colors.transparent,
         foreground: c.inkTertiary,
         pressed: Colors.transparent,
@@ -172,7 +188,7 @@ class _NestButtonLook {
         pressed: c.surfaceTint,
         border: BorderSide(color: c.outlineStrong),
       ),
-      NestButtonVariant.ghost => _NestButtonLook(
+      NestButtonVariant.ghost || NestButtonVariant.link => _NestButtonLook(
         background: Colors.transparent,
         foreground: c.accentInk,
         pressed: c.accentSoft,

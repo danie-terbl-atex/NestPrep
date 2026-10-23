@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 
-/// The events are on the calendar: how many, and the two ways on.
+/// The events are on the calendar: how many, and the two ways on. Every one
+/// came from the letter the AI read, so Twig celebrates (design-system
+/// ADR-0012).
 class LetterAddedPanel extends StatelessWidget {
   const LetterAddedPanel({
     required this.added,
@@ -29,10 +31,9 @@ class LetterAddedPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Center(
-                child: NestIconTile(
-                  icon: LucideIcons.calendarCheck,
-                  tint: NestTileTint.basil,
-                  size: NestSize.avatarLarge,
+                child: NestTwig(
+                  pose: NestTwigPose.celebrate,
+                  size: NestSize.twigLarge,
                 ),
               ),
               const SizedBox(height: NestSpace.lg),

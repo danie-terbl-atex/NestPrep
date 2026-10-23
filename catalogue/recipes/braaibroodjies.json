@@ -1,0 +1,36 @@
+{
+  "id": "braaibroodjies",
+  "name": "Braaibroodjies",
+  "summary": "Cheese, tomato and onion toasties with a layer of chutney, buttered on the outside and toasted in a hinged grid over gentle coals until golden and oozing.",
+  "about": "The braaibroodjie is South Africa's own toasted sandwich and, for many families, the best part of the braai. White bread, cheddar, tomato, onion and chutney are the classic filling; buttering the outside of the bread is the trick that gives it its crisp, golden crust. They go on the coals once the meat comes off.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch", "dinner"],
+  "placement": { "lunch": "side", "dinner": "side" },
+  "tags": ["braai", "kidFriendly", "quick"],
+  "allergens": ["milk", "wheat", "soy"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "White bread slices", "quantity": 16, "unit": null, "note": "from a sliced loaf", "group": null },
+    { "name": "Butter", "quantity": 100, "unit": "g", "note": "soft", "group": null },
+    { "name": "Chutney", "quantity": 8, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Cheddar cheese", "quantity": 300, "unit": "g", "note": "grated", "group": null },
+    { "name": "Tomatoes", "quantity": 3, "unit": null, "note": "thinly sliced", "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "very thinly sliced", "group": null },
+    { "name": "Salt", "quantity": null, "unit": null, "note": "to taste", "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "Butter every slice of bread thinly on one side. Lay 8 slices buttered-side down on a board and spread each with 1 tbsp chutney.",
+    "Top the chutney with half the cheese, then the tomato and onion slices, a pinch of salt and pepper, and the rest of the cheese, keeping the filling just inside the crusts.",
+    "Close each sandwich with a second slice, buttered-side up, press down gently and pack them snugly into a hinged braai grid. Close the grid firmly.",
+    "Braai over low coals, the heat you can hold your hand over for 8 to 10 seconds, turning every 1 to 2 minutes, for 8 to 10 minutes in all, until both sides are evenly golden and crisp and the cheese has melted.",
+    "Cut each braaibroodjie in half diagonally and serve hot."
+  ],
+  "servings": 8,
+  "prepMinutes": 15,
+  "cookMinutes": 10,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Assemble up to 2 hours ahead and keep covered in the fridge; braai once the meat comes off the coals.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

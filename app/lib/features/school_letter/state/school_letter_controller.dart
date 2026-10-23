@@ -77,6 +77,11 @@ final class SchoolLetterController extends ChangeNotifier {
   /// that a second try might fix.
   bool get canRetry => _letter != null && _step == LetterStep.choosing;
 
+  /// The way in may introduce the AI that will read the letter — Twig
+  /// (design-system ADR-0012) — only while nothing has gone wrong. After a
+  /// failure the same step is an error view, and the AI did nothing.
+  bool get isAiWelcome => _step == LetterStep.choosing && _failure == null;
+
   Future<void> pick(LetterSource source) async {
     if (_step == LetterStep.reading || _step == LetterStep.saving) return;
     final LetterFile? letter;

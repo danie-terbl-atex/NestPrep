@@ -46,23 +46,29 @@ class LunchDayCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              // The tag wraps under the day's name rather than pushing the
+              // menu off a narrow card at large text (`FE-14`).
               Expanded(
-                child: Text(
-                  NestDates.dayInARun(day.date, board.today),
-                  style: nest.text.bodyStrong.copyWith(
-                    color: day.isToday ? c.accentInk : c.ink,
-                  ),
+                child: Wrap(
+                  spacing: NestSpace.sm,
+                  runSpacing: NestSpace.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      NestDates.dayInARun(day.date, board.today),
+                      style: nest.text.bodyStrong.copyWith(
+                        color: day.isToday ? c.accentInk : c.ink,
+                      ),
+                    ),
+                    if (day.hasUnsafe)
+                      const NestTag(
+                        label: LunchCopy.unsafeTag,
+                        tone: NestTagTone.danger,
+                        icon: LucideIcons.ban,
+                      ),
+                  ],
                 ),
               ),
-              if (day.hasUnsafe)
-                const Padding(
-                  padding: EdgeInsets.only(right: NestSpace.xs),
-                  child: NestTag(
-                    label: LunchCopy.unsafeTag,
-                    tone: NestTagTone.danger,
-                    icon: LucideIcons.ban,
-                  ),
-                ),
               if (canEdit)
                 NestIconButton(
                   icon: LucideIcons.ellipsis,
@@ -97,6 +103,11 @@ class LunchDayCard extends StatelessWidget {
                         slot: slot,
                       )
                     : null,
+                onRecipe: LunchFlows.recipeFor(
+                  context,
+                  board: board,
+                  pick: day.box[slot],
+                ),
               ),
             ),
           if (day.hasHappened && !day.box.isEmpty) ...[

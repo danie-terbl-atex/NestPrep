@@ -1,0 +1,131 @@
+{
+  "id": "roast-leg-of-lamb",
+  "name": "Sunday roast leg of lamb",
+  "summary": "A bone-in leg of lamb studded with garlic and rosemary, roasted over potatoes until pink and juicy, with gravy made from the pan.",
+  "about": "Roast lamb is the Sunday lunch of many South African families, with Karoo lamb the prized one. It is usually carved at the table and served with roast potatoes, pumpkin or butternut, green beans, yellow rice and gravy.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "festive",
+    "traditional"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Leg of lamb",
+      "quantity": 2.2,
+      "unit": "kg",
+      "note": "bone-in, at room temperature",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 6,
+      "unit": null,
+      "note": "cut into slivers",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Fresh rosemary sprigs",
+      "quantity": 4,
+      "unit": null,
+      "note": "broken into small tufts",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the lamb"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "juice",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Salt",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "coarse",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "peeled and halved",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "quartered",
+      "group": "For the lamb"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the gravy"
+    },
+    {
+      "name": "Beef or lamb stock",
+      "quantity": 500,
+      "unit": "ml",
+      "note": "made from a cube or powder",
+      "group": "For the gravy"
+    },
+    {
+      "name": "Salt and black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the gravy"
+    }
+  ],
+  "steps": [
+    "Take the lamb out of the fridge an hour before cooking. Heat the oven to 220 °C (200 °C fan).",
+    "Make about 20 small, deep cuts all over the lamb with a sharp knife and push a sliver of garlic and a tuft of rosemary into each one.",
+    "Rub the lamb with the oil and lemon juice and season all over with the salt and pepper.",
+    "Put the potatoes and onions in a large roasting tin, toss with a little oil and salt, and set the lamb on top, fat side up.",
+    "Roast for 20 minutes, until the fat starts to sizzle and brown, then turn the oven down to 180 °C (160 °C fan) and roast for another 1 hour 15 minutes for pink meat, or 1 hour 35 minutes for well done. Turn the potatoes halfway through.",
+    "Check the lamb: a skewer pushed into the thickest part should release pinkish juices for medium, clear juices for well done. Lift the lamb onto a board, cover loosely with foil and rest for 20 minutes.",
+    "While the lamb rests, turn the oven up to 220 °C (200 °C fan) and roast the potatoes and onions for 15–20 minutes more, until crisp and golden. Lift them into a serving dish.",
+    "For the gravy, spoon off all but 2 tbsp of fat from the tin, set it over medium heat on the stove and stir in the flour for 1 minute, scraping up the brown bits.",
+    "Whisk in the stock a little at a time and simmer for 3 to 5 minutes, until smooth and thick enough to coat a spoon. Season and pour into a jug.",
+    "Carve the lamb across the grain and serve with the potatoes, vegetables of your choice and the gravy."
+  ],
+  "servings": 8,
+  "prepMinutes": 25,
+  "cookMinutes": 125,
+  "difficulty": "medium",
+  "prepAhead": false,
+  "prepNote": "Stud and season the lamb the night before and keep covered in the fridge; bring to room temperature before roasting.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

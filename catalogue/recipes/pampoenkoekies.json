@@ -1,0 +1,142 @@
+{
+  "id": "pampoenkoekies",
+  "name": "Pampoenkoekies",
+  "summary": "Pumpkin fritters: light, golden pan-fried rounds of mashed pumpkin, dusted with cinnamon sugar and served with a warm caramel sauce.",
+  "about": "Pampoenkoekies are an Afrikaans farm-kitchen favourite, a way to use up the winter pumpkin crop. They are served as a sweet side with Sunday roast or as a pudding afterwards, always with cinnamon sugar, and in many homes with a pour of caramel sauce.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner",
+    "lunch"
+  ],
+  "placement": {
+    "dinner": "dessert",
+    "lunch": "side"
+  },
+  "tags": [
+    "traditional",
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Pumpkin or butternut",
+      "quantity": 750,
+      "unit": "g",
+      "note": "peeled and cubed",
+      "group": "For the fritters"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the fritters"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the fritters"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fritters"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fritters"
+    },
+    {
+      "name": "Ground nutmeg",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fritters"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": "for frying",
+      "group": "For the fritters"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the cinnamon sugar"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the cinnamon sugar"
+    },
+    {
+      "name": "Butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": "For the caramel sauce"
+    },
+    {
+      "name": "Brown sugar",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": null,
+      "group": "For the caramel sauce"
+    },
+    {
+      "name": "Fresh cream",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the caramel sauce"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": "For the caramel sauce"
+    }
+  ],
+  "steps": [
+    "Steam or boil the pumpkin in a little water, covered, until very soft, about 15 minutes. Drain well, mash until smooth, and leave to steam dry and cool for 15 minutes; watery pumpkin makes heavy fritters.",
+    "Mix the cinnamon and sugar in a small bowl and set aside.",
+    "Make the sauce: melt the butter and brown sugar in a small pot over medium heat, stirring, then pour in the cream and the pinch of salt. Simmer for 5 minutes, stirring, until smooth and slightly thickened. Keep warm.",
+    "Beat the eggs into the cooled pumpkin, then sift in the flour, baking powder, salt and nutmeg and fold together until just combined. The batter should drop softly from a spoon.",
+    "Heat 2 tbsp of the oil in a large frying pan over medium heat. Drop in heaped tablespoons of batter, spaced apart, and fry for 2 minutes, until bubbles appear on top and the undersides are golden.",
+    "Turn and fry the second side for 1 to 2 minutes, until golden and cooked through. Drain on paper towel and sprinkle with cinnamon sugar while hot. Repeat with the rest of the batter, adding oil as needed.",
+    "Serve warm with the caramel sauce poured over or on the side."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook and mash the pumpkin the day before and keep it in the fridge; fry the fritters just before serving.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

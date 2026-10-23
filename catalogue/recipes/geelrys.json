@@ -1,0 +1,100 @@
+{
+  "id": "geelrys",
+  "name": "Geelrys",
+  "summary": "Yellow rice with raisins: rice cooked with turmeric, a cinnamon stick and a little sugar, studded with plump raisins.",
+  "about": "Geelrys is the Cape's festive rice, rooted in Cape Malay cooking and now on Afrikaans tables too. It is the rice that goes with bobotie, and it is served beside bredies, curries and the Sunday roast.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "side"
+  },
+  "tags": [
+    "traditional",
+    "capeMalay",
+    "budget"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Long-grain white rice",
+      "quantity": 400,
+      "unit": "g",
+      "note": "rinsed",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 875,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Turmeric",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Seedless raisins",
+      "quantity": 80,
+      "unit": "g",
+      "note": "or sultanas",
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    }
+  ],
+  "steps": [
+    "Put the rice, water, turmeric, cinnamon stick, sugar and salt in a medium saucepan with a tight lid and stir once.",
+    "Bring to the boil over high heat, then turn the heat to its lowest setting, cover and cook for 15 minutes without lifting the lid.",
+    "Scatter the raisins over the rice, put the lid back on and cook for another 5 minutes, until the water is absorbed and the grains are tender.",
+    "Take the pot off the heat and leave it covered for 5 minutes so the raisins plump up. Add the butter, fluff the rice with a fork, remove the cinnamon stick and serve."
+  ],
+  "servings": 6,
+  "prepMinutes": 5,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

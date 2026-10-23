@@ -1,6 +1,7 @@
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../model/packing_preference.dart';
+import '../model/treat_days.dart';
 import 'lunch_idea_drafter.dart';
 
 /// What the phone sends `draftLunchIdeas` (lunch-box ADR-0012): the week,
@@ -23,6 +24,7 @@ abstract final class LunchIdeasRequest {
     'childIds': [...childIds]..sort(),
     'slots': wireNames(LunchSlot.values, packing.slots),
     'preferences': wireNames(PackingPreference.values, packing.preferences),
+    'treatDays': TreatDays.inOrder(packing.treatDays),
     'aisle': [
       for (final shelf in aisle.take(shelfLimit))
         {

@@ -27,9 +27,8 @@ void main() {
     test('a field it does not set is the build default — on in debug, off in '
         'release', () {
       expect(
-        const FeatureFlags.defaults(
-          defaultOn: true,
-        ).isOn(FeatureFlag.documentShareLinks),
+        const FeatureFlags.defaults(defaultOn: true)
+            .isOn(FeatureFlag.documentShareLinks),
         isTrue,
       );
       expect(
@@ -99,5 +98,29 @@ void main() {
       expect(controller.isOn(FeatureFlag.documentShareLinks), isFalse);
       expect(controller.hasAnswered, isFalse);
     });
+
+    test(
+      'has settled once the document answers or fails, so whatever only '
+      'shows the switches is not held back (welcome-tour ADR-0001)',
+      () async {
+        final failing = FeatureFlagsController(source: source);
+        addTearDown(failing.dispose);
+        expect(failing.hasSettled, isFalse);
+        var told = 0;
+        failing.addListener(() => told++);
+        source
+          ..fail(StateError('denied'))
+          ..fail(StateError('denied again'));
+        await Future<void>.delayed(Duration.zero);
+        expect(failing.hasSettled, isTrue);
+        expect(told, 1);
+
+        final answered = FeatureFlagsController(
+          source: FakeFeatureFlagSource(),
+        );
+        addTearDown(answered.dispose);
+        expect(answered.hasSettled, isFalse);
+      },
+    );
   });
 }

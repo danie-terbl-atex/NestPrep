@@ -3,17 +3,25 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../shared/log/app_log.dart';
 import '../../groceries/model/product_match.dart';
+import 'lunch_shop_preference.dart';
 import 'retailer_preference.dart';
 
-/// The chosen shop in `flutter_secure_storage`, the way the Checkers area is
-/// kept — the app's one key-value store on the phone, so no dependency.
-final class SecureStorageRetailerPreference implements RetailerPreference {
-  SecureStorageRetailerPreference({FlutterSecureStorage? storage})
-    : _storage = storage ?? const FlutterSecureStorage();
+/// A chosen shop in `flutter_secure_storage`, the way the Checkers area is
+/// kept — the app's one key-value store on the phone, so no dependency. The
+/// grocery screen's *Shop at* is kept under [groceryPrefix], *Plan my week*'s
+/// shop under [lunchShopPrefix] (lunch-box ADR-0026).
+final class SecureStorageRetailerPreference
+    implements RetailerPreference, LunchShopPreference {
+  SecureStorageRetailerPreference({
+    FlutterSecureStorage? storage,
+    this._prefix = groceryPrefix,
+  }) : _storage = storage ?? const FlutterSecureStorage();
 
-  static const _prefix = 'nestprep.retailer.';
+  static const groceryPrefix = 'nestprep.retailer.';
+  static const lunchShopPrefix = 'nestprep.lunchShop.';
 
   final FlutterSecureStorage _storage;
+  final String _prefix;
 
   @override
   Future<ProductRetailer?> read(String householdId) async {

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { exclusionFor, type Exclusion } from './child_exclusion';
 import { normalised } from './food_safety';
 import type { IdeaBrief } from './idea_brief';
+import { ideaRecipeFrom, recipeWords, type IdeaRecipe } from './idea_recipe';
 import { MAX_IDEAS } from './schemas';
 import { isLunchSlot, type LunchSlot } from './week_documents';
 
@@ -18,6 +19,7 @@ const replyIdea = z.object({
   searchTerm: z.string().trim().optional().default(''),
   children: z.array(z.unknown()).optional().default([]),
   why: z.string().trim().optional().default(''),
+  recipe: z.unknown().optional(),
 });
 
 export interface ChildExclusion extends Exclusion {
@@ -33,6 +35,8 @@ export interface LunchIdea {
   readonly why: string;
   readonly childIds: readonly string[];
   readonly excluded: readonly ChildExclusion[];
+  /** A main idea's dish (lunch-box ADR-0021); absent on every other idea. */
+  readonly recipe?: IdeaRecipe;
 }
 
 /**
@@ -42,6 +46,10 @@ export interface LunchIdea {
  * free-text allergy or a dislike. An idea struck out for everybody is kept,
  * so the phone can show it crossed through with the reason (lunch-box
  * ADR-0012). The same search twice in a compartment is one idea.
+ *
+ * A main idea may carry its dish (ADR-0021): kept only when it parses within
+ * every bound, and then the dish's name and every ingredient are read against
+ * each child too — a wrap is struck out for the child its cheese would hurt.
  */
 export function ideasFrom(reply: IdeasReply, brief: IdeaBrief): LunchIdea[] {
   const ideas: LunchIdea[] = [];
@@ -64,11 +72,12 @@ export function ideasFrom(reply: IdeasReply, brief: IdeaBrief): LunchIdea[] {
     if (forWhom.length === 0) continue;
     seen.add(key);
 
-    const text = `${idea} ${searchTerm}`;
+    const recipe = slot === 'main' ? ideaRecipeFrom(parsed.data.recipe) : null;
+    const text = `${idea} ${searchTerm}${recipe === null ? '' : ` ${recipeWords(recipe)}`}`;
     const childIds: string[] = [];
     const excluded: ChildExclusion[] = [];
     for (const child of forWhom) {
-      const exclusion = exclusionFor(child.rules, text);
+      const exclusion = exclusionFor(child.rules, text, recipe?.allergens ?? []);
       if (exclusion === null) childIds.push(child.memberId);
       else excluded.push({ childId: child.memberId, ...exclusion });
     }
@@ -80,6 +89,7 @@ export function ideasFrom(reply: IdeasReply, brief: IdeaBrief): LunchIdea[] {
       why: parsed.data.why.slice(0, 140),
       childIds,
       excluded,
+      ...(recipe !== null && { recipe }),
     });
   }
   return ideas;

@@ -133,9 +133,8 @@ class _FolderList extends StatelessWidget {
         const SizedBox(height: NestSpace.sm),
         Text(
           AppCopy.documentsOfflineNote,
-          style: NestTheme.of(context).text.caption.copyWith(
-            color: NestTheme.of(context).colors.inkTertiary,
-          ),
+          style: NestTheme.of(context).text.caption
+              .copyWith(color: NestTheme.of(context).colors.inkTertiary),
         ),
         const SizedBox(height: NestSpace.lg),
         for (final folder in library.folders)

@@ -1,0 +1,39 @@
+{
+  "id": "durban-masala-fried-fish",
+  "name": "Durban masala fried fish",
+  "summary": "Hake fillets rubbed with a red masala, lemon and garlic paste and pan-fried until crisp at the edges, the Durban Friday-night fish.",
+  "about": "In Durban's Indian homes, fish is often on the table on a Friday, and the quickest way to cook it is to rub it with the same chilli-red masala used for curry and fry it. Hake is the fish most South African families buy; it takes the spice well and flakes beautifully. It is eaten with rice, a tomato and onion salad or tucked into a soft roll.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["quick", "kidFriendly"],
+  "allergens": ["fish"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Hake fillets", "quantity": 800, "unit": "g", "note": "skinned, cut into 8 portions", "group": null },
+    { "name": "Durban masala", "quantity": 1.5, "unit": "tbsp", "note": "use 2 tsp for children", "group": null },
+    { "name": "Ground turmeric", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Ground coriander and cumin", "quantity": 1, "unit": "tsp", "note": "dhania-jeera powder", "group": null },
+    { "name": "Ginger and garlic paste", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Lemon juice", "quantity": 2, "unit": "tbsp", "note": "about 1 lemon", "group": null },
+    { "name": "Fresh coriander", "quantity": 2, "unit": "tbsp", "note": "finely chopped, plus extra to serve", "group": null },
+    { "name": "Sunflower oil", "quantity": 4, "unit": "tbsp", "note": "for frying", "group": null },
+    { "name": "Curry leaves", "quantity": 10, "unit": null, "note": "optional", "group": null },
+    { "name": "Lemon wedges", "quantity": 4, "unit": null, "note": "to serve", "group": null }
+  ],
+  "steps": [
+    "Pat the hake dry with paper towel. Mix the masala, turmeric, ground coriander and cumin, ginger and garlic paste, salt, lemon juice and chopped coriander into a thick red paste.",
+    "Rub the paste all over the fish and leave it on a plate for 10 minutes while the pan heats (or up to 2 hours, covered, in the fridge).",
+    "Heat the oil in a large non-stick frying pan over medium-high heat until it shimmers. Add the curry leaves, if using, and let them crackle for a few seconds.",
+    "Lay half the fish in the pan and fry without moving it for 3 minutes, until a dark red crust forms underneath. Turn carefully with a spatula and fry for 2–3 minutes more, until the fish is white all the way through and flakes when pressed with a fork. Keep warm while you fry the second batch.",
+    "Serve hot with lemon wedges, extra coriander, rice and a tomato, onion and chilli salad."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 12,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Rub the fish with the masala paste up to 2 hours ahead and keep it covered in the fridge.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

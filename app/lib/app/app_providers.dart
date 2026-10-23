@@ -62,6 +62,7 @@ import '../shared/links/external_link_opener.dart';
 import '../shared/links/launcher_external_link_opener.dart';
 import 'account_routes.dart';
 import 'add_to_checkers_providers.dart';
+import 'add_to_pnp_providers.dart';
 import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'document_tools_providers.dart';
@@ -74,6 +75,7 @@ import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
 import 'notifications_providers.dart';
 import 'plan_week_providers.dart';
+import 'recipe_providers.dart';
 import 'referral_providers.dart';
 import 'subscription_providers.dart';
 import 'two_homes_providers.dart';
@@ -120,6 +122,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // Checkers product matches and Add to Checkers (the Checkers build
   // contract).
   ...addToCheckersProviders(),
+  // Pick n Pay in *Plan my week*, and its cart (add-to-pnp ADR-0001).
+  ...addToPnpProviders(),
   Provider<CalendarRepository>(
     create: (context) =>
         FirestoreCalendarRepository(context.read<FirebaseFirestore>()),
@@ -245,6 +249,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...referralProviders(),
   // plan my week with AI (lunch-box ADR-0011).
   ...planWeekProviders(),
+  // recipes, and the ready-made lunch boxes made from them.
+  ...recipeProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

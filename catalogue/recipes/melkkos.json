@@ -1,0 +1,36 @@
+{
+  "id": "melkkos",
+  "name": "Melkkos",
+  "summary": "Milk food: hot milk thickened with little butter-and-flour crumbs into a creamy, gently lumpy porridge, served under a thick blanket of cinnamon sugar.",
+  "about": "Melkkos is old Afrikaans and Cape home cooking, made from what any farm kitchen had: milk, flour, butter and sugar. It is eaten for breakfast on cold mornings, or as a simple supper or pudding, and for many South Africans it tastes of childhood. The rubbed-in flour crumbs, the 'frummels', give it its soft lumps.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast", "dinner"],
+  "placement": { "breakfast": "main", "dinner": "dessert" },
+  "tags": ["traditional", "comfort", "budget"],
+  "allergens": ["milk", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 120, "unit": "g", "note": "about 1 cup", "group": "For the melkkos" },
+    { "name": "Salt", "quantity": 0.25, "unit": "tsp", "note": null, "group": "For the melkkos" },
+    { "name": "Cold butter", "quantity": 40, "unit": "g", "note": "cubed", "group": "For the melkkos" },
+    { "name": "Full-cream milk", "quantity": 1.5, "unit": "l", "note": null, "group": "For the melkkos" },
+    { "name": "Cinnamon stick", "quantity": 1, "unit": null, "note": null, "group": "For the melkkos" },
+    { "name": "Sugar", "quantity": 100, "unit": "g", "note": "about 0.5 cup", "group": "For the cinnamon sugar" },
+    { "name": "Ground cinnamon", "quantity": 2, "unit": "tsp", "note": null, "group": "For the cinnamon sugar" }
+  ],
+  "steps": [
+    "Mix the sugar and ground cinnamon in a small bowl and set aside.",
+    "Put the flour and salt in a bowl, add the butter and rub it in with your fingertips for 3–4 minutes until it looks like coarse breadcrumbs. Stir in 2 tablespoons of the cinnamon sugar.",
+    "Pour the milk into a large, heavy-based saucepan (rinse it with cold water first to help stop the milk catching), add the cinnamon stick and heat over medium heat until it is steaming and small bubbles form at the edge, about 8 minutes. Watch it closely: milk boils over fast.",
+    "Turn the heat to low. Sprinkle the flour crumbs over the milk a handful at a time, stirring gently with a wooden spoon after each handful. Stir rather than whisk if you like soft lumps; whisk if you prefer it smooth.",
+    "Simmer gently for 10–12 minutes, stirring often and scraping the bottom of the pot, until the melkkos thickens to the consistency of pouring custard and the flour lumps are cooked through with no raw taste.",
+    "Take off the heat, remove the cinnamon stick and leave for 3 minutes to thicken a little more. Ladle into bowls and cover each one generously with cinnamon sugar."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 22,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": "Rub the butter into the flour the night before and keep it in the fridge for a fast breakfast.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

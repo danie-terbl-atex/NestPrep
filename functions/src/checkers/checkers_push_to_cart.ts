@@ -10,7 +10,7 @@ import { CHECKERS_SECRETS } from './checkers_config';
 import { checkersHere, requireAddToCheckers, sessionKeyHere } from './checkers_runtime';
 import { refuseCheckers } from './errors';
 import { FirestoreLinkStore } from './firestore_link_store';
-import { FirestoreGroceryLines } from './grocery_lines';
+import { FirestoreGroceryLines } from '../cart_push/grocery_lines';
 import { checkersPushToCartInput } from './schemas';
 
 /**

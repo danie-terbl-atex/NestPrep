@@ -7,10 +7,14 @@ import 'package:nestprep/features/subscriptions/model/free_child.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
+import 'package:nestprep/shared/flags/feature_flags_controller.dart';
+import 'package:provider/provider.dart';
 
+import '../../../support/bring_into_view.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/test_flags.dart';
 
 /// Where lunch-box's free tier ends, on screen (lunch-box ADR-0009): a free
 /// household plans the one child its first marking recorded, and meets the
@@ -19,14 +23,20 @@ import '../../../support/pump_screen.dart';
 /// all three regardless; this is the answer before anything is written.
 void main() {
   late LunchHarness harness;
+  // The V2 tools have tests of their own; this is the free tier's line.
+  late FeatureFlagsController flagsOff;
 
-  setUp(
-    () => harness = LunchHarness(
+  setUp(() {
+    harness = LunchHarness(
       isPremium: false,
       freeChild: const FreeChild(LunchFixtures.lwaziId),
-    ),
-  );
-  tearDown(() => harness.close());
+    );
+    flagsOff = testFlagsController(TestFlags.off);
+  });
+  tearDown(() async {
+    flagsOff.dispose();
+    await harness.close();
+  });
 
   Future<void> open(WidgetTester tester) async {
     tester.view.physicalSize = const Size(420 * 3, 2400 * 3);
@@ -35,7 +45,10 @@ void main() {
     await pumpScreen(
       tester,
       LunchScreen(onSelectTab: (_) {}),
-      providers: harness.providers,
+      providers: [
+        ChangeNotifierProvider<FeatureFlagsController>.value(value: flagsOff),
+        ...harness.providers,
+      ],
     );
     harness.emit(
       plans: [
@@ -69,6 +82,7 @@ void main() {
     await open(tester);
     await tester.tap(find.text('Ayanda'));
     await tester.pumpAndSettle();
+    await bringIntoView(tester, find.text(LunchCopy.fillWeek));
     await tester.tap(find.text(LunchCopy.fillWeek));
     await tester.pumpAndSettle();
     expect(paywallOn(PremiumFeature.additionalChild), findsOneWidget);
@@ -90,6 +104,7 @@ void main() {
     tester,
   ) async {
     await open(tester);
+    await bringIntoView(tester, find.text(LunchCopy.openPrep));
     await tester.tap(find.text(LunchCopy.openPrep));
     await tester.pumpAndSettle();
     expect(paywallOn(PremiumFeature.prepList), findsOneWidget);

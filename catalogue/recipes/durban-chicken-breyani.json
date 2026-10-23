@@ -1,0 +1,200 @@
+{
+  "id": "durban-chicken-breyani",
+  "name": "Durban chicken breyani",
+  "summary": "Layers of spiced chicken, golden potatoes, lentils and fragrant rice steamed together in one pot — Durban’s celebration dish.",
+  "about": "Breyani is Durban’s version of biryani, carried by the Indian families who came to Natal from 1860. Durban cooks layer it with lentils and potatoes and season it with the city’s red masala. It is the centrepiece of weddings, Eid and Diwali gatherings and many Sunday lunches.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "festive",
+    "traditional"
+  ],
+  "allergens": [
+    "milk",
+    "egg"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Chicken pieces",
+      "quantity": 1.5,
+      "unit": "kg",
+      "note": "bone-in, skin removed",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ginger and garlic paste",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Durban masala",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "or red curry powder; medium or hot to taste",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garam masala",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ripe tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Fresh coriander (dhania)",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "chopped, divided",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Fresh mint leaves",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Onions",
+      "quantity": 3,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "medium, peeled and halved",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Cinnamon sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Cardamom pods",
+      "quantity": 4,
+      "unit": null,
+      "note": "lightly crushed",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Cumin seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Basmati rice",
+      "quantity": 500,
+      "unit": "g",
+      "note": "rinsed until the water runs clear",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Brown lentils",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, drained and rinsed",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Saffron threads",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "or a pinch of turmeric, soaked in 60 ml hot water",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Ghee",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "or butter",
+      "group": "For the rice and layers"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 4,
+      "unit": null,
+      "note": "hard-boiled, to garnish",
+      "group": "For the rice and layers"
+    }
+  ],
+  "steps": [
+    "Mix the chicken with the yoghurt, ginger and garlic paste, masala, turmeric, garam masala, 1 tsp of the salt, the tomatoes, half the dhania and the mint. Cover and refrigerate for at least 1 hour, or overnight.",
+    "Heat the oil in a wide, heavy pot of at least 5 litres that has a tight lid. Fry the onions over medium heat, stirring often, until deep golden, 12–15 minutes. Lift half onto paper towel for the top.",
+    "Fry the potatoes in the same oil, turning, until golden all over but not cooked through, 8–10 minutes. Lift them out.",
+    "Add the cinnamon, cardamom, cumin seeds and bay leaves to the pot and let them sizzle for 30 seconds. Add the chicken and all its marinade and cook uncovered over medium heat, stirring now and then, for 20 minutes, until the sauce has thickened. Tuck in the potatoes and take the pot off the heat.",
+    "Meanwhile boil the eggs for 10 minutes, cool them in cold water and peel. Boil the rice in plenty of water with the remaining 1 tsp salt for 6–7 minutes, until the grains still have a firm bite in the middle, then drain.",
+    "Spread the lentils over the chicken, then pile the rice on top. Drizzle over the saffron water, dot with the ghee and scatter over the reserved onions.",
+    "Cover with foil and then the lid. Cook on medium-high for 5 minutes until you hear it steaming, then on the lowest heat for 40–45 minutes, until the rice is tender and a knife slides easily into the potatoes.",
+    "Rest for 10 minutes, then lift onto a large platter in sections so every serving gets rice, chicken, lentils and potato. Top with the halved eggs and the remaining dhania. Serve with sour milk and grated cucumber, or carrot salad."
+  ],
+  "servings": 6,
+  "prepMinutes": 35,
+  "cookMinutes": 95,
+  "difficulty": "involved",
+  "prepAhead": true,
+  "prepNote": "Marinate the chicken the night before and boil the eggs ahead.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

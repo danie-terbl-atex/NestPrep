@@ -1,4 +1,4 @@
-import type { Firestore } from 'firebase-admin/firestore';
+import type { DocumentReference, Firestore } from 'firebase-admin/firestore';
 
 import { FAMILY_PROFILES } from '../family_profiles/member_details';
 import { householdRef } from '../household/documents';
@@ -7,15 +7,18 @@ import { historyStart } from './taste';
 import {
   LUNCH_BUDGET,
   LUNCH_PLANS,
+  LUNCH_PRICES,
   PLAN_LIMIT,
   SCHOOLS,
   WEEKLY_BUDGET,
   planFrom,
   storedBudget,
   storedOtherAllergy,
+  storedPrice,
   storedProfile,
   storedSchool,
   type LunchPlanFacts,
+  type StoredPrice,
 } from './week_documents';
 
 /** Everything in a household a week's lunches are planned from, read once. */
@@ -25,6 +28,11 @@ export interface WeekFacts {
   readonly plans: readonly LunchPlanFacts[];
   /** The household's weekly lunch budget in cents, for every child together; null when unset. */
   readonly budgetCents: number | null;
+  /**
+   * Item id → its price, for what is already packed in the week being planned
+   * (any child): the week's basket starts there (lunch-box ADR-0012 §4).
+   */
+  readonly prices: Readonly<Record<string, StoredPrice>>;
 }
 
 export interface ChildFacts {
@@ -79,9 +87,39 @@ export async function readWeekFacts(
   }
 
   const storedWeekly = storedBudget.safeParse(budget.data());
+  const weekPlans = plans.docs.flatMap((doc) => planFrom(doc.data()) ?? []);
   return {
     children,
-    plans: plans.docs.flatMap((doc) => planFrom(doc.data()) ?? []),
+    plans: weekPlans,
     budgetCents: budget.exists && storedWeekly.success ? storedWeekly.data.cents : null,
+    prices: await readPricesIn(store, householdId, weekPlans, monday),
   };
+}
+
+/**
+ * The prices of the items packed in the week starting [monday], by id. One
+ * batched read, bounded by the week's compartments; an unpriced or unreadable
+ * item is simply absent, as the budget screen counts it (BE-10).
+ */
+async function readPricesIn(
+  store: Firestore,
+  householdId: string,
+  plans: readonly LunchPlanFacts[],
+  monday: string,
+): Promise<Record<string, StoredPrice>> {
+  const prices = householdRef(store, householdId).collection(LUNCH_PRICES);
+  const ids = new Set(
+    plans
+      .filter((plan) => plan.weekStart === monday)
+      .flatMap((plan) => Object.values(plan.slots).map((pick) => pick.itemId)),
+  );
+  if (ids.size === 0) return {};
+  const refs: DocumentReference[] = [...ids].map((id) => prices.doc(id));
+  const docs = await store.getAll(...refs);
+  const found: Record<string, StoredPrice> = {};
+  for (const doc of docs) {
+    const price = storedPrice.safeParse(doc.data());
+    if (doc.exists && price.success) found[doc.id] = price.data;
+  }
+  return found;
 }

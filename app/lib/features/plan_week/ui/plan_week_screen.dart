@@ -11,8 +11,8 @@ import '../state/plan_week_controller.dart';
 import 'plan_week_brief_panel.dart';
 import 'plan_week_done_panel.dart';
 import 'plan_week_ideas_panel.dart';
-import 'plan_week_steps_bar.dart';
 import 'plan_week_store_panel.dart';
+import 'plan_week_week_name.dart';
 import 'plan_week_week_panel.dart';
 
 /// *Plan my week from Checkers* (lunch-box ADR-0012): five steps, the one
@@ -27,37 +27,58 @@ class PlanWeekScreen extends StatelessWidget {
     return NestScaffold(
       leading: backLeading(context),
       title: PlanWeekCopy.title,
-      subtitle: NestDates.weekRange(controller.week.monday),
+      subtitle: _subtitle(controller),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          PlanWeekStepsBar(step: controller.step),
+          NestStepsBar(
+            count: PlanWeekStep.values.length,
+            index: controller.step.index,
+            label: PlanWeekCopy.stepOf(
+              controller.step.index + 1,
+              PlanWeekCopy.stepNames(
+                controller.retailer.shop,
+              )[controller.step.index],
+            ),
+          ),
           const SizedBox(height: NestSpace.lg),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: NestMotion.of(context).standard,
-              child: KeyedSubtree(
-                key: ValueKey(controller.step),
-                child: switch (controller.step) {
-                  PlanWeekStep.brief => NestAsyncView<LunchBoard>(
-                    state: controller.board,
-                    // No children is said by the brief itself.
-                    isEmpty: (_) => false,
-                    emptyBuilder: (_) => const SizedBox.shrink(),
-                    onRetry: context.read<LunchBoardController>().retry,
-                    dataBuilder: (context, board) =>
-                        PlanWeekBriefPanel(board: board),
-                  ),
-                  PlanWeekStep.ideas => const PlanWeekIdeasPanel(),
-                  PlanWeekStep.store => const PlanWeekStorePanel(),
-                  PlanWeekStep.week => const PlanWeekWeekPanel(),
-                  PlanWeekStep.done => const PlanWeekDonePanel(),
-                },
+            // Twig swaps in mid-flow — the drafting and building waits, the
+            // done step — so its poses are decoded before it is needed.
+            child: NestTwigWarmUp(
+              child: AnimatedSwitcher(
+                duration: NestMotion.of(context).standard,
+                child: KeyedSubtree(
+                  key: ValueKey(controller.step),
+                  child: switch (controller.step) {
+                    PlanWeekStep.brief => NestAsyncView<LunchBoard>(
+                      state: controller.board,
+                      // No children is said by the brief itself.
+                      isEmpty: (_) => false,
+                      emptyBuilder: (_) => const SizedBox.shrink(),
+                      onRetry: context.read<LunchBoardController>().retry,
+                      dataBuilder: (context, board) =>
+                          PlanWeekBriefPanel(board: board),
+                    ),
+                    PlanWeekStep.ideas => const PlanWeekIdeasPanel(),
+                    PlanWeekStep.store => const PlanWeekStorePanel(),
+                    PlanWeekStep.week => const PlanWeekWeekPanel(),
+                    PlanWeekStep.done => const PlanWeekDonePanel(),
+                  },
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// "Next week · 12 – 18 Oct": which week is being planned, then its dates
+  /// (lunch-box ADR-0019); the dates alone for a week further off.
+  static String _subtitle(PlanWeekController controller) {
+    final dates = NestDates.weekRange(controller.week.monday);
+    final name = planWeekName(controller);
+    return name.isNear ? PlanWeekCopy.namedWeek(name.label, dates) : dates;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/mental_load/state/mental_load_controller.dart';
@@ -6,6 +8,7 @@ import 'package:nestprep/features/school_letter/data/letter_picker.dart';
 import 'package:nestprep/features/school_letter/model/letter_reading.dart';
 import 'package:nestprep/features/school_letter/state/school_letter_controller.dart';
 import 'package:nestprep/features/school_letter/ui/school_letter_screen.dart';
+import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../test/support/fake_calendar_repository.dart';
@@ -21,6 +24,45 @@ import 'review_press.dart';
 /// --update-goldens` retakes them.
 void main() {
   setUpAll(loadEveryFont);
+
+  /// The letter flow at one of its steps, reached by [act] — Twig's three
+  /// (the way in, reading, done) and a failure without it (design-system
+  /// ADR-0012). A held read is let go before the test ends.
+  Future<void> captureLetter(
+    WidgetTester tester,
+    String name, {
+    required Brightness brightness,
+    required Future<void> Function(SchoolLetterController controller) act,
+    FakeSchoolLetterReader? reader,
+  }) async {
+    final calendar = FakeCalendarRepository();
+    addTearDown(calendar.close);
+    final letters =
+        reader ??
+        (FakeSchoolLetterReader()
+          ..reading = LetterReading(proposals: twoProposals(), callsLeft: 7));
+    addTearDown(letters.complete);
+    final controller = SchoolLetterController(
+      schoolLetterReader: letters,
+      letterPicker: FakeLetterPicker(),
+      calendarRepository: calendar,
+      householdId: Fixtures.householdId,
+      memberId: Fixtures.samMemberId,
+    );
+    addTearDown(controller.dispose);
+    await captureScreen(
+      tester,
+      name,
+      brightness: brightness,
+      // The reading step's skeleton pulses while it waits; held still, as
+      // reduce-motion shows it, so the shutter can settle.
+      screen: heldStill(const SchoolLetterScreen()),
+      providers: [
+        ChangeNotifierProvider<SchoolLetterController>.value(value: controller),
+      ],
+      emit: () => act(controller),
+    );
+  }
 
   for (final brightness in Brightness.values) {
     final theme = brightness == Brightness.dark ? 'dark' : 'light';
@@ -74,6 +116,29 @@ void main() {
       );
     });
 
+    testWidgets('school letter, reading — $theme', (tester) async {
+      await captureLetter(
+        tester,
+        'school-letter-reading-$theme',
+        brightness: brightness,
+        reader: FakeSchoolLetterReader()..gate = Completer<void>(),
+        act: (controller) async =>
+            unawaited(controller.pick(LetterSource.camera)),
+      );
+    });
+
+    testWidgets('school letter, added — $theme', (tester) async {
+      await captureLetter(
+        tester,
+        'school-letter-added-$theme',
+        brightness: brightness,
+        act: (controller) async {
+          await controller.pick(LetterSource.camera);
+          await controller.confirm();
+        },
+      );
+    });
+
     testWidgets('the shared week — $theme', (tester) async {
       final harness = MentalLoadHarness();
       addTearDown(harness.close);
@@ -92,6 +157,17 @@ void main() {
       );
     });
   }
+
+  testWidgets('school letter, a read that failed', (tester) async {
+    await captureLetter(
+      tester,
+      'school-letter-failed-light',
+      brightness: Brightness.light,
+      reader: FakeSchoolLetterReader()
+        ..failWith = const AiFailure(AiProblem.aiLimitReached),
+      act: (controller) => controller.pick(LetterSource.camera),
+    );
+  });
 
   testWidgets('the shared week — dark at 200% text', (tester) async {
     final harness = MentalLoadHarness();

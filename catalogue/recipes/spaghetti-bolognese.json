@@ -1,0 +1,149 @@
+{
+  "id": "spaghetti-bolognese",
+  "name": "Spaghetti bolognese",
+  "summary": "A rich beef mince and tomato sauce, slow-simmered with onion, carrot and garlic, tossed with spaghetti and finished with grated cheese.",
+  "about": "Spaghetti bolognese is one of the most-cooked family dinners in South Africa. Local homes make it with beef mince, plenty of tomato and grated carrot, and serve it with grated cheddar. It stretches a packet of mince, children love it, and the sauce freezes well.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Sunflower or olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Beef mince",
+      "quantity": 750,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Dried mixed herbs",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "or dried oregano",
+      "group": null
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": null
+    },
+    {
+      "name": "Beef stock",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "made with 1 stock cube",
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Bay leaf",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "adjust to taste",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "ground",
+      "group": null
+    },
+    {
+      "name": "Spaghetti",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cheddar cheese",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "grated, to serve",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large heavy pot over medium-high heat. Add the mince and fry for 8–10 minutes, breaking it up with a wooden spoon, until all the pink is gone and it starts to brown.",
+    "Turn the heat to medium, add the onions and carrots and cook, stirring, for 6–8 minutes until the onions are soft and translucent. Stir in the garlic and herbs for 1 minute.",
+    "Stir in the tomato paste and cook for 1 minute, then add the tomatoes, stock, sugar, bay leaf, salt and pepper. Bring to the boil.",
+    "Turn the heat to low, half-cover the pot and simmer for 40 minutes, stirring every 10 minutes, until the sauce is thick and rich and the oil starts to pool at the edges. Add a splash of water if it catches. Taste for salt and remove the bay leaf.",
+    "About 15 minutes before the sauce is ready, bring a large pot of well-salted water to a rolling boil. Cook the spaghetti for the time on the packet, usually 9–11 minutes, until tender but still with a little bite, then drain.",
+    "Serve the spaghetti in bowls with the sauce spooned over, topped with grated cheddar."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 60,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "The sauce keeps 3 days in the fridge or 3 months frozen; cook the spaghetti fresh.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

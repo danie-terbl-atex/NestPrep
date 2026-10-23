@@ -103,6 +103,36 @@ void main() {
     expect(h.repository.added.single.name, 'Milk');
   });
 
+  testWidgets('the chips scroll with the list, not above it', (tester) async {
+    final h = GroceryListHarness();
+    await h.pump(tester);
+    h.repository.emitItems([
+      groceryItem(
+        'Milk',
+        id: 'milk',
+        boughtAt: groceryNow.subtract(const Duration(hours: 1)),
+      ),
+      for (var i = 0; i < 12; i++) groceryItem('Item $i', id: 'item-$i'),
+    ]);
+    await tester.pumpAndSettle();
+
+    final list = find.ancestor(
+      of: find.text(AppCopy.groceriesToBuy),
+      matching: find.byType(Scrollable),
+    );
+    expect(
+      find.ancestor(of: find.text(AppCopy.groceriesOften), matching: list),
+      findsOneWidget,
+    );
+    final chips = find.text(AppCopy.groceriesOften).hitTestable();
+    expect(chips, findsOneWidget);
+    await tester.drag(list, const Offset(0, -400));
+    await tester.pumpAndSettle();
+
+    expect(chips, findsNothing, reason: 'scrolled away with the list');
+    expect(find.byType(TextField), findsOneWidget, reason: 'the field stays');
+  });
+
   testWidgets('typing a name and submitting adds it and clears the field', (
     tester,
   ) async {
@@ -153,5 +183,70 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Full cream milk'), findsOneWidget);
+  });
+
+  testWidgets('with the chips, in dark at 200% on 360 wide', (tester) async {
+    tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+
+    final h = GroceryListHarness();
+    await h.pump(tester, brightness: Brightness.dark, scale: 2);
+    h.repository.emitItems([
+      groceryItem('Full cream milk', id: 'milk'),
+      groceryItem(
+        'Bread',
+        id: 'bread',
+        boughtAt: groceryNow.subtract(const Duration(hours: 1)),
+      ),
+    ]);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text(AppCopy.groceriesOften), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Full cream milk'),
+      200,
+      scrollable: find
+          .ancestor(
+            of: find.text(AppCopy.groceriesOften),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('empty, with the chips, in dark at 200% on 360 wide', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+
+    final h = GroceryListHarness();
+    await h.pump(tester, brightness: Brightness.dark, scale: 2);
+    h.repository.emitItems([
+      groceryItem(
+        'Bread',
+        id: 'bread',
+        boughtAt: groceryNow.subtract(const Duration(days: 3)),
+      ),
+    ]);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text(AppCopy.groceriesOften), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text(AppCopy.groceriesEmptyTitle),
+      200,
+      scrollable: find
+          .ancestor(
+            of: find.text(AppCopy.groceriesOften),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(tester.takeException(), isNull);
   });
 }

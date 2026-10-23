@@ -6,6 +6,7 @@ import 'home_care_route.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'lunch_route.dart';
+import 'meals_route.dart';
 import 'nanny_hub_route.dart';
 
 /// Where somebody belongs inside a household, given who they are there, or
@@ -77,6 +78,14 @@ HouseholdArea? _areaAt(String location, String householdId) {
   // Lunch's prep list and library (lunch-box ADR-0004).
   if (location.startsWith(LunchRoute.pathFor(householdId))) {
     return HouseholdArea.lunch;
+  }
+  // A recipe's page under Meals (recipes ADR-0003): the catalogue is
+  // everybody's to read, but the page is the meals area's.
+  if (location.startsWith(
+    '${HouseholdRoute.pathFor(householdId, HouseholdTab.meals)}/'
+    '${MealsRoute.recipesSegment}/',
+  )) {
+    return HouseholdArea.meals;
   }
   return null;
 }

@@ -144,6 +144,11 @@ void main() {
         'calls Functions',
     'lib/features/plan_week/data/callable_lunch_week_builder.dart':
         'calls Functions',
+    // Pick n Pay in Plan my week, and its cart (add-to-pnp ADR-0001).
+    'lib/app/add_to_pnp_providers.dart':
+        'builds the PnP catalogue and callables over live Functions',
+    'lib/features/add_to_pnp/data/callable_pnp_directory.dart':
+        'calls Functions',
 
     // Found absent on 2026-09-29 with a fresh report, from features built in
     // parallel: each wraps a platform or a live Firebase.
@@ -343,38 +348,35 @@ void main() {
 
   final Object skipWithoutCoverage = staleOrMissing();
 
-  List<String> handWritten() => Directory('lib')
-      .listSync(recursive: true)
-      .whereType<File>()
-      .map((file) => file.path)
-      .where((path) => path.endsWith('.dart'))
-      .where((path) => !path.endsWith('.g.dart'))
-      .where((path) => !path.endsWith('.freezed.dart'))
-      .toList();
+  List<String> handWritten() =>
+      Directory('lib')
+          .listSync(recursive: true)
+          .whereType<File>()
+          .map((file) => file.path)
+          .where((path) => path.endsWith('.dart'))
+          .where((path) => !path.endsWith('.g.dart'))
+          .where((path) => !path.endsWith('.freezed.dart'))
+          .toList();
 
   Set<String> reported() => {
     for (final line in lcov.readAsLinesSync())
       if (line.startsWith('SF:')) line.substring(3).trim(),
   };
 
-  test(
-    'every file missing from the report is one we know about',
-    () {
-      final missing = handWritten().toSet().difference(reported());
-      final undeclared =
-          missing.difference(absentByDesign.keys.toSet()).toList()..sort();
+  test('every file missing from the report is one we know about', () {
+    final missing = handWritten().toSet().difference(reported());
+    final undeclared = missing.difference(absentByDesign.keys.toSet()).toList()
+      ..sort();
 
-      expect(
-        undeclared,
-        isEmpty,
-        reason:
-            'these are in lib/ and no test loads them, so the coverage figure '
-            'says nothing about them — either test them, or add them here with '
-            'the reason they cannot be',
-      );
-    },
-    skip: skipWithoutCoverage,
-  );
+    expect(
+      undeclared,
+      isEmpty,
+      reason:
+          'these are in lib/ and no test loads them, so the coverage figure '
+          'says nothing about them — either test them, or add them here with '
+          'the reason they cannot be',
+    );
+  }, skip: skipWithoutCoverage);
 
   test('and nothing is excused that the tests now reach', () {
     final reachable = reported();

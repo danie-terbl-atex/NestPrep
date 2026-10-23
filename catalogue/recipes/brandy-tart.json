@@ -1,0 +1,162 @@
+{
+  "id": "brandy-tart",
+  "name": "Brandy tart",
+  "summary": "Cape brandy pudding: a soft date and nut sponge soaked while hot in a buttery brandy and vanilla syrup, served with cream or custard.",
+  "about": "Also called tipsy tart, Cape brandy pudding or brandewyntert, it is one of South Africa's best-known traditional desserts and a fixture of Christmas and Sunday lunch. The syrup is not cooked after the brandy goes in; use the rooibos swap if children are eating.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "festive"
+  ],
+  "allergens": [
+    "treeNut",
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Pitted dates",
+      "quantity": 250,
+      "unit": "g",
+      "note": "chopped",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Bicarbonate of soda",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Boiling water",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Butter",
+      "quantity": 60,
+      "unit": "g",
+      "note": "soft",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 200,
+      "unit": "g",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": "large",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Pecan nuts or walnuts",
+      "quantity": 100,
+      "unit": "g",
+      "note": "chopped",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Water",
+      "quantity": 200,
+      "unit": "ml",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Butter",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the syrup"
+    },
+    {
+      "name": "Brandy",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "or strong rooibos tea with an extra 1 tsp vanilla",
+      "group": "For the syrup"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": "For the syrup"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C fan) and grease a 24 cm round or 20 × 30 cm ovenproof dish.",
+    "Put the dates in a bowl, sprinkle over the bicarbonate of soda and pour over the boiling water. Stir and leave to cool for 15 minutes; the dates will soften and darken.",
+    "Beat the butter and sugar together until pale, about 3 minutes, then beat in the eggs one at a time.",
+    "Sift the flour, baking powder and salt together and fold half into the butter mixture, then the date mixture with its liquid, then the rest of the flour. Stir in the nuts.",
+    "Spread the batter in the dish and bake for 40 to 45 minutes, until risen, deep brown, and a skewer pushed into the middle comes out clean.",
+    "While the pudding bakes, heat the sugar, water and butter in a saucepan over low heat, stirring, until the sugar dissolves. Boil for 5 minutes, then take off the heat and stir in the vanilla, brandy and salt.",
+    "As soon as the pudding comes out of the oven, prick it all over with a skewer and slowly pour the hot syrup over it. Leave for at least 30 minutes so it soaks in completely.",
+    "Serve warm or at room temperature with whipped cream, custard or ice cream."
+  ],
+  "servings": 12,
+  "prepMinutes": 25,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Better made a day ahead; it gets moister as it stands. Keep covered at room temperature.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

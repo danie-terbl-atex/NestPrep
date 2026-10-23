@@ -13,6 +13,8 @@ import { readWeekFacts, type ChildFacts, type WeekFacts } from './week_reads';
 export interface OpenPlanning {
   readonly caller: PlanCaller;
   readonly monday: string;
+  /** Today on the household's clock — a school day on or before it has gone. */
+  readonly today: string;
   readonly facts: WeekFacts;
   /** The asked-for members who are children, in the order the household lists them. */
   readonly children: readonly ChildFacts[];
@@ -49,5 +51,5 @@ export async function openPlanning(
   const asked = new Set(input.childIds);
   const children = facts.children.filter((child) => asked.has(child.memberId));
   if (children.length === 0) throw refusePlanWeek('nothingToPlan');
-  return { caller, monday, facts, children };
+  return { caller, monday, today, facts, children };
 }

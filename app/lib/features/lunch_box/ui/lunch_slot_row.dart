@@ -11,7 +11,9 @@ import 'lunch_concern_tags.dart';
 
 /// One compartment of a day's box: its drawing, its name, what is in it —
 /// or an invitation to fill it — and anything wrong with it for this child.
-/// The whole row is the tap that swaps it (lunch-box ADR-0001).
+/// The whole row is the tap that swaps it (lunch-box ADR-0001); an item made
+/// from a recipe adds *How to make it* beside it, its own button and its own
+/// node, so the swap is never what a recipe tap does (lunch-box ADR-0021 §8).
 class LunchSlotRow extends StatelessWidget {
   const LunchSlotRow({
     required this.slot,
@@ -19,6 +21,7 @@ class LunchSlotRow extends StatelessWidget {
     required this.concerns,
     required this.verdict,
     required this.onTap,
+    this.onRecipe,
     super.key,
   });
 
@@ -32,6 +35,9 @@ class LunchSlotRow extends StatelessWidget {
   /// Null for somebody who may only look.
   final VoidCallback? onTap;
 
+  /// Opens the recipe the packed item is made from; null when it has none.
+  final VoidCallback? onRecipe;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
@@ -40,7 +46,7 @@ class LunchSlotRow extends StatelessWidget {
     final slotName = LunchCopy.slotName(slot);
     // One node to a screen reader — the slot, what is in it and every
     // concern — so a warning is never left out of what is heard (`FE-13`).
-    return MergeSemantics(
+    final row = MergeSemantics(
       child: Semantics(
         button: onTap != null,
         child: InkWell(
@@ -94,6 +100,19 @@ class LunchSlotRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+    final openRecipe = onRecipe;
+    if (packed == null || openRecipe == null) return row;
+    return Row(
+      children: [
+        Expanded(child: row),
+        NestIconButton(
+          icon: LucideIcons.chefHat,
+          label: RecipeCopy.howToMake(packed.name),
+          variant: NestIconButtonVariant.plain,
+          onPressed: openRecipe,
+        ),
+      ],
     );
   }
 }

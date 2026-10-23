@@ -120,6 +120,10 @@ class LunchPantryWeek {
 
   bool get isEmpty => lines.isEmpty;
 
+  /// True when a box from today on holds anything — with nothing planned,
+  /// there is nothing for the pantry to cover.
+  bool get hasBoxesToPack => _stillToPack.isNotEmpty;
+
   bool has(String itemId) => _stock.containsKey(itemId);
 
   int stockOf(String itemId) => _stock[itemId] ?? 0;

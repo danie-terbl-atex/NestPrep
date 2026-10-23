@@ -6,17 +6,20 @@ import '../../groceries/model/product_match.dart';
 import 'retailer_logo.dart';
 
 /// *Shop at*: one compact row — the chosen shop by name, and every shop's
-/// logo with the chosen one ringed and ticked. A shop that is not connected
-/// yet is grey, cannot be chosen, and the words beside the logos say it is
-/// coming (`FE-13`). Renders what it is given and reports a tap (`FE-03`).
+/// logo with the chosen one ringed and ticked. A shop not in [available] —
+/// not connected yet, or switched off — is grey, cannot be chosen, and the
+/// words beside the logos say it is coming (`FE-13`). Renders what it is
+/// given and reports a tap (`FE-03`).
 class RetailerPicker extends StatelessWidget {
   const RetailerPicker({
     required this.chosen,
+    required this.available,
     required this.onChoose,
     super.key,
   });
 
   final ProductRetailer chosen;
+  final List<ProductRetailer> available;
   final ValueChanged<ProductRetailer> onChoose;
 
   @override
@@ -24,7 +27,7 @@ class RetailerPicker extends StatelessWidget {
     final nest = NestTheme.of(context);
     final coming = [
       for (final retailer in ProductRetailer.values)
-        if (!retailer.isConnected) retailer,
+        if (!available.contains(retailer)) retailer,
     ];
     return Row(
       children: [
@@ -51,15 +54,17 @@ class RetailerPicker extends StatelessWidget {
           RetailerLogo(
             retailer: retailer,
             size: NestSize.logoMedium,
-            label: retailer.isConnected
+            label: available.contains(retailer)
                 ? CheckersCopy.retailerName(retailer)
                 : CheckersCopy.retailerSoon(retailer),
-            tone: !retailer.isConnected
+            tone: !available.contains(retailer)
                 ? NestLogoTileTone.muted
                 : retailer == chosen
                 ? NestLogoTileTone.selected
                 : NestLogoTileTone.idle,
-            onTap: retailer.isConnected ? () => onChoose(retailer) : null,
+            onTap: available.contains(retailer)
+                ? () => onChoose(retailer)
+                : null,
           ),
       ],
     );

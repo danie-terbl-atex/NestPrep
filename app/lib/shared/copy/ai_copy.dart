@@ -24,4 +24,11 @@ abstract final class AiCopy {
     1 => '1 AI read left this month.',
     _ => '$calls AI reads left this month.',
   };
+
+  /// What Twig, the AI mascot, says to a screen reader where nothing beside
+  /// it says the AI did the work (design-system ADR-0012). Everywhere else it
+  /// is decoration. A planned week names Twig and, for honesty, what Twig is
+  /// (design-system ADR-0014).
+  static const twigBestMatch = 'Picked by NestPrep’s AI';
+  static const twigPlannedWeek = 'Planned by Twig, NestPrep’s AI';
 }

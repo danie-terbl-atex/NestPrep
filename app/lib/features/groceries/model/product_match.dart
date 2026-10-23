@@ -4,13 +4,14 @@ import '../../../shared/money/money.dart';
 
 part 'product_match.freezed.dart';
 
-/// The shops a product match can be at. Only Checkers Sixty60 is connected
-/// today; Pick n Pay and Woolworths are named so the shop picker can show
-/// them as coming, and the field is stored so connecting one is additive
-/// (`BE-10`). Each needs its own ADR before it is connected (ADR-0001).
+/// The shops a product match can be at. Checkers Sixty60 and Pick n Pay are
+/// connected — on the grocery screen and in *Plan my week* alike, each behind
+/// its own switch (add-to-pnp ADR-0007). Woolworths is named so the shop
+/// picker can show it as coming, and the field is stored so connecting it
+/// is additive (`BE-10`).
 enum ProductRetailer {
   checkers('checkers', isConnected: true),
-  pickNPay('pickNPay', isConnected: false),
+  pickNPay('pickNPay', isConnected: true),
   woolworths('woolworths', isConnected: false);
 
   const ProductRetailer(this.code, {required this.isConnected});
@@ -18,8 +19,9 @@ enum ProductRetailer {
   /// As stored in `productMatch.retailer`.
   final String code;
 
-  /// Whether NestPrep can search this shop yet. Only a connected shop can be
-  /// chosen, so a lookup never goes to a shop that cannot answer.
+  /// Whether NestPrep can search this shop. Only a connected shop — and only
+  /// while its switch is on — can be chosen, so a lookup never goes to a shop
+  /// that cannot answer.
   final bool isConnected;
 
   static ProductRetailer? fromCode(String code) =>
@@ -38,14 +40,16 @@ abstract class ProductMatch with _$ProductMatch {
   const factory ProductMatch({
     required ProductRetailer retailer,
 
-    /// The Sixty60 product id, the same id a cart line carries.
+    /// The shop's national product id, the same id a cart line carries:
+    /// Sixty60's 24-hex id, or Pick n Pay's code (`000000000000838685_EA`).
     required String productId,
 
     /// Article number and unit of measure together, e.g. `10136729EA` — the
     /// backup key when a product id is ever re-issued.
     required String articleCode,
 
-    /// `EA`, `KG`, `PK1`… as Checkers sends it. `KG` is sold by weight.
+    /// `EA`, `KG`, `PK1`… as the shop sends it. `KG` (Checkers) and `KGM`
+    /// (Pick n Pay) are sold by weight.
     required String unitOfMeasure,
     required String name,
     String? brand,
@@ -64,5 +68,5 @@ abstract class ProductMatch with _$ProductMatch {
 
   const ProductMatch._();
 
-  bool get isSoldByWeight => unitOfMeasure == 'KG';
+  bool get isSoldByWeight => const {'KG', 'KGM'}.contains(unitOfMeasure);
 }

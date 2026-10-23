@@ -1,0 +1,155 @@
+{
+  "id": "malva-pudding",
+  "name": "Malva pudding",
+  "summary": "A soft, spongy apricot-jam pudding baked until caramel-brown, then soaked in a hot butter and cream sauce and served warm with custard.",
+  "about": "Malva pudding is a South African baked pudding whose exact origin is uncertain; the name is often linked to Malvasia (Madeira) wine. Spongy, caramelised and soaked in a buttery cream sauce, it became the country's favourite winter dessert, served at Sunday lunches, church bazaars and restaurants.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "dessert"
+  },
+  "tags": [
+    "traditional",
+    "comfort",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Butter",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "soft, plus extra for greasing",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 200,
+      "unit": "g",
+      "note": "about 1 cup",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": "large",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Smooth apricot jam",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Milk",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Brown vinegar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Vanilla essence",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 150,
+      "unit": "g",
+      "note": "about 1 cup plus 2 tbsp",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Bicarbonate of soda",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pudding"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": "For the pudding"
+    },
+    {
+      "name": "Fresh cream",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "or evaporated milk",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Butter",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Hot water",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Custard",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "warm, to serve",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C for a fan oven). Grease a 2-litre ovenproof dish (about 20 × 30 cm) with butter.",
+    "Beat the soft butter, sugar and egg together with an electric beater for 3–4 minutes, until pale and thick. Beat in the apricot jam.",
+    "Stir the vinegar and vanilla into the milk. Sift the flour, bicarbonate of soda and salt into another bowl.",
+    "Fold the flour and the milk into the egg mixture in turns, a third at a time, until you have a smooth, runny batter with no dry pockets.",
+    "Pour the batter into the dish and bake for 40–45 minutes, until risen, deep caramel-brown on top and a skewer pushed into the centre comes out clean.",
+    "While it bakes, put the cream, butter, sugar and hot water in a saucepan over low heat and stir for 3–4 minutes, until the butter has melted and the sugar dissolved. Keep it hot but do not let it boil.",
+    "As soon as the pudding comes out of the oven, prick it all over with a skewer and pour the hot sauce slowly over it. Leave it for 10 minutes to soak up the sauce; it will look glossy and sticky.",
+    "Serve warm, with warm custard poured over each portion."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Bake and sauce it a day ahead; cover and reheat at 160 °C for 15 minutes before serving.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

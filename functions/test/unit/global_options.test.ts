@@ -40,6 +40,11 @@ const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
   // row, each with its own eight-second limit (the Checkers build contract).
   checkersVerifyOtp: 60,
   checkersPushToCart: 60,
+  // Linking Pick n Pay swaps a code at PnP's token endpoint; a push reads the
+  // cart, each product at its store, then writes line by line (add-to-pnp
+  // ADR-0003, ADR-0004).
+  pnpCompleteLink: 60,
+  pnpPushToCart: 120,
 };
 
 /** The functions allowed more than the global limits, and exactly how much. */
@@ -48,6 +53,8 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   // export reads all of it.
   deleteAccount: { timeoutSeconds: 300, memoryMb: 512 },
   exportAccountData: { timeoutSeconds: 120, memoryMb: 512 },
+  // Closing a household ends it the way erasure does (household ADR-0007).
+  closeHousehold: { timeoutSeconds: 300, memoryMb: 512 },
   // Reading a letter waits on Vertex (foundation ADR-0015).
   readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
   // Planning a week waits on Vertex the same way, twice (lunch-box ADR-0012).
@@ -63,9 +70,9 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are eighty-five of them, so a new one cannot slip past these checks', () => {
+  it('there are ninety-two of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
-    // Household and documents: ten callables (`setMemberAccess` is household
+    // Household and documents: eleven callables (`setMemberAccess` is household
     // ADR-0003's, `previewInvite` household ADR-0005's). Product analytics: recordActivity, three Firestore triggers
     // that must run in the database's region or never fire, and one schedule
     // (product-analytics ADR-0001). Kid sign-in: five callables (accounts
@@ -94,9 +101,12 @@ describe('every function — callable, trigger or schedule', () => {
     // buildLunchWeek (lunch-box ADR-0012). Add to Checkers: five callables — link status, send and
     // verify a code, fill the cart, unlink (the Checkers build contract). A
     // lunch box's picture: lunchPhoto (lunch-box ADR-0015). Jev ranking a
-    // grocery line's matches: rankProductMatches (foundation ADR-0021). A feature adds
-    // its count and its line.
-    expect(endpoints()).toHaveLength(85);
+    // grocery line's matches: rankProductMatches (foundation ADR-0021). Saving
+    // the dishes a parent uses as household recipes: saveLunchRecipes (recipes
+    // ADR-0002). Add to Pick n Pay: five callables — link status, start and
+    // complete a link, fill the cart, unlink (add-to-pnp ADR-0003). A feature
+    // adds its count and its line.
+    expect(endpoints()).toHaveLength(92);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite target', () => {

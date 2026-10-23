@@ -1,0 +1,39 @@
+{
+  "id": "braaied-snoek-apricot-glaze",
+  "name": "Braaied snoek with apricot glaze",
+  "summary": "A whole butterflied snoek cooked skin-side down over the coals and basted with a sticky apricot, butter, garlic and lemon glaze until it flakes.",
+  "about": "Snoek is the Cape's own fish, landed by line boats along the West Coast and sold whole and butterflied at harbours and fish shops. Braaied with a sweet apricot basting and eaten with baked sweet potatoes and a green salad, it is the classic Western Cape braai.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["braai", "traditional"],
+  "allergens": ["milk", "fish"],
+  "dietTags": [],
+  "ingredients": [
+    { "name": "Whole snoek", "quantity": 1.8, "unit": "kg", "note": "cleaned and butterflied", "group": null },
+    { "name": "Coarse salt", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Butter", "quantity": 100, "unit": "g", "note": null, "group": null },
+    { "name": "Smooth apricot jam", "quantity": 0.5, "unit": "cup", "note": null, "group": null },
+    { "name": "Garlic cloves", "quantity": 3, "unit": null, "note": "crushed", "group": null },
+    { "name": "Lemon", "quantity": 1, "unit": null, "note": "zest and juice", "group": null },
+    { "name": "Sunflower oil", "quantity": 1, "unit": "tbsp", "note": "for the grid", "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null },
+    { "name": "Lemon", "quantity": 1, "unit": null, "note": "cut into wedges, to serve", "group": null }
+  ],
+  "steps": [
+    "Pat the snoek dry with paper towel, sprinkle the flesh side with the coarse salt and leave it uncovered in the fridge for 30 minutes to 1 hour so the flesh firms up.",
+    "Light the fire and let it burn down to medium-hot coals, when you can hold your hand at grid height for 4 to 5 seconds, about 40 minutes for wood or 25 minutes for charcoal.",
+    "Make the glaze: melt the butter, apricot jam, garlic, lemon zest and juice in a small pot over low heat, stirring, until smooth and just bubbling, about 3 minutes.",
+    "Rinse the salt off the snoek, pat it dry, brush the hinged fish grid with oil and clamp the fish inside. Brush the flesh side generously with glaze and season with pepper.",
+    "Braai skin-side down for 12 to 15 minutes, brushing the flesh with more glaze every few minutes, until the skin is crisp and the flesh has turned white almost all the way through.",
+    "Turn the grid and cook the flesh side for just 2 to 3 minutes, until the glaze is caramelised and the thickest part flakes easily with a fork. Watch closely: the sugar catches quickly.",
+    "Slide the snoek onto a board skin-side down, pour over any remaining glaze and serve at once with lemon wedges. Warn everyone to look out for the fine bones."
+  ],
+  "servings": 6,
+  "prepMinutes": 30,
+  "cookMinutes": 20,
+  "difficulty": "medium",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

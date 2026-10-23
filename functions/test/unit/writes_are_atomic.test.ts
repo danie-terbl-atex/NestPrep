@@ -196,6 +196,9 @@ describe('every callable declares what it may cost', () => {
         'previewAccountDeletion',
         'requestAccountDeletion',
         'sweepAccountExports',
+        // Closing a household ends it the way erasure does, Auth users and
+        // Storage bytes included (household ADR-0007).
+        'closeHousehold',
         // Home care V2: a low product's grocery line written on the
         // household's behalf, whatever the marker's groceries grant, once
         // (home-care ADR-0005); and a translation paid for from a monthly cap
@@ -268,9 +271,19 @@ describe('every callable declares what it may cost', () => {
         'checkersRequestOtp',
         'checkersUnlink',
         'checkersVerifyOtp',
+        // Add to Pick n Pay: the member's PnP tokens are sealed and held by
+        // the server, and fill their own PnP cart (add-to-pnp ADR-0003).
+        'pnpCompleteLink',
+        'pnpLinkStatus',
+        'pnpPushToCart',
+        'pnpStartLink',
+        'pnpUnlink',
         // Jev's ranking of a grocery line's matches: the TypeSafe key is a
         // server secret (foundation ADR-0021).
         'rankProductMatches',
+        // A household recipe's allergen codes come from word lists no rule
+        // can run, so only a Function writes one (recipes ADR-0002).
+        'saveLunchRecipes',
       ].sort(),
     );
   });

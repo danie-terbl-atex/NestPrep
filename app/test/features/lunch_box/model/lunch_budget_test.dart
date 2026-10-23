@@ -115,6 +115,32 @@ void main() {
       expect(cost.basket.total, const Money(6000));
     });
 
+    test('counts only the week on the board, never another week a child '
+        'has a plan for', () {
+      // "Next week's budget is added to this week's" (Daniel, 2026-10-07):
+      // the meter prices the board's week alone.
+      final cost = LunchWeekCost.of(
+        board: boardOf([
+          ...plans,
+          for (final week in [
+            LunchFixtures.week.next,
+            LunchFixtures.week.previous,
+          ])
+            LunchFixtures.plan(
+              LunchFixtures.ayandaId,
+              week: week,
+              slots: {
+                for (var day = 1; day <= 5; day++)
+                  key(day, LunchSlot.main): LunchPick.of(LunchFixtures.wrap),
+              },
+            ),
+        ]),
+        prices: {'wrap': price('wrap', 600)},
+      );
+      expect(cost.basket.lineFor('wrap')!.boxes, 2);
+      expect(cost.basket.total, const Money(1200));
+    });
+
     test('an unpriced thing makes the total *at least*, and is named', () {
       final cost = LunchWeekCost.of(
         board: boardOf(plans),

@@ -22,6 +22,18 @@ enum Allergen {
   static Allergen? fromCode(String code) =>
       values.where((allergen) => allergen.name == code).firstOrNull;
 
+  /// A stored list of codes from system data (recipes, ready-made boxes),
+  /// or null when any entry is not a code this build knows: something whose
+  /// contents cannot be checked is never treated as safe.
+  static Set<Allergen>? parseCodes(Object? value) {
+    if (value is! List<Object?>) return null;
+    final known = [
+      for (final code in value)
+        if (code is String) ?fromCode(code),
+    ];
+    return known.length == value.length ? known.toSet() : null;
+  }
+
   /// A nut allergy makes a person nut-free whatever else is recorded.
   bool get isNut => this == peanut || this == treeNut;
 }

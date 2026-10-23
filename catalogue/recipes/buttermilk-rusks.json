@@ -1,0 +1,100 @@
+{
+  "id": "buttermilk-rusks",
+  "name": "Buttermilk rusks",
+  "summary": "Karringmelkbeskuit: twice-baked buttermilk rusks, baked as a loaf, broken up and dried until crisp enough to dunk in coffee or rooibos.",
+  "about": "Rusks — beskuit — are baked twice: first as a loaf, then broken up and dried slowly until hard. Cape bakers and travelling families dried bread this way so it would keep, and buttermilk rusks, raised with baking powder rather than yeast, are the version South African families still bake at home for dunking.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "breakfast",
+    "lunch"
+  ],
+  "placement": {
+    "breakfast": "snack",
+    "lunch": "snack"
+  },
+  "tags": [
+    "baking",
+    "traditional"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Self-raising flour",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butter",
+      "quantity": 125,
+      "unit": "g",
+      "note": "melted and cooled",
+      "group": null
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Buttermilk",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven) and grease a 30 × 20 cm baking tin.",
+    "Sift the flour, baking powder and salt into a large bowl and stir in the sugar.",
+    "Whisk the butter, egg and buttermilk together, pour into the flour and mix with a wooden spoon, then your hands, into a soft, slightly sticky dough. Do not knead it for long.",
+    "With floured hands, roll the dough into 24 balls of about 40 g and pack them snugly in rows in the tin.",
+    "Bake for 40–45 minutes, until golden and a skewer pushed into the centre comes out clean.",
+    "Cool in the tin for 10 minutes, turn out and cool for 30 minutes more. Break the loaf apart along the ball lines into 24 rusks, using a fork to start each break.",
+    "Spread the rusks on oven racks and dry them at 90 °C with the door propped open a crack with a wooden spoon for 6–8 hours, or overnight, until completely dry and crisp right through. Break one open to check there is no soft centre.",
+    "Cool completely and store in an airtight container for up to 6 weeks."
+  ],
+  "servings": 24,
+  "prepMinutes": 25,
+  "cookMinutes": 525,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Bake a batch at the weekend; kept airtight, the rusks last for weeks.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

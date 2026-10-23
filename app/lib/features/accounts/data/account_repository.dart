@@ -28,4 +28,9 @@ abstract interface class AccountRepository {
     required int termsVersion,
     required int privacyVersion,
   });
+
+  /// Records that this person finished or skipped the welcome tour at
+  /// [version], stamped with the server's time (welcome-tour ADR-0001). The
+  /// rules refuse any other shape, and a version lower than one recorded.
+  Future<void> markTourSeen({required String uid, required int version});
 }

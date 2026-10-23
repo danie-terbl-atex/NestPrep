@@ -1,0 +1,43 @@
+{
+  "id": "hertzoggies",
+  "name": "Hertzoggies",
+  "summary": "Hertzoggies (jam and coconut tartlets): crisp, buttery pastry cups filled with apricot jam under a chewy, lightly golden coconut meringue.",
+  "about": "Hertzoggies are named after J.B.M. Hertzog, South Africa's prime minister from 1924 to 1939, who is said to have loved them. They are a fixture of church bake sales and Sunday tea, and in Cape Malay homes they are baked by the tin-load for Eid, when families visit from house to house.",
+  "cuisine": "southAfrican",
+  "contexts": ["lunch"],
+  "placement": { "lunch": "snack" },
+  "tags": ["baking", "traditional"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 250, "unit": "g", "note": "plus extra for rolling", "group": "For the pastry" },
+    { "name": "Baking powder", "quantity": 2, "unit": "tsp", "note": null, "group": "For the pastry" },
+    { "name": "Sugar", "quantity": 2, "unit": "tbsp", "note": null, "group": "For the pastry" },
+    { "name": "Salt", "quantity": null, "unit": null, "note": "a pinch", "group": "For the pastry" },
+    { "name": "Butter", "quantity": 125, "unit": "g", "note": "cold, cubed, plus extra for greasing", "group": "For the pastry" },
+    { "name": "Egg yolks", "quantity": 3, "unit": null, "note": "keep the whites for the topping", "group": "For the pastry" },
+    { "name": "Cold water", "quantity": 2, "unit": "tbsp", "note": "plus a little more if needed", "group": "For the pastry" },
+    { "name": "Smooth apricot jam", "quantity": 0.75, "unit": "cup", "note": null, "group": "For the filling" },
+    { "name": "Egg whites", "quantity": 3, "unit": null, "note": "at room temperature", "group": "For the topping" },
+    { "name": "Sugar", "quantity": 200, "unit": "g", "note": "about 1 cup", "group": "For the topping" },
+    { "name": "Vanilla essence", "quantity": 0.5, "unit": "tsp", "note": null, "group": "For the topping" },
+    { "name": "Desiccated coconut", "quantity": 150, "unit": "g", "note": "about 2 cups", "group": "For the topping" }
+  ],
+  "steps": [
+    "Sift the flour, baking powder, sugar and salt into a bowl. Rub in the cold butter with your fingertips for 3–4 minutes, until it looks like fine breadcrumbs.",
+    "Whisk the egg yolks with the cold water, add to the flour and mix with a knife until the dough clumps together; add a teaspoon more water if it stays crumbly. Press into a disc, wrap and chill for 20 minutes.",
+    "Heat the oven to 180 °C (160 °C for a fan oven) and grease two 12-hole patty-pan or mini-muffin trays.",
+    "Roll the pastry out on a floured surface to about 3 mm thick and cut out 24 rounds with a 7 cm cutter, re-rolling the offcuts. Press the rounds into the holes.",
+    "Put a heaped teaspoon of apricot jam into each pastry case.",
+    "Beat the egg whites with an electric beater until they hold soft peaks, about 2 minutes. Add the sugar a spoonful at a time, beating well after each, until the meringue is thick and glossy, then beat in the vanilla. Fold in the coconut with a spatula.",
+    "Spoon a heaped teaspoon of coconut meringue over the jam in each case, covering it completely.",
+    "Bake for 20–25 minutes, until the pastry is crisp and pale golden at the edges and the coconut topping is lightly browned and dry to the touch. Cool in the trays for 10 minutes, then lift out onto a rack to cool completely."
+  ],
+  "servings": 24,
+  "prepMinutes": 45,
+  "cookMinutes": 25,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Keeps 5 days in an airtight tin, or 2 months frozen.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

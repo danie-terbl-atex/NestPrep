@@ -133,9 +133,9 @@ class _ContactSheetBodyState extends State<_ContactSheetBody> {
           NestButton(
             label: NannyCopy.save,
             onPressed: _nameIsValid && _phoneIsValid
-                ? () => Navigator.of(
-                    context,
-                  ).pop((draft: _draft, isRemoval: false))
+                ? () =>
+                      Navigator.of(context)
+                          .pop((draft: _draft, isRemoval: false))
                 : null,
           ),
           if (widget.existing != null) ...[

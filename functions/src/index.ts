@@ -11,6 +11,8 @@ export { redeemInvite } from './household/redeem_invite';
 export { previewInvite } from './household/preview_invite';
 export { leaveHousehold } from './household/leave_household';
 export { removeMember } from './household/remove_member';
+// its last adult closes a household for good (household ADR-0007)
+export { closeHousehold } from './household/close_household';
 export { setMemberRole } from './household/set_member_role';
 // household phase 2 — what each role may see (household ADR-0003)
 export { setMemberAccess } from './household/set_member_access';
@@ -110,6 +112,7 @@ export { notifyCoParentHandover } from './notifications/notify_coparent';
 // ---- plan my week from the store, in guided steps: proposals, never a write (lunch-box ADR-0012, foundation ADR-0015) ----
 export { draftLunchIdeas } from './plan_week/draft_lunch_ideas';
 export { buildLunchWeek } from './plan_week/build_lunch_week';
+export { saveLunchRecipes } from './recipes/save_lunch_recipes';
 // ---- a picture of the lunch box, made once per combination (lunch-box ADR-0015, foundation ADR-0015) ----
 export { lunchPhoto } from './lunch_photos/lunch_photo';
 // ---- add to Checkers: a member's own Sixty60 cart, linked by SMS code (the Checkers build contract) ----
@@ -118,5 +121,11 @@ export { checkersRequestOtp } from './checkers/checkers_request_otp';
 export { checkersVerifyOtp } from './checkers/checkers_verify_otp';
 export { checkersPushToCart } from './checkers/checkers_push_to_cart';
 export { checkersUnlink } from './checkers/checkers_unlink';
+// ---- add to Pick n Pay: a member's own PnP cart, linked on PnP's own login page (add-to-pnp ADR-0003) ----
+export { pnpLinkStatus } from './pnp/pnp_link_status';
+export { pnpStartLink } from './pnp/pnp_start_link';
+export { pnpCompleteLink } from './pnp/pnp_complete_link';
+export { pnpPushToCart } from './pnp/pnp_push_to_cart';
+export { pnpUnlink } from './pnp/pnp_unlink';
 // ---- Jev ranks the matches under a grocery line; the member still picks (foundation ADR-0021) ----
 export { rankProductMatches } from './checkers/rank_product_matches';

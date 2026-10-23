@@ -3,6 +3,7 @@ import 'app_copy.dart';
 import 'calendar_sync_copy.dart';
 import 'checkers_copy.dart';
 import 'kid_copy.dart';
+import 'pnp_copy.dart';
 import 'points_copy.dart';
 import 'subscription_copy.dart';
 
@@ -52,6 +53,8 @@ abstract final class FailureCopy {
     AccountDataFailure(:final problem) => AccountDataCopy.problem(problem),
     // product matches and Add to Checkers (the Checkers build contract).
     CheckersFailure(:final problem) => CheckersCopy.problem(problem),
+    // Pick n Pay: the catalogue, the link and the cart (add-to-pnp ADR-0001).
+    PnpFailure(:final problem) => PnpCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
@@ -110,6 +113,10 @@ abstract final class FailureCopy {
       'That needs a grown-up\u2019s account, not a kid sign-in.',
     HouseholdProblem.familyHasFullAccess =>
       'Parents already see everything, so there is nothing to choose.',
+    HouseholdProblem.otherAdultsRemain =>
+      'Another parent has joined, so the household can carry on without you. '
+          'Make them an admin and leave instead.',
+    HouseholdProblem.closeNotConfirmed => 'Type CLOSE in the box to confirm.',
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',

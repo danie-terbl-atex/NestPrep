@@ -23,6 +23,10 @@ export const HOUSEHOLD_REFUSALS = {
   // A kid device calls no household callable at all (accounts ADR-0003).
   kidAccount: ['permission-denied', 'A kid sign-in cannot do that.'],
   familyHasFullAccess: ['failed-precondition', 'Family members already see everything.'],
+  // Closing ends a household for everybody, so it is only for its last adult;
+  // with another adult in it, they take it over instead (household ADR-0007).
+  otherAdultsRemain: ['failed-precondition', 'Another adult can still run this household.'],
+  closeNotConfirmed: ['invalid-argument', 'Closing a household needs the typed confirmation.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type HouseholdRefusal = keyof typeof HOUSEHOLD_REFUSALS;

@@ -21,6 +21,10 @@ enum PremiumFeature {
   /// An AI photo of each lunchbox as it is packed (lunch-box ADR-0015).
   lunchPhoto,
 
+  /// A planned recipe's ingredients found at the shop and put on the
+  /// grocery list in one go (recipes ADR-0005).
+  recipeShopping,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

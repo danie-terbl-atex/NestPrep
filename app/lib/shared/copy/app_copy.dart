@@ -7,22 +7,21 @@ import 'product_analytics_copy.dart';
 
 // Household phase 2's words live beside this file (household ADR-0003).
 export 'access_copy.dart';
-
 // account data: the account centre, download and delete (accounts ADR-0006).
 export 'account_data_copy.dart';
-
 // calendar V2 — AI, snap a school letter, the mental-load view: their words
 // live in their own files, reached through this one.
 export 'ai_copy.dart';
+// closing a household for good (household ADR-0007).
+export 'close_household_copy.dart';
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
-
+// fill the week, step by step (lunch-box ADR-0020).
+export 'fill_week_copy.dart';
 // home-care: its words live in their own file (home-care ADR-0001).
 export 'home_care_copy.dart';
-
 // legal and consent (accounts ADR-0005): their words live in their own file.
 export 'legal_copy.dart';
-
 // lunch-box: its words live in their own file, reached through this one — and
 // its V2 tools' (pantry, budget, kid picks: lunch-box ADR-0006 to ADR-0008)
 // in theirs, beside it in name order.
@@ -31,10 +30,10 @@ export 'lunch_copy.dart';
 export 'lunch_kid_picks_copy.dart';
 export 'lunch_pantry_copy.dart';
 export 'lunch_planning_copy.dart';
-
 // lunch-box phase 2: the shareable card and the printable planner (ADR-0005).
 export 'lunch_share_copy.dart';
-
+// the Meals tab: recipes and this week (design-system ADR-0015).
+export 'meals_copy.dart';
 // calendar V2: the mental-load view (calendar ADR-0006).
 export 'mental_load_copy.dart';
 // The More tab: the household's other places (design-system ADR-0005).
@@ -50,13 +49,19 @@ export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
 // plan my week with AI: its words live in their own file (lunch-box ADR-0011).
+export 'plan_week_again_copy.dart';
 export 'plan_week_copy.dart';
+// recipes: NestPrep's published recipes.
+export 'recipe_copy.dart';
+export 'recipe_shop_copy.dart';
 // referrals: give a month, get a month (subscriptions ADR-0002).
 export 'referral_copy.dart';
 // calendar V2: snap a school letter (calendar ADR-0005).
 export 'school_letter_copy.dart';
 export 'share_link_copy.dart';
 export 'today_copy.dart';
+// the welcome tour (welcome-tour ADR-0001).
+export 'tour_copy.dart';
 // co-parenting: a child in two homes (household ADR-0004).
 export 'two_homes_copy.dart';
 
@@ -83,6 +88,20 @@ abstract final class AppCopy {
   static const signInOrbitInitials = 'AMJKS';
 
   static const signInWithGoogle = 'Continue with Google';
+  static const signInWithApple = 'Continue with Apple';
+  static const signInAppleComingSoon =
+      'Signing in with Apple is coming soon. Use Google or your email for now.';
+
+  // The one way in for a code (accounts ADR-0009): a household invite from
+  // family, or a kid sign-in code from a grown-up.
+  static const codeWayInPrompt = 'Got a code from your family?';
+  static const codeWayIn = 'I have a code';
+  static const codeWayInLabel = 'Your code';
+  static const codeWayInHelper =
+      'Eight letters and numbers for an invite, six for a kid.';
+  static const codeWayInContinue = 'Continue';
+  static const codeWayInInvalid =
+      'That code does not look right. Check it and type it again.';
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';
   static const signInDemoHint = 'Demo accounts — sign in as';
   static const signInAsParent = 'Parent';

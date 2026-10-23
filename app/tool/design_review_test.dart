@@ -10,9 +10,10 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/state/household_gate_controller.dart';
 import 'package:nestprep/features/household/ui/household_gate_screen.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
-import 'package:nestprep/features/meal_planning/ui/meal_plan_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/product_analytics/state/beta_numbers_controller.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
@@ -325,7 +326,12 @@ void main() {
     await captureScreen(
       tester,
       'meals-${brightness.name}',
-      screen: MealPlanScreen(onSelectTab: (_) {}),
+      screen: MealsScreen(
+        view: MealsView.week,
+        onSelectView: (_) {},
+        onSelectTab: (_) {},
+        onOpenRecipe: (_) {},
+      ),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),
       ],

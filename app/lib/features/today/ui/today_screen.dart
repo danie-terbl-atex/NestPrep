@@ -10,6 +10,8 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../welcome_tour/model/tour_target.dart';
+import '../../welcome_tour/ui/tour_anchor.dart';
 import 'today_agenda_section.dart';
 import 'today_lists_section.dart';
 import 'today_lunch_section.dart';
@@ -32,7 +34,12 @@ class TodayScreen extends StatelessWidget {
     final firstName = view.viewerMember?.displayName.split(' ').first;
     final sections = [
       if (permissions.canUse(HouseholdArea.lunch))
-        TodayLunchSection(onOpen: () => onSelectTab(HouseholdTab.lunch)),
+        TourAnchor(
+          target: TourTarget.todayLunch,
+          child: TodayLunchSection(
+            onOpen: () => onSelectTab(HouseholdTab.lunch),
+          ),
+        ),
       if (permissions.canUse(HouseholdArea.calendar))
         TodayAgendaSection(onOpen: () => onSelectTab(HouseholdTab.week)),
       if (permissions.canUse(HouseholdArea.todos))
@@ -43,7 +50,10 @@ class TodayScreen extends StatelessWidget {
 
     return NestScaffold(
       leading: const NestBrandLockup(semanticsLabel: AppCopy.appName),
-      trailing: const [NotificationBell(), AccountMenuButton()],
+      trailing: const [
+        TourAnchor(target: TourTarget.bell, child: NotificationBell()),
+        TourAnchor(target: TourTarget.accountMenu, child: AccountMenuButton()),
+      ],
       bottomBar: HouseholdTabBar(
         current: HouseholdTab.today,
         onSelect: onSelectTab,

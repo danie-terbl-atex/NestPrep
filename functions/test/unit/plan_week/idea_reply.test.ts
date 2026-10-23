@@ -2,9 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { ideaBriefFrom, type IdeaBrief } from '../../../src/plan_week/idea_brief';
 import { ideasFrom } from '../../../src/plan_week/idea_reply';
-import { rulesOf } from './fixtures';
-
-const MONDAY = '2026-10-05';
+import { SCHOOL_WEEK, rulesOf } from './fixtures';
 
 function briefFor(
   mia = rulesOf({ allergyCodes: ['peanut'], dislikes: ['tomato'], otherAllergies: ['kiwi'] }),
@@ -16,7 +14,7 @@ function briefFor(
       { memberId: 'leo', rules: leo },
     ],
     [],
-    MONDAY,
+    SCHOOL_WEEK,
     40000,
   );
 }

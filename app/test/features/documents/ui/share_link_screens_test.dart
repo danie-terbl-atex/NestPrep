@@ -192,9 +192,8 @@ void main() {
         fakes: fakes,
         location: kidVault,
         view: Fixtures.helperView(
-          AccessGrant.uniform(
-            AccessLevel.none,
-          ).withLevel(HouseholdArea.documents, AccessLevel.edit),
+          AccessGrant.uniform(AccessLevel.none)
+              .withLevel(HouseholdArea.documents, AccessLevel.edit),
         ),
         viewerUid: Fixtures.thandiUid,
       );

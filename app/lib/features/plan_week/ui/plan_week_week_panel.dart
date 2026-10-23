@@ -8,8 +8,8 @@ import '../model/shop_week.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_basket_section.dart';
 import 'plan_week_child_card.dart';
-import 'plan_week_step_actions.dart';
 import 'plan_week_week_header.dart';
+import 'plan_week_week_name.dart';
 import 'plan_week_working_panel.dart';
 
 /// Step 4 (lunch-box ADR-0012): each child's week from what the shop had —
@@ -23,9 +23,12 @@ class PlanWeekWeekPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<PlanWeekController>();
     return switch (controller.shop.state) {
-      AsyncLoading() => const PlanWeekWorkingPanel(
+      // The week is the model's to build: the phone builds one only once it
+      // has said it cannot help, and that is never a wait.
+      AsyncLoading() => PlanWeekWorkingPanel(
         title: PlanWeekCopy.buildingTitle,
-        line: PlanWeekCopy.buildingLine,
+        line: PlanWeekCopy.buildingLine(controller.retailer.shop),
+        twig: NestTwigPose.planning,
       ),
       AsyncFailure(:final failure) => NestErrorView(
         message: AppCopy.failure(failure),
@@ -49,16 +52,17 @@ class _Week extends StatelessWidget {
     final controller = context.watch<PlanWeekController>();
     final shop = controller.shop;
     final failure = shop.failure;
+    final weekName = planWeekName(controller);
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
-        PlanWeekWeekHeader(plan: plan),
+        PlanWeekWeekHeader(plan: plan, weekName: weekName),
         if (plan.isEmpty) ...[
           const SizedBox(height: NestSpace.lg),
-          const NestEmptyView(
+          NestEmptyView(
             icon: LucideIcons.sandwich,
-            title: PlanWeekCopy.nothingNew,
-            message: PlanWeekCopy.nothingNewBody,
+            title: PlanWeekCopy.nothingNew(weekName.inSentence),
+            message: PlanWeekAgainCopy.nothingNewBody(controller.retailer.shop),
           ),
         ] else ...[
           for (final child in plan.children) ...[
@@ -71,7 +75,7 @@ class _Week extends StatelessWidget {
             ),
           ],
           const SizedBox(height: NestSpace.md),
-          PlanWeekBasketSection(plan: plan),
+          PlanWeekBasketSection(plan: plan, weekName: weekName),
         ],
         if (failure != null) ...[
           const SizedBox(height: NestSpace.lg),
@@ -83,12 +87,19 @@ class _Week extends StatelessWidget {
           ),
         ],
         const SizedBox(height: NestSpace.xl),
-        PlanWeekStepActions(
-          nextKey: const ValueKey('plan-week-use'),
-          label: PlanWeekCopy.useAction,
-          icon: LucideIcons.check,
+        NestStepActions(
+          // A week with nothing new leads back to the brief, never to a
+          // button that cannot be pressed (lunch-box ADR-0027).
+          nextKey: ValueKey(
+            plan.isEmpty ? 'plan-week-to-brief' : 'plan-week-use',
+          ),
+          nextLabel: plan.isEmpty
+              ? PlanWeekAgainCopy.backToBrief
+              : PlanWeekCopy.useAction,
+          nextIcon: plan.isEmpty ? LucideIcons.arrowLeft : LucideIcons.check,
           isBusy: shop.isSaving,
-          onNext: plan.isEmpty ? null : controller.use,
+          onNext: plan.isEmpty ? controller.startOver : controller.use,
+          backLabel: PlanWeekCopy.back,
           onBack: shop.isSaving ? null : controller.back,
         ),
       ],

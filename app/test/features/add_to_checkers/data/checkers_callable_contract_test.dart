@@ -1,8 +1,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/add_to_checkers/data/cart_push_result_parser.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_failure_mapper.dart';
-import 'package:nestprep/features/add_to_checkers/data/checkers_push_result_parser.dart';
-import 'package:nestprep/features/add_to_checkers/model/checkers_push_result.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
@@ -66,7 +66,7 @@ void main() {
   });
 
   test('a push answer reads into what was added, skipped and the cart', () {
-    final result = CheckersPushResultParser.parse({
+    final result = CartPushResultParser.parse({
       'added': [
         {
           'itemId': 'i1',
@@ -86,13 +86,13 @@ void main() {
     expect(result!.added.single.price.cents, 3799);
     expect(
       [for (final line in result.skipped) line.reason],
-      [CheckersSkipReason.weighedItem, CheckersSkipReason.unrecognised],
+      [CartSkipReason.weighedItem, CartSkipReason.unrecognised],
     );
     expect(result.cartItemCount, 4);
     expect(result.cartTotal.display, 'R123.96');
   });
 
   test('a push answer of the wrong shape is not a result', () {
-    expect(CheckersPushResultParser.parse({'added': 'lots'}), isNull);
+    expect(CartPushResultParser.parse({'added': 'lots'}), isNull);
   });
 }

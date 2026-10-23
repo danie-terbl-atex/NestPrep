@@ -1,0 +1,128 @@
+{
+  "id": "boerewors-rolls",
+  "name": "Boerewors rolls",
+  "summary": "Braaied boerewors in toasted buttered rolls with a quick tomato and onion relish and mustard — the classic boerie roll.",
+  "about": "Boerewors — “farmer’s sausage” — must by South African law be at least 90% meat, spiced with coriander, pepper and nutmeg or cloves. Coiled on the braai and cut to fit soft rolls with tomato and onion relish, the boerie roll is the school fête, sports-day and Saturday braai lunch.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "braai",
+    "kidFriendly",
+    "quick"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the relish"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the relish"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the relish"
+    },
+    {
+      "name": "Ripe tomatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "chopped",
+      "group": "For the relish"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the relish"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the relish"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the relish"
+    },
+    {
+      "name": "Dried chilli flakes",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "optional",
+      "group": "For the relish"
+    },
+    {
+      "name": "Boerewors",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "in a coil",
+      "group": "For the rolls"
+    },
+    {
+      "name": "Hot dog rolls",
+      "quantity": 6,
+      "unit": null,
+      "note": null,
+      "group": "For the rolls"
+    },
+    {
+      "name": "Butter",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "softened, or margarine",
+      "group": "For the rolls"
+    },
+    {
+      "name": "Prepared mustard",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "optional",
+      "group": "For the rolls"
+    }
+  ],
+  "steps": [
+    "For the relish, heat the oil in a saucepan over medium heat and fry the onions until soft and golden, about 8 minutes. Add the garlic for 1 minute, then the tomatoes, sugar, salt, pepper and chilli. Simmer for 10–12 minutes, stirring now and then, until thick and jammy.",
+    "Meanwhile braai the boerewors coil over medium coals (you can hold your hand above the grid for 5–6 seconds) for 12–15 minutes, turning once or twice with tongs and never pricking it, until browned, firm when pressed and the juices run clear. Indoors, fry it in a large pan over medium heat for the same time.",
+    "Split and butter the rolls and toast them cut side down on the grid or in the pan for about 1 minute, until golden.",
+    "Cut the wors into roll-length pieces, tuck one into each roll and top with relish and a line of mustard. Serve hot."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the relish up to 3 days ahead and keep it in the fridge; serve it warm or cold.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

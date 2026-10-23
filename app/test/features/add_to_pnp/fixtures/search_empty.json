@@ -1,0 +1,51 @@
+{
+ "type": "productCategorySearchPageWsDTO",
+ "breadcrumbs": [
+  {
+   "facetCode": "category",
+   "facetName": "category",
+   "facetValueCode": "lunch-box-snacks-1664414929",
+   "facetValueName": "Lunch Box Snacks",
+   "removeQuery": {
+    "query": {
+     "value": ":relevance"
+    },
+    "url": "/search?q=%3Arelevance&pageSize=5"
+   },
+   "visible": true
+  }
+ ],
+ "currentQuery": {
+  "query": {
+   "value": ":relevance:category:lunch-box-snacks-1664414929"
+  },
+  "url": "/search?q=%3Arelevance%3Acategory%3Alunch-box-snacks-1664414929&pageSize=5"
+ },
+ "facets": [],
+ "freeTextSearch": "",
+ "pagination": {
+  "currentPage": 0,
+  "pageSize": 5,
+  "sort": "relevance",
+  "totalPages": 0,
+  "totalResults": 0
+ },
+ "products": [],
+ "sorts": [
+  {
+   "code": "relevance",
+   "name": "Best Match",
+   "selected": true
+  },
+  {
+   "code": "price-asc",
+   "name": "Price: low to high",
+   "selected": false
+  },
+  {
+   "code": "price-desc",
+   "name": "Price: high to low",
+   "selected": false
+  }
+ ]
+}

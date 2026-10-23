@@ -1,0 +1,152 @@
+{
+  "id": "chilli-bites",
+  "name": "Chilli bites",
+  "summary": "Spinach and onion fritters: craggy, spiced chickpea-flour bites fried until crisp, the Durban takeaway favourite.",
+  "about": "Chilli bites are Durban’s name for bhajia, the spiced chickpea-flour fritters that came with Indian indentured families from the 1860s. Sold hot in paper packets beside samoosas at Durban takeaways and markets, and made for Diwali and Eid tables, they are crisp outside and soft inside.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "snack"
+  },
+  "tags": [
+    "streetFood",
+    "vegetableForward",
+    "quick"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "vegan"
+  ],
+  "ingredients": [
+    {
+      "name": "Chickpea flour (chana flour)",
+      "quantity": 200,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 0.25,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "or Durban masala",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, finely chopped",
+      "group": null
+    },
+    {
+      "name": "Spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": "finely shredded",
+      "group": null
+    },
+    {
+      "name": "Green chillies",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Fresh coriander (dhania)",
+      "quantity": 0.25,
+      "unit": "cup",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": "add gradually",
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 750,
+      "unit": "ml",
+      "note": "for deep frying",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Sift the chickpea flour, cake flour, baking powder, spices and salt into a large bowl.",
+    "Add the onion, spinach, chillies, dhania and spring onions and toss to coat. Leave for 5 minutes so the vegetables release some moisture.",
+    "Add the water a little at a time, stirring, until you have a thick batter that drops heavily from a spoon. You may not need all of it.",
+    "Heat the oil about 5 cm deep in a heavy pot over medium-high heat to 170–175 °C; a drop of batter should rise sizzling within 2–3 seconds.",
+    "Drop in heaped teaspoons of batter, about 8 at a time, and fry for 4–5 minutes, turning, until deep golden, craggy and cooked through. Break open the first one to check the middle is not doughy.",
+    "Drain on paper towel and serve hot with chutney or a squeeze of lemon."
+  ],
+  "servings": 6,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": "Damien Ramon Naidoo",
+    "licence": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chilli_Bites_(Bhaji).jpg",
+    "generated": false
+  }
+}

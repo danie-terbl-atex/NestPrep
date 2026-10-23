@@ -18,6 +18,8 @@ _LunchItem _$LunchItemFromJson(Map<String, dynamic> json) => _LunchItem(
   prepNote: json['prepNote'] as String?,
   archived: json['archived'] as bool? ?? false,
   seedKey: json['seedKey'] as String?,
+  recipeId: json['recipeId'] as String?,
+  householdRecipeId: json['householdRecipeId'] as String?,
   addedBy: json['addedBy'] as String,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
 );
@@ -32,6 +34,8 @@ Map<String, dynamic> _$LunchItemToJson(_LunchItem instance) =>
       'prepNote': instance.prepNote,
       'archived': instance.archived,
       'seedKey': instance.seedKey,
+      'recipeId': ?instance.recipeId,
+      'householdRecipeId': ?instance.householdRecipeId,
       'addedBy': instance.addedBy,
       'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),
     };

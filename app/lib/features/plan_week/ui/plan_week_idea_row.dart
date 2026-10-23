@@ -2,22 +2,29 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../groceries/model/product_match.dart';
 import '../../lunch_box/ui/art/lunch_glyph.dart';
 import '../model/lunch_idea.dart';
+import 'plan_week_dish_line.dart';
 
 /// One idea on the list: the compartment's drawing, the idea, why, for whom
 /// — and, for each child it was left out for, the reason. An idea left out
-/// for everybody is struck through and is not searched.
+/// for everybody is struck through and is not searched. A drafted main is a
+/// dish, named as one, with its recipe a tap away (lunch-box ADR-0021).
 class PlanWeekIdeaRow extends StatelessWidget {
   const PlanWeekIdeaRow({
     required this.idea,
     required this.childNames,
     required this.onRemove,
+    required this.shop,
     this.shelfKept,
     super.key,
   });
 
   final LunchIdea idea;
+
+  /// The shop the week is planned at, named on an aisle shelf's tag.
+  final ProductRetailer shop;
 
   /// For a shelf of the lunchbox aisle, how many of its products were kept.
   final int? shelfKept;
@@ -27,6 +34,7 @@ class PlanWeekIdeaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
+    final dish = idea.dish;
     final names = [
       for (final childId in idea.childIds) childNames[childId] ?? '',
     ].where((name) => name.isNotEmpty).join(', ');
@@ -50,7 +58,9 @@ class PlanWeekIdeaRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(idea.idea, style: title),
+                Text(dish?.name ?? idea.idea, style: title),
+                if (dish != null && dish.summary.isNotEmpty)
+                  Text(dish.summary, style: nest.text.bodySecondary),
                 if (idea.why.isNotEmpty)
                   Text(idea.why, style: nest.text.bodySecondary),
                 Text(switch (idea.isStruckOut) {
@@ -71,7 +81,9 @@ class PlanWeekIdeaRow extends StatelessWidget {
                       color: nest.colors.inkSecondary,
                     ),
                   ),
-                if (_originTag(idea.origin) case final tag?)
+                if (dish != null && !idea.isStruckOut)
+                  PlanWeekDishLine(dish: dish, shop: shop),
+                if (_originTag(idea.origin, shop) case final tag?)
                   Padding(
                     padding: const EdgeInsets.only(top: NestSpace.xs),
                     child: tag,
@@ -90,13 +102,14 @@ class PlanWeekIdeaRow extends StatelessWidget {
     );
   }
 
-  static Widget? _originTag(IdeaOrigin origin) => switch (origin) {
-    IdeaOrigin.own => const NestTag(label: PlanWeekCopy.originOwn),
-    IdeaOrigin.aisle => const NestTag(
-      label: PlanWeekCopy.originAisle,
-      tone: NestTagTone.accent,
-      icon: LucideIcons.store,
-    ),
-    IdeaOrigin.drafted || IdeaOrigin.usual => null,
-  };
+  static Widget? _originTag(IdeaOrigin origin, ProductRetailer shop) =>
+      switch (origin) {
+        IdeaOrigin.own => const NestTag(label: PlanWeekCopy.originOwn),
+        IdeaOrigin.aisle => NestTag(
+          label: PlanWeekCopy.originAisle(shop),
+          tone: NestTagTone.accent,
+          icon: LucideIcons.store,
+        ),
+        IdeaOrigin.drafted || IdeaOrigin.usual => null,
+      };
 }

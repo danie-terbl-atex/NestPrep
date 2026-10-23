@@ -1,0 +1,155 @@
+{
+  "id": "hot-cross-buns",
+  "name": "Hot cross buns",
+  "summary": "Soft, spiced yeast buns studded with sultanas and peel, marked with a flour-paste cross and brushed with sticky apricot glaze while hot.",
+  "about": "Spiced buns marked with a cross are an English Good Friday tradition that came to South Africa and stayed. Here they are eaten over the whole Easter weekend, toasted and buttered from Good Friday on.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast",
+    "lunch"
+  ],
+  "placement": {
+    "breakfast": "snack",
+    "lunch": "snack"
+  },
+  "tags": [
+    "baking",
+    "festive"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Bread flour",
+      "quantity": 500,
+      "unit": "g",
+      "note": "or cake flour, plus extra for kneading",
+      "group": "For the buns"
+    },
+    {
+      "name": "Instant dry yeast",
+      "quantity": 10,
+      "unit": "g",
+      "note": "1 sachet",
+      "group": "For the buns"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 75,
+      "unit": "g",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Mixed spice",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the buns"
+    },
+    {
+      "name": "Orange zest",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "from 1 orange",
+      "group": "For the buns"
+    },
+    {
+      "name": "Milk",
+      "quantity": 1.25,
+      "unit": "cup",
+      "note": "lukewarm",
+      "group": "For the buns"
+    },
+    {
+      "name": "Butter",
+      "quantity": 50,
+      "unit": "g",
+      "note": "melted",
+      "group": "For the buns"
+    },
+    {
+      "name": "Egg",
+      "quantity": 1,
+      "unit": null,
+      "note": "beaten",
+      "group": "For the buns"
+    },
+    {
+      "name": "Mixed dried fruit",
+      "quantity": 150,
+      "unit": "g",
+      "note": "sultanas, currants and peel",
+      "group": "For the buns"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 75,
+      "unit": "g",
+      "note": null,
+      "group": "For the crosses"
+    },
+    {
+      "name": "Water",
+      "quantity": 5,
+      "unit": "tbsp",
+      "note": "about",
+      "group": "For the crosses"
+    },
+    {
+      "name": "Apricot jam",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the glaze"
+    },
+    {
+      "name": "Water",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the glaze"
+    }
+  ],
+  "steps": [
+    "Mix the bread flour, yeast, sugar, salt, mixed spice, cinnamon and orange zest in a large bowl. Add the lukewarm milk (it should feel just warm on your wrist), melted butter and egg and mix into a soft, sticky dough.",
+    "Knead on a lightly floured surface for 10 minutes, or 6 minutes in a mixer with a dough hook, until smooth and elastic and it springs back when poked. Knead in the dried fruit until evenly spread.",
+    "Put the dough in an oiled bowl, cover and leave in a warm spot for 1–1.5 hours, until doubled in size.",
+    "Knock the dough back and divide into 12 equal pieces. Roll each into a smooth ball and set them 1 cm apart in a greased 23 x 33 cm baking tin. Cover and prove for 30–40 minutes, until puffy and touching. Heat the oven to 200 °C (180 °C fan).",
+    "Mix the cake flour with enough water to make a thick, smooth paste that pipes without running. Spoon into a piping bag or a plastic bag with the corner snipped and pipe a line down each row of buns, then across, to make the crosses.",
+    "Bake for 18–20 minutes, until well risen and deep golden and the buns sound hollow when tapped underneath.",
+    "While they bake, warm the jam and water in a small pan over low heat for 2 minutes until runny, and sieve it. Brush the glaze over the buns as soon as they come out of the oven, then cool in the tin for 10 minutes. Serve warm or split and toasted with butter."
+  ],
+  "servings": 12,
+  "prepMinutes": 35,
+  "cookMinutes": 20,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Allow 2 hours for proving. Baked buns freeze for a month; toast from frozen.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "umngqusho",
+  "name": "Umngqusho",
+  "summary": "Samp and sugar beans simmered slowly until soft and creamy, finished with butter and onion: the filling isiXhosa staple that stretches any meal.",
+  "about": "Umngqusho is the everyday dish of isiXhosa homes in the Eastern Cape, made from samp (crushed dried maize kernels) and speckled sugar beans cooked together for hours. It is often eaten on its own, or alongside a stew or chakalaka, and is widely remembered as a favourite meal of Nelson Mandela.",
+  "cuisine": "southAfrican",
+  "contexts": ["dinner"],
+  "placement": { "dinner": "main" },
+  "tags": ["traditional", "budget", "onePot"],
+  "allergens": ["milk"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Samp", "quantity": 500, "unit": "g", "note": null, "group": null },
+    { "name": "Sugar beans", "quantity": 250, "unit": "g", "note": "dried red speckled beans", "group": null },
+    { "name": "Water", "quantity": 2.5, "unit": "l", "note": "plus extra for soaking", "group": null },
+    { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
+    { "name": "Onion", "quantity": 1, "unit": null, "note": "finely chopped", "group": null },
+    { "name": "Salt", "quantity": 2, "unit": "tsp", "note": "adjust to taste", "group": null },
+    { "name": "Butter", "quantity": 2, "unit": "tbsp", "note": "or more oil for a vegan pot", "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "to taste", "group": null }
+  ],
+  "steps": [
+    "The night before, rinse the samp and beans, put them in a large bowl and cover with plenty of cold water. Leave to soak for at least 8 hours or overnight; they will swell to about double.",
+    "Drain and rinse the samp and beans, tip them into a large heavy-based pot and add 2 litres of the water. Bring to the boil over high heat and boil for 10 minutes, skimming off any foam.",
+    "Turn the heat down to low, cover and simmer for 2 hours, stirring every 20 minutes and adding a cup of hot water whenever the level drops below the samp, so it never catches on the bottom.",
+    "Meanwhile, heat the oil in a small pan over medium heat and fry the onion for 8–10 minutes, until soft and golden.",
+    "When the samp is soft enough to squash between your fingers and the beans are tender, stir in the fried onion and the salt. Simmer uncovered on low for another 20–30 minutes, stirring often, until most of the liquid is absorbed and the pot looks thick and creamy.",
+    "Stir in the butter and season with pepper. Taste for salt, then serve hot on its own or with a stew and chakalaka."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 160,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Soak overnight. Keeps 3 days in the fridge or 3 months frozen; loosen with a little water when reheating.",
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

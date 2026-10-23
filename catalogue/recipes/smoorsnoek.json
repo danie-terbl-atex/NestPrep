@@ -1,0 +1,135 @@
+{
+  "id": "smoorsnoek",
+  "name": "Smoorsnoek",
+  "summary": "Braised smoked snoek: flaked smoked fish folded into onions, potatoes and tomato with a little chilli, served on rice with apricot jam.",
+  "about": "Smoor means to braise, and smoorsnoek is an old Cape dish that turns a single smoked snoek into a meal for a family. It is Cape Malay and West Coast home cooking, eaten with white rice and, in many homes, a spoon of apricot jam or chutney on the side.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "traditional",
+    "capeMalay",
+    "budget"
+  ],
+  "allergens": [
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Smoked snoek",
+      "quantity": 500,
+      "unit": "g",
+      "note": "about 350 g once skinned and boned",
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": null
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "medium, peeled and cut into 1.5 cm cubes",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Green chilli",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped, optional",
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, or 3 ripe tomatoes",
+      "group": null
+    },
+    {
+      "name": "Sugar",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 125,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "juice",
+      "group": null
+    },
+    {
+      "name": "Apricot jam",
+      "quantity": null,
+      "unit": null,
+      "note": "to serve",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Skin the snoek and flake the flesh into bite-sized pieces, feeling carefully for bones with your fingers and removing every one.",
+    "Heat the oil in a large frying pan over medium heat and fry the onions until soft and light golden, about 8 minutes.",
+    "Add the potatoes and fry, turning now and then, for 5 minutes, until the edges start to colour. Stir in the garlic and chilli and cook for 1 minute.",
+    "Add the tomatoes, sugar and water, cover and simmer over low heat for 15 to 20 minutes, until the potatoes are tender when pierced with a knife. Add a splash of water if the pan goes dry.",
+    "Fold in the snoek gently, so it stays in flakes, and heat through uncovered for 5 minutes. It is ready when the fish is hot and the sauce clings to the potatoes. Taste before seasoning: smoked snoek is salty.",
+    "Finish with pepper, parsley and the lemon juice. Serve on white rice with apricot jam on the side."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

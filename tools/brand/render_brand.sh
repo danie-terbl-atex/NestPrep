@@ -31,9 +31,14 @@ render "0 0 96 96" "$tile$strokes" 192 "$here/functions/assets/share/nest_mark.p
 # iOS masks its own corners: the tile is square and full-bleed.
 render "0 0 96 96" "<rect width=\"96\" height=\"96\" fill=\"#F57B91\"/>$strokes" 1024 "$launcher/app_icon.png"
 
-# Android's adaptive icon: the strokes alone inside the 66/108 safe zone,
-# over a Guava background set in flutter_launcher_icons.yaml.
-render "-30 -30 156 156" "$strokes" 1024 "$launcher/app_icon_foreground.png"
+# Android's adaptive icon: the strokes alone over a Guava background set in
+# flutter_launcher_icons.yaml. A launcher shows the middle 72 of the 108 dp
+# layer, so a 144-unit view frames the 96-unit tile in exactly that 72 dp and
+# the mark fills the icon as it does on iOS (64% of its height). The furthest
+# stroke is then 24.5 dp from the centre, inside the 33 dp safe zone. The
+# yaml's adaptive_icon_foreground_inset is 0 because the padding is here
+# (design-system ADR-0011).
+render "-24 -24 144 144" "$strokes" 1024 "$launcher/app_icon_foreground.png"
 
 # Launch screens: the tile, and for Android 12 the tile inside its icon
 # circle (two thirds of the 1152 image).
@@ -41,3 +46,33 @@ render "0 0 96 96" "$tile$strokes" 432 "$launcher/splash_mark.png"
 render "-60 -60 216 216" "$tile$strokes" 1152 "$launcher/splash_android12.png"
 
 echo "rendered the mark into app/assets/brand, its launcher folder and functions/assets/share"
+
+# The iOS app icon is its own SVG, not the tile above: pure black strokes on a
+# full-bleed Guava square, one 1024 image per home-screen appearance. Shipping
+# the dark appearance as the same picture stops iOS dimming it in Dark mode,
+# which faded Ink-on-Guava into a soft blur (design-system ADR-0013). Xcode
+# draws every smaller size from the 1024; flutter_launcher_icons no longer
+# writes the iOS set (`ios: false`).
+appicon="$here/app/ios/Runner/Assets.xcassets/AppIcon.appiconset"
+opaque() {
+  sips -s format png "$1" --out "$work/raw.png" >/dev/null
+  xcrun swift "$here/tools/brand/opaque_png.swift" "$work/raw.png" "$2"
+}
+rm -f "$appicon"/*.png
+opaque "$brand/app_icon_ios.svg" "$appicon/AppIcon-1024.png"
+cp "$appicon/AppIcon-1024.png" "$appicon/AppIcon-1024-dark.png"
+opaque "$brand/app_icon_ios_tinted.svg" "$appicon/AppIcon-1024-tinted.png"
+cat > "$appicon/Contents.json" <<'JSON'
+{
+  "images" : [
+    { "filename" : "AppIcon-1024.png", "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" },
+    { "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ],
+      "filename" : "AppIcon-1024-dark.png", "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" },
+    { "appearances" : [ { "appearance" : "luminosity", "value" : "tinted" } ],
+      "filename" : "AppIcon-1024-tinted.png", "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}
+JSON
+
+echo "rendered the iOS app icon set (light, dark, tinted)"

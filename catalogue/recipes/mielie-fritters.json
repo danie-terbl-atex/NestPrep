@@ -1,0 +1,41 @@
+{
+  "id": "mielie-fritters",
+  "name": "Mielie fritters",
+  "summary": "Sweetcorn fritters: creamed and whole-kernel corn in a light batter, shallow-fried by the spoonful until golden and crisp at the edges.",
+  "about": "Mielie fritters, or mieliepoffers, are a South African home favourite built on the pantry tin of creamed sweetcorn. They are made for weekend breakfasts, school-holiday lunches and as a side with a braai, savoury with sour cream and chives or sweet with cinnamon sugar or syrup.",
+  "cuisine": "southAfrican",
+  "contexts": ["breakfast", "lunch"],
+  "placement": { "breakfast": "main", "lunch": "snack" },
+  "tags": ["kidFriendly", "quick", "budget"],
+  "allergens": ["milk", "egg", "wheat"],
+  "dietTags": ["vegetarian"],
+  "ingredients": [
+    { "name": "Cake flour", "quantity": 140, "unit": "g", "note": "about 1 cup", "group": null },
+    { "name": "Baking powder", "quantity": 1.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Sugar", "quantity": 1, "unit": "tsp", "note": null, "group": null },
+    { "name": "Salt", "quantity": 0.5, "unit": "tsp", "note": null, "group": null },
+    { "name": "Black pepper", "quantity": null, "unit": null, "note": "a pinch, to taste", "group": null },
+    { "name": "Eggs", "quantity": 2, "unit": null, "note": null, "group": null },
+    { "name": "Creamed sweetcorn", "quantity": 1, "unit": "tin", "note": "410 g", "group": null },
+    { "name": "Whole-kernel sweetcorn", "quantity": 1, "unit": "cup", "note": "tinned and drained, or frozen and thawed", "group": null },
+    { "name": "Spring onions", "quantity": 2, "unit": null, "note": "finely sliced, optional", "group": null },
+    { "name": "Sunflower oil", "quantity": 0.5, "unit": "cup", "note": "for shallow frying", "group": null },
+    { "name": "Sour cream", "quantity": 0.5, "unit": "cup", "note": "to serve, optional", "group": null },
+    { "name": "Chives", "quantity": null, "unit": null, "note": "chopped, to serve", "group": null }
+  ],
+  "steps": [
+    "Whisk the flour, baking powder, sugar, salt and pepper in a mixing bowl.",
+    "Beat the eggs in a second bowl, then stir in the creamed sweetcorn, the corn kernels and the spring onions.",
+    "Pour the wet mixture into the flour and stir just until no dry flour shows. The batter should drop thickly off a spoon; add a tablespoon of flour if it runs.",
+    "Heat the oil in a large frying pan over medium heat until a drop of batter sizzles at once, about 3 minutes.",
+    "Drop heaped tablespoons of batter into the pan, leaving space between them, and flatten slightly. Fry for 2–3 minutes until bubbles appear on top and the underside is golden, then turn and fry for 2 minutes more until golden and springy in the middle.",
+    "Drain on paper towel and keep warm in a low oven (100 °C) while you fry the rest in batches, adding a little oil if the pan is dry. Serve hot with sour cream and chives, or with cinnamon sugar or syrup for a sweet breakfast."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
+}

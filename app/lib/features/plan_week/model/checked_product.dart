@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../add_to_checkers/model/checkers_product.dart';
+import '../../add_to_checkers/model/retailer_product.dart';
 import '../../family_profiles/model/allergen.dart';
 import '../../family_profiles/model/food_rules.dart';
 import 'allergen_words.dart';
@@ -26,7 +26,7 @@ final class CheckedProduct {
   /// [product] judged for each child in [rulesByChild] — child id to the
   /// rules the phone holds for them now.
   factory CheckedProduct.of(
-    CheckersProduct product,
+    RetailerProduct product,
     Map<String, FoodRules> rulesByChild,
   ) {
     final contents = [
@@ -67,7 +67,7 @@ final class CheckedProduct {
     );
   }
 
-  final CheckersProduct product;
+  final RetailerProduct product;
 
   /// What the shop's words say is in it — the codes a library item made
   /// from it carries into every box (lunch-box ADR-0001).

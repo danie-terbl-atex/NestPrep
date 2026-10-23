@@ -15,10 +15,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductMatch {
 
- ProductRetailer get retailer;/// The Sixty60 product id, the same id a cart line carries.
+ ProductRetailer get retailer;/// The shop's national product id, the same id a cart line carries:
+/// Sixty60's 24-hex id, or Pick n Pay's code (`000000000000838685_EA`).
  String get productId;/// Article number and unit of measure together, e.g. `10136729EA` — the
 /// backup key when a product id is ever re-issued.
- String get articleCode;/// `EA`, `KG`, `PK1`… as Checkers sends it. `KG` is sold by weight.
+ String get articleCode;/// `EA`, `KG`, `PK1`… as the shop sends it. `KG` (Checkers) and `KGM`
+/// (Pick n Pay) are sold by weight.
  String get unitOfMeasure; String get name; String? get brand;/// What it cost when it was picked (`ENG-20`); per kilogram for a
 /// weighed item.
  Money get price; String? get imageId;/// The member profile that picked it, the same convention as `addedBy`.
@@ -233,12 +235,14 @@ class _ProductMatch extends ProductMatch {
   
 
 @override final  ProductRetailer retailer;
-/// The Sixty60 product id, the same id a cart line carries.
+/// The shop's national product id, the same id a cart line carries:
+/// Sixty60's 24-hex id, or Pick n Pay's code (`000000000000838685_EA`).
 @override final  String productId;
 /// Article number and unit of measure together, e.g. `10136729EA` — the
 /// backup key when a product id is ever re-issued.
 @override final  String articleCode;
-/// `EA`, `KG`, `PK1`… as Checkers sends it. `KG` is sold by weight.
+/// `EA`, `KG`, `PK1`… as the shop sends it. `KG` (Checkers) and `KGM`
+/// (Pick n Pay) are sold by weight.
 @override final  String unitOfMeasure;
 @override final  String name;
 @override final  String? brand;

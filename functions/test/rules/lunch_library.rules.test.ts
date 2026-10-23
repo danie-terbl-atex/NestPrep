@@ -1,4 +1,12 @@
-import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
 import { CLEO, MIA, NOMSA, OLIVIA, SAM, STRANGER } from './family_fixture';
@@ -87,6 +95,113 @@ describe('lunchItems/{itemId}', () => {
     ]) {
       await assertFails(setDoc(doc(db, `${ITEMS}/bad`), { ...newItem, ...bad }));
     }
+  });
+
+  // Recipes ADR-0001: a recipe reaches a household only as a library item,
+  // `recipe-<id>`, that names it — once, for good.
+  const fromRecipe = {
+    ...newItem,
+    name: 'Banana oat bites',
+    nameKey: 'banana oat bites',
+    slot: 'treat',
+    allergens: [],
+    recipeId: 'banana-oat-bites',
+  };
+
+  it('family adds an item made from a recipe, naming the recipe', async () => {
+    const db = await asUser(SAM);
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/recipe-banana-oat-bites`), fromRecipe));
+    for (const recipeId of ['', 42, 'x'.repeat(61), null]) {
+      await assertFails(setDoc(doc(db, `${ITEMS}/bad`), { ...fromRecipe, recipeId }));
+    }
+  });
+
+  it('never adds, changes or drops the recipe an item was made from', async () => {
+    await givenData(async (db) => {
+      await setDoc(doc(db, `${ITEMS}/recipe-banana-oat-bites`), {
+        ...fromRecipe,
+        createdAt: new Date(),
+      });
+    });
+    const db = await asUser(SAM);
+    const item = doc(db, `${ITEMS}/recipe-banana-oat-bites`);
+    await assertSucceeds(updateDoc(item, { name: 'Oat bites', nameKey: 'oat bites' }));
+    await assertFails(updateDoc(item, { recipeId: 'apple-crumble-muffins' }));
+    await assertFails(updateDoc(item, { recipeId: deleteField() }));
+    await assertFails(updateDoc(doc(db, `${ITEMS}/apple`), { recipeId: 'banana-oat-bites' }));
+  });
+
+  // Recipes ADR-0002: a dish *Plan my week* drafted links to the household's
+  // own recipe, carries at least its allergen codes, and never moves.
+  const RECIPES = 'households/h1/recipes';
+  const fromHouseholdRecipe = {
+    ...newItem,
+    name: 'Mexican wholewheat wrap',
+    nameKey: 'mexican wholewheat wrap',
+    allergens: ['milk', 'wheat'],
+    householdRecipeId: 'ai-0123456789abcdef0123',
+  };
+
+  async function givenTheWrapRecipe(): Promise<void> {
+    await givenData(async (db) => {
+      await setDoc(doc(db, `${RECIPES}/ai-0123456789abcdef0123`), {
+        name: 'Mexican wholewheat wrap',
+        source: 'ai',
+        allergens: ['milk', 'wheat'],
+        addedBy: 'm-sam',
+        createdAt: new Date(),
+      });
+    });
+  }
+
+  it('family adds a dish linked to its household recipe, carrying the recipe’s codes', async () => {
+    await givenTheWrapRecipe();
+    const db = await asUser(SAM);
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/wrap`), fromHouseholdRecipe));
+    await assertSucceeds(
+      setDoc(doc(db, `${ITEMS}/wrap-plus`), {
+        ...fromHouseholdRecipe,
+        allergens: ['milk', 'wheat', 'soy'],
+      }),
+    );
+  });
+
+  it('refuses a dish that carries fewer codes than its recipe', async () => {
+    await givenTheWrapRecipe();
+    const db = await asUser(SAM);
+    await assertFails(
+      setDoc(doc(db, `${ITEMS}/wrap`), { ...fromHouseholdRecipe, allergens: ['wheat'] }),
+    );
+    await assertFails(setDoc(doc(db, `${ITEMS}/wrap`), { ...fromHouseholdRecipe, allergens: [] }));
+  });
+
+  it('refuses a link to a recipe the household does not have, or to both kinds at once', async () => {
+    const db = await asUser(SAM);
+    await assertFails(setDoc(doc(db, `${ITEMS}/wrap`), fromHouseholdRecipe));
+    await givenTheWrapRecipe();
+    await assertFails(
+      setDoc(doc(db, `${ITEMS}/wrap`), { ...fromHouseholdRecipe, recipeId: 'chicken-mayo-wrap' }),
+    );
+    for (const householdRecipeId of ['', 42, 'x'.repeat(61), null]) {
+      await assertFails(setDoc(doc(db, `${ITEMS}/bad`), { ...newItem, householdRecipeId }));
+    }
+  });
+
+  it('never changes or drops the link, nor takes the recipe’s codes off the dish', async () => {
+    await givenTheWrapRecipe();
+    await givenData(async (db) => {
+      await setDoc(doc(db, `${ITEMS}/wrap`), { ...fromHouseholdRecipe, createdAt: new Date() });
+    });
+    const db = await asUser(SAM);
+    const item = doc(db, `${ITEMS}/wrap`);
+    await assertSucceeds(updateDoc(item, { name: 'Taco wrap', nameKey: 'taco wrap' }));
+    await assertSucceeds(updateDoc(item, { allergens: ['milk', 'wheat', 'egg'] }));
+    await assertFails(updateDoc(item, { allergens: ['wheat'] }));
+    await assertFails(updateDoc(item, { householdRecipeId: 'ai-ffffffffffffffffffff' }));
+    await assertFails(updateDoc(item, { householdRecipeId: deleteField() }));
+    await assertFails(
+      updateDoc(doc(db, `${ITEMS}/apple`), { householdRecipeId: 'ai-0123456789abcdef0123' }),
+    );
   });
 
   it('family edits what it contains and puts it away', async () => {

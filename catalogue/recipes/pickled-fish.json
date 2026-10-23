@@ -1,0 +1,167 @@
+{
+  "id": "pickled-fish",
+  "name": "Pickled fish",
+  "summary": "Cape curried pickled fish (kerrievis): fried hake layered with onion rings in a sweet-sour curry vinegar sauce, made days ahead for Easter.",
+  "about": "Pickled fish began as a Cape way of keeping the catch and is closely tied to Cape Malay cooking. Families make it before Good Friday and eat it over the Easter weekend, often with hot cross buns.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch",
+    "dinner"
+  ],
+  "placement": {
+    "lunch": "main",
+    "dinner": "main"
+  },
+  "tags": [
+    "capeMalay",
+    "traditional",
+    "festive"
+  ],
+  "allergens": [
+    "wheat",
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Hake fillets",
+      "quantity": 1.2,
+      "unit": "kg",
+      "note": "skinned, cut into 8 portions",
+      "group": "For the fish"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "for dusting",
+      "group": "For the fish"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "for shallow frying",
+      "group": "For the fish"
+    },
+    {
+      "name": "Brown or white vinegar",
+      "quantity": 375,
+      "unit": "ml",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Medium curry powder",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Coriander seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Black peppercorns",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 5,
+      "unit": null,
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Onions",
+      "quantity": 4,
+      "unit": null,
+      "note": "large, sliced into rings",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Sugar",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "mixed with 2 tbsp cold water",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Smooth apricot jam",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    }
+  ],
+  "steps": [
+    "Season the fish with the salt and turmeric, dust it in the flour and shake off the excess.",
+    "Heat the oil in a large frying pan over medium-high heat. Fry the fish in batches for 2–3 minutes a side, until golden and just flaking. Drain on paper towel, then lay it in a single layer in a glass or ceramic dish (not metal, which reacts with vinegar).",
+    "In a stainless-steel or enamel saucepan, bring the vinegar, water, curry powder, turmeric, coriander seeds, peppercorns, bay leaves and salt to the boil over medium-high heat and boil for 2 minutes.",
+    "Add the onions and sugar and simmer on medium for 6–8 minutes, until the onions are tender but still have a little bite.",
+    "Stir in the cornflour paste and the jam and simmer for 1–2 minutes, until slightly thickened and glossy. Taste: it should be sharp and sweet at once; add a little sugar or vinegar to balance.",
+    "Pour the hot sauce and onions over the fish so it is covered. Cool, cover and refrigerate for at least 24 hours, and ideally 2–3 days.",
+    "Serve cold or at room temperature with buttered bread or hot cross buns. It keeps for 5 days in the fridge."
+  ],
+  "servings": 8,
+  "prepMinutes": 25,
+  "cookMinutes": 35,
+  "difficulty": "medium",
+  "prepAhead": true,
+  "prepNote": "Make it 2–3 days before you serve it; the flavour deepens. Keeps 5 days in the fridge.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

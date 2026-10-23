@@ -23,7 +23,8 @@ import 'test_flags.dart';
 /// fakes, following the board the way the lunch shell wires them — the one
 /// setup every pantry, budget and kid-picks test starts from.
 final class LunchPlanningHarness {
-  LunchPlanningHarness({FeatureFlags flags = TestFlags.on}) {
+  LunchPlanningHarness({FeatureFlags flags = TestFlags.on, bool canEdit = true})
+    : lunch = LunchHarness(canEdit: canEdit) {
     this.flags = testFlagsController(flags);
     pantry = LunchPantryController(
       pantryRepository: pantryRepository,
@@ -50,7 +51,7 @@ final class LunchPlanningHarness {
     _follow();
   }
 
-  final lunch = LunchHarness();
+  final LunchHarness lunch;
   final pantryRepository = FakeLunchPantryRepository();
   final budgetRepository = FakeLunchBudgetRepository();
   final choicesRepository = FakeLunchChoicesRepository();

@@ -8,7 +8,10 @@
  *   restart; created verified, the way a Google account arrives;
  * - the demo household they share (`demo-household.mjs`), with two children,
  *   premium and every V2 flag on;
- * - the canned answers the emulator's model gives (foundation ADR-0015).
+ * - the canned answers the emulator's model gives (foundation ADR-0015);
+ * - NestPrep's recipes, their photos and the starter boxes (recipes ADR-0001,
+ *   ADR-0003, lunch-box ADR-0018), as `seed-catalogue.mjs` publishes them to
+ *   the cloud.
  *
  * Safe to run again, and safe over data the suite imported: users are
  * refreshed in place, and a user an earlier seed made under a random uid is
@@ -30,6 +33,7 @@ const PASSWORD = 'nestprep';
 // The Admin SDK finds the suite through these; set before it starts.
 process.env.FIREBASE_AUTH_EMULATOR_HOST ??= '127.0.0.1:9099';
 process.env.FIRESTORE_EMULATOR_HOST ??= '127.0.0.1:8080';
+process.env.FIREBASE_STORAGE_EMULATOR_HOST ??= '127.0.0.1:9199';
 process.env.GCLOUD_PROJECT ??= PROJECT;
 process.env.GOOGLE_CLOUD_PROJECT ??= PROJECT;
 // Nothing here needs Google credentials; without this the SDK first probes for
@@ -39,6 +43,8 @@ process.env.METADATA_SERVER_DETECTION ??= 'none';
 const require = createRequire(import.meta.url);
 const { db } = require('../lib/shared/firestore.js');
 const { auth } = require('../lib/shared/auth.js');
+const { publishCatalogue } = require('../lib/catalogue/publish_catalogue.js');
+const { objectStore } = require('../lib/shared/storage.js');
 
 /** Creates the user under its fixed uid, or brings an existing one back to the seed. */
 async function seedUser({ uid, email, displayName }) {
@@ -95,5 +101,12 @@ const lines = [];
 for (const person of PEOPLE) lines.push(await seedUser(person));
 lines.push(await seedDemoHousehold(db()));
 lines.push(await seedCannedReplies(db()));
+const catalogue = await publishCatalogue(db(), objectStore(), { write: true });
+lines.push(
+  `recipe photos: ${catalogue.photos.uploaded} uploaded, ${catalogue.photos.present} already there`,
+);
+for (const { collection, published, retired, unchanged } of catalogue.collections) {
+  lines.push(`${collection}: ${published} published, ${retired} retired, ${unchanged} unchanged`);
+}
 for (const line of lines) console.log(line);
 console.log(`\npassword for all of them: ${PASSWORD}`);

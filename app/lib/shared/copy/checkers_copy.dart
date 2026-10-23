@@ -22,12 +22,15 @@ abstract final class CheckersCopy {
   };
   static String retailerSoon(ProductRetailer retailer) =>
       '${retailerName(retailer)}, coming soon';
-  static String matchesTitle(String itemName) => 'At Checkers: $itemName';
-  static const matchesLoading = 'Looking at Checkers…';
-  static const matchesEmptyTitle = 'Nothing close at Checkers';
-  static const matchesEmptyBody =
-      'Checkers has nothing by that name near you. The item is on the list '
-      'either way.';
+  static String matchesTitle(ProductRetailer shop, String itemName) =>
+      'At ${retailerName(shop)}: $itemName';
+  static String matchesLoading(ProductRetailer shop) =>
+      'Looking at ${retailerName(shop)}…';
+  static String matchesEmptyTitle(ProductRetailer shop) =>
+      'Nothing close at ${retailerName(shop)}';
+  static String matchesEmptyBody(ProductRetailer shop) =>
+      '${retailerName(shop)} has nothing by that name near you. The item is '
+      'on the list either way.';
   static const closeMatches = 'Close';
   static const pick = 'Pick';
   static const outOfStock = 'Out of stock';
@@ -38,48 +41,26 @@ abstract final class CheckersCopy {
       perKilogram ? '${price.display}/kg' : price.display;
   static const changeMatch = 'Change product';
   static const clearMatch = 'Remove product';
-  static String matchedSemantics(String productName) =>
-      'Checkers product: $productName';
+  static String matchedSemantics(ProductRetailer shop, String productName) =>
+      '${retailerName(shop)} product: $productName';
 
   // ---- where the matches come from ----
   static const nearYou = 'Near you';
   static String nearArea(String area) => 'Near $area';
   static const changeArea = 'Change area';
-  static const areaTitle = 'Your Checkers area';
+  static const areaTitle = 'Your shopping area';
   static const areaBody =
       'NestPrep uses your location for this only if you already let it. '
       'Otherwise, choose the city you shop in.';
 
-  // ---- Add to Checkers, on the list ----
-  static String readyToAdd(int count) => count == 1
-      ? '1 item has a Checkers product'
-      : '$count items have a Checkers product';
-  static const addToCheckers = 'Add to Checkers';
-
-  // ---- the push result ----
-  static const pushTitle = 'Add to Checkers';
-  static const pushing = 'Adding to your Checkers cart…';
-  static const pushEmptyTitle = 'Nothing was added';
-  static const pushEmptyBody =
-      'None of these could go in your cart right now. The reasons are below.';
-  static String addedCount(int count) =>
-      count == 1 ? '1 item added' : '$count items added';
-  static String skippedCount(int count) =>
-      count == 1 ? '1 item not added' : '$count items not added';
-  static String cartSummary(int items, Money total) =>
-      'Your cart now has $items ${items == 1 ? 'item' : 'items'} · '
-      '${total.display}';
-  static const finishInCheckers =
-      'Finish and pay in the Checkers Sixty60 app. NestPrep never checks out '
-      'for you.';
-  static const skipNoMatch = 'No Checkers product picked';
-  static const skipOutOfStock = 'Out of stock at your store';
-  static const skipNotFound = 'Checkers no longer has this product';
-  static const skipWeighed =
-      'Sold by weight — add it in the Checkers app so you choose how much';
-  static const skipUnknown = 'Could not be added';
-  static const done = 'Done';
-  static const manageLink = 'Checkers account';
+  // ---- the cart actions on the list (add-to-pnp ADR-0007) ----
+  static String readyToAdd(ProductRetailer shop, int count) => count == 1
+      ? '1 item has a ${retailerName(shop)} product'
+      : '$count items have a ${retailerName(shop)} product';
+  static String addCountTo(ProductRetailer shop, int count) =>
+      'Add $count to ${retailerName(shop)}';
+  static String notMatched(int count) =>
+      count == 1 ? '1 item not matched' : '$count items not matched';
 
   // ---- linking ----
   static const linkTitle = 'Link Checkers';

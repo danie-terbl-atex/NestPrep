@@ -32,36 +32,46 @@ class SchoolLetterScreen extends StatelessWidget {
     return NestScaffold(
       leading: backLeading(context),
       title: SchoolLetterCopy.title,
-      body: AnimatedSwitcher(
-        duration: NestMotion.of(context).standard,
-        child: KeyedSubtree(
-          key: ValueKey(controller.step),
-          child: switch (controller.step) {
-            LetterStep.choosing => LetterSourcePanel(
-              onPick: controller.pick,
-              failure: controller.failure,
-              onRetry: controller.canRetry ? controller.retry : null,
-            ),
-            LetterStep.reading => const LetterReadingPanel(),
-            LetterStep.review || LetterStep.saving => LetterReviewList(
-              items: controller.items,
-              today: today,
-              members: view.members,
-              isSaving: controller.step == LetterStep.saving,
-              callsLeft: controller.callsLeft,
-              failure: controller.failure,
-              onDismissFailure: controller.dismissFailure,
-              onToggle: controller.toggle,
-              onEdit: (item) => _edit(context, controller, item),
-              onConfirm: controller.confirm,
-              onStartOver: controller.startOver,
-            ),
-            LetterStep.done => LetterAddedPanel(
-              added: controller.added,
-              onSeeTheWeek: () => _toTheWeek(context, controller),
-              onSnapAnother: controller.startOver,
-            ),
-          },
+      // Twig swaps in as the letter goes to the model and comes back, so its
+      // poses are decoded first (design-system ADR-0012).
+      body: NestTwigWarmUp(
+        poses: const [
+          NestTwigPose.welcome,
+          NestTwigPose.thinking,
+          NestTwigPose.celebrate,
+        ],
+        child: AnimatedSwitcher(
+          duration: NestMotion.of(context).standard,
+          child: KeyedSubtree(
+            key: ValueKey(controller.step),
+            child: switch (controller.step) {
+              LetterStep.choosing => LetterSourcePanel(
+                onPick: controller.pick,
+                isAiWelcome: controller.isAiWelcome,
+                failure: controller.failure,
+                onRetry: controller.canRetry ? controller.retry : null,
+              ),
+              LetterStep.reading => const LetterReadingPanel(),
+              LetterStep.review || LetterStep.saving => LetterReviewList(
+                items: controller.items,
+                today: today,
+                members: view.members,
+                isSaving: controller.step == LetterStep.saving,
+                callsLeft: controller.callsLeft,
+                failure: controller.failure,
+                onDismissFailure: controller.dismissFailure,
+                onToggle: controller.toggle,
+                onEdit: (item) => _edit(context, controller, item),
+                onConfirm: controller.confirm,
+                onStartOver: controller.startOver,
+              ),
+              LetterStep.done => LetterAddedPanel(
+                added: controller.added,
+                onSeeTheWeek: () => _toTheWeek(context, controller),
+                onSnapAnother: controller.startOver,
+              ),
+            },
+          ),
         ),
       ),
     );

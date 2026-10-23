@@ -15,12 +15,12 @@ import '../support/pump_kit.dart';
 /// pushing it, and the system back button closed the app.
 void main() {
   group('the tabs themselves', () {
-    test('the bar is Today, Lunch, Week, Lists and More '
-        '(design-system ADR-0009)', () {
+    test('the bar is Today, Lunch, Meals, Lists and More '
+        '(design-system ADR-0015)', () {
       expect(HouseholdTab.inBar, [
         HouseholdTab.today,
         HouseholdTab.lunch,
-        HouseholdTab.week,
+        HouseholdTab.meals,
         HouseholdTab.lists,
         HouseholdTab.more,
       ]);
@@ -29,10 +29,11 @@ void main() {
       }
     });
 
-    test('To do and Groceries light Lists; Meals lights More', () {
+    test('To do and Groceries light Lists; Week lights More', () {
       expect(HouseholdTab.todos.barTab, HouseholdTab.lists);
       expect(HouseholdTab.groceries.barTab, HouseholdTab.lists);
-      expect(HouseholdTab.meals.barTab, HouseholdTab.more);
+      expect(HouseholdTab.week.barTab, HouseholdTab.more);
+      expect(HouseholdTab.meals.barTab, HouseholdTab.meals);
     });
 
     test('Lists opens To do, or Groceries for somebody who may only shop', () {
@@ -95,9 +96,8 @@ void main() {
       );
       expect(
         path,
-        HouseholdRoute.homeFor(
-          Fixtures.householdId,
-        ).replaceAll(HouseholdTab.today.segment, HouseholdTab.meals.segment),
+        HouseholdRoute.homeFor(Fixtures.householdId)
+            .replaceAll(HouseholdTab.today.segment, HouseholdTab.meals.segment),
       );
     });
   });
@@ -106,7 +106,7 @@ void main() {
     testWidgets('shows every tab, and says which one you are on', (
       tester,
     ) async {
-      var chosen = HouseholdTab.week;
+      var chosen = HouseholdTab.meals;
       await pumpKit(
         tester,
         Provider<HouseholdView>.value(
@@ -132,9 +132,9 @@ void main() {
       handle.dispose();
 
       expect(
-        find.bySemanticsLabel(AppCopy.tabMeals),
+        find.bySemanticsLabel(AppCopy.tabWeek),
         findsNothing,
-        reason: 'meals is on More, not in the bar',
+        reason: 'the week is on More, not in the bar',
       );
 
       await tester.tap(find.bySemanticsLabel(MoreCopy.tab));
@@ -158,12 +158,12 @@ void main() {
       }
     });
 
-    testWidgets('lights up More while meals is open', (tester) async {
+    testWidgets('lights up More while the week is open', (tester) async {
       await pumpKit(
         tester,
         Provider<HouseholdView>.value(
           value: Fixtures.view(),
-          child: HouseholdTabBar(current: HouseholdTab.meals, onSelect: (_) {}),
+          child: HouseholdTabBar(current: HouseholdTab.week, onSelect: (_) {}),
         ),
       );
 

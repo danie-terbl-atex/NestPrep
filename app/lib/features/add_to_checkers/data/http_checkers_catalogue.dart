@@ -7,11 +7,11 @@ import 'package:http/http.dart' as http;
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
 import '../../live_location/model/coordinates.dart';
-import '../model/checkers_product.dart';
-import '../model/checkers_shelf.dart';
 import '../model/checkers_store.dart';
-import 'checkers_catalogue.dart';
+import '../model/retailer_product.dart';
+import '../model/retailer_shelf.dart';
 import 'checkers_catalogue_parser.dart';
+import 'retailer_catalogue.dart';
 
 /// The Sixty60 catalogue over HTTPS, unauthenticated — the two calls
 /// `checkers-discovery/probe-search.mjs` proved on 2026-09-30: the stores that
@@ -22,7 +22,7 @@ import 'checkers_catalogue_parser.dart';
 /// for a place and the last few searches are remembered for as long as the
 /// app runs, a search already in flight is shared rather than repeated, and a
 /// 429 stops every call until its `Retry-After` has passed.
-final class HttpCheckersCatalogue implements CheckersCatalogue {
+final class HttpCheckersCatalogue implements RetailerCatalogue {
   HttpCheckersCatalogue({
     http.Client? client,
     DateTime Function()? now,
@@ -44,14 +44,14 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
 
   final _stores = <String, Future<List<CheckersStore>>>{};
   // Insertion-ordered, so the oldest search is the first to be forgotten.
-  final _searches = <String, Future<List<CheckersProduct>>>{};
+  final _searches = <String, Future<List<RetailerProduct>>>{};
   DateTime? _coolDownUntil;
 
   @override
-  Future<List<CheckersProduct>> search({
+  Future<List<RetailerProduct>> search({
     required String query,
     required Coordinates near,
-    int limit = CheckersCatalogue.defaultLimit,
+    int limit = RetailerCatalogue.defaultLimit,
   }) {
     final words = query.trim();
     return _products(
@@ -62,29 +62,29 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
     );
   }
 
-  /// A shelf in the order the catalogue says sells best: its default order
-  /// changes from one identical call to the next.
+  /// Best sellers first: the default order changes from call to call.
   @override
-  Future<List<CheckersProduct>> shelf({
-    required CheckersShelf shelf,
+  Future<List<RetailerProduct>> shelf({
+    required RetailerShelf shelf,
     required Coordinates near,
-    int limit = CheckersCatalogue.defaultLimit,
+    int limit = RetailerCatalogue.defaultLimit,
   }) => _products(
     key: '${shelf.kind.name}|${shelf.id}',
     source: switch (shelf.kind) {
-      CheckersShelfKind.productList => {
+      RetailerShelfKind.productList => {
         'productList': {'id': shelf.id},
       },
-      CheckersShelfKind.displayCategory => {
+      RetailerShelfKind.displayCategory => {
         'displayCategory': {'id': shelf.id},
       },
+      RetailerShelfKind.pnpCategory => throw ArgumentError.value(shelf.id),
     },
     near: near,
     limit: limit,
     sort: const {'field': 'globalRateOfSale', 'direction': -1},
   );
 
-  Future<List<CheckersProduct>> _products({
+  Future<List<RetailerProduct>> _products({
     required String key,
     required Map<String, Object?> source,
     required Coordinates near,
@@ -135,7 +135,7 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
     return CheckersCatalogueParser.sixtyMinuteStores(json);
   }
 
-  Future<List<CheckersProduct>> _fetchProducts(
+  Future<List<RetailerProduct>> _fetchProducts(
     Map<String, Object?> source,
     Map<String, Object?>? sort,
     List<CheckersStore> stores,
@@ -163,7 +163,7 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
     return CheckersCatalogueParser.products(json).take(limit).toList();
   }
 
-  void _remember(String key, Future<List<CheckersProduct>> search) {
+  void _remember(String key, Future<List<RetailerProduct>> search) {
     _searches[key] = search;
     unawaited(
       search.then<void>(
@@ -246,8 +246,8 @@ final class HttpCheckersCatalogue implements CheckersCatalogue {
   /// Random for each run of the app, so it identifies nobody across runs.
   static String _sessionDeviceId() {
     final random = Random.secure();
-    return [
-      for (var i = 0; i < 16; i++) random.nextInt(256).toRadixString(16),
-    ].map((byte) => byte.padLeft(2, '0')).join();
+    return [for (var i = 0; i < 16; i++) random.nextInt(256).toRadixString(16)]
+        .map((byte) => byte.padLeft(2, '0'))
+        .join();
   }
 }

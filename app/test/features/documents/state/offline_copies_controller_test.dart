@@ -171,9 +171,8 @@ void main() {
   group('taking a copy', () {
     test('of a vault document goes through the logged open first', () async {
       await unlock();
-      final document = vaultDocument(
-        'passport',
-      ).copyWith(ownerMemberId: Fixtures.kidMemberId);
+      final document = vaultDocument('passport')
+          .copyWith(ownerMemberId: Fixtures.kidMemberId);
 
       await controller.saveVaultDocument(document);
 

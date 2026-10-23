@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../features/add_to_checkers/data/lunch_shop_preference.dart';
 import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/state/family_controller.dart';
@@ -17,9 +18,11 @@ import '../features/lunch_box/ui/lunch_prep_screen.dart';
 import '../features/lunch_box/ui/lunch_screen.dart';
 import '../features/lunch_box/ui/planner/pdf_lunch_planner_composer.dart';
 import '../features/lunch_box/ui/share/lunch_share_screen.dart';
+import '../features/plan_week/state/lunch_shop_choice.dart';
 import '../shared/time/household_clock.dart';
-import 'app_router.dart';
+import 'fill_week_routes.dart';
 import 'household_route.dart';
+import 'household_tab_navigation.dart';
 import 'lunch_planning_routes.dart';
 import 'lunch_route.dart';
 import 'plan_week_routes.dart';
@@ -60,6 +63,14 @@ ShellRoute lunchRoutes() => ShellRoute(
       ),
       // lunch-box V2 — pantry, budget, kid picks (ADR-0006 to ADR-0008).
       ...lunchPlanningShellProviders(state),
+      // The shop *Plan my week* plans at, which the board's row shows too
+      // (lunch-box ADR-0026).
+      ChangeNotifierProvider(
+        create: (context) => LunchShopChoice(
+          preference: context.read<LunchShopPreference>(),
+          householdId: HouseholdRoute.idFrom(state),
+        ),
+      ),
     ],
     child: child,
   ),
@@ -93,6 +104,8 @@ ShellRoute lunchRoutes() => ShellRoute(
       ),
     ),
     ...lunchPlanningRoutes(),
+    // fill the week, step by step (lunch-box ADR-0020).
+    fillWeekRoute(),
     // plan my week with AI (lunch-box ADR-0011).
     planWeekRoute(),
   ],

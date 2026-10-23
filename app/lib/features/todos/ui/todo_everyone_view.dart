@@ -36,23 +36,33 @@ class TodoEveryoneView extends StatelessWidget {
           everybodyLabel: AppCopy.todosAllMembers,
         ),
         const SizedBox(height: NestSpace.lg),
-        RoutineList(board: board),
-        const SizedBox(height: NestSpace.lg),
+        // The routines scroll with the week below them, so a long list of
+        // routines never pins the tasks into a sliver of the screen.
         Expanded(
-          child: occurrences.isEmpty
-              ? const NestEmptyView(
+          child: ListView(
+            padding: const EdgeInsets.only(
+              bottom: NestSize.bottomBarHeight * 2,
+            ),
+            children: [
+              RoutineList(board: board),
+              const SizedBox(height: NestSpace.lg),
+              if (occurrences.isEmpty)
+                const NestEmptyView(
                   title: AppCopy.todosEveryoneEmptyTitle,
                   message: AppCopy.todosEveryoneEmptyBody,
                 )
-              : _GroupedList(occurrences: occurrences, board: board),
+              else
+                _GroupedDays(occurrences: occurrences, board: board),
+            ],
+          ),
         ),
       ],
     );
   }
 }
 
-class _GroupedList extends StatelessWidget {
-  const _GroupedList({required this.occurrences, required this.board});
+class _GroupedDays extends StatelessWidget {
+  const _GroupedDays({required this.occurrences, required this.board});
 
   final List<TaskOccurrence> occurrences;
   final TodoBoard board;
@@ -65,8 +75,8 @@ class _GroupedList extends StatelessWidget {
     }
     final days = byDay.keys.toList()..sort();
 
-    return ListView(
-      padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final day in days) ...[
           NestSectionHeader(

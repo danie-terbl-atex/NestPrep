@@ -2,8 +2,9 @@ import type { DocumentReference } from 'firebase-admin/firestore';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { monthKeyIn } from '../../src/ai/usage_rules';
-import { mondayOf, weekKeyOf } from '../../src/plan_week/iso_week';
+import { mondayOfWeek } from '../../src/plan_week/iso_week';
 import { expectRefusal, householdOfTwo } from './calendar_sync_fixture';
+import { HOUSEHOLD_TIME_ZONE, nextWeekIn } from './household_week';
 import { adminDb, callAs, clearFirestore, signUp, type TestUser } from './emulator_harness';
 
 /**
@@ -13,9 +14,7 @@ import { adminDb, callAs, clearFirestore, signUp, type TestUser } from './emulat
  */
 
 const MONTH = monthKeyIn('Africa/Johannesburg', new Date());
-const NEXT_WEEK = weekKeyOf(
-  mondayOf(new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10)),
-);
+const NEXT_WEEK = nextWeekIn(HOUSEHOLD_TIME_ZONE, new Date());
 
 const home = (householdId: string): DocumentReference =>
   adminDb().collection('households').doc(householdId);
@@ -56,6 +55,17 @@ describe('ranking a grocery line’s Checkers matches', () => {
   it('refuses somebody outside the household', async () => {
     const { householdId } = await householdOfTwo();
     await expectRefusal(rank(await signUp(), householdId), 'not-a-member');
+  });
+
+  it('ranks for either shop: refused only when both shops are switched off', async () => {
+    const { sam, householdId } = await householdOfTwo();
+    const flags = adminDb().doc('appConfig/flags');
+    await flags.set({ addToCheckers: false, addToPnp: true });
+    const ranked = await rank(sam, householdId);
+    expect(Array.isArray(ranked.ranked)).toBe(true);
+    await flags.set({ addToCheckers: false, addToPnp: false });
+    await expectRefusal(rank(sam, householdId), 'checkers-switched-off');
+    await flags.delete();
   });
 
   it('is refused when switched off, and when Jev is down', async () => {
@@ -136,6 +146,48 @@ describe('building the week from what the store has', () => {
     expect(week.packs).toEqual([{ productId: 'cups', boxesPerPack: 4 }]);
     expect(week.callsLeft).toBe(99);
     expect(await callsCharged(householdId)).toBe(1);
+  });
+
+  it('keeps the whole week within budget, counting what is packed already at its price', async () => {
+    const { sam, householdId, childId } = await aPremiumHousehold();
+    // R300 of crackers already in the week, against a R450 budget.
+    await home(householdId)
+      .collection('lunchPlans')
+      .doc(`${childId}_${NEXT_WEEK}`)
+      .set({
+        childId,
+        weekStart: mondayOfWeek(NEXT_WEEK),
+        slots: Object.fromEntries(
+          [1, 2, 3, 4, 5].map((day) => [
+            `${String(day)}_snack`,
+            { itemId: 'crackers', name: 'Crackers 200g', allergens: [] },
+          ]),
+        ),
+      });
+    await home(householdId).collection('lunchPrices').doc('crackers').set({ cents: 6000 });
+    await home(householdId).collection('lunchBudget').doc('weekly').set({ cents: 45000 });
+    await canned('lunchWeek', { answers: { 'fit|p-1': noul(0.99), 'fit|p-2': noul(0.7) } });
+
+    const week = await callAs<Week>(sam, 'buildLunchWeek', {
+      householdId,
+      week: NEXT_WEEK,
+      childIds: [childId],
+      slots: ['fruit'],
+      ideas: [
+        {
+          id: 'fruit',
+          slot: 'fruit',
+          childIds: [childId],
+          products: [
+            { ...product('berries', 'Blueberries 125g', 1), priceCents: 4999 },
+            { ...product('apples', 'Apples 6 pack', 6), priceCents: 2999 },
+          ],
+        },
+      ],
+    });
+    // Berries three days would be R479.96 with the crackers: over, so apples.
+    expect(week.lunches).toHaveLength(5);
+    expect(week.lunches.every((l) => l.productId === 'apples')).toBe(true);
   });
 
   it('refunds the call when Jev is down', async () => {

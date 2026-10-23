@@ -10,16 +10,22 @@ import '../data/letter_picker.dart';
 /// does not (foundation ADR-0015's POPIA section, said in plain words).
 ///
 /// A read that failed comes back here with its reason above the choices, so
-/// the way to try again is never taken away (`FE-08`).
+/// the way to try again is never taken away (`FE-08`). Twig welcomes only a
+/// fresh start; beside a failure the hero keeps its plain tile
+/// (design-system ADR-0012).
 class LetterSourcePanel extends StatelessWidget {
   const LetterSourcePanel({
     required this.onPick,
+    required this.isAiWelcome,
     this.failure,
     this.onRetry,
     super.key,
   });
 
   final ValueChanged<LetterSource> onPick;
+
+  /// Nothing has gone wrong: the hero is Twig, welcoming, not the tile.
+  final bool isAiWelcome;
   final AppFailure? failure;
 
   /// Send the same letter again; null when there is nothing to resend.
@@ -56,10 +62,16 @@ class LetterSourcePanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const NestIconTile(
-                  icon: LucideIcons.scanText,
-                  tint: NestTileTint.lilac,
-                ),
+                if (isAiWelcome)
+                  const NestTwig(
+                    pose: NestTwigPose.welcome,
+                    size: NestSize.twigLarge,
+                  )
+                else
+                  const NestIconTile(
+                    icon: LucideIcons.scanText,
+                    tint: NestTileTint.lilac,
+                  ),
                 const SizedBox(height: NestSpace.md),
                 Text(
                   SchoolLetterCopy.heroTitle,

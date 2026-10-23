@@ -1,0 +1,99 @@
+{
+  "id": "snoek-pate",
+  "name": "Smoked snoek pâté",
+  "summary": "Flaked smoked snoek beaten with cream cheese, lemon and parsley into a smoky, lemony spread for lunch or a party table.",
+  "about": "Snoek is the Cape's signature fish, sold smoked at West Coast farm stalls and fish shops. Turning a piece of smoked snoek, or the braai leftovers, into a pâté is a long-standing Cape lunch and party habit, and the pâté is spread thickly and eaten with lemon.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "snack"
+  },
+  "tags": [
+    "quick",
+    "traditional"
+  ],
+  "allergens": [
+    "milk",
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Smoked snoek",
+      "quantity": 350,
+      "unit": "g",
+      "note": "about 250 g once skinned and boned",
+      "group": null
+    },
+    {
+      "name": "Cream cheese",
+      "quantity": 250,
+      "unit": "g",
+      "note": "at room temperature",
+      "group": null
+    },
+    {
+      "name": "Sour cream",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": "or plain yoghurt",
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "zest and juice of half, rest in wedges",
+      "group": null
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "optional",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Skin the snoek and flake it into a bowl, running your fingers through the flakes to find and remove every bone. This takes about 10 minutes and is worth doing slowly.",
+    "In another bowl, beat the cream cheese and sour cream with a wooden spoon for 1 minute, until smooth and soft.",
+    "Fold in the snoek, lemon zest, spring onions, parsley and paprika, mashing lightly with a fork. Stop when it is spreadable but still has some texture.",
+    "Add the lemon juice a little at a time, tasting as you go, and season with pepper. Smoked snoek is salty, so add salt only if it needs it.",
+    "Spoon into a bowl and chill for at least 15 minutes, until firm enough to hold its shape. Serve with crackers or toast and lemon wedges."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days covered in the fridge and freezes well for a month.",
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

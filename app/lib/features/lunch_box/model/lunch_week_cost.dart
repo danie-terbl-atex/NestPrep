@@ -16,20 +16,30 @@ class LunchWeekCost {
     required Map<String, String> unpricedNames,
   }) : unpricedNames = Map.unmodifiable(unpricedNames);
 
+  /// [alsoPacked] are boxes not on the board yet — a proposed week's —
+  /// counted as though they were, so a plan is priced exactly as the board
+  /// will be once it is written.
   factory LunchWeekCost.of({
     required LunchBoard board,
     required Map<String, LunchPrice> prices,
+    Iterable<({String itemId, String name})> alsoPacked = const [],
   }) {
     final boxes = <String, int>{};
     final names = <String, String>{};
+    void count(String itemId, String name) {
+      boxes[itemId] = (boxes[itemId] ?? 0) + 1;
+      names[itemId] = name;
+    }
+
     for (final childWeek in board.children) {
       for (final day in childWeek.days) {
         for (final (_, pick) in day.box.filled) {
-          boxes[pick.itemId] = (boxes[pick.itemId] ?? 0) + 1;
-          names[pick.itemId] =
-              board.libraryById[pick.itemId]?.name ?? pick.name;
+          count(pick.itemId, board.libraryById[pick.itemId]?.name ?? pick.name);
         }
       }
+    }
+    for (final box in alsoPacked) {
+      count(box.itemId, box.name);
     }
     return LunchWeekCost._(
       basket: LunchBasket([

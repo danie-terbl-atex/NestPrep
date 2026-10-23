@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -50,13 +52,26 @@ abstract final class KidRoute {
 List<RouteBase> kidRoutes(SessionController session) => [
   GoRoute(
     path: KidRoute.codePath,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => KidCodeController(
-        kidSignInDirectory: context.read<KidSignInDirectory>(),
-        authGateway: context.read<AuthGateway>(),
-      ),
-      child: const KidCodeScreen(),
-    ),
+    builder: (context, state) {
+      final typed = state.uri.queryParameters[KidCodeScreen.codeParameter];
+      return ChangeNotifierProvider(
+        create: (context) {
+          final controller = KidCodeController(
+            kidSignInDirectory: context.read<KidSignInDirectory>(),
+            authGateway: context.read<AuthGateway>(),
+          );
+          // A code typed on the sign-in screen's code sheet is redeemed at
+          // once (accounts ADR-0009); a refusal shows here, with the code in
+          // the tiles to correct.
+          if (typed != null) {
+            controller.setCode(typed);
+            unawaited(controller.submit());
+          }
+          return controller;
+        },
+        child: const KidCodeScreen(),
+      );
+    },
   ),
   GoRoute(
     path: KidRoute.homePath,

@@ -71,6 +71,30 @@ final class FirestoreGroceryRepository implements GroceryRepository {
   }
 
   @override
+  Future<String> addMatched({
+    required String householdId,
+    required String name,
+    String? quantity,
+    required String addedBy,
+    required ProductMatch match,
+  }) async {
+    final document = _items(householdId).doc();
+    await _guarded(
+      () => document.set(
+        GroceryItem(
+          id: document.id,
+          name: name,
+          quantity: quantity,
+          addedBy: addedBy,
+          // `pickedAt` null becomes the server's time (the converter's rule).
+          productMatch: match.copyWith(pickedAt: null),
+        ),
+      ),
+    );
+    return document.id;
+  }
+
+  @override
   Future<void> setBought({
     required String householdId,
     required String itemId,
@@ -122,9 +146,10 @@ final class FirestoreGroceryRepository implements GroceryRepository {
     required String householdId,
     required String itemId,
   }) => _guarded(
-    () => _items(
-      householdId,
-    ).doc(itemId).update({'productMatch': FieldValue.delete()}),
+    () =>
+        _items(householdId)
+            .doc(itemId)
+            .update({'productMatch': FieldValue.delete()}),
   );
 
   @override
