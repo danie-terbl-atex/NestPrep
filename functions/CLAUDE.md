@@ -210,10 +210,12 @@ the invoker of a private function. Under the emulator no Google ID token exists,
 emulator tests drive their bodies directly. `premiumWeb` (europe-west1, behind Hosting's `/api/premium/**`)
 is the public gift and redeem pages' endpoint. Gift lookups and reassigns are limited per address
 (`callerAddress`) only, and a reassign per new email too: a 256-bit token needs no shared budget, and one
-would only be a way to close the page for everybody. A redeem honours a found code whatever any limit
-says, and answers `redeemed` for a first and a repeat redemption alike. A miss is counted per address,
-and only a miss from an address still under its own limit counts against the overall miss budget; past
-that budget misses alone are refused, with one error logged a window. A real code's refusal (paused,
+would only be a way to close the page for everybody. Every redeem takes one of its address's 30 places
+a quarter hour, inside the redemption's own transaction, and is refused before the code is looked up
+once those, or the address's 10 misses a quarter hour, are spent; an address creates at most 10
+vouchers an hour. Only a miss from an address under its own limits counts against the overall miss
+budget (2,000 an hour), and that budget refuses misses alone, never a found code, with one error logged
+a window. A repeat redemption answers `redeemed` like the first. A real code's refusal (paused,
 ended, used up) counts against the email; a miss never does. A gift link moves its voucher at most
 five times (`voucherReassignLimit`). A code-email challenge is stored only after Resend accepted the
 email, under a daily cap per account and five sends an hour per address. An address's ten tries an hour

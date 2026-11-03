@@ -21,10 +21,22 @@ export const PREMIUM_WEB_PER_EMAIL: RateLimitRule = {
   windowSeconds: HOUR,
 };
 
-export const REDEEM_MISSES_PER_ADDRESS: RateLimitRule = {
-  name: 'premiumWeb:redeem:misses:address',
+export const REDEEM_PER_ADDRESS: RateLimitRule = {
+  name: 'premiumWeb:redeem:address',
   limit: 30,
   windowSeconds: FIFTEEN_MINUTES,
+};
+
+export const REDEEM_MISSES_PER_ADDRESS: RateLimitRule = {
+  name: 'premiumWeb:redeem:misses:address',
+  limit: 10,
+  windowSeconds: FIFTEEN_MINUTES,
+};
+
+export const REDEEMED_PER_ADDRESS: RateLimitRule = {
+  name: 'premiumWeb:redeem:redeemed:address',
+  limit: 10,
+  windowSeconds: HOUR,
 };
 
 export const REDEEM_MISSES_OVERALL: RateLimitRule = {

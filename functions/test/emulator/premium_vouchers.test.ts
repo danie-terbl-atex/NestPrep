@@ -9,7 +9,8 @@ import { tokenHashOf } from '../../src/premium_vouchers/premium_hashes';
 import { firestoreChallenges } from '../../src/premium_vouchers/email_challenges';
 import { sendEmailCode, verifyEmailCode } from '../../src/premium_vouchers/email_code';
 import { EmailNotSent } from '../../src/premium_vouchers/email_sender';
-import { type RateLimitRule, consumeRateLimit } from '../../src/shared/rate_limit';
+import { type RateLimitRule, consumeRateLimit, rateLimitId } from '../../src/shared/rate_limit';
+import { REDEEM_MISSES_OVERALL } from '../../src/premium_vouchers/premium_web_limits';
 import { EMULATOR_EMAIL_CODE } from '../../src/premium_vouchers/voucher_runtime';
 import {
   CallFailed,
@@ -804,10 +805,10 @@ describe('the redeem page answers the same for a first and a repeat redemption (
     await aCode('GOOD-ONE');
     await aCode('ON-HOLD', { status: 'paused' });
     const email = 'repeat@nestprep.test';
-    for (let attempt = 0; attempt < 12; attempt += 1) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
       expect((await redeemOnTheWeb('WRONG-CODE', email)).body).toEqual({ error: 'codeUnknown' });
     }
-    for (let attempt = 0; attempt < 12; attempt += 1) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
       expect((await redeemOnTheWeb('GOOD-ONE', email)).body['result']).toBe('redeemed');
     }
     for (let attempt = 0; attempt < 10; attempt += 1) {
@@ -815,6 +816,7 @@ describe('the redeem page answers the same for a first and a repeat redemption (
     }
     expect((await redeemOnTheWeb('ON-HOLD', email)).body).toEqual({ error: 'tooManyTries' });
     expect((await redeemOnTheWeb('GOOD-ONE', email)).body['result']).toBe('redeemed');
+    expect((await adminDb().collection('premiumVouchers').get()).size).toBe(1);
   });
 
   it('still answers redeemed to an email that redeemed a code since paused', async () => {
@@ -828,20 +830,65 @@ describe('the redeem page answers the same for a first and a repeat redemption (
   });
 });
 
-describe('code misses are limited per address, and a found code is always honoured (R-02)', () => {
+describe('every redeem from an address is limited before anything is looked up (M-01)', () => {
   beforeEach(clearFirestore);
 
-  it('refuses one address’s misses past thirty, and still redeems its real code', async () => {
+  const vouchers = async (): Promise<number> =>
+    (await adminDb().collection('premiumVouchers').get()).size;
+
+  it('refuses the thirty-first redeem in a quarter hour, a valid code and a new email included', async () => {
     await aCode('REAL-CODE');
-    const statuses: number[] = [];
-    for (let miss = 0; miss < 31; miss += 1) {
-      statuses.push((await redeemOnTheWeb(`MISS-${String(miss)}`, 'guess@nestprep.test')).status);
+    for (let call = 0; call < 30; call += 1) {
+      expect((await redeemOnTheWeb('REAL-CODE', 'same@nestprep.test')).status).toBe(200);
     }
-    expect(statuses.slice(0, 30).every((status) => status === 404)).toBe(true);
-    expect(statuses[30]).toBe(429);
-    expect((await redeemOnTheWeb('REAL-CODE', 'guess@nestprep.test')).body['result']).toBe(
+    expect(await vouchers()).toBe(1);
+    expect(await redeemOnTheWeb('REAL-CODE', 'fresh@nestprep.test')).toMatchObject({
+      status: 429,
+      body: { error: 'tooManyTries' },
+    });
+    expect(await vouchers()).toBe(1);
+  });
+
+  it('refuses everything, a valid code included, once ten misses are spent', async () => {
+    await aCode('REAL-CODE');
+    for (let miss = 0; miss < 10; miss += 1) {
+      expect((await redeemOnTheWeb(`MISS-${String(miss)}`, 'guess@nestprep.test')).status).toBe(
+        404,
+      );
+    }
+    expect((await redeemOnTheWeb('MISS-X', 'guess@nestprep.test')).status).toBe(429);
+    expect((await redeemOnTheWeb('REAL-CODE', 'new@nestprep.test')).status).toBe(429);
+    expect(await vouchers()).toBe(0);
+  });
+
+  it('creates at most ten vouchers an hour from one address', async () => {
+    await aCode('SHARED-CODE');
+    for (let email = 0; email < 10; email += 1) {
+      expect(
+        (await redeemOnTheWeb('SHARED-CODE', `farm-${String(email)}@nestprep.test`)).body['result'],
+      ).toBe('redeemed');
+    }
+    expect((await redeemOnTheWeb('SHARED-CODE', 'farm-10@nestprep.test')).body).toEqual({
+      error: 'tooManyTries',
+    });
+    expect((await redeemOnTheWeb('SHARED-CODE', 'farm-0@nestprep.test')).body['result']).toBe(
       'redeemed',
     );
+    expect(await vouchers()).toBe(10);
+  });
+
+  it('lets a spent overall miss ceiling refuse misses only, never a found code', async () => {
+    await aCode('REAL-CODE');
+    await adminDb()
+      .doc(`rateLimits/${rateLimitId(REDEEM_MISSES_OVERALL, 'all')}`)
+      .set({
+        rule: REDEEM_MISSES_OVERALL.name,
+        windowStart: Timestamp.now(),
+        count: REDEEM_MISSES_OVERALL.limit,
+        expiresAt: Timestamp.fromMillis(Date.now() + 60 * 60 * 1000),
+      });
+    expect((await redeemOnTheWeb('NOPE-NOPE', 'x@nestprep.test')).status).toBe(429);
+    expect((await redeemOnTheWeb('REAL-CODE', 'x@nestprep.test')).body['result']).toBe('redeemed');
   });
 });
 

@@ -55,10 +55,6 @@ function readWindow(data: Record<string, unknown> | undefined): RateWindow | nul
   return { windowStart: start.toDate(), count };
 }
 
-/**
- * Counts one attempt against the rule for this subject, in a transaction so
- * two attempts at once cannot both take the last place. True means go ahead.
- */
 export interface StagedRateLimit {
   readonly allowed: boolean;
   readonly stage: () => void;

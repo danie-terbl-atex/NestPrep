@@ -6,8 +6,6 @@ import {
   GIFT_LOOKUP_PER_ADDRESS,
   GIFT_REASSIGN_PER_ADDRESS,
   PREMIUM_WEB_PER_EMAIL,
-  REDEEM_MISSES_OVERALL,
-  REDEEM_MISSES_PER_ADDRESS,
   REDEEM_MISSES_TRIPPED,
 } from '../../../src/premium_vouchers/premium_web_limits';
 import {
@@ -18,7 +16,7 @@ import {
   answerPremiumWeb,
   routeOf,
 } from '../../../src/premium_vouchers/premium_web_answer';
-import type { RedeemAnswer, Redeemer } from '../../../src/premium_vouchers/web_redemption';
+import type { RedeemOutcome, Redeemer } from '../../../src/premium_vouchers/web_redemption';
 import type { RateLimitRule } from '../../../src/shared/rate_limit';
 
 const PEPPER = 'test-pepper';
@@ -34,15 +32,6 @@ const untouchable = new Proxy(
   },
 ) as Firestore;
 
-const RULES = [
-  GIFT_LOOKUP_PER_ADDRESS,
-  GIFT_REASSIGN_PER_ADDRESS,
-  PREMIUM_WEB_PER_EMAIL,
-  REDEEM_MISSES_OVERALL,
-  REDEEM_MISSES_PER_ADDRESS,
-  REDEEM_MISSES_TRIPPED,
-];
-
 interface World {
   readonly deps: PremiumWebDeps;
   readonly asked: { rule: string; subject: string }[];
@@ -52,7 +41,7 @@ interface World {
 }
 
 async function aWorld(
-  options: { limits?: Partial<Record<string, number>>; answer?: RedeemAnswer } = {},
+  options: { limits?: Partial<Record<string, number>>; outcome?: RedeemOutcome } = {},
 ): Promise<World> {
   const asked: { rule: string; subject: string }[] = [];
   const used = new Map<string, number>();
@@ -72,10 +61,16 @@ async function aWorld(
       used.set(key, count + 1);
       return Promise.resolve(true);
     },
-    redeem: async (redeemer): Promise<RedeemAnswer> => {
+    redeem: async (redeemer): Promise<RedeemOutcome> => {
       redeemed.push(redeemer);
-      if (redeemer.codeHash !== found) return Promise.resolve({ error: 'codeUnknown' });
-      return Promise.resolve(options.answer ?? { result: 'redeemed', days: 30, label: 'Launch' });
+      if (options.outcome !== undefined) return Promise.resolve(options.outcome);
+      return Promise.resolve({
+        answer:
+          redeemer.codeHash === found
+            ? { result: 'redeemed', days: 30, label: 'Launch' }
+            : { error: 'codeUnknown' },
+        missCeilingTripped: false,
+      });
     },
   });
   return { deps: at('203.0.113.9'), asked, used, redeemed, at };
@@ -157,70 +152,40 @@ describe('gift links', () => {
 });
 
 describe('redeeming a code', () => {
-  it('honours a found code whatever any limit says', async () => {
-    const world = await aWorld({
-      limits: Object.fromEntries(RULES.map((rule) => [rule.name, 0])),
-    });
-    const reply = await answerPremiumWeb(world.deps, redeem('thandi-30'));
+  it('hands the redemption the code and email hashes and the caller’s address, and nothing plain', async () => {
+    const world = await aWorld();
+    const reply = await answerPremiumWeb(world.deps, redeem('thandi-30', ' Sam@Example.com'));
     expect(reply).toEqual({ status: 200, body: { result: 'redeemed', days: 30, label: 'Launch' } });
+    expect(world.redeemed).toEqual([
+      {
+        codeHash: await codeHashOf(PEPPER, FOUND),
+        emailHash: await emailHashOf(PEPPER, 'sam@example.com'),
+        emailMasked: 's***@example.com',
+        address: '203.0.113.9',
+      },
+    ]);
     expect(world.asked).toEqual([]);
   });
 
-  it('counts a miss per address, and adds it to the overall budget only while that address is under its own', async () => {
-    const world = await aWorld();
-    const answers: number[] = [];
-    for (let call = 0; call < 40; call += 1) {
-      answers.push((await answerPremiumWeb(world.deps, redeem('ZZZZ-ZZZZ'))).status);
-    }
-    expect(
-      answers.slice(0, REDEEM_MISSES_PER_ADDRESS.limit).every((status) => status === 404),
-    ).toBe(true);
-    expect(answers.slice(REDEEM_MISSES_PER_ADDRESS.limit).every((status) => status === 429)).toBe(
-      true,
-    );
-    expect(world.used.get(`${REDEEM_MISSES_OVERALL.name} all`)).toBe(
-      REDEEM_MISSES_PER_ADDRESS.limit,
-    );
-    expect((await answerPremiumWeb(world.deps, redeem(FOUND))).status).toBe(200);
-  });
-
-  it('once the overall miss budget is spent, refuses only misses, and logs it once a window', async () => {
-    const world = await aWorld({ limits: { [REDEEM_MISSES_OVERALL.name]: 2 } });
-    const statuses: number[] = [];
-    for (let address = 0; address < 4; address += 1) {
-      statuses.push(
-        (await answerPremiumWeb(world.at(`198.51.100.${String(address)}`), redeem('NOPE-NOPE')))
-          .status,
-      );
-    }
-    expect(statuses).toEqual([404, 404, 429, 429]);
-    expect(world.used.get(`${REDEEM_MISSES_TRIPPED.name} all`)).toBe(1);
-    expect((await answerPremiumWeb(world.at('198.51.100.9'), redeem(FOUND))).status).toBe(200);
-  });
-
-  it('never counts a miss against the email, so garbage cannot lock anybody out', async () => {
-    const world = await aWorld();
-    for (let call = 0; call < 12; call += 1) {
-      await answerPremiumWeb(
-        world.at(`198.51.100.${String(call)}`),
-        redeem('ZZZZ', 'victim@example.com'),
-      );
-    }
-    expect(world.asked.map((entry) => entry.rule)).not.toContain(PREMIUM_WEB_PER_EMAIL.name);
-  });
-
-  it('counts a real code’s refusal against the email, by its hash', async () => {
-    const world = await aWorld({ answer: { error: 'codePaused' } });
-    for (let call = 0; call < PREMIUM_WEB_PER_EMAIL.limit; call += 1) {
-      expect((await answerPremiumWeb(world.deps, redeem(FOUND, 'Sam@Example.com'))).body).toEqual({
-        error: 'codePaused',
-      });
-    }
-    expect((await answerPremiumWeb(world.deps, redeem(FOUND, ' sam@example.com'))).body).toEqual({
-      error: 'tooManyTries',
+  it('answers what the redemption decided, its limits included', async () => {
+    const world = await aWorld({
+      outcome: { answer: { error: 'tooManyTries' }, missCeilingTripped: false },
     });
-    const subjects = new Set(world.asked.map((entry) => entry.subject));
-    expect(subjects).toEqual(new Set([await emailHashOf(PEPPER, 'sam@example.com')]));
+    expect(await answerPremiumWeb(world.deps, redeem(FOUND))).toEqual({
+      status: 429,
+      body: { error: 'tooManyTries' },
+    });
+  });
+
+  it('logs a tripped miss ceiling once a window', async () => {
+    const world = await aWorld({
+      outcome: { answer: { error: 'tooManyTries' }, missCeilingTripped: true },
+    });
+    for (let call = 0; call < 3; call += 1) await answerPremiumWeb(world.deps, redeem('NOPE-NOPE'));
+    expect(world.asked.map((entry) => entry.rule)).toEqual(
+      Array(3).fill(REDEEM_MISSES_TRIPPED.name),
+    );
+    expect(world.used.get(`${REDEEM_MISSES_TRIPPED.name} all`)).toBe(1);
   });
 
   it('looks nothing up for a body that is not a code and an email', async () => {

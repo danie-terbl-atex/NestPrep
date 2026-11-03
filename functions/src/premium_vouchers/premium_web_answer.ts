@@ -16,7 +16,6 @@ import {
   GIFT_REASSIGN_PER_ADDRESS,
   PREMIUM_WEB_PER_EMAIL,
   REDEEM_MISSES_OVERALL,
-  REDEEM_MISSES_PER_ADDRESS,
   REDEEM_MISSES_TRIPPED,
 } from './premium_web_limits';
 import { giftLookupInput, giftReassignInput, redeemCodeInput } from './schemas';
@@ -27,7 +26,7 @@ import {
   lookUpGift,
   reassignGift,
 } from './web_gifts';
-import { REDEEM_REFUSALS, type RedeemAnswer, type Redeemer } from './web_redemption';
+import { REDEEM_REFUSALS, type RedeemOutcome, type Redeemer } from './web_redemption';
 
 export const WEB_ERROR_STATUS = {
   badRequest: 400,
@@ -75,7 +74,7 @@ export interface PremiumWebDeps {
   readonly address: string;
   readonly now: Date;
   readonly consume: (rule: RateLimitRule, subject: string) => Promise<boolean>;
-  readonly redeem: (redeemer: Redeemer) => Promise<RedeemAnswer>;
+  readonly redeem: (redeemer: Redeemer) => Promise<RedeemOutcome>;
 }
 
 type Answer = Readonly<Record<string, unknown>> & { readonly error?: WebError };
@@ -129,31 +128,20 @@ async function answerRoute(deps: PremiumWebDeps, route: WebRoute, body: unknown)
       const email = normEmail(input.email);
       if (email === null) return { error: 'badEmail' };
       const pepper = deps.pepper();
-      const emailHash = await emailHashOf(pepper, email);
-      const answer = await deps.redeem({
+      const { answer, missCeilingTripped } = await deps.redeem({
         codeHash: await codeHashOf(pepper, code),
-        emailHash,
+        emailHash: await emailHashOf(pepper, email),
         emailMasked: maskEmail(email),
+        address: deps.address,
       });
-      if (!('error' in answer)) return answer;
-      if (answer.error === 'codeUnknown') return answerMiss(deps);
-      if (!(await deps.consume(PREMIUM_WEB_PER_EMAIL, emailHash))) return TOO_MANY;
+      if (missCeilingTripped && (await deps.consume(REDEEM_MISSES_TRIPPED, 'all'))) {
+        logger.error('premium code misses reached their overall ceiling; misses refused', {
+          limit: REDEEM_MISSES_OVERALL.limit,
+        });
+      }
       return answer;
     }
   }
-}
-
-async function answerMiss(deps: PremiumWebDeps): Promise<Answer> {
-  if (!(await deps.consume(REDEEM_MISSES_PER_ADDRESS, deps.address))) return TOO_MANY;
-  if (!(await deps.consume(REDEEM_MISSES_OVERALL, 'all'))) {
-    if (await deps.consume(REDEEM_MISSES_TRIPPED, 'all')) {
-      logger.error('premium code misses reached their overall ceiling; misses refused', {
-        limit: REDEEM_MISSES_OVERALL.limit,
-      });
-    }
-    return TOO_MANY;
-  }
-  return { error: 'codeUnknown' };
 }
 
 function parsed<S extends z.ZodType>(schema: S, body: unknown): z.infer<S> | null {

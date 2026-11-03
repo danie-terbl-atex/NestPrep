@@ -1,7 +1,15 @@
 import { type Firestore, Timestamp, type Transaction } from 'firebase-admin/firestore';
 import { logger } from 'firebase-functions/v2';
 
+import { type RateLimitRule, type StagedRateLimit, readRateLimitIn } from '../shared/rate_limit';
 import { claimByOf, redeemRefusalOf, type RedeemRefusal } from './code_policy';
+import {
+  PREMIUM_WEB_PER_EMAIL,
+  REDEEMED_PER_ADDRESS,
+  REDEEM_MISSES_OVERALL,
+  REDEEM_MISSES_PER_ADDRESS,
+  REDEEM_PER_ADDRESS,
+} from './premium_web_limits';
 import {
   type StoredCode,
   PREMIUM_VOUCHERS,
@@ -16,6 +24,7 @@ export interface Redeemer {
   readonly codeHash: string;
   readonly emailHash: string;
   readonly emailMasked: string;
+  readonly address: string;
 }
 
 export const REDEEM_REFUSALS = [
@@ -28,17 +37,42 @@ export const REDEEM_REFUSALS = [
 
 export type RedeemAnswer =
   | { readonly result: 'redeemed'; readonly days: number; readonly label: string }
-  | { readonly error: 'codeUnknown' }
+  | { readonly error: 'codeUnknown' | 'tooManyTries' }
   | RedeemRefusal;
+
+export interface RedeemOutcome {
+  readonly answer: RedeemAnswer;
+  readonly missCeilingTripped: boolean;
+}
+
+const TOO_MANY = { error: 'tooManyTries' } as const;
 
 export async function redeemCode(
   store: Firestore,
   redeemer: Redeemer,
   now: Date,
-): Promise<RedeemAnswer> {
-  return store.runTransaction(async (transaction): Promise<RedeemAnswer> => {
+): Promise<RedeemOutcome> {
+  return store.runTransaction(async (transaction): Promise<RedeemOutcome> => {
+    const limit = (rule: RateLimitRule, subject: string): Promise<StagedRateLimit> =>
+      readRateLimitIn(transaction, store, rule, subject, now);
+    const answered = (answer: RedeemAnswer): RedeemOutcome => ({
+      answer,
+      missCeilingTripped: false,
+    });
+
+    const request = await limit(REDEEM_PER_ADDRESS, redeemer.address);
+    const misses = await limit(REDEEM_MISSES_PER_ADDRESS, redeemer.address);
+    if (!request.allowed || !misses.allowed) return answered(TOO_MANY);
+
     const code = await readCode(transaction, store, redeemer.codeHash);
-    if (code === null || code.status === 'archived') return { error: 'codeUnknown' };
+    if (code === null || code.status === 'archived') {
+      const overall = await limit(REDEEM_MISSES_OVERALL, 'all');
+      request.stage();
+      misses.stage();
+      if (!overall.allowed) return { answer: TOO_MANY, missCeilingTripped: true };
+      overall.stage();
+      return answered({ error: 'codeUnknown' });
+    }
 
     const redemption = await transaction.get(
       codeRedemptionRef(store, redeemer.codeHash, redeemer.emailHash),
@@ -49,16 +83,27 @@ export async function redeemCode(
         typeof voucherId === 'string'
           ? storedVoucher.safeParse((await transaction.get(voucherRef(store, voucherId))).data())
           : null;
-      return {
+      request.stage();
+      return answered({
         result: 'redeemed',
         days: earlier?.success === true ? earlier.data.days : code.days,
         label: code.label,
-      };
+      });
     }
 
     const refusal = redeemRefusalOf(code, now);
-    if (refusal !== null) return refusal;
+    if (refusal !== null) {
+      const perEmail = await limit(PREMIUM_WEB_PER_EMAIL, redeemer.emailHash);
+      request.stage();
+      if (!perEmail.allowed) return answered(TOO_MANY);
+      perEmail.stage();
+      return answered(refusal);
+    }
 
+    const redeemed = await limit(REDEEMED_PER_ADDRESS, redeemer.address);
+    request.stage();
+    if (!redeemed.allowed) return answered(TOO_MANY);
+    redeemed.stage();
     const voucher = store.collection(PREMIUM_VOUCHERS).doc();
     const at = Timestamp.fromDate(now);
     const claimBy = claimByOf(code);
@@ -92,7 +137,7 @@ export async function redeemCode(
       voucherId: voucher.id,
       at,
     });
-    return { result: 'redeemed', days: code.days, label: code.label };
+    return answered({ result: 'redeemed', days: code.days, label: code.label });
   });
 }
 
