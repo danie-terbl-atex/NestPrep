@@ -1,5 +1,6 @@
 import { type Firestore, Timestamp, type Transaction } from 'firebase-admin/firestore';
 
+import { type RateLimitRule, readRateLimitIn } from '../shared/rate_limit';
 import { sameHash } from './premium_hashes';
 import {
   type StoredChallenge,
@@ -14,6 +15,12 @@ export const EMAIL_CODE_LIFETIME_MS = 10 * MINUTE_MS;
 export const EMAIL_CODES_PER_HOUR = 3;
 export const EMAIL_CODE_WINDOW_MS = 60 * MINUTE_MS;
 export const EMAIL_CODE_TRIES = 5;
+
+export const EMAIL_CODE_TRIES_PER_ADDRESS: RateLimitRule = {
+  name: 'voucherEmailCode:tries:email',
+  limit: 10,
+  windowSeconds: 60 * 60,
+};
 
 export type AttemptOutcome =
   'verified' | 'emailCodeWrong' | 'emailCodeExpired' | 'emailCodeTooManyTries';
@@ -49,6 +56,30 @@ export function judgeAttempt(
   return codeMatches && emailMatches ? 'verified' : 'emailCodeWrong';
 }
 
+export interface AttemptDecision {
+  readonly outcome: AttemptOutcome;
+  readonly addsChallengeTry: boolean;
+  readonly spendsAddressTry: boolean;
+}
+
+export function decideAttempt(
+  challenge: StoredChallenge | null,
+  addressHasTries: boolean,
+  attempt: Pick<Attempt, 'emailHash' | 'codeHash'>,
+  now: Date,
+): AttemptDecision {
+  if (!addressHasTries) {
+    return { outcome: 'emailCodeTooManyTries', addsChallengeTry: false, spendsAddressTry: false };
+  }
+  const outcome = judgeAttempt(challenge, attempt, now);
+  const wrong = outcome === 'emailCodeWrong' && challenge !== null;
+  return {
+    outcome,
+    addsChallengeTry: wrong,
+    spendsAddressTry: wrong && sameHash(challenge.emailHash, attempt.emailHash),
+  };
+}
+
 export function firestoreChallenges(store: Firestore): ChallengeStore {
   return {
     async sentThisHour(uid: string, now: Date): Promise<number> {
@@ -77,10 +108,23 @@ export function firestoreChallenges(store: Firestore): ChallengeStore {
     async attempt(uid: string, attempt: Attempt, now: Date): Promise<AttemptOutcome> {
       return store.runTransaction(async (transaction) => {
         const challenge = await readChallenge(store, uid, transaction);
-        const outcome = judgeAttempt(challenge, attempt, now);
-        if (outcome === 'emailCodeWrong' && challenge !== null) {
+        const budget = await readRateLimitIn(
+          transaction,
+          store,
+          EMAIL_CODE_TRIES_PER_ADDRESS,
+          attempt.emailHash,
+          now,
+        );
+        const { outcome, addsChallengeTry, spendsAddressTry } = decideAttempt(
+          challenge,
+          budget.allowed,
+          attempt,
+          now,
+        );
+        if (addsChallengeTry && challenge !== null) {
           transaction.update(emailChallengeRef(store, uid), { tries: challenge.tries + 1 });
         }
+        if (spendsAddressTry) budget.stage();
         if (outcome === 'verified') {
           transaction.set(
             verifiedEmailsRef(store, uid),

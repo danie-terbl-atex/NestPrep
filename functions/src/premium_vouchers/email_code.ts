@@ -23,12 +23,6 @@ export const EMAIL_CODES_PER_ACCOUNT_DAY: RateLimitRule = {
   windowSeconds: 24 * HOUR,
 };
 
-export const EMAIL_CODE_TRIES_PER_ADDRESS: RateLimitRule = {
-  name: 'voucherEmailCode:tries:email',
-  limit: 10,
-  windowSeconds: HOUR,
-};
-
 export interface EmailCodeDeps {
   readonly challenges: ChallengeStore;
   readonly provenHashes: (uid: string) => Promise<readonly string[]>;
@@ -36,7 +30,6 @@ export interface EmailCodeDeps {
   readonly sender: EmailSender;
   readonly newCode: () => string;
   readonly consume: (rule: RateLimitRule, subject: string) => Promise<boolean>;
-  readonly isWithin: (rule: RateLimitRule, subject: string) => Promise<boolean>;
   readonly now: Date;
 }
 
@@ -82,24 +75,18 @@ export async function sendEmailCode(
 }
 
 export async function verifyEmailCode(
-  deps: Pick<EmailCodeDeps, 'challenges' | 'pepper' | 'consume' | 'isWithin' | 'now'>,
+  deps: Pick<EmailCodeDeps, 'challenges' | 'pepper' | 'now'>,
   uid: string,
   input: { readonly email: string; readonly code: string },
 ): Promise<{ verified: true; emailMasked: string }> {
   const { pepper, now } = deps;
   const emailHash = await emailHashOf(pepper, input.email);
-  if (!(await deps.isWithin(EMAIL_CODE_TRIES_PER_ADDRESS, emailHash))) {
-    throw refuseSubscription('emailCodeTooManyTries');
-  }
   const emailMasked = maskEmail(input.email);
   const outcome = await deps.challenges.attempt(
     uid,
     { emailHash, codeHash: await otpHashOf(pepper, uid, input.code), emailMasked },
     now,
   );
-  if (outcome === 'emailCodeWrong' || outcome === 'emailCodeTooManyTries') {
-    await deps.consume(EMAIL_CODE_TRIES_PER_ADDRESS, emailHash);
-  }
   if (outcome !== 'verified') throw refuseSubscription(outcome);
   logger.info('voucher email verified', { uid });
   return { verified: true, emailMasked };

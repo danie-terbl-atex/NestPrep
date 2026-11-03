@@ -6,14 +6,15 @@ import {
   type AttemptOutcome,
   type ChallengeStore,
   EMAIL_CODE_TRIES,
+  EMAIL_CODE_TRIES_PER_ADDRESS,
   EMAIL_CODE_WINDOW_MS,
+  decideAttempt,
   judgeAttempt,
   sentInWindow,
 } from '../../../src/premium_vouchers/email_challenges';
 import {
   EMAIL_CODES_PER_ACCOUNT_DAY,
   EMAIL_CODES_PER_ADDRESS,
-  EMAIL_CODE_TRIES_PER_ADDRESS,
   type EmailCodeDeps,
   sendEmailCode,
   verifyEmailCode,
@@ -31,6 +32,7 @@ interface World {
   readonly deps: EmailCodeDeps;
   readonly events: string[];
   readonly challenges: Map<string, StoredChallenge>;
+  readonly triesSpent: Map<string, number>;
 }
 
 function aWorld(
@@ -43,6 +45,7 @@ function aWorld(
 ): World {
   const events: string[] = [];
   const challenges = new Map<string, StoredChallenge>();
+  const triesSpent = new Map<string, number>();
   const store: ChallengeStore = {
     sentThisHour: async () => Promise.resolve(options.sentThisHour ?? 0),
     record: async (uid, sent, now) => {
@@ -58,12 +61,26 @@ function aWorld(
     },
     attempt: async (uid: string, attempt: Attempt, now: Date): Promise<AttemptOutcome> => {
       events.push(`attempt ${uid}`);
-      return Promise.resolve(judgeAttempt(challenges.get(uid) ?? null, attempt, now));
+      const challenge = challenges.get(uid) ?? null;
+      const spent = triesSpent.get(attempt.emailHash) ?? 0;
+      const decision = decideAttempt(
+        challenge,
+        spent < EMAIL_CODE_TRIES_PER_ADDRESS.limit,
+        attempt,
+        now,
+      );
+      if (decision.addsChallengeTry && challenge !== null) {
+        challenges.set(uid, { ...challenge, tries: challenge.tries + 1 });
+      }
+      if (decision.spendsAddressTry) triesSpent.set(attempt.emailHash, spent + 1);
+      if (decision.outcome === 'verified') challenges.delete(uid);
+      return Promise.resolve(decision.outcome);
     },
   };
   return {
     events,
     challenges,
+    triesSpent,
     deps: {
       challenges: store,
       provenHashes: async () => Promise.resolve(options.proven ?? []),
@@ -78,10 +95,6 @@ function aWorld(
       newCode: () => '482913',
       consume: async (rule, subject): Promise<boolean> => {
         events.push(`consume ${rule.name} ${subject.includes('@') ? 'PLAIN EMAIL' : 'ok'}`);
-        return Promise.resolve(!(options.refuse?.(rule) ?? false));
-      },
-      isWithin: async (rule): Promise<boolean> => {
-        events.push(`check ${rule.name}`);
         return Promise.resolve(!(options.refuse?.(rule) ?? false));
       },
       now: NOW,
@@ -154,59 +167,117 @@ describe('sending an email code', () => {
 });
 
 describe('verifying an email code', () => {
-  const spentTries = (world: World): number =>
-    world.events.filter((event) => event.startsWith(`consume ${EMAIL_CODE_TRIES_PER_ADDRESS.name}`))
-      .length;
+  const spent = async (world: World, email: string): Promise<number> =>
+    world.triesSpent.get(await emailHashOf(PEPPER, email)) ?? 0;
+  const verify = async (
+    world: World,
+    uid: string,
+    email: string,
+    code: string,
+  ): Promise<string | undefined> => reasonOf(verifyEmailCode(world.deps, uid, { email, code }));
 
-  it('spends nothing from the address’s try budget without a live challenge', async () => {
+  it('spends nothing from an address’s budget without a live challenge', async () => {
     const world = aWorld();
     for (let call = 0; call < 20; call += 1) {
-      expect(
-        await reasonOf(
-          verifyEmailCode(world.deps, 'uid-stranger', { email: TARGET, code: '000000' }),
-        ),
-      ).toBe('emailCodeExpired');
+      expect(await verify(world, 'uid-stranger', TARGET, '000000')).toBe('emailCodeExpired');
     }
-    expect(spentTries(world)).toBe(0);
+    expect(await spent(world, TARGET)).toBe(0);
   });
 
-  it('spends a try on a wrong guess against a live challenge, and none on the right code', async () => {
+  it('spends a try only on a wrong code for the email the challenge was sent to', async () => {
     const world = aWorld();
     await sendEmailCode(world.deps, 'uid-1', TARGET);
-    expect(
-      await reasonOf(verifyEmailCode(world.deps, 'uid-1', { email: TARGET, code: '000000' })),
-    ).toBe('emailCodeWrong');
-    expect(spentTries(world)).toBe(1);
-    await verifyEmailCode(world.deps, 'uid-1', { email: TARGET, code: '482913' });
-    expect(spentTries(world)).toBe(1);
-  });
-
-  it('spends a try on a guess at a challenge already out of tries', async () => {
-    const world = aWorld();
-    await sendEmailCode(world.deps, 'uid-1', TARGET);
-    const challenge = world.challenges.get('uid-1');
-    if (challenge !== undefined) world.challenges.set('uid-1', { ...challenge, tries: 5 });
-    expect(
-      await reasonOf(verifyEmailCode(world.deps, 'uid-1', { email: TARGET, code: '482913' })),
-    ).toBe('emailCodeTooManyTries');
-    expect(spentTries(world)).toBe(1);
-  });
-
-  it('reads the address’s try budget before any challenge is looked at', async () => {
-    const world = aWorld({ refuse: (rule) => rule.name === EMAIL_CODE_TRIES_PER_ADDRESS.name });
-    await sendEmailCode(aWorld().deps, 'uid-1', TARGET);
-    expect(
-      await reasonOf(verifyEmailCode(world.deps, 'uid-1', { email: TARGET, code: '482913' })),
-    ).toBe('emailCodeTooManyTries');
-    expect(world.events.some((event) => event.startsWith('attempt'))).toBe(false);
-  });
-
-  it('verifies the code sent, for the email it was sent to', async () => {
-    const world = aWorld();
-    await sendEmailCode(world.deps, 'uid-1', TARGET);
+    expect(await verify(world, 'uid-1', TARGET, '000000')).toBe('emailCodeWrong');
+    expect(await spent(world, TARGET)).toBe(1);
     expect(await verifyEmailCode(world.deps, 'uid-1', { email: TARGET, code: '482913' })).toEqual({
       verified: true,
       emailMasked: 'b***@example.com',
+    });
+    expect(await spent(world, TARGET)).toBe(1);
+  });
+
+  it('never spends the typed email’s budget for a challenge sent to another email', async () => {
+    const world = aWorld();
+    await sendEmailCode(world.deps, 'uid-attacker', 'attacker@example.com');
+    for (let call = 0; call < 12; call += 1) {
+      await verify(world, 'uid-attacker', TARGET, '000000');
+    }
+    expect(await spent(world, TARGET)).toBe(0);
+    expect(await spent(world, 'attacker@example.com')).toBe(0);
+  });
+
+  it('never spends a budget for a challenge stuck out of tries', async () => {
+    const world = aWorld();
+    await sendEmailCode(world.deps, 'uid-1', TARGET);
+    for (let call = 0; call < EMAIL_CODE_TRIES; call += 1) {
+      await verify(world, 'uid-1', TARGET, '000000');
+    }
+    expect(await spent(world, TARGET)).toBe(EMAIL_CODE_TRIES);
+    for (let call = 0; call < 10; call += 1) {
+      expect(await verify(world, 'uid-1', TARGET, '000000')).toBe('emailCodeTooManyTries');
+    }
+    expect(await spent(world, TARGET)).toBe(EMAIL_CODE_TRIES);
+    await sendEmailCode(world.deps, 'uid-owner', TARGET);
+    expect(
+      await verifyEmailCode(world.deps, 'uid-owner', { email: TARGET, code: '482913' }),
+    ).toMatchObject({ verified: true });
+  });
+
+  it('refuses every attempt for an address whose budget is spent, the right code included', async () => {
+    const world = aWorld();
+    world.triesSpent.set(await emailHashOf(PEPPER, TARGET), EMAIL_CODE_TRIES_PER_ADDRESS.limit);
+    await sendEmailCode(world.deps, 'uid-1', TARGET);
+    expect(await verify(world, 'uid-1', TARGET, '482913')).toBe('emailCodeTooManyTries');
+    expect(world.challenges.get('uid-1')?.tries).toBe(0);
+  });
+});
+
+describe('deciding one attempt', () => {
+  const emailHash = 'e'.repeat(64);
+  const codeHash = 'c'.repeat(64);
+  const live: StoredChallenge = {
+    emailHash,
+    codeHash,
+    expiresAt: new Date(NOW.getTime() + 60_000),
+    tries: 0,
+    sentCount: 1,
+    windowStart: NOW,
+  };
+
+  it('counts against the address only a wrong code for that address', () => {
+    expect(decideAttempt(live, true, { emailHash, codeHash: 'd'.repeat(64) }, NOW)).toEqual({
+      outcome: 'emailCodeWrong',
+      addsChallengeTry: true,
+      spendsAddressTry: true,
+    });
+    expect(decideAttempt(live, true, { emailHash: 'f'.repeat(64), codeHash }, NOW)).toEqual({
+      outcome: 'emailCodeWrong',
+      addsChallengeTry: true,
+      spendsAddressTry: false,
+    });
+  });
+
+  it('counts nothing for no challenge, a stuck one, an expired one, a spent budget or the right code', () => {
+    const nothing = { addsChallengeTry: false, spendsAddressTry: false };
+    expect(decideAttempt(null, true, { emailHash, codeHash }, NOW)).toEqual({
+      outcome: 'emailCodeExpired',
+      ...nothing,
+    });
+    expect(decideAttempt({ ...live, tries: 5 }, true, { emailHash, codeHash }, NOW)).toEqual({
+      outcome: 'emailCodeTooManyTries',
+      ...nothing,
+    });
+    expect(decideAttempt({ ...live, expiresAt: NOW }, true, { emailHash, codeHash }, NOW)).toEqual({
+      outcome: 'emailCodeExpired',
+      ...nothing,
+    });
+    expect(decideAttempt(live, false, { emailHash, codeHash }, NOW)).toEqual({
+      outcome: 'emailCodeTooManyTries',
+      ...nothing,
+    });
+    expect(decideAttempt(live, true, { emailHash, codeHash }, NOW)).toEqual({
+      outcome: 'verified',
+      ...nothing,
     });
   });
 });

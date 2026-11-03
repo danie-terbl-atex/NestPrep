@@ -52,9 +52,9 @@ class PremiumTimeCard extends StatelessWidget {
             NestListRow(
               leading: const NestIconTile(icon: LucideIcons.sparkles),
               title: PremiumVoucherCopy.freePremium,
-              subtitle: PremiumVoucherCopy.untilWithWaiting(
-                dateLabel(givenUntil),
-              ),
+              subtitle: entitlement.daysWaiting.total > 0
+                  ? PremiumVoucherCopy.untilWithWaiting(dateLabel(givenUntil))
+                  : PremiumVoucherCopy.until(dateLabel(givenUntil)),
             ),
           for (final source in GrantSource.values)
             if (entitlement.daysWaiting.of(source) > 0)

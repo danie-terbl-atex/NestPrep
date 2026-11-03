@@ -5,10 +5,10 @@ import { userInfo } from 'node:os';
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
-import { initializeApp } from 'firebase-admin/app';
-import { Timestamp, getFirestore } from 'firebase-admin/firestore';
+import { Timestamp } from 'firebase-admin/firestore';
 
-const REAL_PROJECT = 'nestprep-643b7';
+import { PROJECT_OPTIONS, premiumAdmin, refuse } from './premium-admin.mjs';
+
 const UNIQUE_LENGTH = 12;
 const MAX_UNIQUE = 5000;
 const BATCH_SIZE = 400;
@@ -27,33 +27,14 @@ const { values } = parseArgs({
     partner: { type: 'string' },
     test: { type: 'boolean', default: false },
     by: { type: 'string' },
-    project: { type: 'string' },
-    yes: { type: 'boolean', default: false },
+    ...PROJECT_OPTIONS,
   },
 });
 
-function refuse(message) {
-  console.error(message);
-  process.exit(2);
-}
-
-const real = values.project !== undefined;
-if (real && (values.project !== REAL_PROJECT || !values.yes)) {
-  refuse(`the real project needs exactly --project ${REAL_PROJECT} --yes`);
-}
-if (real && process.env.FIRESTORE_EMULATOR_HOST !== undefined) {
-  refuse('FIRESTORE_EMULATOR_HOST is set: unset it for the real project, or drop --project');
-}
-if (!real) process.env.FIRESTORE_EMULATOR_HOST ??= '127.0.0.1:8080';
-process.env.GCLOUD_PROJECT ??= REAL_PROJECT;
-
-const { EMULATOR_PEPPER } = await import('../lib/premium_vouchers/premium_config.js');
+const { store, pepper, target } = await premiumAdmin(values);
 const { codeHashOf, normCode } = await import('../lib/premium_vouchers/premium_hashes.js');
 const { PREMIUM_CODES } = await import('../lib/premium_vouchers/voucher_documents.js');
 const { generateReadableCode } = await import('../lib/shared/readable_code.js');
-
-const pepper = real ? (process.env.PREMIUM_EMAIL_PEPPER ?? '').trim() : EMULATOR_PEPPER;
-if (pepper === '' || pepper === 'unset') refuse('PREMIUM_EMAIL_PEPPER is not set');
 
 if ((values.shared === undefined) === (values.unique === undefined)) {
   refuse('give exactly one of --shared <CODE> or --unique <count> --out <file.csv>');
@@ -89,7 +70,6 @@ function sastInstant(day, time) {
   return instant;
 }
 
-const store = getFirestore(initializeApp({ projectId: REAL_PROJECT }));
 const now = Timestamp.now();
 const base = {
   label,
@@ -104,10 +84,6 @@ const base = {
   createdAt: now,
   createdBy: values.by ?? userInfo().username,
 };
-const target = real
-  ? `project ${REAL_PROJECT}`
-  : `the emulator at ${process.env.FIRESTORE_EMULATOR_HOST}`;
-
 if (values.shared !== undefined) {
   const code = normCode(values.shared);
   if (code === null) refuse('a code is 4 to 20 letters and numbers');

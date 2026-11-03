@@ -23,6 +23,7 @@ npm run test:all       # all three, in that order
 npm run seed           # three fixed-uid users and the demo household, against a running suite (build first)
 npm run seed:catalogue       # dry run; `-- --confirm` publishes recipes and starter boxes to the real project (build first)
 npm run seed:premium-codes -- --shared THANDI30 --label "…" --days 30   # or --unique <n> --out <file.csv>; emulator unless --project nestprep-643b7 --yes (build first)
+npm run premium:repoint-voucher -- --voucher <orderId_n> --email <address>   # the same targets; a waiting frame voucher only (build first)
 npm run seed:cloud-demo      # the live demo family in the real project (build first; foundation ADR-0019)
 npm run teardown:cloud-demo  # dry run; `-- --confirm` removes exactly what seed:cloud-demo made
 npm run emulators      # build, start the suite importing/exporting ../emulator-data, then seed (foundation ADR-0018)
@@ -207,12 +208,17 @@ decides who reaches them, and the handler also checks the bearer ID token's `ema
 account needs `roles/run.invoker` on both services, granted by hand** — `firebase deploy` never touches
 the invoker of a private function. Under the emulator no Google ID token exists, so both refuse 403; the
 emulator tests drive their bodies directly. `premiumWeb` (europe-west1, behind Hosting's `/api/premium/**`)
-is the public gift and redeem pages' endpoint: per address (`callerAddress`) first, then per email hash,
-and only an accepted request counts against the overall budget; gift lookups have ceilings of their own.
-A redeem answers `redeemed` for a first and a repeat redemption alike, and counts the email only on a
-refusal. A gift link moves its voucher at most five times (`voucherReassignLimit`). A code-email
-challenge is stored only after Resend accepted the email, under a daily cap per account and five sends
-and ten tries an hour per address. Under the emulator `sendVoucherEmailCode` sends nothing and the code is always `123456`.
+is the public gift and redeem pages' endpoint. Gift lookups and reassigns are limited per address
+(`callerAddress`) only, and a reassign per new email too: a 256-bit token needs no shared budget, and one
+would only be a way to close the page for everybody. A redeem honours a found code whatever any limit
+says, and answers `redeemed` for a first and a repeat redemption alike. A miss is counted per address,
+and only a miss from an address still under its own limit counts against the overall miss budget; past
+that budget misses alone are refused, with one error logged a window. A real code's refusal (paused,
+ended, used up) counts against the email; a miss never does. A gift link moves its voucher at most
+five times (`voucherReassignLimit`). A code-email challenge is stored only after Resend accepted the
+email, under a daily cap per account and five sends an hour per address. An address's ten tries an hour
+are spent, inside the attempt's own transaction, only by a wrong code for a live challenge sent to that
+address. Under the emulator `sendVoucherEmailCode` sends nothing and the code is always `123456`.
 `seed:premium-codes` writes codes straight to Firestore; a unique batch's plain codes go only to the
 CSV named by `--out` (mode 600, never overwritten); the real project needs the pepper in the
 environment as `PREMIUM_EMAIL_PEPPER`.
@@ -230,6 +236,12 @@ cannot read those grants and drops them from any restatement it makes:
    `firebase deploy --only functions:issuePremiumVouchers,functions:voidFrameVoucher`, grant the store
    `roles/run.invoker` on `issuepremiumvouchers` and `voidframevoucher`, seed codes, deploy Hosting, then
    switch on the store's push.
+
+When a buyer says their gift went to the wrong person, or a forwarded link used up its five moves,
+`premium:repoint-voucher` points a **waiting frame** voucher at the address they give and resets its
+moves. It refuses a claimed or void voucher and a code voucher, prints only the masked address, and
+needs `PREMIUM_EMAIL_PEPPER` in the environment for the real project, like `seed:premium-codes`.
+Confirm the buyer from the store's order first: the voucher id is `<orderId>_<n>`.
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or

@@ -23,6 +23,7 @@
     "seed": "node tools/seed-emulator.mjs",
     "seed:catalogue": "node tools/seed-catalogue.mjs",
     "seed:premium-codes": "node tools/seed-premium-codes.mjs",
+    "premium:repoint-voucher": "node tools/repoint-frame-voucher.mjs",
     "seed:cloud-demo": "node tools/seed-cloud-demo.mjs",
     "teardown:cloud-demo": "node tools/teardown-cloud-demo.mjs",
     "emulators": "node tools/emulators.mjs",

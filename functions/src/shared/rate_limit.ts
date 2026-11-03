@@ -1,6 +1,6 @@
 import { hash } from 'node:crypto';
 
-import { type Firestore, Timestamp } from 'firebase-admin/firestore';
+import { type Firestore, Timestamp, type Transaction } from 'firebase-admin/firestore';
 
 /**
  * A fixed-window counter for the endpoints anybody can reach without signing
@@ -59,34 +59,44 @@ function readWindow(data: Record<string, unknown> | undefined): RateWindow | nul
  * Counts one attempt against the rule for this subject, in a transaction so
  * two attempts at once cannot both take the last place. True means go ahead.
  */
+export interface StagedRateLimit {
+  readonly allowed: boolean;
+  readonly stage: () => void;
+}
+
+export async function readRateLimitIn(
+  transaction: Transaction,
+  store: Firestore,
+  rule: RateLimitRule,
+  subject: string,
+  now: Date,
+): Promise<StagedRateLimit> {
+  const ref = store.collection(RATE_LIMITS).doc(rateLimitId(rule, subject));
+  const next = nextWindow(readWindow((await transaction.get(ref)).data()), rule, now);
+  return {
+    allowed: next !== null,
+    stage: (): void => {
+      if (next === null) return;
+      const expiresAt = new Date(next.windowStart.getTime() + rule.windowSeconds * 1000);
+      transaction.set(ref, {
+        rule: rule.name,
+        windowStart: Timestamp.fromDate(next.windowStart),
+        count: next.count,
+        expiresAt: Timestamp.fromDate(expiresAt),
+      });
+    },
+  };
+}
+
 export async function consumeRateLimit(
   store: Firestore,
   rule: RateLimitRule,
   subject: string,
   now: Date = new Date(),
 ): Promise<boolean> {
-  const ref = store.collection(RATE_LIMITS).doc(rateLimitId(rule, subject));
   return store.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(ref);
-    const next = nextWindow(readWindow(snapshot.data()), rule, now);
-    if (next === null) return false;
-    const expiresAt = new Date(next.windowStart.getTime() + rule.windowSeconds * 1000);
-    transaction.set(ref, {
-      rule: rule.name,
-      windowStart: Timestamp.fromDate(next.windowStart),
-      count: next.count,
-      expiresAt: Timestamp.fromDate(expiresAt),
-    });
-    return true;
+    const limit = await readRateLimitIn(transaction, store, rule, subject, now);
+    limit.stage();
+    return limit.allowed;
   });
-}
-
-export async function isWithinRateLimit(
-  store: Firestore,
-  rule: RateLimitRule,
-  subject: string,
-  now: Date = new Date(),
-): Promise<boolean> {
-  const snapshot = await store.collection(RATE_LIMITS).doc(rateLimitId(rule, subject)).get();
-  return nextWindow(readWindow(snapshot.data()), rule, now) !== null;
 }

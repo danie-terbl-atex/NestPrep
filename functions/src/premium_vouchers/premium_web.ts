@@ -3,10 +3,11 @@ import { onRequest } from 'firebase-functions/v2/https';
 
 import { callerAddress } from '../shared/client_address';
 import { db } from '../shared/firestore';
-import { consumeRateLimit, isWithinRateLimit } from '../shared/rate_limit';
+import { consumeRateLimit } from '../shared/rate_limit';
 import { HOSTING_REGION } from '../shared/region';
 import { premiumEmailPepper, premiumPepper } from './premium_config';
 import { answerPremiumWeb, routeOf } from './premium_web_answer';
+import { redeemCode } from './web_redemption';
 
 export const premiumWeb = onRequest(
   { region: HOSTING_REGION, invoker: 'public', secrets: [premiumEmailPepper] },
@@ -23,7 +24,7 @@ export const premiumWeb = onRequest(
           address: callerAddress(req),
           now,
           consume: (rule, subject) => consumeRateLimit(store, rule, subject, now),
-          isWithin: (rule, subject) => isWithinRateLimit(store, rule, subject, now),
+          redeem: (redeemer) => redeemCode(store, redeemer, now),
         },
         { method: req.method, path: req.path, body: req.body },
       );

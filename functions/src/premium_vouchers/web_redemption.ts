@@ -39,8 +39,6 @@ export async function redeemCode(
   return store.runTransaction(async (transaction): Promise<RedeemAnswer> => {
     const code = await readCode(transaction, store, redeemer.codeHash);
     if (code === null || code.status === 'archived') return { error: 'codeUnknown' };
-    const refusal = redeemRefusalOf(code, now);
-    if (refusal !== null) return refusal;
 
     const redemption = await transaction.get(
       codeRedemptionRef(store, redeemer.codeHash, redeemer.emailHash),
@@ -57,6 +55,9 @@ export async function redeemCode(
         label: code.label,
       };
     }
+
+    const refusal = redeemRefusalOf(code, now);
+    if (refusal !== null) return refusal;
 
     const voucher = store.collection(PREMIUM_VOUCHERS).doc();
     const at = Timestamp.fromDate(now);

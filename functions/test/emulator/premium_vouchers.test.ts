@@ -9,11 +9,7 @@ import { tokenHashOf } from '../../src/premium_vouchers/premium_hashes';
 import { firestoreChallenges } from '../../src/premium_vouchers/email_challenges';
 import { sendEmailCode, verifyEmailCode } from '../../src/premium_vouchers/email_code';
 import { EmailNotSent } from '../../src/premium_vouchers/email_sender';
-import {
-  type RateLimitRule,
-  consumeRateLimit,
-  isWithinRateLimit,
-} from '../../src/shared/rate_limit';
+import { type RateLimitRule, consumeRateLimit } from '../../src/shared/rate_limit';
 import { EMULATOR_EMAIL_CODE } from '../../src/premium_vouchers/voucher_runtime';
 import {
   CallFailed,
@@ -714,8 +710,6 @@ describe('nobody can guess at a code that was never sent (R-01)', () => {
       newCode: (): string => '424242',
       consume: (rule: RateLimitRule, subject: string): Promise<boolean> =>
         consumeRateLimit(store, rule, subject, now),
-      isWithin: (rule: RateLimitRule, subject: string): Promise<boolean> =>
-        isWithinRateLimit(store, rule, subject, now),
       now,
     };
     await expect(sendEmailCode(deps, user.uid, 'bounce@nestprep.test')).rejects.toMatchObject({
@@ -750,6 +744,29 @@ describe('nobody can guess at a code that was never sent (R-01)', () => {
     );
   });
 
+  it('lets nobody spend an address’s tries with a challenge sent somewhere else (N-02)', async () => {
+    const victim = 'hide-my-email@nestprep.test';
+    const attacker = await signUp();
+    await callAs(attacker, 'sendVoucherEmailCode', {
+      email: `own-${attacker.uid}@nestprep.test`.toLowerCase(),
+    });
+    const outcomes: string[] = [];
+    for (let call = 0; call < 12; call += 1) {
+      await callAs(attacker, 'verifyVoucherEmailCode', { email: victim, code: '000000' }).catch(
+        (error: unknown) => {
+          outcomes.push(error instanceof CallFailed ? (error.reason ?? '') : 'other');
+        },
+      );
+    }
+    expect(outcomes.slice(0, 5)).toEqual(Array(5).fill('emailCodeWrong'));
+    expect(outcomes.slice(5)).toEqual(Array(7).fill('emailCodeTooManyTries'));
+    const owner = await signUp();
+    await callAs(owner, 'sendVoucherEmailCode', { email: victim });
+    expect(
+      await callAs(owner, 'verifyVoucherEmailCode', { email: victim, code: EMULATOR_EMAIL_CODE }),
+    ).toEqual({ verified: true, emailMasked: 'h***@nestprep.test' });
+  });
+
   it('lets nobody without a challenge spend an address’s tries', async () => {
     const target = 'owner-only@nestprep.test';
     const stranger = await signUp();
@@ -780,34 +797,51 @@ describe('nobody can guess at a code that was never sent (R-01)', () => {
   });
 });
 
-describe('the redeem page answers the same for a first and a repeat redemption (R-11)', () => {
+describe('the redeem page answers the same for a first and a repeat redemption (R-11, N-04)', () => {
   beforeEach(clearFirestore);
 
-  it('spends an email’s limit only on refusals', async () => {
-    await aCode('REPEAT-ME');
+  it('never lets garbage codes lock an email out, and counts a real code’s refusals per email', async () => {
+    await aCode('GOOD-ONE');
+    await aCode('ON-HOLD', { status: 'paused' });
     const email = 'repeat@nestprep.test';
     for (let attempt = 0; attempt < 12; attempt += 1) {
-      expect((await redeemOnTheWeb('REPEAT-ME', email)).body['result']).toBe('redeemed');
-    }
-    for (let attempt = 0; attempt < 10; attempt += 1) {
       expect((await redeemOnTheWeb('WRONG-CODE', email)).body).toEqual({ error: 'codeUnknown' });
     }
-    expect((await redeemOnTheWeb('REPEAT-ME', email)).body).toEqual({ error: 'tooManyTries' });
-    expect((await redeemOnTheWeb('REPEAT-ME', 'other@nestprep.test')).body['result']).toBe(
-      'redeemed',
-    );
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      expect((await redeemOnTheWeb('GOOD-ONE', email)).body['result']).toBe('redeemed');
+    }
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      expect((await redeemOnTheWeb('ON-HOLD', email)).body).toEqual({ error: 'codePaused' });
+    }
+    expect((await redeemOnTheWeb('ON-HOLD', email)).body).toEqual({ error: 'tooManyTries' });
+    expect((await redeemOnTheWeb('GOOD-ONE', email)).body['result']).toBe('redeemed');
   });
 
-  it('refuses a paused code to an email that redeemed it, as to anybody', async () => {
+  it('still answers redeemed to an email that redeemed a code since paused', async () => {
     const codeHash = await aCode('THEN-PAUSED');
-    await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test');
+    const first = await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test');
     await adminDb().doc(`premiumCodes/${codeHash}`).update({ status: 'paused' });
-    expect((await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test')).body).toEqual({
-      error: 'codePaused',
-    });
+    expect((await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test')).body).toEqual(first.body);
     expect((await redeemOnTheWeb('THEN-PAUSED', 'never@nestprep.test')).body).toEqual({
       error: 'codePaused',
     });
+  });
+});
+
+describe('code misses are limited per address, and a found code is always honoured (R-02)', () => {
+  beforeEach(clearFirestore);
+
+  it('refuses one address’s misses past thirty, and still redeems its real code', async () => {
+    await aCode('REAL-CODE');
+    const statuses: number[] = [];
+    for (let miss = 0; miss < 31; miss += 1) {
+      statuses.push((await redeemOnTheWeb(`MISS-${String(miss)}`, 'guess@nestprep.test')).status);
+    }
+    expect(statuses.slice(0, 30).every((status) => status === 404)).toBe(true);
+    expect(statuses[30]).toBe(429);
+    expect((await redeemOnTheWeb('REAL-CODE', 'guess@nestprep.test')).body['result']).toBe(
+      'redeemed',
+    );
   });
 });
 
