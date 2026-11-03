@@ -1,0 +1,144 @@
+{
+  "id": "pampoenkoekies",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Pumpkin or butternut",
+      "amount": "750 g peeled (pumpkin taken)",
+      "grams": 750,
+      "kcal": 195,
+      "proteinG": 7.5,
+      "fatG": 0.8,
+      "netCarbsG": 45.0,
+      "reference": "Pumpkin, raw — USDA FDC 168448: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 large ≈ 110 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287 (SA large egg 55 g out of shell): 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 358,
+      "proteinG": 8.2,
+      "fatG": 0.9,
+      "netCarbsG": 76.0,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "2 tsp ≈ 9 g",
+      "grams": 9,
+      "kcal": 5,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.5,
+      "reference": "Leavening agents, baking powder, double-acting — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1/4 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Ground nutmeg",
+      "amount": "1/4 tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, nutmeg, ground — USDA FDC 171326: 525 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "4 tbsp = 54 g; ~75 % (40 g) absorbed",
+      "grams": 40,
+      "kcal": 354,
+      "proteinG": 0.0,
+      "fatG": 40.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "3 tbsp ≈ 37.5 g",
+      "grams": 37.5,
+      "kcal": 145,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 37.5,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 430,
+      "proteinG": 0.5,
+      "fatG": 48.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "3/4 cup ≈ 150 g",
+      "grams": 150,
+      "kcal": 570,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 147.1,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh cream",
+      "amount": "1/2 cup (125 ml) ≈ 125 g",
+      "grams": 125,
+      "kcal": 425,
+      "proteinG": 3.5,
+      "fatG": 45.1,
+      "netCarbsG": 3.5,
+      "reference": "Cream, fluid, heavy whipping — USDA FDC 170859 (SA fresh cream ~36 % fat): 340 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    }
+  ],
+  "totalKcal": 2648,
+  "kcalPerServing": 440,
+  "perServing": {
+    "proteinG": 5.6,
+    "fatG": 24.4,
+    "netCarbsG": 52.2
+  },
+  "notes": "Assumptions that change the number: pumpkin taken, not butternut (butternut would add ~140 kcal to the batch, ~25 a serving); of the 4 tbsp frying oil ~75 % (40 g) is soaked up by the fritters; the caramel sauce (60 g butter, 150 g brown sugar, 125 ml cream) is all eaten, and it is ~60 % of the energy. Sanity check by batch total: Simply Delicious's gran's pumpkin fritters with a cream caramel are 148 kcal × 20 = ~2960 kcal; ours is 2648. The Cinnamon Jar's is 304 × 12 = ~3650. Spinneys lists 181 kcal a serving for 4–6, but without the full caramel sauce."
+}

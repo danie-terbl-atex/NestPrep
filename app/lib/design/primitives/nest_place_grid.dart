@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../tokens/nest_spacing.dart';
 
-/// Place tiles laid out two to a row on a phone, more on a wider screen, every
-/// tile in a row as tall as the tallest so the grid reads as one surface
-/// (`FE-14`). It is a column, not a scrolling grid: it sits inside the
+/// Place tiles laid out two to a row on a phone, more on a wider screen and
+/// one at a large text setting, so a name never breaks mid-word; every tile in
+/// a row as tall as the tallest so the grid reads as one surface (`FE-14`). It is a column, not a scrolling grid: it sits inside the
 /// screen's own list.
 class NestPlaceGrid extends StatelessWidget {
   const NestPlaceGrid({required this.children, super.key});
@@ -13,11 +13,11 @@ class NestPlaceGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tileWidth = MediaQuery.textScalerOf(context)
+        .scale(NestSize.placeTileMaxWidth);
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columns = (constraints.maxWidth / NestSize.placeTileMaxWidth)
-            .ceil()
-            .clamp(2, 4);
+        final columns = (constraints.maxWidth / tileWidth).ceil().clamp(1, 4);
         final rows = <Widget>[];
         for (var start = 0; start < children.length; start += columns) {
           if (rows.isNotEmpty) {

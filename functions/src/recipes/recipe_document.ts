@@ -51,6 +51,7 @@ export function recipeDocument(
     difficulty: recipe.difficulty,
     prepAhead: recipe.prepAhead,
     prepNote: recipe.prepNote,
+    kcalPerServing: recipe.kcalPerServing,
     photo: photoDocument(recipe, photoPaths),
   };
 }

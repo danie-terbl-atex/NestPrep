@@ -62,6 +62,10 @@ abstract class Recipe with _$Recipe {
     @Default(0) int cookMinutes,
     RecipeDifficulty? difficulty,
     RecipePhoto? photo,
+
+    /// Estimated energy in one serving as written (recipes ADR-0006); a
+    /// household's own recipe has none.
+    int? kcalPerServing,
   }) = _Recipe;
 
   const Recipe._();

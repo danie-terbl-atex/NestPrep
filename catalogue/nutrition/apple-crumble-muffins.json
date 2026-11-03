@@ -1,0 +1,104 @@
+{
+  "id": "apple-crumble-muffins",
+  "servings": 12,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "2 cups × 140 g",
+      "grams": 280,
+      "kcal": 1002,
+      "proteinG": 31.6,
+      "fatG": 5.3,
+      "netCarbsG": 198.8,
+      "reference": "Woolworths Cake Wheat Flour label via fatsecret.co.za: 358 kcal, P 11.3, F 1.9, available carbohydrate 71 g / 100 g: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "2 tsp × 4.6 g",
+      "grams": 9,
+      "kcal": 5,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.5,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "½ cup lightly packed, ~200 g per 250 ml cup",
+      "grams": 100,
+      "kcal": 380,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 98.1,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp",
+      "grams": 3,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 SA large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "¾ cup = 188 ml × 1.03 g/ml",
+      "grams": 193,
+      "kcal": 118,
+      "proteinG": 6.1,
+      "fatG": 6.3,
+      "netCarbsG": 9.3,
+      "reference": "Milk, whole, 3.25% milkfat — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Melted butter",
+      "amount": "80 g + 2 tbsp (28 g) for the crumble, as the line says",
+      "grams": 108,
+      "kcal": 774,
+      "proteinG": 0.9,
+      "fatG": 87.6,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Apples",
+      "amount": "2 medium, ~150 g each peeled and cored",
+      "grams": 300,
+      "kcal": 144,
+      "proteinG": 0.8,
+      "fatG": 0.4,
+      "netCarbsG": 34.4,
+      "reference": "Apples, raw, without skin — USDA FDC 171689: 48 kcal / 100 g"
+    },
+    {
+      "ingredient": "Rolled oats",
+      "amount": "¼ cup, ~21 g",
+      "grams": 21,
+      "kcal": 80,
+      "proteinG": 2.8,
+      "fatG": 1.4,
+      "netCarbsG": 12.1,
+      "reference": "Cereals, oats, regular and quick, not fortified, dry — USDA FDC 173904: 379 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2667,
+  "kcalPerServing": 220,
+  "perServing": {
+    "proteinG": 4.7,
+    "fatG": 9.3,
+    "netCarbsG": 29.7
+  },
+  "notes": "Assumptions: the butter line is counted with its extra 2 tbsp for the crumble, as written (108 g in all); brown sugar ½ cup lightly packed ~100 g; 2 medium apples ~150 g each peeled and cored. 12 muffins, ~83 g each. Sanity check: Healthy Food Guide apple crumble muffins 178 kcal (reduced-fat spread, skim milk), Erin Lives Whole 218 kcal; ours (220) is in range and ~265 kcal/100 g, under USDA plain muffins from a recipe (296 kcal/100 g)."
+}

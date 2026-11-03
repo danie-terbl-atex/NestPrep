@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["braai", "traditional"],
   "allergens": ["milk", "fish"],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "glutenFree"],
   "ingredients": [
     { "name": "Whole snoek", "quantity": 1.8, "unit": "kg", "note": "cleaned and butterflied", "group": null },
     { "name": "Coarse salt", "quantity": 1, "unit": "tbsp", "note": null, "group": null },
@@ -35,5 +35,6 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 400,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

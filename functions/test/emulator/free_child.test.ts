@@ -18,7 +18,13 @@ describe('markChild keeps the free tier’s child', () => {
     uid: string,
     memberId: string,
     isChild = true,
-  ): Promise<void> => markChild(adminDb(), uid, { householdId, memberId, isChild }, NOW);
+  ): Promise<void> =>
+    markChild(
+      adminDb(),
+      uid,
+      { householdId, memberId, isChild, guardianConsent: { version: 1 } },
+      NOW,
+    );
 
   async function freeChildOf(householdId: string): Promise<unknown> {
     const snapshot = await adminDb().doc(`households/${householdId}/entitlement/freeChild`).get();

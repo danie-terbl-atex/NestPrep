@@ -1,0 +1,174 @@
+{
+  "id": "salmon-poke-bowls",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "1 cup raw ≈ 200 g",
+      "grams": 200,
+      "kcal": 734,
+      "proteinG": 15.1,
+      "fatG": 6.4,
+      "netCarbsG": 145.3,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2.5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Tamari soy sauce",
+      "amount": "3 tbsp × 16 g",
+      "grams": 48,
+      "kcal": 29,
+      "proteinG": 5.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.3,
+      "reference": "Soy sauce made from soy (tamari) — USDA FDC 174278: 60 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lime",
+      "amount": "1, juiced ≈ 30 g (2 tbsp)",
+      "grams": 30,
+      "kcal": 8,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 2.4,
+      "reference": "Lime juice, raw — USDA FDC 168156: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tsp grated ≈ 2 g",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Honey",
+      "amount": "1 tsp ≈ 7 g",
+      "grams": 7,
+      "kcal": 21,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 5.8,
+      "reference": "Honey — USDA FDC 169640: 304 kcal / 100 g"
+    },
+    {
+      "ingredient": "Skinless salmon or trout fillets",
+      "amount": "500 g raw, counted as farmed salmon",
+      "grams": 500,
+      "kcal": 1040,
+      "proteinG": 102.1,
+      "fatG": 67.1,
+      "netCarbsG": 0.0,
+      "reference": "Fish, salmon, Atlantic, farmed, raw — USDA FDC 175167: 208 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Frozen shelled edamame beans",
+      "amount": "1 cup ≈ 150 g",
+      "grams": 150,
+      "kcal": 164,
+      "proteinG": 16.8,
+      "fatG": 7.1,
+      "netCarbsG": 4.2,
+      "reference": "Edamame, frozen, unprepared — USDA FDC 168410: 109 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "1 ≈ 350 g",
+      "grams": 350,
+      "kcal": 52,
+      "proteinG": 2.3,
+      "fatG": 0.4,
+      "netCarbsG": 11.0,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 80 g",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 10.8,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Avocado",
+      "amount": "1 large ≈ 180 g flesh",
+      "grams": 180,
+      "kcal": 288,
+      "proteinG": 3.6,
+      "fatG": 26.4,
+      "netCarbsG": 3.3,
+      "reference": "Avocados, raw, all commercial varieties — USDA FDC 171705: 160 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "3 × 15 g",
+      "grams": 45,
+      "kcal": 14,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 2.1,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sesame seeds",
+      "amount": "1 tbsp ≈ 9 g",
+      "grams": 9,
+      "kcal": 52,
+      "proteinG": 1.6,
+      "fatG": 4.5,
+      "netCarbsG": 1.0,
+      "reference": "Seeds, sesame seeds, whole, dried — USDA FDC 170150: 573 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2596,
+  "kcalPerServing": 650,
+  "perServing": {
+    "proteinG": 37.3,
+    "fatG": 31.5,
+    "netCarbsG": 47.5
+  },
+  "notes": "Assumptions that change the number: 'salmon or trout' counted as farmed Atlantic salmon, 125 g a person (with trout ~85 kcal less a serving); 50 g raw brown rice each; edamame 1 cup ≈ 150 g frozen; a large avocado gives 180 g of flesh; the fish is fried in 1 tbsp oil, all counted. Published check: salmon poke bowls with rice, edamame and avocado are typically listed at ~550–700 kcal; 650 agrees."
+}

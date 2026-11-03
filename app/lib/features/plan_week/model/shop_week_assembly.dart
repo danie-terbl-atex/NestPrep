@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import '../../../shared/money/money.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/model/lunch_budget_week.dart';
 import '../../lunch_box/model/lunch_plan.dart';
 import '../../lunch_box/model/lunch_slot.dart';
+import '../../lunch_box/model/lunch_variety.dart';
 import 'checked_product.dart';
 import 'idea_search.dart';
+import 'lunch_pack_boxes.dart';
 import 'lunch_week_reply.dart';
 import 'packing_preference.dart';
 import 'plan_fallback.dart';
@@ -22,6 +26,10 @@ import 'shop_week.dart';
 ///
 /// It never touches a compartment somebody already filled.
 abstract final class ShopWeekAssembly {
+  /// Kinds a varying compartment takes a week without AI, as the server's
+  /// `MAX_KINDS` (foundation ADR-0023).
+  static const mostKinds = 3;
+
   static ShopWeek fromReply({
     required LunchBoard board,
     required Set<String> childIds,
@@ -77,7 +85,7 @@ abstract final class ShopWeekAssembly {
       searches: searches,
       dishes: dishes,
       boxesPerPack: {
-        ..._packs(result, reply.boxesPerPack),
+        ..._packs(searches, reply.boxesPerPack),
         for (final dish in dishes.values)
           for (final part in dish.parts)
             part.product.productId:
@@ -96,9 +104,10 @@ abstract final class ShopWeekAssembly {
   }
 
   /// A week made on the phone: for each empty compartment the brief fills,
-  /// the slot's ideas taken in turn — moved on a place each day, so the week
-  /// varies — and from the idea the product that costs least a box. Children
-  /// who may have the same things get the same box, so it is packed once.
+  /// the slot's first idea every day when [variety] keeps it the same all
+  /// week, else up to [mostKinds] of its ideas in turn — and from the idea
+  /// the product that costs least a box (lunch-box ADR-0028). Children who
+  /// may have the same things get the same box, so it is packed once.
   static ShopWeek fallback({
     required LunchBoard board,
     required Set<String> childIds,
@@ -106,6 +115,7 @@ abstract final class ShopWeekAssembly {
     required Money? budget,
     required PackingChoice packing,
     required PlanFallbackReason reason,
+    LunchVariety variety = LunchVariety.standard,
     LunchBudgetWeek? weekSoFar,
   }) {
     var result = _empty(
@@ -132,8 +142,10 @@ abstract final class ShopWeekAssembly {
                 search,
           ];
           if (ideas.isEmpty) continue;
-          final search = ideas[(day - 1) % ideas.length];
-          final product = _cheapest(search.keptFor(child.childId));
+          final search = variety.keepsSame(slot)
+              ? ideas.first
+              : ideas[(day - 1) % min(ideas.length, mostKinds)];
+          final product = _cheapest(search.keptFor(child.childId), slot);
           result = result.withPick(
             child.childId,
             key,
@@ -152,7 +164,7 @@ abstract final class ShopWeekAssembly {
       fallbackReason: reason,
       children: result.children,
       searches: searches,
-      boxesPerPack: _packs(result, const {}),
+      boxesPerPack: _packs(searches, const {}),
       slots: packing.slots,
       treatDays: packing.treatDays,
       budget: budget,
@@ -213,27 +225,32 @@ abstract final class ShopWeekAssembly {
     treatDays: packing.treatDays,
   );
 
-  /// Boxes a pack does for every product in the week: the model's, else
-  /// what the shop says a pack holds, else one.
-  static Map<String, int> _packs(ShopWeek week, Map<String, int> reckoned) => {
-    for (final child in week.children)
-      for (final pick in child.added.values)
-        pick.productId:
-            (reckoned[pick.productId] ??
-                    week.productOf(pick)?.product.packCount ??
-                    1)
+  /// Boxes a pack does for every product kept — not only the placed ones,
+  /// so a swap is priced at its real pack: the model's, else
+  /// [LunchPackBoxes.of].
+  static Map<String, int> _packs(
+    List<IdeaSearch> searches,
+    Map<String, int> reckoned,
+  ) => {
+    for (final search in searches)
+      for (final kept in search.kept)
+        kept.productId:
+            (reckoned[kept.productId] ??
+                    LunchPackBoxes.of(kept.product, search.idea.slot))
                 .clamp(1, ShopWeek.packLimit),
   };
 
-  /// The product that costs least a box, by its pack count when the shop
-  /// gave one — compared without division, in whole cents.
-  static CheckedProduct _cheapest(List<CheckedProduct> products) =>
-      products.reduce((best, next) {
-        final bestCount = best.product.packCount ?? 1;
-        final nextCount = next.product.packCount ?? 1;
-        return next.product.price.cents * bestCount <
-                best.product.price.cents * nextCount
-            ? next
-            : best;
-      });
+  /// The product that costs least a box, by [LunchPackBoxes.of] — compared
+  /// without division, in whole cents.
+  static CheckedProduct _cheapest(
+    List<CheckedProduct> products,
+    LunchSlot slot,
+  ) => products.reduce((best, next) {
+    final bestCount = LunchPackBoxes.of(best.product, slot);
+    final nextCount = LunchPackBoxes.of(next.product, slot);
+    return next.product.price.cents * bestCount <
+            best.product.price.cents * nextCount
+        ? next
+        : best;
+  });
 }

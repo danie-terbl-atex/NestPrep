@@ -1,0 +1,164 @@
+{
+  "id": "salmon-poke-bowls",
+  "name": "Salmon poke bowls",
+  "summary": "Salmon or trout cubes seared in a tamari, lime and ginger glaze over brown rice, with edamame, cucumber, carrot, avocado and toasted sesame seeds.",
+  "about": "Poke is Hawaiian for cutting into pieces, and the dish began as cubes of raw fish dressed with sea salt and seaweed. This family version cooks the fish in a sticky glaze, so everyone at the table can eat it, and sets out the rice and vegetables so each person builds their own bowl.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "soy",
+    "fish",
+    "sesame"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Tamari soy sauce",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salmon"
+    },
+    {
+      "name": "Lime",
+      "quantity": 1,
+      "unit": null,
+      "note": "juiced, about 2 tbsp",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Honey",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the salmon"
+    },
+    {
+      "name": "Skinless salmon or trout fillets",
+      "quantity": 500,
+      "unit": "g",
+      "note": "cut into 2 cm cubes",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salmon"
+    },
+    {
+      "name": "Frozen shelled edamame beans",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the bowls"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, sliced",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 3,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Sesame seeds",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the bowls"
+    }
+  ],
+  "steps": [
+    "Put the rice, water and salt in a saucepan and bring to the boil over high heat. Cover, turn the heat to its lowest and cook for 40 minutes, until the water is absorbed and the grains are tender. Leave it to stand, covered, for 10 minutes.",
+    "While the rice cooks, stir the tamari, lime juice, ginger, garlic and honey together in a bowl. Toss the salmon in 1 tbsp of this glaze and keep the rest.",
+    "Cook the edamame in boiling water for 3 minutes, until bright green and tender, then drain and run under cold water.",
+    "Prepare the cucumber, carrot, avocado and spring onion and set them out in separate small bowls.",
+    "Toast the sesame seeds in a dry frying pan over medium heat for 2 to 3 minutes, shaking the pan, until golden. Tip them into a small bowl.",
+    "Heat the oil in the same pan over medium-high heat. Add the salmon in one layer and fry for 3 to 4 minutes, turning the cubes, until golden on the outside and nearly opaque in the middle.",
+    "Pour in the rest of the glaze and toss for about 1 minute, until it bubbles, thickens slightly and coats the fish, and the salmon flakes when pressed.",
+    "Divide the rice between four bowls and arrange the salmon, edamame, cucumber, carrot and avocado on top in sections. Spoon over the pan juices and scatter with spring onion and sesame seeds, or set it all out and let everyone build their own."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook the rice and edamame a day ahead and chill; cook the salmon just before serving.",
+  "kcalPerServing": 650,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

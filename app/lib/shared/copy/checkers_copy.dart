@@ -10,11 +10,23 @@ abstract final class CheckersCopy {
   static String findAt(ProductRetailer retailer) =>
       'Find at ${retailerName(retailer)}';
 
-  // ---- the shop picker, above the list ----
-  static String shopAtRetailer(ProductRetailer retailer) =>
-      'Shop at ${retailerName(retailer)}';
-  static String comingSoon(List<ProductRetailer> retailers) =>
-      '${retailers.map(retailerName).join(' and ')} coming soon';
+  // ---- matching as you type, at the add field (add-to-checkers ADR-0007) ----
+  static String matchingAsYouType(ProductRetailer shop) =>
+      'Matching at ${retailerName(shop)} as you type. Change';
+  static const notMatchingAsYouType = 'Not matching as you type. Change';
+  static const matchAsYouTypeTitle = 'Match as you type';
+  static const matchAsYouTypeBody =
+      'As you type an item, see what the shop sells. Add one and it goes on '
+      'the list with that product, ready for the cart.';
+  static String matchAt(ProductRetailer shop) =>
+      'Match at ${retailerName(shop)}';
+  static const dontMatchAsYouType = "Don't match as I type";
+  static String typeAheadTitle(ProductRetailer shop, String text) =>
+      '“$text” at ${retailerName(shop)}';
+  static String justAdd(String text) => 'Just add “$text”';
+  static const addProduct = 'Add';
+
+  // ---- the shops ----
   static String retailerName(ProductRetailer retailer) => switch (retailer) {
     ProductRetailer.checkers => 'Checkers',
     ProductRetailer.pickNPay => 'Pick n Pay',

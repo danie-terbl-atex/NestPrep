@@ -8,13 +8,11 @@ import '../../../shared/state/action_failure.dart';
 import '../../groceries/data/grocery_repository.dart';
 import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
-import '../data/checkers_place_resolver.dart';
-import '../data/product_match_ranker.dart';
-import '../data/retailer_catalogues.dart';
 import '../model/checkers_area.dart';
 import '../model/checkers_place.dart';
 import '../model/product_match_from.dart';
 import '../model/retailer_product.dart';
+import 'product_finder.dart';
 
 /// The item whose matches are showing, and the shop they are from.
 typedef ProductMatchTarget = ({
@@ -36,23 +34,16 @@ typedef ProductMatchTarget = ({
 final class ProductMatchController extends ChangeNotifier
     with ActionFailureHolder {
   ProductMatchController({
-    required this._catalogues,
-    required CheckersPlaceResolver placeResolver,
+    required this._finder,
     required GroceryRepository groceryRepository,
     required this.householdId,
     required this.memberId,
-    this._ranker,
     this.debounce = const Duration(milliseconds: 400),
-  }) : _places = placeResolver,
-       _repository = groceryRepository;
+  }) : _repository = groceryRepository;
 
-  /// Jev's score a match needs before it is called the best (foundation
-  /// ADR-0021).
-  static const bestMatchFit = 0.6;
+  static const bestMatchFit = ProductFinder.bestMatchFit;
 
-  final RetailerCatalogues _catalogues;
-  final ProductMatchRanker? _ranker;
-  final CheckersPlaceResolver _places;
+  final ProductFinder _finder;
   final GroceryRepository _repository;
   final String householdId;
 
@@ -63,7 +54,6 @@ final class ProductMatchController extends ChangeNotifier
   ProductMatchTarget? _target;
   AsyncState<List<RetailerProduct>> _matches = const AsyncLoading();
   String? _bestMatchId;
-  CheckersPlace? _place;
   Timer? _timer;
   var _generation = 0;
   var _isPicking = false;
@@ -78,7 +68,7 @@ final class ProductMatchController extends ChangeNotifier
   String? get bestMatchId => _bestMatchId;
 
   /// Where the last search looked, once it is known.
-  CheckersPlace? get place => _place;
+  CheckersPlace? get place => _finder.place;
 
   bool get isPicking => _isPicking;
 
@@ -104,8 +94,7 @@ final class ProductMatchController extends ChangeNotifier
 
   /// Searches this household's matches near [area] from now on.
   Future<void> chooseArea(CheckersArea area) async {
-    await _places.choose(householdId, area);
-    _place = CheckersPlace.area(area);
+    await _finder.chooseArea(area);
     if (_target != null) _schedule(immediately: true);
     notifyListeners();
   }
@@ -157,49 +146,20 @@ final class ProductMatchController extends ChangeNotifier
     if (target == null) return;
     AsyncState<List<RetailerProduct>> result;
     try {
-      final place = _place ??= await _places.resolve(householdId);
-      result = AsyncData(
-        await _catalogues
-            .of(target.shop)
-            .search(query: target.name, near: place.coordinates),
-      );
+      result = AsyncData(await _finder.search(target.name, at: target.shop));
     } on AppFailure catch (failure) {
       result = AsyncFailure(failure);
     }
     if (_isDisposed || generation != _generation) return;
     _matches = result;
     notifyListeners();
-    if (result case AsyncData(value: final products) when products.isNotEmpty) {
-      await _rank(generation, target.name, products);
+    if (result case AsyncData(value: final products)) {
+      final ranked = await _finder.rank(target.name, products);
+      if (ranked == null || _isDisposed || generation != _generation) return;
+      _matches = AsyncData(ranked.products);
+      _bestMatchId = ranked.bestMatchId;
+      notifyListeners();
     }
-  }
-
-  /// Puts Jev's best first. Ranking is a nicety: when it fails the shop's
-  /// order stays and nothing is said.
-  Future<void> _rank(
-    int generation,
-    String item,
-    List<RetailerProduct> products,
-  ) async {
-    final ranker = _ranker;
-    if (ranker == null) return;
-    final Map<String, double> fits;
-    try {
-      fits = await ranker.rank(
-        householdId: householdId,
-        item: item,
-        products: products,
-      );
-    } on AppFailure {
-      return;
-    }
-    if (_isDisposed || generation != _generation) return;
-    final ranked = [...products]
-      ..sort((a, b) => (fits[b.id] ?? 0).compareTo(fits[a.id] ?? 0));
-    final best = ranked.first;
-    _matches = AsyncData(ranked);
-    _bestMatchId = (fits[best.id] ?? 0) >= bestMatchFit ? best.id : null;
-    notifyListeners();
   }
 
   @override

@@ -1,0 +1,74 @@
+{
+  "id": "cremora-tart",
+  "servings": 10,
+  "lines": [
+    {
+      "ingredient": "Tea biscuits",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 926,
+      "proteinG": 10.4,
+      "fatG": 43.8,
+      "netCarbsG": 126.0,
+      "reference": "SA coconut tea biscuits label (Bakers Tennis Classic, FatSecret ZA): 1937 kJ = 463 kcal, 5.2 g protein, 21.9 g fat, 63 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 717,
+      "proteinG": 0.9,
+      "fatG": 81.1,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Non-dairy creamer powder",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 1322,
+      "proteinG": 6.3,
+      "fatG": 82.3,
+      "netCarbsG": 148.3,
+      "reference": "Cream substitute, powdered — USDA FDC 171263: 529 kcal / 100 g (matches SA creamer labels ~2200 kJ)"
+    },
+    {
+      "ingredient": "Boiling water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Condensed milk",
+      "amount": "385 g tin",
+      "grams": 385,
+      "kcal": 1236,
+      "proteinG": 30.4,
+      "fatG": 33.5,
+      "netCarbsG": 209.4,
+      "reference": "Milk, canned, condensed, sweetened — USDA FDC 171275: 321 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "125 ml (127 g)",
+      "grams": 127,
+      "kcal": 28,
+      "proteinG": 0.4,
+      "fatG": 0.3,
+      "netCarbsG": 8.4,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 4229,
+  "kcalPerServing": 420,
+  "perServing": {
+    "proteinG": 4.8,
+    "fatG": 24.1,
+    "netCarbsG": 49.2
+  },
+  "notes": "One slice of 10. Assumptions: SA coconut tea biscuit label values; USDA powdered cream substitute values, which match SA creamer labels; all 125 ml lemon juice used; the 2 tbsp of reserved crumbs are still on the tart. The tart weighs ~1.19 kg, ~356 kcal / 100 g. No published cremora-tart figure could be found before the web search budget ran out. As a cross-check, SA chilled custard tarts run 295-369 kcal / 100 g (FatSecret ZA malva puddings and a malva milktart), and ours sits inside that band."
+}

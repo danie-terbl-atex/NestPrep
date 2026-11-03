@@ -13,12 +13,13 @@
   "tags": [
     "traditional",
     "capeMalay",
-    "budget"
+    "budget",
+    "healthy"
   ],
   "allergens": [
     "fish"
   ],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "glutenFree", "dairyFree"],
   "ingredients": [
     {
       "name": "Smoked snoek",
@@ -126,6 +127,7 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 400,
   "photo": {
     "credit": null,
     "licence": null,

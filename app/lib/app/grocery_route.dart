@@ -5,12 +5,15 @@ import 'package:provider/provider.dart';
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/checkers_place_resolver.dart';
+import '../features/add_to_checkers/data/match_as_you_type_preference.dart';
 import '../features/add_to_checkers/data/product_match_ranker.dart';
 import '../features/add_to_checkers/data/retailer_catalogues.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/add_to_checkers/model/retailer_switch.dart';
 import '../features/add_to_checkers/state/cart_push_controller.dart';
+import '../features/add_to_checkers/state/product_finder.dart';
 import '../features/add_to_checkers/state/product_match_controller.dart';
+import '../features/add_to_checkers/state/product_type_ahead_controller.dart';
 import '../features/add_to_checkers/state/retailer_choice_controller.dart';
 import '../features/add_to_checkers/state/shop_carts.dart';
 import '../features/add_to_pnp/data/pnp_directory.dart';
@@ -76,22 +79,33 @@ GoRoute groceryRoute() => GoRoute(
         ChangeNotifierProvider(
           create: (context) => _planController(context, householdId),
         ),
-        // Product matches and the carts, at Checkers and Pick n Pay (the
-        // Checkers build contract, add-to-pnp ADR-0007). Created whatever the
-        // switches say — none does anything until the screen, which reads
-        // them, asks.
-        ChangeNotifierProvider(
-          create: (context) => ProductMatchController(
+        // Product matches, as somebody types and under an item, and the
+        // carts, at Checkers and Pick n Pay (the Checkers build contract,
+        // add-to-pnp ADR-0007, add-to-checkers ADR-0007). Created whatever
+        // the switches say — none does anything until the screen, which
+        // reads them, asks.
+        Provider(
+          create: (context) => ProductFinder(
             catalogues: context.read<RetailerCatalogues>(),
             placeResolver: CheckersPlaceResolver(
               locationSource: context.read<LocationSource>(),
               areaPreference: context.read<CheckersAreaPreference>(),
             ),
+            householdId: householdId,
+            ranker: context.read<ProductMatchRanker>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductMatchController(
+            finder: context.read<ProductFinder>(),
             groceryRepository: context.read<GroceryRepository>(),
             householdId: householdId,
             memberId: viewerMemberIdOf(context),
-            ranker: context.read<ProductMatchRanker>(),
           ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              ProductTypeAheadController(finder: context.read<ProductFinder>()),
         ),
         // The shop *Find at* asks, among those switched on.
         ChangeNotifierProvider(
@@ -99,6 +113,7 @@ GoRoute groceryRoute() => GoRoute(
             final flags = context.read<FeatureFlagsController>();
             return RetailerChoiceController(
               preference: context.read<RetailerPreference>(),
+              matchAsYouType: context.read<MatchAsYouTypePreference>(),
               householdId: householdId,
               shopsOn: () => shopsOn(flags.isOn),
             );

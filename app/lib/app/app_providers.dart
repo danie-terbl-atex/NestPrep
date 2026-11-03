@@ -40,11 +40,7 @@ import '../features/kid_accounts/data/callable_kid_sign_in_directory.dart';
 import '../features/kid_accounts/data/firestore_kid_device_repository.dart';
 import '../features/kid_accounts/data/kid_device_repository.dart';
 import '../features/kid_accounts/data/kid_sign_in_directory.dart';
-import '../features/live_location/data/firestore_live_location_repository.dart';
-import '../features/live_location/data/geolocator_location_source.dart';
-import '../features/live_location/data/live_location_repository.dart';
-import '../features/live_location/data/location_reporter.dart';
-import '../features/live_location/data/location_source.dart';
+import '../features/live_location/state/always_sharing.dart';
 import '../features/lunch_box/data/callable_lunch_photo_source.dart';
 import '../features/lunch_box/data/firestore_lunch_repository.dart';
 import '../features/lunch_box/data/lunch_photo_source.dart';
@@ -63,6 +59,7 @@ import '../shared/links/launcher_external_link_opener.dart';
 import 'account_routes.dart';
 import 'add_to_checkers_providers.dart';
 import 'add_to_pnp_providers.dart';
+import 'assistants_providers.dart';
 import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'document_tools_providers.dart';
@@ -70,10 +67,12 @@ import 'documents_providers.dart';
 import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
-import 'location_reporting.dart';
+import 'home_layout_providers.dart';
+import 'live_location_providers.dart';
 import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
 import 'notifications_providers.dart';
+import 'photo_frame_providers.dart';
 import 'plan_week_providers.dart';
 import 'recipe_providers.dart';
 import 'referral_providers.dart';
@@ -148,23 +147,7 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
     create: (context) =>
         FirestoreTodoRepository(context.read<FirebaseFirestore>()),
   ),
-  Provider<LiveLocationRepository>(
-    create: (context) =>
-        FirestoreLiveLocationRepository(context.read<FirebaseFirestore>()),
-  ),
-  Provider<LocationSource>(
-    create: (context) => const GeolocatorLocationSource(),
-  ),
-  // Above every route on purpose: a share the person opened keeps reporting
-  // when they navigate away from the screen, and stops when its window closes
-  // (live-location ADR-0001).
-  Provider<LocationReporter>(
-    create: (context) => locationReporterFor(
-      LocationReporting.fromEnvironment(),
-      locationSource: context.read<LocationSource>(),
-      liveLocationRepository: context.read<LiveLocationRepository>(),
-    ),
-  ),
+  ...liveLocationProviders(),
   Provider<DocumentRepository>(
     create: (context) =>
         FirestoreDocumentRepository(context.read<FirebaseFirestore>()),
@@ -247,14 +230,19 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // referrals and conversion by trigger (subscriptions ADR-0002,
   // product-analytics ADR-0002)
   ...referralProviders(),
+  // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
+  ...assistantsProviders(),
   // plan my week with AI (lunch-box ADR-0011).
   ...planWeekProviders(),
   // recipes, and the ready-made lunch boxes made from them.
   ...recipeProviders(),
+  // photo frames on the wall (photo-frames ADR-0001).
+  ...photoFrameProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),
       accountRepository: context.read<AccountRepository>(),
+      beforeSignOut: context.read<AlwaysSharing>().stopBeforeSignOut,
     ),
   ),
   // documents V2: shared links and offline copies (documents ADR-0006,
@@ -263,4 +251,5 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // notifications — after the session, which the phone's registration
   // follows (notifications ADR-0001).
   ...notificationsProviders(),
+  ...homeLayoutProviders(),
 ];

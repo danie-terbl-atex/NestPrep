@@ -24,6 +24,7 @@ describe('a stored recipe', () => {
         'dietTags',
         'difficulty',
         'ingredients',
+        'kcalPerServing',
         'name',
         'photo',
         'placement',

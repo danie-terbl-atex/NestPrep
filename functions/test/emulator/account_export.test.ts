@@ -1,5 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
+import { HOSTING_REGION } from '../../src/shared/region';
 import {
   adminBucket,
   adminDb,
@@ -42,6 +43,16 @@ describe('exportAccountData', () => {
       linkedByUid: h.sam.uid,
       status: 'active',
     });
+    await adminDb().collection('feedback').doc('f1').set({
+      uid: h.sam.uid,
+      kind: 'problem',
+      message: 'The lunch board forgets Thursday.',
+    });
+    await adminDb().collection('feedback').doc('f2').set({
+      uid: 'uid-somebody-else',
+      kind: 'idea',
+      message: 'Not Sam’s words.',
+    });
 
     const result = await callAs<Exported>(h.sam, 'exportAccountData', null);
     expect(result.path.startsWith(`accountExports/${h.sam.uid}/`)).toBe(true);
@@ -60,9 +71,11 @@ describe('exportAccountData', () => {
         profile: { birthday: string };
         aboutYou: { kind: string }[];
         whatYouAdded: Record<string, unknown>;
+        whereYouHaveBeen: { days: { id: string }[]; placeEvents: { id: string }[] } | null;
       }[];
       vaultFiles: { name: string }[];
       storeSubscriptions: Record<string, unknown>[];
+      feedback: { records: { id: string; message: string }[]; cutShort: boolean };
     };
     expect(body.formatVersion).toBe(1);
     expect(body.signIn?.email).toBe(h.sam.email);
@@ -74,8 +87,14 @@ describe('exportAccountData', () => {
       'memberLocations',
     ]);
     expect(Object.keys(body.households[0]?.whatYouAdded ?? {})).toContain('groceryItems');
+    expect(body.households[0]?.whereYouHaveBeen?.days.map((day) => day.id)).toEqual(['2026-11-02']);
+    expect(body.households[0]?.whereYouHaveBeen?.placeEvents).toHaveLength(1);
     expect(body.vaultFiles.map((file) => file.name)).toEqual(['Passport']);
     expect(body.storeSubscriptions[0]?.['status']).toBe('active');
+    expect(body.feedback.records.map((entry) => entry.message)).toEqual([
+      'The lunch board forgets Thursday.',
+    ]);
+    expect(body.feedback.cutShort).toBe(false);
     // The store's own purchase credential is never handed out, even to its owner.
     expect(text).not.toContain('purchase-token');
   });
@@ -109,7 +128,7 @@ async function requestDeletion(
   body: unknown,
   options: { method?: string; from?: string } = {},
 ): Promise<{ status: number; answer: string | undefined }> {
-  const response = await fetch(httpFunctionUrl('requestAccountDeletion'), {
+  const response = await fetch(httpFunctionUrl('requestAccountDeletion', HOSTING_REGION), {
     method: options.method ?? 'POST',
     headers: {
       'Content-Type': 'application/json',

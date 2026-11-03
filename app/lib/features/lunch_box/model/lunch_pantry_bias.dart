@@ -17,6 +17,7 @@ final class LunchPantryBias implements LunchFillBias {
   final Map<String, int> _available;
 
   /// Whether the pantry still has one of [itemId] once [added] is taken.
+  @override
   bool hasLeft(String itemId, [Map<String, int> added = const {}]) =>
       (_available[itemId] ?? 0) - (added[itemId] ?? 0) > 0;
 

@@ -90,6 +90,21 @@ export async function givenSamsDetails(h: Household): Promise<void> {
     .set({ likes: ['coffee'] });
   await home.collection('memberHealth').doc(samMemberId).set({ medication: [] });
   await home.collection('memberLocations').doc(samMemberId).set({ sharingUntil: Timestamp.now() });
+  const trail = home.collection('locationTrails').doc(samMemberId);
+  await trail
+    .collection('trailDays')
+    .doc('2026-11-02')
+    .set({
+      points: [{ t: 1793000000, la: -26.2, lo: 28.04, ac: 12 }],
+      updatedAt: Timestamp.now(),
+      expiresAt: Timestamp.now(),
+    });
+  await trail.collection('placeEvents').doc('e1').set({
+    placeId: 'school',
+    kind: 'arrive',
+    at: Timestamp.now(),
+    expiresAt: Timestamp.now(),
+  });
   await home
     .collection('vaults')
     .doc(samMemberId)

@@ -14,10 +14,6 @@ import 'household_view.dart';
 /// It only decides what is offered. The rules refuse the data whatever this
 /// says (`FE-04`).
 enum HouseholdPlace {
-  /// The family calendar, day by day — on More since the bar gave its place
-  /// to Meals (design-system ADR-0015).
-  week,
-
   /// Stars the kids earn and their rewards — a parent's to run (todos
   /// ADR-0003).
   stars,
@@ -43,30 +39,41 @@ enum HouseholdPlace {
   /// The household's papers (documents ADR-0001).
   documents,
 
+  /// The family's day on a wall photo frame (photo-frames ADR-0001).
+  photoFrames,
+
   /// Plan and billing — family buy it (subscriptions ADR-0001).
   plan,
 
   /// Give a month, get a month (subscriptions ADR-0002).
-  referrals;
+  referrals,
+
+  /// nestprep in Claude and ChatGPT, while its switch is on (assistants
+  /// ADR-0001). Open to every member: family see the household's
+  /// connections, anybody else only their own.
+  assistants;
 
   /// Whether [view]'s viewer is offered this place while [flags] stand.
   bool isOpenTo(HouseholdView view, FeatureFlags flags) {
     final permissions = view.permissions;
     return switch (this) {
-      HouseholdPlace.week => permissions.canUse(HouseholdArea.calendar),
       HouseholdPlace.stars || HouseholdPlace.plan => permissions.isFamily,
       HouseholdPlace.sharedWeek =>
         permissions.isFamily && flags.isOn(FeatureFlag.mentalLoadView),
       HouseholdPlace.familyProfiles => FamilyAccess.of(view).isVisible,
-      HouseholdPlace.whereWeAre => true,
+      HouseholdPlace.whereWeAre => permissions.canView(HouseholdArea.location),
       HouseholdPlace.twoHomes =>
         flags.isOn(FeatureFlag.coParenting) &&
             TwoHomesAccess.of(view).showsWayIn,
       HouseholdPlace.nannyHub => NannyAccess.of(view).canView,
       HouseholdPlace.homeCare => permissions.canUse(HouseholdArea.homeCare),
       HouseholdPlace.documents => permissions.canUse(HouseholdArea.documents),
+      HouseholdPlace.photoFrames =>
+        permissions.isFamily && flags.isOn(FeatureFlag.photoFrames),
       HouseholdPlace.referrals =>
         permissions.isFamily && flags.isOn(FeatureFlag.referralRewards),
+      HouseholdPlace.assistants =>
+        permissions.isMember && flags.isOn(FeatureFlag.assistants),
     };
   }
 

@@ -54,9 +54,37 @@ describe('where a link may lead', () => {
     });
   }
 
+  for (const address of [
+    '::ffff:a9fe:a9fe',
+    '::ffff:7f00:1',
+    '::ffff:0:7f00:1',
+    '64:ff9b::a9fe:a9fe',
+    '64:ff9b::10.0.0.1',
+    '::7f00:1',
+    '::127.0.0.1',
+    '2002:7f00:1::',
+    '2002:a9fe:a9fe::1',
+    '[::ffff:169.254.169.254]',
+    'fe80::1%eth0',
+    '::',
+    'ff02::1',
+    '100::1',
+    '2001:db8::1',
+    '192.0.2.1',
+    '255.255.255.255',
+    'not an address',
+  ]) {
+    it(`never to ${address}, an address that is private however it is written`, () => {
+      expect(isPrivateAddress(address)).toBe(true);
+    });
+  }
+
   it('to a public address', () => {
     expect(isPrivateAddress('17.253.144.10')).toBe(false);
     expect(isPrivateAddress('2606:4700::1111')).toBe(false);
+    expect(isPrivateAddress('::ffff:17.253.144.10')).toBe(false);
+    expect(isPrivateAddress('64:ff9b::11fd:900a')).toBe(false);
+    expect(isPrivateAddress('2002:11fd:900a::1')).toBe(false);
   });
 
   it('never to a name that resolves anywhere private, even once', async () => {
@@ -68,7 +96,10 @@ describe('where a link may lead', () => {
   it('to loopback only in the emulator', async () => {
     expect(await isPublicHost('127.0.0.1', publicDns, false)).toBe(false);
     expect(await isPublicHost('127.0.0.1', publicDns, true)).toBe(true);
+    expect(await isPublicHost('[::ffff:7f00:1]', publicDns, false)).toBe(false);
+    expect(await isPublicHost('[::ffff:7f00:1]', publicDns, true)).toBe(true);
     expect(await isPublicHost('10.0.0.1', publicDns, true)).toBe(false);
+    expect(await isPublicHost('[::ffff:a9fe:a9fe]', publicDns, true)).toBe(false);
   });
 });
 

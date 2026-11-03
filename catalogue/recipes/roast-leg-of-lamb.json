@@ -17,7 +17,7 @@
   "allergens": [
     "wheat"
   ],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     {
       "name": "Leg of lamb",
@@ -122,6 +122,7 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": "Stud and season the lamb the night before and keep covered in the fridge; bring to room temperature before roasting.",
+  "kcalPerServing": 650,
   "photo": {
     "credit": null,
     "licence": null,

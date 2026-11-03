@@ -1,0 +1,188 @@
+{
+  "id": "slow-cooker-chicken-cacciatore",
+  "name": "Slow-cooker chicken cacciatore",
+  "summary": "Chicken thighs slow-cooked with tomatoes, peppers, mushrooms and olives until they fall apart, served over brown rice with green beans.",
+  "about": "Cacciatore means hunter-style in Italian: meat braised with onion, tomato, peppers, mushrooms and herbs. Started in the slow cooker in the morning, it is ready when everyone gets home.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "comfort"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Chicken thigh fillets",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "skinless and boneless",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, chopped",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and sliced",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Green pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and sliced",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Balsamic vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Brown mushrooms",
+      "quantity": 250,
+      "unit": "g",
+      "note": "thickly sliced",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Dried mixed herbs",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Pitted black olives",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "halved",
+      "group": "For the cacciatore"
+    },
+    {
+      "name": "Brown rice",
+      "quantity": 1.5,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "To serve"
+    },
+    {
+      "name": "Water",
+      "quantity": 3.75,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Green beans",
+      "quantity": 400,
+      "unit": "g",
+      "note": "trimmed",
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Pat the chicken dry and season all over with the salt and pepper.",
+    "Heat the oil in a large frying pan over medium-high heat. Brown the chicken in two batches for 3 minutes a side, until golden; it does not need to cook through. Move it to a slow cooker of 5 litres or larger.",
+    "Turn the heat to medium, add the onion and peppers to the same pan and cook, stirring, for 5 minutes, until the onion softens. Stir in the garlic and tomato paste for 1 minute, then add the vinegar and scrape up the browned bits from the bottom of the pan.",
+    "Tip the pan into the slow cooker and add the mushrooms, chopped tomatoes, herbs and bay leaves. Stir so the chicken sits mostly under the sauce.",
+    "Cover and cook on low for 6 hours or on high for 3½ hours, until the chicken is tender enough to pull apart with a fork.",
+    "Lift out the bay leaves and stir in the olives. If the sauce looks thin, leave the lid off on high for 30 minutes while you cook the rice, until it thickens.",
+    "Put the rice, water and salt in a saucepan and bring to the boil over high heat. Cover, turn to low and simmer for 40 minutes, until tender and the water has been absorbed, then leave covered off the heat for 10 minutes.",
+    "While the rice rests, boil or steam the green beans for 5 minutes, until bright green and just tender.",
+    "Break the chicken into large pieces with a spoon, scatter over the parsley and serve over the rice with the beans alongside."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 430,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge and freezes for 3 months; reheat gently until piping hot.",
+  "kcalPerServing": 510,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

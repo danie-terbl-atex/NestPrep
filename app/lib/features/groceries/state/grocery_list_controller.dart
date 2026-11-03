@@ -9,6 +9,7 @@ import '../data/grocery_repository.dart';
 import '../model/grocery_item.dart';
 import '../model/grocery_list_view.dart';
 import '../model/grocery_suggestion.dart';
+import '../model/product_match.dart';
 
 /// The grocery list screen's controller. Two live reads — what is still to buy,
 /// and what the household has bought recently — become one `AsyncState` so the
@@ -70,6 +71,22 @@ final class GroceryListController extends ChangeNotifier
       );
     });
     return added;
+  }
+
+  /// Adds a line already carrying [match], in one write (groceries
+  /// ADR-0008): a product picked while the name was typed.
+  Future<bool> addMatched(String name, ProductMatch match) async {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return false;
+    await runAction(
+      () => _repository.addMatched(
+        householdId: householdId,
+        name: trimmed,
+        addedBy: memberId,
+        match: match,
+      ),
+    );
+    return actionFailure == null;
   }
 
   Future<void> toggleBought(GroceryItem item) => runAction(

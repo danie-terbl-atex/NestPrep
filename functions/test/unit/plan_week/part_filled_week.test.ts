@@ -94,7 +94,8 @@ describe('a week that already holds some of its budget', () => {
       weekOf([MIAS_CRACKERS], 60000, { prices: CRACKER_PRICE }),
     );
     const week = assembleWeek(brief, fits(brief, { 'p-1': 0.99, 'p-2': 0.7 }));
-    expect(week.lunches.filter((l) => l.productId === 'berries')).toHaveLength(3);
+    expect(week.lunches.filter((l) => l.productId === 'berries')).toHaveLength(5);
+    expect(weekCents(brief, week.lunches)).toBeLessThanOrEqual(60000);
   });
 });
 

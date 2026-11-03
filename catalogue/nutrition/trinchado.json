@@ -1,0 +1,184 @@
+{
+  "id": "trinchado",
+  "servings": 5,
+  "lines": [
+    {
+      "ingredient": "Beef rump steak",
+      "amount": "1 kg trimmed",
+      "grams": 1000,
+      "kcal": 2010,
+      "proteinG": 203.0,
+      "fatG": 127.1,
+      "netCarbsG": 0.0,
+      "reference": "Beef, top sirloin, steak, separable lean and fat, trimmed to 1/8\" fat, raw (SA rump) — USDA FDC 168726: 201 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "½ tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.4,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "2 tbsp × 9 g",
+      "grams": 18,
+      "kcal": 64,
+      "proteinG": 2.0,
+      "fatG": 0.3,
+      "netCarbsG": 12.8,
+      "reference": "Woolworths Cake Wheat Flour label via fatsecret.co.za: 358 kcal, P 11.3, F 1.9, available carbohydrate 71 g / 100 g: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive or sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 large × 200 g",
+      "grams": 400,
+      "kcal": 160,
+      "proteinG": 4.4,
+      "fatG": 0.4,
+      "netCarbsG": 30.6,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "6 cloves × 5 g",
+      "grams": 30,
+      "kcal": 45,
+      "proteinG": 1.9,
+      "fatG": 0.1,
+      "netCarbsG": 9.3,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh red chillies",
+      "amount": "2 × 15 g",
+      "grams": 30,
+      "kcal": 12,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 2.2,
+      "reference": "Peppers, hot chili, red, raw — USDA FDC 170106: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "2 tsp",
+      "grams": 5,
+      "kcal": 14,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 1.0,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dry red wine",
+      "amount": "250 ml, simmered",
+      "grams": 248,
+      "kcal": 72,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 6.5,
+      "reference": "Alcoholic beverage, wine, table, red: 85 kcal / 100 g, 74 of it alcohol; 25 % of the alcohol kcal kept = 29 kcal / 100 g — USDA FDC 173190"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "250 ml water + one 10 g stock cube",
+      "grams": 10,
+      "kcal": 33,
+      "proteinG": 0.4,
+      "fatG": 2.6,
+      "netCarbsG": 1.8,
+      "reference": "Knorrox Beef Flavour Stock Cubes via fatsecret.co.za: 326 kcal, P 3.9, F 26.1, C 18 / 100 g (10 g cube): 326 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaf, removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Peri-peri sauce",
+      "amount": "2 tbsp",
+      "grams": 30,
+      "kcal": 14,
+      "proteinG": 0.2,
+      "fatG": 1.0,
+      "netCarbsG": 0.8,
+      "reference": "Nando's Peri-Peri Sauce Medium label (onestop.co.uk PDF): 186 kJ = 45 kcal, F 3.4 / 100 g: 45 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "2 tbsp chopped",
+      "grams": 8,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Portuguese rolls",
+      "amount": "5 × 70 g",
+      "grams": 350,
+      "kcal": 900,
+      "proteinG": 28.4,
+      "fatG": 8.0,
+      "netCarbsG": 170.1,
+      "reference": "Woolworths Portuguese Rolls via fatsecret.co.za: 180 kcal, P 5.7, F 1.6, C 34 per 70 g roll: 257 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3796,
+  "kcalPerServing": 760,
+  "perServing": {
+    "proteinG": 48.7,
+    "fatG": 38.0,
+    "netCarbsG": 48.1
+  },
+  "notes": "Assumptions: SA rump valued as USDA top sirloin trimmed to ⅛\" fat; red wine simmered, so 25 % of its alcohol kcal kept; stock one 10 g cube; 5 Portuguese rolls at 70 g (Woolworths label), one each, ~180 kcal. Sanity check: Leite's Culinaria trinchado 628 kcal a serving (4–6, no bread) and SnapCalorie 350 kcal per 250 g; ours without the roll is ~580 kcal for ~200 g raw steak and sauce, within 10 % of Leite's."
+}

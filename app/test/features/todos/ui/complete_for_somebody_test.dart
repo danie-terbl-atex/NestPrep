@@ -84,6 +84,8 @@ void main() {
     // Kid's task is on the household's list, not the admin's own.
     await tester.tap(find.text(AppCopy.todosEveryone));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Pack the swimming bag'));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('an admin is offered it for a profile nobody has claimed', (
@@ -102,7 +104,7 @@ void main() {
       ],
     );
 
-    expect(find.bySemanticsLabel(AppCopy.todosCompleteFor), findsOneWidget);
+    expect(find.text(AppCopy.todosCompleteFor), findsOneWidget);
   });
 
   testWidgets('and not for somebody who has joined and can tick their own', (
@@ -121,7 +123,7 @@ void main() {
       ],
     );
 
-    expect(find.bySemanticsLabel(AppCopy.todosCompleteFor), findsNothing);
+    expect(find.text(AppCopy.todosCompleteFor), findsNothing);
   });
 
   testWidgets('and never to a helper, because the rules would refuse it', (
@@ -140,7 +142,7 @@ void main() {
       ],
     );
 
-    expect(find.bySemanticsLabel(AppCopy.todosCompleteFor), findsNothing);
+    expect(find.text(AppCopy.todosCompleteFor), findsNothing);
   });
 
   testWidgets('one unclaimed assignee is not a choice, so it just happens', (
@@ -159,7 +161,7 @@ void main() {
       ],
     );
 
-    await tester.tap(find.bySemanticsLabel(AppCopy.todosCompleteFor));
+    await tester.tap(find.text(AppCopy.todosCompleteFor));
     await tester.pumpAndSettle();
 
     final done = repository.completed.single;
@@ -197,7 +199,7 @@ void main() {
       reason: 'a task somebody else ticked off for you should say so',
     );
     expect(
-      find.bySemanticsLabel(AppCopy.todosCompleteFor),
+      find.text(AppCopy.todosCompleteFor),
       findsNothing,
       reason: 'it is already done',
     );

@@ -1,0 +1,164 @@
+{
+  "id": "mince-jaffles",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tbsp = 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "500 g raw",
+      "grams": 500,
+      "kcal": 1075,
+      "proteinG": 93.0,
+      "fatG": 75.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 85% lean meat / 15% fat, raw — USDA FDC 171796 (SA regular beef mince): 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves ≈ 10 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mild curry powder",
+      "amount": "2 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 13,
+      "proteinG": 0.6,
+      "fatG": 0.6,
+      "netCarbsG": 0.1,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1/2 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp ≈ 33 g",
+      "grams": 33,
+      "kcal": 27,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.9,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 tin, 400 g with juice",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fruit chutney",
+      "amount": "2 tbsp ≈ 40 g",
+      "grams": 40,
+      "kcal": 72,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 17.2,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ, 43 g carbohydrate / 100 g (FatSecret ZA 730 kJ) (used 180 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Frozen peas",
+      "amount": "1/2 cup ≈ 70 g",
+      "grams": 70,
+      "kcal": 54,
+      "proteinG": 3.7,
+      "fatG": 0.3,
+      "netCarbsG": 6.4,
+      "reference": "Peas, green, frozen, unprepared — USDA FDC 170016: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, pepper, black — USDA FDC 170931 — none counted"
+    },
+    {
+      "ingredient": "Bread slices",
+      "amount": "16 slices × 40 g",
+      "grams": 640,
+      "kcal": 1504,
+      "proteinG": 51.8,
+      "fatG": 16.0,
+      "netCarbsG": 288.0,
+      "reference": "SA white sandwich bread label (Albany Superior White, FatSecret ZA): 235 kcal, 8.1 g protein, 45 g carbohydrate / 100 g; fat by difference 2.5 g; 40 g slice (700 g loaf) (used 235 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Butter or margarine",
+      "amount": "4 tbsp ≈ 56 g (butter taken)",
+      "grams": 56,
+      "kcal": 402,
+      "proteinG": 0.5,
+      "fatG": 45.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "1 cup grated ≈ 100 g",
+      "grams": 100,
+      "kcal": 403,
+      "proteinG": 22.9,
+      "fatG": 33.3,
+      "netCarbsG": 3.4,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3813,
+  "kcalPerServing": 950,
+  "perServing": {
+    "proteinG": 44.9,
+    "fatG": 46.4,
+    "netCarbsG": 85.4
+  },
+  "notes": "Assumptions that change the number: 16 slices × 40 g (a 700 g SA loaf), so a serving is two jaffles; butter (not margarine) at 14 g per tbsp; mince 15 % fat with nothing drained; 1 cup grated cheddar ≈ 100 g. Sanity check: no published mince-jaffle figure was found; a ham, cheese and tomato jaffle (Jenny Craig, FatSecret AU) is 251 kcal per 125 g = 201 kcal / 100 g. Ours is ~246 kcal / 100 g (≈ 1550 g of finished jaffles), about 22 % higher because of the butter on every slice and full-fat mince and cheese. Each jaffle is ~475 kcal."
+}

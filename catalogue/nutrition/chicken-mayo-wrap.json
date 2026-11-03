@@ -1,0 +1,64 @@
+{
+  "id": "chicken-mayo-wrap",
+  "servings": 2,
+  "lines": [
+    {
+      "ingredient": "Cooked chicken breast",
+      "amount": "1 cup shredded, ~140 g",
+      "grams": 140,
+      "kcal": 231,
+      "proteinG": 43.4,
+      "fatG": 5.0,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, breast, meat only, cooked, roasted — USDA FDC 171477: 165 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mayonnaise",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 140,
+      "proteinG": 0.1,
+      "fatG": 14.6,
+      "netCarbsG": 3.1,
+      "reference": "Crosse & Blackwell Tangy Mayonnaise (SA) via fatsecret.co.za: 2088 kJ = 499 kcal, F 52, C 11, P 0.4 / 100 g: 499 kcal / 100 g"
+    },
+    {
+      "ingredient": "Grated carrot",
+      "amount": "½ cup grated, ~58 g",
+      "grams": 58,
+      "kcal": 24,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 3.9,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Shredded lettuce",
+      "amount": "½ cup shredded, ~38 g",
+      "grams": 38,
+      "kcal": 5,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.7,
+      "reference": "Lettuce, iceberg, raw — USDA FDC 169248: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tortilla wraps",
+      "amount": "2 × 60 g (25 cm)",
+      "grams": 120,
+      "kcal": 367,
+      "proteinG": 9.8,
+      "fatG": 9.6,
+      "netCarbsG": 55.1,
+      "reference": "Tortillas, ready-to-bake or -fry, flour, refrigerated — USDA FDC 175037: 306 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 767,
+  "kcalPerServing": 380,
+  "perServing": {
+    "proteinG": 27.0,
+    "fatG": 14.7,
+    "netCarbsG": 31.4
+  },
+  "notes": "Assumptions: 1 cup shredded cooked breast ~140 g; SA tangy mayonnaise; 25 cm flour tortillas ~60 g each. Sanity check: FatSecret lists Wimpy creamy mayo grilled chicken wrap 406 kcal, a generic chicken wrap 292 kcal, and MealGarden's chicken wrap 362 kcal; ours (380) sits in the range."
+}

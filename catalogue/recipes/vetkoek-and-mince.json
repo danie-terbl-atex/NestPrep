@@ -8,7 +8,7 @@
   "placement": { "lunch": "main", "dinner": "main" },
   "tags": ["comfort", "budget", "kidFriendly", "traditional"],
   "allergens": ["wheat"],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     { "name": "Cake flour", "quantity": 500, "unit": "g", "note": "plus extra for shaping", "group": "For the vetkoek" },
     { "name": "Instant dry yeast", "quantity": 10, "unit": "g", "note": "one sachet", "group": "For the vetkoek" },
@@ -46,5 +46,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Make the mince a day ahead and reheat. Vetkoek are best fried on the day; leftovers freeze well and refresh in a warm oven.",
+  "kcalPerServing": 830,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

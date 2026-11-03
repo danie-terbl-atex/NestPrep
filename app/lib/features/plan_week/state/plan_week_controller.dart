@@ -10,6 +10,7 @@ import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/model/lunch_budget_week.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/model/lunch_week.dart';
+import '../../lunch_box/state/lunch_variety_choice.dart';
 import '../data/lunch_aisle_source.dart';
 import '../data/lunch_idea_drafter.dart';
 import '../data/lunch_week_builder.dart';
@@ -47,6 +48,7 @@ final class PlanWeekController extends ChangeNotifier {
     required ShopWeekSaver saver,
     required ShopWeekGroceries groceries,
     required PackingChoiceStore packingStore,
+    required this.variety,
     required this.householdId,
     required this.week,
   }) : _shopChoice = shopChoice {
@@ -56,6 +58,7 @@ final class PlanWeekController extends ChangeNotifier {
       isPnpOn: isPnpOn,
     );
     shopChoice.addListener(_changed);
+    variety.addListener(_changed);
     places = PlanWeekPlace(
       resolver: placeResolver,
       householdId: householdId,
@@ -82,6 +85,10 @@ final class PlanWeekController extends ChangeNotifier {
   final String householdId;
   final LunchWeek week;
   final LunchShopChoice _shopChoice;
+
+  /// Which compartments keep the same all week — the brief's chips, shared
+  /// with *Fill the week* (lunch-box ADR-0028).
+  final LunchVarietyChoice variety;
   late final PlanWeekRetailer retailer;
   late final PlanWeekPlace places;
   late final PlanWeekPacking packing;
@@ -193,6 +200,7 @@ final class PlanWeekController extends ChangeNotifier {
       childIds: childIds,
       searches: store.searches,
       packing: packing.choice,
+      variety: variety.variety,
       budgetWeek: _budgetWeek,
     );
   }
@@ -251,6 +259,7 @@ final class PlanWeekController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _shopChoice.removeListener(_changed);
+    variety.removeListener(_changed);
     aisle.clear();
     ideas.clear();
     store.clear();

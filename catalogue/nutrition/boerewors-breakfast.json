@@ -1,0 +1,124 @@
+{
+  "id": "boerewors-breakfast",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 clove",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ripe tomatoes",
+      "amount": "4 medium, 123 g each",
+      "grams": 492,
+      "kcal": 89,
+      "proteinG": 4.4,
+      "fatG": 1.0,
+      "netCarbsG": 13.3,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.2,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried thyme",
+      "amount": "0.5 tsp",
+      "grams": 0.5,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spices, thyme, dried — USDA FDC 170938: 276 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Boerewors",
+      "amount": "600 g raw",
+      "grams": 600,
+      "kcal": 1686,
+      "proteinG": 78.0,
+      "fatG": 145.2,
+      "netCarbsG": 12.0,
+      "reference": "Boerewors, raw (FatSecret ZA generic): 1177 kJ = 281 kcal, 13.0 g protein, 24.2 g fat, 2.0 g carbohydrate / 100 g; SA store entries range 221-396 kcal"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "4 SA large, 55 g each",
+      "grams": 220,
+      "kcal": 315,
+      "proteinG": 27.7,
+      "fatG": 20.9,
+      "netCarbsG": 1.5,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bread slices",
+      "amount": "4 slices, 38 g each (700 g loaf)",
+      "grams": 152,
+      "kcal": 404,
+      "proteinG": 13.5,
+      "fatG": 5.0,
+      "netCarbsG": 71.0,
+      "reference": "Bread, white, commercially prepared — USDA FDC 174924: 266 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "4 tsp (4.7 g each)",
+      "grams": 19,
+      "kcal": 136,
+      "proteinG": 0.2,
+      "fatG": 15.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3013,
+  "kcalPerServing": 750,
+  "perServing": {
+    "proteinG": 31.9,
+    "fatG": 53.7,
+    "netCarbsG": 31.6
+  },
+  "notes": "Assumptions that move the number: boerewors at 281 kcal / 100 g (FatSecret ZA generic; SA wors entries range 221-396 kcal, so 600 g could be 1330-2380 kcal); counted raw, with no allowance for fat left in the pan; 38 g bread slices; SA large eggs of 55 g. Each plate has 150 g raw wors (~420 kcal). No published figure for this exact plate turned up. Component check: FatSecret ZA lists 338 kcal for a 120 g serving of boerewors, and Arise lists 414 kcal for 150 g boerewors, which matches ours for the sausage."
+}

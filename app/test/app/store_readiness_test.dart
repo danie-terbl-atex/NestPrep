@@ -20,6 +20,7 @@ void main() {
       'NSPhotoLibraryUsageDescription',
     ],
     'cunning_document_scanner': ['NSCameraUsageDescription'],
+    'mobile_scanner': ['NSCameraUsageDescription'],
     'geolocator': ['NSLocationWhenInUseUsageDescription'],
     'local_auth': ['NSFaceIDUsageDescription'],
   };
@@ -37,18 +38,29 @@ void main() {
     });
   }
 
-  test('background location is not asked for on either platform', () {
-    // Live location phase 1 is foreground only; either key brings a store
-    // declaration with it (live-location ADR-0001).
-    final manifest = File('android/app/src/main/AndroidManifest.xml')
-        .readAsStringSync();
-    // The manifest's comment names the permission to say why it is absent.
-    expect(
-      manifest,
-      isNot(matches(RegExp(r'<uses-permission[^>]*BACKGROUND_LOCATION'))),
-    );
-    expect(infoPlist, isNot(contains('NSLocationAlwaysAndWhenInUse')));
-  });
+  test(
+    'background location is declared with the reasons the stores ask for',
+    () {
+      // Always-on sharing (live-location ADR-0003, ADR-0005): Play needs the
+      // prominent-disclosure declaration before a release carries these.
+      final manifest = File('android/app/src/main/AndroidManifest.xml')
+          .readAsStringSync();
+      for (final permission in [
+        'ACCESS_BACKGROUND_LOCATION',
+        'FOREGROUND_SERVICE_LOCATION',
+        'ACTIVITY_RECOGNITION',
+      ]) {
+        expect(manifest, matches(RegExp('<uses-permission[^>]*$permission')));
+      }
+      expect(manifest, contains('android:foregroundServiceType="location"'));
+      expect(
+        infoPlist,
+        contains('NSLocationAlwaysAndWhenInUseUsageDescription'),
+      );
+      expect(infoPlist, contains('NSMotionUsageDescription'));
+      expect(infoPlist, matches(RegExp(r'<string>location</string>')));
+    },
+  );
 
   test('the privacy manifest exists, tracks nothing and ships in the app', () {
     final manifest = File('ios/Runner/PrivacyInfo.xcprivacy')

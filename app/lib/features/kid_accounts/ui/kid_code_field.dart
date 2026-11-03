@@ -18,10 +18,12 @@ class KidCodeField extends StatefulWidget {
     required this.code,
     required this.onChanged,
     required this.onSubmitted,
+    this.label = KidCopy.codeFieldLabel,
     super.key,
   });
 
   final String code;
+  final String label;
   final ValueChanged<String> onChanged;
   final VoidCallback onSubmitted;
 
@@ -82,8 +84,8 @@ class _KidCodeFieldState extends State<KidCodeField> {
               textCapitalization: TextCapitalization.characters,
               textInputAction: TextInputAction.go,
               inputFormatters: [_KidCodeFormatter()],
-              decoration: const InputDecoration(
-                labelText: KidCopy.codeFieldLabel,
+              decoration: InputDecoration(
+                labelText: widget.label,
                 border: InputBorder.none,
                 counterText: '',
               ),

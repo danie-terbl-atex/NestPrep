@@ -130,15 +130,50 @@ void main() {
     expect(find.text('Bins'), findsOneWidget);
   });
 
-  testWidgets('tapping a task ticks it off', (tester) async {
+  testWidgets('tapping a task opens it, and Complete ticks it off', (
+    tester,
+  ) async {
     await pump(tester);
     await emit(tester, tasks: [task()]);
 
     await tester.tap(find.text('Bins'));
     await tester.pumpAndSettle();
 
+    expect(repository.completed, isEmpty);
+    expect(find.text(AppCopy.todosComplete), findsOneWidget);
+
+    await tester.tap(find.text(AppCopy.todosComplete));
+    await tester.pumpAndSettle();
+
     expect(repository.completed.single.taskId, 't1');
     expect(repository.completed.single.date.iso, '2026-09-18');
+  });
+
+  testWidgets('tapping an open task again closes it', (tester) async {
+    await pump(tester);
+    await emit(
+      tester,
+      tasks: [
+        task(),
+        task(id: 't2', title: 'Recycling'),
+      ],
+    );
+
+    await tester.tap(find.text('Bins'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Bins'));
+    await tester.pumpAndSettle();
+    expect(find.text(AppCopy.todosComplete), findsNothing);
+
+    await tester.tap(find.text('Bins'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recycling'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(AppCopy.todosComplete),
+      findsOneWidget,
+      reason: 'one row open at a time',
+    );
   });
 
   testWidgets('the household view shows everybody"s, mine shows only mine', (
@@ -148,17 +183,17 @@ void main() {
     await emit(
       tester,
       tasks: [
-        task(id: 'a', title: 'Mine', assigneeIds: [Fixtures.samMemberId]),
+        task(id: 'a', title: 'My errand', assigneeIds: [Fixtures.samMemberId]),
         task(id: 'b', title: 'Theirs', assigneeIds: [Fixtures.kidMemberId]),
       ],
     );
-    expect(find.text('Mine'), findsOneWidget);
+    expect(find.text('My errand'), findsOneWidget);
     expect(find.text('Theirs'), findsNothing);
 
     await tester.tap(find.text(AppCopy.todosEveryone));
     await tester.pumpAndSettle();
 
-    expect(find.text('Mine'), findsOneWidget);
+    expect(find.text('My errand'), findsOneWidget);
     expect(find.text('Theirs'), findsOneWidget);
   });
 
@@ -170,6 +205,8 @@ void main() {
 
     repository.failWritesWith = const PermissionDeniedFailure();
     await tester.tap(find.text('Bins'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppCopy.todosComplete));
     await tester.pumpAndSettle();
 
     expect(

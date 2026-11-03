@@ -109,6 +109,8 @@ export { sendTestNotification } from './notifications/send_test_notification';
 export { notifyPhotoUpdate } from './notifications/notify_photo_update';
 export { notifyCoParentRequest } from './notifications/notify_coparent';
 export { notifyCoParentHandover } from './notifications/notify_coparent';
+// ---- family location: arrivals and departures at the household's places (live-location ADR-0006) ----
+export { notifyPlaceEvent } from './live_location/notify_place_event';
 // ---- plan my week from the store, in guided steps: proposals, never a write (lunch-box ADR-0012, foundation ADR-0015) ----
 export { draftLunchIdeas } from './plan_week/draft_lunch_ideas';
 export { buildLunchWeek } from './plan_week/build_lunch_week';
@@ -129,3 +131,24 @@ export { pnpPushToCart } from './pnp/pnp_push_to_cart';
 export { pnpUnlink } from './pnp/pnp_unlink';
 // ---- Jev ranks the matches under a grocery line; the member still picks (foundation ADR-0021) ----
 export { rankProductMatches } from './checkers/rank_product_matches';
+// ---- photo frames: a wall frame pairs by code and reads one assembled day (photo-frames ADR-0001) ----
+export { startFramePairing } from './frames/start_frame_pairing';
+export { pollFramePairing } from './frames/poll_frame_pairing';
+export { claimFramePairing } from './frames/claim_frame_pairing';
+export { getFrameDay } from './frames/get_frame_day';
+export { getFrameMonth } from './frames/get_frame_month';
+export { getFramePhotos } from './frames/get_frame_photos';
+export { getFramePhoto } from './frames/get_frame_photo';
+export { getFrameLunchPhoto } from './frames/get_frame_lunch_photo';
+export { unlinkFrame } from './frames/unlink_frame';
+export { tickFrameItem } from './frames/tick_frame_item';
+export { addFrameEvent } from './frames/add_frame_event';
+export { shareToFrame } from './frames/share_to_frame';
+export { waitFrameShare } from './frames/wait_frame_share';
+export { getFrameRecipePhoto } from './frames/get_frame_recipe_photo';
+export { searchFrameProducts } from './frames/search_frame_products';
+export { addFrameGroceryItem } from './frames/add_frame_grocery_item';
+// ---- assistants: NestPrep in Claude and ChatGPT — the authorization server, the MCP endpoint and connections (assistants ADR-0001 to ADR-0003) ----
+export { assistantAuth } from './assistants/auth/assistant_auth';
+export { assistantMcp } from './assistants/mcp/assistant_mcp';
+export { pruneAssistantConnections } from './assistants/connections/prune_assistant_connections';

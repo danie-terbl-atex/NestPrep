@@ -13,7 +13,8 @@ enum RecipeTag {
   traditional,
   capeMalay,
   streetFood,
-  vegetableForward;
+  vegetableForward,
+  healthy;
 
   /// The tag a stored name means, or null for one this build does not know —
   /// skipped, never a reason to lose the recipe (`BE-10`).

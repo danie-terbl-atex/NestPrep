@@ -1,0 +1,50 @@
+{
+  "liveContinuous": {
+    "path": "households/{householdId}/memberLocations/{memberId}",
+    "write": "set",
+    "fields": {
+      "point": { "geoPoint": { "latitude": -26.2041, "longitude": 28.0473 } },
+      "accuracyMetres": 12,
+      "reportedAt": "serverTimestamp",
+      "sharingUntil": { "timestampFromNow": "PT24H" },
+      "mode": "continuous",
+      "batteryPercent": 64,
+      "charging": false,
+      "motion": "driving"
+    }
+  },
+  "dayFlush": {
+    "path": "households/{householdId}/locationTrails/{memberId}/trailDays/{yyyy-MM-dd}",
+    "write": "setMerge",
+    "fields": {
+      "points": { "arrayUnion": [{ "t": 1793000000, "la": -26.2041, "lo": 28.0473, "ac": 12 }] },
+      "updatedAt": "serverTimestamp",
+      "expiresAt": { "timestampFromNow": "P30D" }
+    }
+  },
+  "placeEvent": {
+    "path": "households/{householdId}/locationTrails/{memberId}/placeEvents/{autoId}",
+    "write": "set",
+    "fields": {
+      "placeId": "school",
+      "kind": "arrive",
+      "at": "serverTimestamp",
+      "expiresAt": { "timestampFromNow": "P30D" }
+    }
+  },
+  "motionValues": ["still", "onFoot", "cycling", "driving", "unknown"],
+  "startArguments": {
+    "householdId": "h1",
+    "memberId": "m-sam",
+    "timeZone": "Africa/Johannesburg",
+    "emulatorHost": null,
+    "firestorePort": 8080,
+    "authPort": 9099,
+    "foreground": true,
+    "places": [{ "id": "school", "latitude": -26.1, "longitude": 28.05, "radiusMetres": 150 }],
+    "notificationTitle": "Sharing your location",
+    "notificationBody": "The Oak Street Nest can see where you are.",
+    "notificationChannelName": "Location sharing",
+    "notificationPauseLabel": "Pause"
+  }
+}

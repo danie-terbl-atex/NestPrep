@@ -50,5 +50,6 @@
   "difficulty": "involved",
   "prepAhead": true,
   "prepNote": "Make the dough the night before and let it rise slowly in the fridge; shape and fry in the morning. Best eaten the day they are made.",
-  "photo": { "credit": "Tasneem J", "licence": "CC BY 4.0", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Koesisters_Cape_Malay_South_Africa.jpg", "generated": false }
+  "kcalPerServing": 210,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

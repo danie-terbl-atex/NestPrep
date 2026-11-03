@@ -12,6 +12,8 @@ class NestMotion {
     required this.photo,
     required this.drift,
     required this.stagger,
+    required this.tick,
+    required this.celebration,
     required this._revolution,
     required this.isReduced,
   });
@@ -23,6 +25,8 @@ class NestMotion {
     photo: Duration(milliseconds: 480),
     drift: Duration(seconds: 4),
     stagger: Duration(milliseconds: 60),
+    tick: Duration(milliseconds: 450),
+    celebration: Duration(milliseconds: 2200),
     revolution: Duration(seconds: 60),
     isReduced: false,
   );
@@ -34,6 +38,8 @@ class NestMotion {
     photo: Duration.zero,
     drift: Duration.zero,
     stagger: Duration.zero,
+    tick: Duration.zero,
+    celebration: Duration(milliseconds: 1400),
     revolution: Duration.zero,
     isReduced: true,
   );
@@ -54,6 +60,11 @@ class NestMotion {
   final Duration drift;
   final Duration stagger;
 
+  final Duration tick;
+
+  /// Not zero under reduce-motion: the card still has to be read.
+  final Duration celebration;
+
   /// One full turn of the slowest ring of the welcome's orbit
   /// (design-system ADR-0006). Zero under reduce-motion, and in the widget
   /// suite (see [debugHoldStill]).
@@ -65,6 +76,8 @@ class NestMotion {
   /// Stops the orbit turning so `pumpAndSettle` can settle. Set for the whole
   /// suite by `test/flutter_test_config.dart`; never set in the app.
   static bool debugHoldStill = false;
+
+  static const undoWindow = Duration(seconds: 5);
 
   static const double pressScale = 0.98;
   static const double photoZoom = 1.06;

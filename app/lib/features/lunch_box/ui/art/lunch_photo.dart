@@ -41,7 +41,8 @@ class _LunchPhotoState extends State<LunchPhoto> {
   String? _askedFor;
 
   String get _signature => [
-    for (final (slot, pick) in widget.box.filled) '${slot.name}:${pick.itemId}',
+    for (final (slot, pick) in widget.box.filled)
+      '${slot.name}:${pick.itemId}:${pick.name}',
   ].join(',');
 
   @override
@@ -86,30 +87,7 @@ class _LunchPhotoState extends State<LunchPhoto> {
       child: _LunchPhotoArt(box: widget.box),
     );
     if (photo == null) return art;
-    return FutureBuilder<Uint8List?>(
-      future: photo,
-      builder: (context, snapshot) {
-        final bytes = snapshot.data;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            art,
-            AnimatedOpacity(
-              opacity: bytes == null ? 0 : 1,
-              duration: NestMotion.of(context).slow,
-              curve: NestMotion.enter,
-              child: bytes == null
-                  ? const SizedBox.shrink()
-                  : Image.memory(
-                      bytes,
-                      fit: BoxFit.cover,
-                      gaplessPlayback: true,
-                    ),
-            ),
-          ],
-        );
-      },
-    );
+    return NestPhotoBytes(bytes: photo, under: art);
   }
 }
 

@@ -1,0 +1,164 @@
+{
+  "id": "hot-cross-buns",
+  "servings": 12,
+  "lines": [
+    {
+      "ingredient": "Bread flour",
+      "amount": "500 g (kneading flour not counted)",
+      "grams": 500,
+      "kcal": 1805,
+      "proteinG": 59.9,
+      "fatG": 8.3,
+      "netCarbsG": 350.6,
+      "reference": "Wheat flour, white, bread, enriched — USDA FDC 168896: 361 kcal / 100 g"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "75 g",
+      "grams": 75,
+      "kcal": 290,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 75.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Mixed spice",
+      "amount": "2 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 14,
+      "proteinG": 0.2,
+      "fatG": 0.5,
+      "netCarbsG": 2.2,
+      "reference": "Spices, pumpkin pie spice (proxy for mixed spice) — USDA FDC 171332: 342 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Orange zest",
+      "amount": "1 tbsp ≈ 6 g",
+      "grams": 6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Orange peel, raw — USDA FDC 169103: 97 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "1.25 cup = 312 ml × 1.03",
+      "grams": 322,
+      "kcal": 196,
+      "proteinG": 10.1,
+      "fatG": 10.5,
+      "netCarbsG": 15.5,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "50 g",
+      "grams": 50,
+      "kcal": 358,
+      "proteinG": 0.4,
+      "fatG": 40.6,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 large ≈ 55 g",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mixed dried fruit",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 453,
+      "proteinG": 4.1,
+      "fatG": 0.3,
+      "netCarbsG": 114.5,
+      "reference": "Mixed dried fruit as sultanas 50 / currants 30 / peel 20 — USDA FDC 168164 + 171724 + 167781: 302 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "75 g, all piped as crosses",
+      "grams": 75,
+      "kcal": 273,
+      "proteinG": 7.7,
+      "fatG": 0.7,
+      "netCarbsG": 55.2,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "5 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Apricot jam",
+      "amount": "3 tbsp × 20 g",
+      "grams": 60,
+      "kcal": 145,
+      "proteinG": 0.4,
+      "fatG": 0.1,
+      "netCarbsG": 38.5,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    }
+  ],
+  "totalKcal": 3657,
+  "kcalPerServing": 300,
+  "perServing": {
+    "proteinG": 7.8,
+    "fatG": 5.6,
+    "netCarbsG": 54.6
+  },
+  "notes": "12 buns. All the cross paste and glaze counted. Sanity check: Kitchen Fun With My 3 Sons hot cross buns 297 kcal (12); SparkPeople 275 kcal (12). Ours 300 — buns are ~100 g each from 575 g flour."
+}

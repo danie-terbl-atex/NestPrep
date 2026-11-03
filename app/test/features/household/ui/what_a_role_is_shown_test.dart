@@ -61,8 +61,8 @@ void main() {
 
       expect(find.bySemanticsLabel(AppCopy.tabToday), findsOneWidget);
       expect(find.bySemanticsLabel(AppCopy.tabLists), findsOneWidget);
-      expect(find.bySemanticsLabel(LunchCopy.tab), findsNothing);
-      expect(find.bySemanticsLabel(AppCopy.tabWeek), findsNothing);
+      expect(find.bySemanticsLabel(AppCopy.tabFood), findsNothing);
+      expect(find.bySemanticsLabel(AppCopy.tabCalendar), findsNothing);
       expect(find.bySemanticsLabel(AppCopy.tabMeals), findsNothing);
       handle.dispose();
     });

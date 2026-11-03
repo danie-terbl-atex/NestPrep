@@ -9,6 +9,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/points_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
 
+import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -26,11 +27,12 @@ void main() {
     HouseholdView? view,
     Brightness brightness = Brightness.light,
     double scale = 1,
+    FakeFeatureFlagSource? flags,
   }) async {
     await pumpScreen(
       tester,
       HouseholdMoreScreen(onSelectTab: (_) {}),
-      providers: const [],
+      providers: [if (flags != null) featureFlagsProvider(source: flags)],
       view: view,
       brightness: brightness,
       textScale: scale,
@@ -60,14 +62,14 @@ void main() {
     expect(find.text(MoreCopy.peopleCount(3)), findsOneWidget);
     for (final text in [
       MoreCopy.sectionWeek,
-      AppCopy.tabWeek,
       PointsCopy.screenTitle,
       MoreCopy.sectionFamily,
       FamilyCopy.openFromHousehold,
-      AppCopy.locationTitle,
+      LocationCopy.title,
       MoreCopy.sectionHome,
       HomeCareCopy.openFromHousehold,
       AppCopy.documentsOpenLibrary,
+      PhotoFrameCopy.title,
       MoreCopy.sectionPlan,
       SubscriptionCopy.openFromHousehold,
     ]) {
@@ -76,8 +78,37 @@ void main() {
     }
   });
 
-  testWidgets('a helper who may only clean sees their jobs and where '
-      'everybody is, and nothing their grant does not open', (tester) async {
+  group('the way to photo frames', () {
+    testWidgets('goes there, and pushes so that back comes back here', (
+      tester,
+    ) async {
+      tallPhone(tester);
+      await pump(tester);
+      await tester.drag(find.byType(ListView), const Offset(0, -600));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(PhotoFrameCopy.title));
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(MoreCopy.subtitle), findsOneWidget);
+    });
+
+    testWidgets('is not offered while its switch is off', (tester) async {
+      final flags = FakeFeatureFlagSource();
+      addTearDown(flags.close);
+      await pump(tester, flags: flags);
+      flags.emit({'photoFrames': false});
+      await tester.pumpAndSettle();
+
+      await scrollTo(tester, SubscriptionCopy.openFromHousehold);
+      expect(find.text(PhotoFrameCopy.title), findsNothing);
+    });
+  });
+
+  testWidgets('a helper who may only clean sees their jobs, and nothing '
+      'their grant does not open', (tester) async {
     await pump(tester, view: cleaningOnly);
 
     await scrollTo(tester, HomeCareCopy.openFromHousehold);
@@ -86,13 +117,13 @@ void main() {
       findsOneWidget,
       reason: 'a helper is told the jobs are the ones assigned to them',
     );
-    await scrollTo(tester, AppCopy.locationTitle);
 
     for (final text in [
-      AppCopy.tabWeek,
+      LocationCopy.title,
       PointsCopy.screenTitle,
       FamilyCopy.openFromHousehold,
       AppCopy.documentsOpenLibrary,
+      PhotoFrameCopy.title,
       MoreCopy.sectionWeek,
       MoreCopy.sectionPlan,
       SubscriptionCopy.openFromHousehold,
@@ -110,7 +141,7 @@ void main() {
     testWidgets('says what it is before it is tapped', (tester) async {
       await pump(tester);
       await scrollTo(tester, MoreCopy.locationBody);
-      expect(find.text(AppCopy.locationTitle), findsOneWidget);
+      expect(find.text(LocationCopy.title), findsOneWidget);
     });
 
     testWidgets('goes there, and pushes so that back comes back here', (
@@ -122,7 +153,7 @@ void main() {
       // identical until somebody presses back and the app closes (`FE-17`).
       tallPhone(tester);
       await pump(tester);
-      await tester.tap(find.text(AppCopy.locationTitle));
+      await tester.tap(find.text(LocationCopy.title));
       await tester.pumpAndSettle();
       expect(find.byType(Placeholder), findsOneWidget);
 
@@ -131,14 +162,13 @@ void main() {
       expect(find.text(MoreCopy.subtitle), findsOneWidget);
     });
 
-    testWidgets('is offered to a helper exactly as it is to an admin', (
+    testWidgets('is hidden from a helper whose grant does not open it', (
       tester,
     ) async {
-      // Nothing here is an admin action: every member controls their own
-      // sharing and nobody else's (live-location ADR-0002).
+      // Who sees the map is the location grant (household ADR-0008).
       await pump(tester, view: cleaningOnly);
-      await scrollTo(tester, AppCopy.locationTitle);
-      expect(find.text(AppCopy.locationTitle), findsOneWidget);
+      await scrollTo(tester, HomeCareCopy.openFromHousehold);
+      expect(find.text(LocationCopy.title), findsNothing);
     });
   });
 

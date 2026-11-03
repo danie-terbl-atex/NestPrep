@@ -5,6 +5,7 @@ import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/recipes/model/recipe_facet.dart';
 import 'package:nestprep/features/recipes/model/recipe_meal_filter.dart';
 import 'package:nestprep/features/recipes/model/recipe_shelf.dart';
+import 'package:nestprep/features/recipes/ui/recipe_card.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -21,10 +22,12 @@ void main() {
 
   late RecipeHarness harness;
   late List<String> opened;
+  late List<String?> heroTags;
 
   setUp(() {
     harness = RecipeHarness();
     opened = [];
+    heroTags = [];
   });
 
   tearDown(() => harness.close());
@@ -46,7 +49,11 @@ void main() {
       view: MealsView.recipes,
       onSelectView: (_) {},
       onSelectTab: (_) {},
-      onOpenRecipe: opened.add,
+      onPickRecipe: (_, _) async => null,
+      onOpenRecipe: (id, {heroTag}) {
+        opened.add(id);
+        heroTags.add(heroTag);
+      },
     ),
     providers: harness.providers,
     brightness: brightness,
@@ -118,13 +125,38 @@ void main() {
     }
   });
 
-  testWidgets('tapping tonight’s card opens that recipe', (tester) async {
+  testWidgets('tapping tonight’s card opens that recipe from its photo', (
+    tester,
+  ) async {
     phone(tester);
     await pump(tester);
     await deliver(tester);
 
     await tester.tap(find.text(RecipeCopy.tonightAction));
-    expect(opened, [harness.catalogue.discovery!.tonight!.id]);
+    final tonight = harness.catalogue.discovery!.tonight!.id;
+    expect(opened, [tonight]);
+    expect(heroTags, [RecipeCard.heroTagFor('tonight', tonight)]);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is Hero && widget.tag == heroTags.single,
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('every recipe photo on the list has a hero of its own', (
+    tester,
+  ) async {
+    phone(tester);
+    await pump(tester);
+    await deliver(tester);
+
+    final tags = tester
+        .widgetList<Hero>(find.byType(Hero, skipOffstage: false))
+        .map((hero) => hero.tag)
+        .toList();
+    expect(tags, isNotEmpty);
+    expect(tags.toSet(), hasLength(tags.length));
   });
 
   testWidgets('a meal chip narrows the recipes to that meal', (tester) async {
@@ -158,6 +190,10 @@ void main() {
     );
     expect(find.text(RecipeCopy.meal(RecipeMealFilter.dinner)), findsOneWidget);
 
+    // Under the Food switch, the way out sits below the fold on a small
+    // phone (design-system ADR-0017).
+    await tester.ensureVisible(find.text(RecipeCopy.showEverything));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(RecipeCopy.showEverything));
     await tester.pumpAndSettle();
     expect(find.text(RecipeCopy.tonightAction), findsOneWidget);

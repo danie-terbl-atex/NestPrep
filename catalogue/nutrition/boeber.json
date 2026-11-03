@@ -1,0 +1,124 @@
+{
+  "id": "boeber",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "Sago",
+      "amount": "3 tbsp (9.6 g each)",
+      "grams": 29,
+      "kcal": 104,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 25.5,
+      "reference": "Tapioca, pearl, dry (sago) — USDA FDC 169717: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 430,
+      "proteinG": 0.5,
+      "fatG": 48.7,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fine vermicelli",
+      "amount": "80 g dry",
+      "grams": 80,
+      "kcal": 297,
+      "proteinG": 10.4,
+      "fatG": 1.2,
+      "netCarbsG": 57.2,
+      "reference": "Pasta, dry, enriched (vermicelli) — USDA FDC 169736: 371 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon sticks",
+      "amount": "2 sticks, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving — 0 kcal"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "6 pods, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving — 0 kcal"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "1.5 l (1545 g)",
+      "grams": 1545,
+      "kcal": 942,
+      "proteinG": 48.7,
+      "fatG": 50.2,
+      "netCarbsG": 74.2,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sultanas",
+      "amount": "50 g",
+      "grams": 50,
+      "kcal": 150,
+      "proteinG": 1.7,
+      "fatG": 0.1,
+      "netCarbsG": 38.4,
+      "reference": "Raisins, golden, seedless (sultanas) — USDA FDC 168164: 301 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "125 g",
+      "grams": 125,
+      "kcal": 484,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 125.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Rose water",
+      "amount": "1 tbsp",
+      "grams": 15,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Rose water (distilled flower water) — ~0 kcal"
+    },
+    {
+      "ingredient": "Flaked almonds",
+      "amount": "40 g",
+      "grams": 40,
+      "kcal": 232,
+      "proteinG": 8.5,
+      "fatG": 20.0,
+      "netCarbsG": 3.6,
+      "reference": "Nuts, almonds — USDA FDC 170567: 579 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2639,
+  "kcalPerServing": 330,
+  "perServing": {
+    "proteinG": 8.7,
+    "fatG": 15.0,
+    "netCarbsG": 40.5
+  },
+  "notes": "One glass of 8, about 240 ml. Assumptions: full-cream milk; the sugar as written (125 g, not the 'more to taste'); the cinnamon and cardamom are removed and not counted; the optional sultanas are counted. Compared against: Tantalise My Taste Buds boeber at 472 kcal for 250 ml. That version uses 2 litres of milk plus a tin of condensed milk. Ours uses no condensed milk, so being ~30 % lower is expected."
+}

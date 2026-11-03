@@ -1,0 +1,28 @@
+// ---- the household's places: home, school, gran's (live-location ADR-0006) ----
+//
+// A lapsed household keeps its places and may delete them; only creating and
+// changing one is premium (subscriptions ADR-0001).
+match /places/{placeId} {
+  allow read: if canView(householdId, 'location');
+
+  allow create, update: if canEdit(householdId, 'location')
+    && hasPremium(householdId)
+    && isHouseholdPlace(request.resource.data);
+
+  allow delete: if canEdit(householdId, 'location');
+
+  function isHouseholdPlace(data) {
+    return data.keys().hasOnly(['name', 'centre', 'radiusMetres', 'icon', 'alerts', 'updatedAt'])
+      && data.name is string
+      && data.name.size() >= 1 && data.name.size() <= 40
+      && data.centre is latlng
+      && data.radiusMetres is int
+      && data.radiusMetres >= 75 && data.radiusMetres <= 500
+      && data.icon in ['home', 'school', 'work', 'sport', 'shop', 'family', 'other']
+      && data.alerts is map
+      && data.alerts.keys().hasOnly(['arrive', 'leave'])
+      && data.alerts.arrive is bool
+      && data.alerts.leave is bool
+      && isServerTime('updatedAt');
+  }
+}

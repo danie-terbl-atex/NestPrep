@@ -1,0 +1,94 @@
+{
+  "id": "french-toast",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Eggs",
+      "amount": "4 large × 55 g",
+      "grams": 220,
+      "kcal": 315,
+      "proteinG": 27.6,
+      "fatG": 20.9,
+      "netCarbsG": 1.6,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "160 ml × 1.03 g/ml",
+      "grams": 165,
+      "kcal": 101,
+      "proteinG": 5.2,
+      "fatG": 5.4,
+      "netCarbsG": 7.9,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vanilla essence",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 12,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Vanilla extract — USDA FDC 173471: 288 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "White bread slices",
+      "amount": "8 thick slices × 40 g",
+      "grams": 320,
+      "kcal": 851,
+      "proteinG": 28.3,
+      "fatG": 10.7,
+      "netCarbsG": 149.5,
+      "reference": "Bread, white, commercially prepared (includes soft bread crumbs) — USDA FDC 174924: 266 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "40 g, all taken up in frying",
+      "grams": 40,
+      "kcal": 287,
+      "proteinG": 0.3,
+      "fatG": 32.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "3 tbsp × 13 g",
+      "grams": 39,
+      "kcal": 151,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 39.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1723,
+  "kcalPerServing": 430,
+  "perServing": {
+    "proteinG": 15.4,
+    "fatG": 17.4,
+    "netCarbsG": 49.8
+  },
+  "notes": "Thick slices of a 700 g SA loaf ≈ 40 g each. All the egg mix is soaked up and all the frying butter counted. Sanity check: Feelgoodfoodie French toast 237 kcal (4 eggs, 8 slices, serves 4); Iowa State SpendSmart 310 kcal (2 slices). Ours is 430 — higher because the slices are thick (40 g vs ~28 g), all 40 g frying butter is counted (~70 kcal) and 3 tbsp sugar go on top (~38 kcal)."
+}

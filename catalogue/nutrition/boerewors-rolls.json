@@ -1,0 +1,134 @@
+{
+  "id": "boerewors-rolls",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ripe tomatoes",
+      "amount": "4 medium, 123 g each",
+      "grams": 492,
+      "kcal": 89,
+      "proteinG": 4.4,
+      "fatG": 1.0,
+      "netCarbsG": 13.3,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.2,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.25 tsp",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried chilli flakes",
+      "amount": "0.25 tsp",
+      "grams": 0.5,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.1,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Boerewors",
+      "amount": "1 kg raw",
+      "grams": 1000,
+      "kcal": 2810,
+      "proteinG": 130.0,
+      "fatG": 242.0,
+      "netCarbsG": 20.0,
+      "reference": "Boerewors, raw (FatSecret ZA generic): 1177 kJ = 281 kcal, 13.0 g protein, 24.2 g fat, 2.0 g carbohydrate / 100 g; SA store entries range 221-396 kcal"
+    },
+    {
+      "ingredient": "Hot dog rolls",
+      "amount": "6 rolls, ~55 g each",
+      "grams": 330,
+      "kcal": 921,
+      "proteinG": 32.3,
+      "fatG": 12.9,
+      "netCarbsG": 159.4,
+      "reference": "Rolls, hamburger or hotdog, plain — USDA FDC 172796: 279 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Prepared mustard",
+      "amount": "2 tbsp",
+      "grams": 30,
+      "kcal": 18,
+      "proteinG": 1.1,
+      "fatG": 1.0,
+      "netCarbsG": 0.5,
+      "reference": "Mustard, prepared, yellow — USDA FDC 172234: 60 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 4432,
+  "kcalPerServing": 740,
+  "perServing": {
+    "proteinG": 28.7,
+    "fatG": 51.2,
+    "netCarbsG": 37.3
+  },
+  "notes": "Assumptions: boerewors 281 kcal / 100 g (see the reference; the brand range moves this roll by -100 to +190 kcal); counted raw, with no allowance for fat dripping off on the braai; hot dog rolls ~55 g; butter and the optional mustard counted. Each roll has 167 g raw wors (~470 kcal), a 55 g roll (~155 kcal) and ~115 kcal of butter, oil and relish. No reliable per-roll figure was found (a bigoven entry of 62 kcal is clearly broken). Component check: Arise boerewors 414 kcal for 150 g, and its boerewors roll with wedges at 990 kcal for 410 g; take away ~350 kcal of wedges and that roll lands at ~640 kcal."
+}

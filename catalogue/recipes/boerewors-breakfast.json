@@ -35,5 +35,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "The smoor keeps 3 days in the fridge; warm it while the wors cooks.",
+  "kcalPerServing": 750,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

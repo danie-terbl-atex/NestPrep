@@ -33,10 +33,10 @@ class NestLogoTile extends StatelessWidget {
   const NestLogoTile.decorative({
     required this.asset,
     this.size = NestSize.logoSmall,
+    this.tone = NestLogoTileTone.idle,
     super.key,
   }) : label = null,
-       onTap = null,
-       tone = NestLogoTileTone.idle;
+       onTap = null;
 
   /// A square image under `assets/`.
   final String asset;

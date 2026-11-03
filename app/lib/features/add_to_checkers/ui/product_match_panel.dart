@@ -5,11 +5,11 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/checkers_copy.dart';
-import '../../groceries/model/product_match.dart';
 import '../model/retailer_product.dart';
 import '../state/product_match_controller.dart';
 import 'checkers_area_sheet.dart';
 import 'checkers_product_tile.dart';
+import 'products_message.dart';
 
 /// The Checkers matches under the item they are for: loading, nothing close,
 /// a failure with a retry, or up to five products to pick from (`FE-08`).
@@ -48,16 +48,17 @@ class ProductMatchPanel extends StatelessWidget {
           _PlaceLine(controller: controller),
           const SizedBox(height: NestSpace.sm),
           switch (controller.matches) {
-            AsyncLoading() => _Loading(shop: target.shop),
-            AsyncFailure(:final failure) => _Message(
+            AsyncLoading() => ProductsLoading(shop: target.shop),
+            AsyncFailure(:final failure) => ProductsMessage(
               message: AppCopy.failure(failure),
               actionLabel: CheckersCopy.retry,
               onAction: controller.retry,
             ),
-            AsyncData(value: final products) when products.isEmpty => _Message(
-              title: CheckersCopy.matchesEmptyTitle(target.shop),
-              message: CheckersCopy.matchesEmptyBody(target.shop),
-            ),
+            AsyncData(value: final products) when products.isEmpty =>
+              ProductsMessage(
+                title: CheckersCopy.matchesEmptyTitle(target.shop),
+                message: CheckersCopy.matchesEmptyBody(target.shop),
+              ),
             AsyncData(value: final products) => _Products(
               products: products,
               bestMatchId: controller.bestMatchId,
@@ -104,64 +105,6 @@ class _PlaceLine extends StatelessWidget {
             onChoose: controller.chooseArea,
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _Loading extends StatelessWidget {
-  const _Loading({required this.shop});
-
-  final ProductRetailer shop;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-    label: CheckersCopy.matchesLoading(shop),
-    child: const Column(
-      children: [
-        NestSkeleton(height: CheckersProductTile.imageSize),
-        SizedBox(height: NestSpace.sm),
-        NestSkeleton(height: CheckersProductTile.imageSize),
-        SizedBox(height: NestSpace.sm),
-        NestSkeleton(height: CheckersProductTile.imageSize),
-      ],
-    ),
-  );
-}
-
-class _Message extends StatelessWidget {
-  const _Message({
-    required this.message,
-    this.title,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final String? title;
-  final String message;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
-    final heading = title;
-    final label = actionLabel;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (heading != null) Text(heading, style: nest.text.label),
-        Text(message, style: nest.text.bodySecondary),
-        if (label != null) ...[
-          const SizedBox(height: NestSpace.sm),
-          NestButton(
-            label: label,
-            variant: NestButtonVariant.outline,
-            size: NestButtonSize.small,
-            isExpanded: false,
-            onPressed: onAction,
-          ),
-        ],
       ],
     );
   }

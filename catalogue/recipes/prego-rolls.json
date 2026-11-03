@@ -36,5 +36,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Flatten and marinate the steaks the night before; cook just before serving.",
+  "kcalPerServing": 540,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

@@ -20,7 +20,9 @@
   "allergens": [],
   "dietTags": [
     "vegetarian",
-    "vegan"
+    "vegan",
+    "glutenFree",
+    "dairyFree"
   ],
   "ingredients": [
     {
@@ -59,6 +61,7 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 240,
   "photo": {
     "credit": null,
     "licence": null,

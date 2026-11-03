@@ -21,9 +21,9 @@ class PlannedRecipeThumb extends StatelessWidget {
       (catalogue) => catalogue?.recipe(recipeId)?.photo?.card,
     );
     return SizedBox.square(
-      dimension: NestSize.controlSmall,
+      dimension: NestSize.controlHuge,
       child: NestPhotoFrame(
-        radius: NestRadius.sm,
+        radius: NestRadius.md,
         child: RecipePicture(path: path),
       ),
     );

@@ -1,0 +1,124 @@
+{
+  "id": "veggie-egg-muffins",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrow",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 26,
+      "proteinG": 1.8,
+      "fatG": 0.5,
+      "netCarbsG": 3.2,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "4 × 15 g",
+      "grams": 60,
+      "kcal": 19,
+      "proteinG": 1.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.8,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 23,
+      "proteinG": 2.9,
+      "fatG": 0.4,
+      "netCarbsG": 1.4,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "125 g",
+      "grams": 125,
+      "kcal": 22,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.4,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "8 SA large × 55 g",
+      "grams": 440,
+      "kcal": 629,
+      "proteinG": 55.3,
+      "fatG": 41.8,
+      "netCarbsG": 3.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "4 tbsp = 60 ml × 1.03 g/ml",
+      "grams": 62,
+      "kcal": 38,
+      "proteinG": 2.0,
+      "fatG": 2.0,
+      "netCarbsG": 3.0,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "½ tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "¼ tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "½ cup grated ≈ 55 g (110 g per cup)",
+      "grams": 55,
+      "kcal": 222,
+      "proteinG": 12.6,
+      "fatG": 18.3,
+      "netCarbsG": 1.9,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1131,
+  "kcalPerServing": 280,
+  "perServing": {
+    "proteinG": 19.5,
+    "fatG": 19.3,
+    "netCarbsG": 5.9
+  },
+  "notes": "Assumptions that move the number: 8 SA large eggs × 55 g (629 kcal); ½ cup grated cheddar ≈ 55 g; 1 tbsp olive oil, all of it in the muffins and tin. Net carbs 5.9 g a serving and fat 61 % of energy, so it meets the keto rule (≤ 10 g, ≥ 60 %) as well as banting — the fat share is close to the line. Cross-check: published vegetable egg muffins list ~70–90 kcal each, ~250–300 for three; 280 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

@@ -48,5 +48,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Roll the frikkadels in the morning and keep them covered in the fridge; the cooked dish keeps 2 days and reheats well.",
+  "kcalPerServing": 410,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

@@ -1,0 +1,194 @@
+{
+  "id": "gatsby",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Potatoes",
+      "amount": "1 kg peeled",
+      "grams": 1000,
+      "kcal": 770,
+      "proteinG": 20.5,
+      "fatG": 0.9,
+      "netCarbsG": 153.9,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1.5 l for deep-frying; absorbed ≈ 6 % of the raw chips = 60 g",
+      "grams": 60,
+      "kcal": 530,
+      "proteinG": 0.0,
+      "fatG": 60.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; thick chips absorb ~6 % of their weight"
+    },
+    {
+      "ingredient": "Brown spirit vinegar",
+      "amount": "3 tbsp ≈ 45 g",
+      "grams": 45,
+      "kcal": 8,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic and ginger paste",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 14,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 2.6,
+      "reference": "Ginger and garlic paste, bottled (Smith & Jones label, FatSecret): 90 kcal / 100 g"
+    },
+    {
+      "ingredient": "Roasted masala",
+      "amount": "2 tsp ≈ 5 g",
+      "grams": 5,
+      "kcal": 14,
+      "proteinG": 0.7,
+      "fatG": 0.7,
+      "netCarbsG": 0.7,
+      "reference": "Spices, chili powder (proxy for Durban / roasted masala) — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Turmeric",
+      "amount": "0.5 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Minute steaks",
+      "amount": "500 g",
+      "grams": 500,
+      "kcal": 830,
+      "proteinG": 110.3,
+      "fatG": 39.6,
+      "netCarbsG": 0.0,
+      "reference": "Beef, round, top round steak, lean and fat, 1/8\" trim, raw (minute steak) — USDA FDC 169529: 166 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato",
+      "amount": "1 medium ≈ 120 g",
+      "grams": 120,
+      "kcal": 22,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.2,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Long French loaf",
+      "amount": "1 × ~60 cm ≈ 400 g",
+      "grams": 400,
+      "kcal": 1088,
+      "proteinG": 43.0,
+      "fatG": 9.7,
+      "netCarbsG": 198.7,
+      "reference": "Bread, french or vienna (includes sourdough) — USDA FDC 172675: 272 kcal / 100 g"
+    },
+    {
+      "ingredient": "Iceberg lettuce",
+      "amount": "0.25 head of ~540 g ≈ 135 g",
+      "grams": 135,
+      "kcal": 19,
+      "proteinG": 1.2,
+      "fatG": 0.2,
+      "netCarbsG": 2.4,
+      "reference": "Lettuce, iceberg (includes crisphead types), raw — USDA FDC 169248: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mango atchar",
+      "amount": "4 tbsp ≈ 60 g",
+      "grams": 60,
+      "kcal": 109,
+      "proteinG": 0.8,
+      "fatG": 10.6,
+      "netCarbsG": 2.4,
+      "reference": "Mango atchar, SA (Woolworths mild, FatSecret ZA): 181 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato sauce",
+      "amount": "4 tbsp × 17 g",
+      "grams": 68,
+      "kcal": 69,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 18.4,
+      "reference": "Catsup (SA tomato sauce) — USDA FDC 168556: 101 kcal / 100 g"
+    },
+    {
+      "ingredient": "Peri-peri or chilli sauce",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 17,
+      "proteinG": 0.1,
+      "fatG": 1.4,
+      "netCarbsG": 0.6,
+      "reference": "Peri-peri sauce, hot, SA (Nando's, FatSecret ZA): 56 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3837,
+  "kcalPerServing": 960,
+  "perServing": {
+    "proteinG": 45.7,
+    "fatG": 37.8,
+    "netCarbsG": 100.4
+  },
+  "notes": "Deep-fried chips: oil absorbed taken as 6 % of the 1 kg raw potato (60 g), not the 1.5 l in the pot. 60 cm French loaf taken as 400 g. Minute steak as lean top round. Sanity check: no published per-quarter figure found. FatSecret ZA steak sandwich on a roll 344 kcal + a medium portion of chips (~350–400) + sauces ≈ 750–800; ours 960 per quarter (~560 g, ≈ 170 kcal / 100 g) is within ~20 % once the atchar and 100 g of bread a quarter are included."
+}

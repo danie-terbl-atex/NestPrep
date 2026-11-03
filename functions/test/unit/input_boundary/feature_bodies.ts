@@ -26,6 +26,16 @@ import {
   verifyPurchaseInput,
 } from '../../../src/subscriptions/schemas';
 import { translateHomeCareTextsInput } from '../../../src/home_care/schemas';
+import {
+  addFrameEventInput,
+  claimFramePairingInput,
+  getFrameDayInput,
+  getFramePhotosInput,
+  pollFramePairingInput,
+  startFramePairingInput,
+  tickFrameItemInput,
+  unlinkFrameInput,
+} from '../../../src/frames/frame_schemas';
 import { sendTestNotificationInput } from '../../../src/notifications/schemas';
 import {
   checkersPushToCartInput,
@@ -35,6 +45,8 @@ import {
 import { pnpCompleteLinkInput, pnpPushToCartInput } from '../../../src/pnp/pnp_schemas';
 
 /** Subscriptions, home care, co-parenting, nanny hub and the shops. */
+const FRAME_SECRET = 'q'.repeat(43);
+
 export const featureBodies = {
   // Subscriptions (subscriptions ADR-0001). `trigger` is nullable rather than
   // optional — a restore says so — so it is in the body every field of which
@@ -207,5 +219,33 @@ export const featureBodies = {
   pnpPushToCart: {
     schema: pnpPushToCartInput,
     body: { householdId: 'h1', itemIds: ['milk'] },
+  },
+  // Photo frames (photo-frames ADR-0001). `model` is optional, so it is not
+  // in the body; its own cases are in `frames/frame_day.test.ts`.
+  startFramePairing: { schema: startFramePairingInput, body: { secret: FRAME_SECRET } },
+  pollFramePairing: {
+    schema: pollFramePairingInput,
+    body: { code: 'ABC234', secret: FRAME_SECRET },
+  },
+  claimFramePairing: {
+    schema: claimFramePairingInput,
+    body: {
+      householdId: 'h1',
+      code: 'ABC234',
+      name: 'Kitchen',
+      panels: { calendar: true, todos: true, meals: true, helperMemberId: null },
+    },
+  },
+  getFrameDay: { schema: getFrameDayInput, body: { secret: FRAME_SECRET } },
+  getFramePhotos: { schema: getFramePhotosInput, body: { secret: FRAME_SECRET } },
+  unlinkFrame: { schema: unlinkFrameInput, body: { secret: FRAME_SECRET } },
+  tickFrameItem: {
+    schema: tickFrameItemInput,
+    body: { secret: FRAME_SECRET, kind: 'task', id: 'task-1', date: '2026-10-25', done: true },
+  },
+  // The times, note and repeat are optional; their cases are in `frames/frame_events.test.ts`.
+  addFrameEvent: {
+    schema: addFrameEventInput,
+    body: { secret: FRAME_SECRET, title: 'Dentist', date: '2026-11-03', who: [], by: 'Sam' },
   },
 } as const;

@@ -365,7 +365,7 @@ void main() {
   });
 
   group('memberLocations/{memberId}', () {
-    test('writes the four keys the rule names, and the server times it', () {
+    test('writes the keys the rule names, and the server times it', () {
       final json = MemberLocation(
         id: 'm-sam',
         point: const Coordinates(latitude: -26.2041, longitude: 28.0473),
@@ -379,7 +379,9 @@ void main() {
         'accuracyMetres',
         'reportedAt',
         'sharingUntil',
+        'mode',
       });
+      expect(json['mode'], 'window');
       // `reportedAt` is the server's, so how old a position is cannot be
       // something a device flatters itself about; `sharingUntil` is the
       // member's own and the rules bound it instead (live-location ADR-0001).

@@ -1,0 +1,161 @@
+{
+  "id": "chicken-and-vegetable-stir-fry",
+  "name": "Chicken and vegetable noodle stir-fry",
+  "summary": "Wholewheat noodles tossed in a hot wok with chicken strips, baby corn, sugar snap peas, pak choi, cabbage and red pepper in a garlic, ginger, soy and lime sauce.",
+  "about": "Stir-fried noodles are cooked across China and South-East Asia: the noodles are boiled first, then tossed over high heat with meat, vegetables and a little sauce so they stay springy. Sharpened with lime rather than a sweet glaze, this version needs one pot and one wok on a school night.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly",
+    "quick"
+  ],
+  "allergens": [
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Wholewheat noodles",
+      "quantity": 250,
+      "unit": "g",
+      "note": "dried",
+      "group": "For the noodles"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": "For the noodles"
+    },
+    {
+      "name": "Reduced-salt soy sauce",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Limes",
+      "quantity": 2,
+      "unit": null,
+      "note": "1 juiced for the sauce, 1 cut into wedges to serve",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 500,
+      "unit": "g",
+      "note": "cut into thin strips",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Baby corn",
+      "quantity": 150,
+      "unit": "g",
+      "note": "halved lengthways",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Sugar snap peas",
+      "quantity": 150,
+      "unit": "g",
+      "note": "trimmed",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into thin strips",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Pak choi",
+      "quantity": 300,
+      "unit": "g",
+      "note": "about 3 heads, stems sliced, leaves kept apart",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Green cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 3,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Bring a large pot of water to the boil over high heat. Drop in the noodles and cook for the time on the packet, usually 4 to 5 minutes, until soft with a little bite left. Drain, rinse under the cold tap so they stop cooking, then toss with 1 tsp of the oil so the strands stay separate.",
+    "While the water heats, mix the soy sauce, the juice of one lime, the 4 tbsp water and the cornflour in a jug until the cornflour has dissolved.",
+    "Set a wok or your largest frying pan over high heat with 1 tbsp of the oil. When it shimmers, spread the chicken out in the pan, let it sit for 1 minute to colour, then keep it moving for another 3 minutes, until golden with no pink left inside the thickest strip. Move it to a plate.",
+    "Pour in the last of the oil and add the baby corn, sugar snaps, red pepper and pak choi stems. Keep tossing over high heat for 2 to 3 minutes, until the corn and peas are bright and the pepper is just beginning to soften.",
+    "Add the cabbage, pak choi leaves, garlic and ginger and toss for 1 to 2 minutes more, until the leaves have wilted and the garlic smells fragrant without browning.",
+    "Tip the chicken and noodles back in. Stir the sauce once more, pour it over and turn everything with tongs for 1 to 2 minutes, until the noodles are hot and evenly coated and no sauce is left pooling in the pan.",
+    "Pile into bowls, scatter with the spring onions and coriander and serve with the lime wedges for squeezing."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Slice the chicken and vegetables and mix the sauce up to a day ahead; keep them covered in the fridge.",
+  "kcalPerServing": 510,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

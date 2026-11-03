@@ -12,6 +12,7 @@ import 'lunch_safety.dart';
 import 'lunch_slot.dart';
 import 'lunch_suggestions.dart';
 import 'lunch_taste.dart';
+import 'lunch_variety.dart';
 import 'lunch_week.dart';
 
 /// What filling a week wrote, and how much of it came from boxes.
@@ -75,6 +76,7 @@ abstract final class LunchAutoFill {
     required LunchTaste taste,
     LunchFillBias? bias,
     LunchFillChoice? choice,
+    LunchVariety variety = LunchVariety.standard,
   }) {
     final run = _Run(
       plan: plan,
@@ -82,6 +84,7 @@ abstract final class LunchAutoFill {
       rules: rules,
       taste: taste,
       bias: bias,
+      variety: variety,
     );
     final days = [
       for (final day in week.schoolDays)
@@ -140,23 +143,26 @@ abstract final class LunchAutoFill {
   }
 
   /// Step 2: the best suggestion in every slot still empty, a treat on
-  /// Friday only.
+  /// Friday only. A slot kept the same all week takes what the week already
+  /// holds most there while it is still suggested, and repeats cost it
+  /// nothing (lunch-box ADR-0028); any other slot varies (ADR-0003).
   static void _packSuggestions(_Run run, List<int> days) {
     final bias = run.bias;
     for (final day in days) {
       for (final slot in LunchSlot.values) {
         final key = LunchPlan.slotKey(day, slot);
         if (run.isTaken(key) || !slot.isAutoFilledOn(day)) continue;
+        final keepsSame = run.variety.keepsSame(slot);
         final ranked = LunchSuggestions.rank(
           slot: slot,
           library: run.library,
           rules: run.rules,
           taste: run.taste,
-          usesThisWeek: run.uses,
+          usesThisWeek: keepsSame ? const {} : run.uses,
         );
-        final best = bias == null
-            ? ranked.best
-            : bias.choose(ranked, run.added);
+        final best =
+            (keepsSame ? run.keptAmong(ranked) : null) ??
+            (bias == null ? ranked.best : bias.choose(ranked, run.added));
         if (best != null) run.put(key, LunchPick.of(best.item));
       }
     }
@@ -185,6 +191,7 @@ final class _Run {
     required this.rules,
     required this.taste,
     required this.bias,
+    required this.variety,
   }) : _itemsById = {for (final item in library) item.id: item} {
     for (final pick in plan.slots.values) {
       uses[pick.itemId] = (uses[pick.itemId] ?? 0) + 1;
@@ -196,6 +203,7 @@ final class _Run {
   final FoodRules rules;
   final LunchTaste taste;
   final LunchFillBias? bias;
+  final LunchVariety variety;
   final Map<String, LunchItem> _itemsById;
   final picks = <String, LunchPick>{};
   final uses = <String, int>{};
@@ -216,6 +224,20 @@ final class _Run {
           ))
         favourite,
   ]..sort(LunchFavourite.inRotationOrder);
+
+  /// The suggestion the week already holds most, when the pantry — if
+  /// planning from it — still has some.
+  LunchSuggestion? keptAmong(RankedLunchItems ranked) {
+    LunchSuggestion? kept;
+    for (final entry in ranked.suggested) {
+      final count = uses[entry.item.id] ?? 0;
+      if (count == 0 || !(bias?.hasLeft(entry.item.id, added) ?? true)) {
+        continue;
+      }
+      if (kept == null || count > (uses[kept.item.id] ?? 0)) kept = entry;
+    }
+    return kept;
+  }
 
   bool isTaken(String key) =>
       plan.slots.containsKey(key) || picks.containsKey(key);

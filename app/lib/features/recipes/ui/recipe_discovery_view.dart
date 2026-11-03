@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../model/recipe.dart';
 import '../model/recipe_catalogue.dart';
 import '../model/recipe_discovery.dart';
 import '../state/recipe_catalogue_controller.dart';
+import 'recipe_card.dart';
 import 'recipe_discovery_skeleton.dart';
 import 'recipe_filter_bar.dart';
 import 'recipe_grid_row.dart';
@@ -26,7 +26,7 @@ import 'recipe_tonight_card.dart';
 class RecipeDiscoveryView extends StatelessWidget {
   const RecipeDiscoveryView({required this.onOpen, super.key});
 
-  final ValueChanged<Recipe> onOpen;
+  final RecipeOpened onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _Discovery extends StatelessWidget {
   final RecipeCatalogue catalogue;
   final RecipeDiscovery discovery;
   final RecipeCatalogueController controller;
-  final ValueChanged<Recipe> onOpen;
+  final RecipeOpened onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +94,7 @@ class _Discovery extends StatelessWidget {
           SliverPadding(
             padding: const EdgeInsets.only(top: NestSpace.xxl),
             sliver: SliverToBoxAdapter(
-              child: RecipeTonightCard(
-                recipe: tonight,
-                onOpen: () => onOpen(tonight),
-              ),
+              child: RecipeTonightCard(recipe: tonight, onOpen: onOpen),
             ),
           ),
         for (final shelf in discovery.shelves)

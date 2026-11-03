@@ -8,6 +8,7 @@ import '../../../shared/time/calendar_date.dart';
 import '../../../shared/ui/nest_date_field.dart';
 import '../../../shared/ui/pick_minute_of_day.dart';
 import '../../../shared/ui/recurrence_editor.dart';
+import '../../assistants/ui/assistant_via_mark.dart';
 import '../../household/model/member.dart';
 import '../../household/ui/member_picker.dart';
 import '../model/household_event.dart';
@@ -131,11 +132,19 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final canSave = _title.text.trim().isNotEmpty;
+    final via = widget.existing?.createdVia;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (via != null) ...[
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AssistantViaMark(via: via),
+            ),
+            const SizedBox(height: NestSpace.md),
+          ],
           NestTextField(
             label: AppCopy.calendarTitleLabel,
             controller: _title,

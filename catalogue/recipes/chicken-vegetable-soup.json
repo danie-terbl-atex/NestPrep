@@ -1,0 +1,166 @@
+{
+  "id": "chicken-vegetable-soup",
+  "name": "Chicken and vegetable soup",
+  "summary": "Chicken thighs simmered with onion, carrot and celery into their own broth, then shredded back in with baby marrow, green beans, sweetcorn and butter beans.",
+  "about": "Simmering chicken on the bone in water makes its own broth, so this soup needs no stock cube. A pot does supper one night and goes into flasks for school and work the next day.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch",
+    "dinner"
+  ],
+  "placement": {
+    "lunch": "main",
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot",
+    "budget"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 3,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Celery sticks",
+      "quantity": 3,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Chicken thighs",
+      "quantity": 1,
+      "unit": "kg",
+      "note": "bone in, skin pulled off",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 2,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Fresh thyme",
+      "quantity": 4,
+      "unit": null,
+      "note": "sprigs, or 1 tsp dried",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": null
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Green beans",
+      "quantity": 150,
+      "unit": "g",
+      "note": "cut into 2 cm lengths",
+      "group": null
+    },
+    {
+      "name": "Frozen sweetcorn",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Butter beans",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, drained and rinsed",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large pot of at least 5 litres over medium heat. Add the onions, carrots and celery and fry, stirring now and then, for 8 minutes, until the onion is soft and translucent. Add the garlic and stir for 1 minute.",
+    "Add the chicken, water, bay leaves, thyme and salt and bring to the boil over high heat. Skim off any grey foam, then turn the heat to low and simmer, partly covered, for 35 minutes, until the meat comes away from the bone easily.",
+    "Lift the chicken onto a board to cool for a few minutes. Add the baby marrows, green beans, sweetcorn and butter beans to the pot and simmer for 10 minutes, until the green beans are tender but still bright green.",
+    "Meanwhile, pull the chicken off the bones with two forks and shred it, discarding the bones and any fat. Fish out the bay leaves and thyme stalks.",
+    "Return the chicken to the pot and simmer for 2 minutes to heat through. Stir in the parsley, lemon juice and pepper, taste for salt and ladle into bowls."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 55,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge or 3 months frozen; reheat until piping hot before filling a flask.",
+  "kcalPerServing": 280,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

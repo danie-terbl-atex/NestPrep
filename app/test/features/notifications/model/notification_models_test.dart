@@ -58,9 +58,8 @@ void main() {
       final settings = NotificationSettings.unchosen('m')
           .withCategory(SwitchableCategory.chores, false);
       expect(settings.categories, {
-        'documents': true,
-        'handover': true,
-        'chores': false,
+        for (final category in SwitchableCategory.values)
+          category.name: category != SwitchableCategory.chores,
       });
     });
   });

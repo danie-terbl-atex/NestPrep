@@ -1,0 +1,124 @@
+{
+  "id": "prego-rolls",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Thin rump or minute steaks",
+      "amount": "600 g raw, fat trimmed",
+      "grams": 600,
+      "kcal": 810,
+      "proteinG": 131.5,
+      "fatG": 27.7,
+      "netCarbsG": 0.0,
+      "reference": "Beef, top sirloin, steak, separable lean only, trimmed to 1/8\" fat, choice, raw — USDA FDC 174763 (SA rump, fat trimmed): 135 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "6 cloves ≈ 30 g",
+      "grams": 30,
+      "kcal": 45,
+      "proteinG": 1.9,
+      "fatG": 0.1,
+      "netCarbsG": 9.3,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "3 tbsp = 40.5 g",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Peri-peri sauce",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 17,
+      "proteinG": 0.1,
+      "fatG": 1.4,
+      "netCarbsG": 0.6,
+      "reference": "Bottled peri-peri sauce, hot (Nando's, FatSecret ZA): 236 kJ, 4.7 g fat, 2.0 g carbohydrate / 100 g (used 56 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, bay leaf — USDA FDC 170917 (leaves removed: 0 g eaten) — none counted"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt; pepper to taste is negligible)"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp = 28 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dry white wine",
+      "amount": "1/4 cup ≈ 62 g",
+      "grams": 62,
+      "kcal": 17,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.6,
+      "reference": "Alcoholic beverage, wine, table, white — USDA FDC 174837: 82 kcal, 2.6 g carbohydrate / 100 g; alcohol (~72 kcal) kept at 25 % = 28 kcal / 100 g: 28 kcal / 100 g"
+    },
+    {
+      "ingredient": "Portuguese rolls",
+      "amount": "4 rolls × 70 g",
+      "grams": 280,
+      "kcal": 706,
+      "proteinG": 28.0,
+      "fatG": 6.2,
+      "netCarbsG": 134.4,
+      "reference": "Portuguese rolls, SA (Pick n Pay, FatSecret ZA): 1056 kJ, 10 g protein, 48 g carbohydrate / 100 g, fat by difference 2.2 g; 70 g roll (Woolworths 70 g, SPAR 55 g) (used 252 kcal / 100 g)"
+    }
+  ],
+  "totalKcal": 2163,
+  "kcalPerServing": 540,
+  "perServing": {
+    "proteinG": 40.5,
+    "fatG": 24.7,
+    "netCarbsG": 36.8
+  },
+  "notes": "Assumptions that change the number: steaks fat-trimmed, at the USDA lean-only raw value; all of the marinade goes back into the pan sauce and is eaten (oil, butter, peri-peri sauce); the wine is boiled for 2 minutes, so 25 % of its alcohol energy is kept; Portuguese rolls 70 g each; extra peri-peri sauce at the table not counted. Sanity check: Woolworths rump steak prego roll is 387 kcal (FatSecret ZA), The Cinnamon Jar's homemade prego is ~445 kcal a roll and Simply Delicious's is 718 kcal. Ours is 540, with 150 g raw steak a roll."
+}

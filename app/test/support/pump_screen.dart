@@ -57,6 +57,8 @@ Future<void> pumpScreen(
         'lunch/share',
         'notifications',
         'household/close',
+        'frames',
+        'frames/photos',
       ])
         GoRoute(
           path: '/households/:householdId/$place',

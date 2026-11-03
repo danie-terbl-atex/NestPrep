@@ -1,0 +1,144 @@
+{
+  "id": "salmon-sweet-potato-traybake",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sweet potatoes",
+      "amount": "700 g peeled",
+      "grams": 700,
+      "kcal": 602,
+      "proteinG": 11.0,
+      "fatG": 0.3,
+      "netCarbsG": 119.8,
+      "reference": "Sweet potato, raw, unprepared — USDA FDC 168482: 86 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Broccoli",
+      "amount": "500 g florets",
+      "grams": 500,
+      "kcal": 170,
+      "proteinG": 14.1,
+      "fatG": 1.9,
+      "netCarbsG": 20.2,
+      "reference": "Broccoli, raw — USDA FDC 170379: 34 kcal / 100 g"
+    },
+    {
+      "ingredient": "Wholegrain mustard",
+      "amount": "2 tbsp × 15 g",
+      "grams": 30,
+      "kcal": 46,
+      "proteinG": 2.2,
+      "fatG": 3.1,
+      "netCarbsG": 1.5,
+      "reference": "Wholegrain mustard: no SR Legacy entry; branded label (Beaufor, USDA Branded Foods UPC 888513932977, nutritionvalue.org) 10 kcal per 5 g, rounded; used 155 kcal, P 7.5, F 10.5, net carbs 5 / 100 g, in the range of European wholegrain mustard labels"
+    },
+    {
+      "ingredient": "Honey",
+      "amount": "1 tbsp ≈ 21 g",
+      "grams": 21,
+      "kcal": 64,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 17.3,
+      "reference": "Honey — USDA FDC 169640: 304 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1: 48 g juice + 2 g zest",
+      "grams": 50,
+      "kcal": 12,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 3.3,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g; Lemon peel, raw (for lemon or lime zest) — USDA FDC 167749: 47 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salmon fillets",
+      "amount": "4 × 150 g raw, skin on (skin counted)",
+      "grams": 600,
+      "kcal": 1248,
+      "proteinG": 122.5,
+      "fatG": 80.5,
+      "netCarbsG": 0.0,
+      "reference": "Fish, salmon, Atlantic, farmed, raw — USDA FDC 175167: 208 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1 in wedges ≈ 30 g juice squeezed",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2461,
+  "kcalPerServing": 620,
+  "perServing": {
+    "proteinG": 38.1,
+    "fatG": 28.3,
+    "netCarbsG": 44.5
+  },
+  "notes": "Assumptions that change the number: farmed Atlantic salmon at USDA values, 150 g skin-on a person with the skin counted (trout would be ~100 kcal less a serving); 175 g peeled sweet potato each; all 2 tbsp oil eaten; wholegrain mustard from a label. Published check: salmon with sweet potato and broccoli traybakes are typically listed at ~550–650 kcal; 620 agrees."
+}

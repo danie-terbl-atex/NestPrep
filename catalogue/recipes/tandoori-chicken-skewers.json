@@ -1,0 +1,225 @@
+{
+  "id": "tandoori-chicken-skewers",
+  "name": "Tandoori chicken skewers with raita",
+  "summary": "Chicken thighs marinated in spiced yoghurt and lemon, charred on skewers and served with cool cucumber-mint raita and a crunchy tomato and onion salad.",
+  "about": "Tandoori chicken is named after the tandoor, the clay oven of the Punjab, where yoghurt-marinated chicken cooks fast in fierce heat. Cut into pieces and threaded on skewers, it cooks just as quickly over hot coals or under the oven grill, and with raita and a chopped salad it makes a light braai or weeknight supper.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "braai",
+    "kidFriendly",
+    "healthy"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "glutenFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Skinless chicken thigh fillets",
+      "quantity": 800,
+      "unit": "g",
+      "note": "cut into 4 cm pieces",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garam masala",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "use 1 tsp if your family likes heat",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "1 for the marinade, 1 for brushing",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Skewers",
+      "quantity": 8,
+      "unit": null,
+      "note": "wooden ones soaked in water for 30 minutes",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "coarsely grated",
+      "group": "For the raita"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the raita"
+    },
+    {
+      "name": "Fresh mint",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": "For the raita"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the raita"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the raita"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "diced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "diced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, finely chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Stir the 3/4 cup yoghurt, lemon juice, garlic, ginger, paprika, cumin, garam masala, coriander, turmeric, chilli powder, salt and 1 tbsp of the olive oil together in a large bowl. Add the chicken and turn until every piece is coated. Cover and chill for at least 30 minutes, or up to overnight.",
+    "Put the wooden skewers in a tray of water to soak for 30 minutes so they do not burn, and take the chicken out of the fridge at the same time.",
+    "Make the raita: squeeze the grated cucumber hard in your hands to get rid of its water, then stir it into the cup of yoghurt with the mint, cumin and a pinch of salt. Keep it in the fridge until you serve.",
+    "Make the salad: toss the tomatoes, diced cucumber, red onion and coriander with the lemon juice and a pinch of salt.",
+    "Light the braai, or heat the oven grill on high with a rack on the top shelf and a foil-lined tray underneath.",
+    "Thread the chicken onto the skewers with a little space between the pieces so they cook evenly. Wipe off any thick clumps of marinade and brush the chicken with the remaining 1 tbsp oil.",
+    "Cook over hot coals (you can hold your hand above the grid for only 3 to 4 seconds), or on the rack under the grill, for 12 to 15 minutes, turning every 3 to 4 minutes, until charred at the edges and the thickest piece is white all the way through with clear juices.",
+    "Rest the skewers for 3 minutes, then serve with the raita and the salad."
+  ],
+  "servings": 4,
+  "prepMinutes": 40,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Marinate the chicken the night before or in the morning; make the raita up to 4 hours ahead and keep it cold.",
+  "kcalPerServing": 420,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

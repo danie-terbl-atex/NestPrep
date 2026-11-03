@@ -38,5 +38,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 3 weeks in an airtight tin; the dough can be made a day ahead and kept in the fridge.",
+  "kcalPerServing": 100,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

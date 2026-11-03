@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/text/normalised_name.dart';
+import '../../assistants/model/assistant_via.dart';
 import 'product_match.dart';
 import 'product_match_converter.dart';
 
@@ -50,6 +51,13 @@ abstract class GroceryItem with _$GroceryItem {
     @ProductMatchConverter()
     @JsonKey(includeIfNull: false)
     ProductMatch? productMatch,
+
+    /// The assistant that added it, on an item an assistant added (assistants
+    /// ADR-0005). Only a Function writes it, so it is read and never written:
+    /// the rules refuse it on a create, and every edit sends only the fields
+    /// it changes, which leaves it where it is.
+    @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant)
+    AssistantVia? addedVia,
   }) = _GroceryItem;
 
   const GroceryItem._();

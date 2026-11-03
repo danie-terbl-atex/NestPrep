@@ -1,0 +1,234 @@
+{
+  "id": "koesisters",
+  "servings": 24,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "500 g",
+      "grams": 500,
+      "kcal": 1820,
+      "proteinG": 51.6,
+      "fatG": 4.9,
+      "netCarbsG": 368.1,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "3 tbsp × 13 g",
+      "grams": 39,
+      "kcal": 151,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 39.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "2 tsp ≈ 5 g",
+      "grams": 5,
+      "kcal": 12,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground aniseed",
+      "amount": "2 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 1.4,
+      "reference": "Spices, anise seed — USDA FDC 171316: 337 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground ginger",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 1.0,
+      "reference": "Spices, ginger, ground — USDA FDC 170926: 335 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cardamom",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.8,
+      "reference": "Spices, cardamom — USDA FDC 170919: 311 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mixed spice",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.3,
+      "netCarbsG": 1.1,
+      "reference": "Spices, pumpkin pie spice (proxy for mixed spice) — USDA FDC 171332: 342 kcal / 100 g"
+    },
+    {
+      "ingredient": "Naartjie zest",
+      "amount": "1 tbsp ≈ 6 g",
+      "grams": 6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Orange peel, raw — USDA FDC 169103: 97 kcal / 100 g; orange peel stands in for naartjie peel"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tsp ≈ 4.6 g",
+      "grams": 4.6,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "40 g",
+      "grams": 40,
+      "kcal": 287,
+      "proteinG": 0.3,
+      "fatG": 32.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "0.75 cup = 187 ml × 1.03",
+      "grams": 193,
+      "kcal": 118,
+      "proteinG": 6.1,
+      "fatG": 6.3,
+      "netCarbsG": 9.3,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "0.75 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 large ≈ 55 g",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 l for deep-frying; absorbed ≈ 12 % of ~1050 g dough = 126 g",
+      "grams": 126,
+      "kcal": 1114,
+      "proteinG": 0.0,
+      "fatG": 126.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; dough absorbs 10–15 % of its weight"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "400 g in the syrup; ~50 % soaked up = 200 g",
+      "grams": 200,
+      "kcal": 774,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 200.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g; the rest of the syrup is left in the pot"
+    },
+    {
+      "ingredient": "Cinnamon sticks",
+      "amount": "2, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "4, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Naartjie peel",
+      "amount": "1, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "flavouring, removed, 0 kcal"
+    },
+    {
+      "ingredient": "Desiccated coconut",
+      "amount": "150 g; ~2/3 sticks = 100 g",
+      "grams": 100,
+      "kcal": 660,
+      "proteinG": 6.9,
+      "fatG": 64.5,
+      "netCarbsG": 7.3,
+      "reference": "Nuts, coconut meat, dried (desiccated), not sweetened — USDA FDC 170170: 660 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 5087,
+  "kcalPerServing": 210,
+  "perServing": {
+    "proteinG": 3.2,
+    "fatG": 10.1,
+    "netCarbsG": 26.4
+  },
+  "notes": "24 koesisters. Oil: ~1050 g yeast dough absorbs ~12 % (126 g), not the 2 l in the pot. Syrup: a 1-minute dunk in hot syrup takes up about half of it (200 g of the 400 g sugar). About two-thirds of the 150 g coconut sticks; the rest stays in the bowl. Sanity check: Woolworths koesisters 225 kcal / 55 g (409 kcal / 100 g). Ours is ~60 g each ≈ 350 kcal / 100 g, ~15 % lower, explained by the brief syrup dunk and the coconut that stays in the bowl."
+}

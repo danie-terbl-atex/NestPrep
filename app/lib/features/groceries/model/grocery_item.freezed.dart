@@ -28,7 +28,11 @@ mixin _$GroceryItem {
  String? get sourceNote;/// The product a member picked for it at a shop, if anybody has. Absent
 /// rather than null on a new item, so creating one writes only the
 /// fields it always had.
-@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? get productMatch;
+@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? get productMatch;/// The assistant that added it, on an item an assistant added (assistants
+/// ADR-0005). Only a Function writes it, so it is read and never written:
+/// the rules refuse it on a create, and every edit sends only the fields
+/// it changes, which leaves it where it is.
+@JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant) AssistantVia? get addedVia;
 /// Create a copy of GroceryItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -42,20 +46,20 @@ $GroceryItemCopyWith<GroceryItem> get copyWith => _$GroceryItemCopyWithImpl<Groc
 @override
 bool operator ==(Object other) {
   final _this = this as GroceryItem;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GroceryItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.quantity, _this.quantity) || other.quantity == _this.quantity)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.addedAt, _this.addedAt) || other.addedAt == _this.addedAt)&&(identical(other.boughtAt, _this.boughtAt) || other.boughtAt == _this.boughtAt)&&(identical(other.boughtBy, _this.boughtBy) || other.boughtBy == _this.boughtBy)&&(identical(other.sourceKey, _this.sourceKey) || other.sourceKey == _this.sourceKey)&&(identical(other.sourceWeek, _this.sourceWeek) || other.sourceWeek == _this.sourceWeek)&&(identical(other.sourceNote, _this.sourceNote) || other.sourceNote == _this.sourceNote)&&(identical(other.productMatch, _this.productMatch) || other.productMatch == _this.productMatch));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GroceryItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.quantity, _this.quantity) || other.quantity == _this.quantity)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy)&&(identical(other.addedAt, _this.addedAt) || other.addedAt == _this.addedAt)&&(identical(other.boughtAt, _this.boughtAt) || other.boughtAt == _this.boughtAt)&&(identical(other.boughtBy, _this.boughtBy) || other.boughtBy == _this.boughtBy)&&(identical(other.sourceKey, _this.sourceKey) || other.sourceKey == _this.sourceKey)&&(identical(other.sourceWeek, _this.sourceWeek) || other.sourceWeek == _this.sourceWeek)&&(identical(other.sourceNote, _this.sourceNote) || other.sourceNote == _this.sourceNote)&&(identical(other.productMatch, _this.productMatch) || other.productMatch == _this.productMatch)&&(identical(other.addedVia, _this.addedVia) || other.addedVia == _this.addedVia));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as GroceryItem;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.quantity,_this.addedBy,_this.addedAt,_this.boughtAt,_this.boughtBy,_this.sourceKey,_this.sourceWeek,_this.sourceNote,_this.productMatch);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.quantity,_this.addedBy,_this.addedAt,_this.boughtAt,_this.boughtBy,_this.sourceKey,_this.sourceWeek,_this.sourceNote,_this.productMatch,_this.addedVia);
 }
 
 @override
 String toString() {
   final _this = this as GroceryItem;
-  return 'GroceryItem(id: ${_this.id}, name: ${_this.name}, quantity: ${_this.quantity}, addedBy: ${_this.addedBy}, addedAt: ${_this.addedAt}, boughtAt: ${_this.boughtAt}, boughtBy: ${_this.boughtBy}, sourceKey: ${_this.sourceKey}, sourceWeek: ${_this.sourceWeek}, sourceNote: ${_this.sourceNote}, productMatch: ${_this.productMatch})';
+  return 'GroceryItem(id: ${_this.id}, name: ${_this.name}, quantity: ${_this.quantity}, addedBy: ${_this.addedBy}, addedAt: ${_this.addedAt}, boughtAt: ${_this.boughtAt}, boughtBy: ${_this.boughtBy}, sourceKey: ${_this.sourceKey}, sourceWeek: ${_this.sourceWeek}, sourceNote: ${_this.sourceNote}, productMatch: ${_this.productMatch}, addedVia: ${_this.addedVia})';
 }
 
 
@@ -66,7 +70,7 @@ abstract mixin class $GroceryItemCopyWith<$Res>  {
   factory $GroceryItemCopyWith(GroceryItem value, $Res Function(GroceryItem) _then) = _$GroceryItemCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String? quantity, String addedBy,@ServerTimestampConverter() DateTime? addedAt,@NullableTimestampConverter() DateTime? boughtAt, String? boughtBy, String? sourceKey, String? sourceWeek, String? sourceNote,@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? productMatch
+@JsonKey(includeToJson: false) String id, String name, String? quantity, String addedBy,@ServerTimestampConverter() DateTime? addedAt,@NullableTimestampConverter() DateTime? boughtAt, String? boughtBy, String? sourceKey, String? sourceWeek, String? sourceNote,@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? productMatch,@JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant) AssistantVia? addedVia
 });
 
 
@@ -83,7 +87,7 @@ class _$GroceryItemCopyWithImpl<$Res>
 
 /// Create a copy of GroceryItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? quantity = freezed,Object? addedBy = null,Object? addedAt = freezed,Object? boughtAt = freezed,Object? boughtBy = freezed,Object? sourceKey = freezed,Object? sourceWeek = freezed,Object? sourceNote = freezed,Object? productMatch = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? quantity = freezed,Object? addedBy = null,Object? addedAt = freezed,Object? boughtAt = freezed,Object? boughtBy = freezed,Object? sourceKey = freezed,Object? sourceWeek = freezed,Object? sourceNote = freezed,Object? productMatch = freezed,Object? addedVia = freezed,}) {
   return _then(GroceryItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -96,7 +100,8 @@ as String?,sourceKey: freezed == sourceKey ? _self.sourceKey : sourceKey // igno
 as String?,sourceWeek: freezed == sourceWeek ? _self.sourceWeek : sourceWeek // ignore: cast_nullable_to_non_nullable
 as String?,sourceNote: freezed == sourceNote ? _self.sourceNote : sourceNote // ignore: cast_nullable_to_non_nullable
 as String?,productMatch: freezed == productMatch ? _self.productMatch : productMatch // ignore: cast_nullable_to_non_nullable
-as ProductMatch?,
+as ProductMatch?,addedVia: freezed == addedVia ? _self.addedVia : addedVia // ignore: cast_nullable_to_non_nullable
+as AssistantVia?,
   ));
 }
 /// Create a copy of GroceryItem
@@ -193,10 +198,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch, @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant)  AssistantVia? addedVia)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GroceryItem() when $default != null:
-return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch);case _:
+return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch,_that.addedVia);case _:
   return orElse();
 
 }
@@ -214,10 +219,10 @@ return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch, @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant)  AssistantVia? addedVia)  $default,) {final _that = this;
 switch (_that) {
 case _GroceryItem():
-return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch);case _:
+return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch,_that.addedVia);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -234,10 +239,10 @@ return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String? quantity,  String addedBy, @ServerTimestampConverter()  DateTime? addedAt, @NullableTimestampConverter()  DateTime? boughtAt,  String? boughtBy,  String? sourceKey,  String? sourceWeek,  String? sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false)  ProductMatch? productMatch, @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant)  AssistantVia? addedVia)?  $default,) {final _that = this;
 switch (_that) {
 case _GroceryItem() when $default != null:
-return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch);case _:
+return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_that.boughtAt,_that.boughtBy,_that.sourceKey,_that.sourceWeek,_that.sourceNote,_that.productMatch,_that.addedVia);case _:
   return null;
 
 }
@@ -249,7 +254,7 @@ return $default(_that.id,_that.name,_that.quantity,_that.addedBy,_that.addedAt,_
 @JsonSerializable()
 
 class _GroceryItem extends GroceryItem {
-  const _GroceryItem({@JsonKey(includeToJson: false) required this.id, required this.name, this.quantity, required this.addedBy, @ServerTimestampConverter() this.addedAt, @NullableTimestampConverter() this.boughtAt, this.boughtBy, this.sourceKey, this.sourceWeek, this.sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false) this.productMatch}): super._();
+  const _GroceryItem({@JsonKey(includeToJson: false) required this.id, required this.name, this.quantity, required this.addedBy, @ServerTimestampConverter() this.addedAt, @NullableTimestampConverter() this.boughtAt, this.boughtBy, this.sourceKey, this.sourceWeek, this.sourceNote, @ProductMatchConverter()@JsonKey(includeIfNull: false) this.productMatch, @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant) this.addedVia}): super._();
   factory _GroceryItem.fromJson(Map<String, dynamic> json) => _$GroceryItemFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -275,6 +280,11 @@ class _GroceryItem extends GroceryItem {
 /// rather than null on a new item, so creating one writes only the
 /// fields it always had.
 @override@ProductMatchConverter()@JsonKey(includeIfNull: false) final  ProductMatch? productMatch;
+/// The assistant that added it, on an item an assistant added (assistants
+/// ADR-0005). Only a Function writes it, so it is read and never written:
+/// the rules refuse it on a create, and every edit sends only the fields
+/// it changes, which leaves it where it is.
+@override@JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant) final  AssistantVia? addedVia;
 
 /// Create a copy of GroceryItem
 /// with the given fields replaced by the non-null parameter values.
@@ -289,18 +299,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GroceryItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt)&&(identical(other.boughtAt, boughtAt) || other.boughtAt == boughtAt)&&(identical(other.boughtBy, boughtBy) || other.boughtBy == boughtBy)&&(identical(other.sourceKey, sourceKey) || other.sourceKey == sourceKey)&&(identical(other.sourceWeek, sourceWeek) || other.sourceWeek == sourceWeek)&&(identical(other.sourceNote, sourceNote) || other.sourceNote == sourceNote)&&(identical(other.productMatch, productMatch) || other.productMatch == productMatch));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GroceryItem&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt)&&(identical(other.boughtAt, boughtAt) || other.boughtAt == boughtAt)&&(identical(other.boughtBy, boughtBy) || other.boughtBy == boughtBy)&&(identical(other.sourceKey, sourceKey) || other.sourceKey == sourceKey)&&(identical(other.sourceWeek, sourceWeek) || other.sourceWeek == sourceWeek)&&(identical(other.sourceNote, sourceNote) || other.sourceNote == sourceNote)&&(identical(other.productMatch, productMatch) || other.productMatch == productMatch)&&(identical(other.addedVia, addedVia) || other.addedVia == addedVia));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,quantity,addedBy,addedAt,boughtAt,boughtBy,sourceKey,sourceWeek,sourceNote,productMatch);
+    return Object.hash(runtimeType,id,name,quantity,addedBy,addedAt,boughtAt,boughtBy,sourceKey,sourceWeek,sourceNote,productMatch,addedVia);
 }
 
 @override
 String toString() {
-    return 'GroceryItem(id: $id, name: $name, quantity: $quantity, addedBy: $addedBy, addedAt: $addedAt, boughtAt: $boughtAt, boughtBy: $boughtBy, sourceKey: $sourceKey, sourceWeek: $sourceWeek, sourceNote: $sourceNote, productMatch: $productMatch)';
+    return 'GroceryItem(id: $id, name: $name, quantity: $quantity, addedBy: $addedBy, addedAt: $addedAt, boughtAt: $boughtAt, boughtBy: $boughtBy, sourceKey: $sourceKey, sourceWeek: $sourceWeek, sourceNote: $sourceNote, productMatch: $productMatch, addedVia: $addedVia)';
 }
 
 
@@ -311,7 +321,7 @@ abstract mixin class _$GroceryItemCopyWith<$Res> implements $GroceryItemCopyWith
   factory _$GroceryItemCopyWith(_GroceryItem value, $Res Function(_GroceryItem) _then) = __$GroceryItemCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String? quantity, String addedBy,@ServerTimestampConverter() DateTime? addedAt,@NullableTimestampConverter() DateTime? boughtAt, String? boughtBy, String? sourceKey, String? sourceWeek, String? sourceNote,@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? productMatch
+@JsonKey(includeToJson: false) String id, String name, String? quantity, String addedBy,@ServerTimestampConverter() DateTime? addedAt,@NullableTimestampConverter() DateTime? boughtAt, String? boughtBy, String? sourceKey, String? sourceWeek, String? sourceNote,@ProductMatchConverter()@JsonKey(includeIfNull: false) ProductMatch? productMatch,@JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant) AssistantVia? addedVia
 });
 
 
@@ -328,7 +338,7 @@ class __$GroceryItemCopyWithImpl<$Res>
 
 /// Create a copy of GroceryItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? quantity = freezed,Object? addedBy = null,Object? addedAt = freezed,Object? boughtAt = freezed,Object? boughtBy = freezed,Object? sourceKey = freezed,Object? sourceWeek = freezed,Object? sourceNote = freezed,Object? productMatch = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? quantity = freezed,Object? addedBy = null,Object? addedAt = freezed,Object? boughtAt = freezed,Object? boughtBy = freezed,Object? sourceKey = freezed,Object? sourceWeek = freezed,Object? sourceNote = freezed,Object? productMatch = freezed,Object? addedVia = freezed,}) {
   return _then(_GroceryItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -341,7 +351,8 @@ as String?,sourceKey: freezed == sourceKey ? _self.sourceKey : sourceKey // igno
 as String?,sourceWeek: freezed == sourceWeek ? _self.sourceWeek : sourceWeek // ignore: cast_nullable_to_non_nullable
 as String?,sourceNote: freezed == sourceNote ? _self.sourceNote : sourceNote // ignore: cast_nullable_to_non_nullable
 as String?,productMatch: freezed == productMatch ? _self.productMatch : productMatch // ignore: cast_nullable_to_non_nullable
-as ProductMatch?,
+as ProductMatch?,addedVia: freezed == addedVia ? _self.addedVia : addedVia // ignore: cast_nullable_to_non_nullable
+as AssistantVia?,
   ));
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/app/basket_compare_route.dart';
 import 'package:nestprep/app/documents_route.dart';
 import 'package:nestprep/app/family_route.dart';
 import 'package:nestprep/app/household_place_redirect.dart';
@@ -109,10 +110,44 @@ void main() {
       );
     });
 
+    test('keeps them off the family map, a push tap included', () {
+      for (final location in [
+        HouseholdRoute.wherePathFor(id),
+        HouseholdRoute.historyPathFor(id, Fixtures.samMemberId),
+        HouseholdRoute.placesPathFor(id),
+      ]) {
+        expect(
+          householdPlaceRedirect(
+            location: location,
+            view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
+          ),
+          home,
+          reason: location,
+        );
+      }
+      expect(
+        householdPlaceRedirect(
+          location: HouseholdRoute.wherePathFor(id),
+          view: view(),
+        ),
+        isNull,
+      );
+    });
+
     test('keeps them out of the documents', () {
       expect(
         householdPlaceRedirect(
           location: DocumentsRoute.folderPathFor(id, 'f-passports'),
+          view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
+        ),
+        home,
+      );
+    });
+
+    test('and out of comparing the grocery list across shops', () {
+      expect(
+        householdPlaceRedirect(
+          location: BasketCompareRoute.pathFor(id),
           view: view(viewer: Fixtures.thandiUid, access: cleaningOnly),
         ),
         home,
@@ -159,7 +194,7 @@ void main() {
 
     test('leaves family wherever they are', () {
       for (final tab in HouseholdTab.values) {
-        if (tab == HouseholdTab.lists) continue;
+        if (tab == HouseholdTab.lists || tab == HouseholdTab.food) continue;
         expect(
           householdPlaceRedirect(
             location: HouseholdRoute.pathFor(id, tab),
@@ -177,6 +212,17 @@ void main() {
           view: view(),
         ),
         HouseholdRoute.pathFor(id, HouseholdTab.todos),
+      );
+    });
+
+    test('resolves Food, which is a name and not a place, to Lunch '
+        '(design-system ADR-0017)', () {
+      expect(
+        householdPlaceRedirect(
+          location: HouseholdRoute.pathFor(id, HouseholdTab.food),
+          view: view(),
+        ),
+        HouseholdRoute.pathFor(id, HouseholdTab.lunch),
       );
     });
 

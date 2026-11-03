@@ -7,6 +7,7 @@ import '../features/add_to_checkers/data/callable_product_match_ranker.dart';
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
 import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/http_checkers_catalogue.dart';
+import '../features/add_to_checkers/data/match_as_you_type_preference.dart';
 import '../features/add_to_checkers/data/product_match_ranker.dart';
 import '../features/add_to_checkers/data/retailer_catalogue.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
@@ -23,6 +24,9 @@ List<SingleChildWidget> addToCheckersProviders() => [
     create: (context) => SecureStorageCheckersAreaPreference(),
   ),
   Provider<RetailerPreference>(
+    create: (context) => SecureStorageRetailerPreference(),
+  ),
+  Provider<MatchAsYouTypePreference>(
     create: (context) => SecureStorageRetailerPreference(),
   ),
   Provider<CheckersDirectory>(

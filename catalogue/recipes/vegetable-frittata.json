@@ -1,0 +1,165 @@
+{
+  "id": "vegetable-frittata",
+  "name": "Vegetable frittata",
+  "summary": "An oven-finished Italian omelette packed with red pepper, baby marrow, spinach and cherry tomatoes under a little feta, served warm in wedges or cold the next day.",
+  "about": "A frittata is the Italian open omelette, started on the stove and finished in the oven so it sets right through. It is a good way to use up the vegetables at the end of the week, and a cold wedge travels well in a lunchbox.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner",
+    "lunch"
+  ],
+  "placement": {
+    "dinner": "main",
+    "lunch": "main"
+  },
+  "tags": [
+    "healthy",
+    "vegetableForward",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "egg"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the frittata"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "diced",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 2,
+      "unit": null,
+      "note": "about 200 g, halved lengthways and sliced",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 150,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 80,
+      "unit": "g",
+      "note": null,
+      "group": "For the frittata"
+    },
+    {
+      "name": "Large eggs",
+      "quantity": 8,
+      "unit": null,
+      "note": null,
+      "group": "For the frittata"
+    },
+    {
+      "name": "Milk",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the frittata"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the frittata"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Feta",
+      "quantity": 60,
+      "unit": "g",
+      "note": "crumbled",
+      "group": "For the frittata"
+    },
+    {
+      "name": "Mixed salad leaves",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Heat the olive oil in a 24–26 cm ovenproof non-stick frying pan over medium heat and cook the onion for 5 minutes, until soft.",
+    "Add the red pepper and baby marrows and cook, stirring now and then, for 5 minutes, until tender and any liquid has cooked off. Stir in the garlic for 30 seconds.",
+    "Add the tomatoes and spinach and stir for 1–2 minutes, until the spinach has wilted. Spread the vegetables evenly over the base of the pan.",
+    "Whisk the eggs, milk, salt and pepper in a jug until no streaks of white remain. Turn the heat to medium-low, pour the eggs over the vegetables and scatter the feta on top.",
+    "Cook without stirring for 4 minutes, until the edge is set and pale gold underneath when you lift it with a spatula.",
+    "Move the pan to the oven and bake for 12–15 minutes, until puffed and set in the centre with no wobble; a knife pushed into the middle should come out clean. The handle will be hot, so use an oven glove.",
+    "Leave to rest for 5 minutes, then loosen the edge and slide the frittata onto a board. Toss the salad leaves and cucumber with the olive oil and lemon juice and serve with wedges of frittata."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge; eat it cold in a lunchbox or warm a wedge through in the microwave.",
+  "kcalPerServing": 320,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

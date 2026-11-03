@@ -13,14 +13,17 @@ import '../../calendar_sync/model/synced_event.dart';
 import '../../household/model/member.dart';
 import '../data/calendar_repository.dart';
 import '../model/birthday_occurrence.dart';
+import '../model/calendar_month.dart';
+import '../model/calendar_view.dart';
 import '../model/calendar_week.dart';
 import '../model/event_exception.dart';
 import '../model/event_occurrence.dart';
 import '../model/household_event.dart';
 
-/// The calendar's controller. The week being looked at is the one piece of
-/// state the screen owns, and the exceptions listener follows it — which is why
-/// moving a week reopens that one read and nothing else.
+/// The calendar's controller. The window being looked at — a week, or a month
+/// grid (design-system ADR-0017) — is the one piece of state the screen owns,
+/// and the exceptions listener follows it, which is why moving the window
+/// reopens that one read and nothing else.
 ///
 /// The members come from the household shell's listener rather than a read of
 /// this feature's own, and the birthdays on the week are derived from them
@@ -39,11 +42,14 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
     required this.memberId,
     required List<Member> householdMembers,
     CalendarDate? initialWeekStart,
+    CalendarView initialView = CalendarView.week,
   }) : _repository = calendarRepository,
        _syncRepository = calendarSyncRepository,
        _clock = householdClock,
-       _members = householdMembers {
+       _members = householdMembers,
+       _view = initialView {
     _weekStart = initialWeekStart ?? _clock.today.weekStart;
+    _month = CalendarMonth.of(_weekStart);
     _subscribeToEvents();
     _subscribeToWindow();
   }
@@ -63,21 +69,54 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
   List<SyncedEvent> _synced = const [];
   List<Member> _members;
 
+  CalendarView _view;
   late CalendarDate _weekStart;
+  late CalendarMonth _month;
   AsyncState<CalendarWeek> _week = const AsyncLoading();
   String? _memberFilter;
   CalendarDate? _selectedDay;
 
   AsyncState<CalendarWeek> get week => _week;
+  CalendarView get view => _view;
   CalendarDate get weekStart => _weekStart;
+  CalendarMonth get month => _month;
   CalendarDate get today => _clock.today;
   String? get memberFilter => _memberFilter;
 
+  CalendarDate get _windowStart => switch (_view) {
+    CalendarView.week => _weekStart,
+    CalendarView.month => _month.gridStart,
+  };
+
+  int get _windowDays => switch (_view) {
+    CalendarView.week => CalendarWeek.daysInAWeek,
+    CalendarView.month => _month.gridDays,
+  };
+
+  CalendarDate get _windowEnd => _windowStart.addDays(_windowDays - 1);
+
   /// The day the agenda is showing: the chosen one, or today when today is in
-  /// this week, or the week's Monday.
+  /// view, or the first day of the week or month.
   CalendarDate get selectedDay =>
       _selectedDay ??
-      (today.isInRange(_weekStart, _weekStart.addDays(6)) ? today : _weekStart);
+      switch (_view) {
+        CalendarView.week =>
+          today.isInRange(_weekStart, _weekStart.addDays(6))
+              ? today
+              : _weekStart,
+        CalendarView.month => _month.contains(today) ? today : _month.first,
+      };
+
+  /// Month or week, keeping the day the agenda shows in view.
+  void showView(CalendarView view) {
+    if (_view == view) return;
+    final day = selectedDay;
+    _view = view;
+    _weekStart = day.weekStart;
+    _month = CalendarMonth.of(day);
+    _selectedDay = day;
+    _moveWindow();
+  }
 
   void selectDay(CalendarDate date) {
     if (_selectedDay == date) return;
@@ -102,26 +141,49 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
 
   void goToWeek(CalendarDate weekStart) {
     final monday = weekStart.weekStart;
-    if (monday == _weekStart) return;
+    if (monday == _weekStart && _view == CalendarView.week) return;
+    _view = CalendarView.week;
     _weekStart = monday;
     _selectedDay = null;
-    _exceptions = null;
-    _synced = const [];
-    _week = const AsyncLoading();
-    notifyListeners();
-    unawaited(_resubscribeToWindow());
+    _moveWindow();
   }
 
-  /// Turns to the week [date] is in and opens that day — where something just
-  /// added lands, so the member sees it arrive (calendar ADR-0004).
+  void goToMonth(CalendarMonth month) {
+    if (month == _month && _view == CalendarView.month) return;
+    _view = CalendarView.month;
+    _month = month;
+    _selectedDay = null;
+    _moveWindow();
+  }
+
+  /// Turns to the week or month [date] is in and opens that day — where
+  /// something just added lands, so the member sees it arrive (calendar
+  /// ADR-0004), and where a day of the month before or after is tapped.
   void showDay(CalendarDate date) {
-    goToWeek(date.weekStart);
+    switch (_view) {
+      case CalendarView.week:
+        goToWeek(date.weekStart);
+      case CalendarView.month:
+        goToMonth(CalendarMonth.of(date));
+    }
     selectDay(date);
   }
 
   void goToPreviousWeek() => goToWeek(_weekStart.addDays(-7));
   void goToNextWeek() => goToWeek(_weekStart.addDays(7));
   void goToThisWeek() => goToWeek(today.weekStart);
+
+  void goToPreviousMonth() => goToMonth(_month.previous);
+  void goToNextMonth() => goToMonth(_month.next);
+  void goToThisMonth() => goToMonth(CalendarMonth.of(today));
+
+  void _moveWindow() {
+    _exceptions = null;
+    _synced = const [];
+    _week = const AsyncLoading();
+    notifyListeners();
+    unawaited(_resubscribeToWindow());
+  }
 
   Future<void> retry() async {
     await _cancel();
@@ -184,17 +246,18 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
     }, onError: _onError);
   }
 
-  /// The two reads that follow the week being looked at.
+  /// The two reads that follow the window being looked at.
   void _subscribeToWindow() {
-    final weekEnd = _weekStart.addDays(CalendarWeek.daysInAWeek - 1);
+    final from = _windowStart;
+    final to = _windowEnd;
     _exceptionSubscription = _repository
-        .watchExceptions(householdId, from: _weekStart, to: weekEnd)
+        .watchExceptions(householdId, from: from, to: to)
         .listen((exceptions) {
           _exceptions = exceptions;
           _publish();
         }, onError: _onError);
     _syncedSubscription = _syncRepository
-        .watchSyncedEvents(householdId, from: _weekStart, to: weekEnd)
+        .watchSyncedEvents(householdId, from: from, to: to)
         .listen(
           (synced) {
             _synced = synced;
@@ -220,24 +283,26 @@ final class CalendarController extends ChangeNotifier with ActionFailureHolder {
     final events = _events;
     final exceptions = _exceptions;
     if (events == null || exceptions == null) return;
-    final weekEnd = _weekStart.addDays(CalendarWeek.daysInAWeek - 1);
+    final from = _windowStart;
+    final to = _windowEnd;
     _week = AsyncData(
       CalendarWeek.from(
         occurrences: selectEventOccurrences(
           events: events,
           exceptions: exceptions,
-          from: _weekStart,
-          to: weekEnd,
+          from: from,
+          to: to,
         ),
         birthdays: selectBirthdayOccurrences(
           members: _members,
-          from: _weekStart,
-          to: weekEnd,
+          from: from,
+          to: to,
         ),
         synced: _synced,
-        weekStart: _weekStart,
+        weekStart: from,
         today: today,
         memberFilter: _memberFilter,
+        dayCount: _windowDays,
       ),
     );
     notifyListeners();

@@ -1,0 +1,100 @@
+{
+  "id": "overnight-oats",
+  "name": "Overnight oats with berries",
+  "summary": "Rolled oats soaked overnight with milk, yoghurt, chia seeds, grated apple and cinnamon, ready in jars in the morning with berries and banana on top.",
+  "about": "Overnight oats are a cousin of Bircher muesli, the soaked oats, apple and milk the Swiss doctor Maximilian Bircher-Benner gave his patients around 1900. Mixed the night before, they are a breakfast to take straight from the fridge on a school morning.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Rolled oats",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "For the oats"
+    },
+    {
+      "name": "Chia seeds",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the oats"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the oats"
+    },
+    {
+      "name": "Apple",
+      "quantity": 1,
+      "unit": null,
+      "note": "coarsely grated, skin on",
+      "group": "For the oats"
+    },
+    {
+      "name": "Low-fat milk",
+      "quantity": 500,
+      "unit": "ml",
+      "note": null,
+      "group": "For the oats"
+    },
+    {
+      "name": "Low-fat plain yoghurt",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the oats"
+    },
+    {
+      "name": "Frozen mixed berries",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "thawed overnight in the fridge",
+      "group": "To serve"
+    },
+    {
+      "name": "Bananas",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "In a large bowl, stir the oats, chia seeds and cinnamon together, then add the grated apple, milk and yoghurt and mix until there are no dry pockets of oats.",
+    "Divide between four jars or lidded containers, close them and refrigerate for at least 6 hours or overnight, until the oats are soft and the mixture is thick and creamy. Put the berries in a covered bowl in the fridge at the same time to thaw.",
+    "In the morning, stir each jar, adding a splash of milk if it is thicker than you like. Top with the berries and their juice and the sliced banana, and eat cold."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge; add the banana just before eating so it does not brown.",
+  "kcalPerServing": 410,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

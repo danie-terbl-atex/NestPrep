@@ -7,6 +7,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/notifications_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
+import '../../household/model/household_area.dart';
+import '../../household/model/household_view.dart';
 import '../model/notification_settings.dart';
 import '../model/notification_vocabulary.dart';
 import '../state/notification_settings_controller.dart';
@@ -29,6 +31,11 @@ class ReminderSettingsCard extends StatelessWidget {
     bool offered(SwitchableCategory category) => switch (category) {
       SwitchableCategory.photos => flags.isOn(FeatureFlag.nannyPhotoUpdates),
       SwitchableCategory.coParenting => flags.isOn(FeatureFlag.coParenting),
+      SwitchableCategory.places =>
+        context.read<HouseholdView?>()?.permissions.canView(
+              HouseholdArea.location,
+            ) ??
+            false,
       SwitchableCategory.documents ||
       SwitchableCategory.handover ||
       SwitchableCategory.chores => true,

@@ -11,6 +11,7 @@ import '../features/live_location/data/location_source.dart';
 import '../features/lunch_box/data/lunch_budget_repository.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/state/lunch_board_controller.dart';
+import '../features/lunch_box/state/lunch_variety_choice.dart';
 import '../features/plan_week/data/lunch_aisle_source.dart';
 import '../features/plan_week/data/lunch_idea_drafter.dart';
 import '../features/plan_week/data/lunch_recipe_saver.dart';
@@ -73,6 +74,7 @@ GoRoute planWeekRoute() => GoRoute(
               memberId: memberId,
             ),
             packingStore: context.read<PackingChoiceStore>(),
+            variety: context.read<LunchVarietyChoice>(),
             householdId: householdId,
             week: context.read<LunchBoardController>().week,
           ),

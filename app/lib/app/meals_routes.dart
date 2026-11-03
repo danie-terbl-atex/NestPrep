@@ -1,15 +1,24 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../design/nest_kit.dart';
 import '../features/household/model/household_view.dart';
 import '../features/meal_planning/data/meal_repository.dart';
+import '../features/meal_planning/model/meals_view.dart';
 import '../features/meal_planning/state/meal_plan_controller.dart';
 import '../features/meal_planning/ui/meals_screen.dart';
+import '../features/photo_frames/data/photo_frame_repository.dart';
+import '../features/photo_frames/state/frame_availability.dart';
 import '../features/recipes/data/recipe_repository.dart';
 import '../features/recipes/model/family_size.dart';
+import '../features/recipes/model/recipe.dart';
 import '../features/recipes/state/recipe_catalogue_controller.dart';
 import '../features/recipes/state/recipe_page_controller.dart';
+import '../features/recipes/ui/recipe_picker_screen.dart';
 import '../features/recipes/ui/recipe_screen.dart';
+import '../shared/flags/feature_flag.dart';
+import '../shared/flags/feature_flags_controller.dart';
 import '../shared/time/household_clock.dart';
 import 'household_route.dart';
 import 'household_tab_navigation.dart';
@@ -51,37 +60,97 @@ ShellRoute mealsRoutes() => ShellRoute(
             onSelectView: (view) =>
                 context.go(MealsRoute.pathFor(householdId, view: view)),
             onSelectTab: (tab) => goToTab(context, state, tab),
-            onOpenRecipe: (recipeId) =>
-                context.push(MealsRoute.recipePathFor(householdId, recipeId)),
+            onOpenRecipe: (recipeId, {heroTag}) => context.push(
+              MealsRoute.recipePathFor(householdId, recipeId),
+              extra: heroTag,
+            ),
+            onPickRecipe: (slot, day) => context.push<Recipe>(
+              MealsRoute.pickPathFor(householdId, slot: slot, day: day),
+            ),
           ),
         );
       },
     ),
     GoRoute(
-      path: MealsRoute.recipePath,
+      path: MealsRoute.pickPath,
+      redirect: (context, state) =>
+          MealsRoute.slotFrom(state) == null ||
+              MealsRoute.dayFrom(state) == null
+          ? MealsRoute.pathFor(
+              HouseholdRoute.idFrom(state),
+              view: MealsView.week,
+            )
+          : null,
       builder: (context, state) {
         final householdId = HouseholdRoute.idFrom(state);
-        return ChangeNotifierProxyProvider<
-          RecipeCatalogueController,
-          RecipePageController
-        >(
-          create: (context) => RecipePageController(
-            mealRepository: context.read<MealRepository>(),
-            householdId: householdId,
-            memberId: viewerMemberIdOf(context),
-            recipeId: MealsRoute.recipeIdFrom(state),
-            familySize: familySizeOf(context.read<HouseholdView>()),
-          ),
-          update: (context, catalogue, page) =>
-              page!..followCatalogue(catalogue),
-          child: RecipeScreen(
-            // A link straight here has nothing under it: back is the
-            // recipes, never out of the app.
-            onBack: () => context.canPop()
-                ? context.pop()
-                : context.go(MealsRoute.pathFor(householdId)),
-          ),
+        return RecipePickerScreen(
+          slot: MealsRoute.slotFrom(state)!,
+          day: MealsRoute.dayFrom(state)!,
+          today: context.read<HouseholdClock>().today,
+          onPick: (recipe) => context.pop(recipe),
+          onBack: () => context.canPop()
+              ? context.pop()
+              : context.go(
+                  MealsRoute.pathFor(householdId, view: MealsView.week),
+                ),
         );
+      },
+    ),
+    GoRoute(
+      path: MealsRoute.recipePath,
+      pageBuilder: (context, state) {
+        final householdId = HouseholdRoute.idFrom(state);
+        final heroTag = switch (state.extra) {
+          final String tag => tag,
+          _ => null,
+        };
+        final page =
+            ChangeNotifierProxyProvider<
+              RecipeCatalogueController,
+              RecipePageController
+            >(
+              create: (context) => RecipePageController(
+                mealRepository: context.read<MealRepository>(),
+                householdId: householdId,
+                memberId: viewerMemberIdOf(context),
+                recipeId: MealsRoute.recipeIdFrom(state),
+                familySize: familySizeOf(context.read<HouseholdView>()),
+              ),
+              update: (context, catalogue, page) =>
+                  page!..followCatalogue(catalogue),
+              child:
+                  ChangeNotifierProxyProvider<
+                    FeatureFlagsController,
+                    FrameAvailability
+                  >(
+                    create: (context) => FrameAvailability(
+                      photoFrameRepository: context
+                          .read<PhotoFrameRepository>(),
+                      householdId: householdId,
+                      isFamily: context
+                          .read<HouseholdView>()
+                          .permissions
+                          .isFamily,
+                    ),
+                    update: (context, flags, availability) => availability!
+                      ..followFlag(
+                        framesOn: flags.isOn(FeatureFlag.photoFrames),
+                      ),
+                    child: RecipeScreen(
+                      heroTag: heroTag,
+                      // A link straight here has nothing under it: back is the
+                      // recipes, never out of the app.
+                      onBack: () => context.canPop()
+                          ? context.pop()
+                          : context.go(MealsRoute.pathFor(householdId)),
+                    ),
+                  ),
+            );
+        // Opened from a card, the page fades in under the card's flying
+        // photo, as a lunch does; any other way, it arrives as pages do.
+        return heroTag == null
+            ? MaterialPage<void>(key: state.pageKey, child: page)
+            : NestPhotoPage<void>(key: state.pageKey, child: page);
       },
     ),
   ],

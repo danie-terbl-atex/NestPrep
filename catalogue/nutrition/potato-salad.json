@@ -1,0 +1,114 @@
+{
+  "id": "potato-salad",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Potatoes",
+      "amount": "1.2 kg peeled",
+      "grams": 1200,
+      "kcal": 924,
+      "proteinG": 24.6,
+      "fatG": 1.1,
+      "netCarbsG": 184.7,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp, in cooking water",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "4 large × 55 g",
+      "grams": 220,
+      "kcal": 315,
+      "proteinG": 27.6,
+      "fatG": 20.9,
+      "netCarbsG": 1.6,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287 (SA large egg 55 g out of shell): 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "White vinegar",
+      "amount": "2 tbsp = 30 g",
+      "grams": 30,
+      "kcal": 5,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237 (SA brown/white spirit vinegar): 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mayonnaise",
+      "amount": "1 cup (250 ml) ≈ 240 g",
+      "grams": 240,
+      "kcal": 1198,
+      "proteinG": 0.2,
+      "fatG": 124.8,
+      "netCarbsG": 21.6,
+      "reference": "SA mayonnaise (Crosse & Blackwell Tangy, FatSecret ZA): 2088 kJ, 52 g fat, 9 g carbohydrate, 0.1 g protein / 100 g (used 499 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Prepared mustard",
+      "amount": "2 tsp ≈ 10 g",
+      "grams": 10,
+      "kcal": 6,
+      "proteinG": 0.4,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Mustard, prepared, yellow — USDA FDC 172234: 60 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 15,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "4 × 15 g",
+      "grams": 60,
+      "kcal": 19,
+      "proteinG": 1.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.8,
+      "reference": "Onions, spring or scallions, raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped ≈ 11 g",
+      "grams": 11,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt; pepper to taste is negligible)"
+    }
+  ],
+  "totalKcal": 2486,
+  "kcalPerServing": 410,
+  "perServing": {
+    "proteinG": 9.0,
+    "fatG": 24.6,
+    "netCarbsG": 35.9
+  },
+  "notes": "Assumptions that change the number: 1 cup SA tangy-style mayonnaise ≈ 240 g at 499 kcal / 100 g (the mayonnaise is ~48 % of the energy); potatoes peeled at the USDA raw value; cooking-water salt not counted. Sanity check: USDA potato salad, home-prepared (FDC 169269) is 143 kcal / 100 g and ours is ~140 kcal / 100 g (2486 kcal over ~1.78 kg). Per serving we are higher than Spinneys' aartappelslaai (299 kcal, serves 4) and FatSecret's 262 kcal a cup, because one sixth of this bowl is a generous ~295 g side."
+}

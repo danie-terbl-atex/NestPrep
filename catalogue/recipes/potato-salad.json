@@ -8,7 +8,7 @@
   "placement": { "dinner": "side", "lunch": "side" },
   "tags": ["braai", "kidFriendly"],
   "allergens": ["egg"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "dairyFree"],
   "ingredients": [
     { "name": "Potatoes", "quantity": 1.2, "unit": "kg", "note": "waxy, peeled and cut into 3 cm cubes", "group": null },
     { "name": "Salt", "quantity": 2, "unit": "tsp", "note": "for the cooking water", "group": null },
@@ -35,5 +35,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make up to a day ahead and keep covered in the fridge. Don't leave it in the sun for more than an hour.",
+  "kcalPerServing": 410,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

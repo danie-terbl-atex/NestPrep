@@ -8,6 +8,9 @@ import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/today/model/home_layout.dart';
+import 'package:nestprep/features/today/state/home_layout_controller.dart';
+import 'package:nestprep/features/today/ui/home_board_screen.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
@@ -18,6 +21,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../test/support/fake_calendar_repository.dart';
 import '../test/support/fake_calendar_sync.dart';
 import '../test/support/fake_grocery_repository.dart';
+import '../test/support/fake_home_layout_store.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
@@ -45,6 +49,7 @@ void main() {
     String name, {
     Brightness brightness = Brightness.light,
     double textScale = 1,
+    bool isBoard = false,
   }) async {
     final lunch = LunchHarness();
     final clock = HouseholdClock(
@@ -85,11 +90,20 @@ void main() {
     await captureScreen(
       tester,
       name,
-      screen: TodayScreen(onSelectTab: (_) {}),
+      screen: isBoard
+          ? HomeBoardScreen(onOpenTab: (_) {})
+          : TodayScreen(onSelectTab: (_) {}),
       brightness: brightness,
       textScale: textScale,
       providers: [
         ...lunch.providers,
+        if (isBoard)
+          ChangeNotifierProvider<HomeLayoutController>(
+            create: (_) => HomeLayoutController(
+              store: FakeHomeLayoutStore(HomeLayout.cards),
+              canSwitch: true,
+            ),
+          ),
         ChangeNotifierProvider<TodoController>.value(value: todos),
         ChangeNotifierProvider<CalendarController>.value(value: calendar),
         ChangeNotifierProvider<GroceryListController>.value(value: groceries),
@@ -178,6 +192,32 @@ void main() {
       'today-dark-200-percent-text',
       brightness: Brightness.dark,
       textScale: 2,
+    ),
+  );
+
+  testWidgets(
+    'card home — light',
+    (tester) => capture(tester, 'home-board-light', isBoard: true),
+  );
+
+  testWidgets(
+    'card home — dark',
+    (tester) => capture(
+      tester,
+      'home-board-dark',
+      brightness: Brightness.dark,
+      isBoard: true,
+    ),
+  );
+
+  testWidgets(
+    'card home — dark at 200% text',
+    (tester) => capture(
+      tester,
+      'home-board-dark-200-percent-text',
+      brightness: Brightness.dark,
+      textScale: 2,
+      isBoard: true,
     ),
   );
 }

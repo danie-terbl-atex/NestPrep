@@ -6,9 +6,9 @@
   "cuisine": "southAfrican",
   "contexts": ["dinner"],
   "placement": { "dinner": "main" },
-  "tags": ["traditional", "budget", "comfort", "onePot"],
+  "tags": ["traditional", "budget", "onePot", "healthy"],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Dried sugar beans", "quantity": 500, "unit": "g", "note": "soaked overnight in cold water", "group": null },
     { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
@@ -41,5 +41,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Soak the beans the night before. The soup keeps 3 days in the fridge and thickens as it stands; loosen with water.",
+  "kcalPerServing": 510,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

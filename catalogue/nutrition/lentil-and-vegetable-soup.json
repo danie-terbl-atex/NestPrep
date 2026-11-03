@@ -1,0 +1,154 @@
+{
+  "id": "lentil-and-vegetable-soup",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 75 g",
+      "grams": 150,
+      "kcal": 62,
+      "proteinG": 1.4,
+      "fatG": 0.4,
+      "netCarbsG": 10.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Celery sticks",
+      "amount": "2 sticks × 40 g",
+      "grams": 80,
+      "kcal": 11,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 1.1,
+      "reference": "Celery, raw — USDA FDC 169988: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1½ tsp × 2.1 g",
+      "grams": 3.2,
+      "kcal": 12,
+      "proteinG": 0.6,
+      "fatG": 0.7,
+      "netCarbsG": 1.1,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika (smoked paprika) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red lentils",
+      "amount": "300 g raw",
+      "grams": 300,
+      "kcal": 1074,
+      "proteinG": 71.7,
+      "fatG": 6.5,
+      "netCarbsG": 156.9,
+      "reference": "Lentils, pink or red, raw — USDA FDC 174284: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 × 400 g tin, with juice",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1.5 l",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1½ tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 23,
+      "proteinG": 2.9,
+      "fatG": 0.4,
+      "netCarbsG": 1.4,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "½ tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1579,
+  "kcalPerServing": 260,
+  "perServing": {
+    "proteinG": 13.9,
+    "fatG": 6.1,
+    "netCarbsG": 32.5
+  },
+  "notes": "Assumptions that move the number: 300 g raw red lentils (1074 kcal, 68 % of the total); 2 tbsp olive oil; water only, no stock cube; no bread in the recipe. Cross-check: published red lentil and vegetable soups list ~230–300 kcal a bowl; 260 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

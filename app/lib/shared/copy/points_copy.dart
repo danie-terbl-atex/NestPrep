@@ -95,6 +95,7 @@ abstract final class PointsCopy {
     'You have ${starsCount(stars)}',
     if (streak >= 2) kidStreak(streak),
   ].join('. ');
+  static String plusStars(int stars) => '+${starsCount(stars)}';
   static String kidJustEarned(int stars) => '+${starsCount(stars)}! Brilliant.';
   static const kidNoStarsYet = 'Finish a starred job to earn some.';
   static String kidStreak(int days) => '$days days in a row!';

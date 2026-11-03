@@ -9,6 +9,7 @@ import '../../../shared/time/calendar_date.dart';
 import '../../meal_planning/data/meal_repository.dart';
 import '../../meal_planning/model/meal.dart';
 import '../../meal_planning/model/week_plan.dart';
+import '../model/family_size.dart';
 import '../model/recipe.dart';
 import '../model/recipe_meal_lines.dart';
 import '../model/recipe_scale.dart';
@@ -103,18 +104,13 @@ final class RecipePageController extends ChangeNotifier
       _groups = const [];
     } else if (_scale?.servings != arrived.servings) {
       _scale = RecipeScale(
-        people: startingPeople(arrived),
+        people: startingPeopleFor(arrived, familySize),
         servings: arrived.servings,
       );
     }
     _regroup();
     notifyListeners();
   }
-
-  /// A family meal starts at the family's size; anything else — a lunch-box
-  /// treat, a tray of rusks — at what the recipe makes.
-  int startingPeople(Recipe recipe) =>
-      recipe.firstMeal != null && familySize > 0 ? familySize : recipe.servings;
 
   void addPerson() => _setPeople((_scale?.people ?? 0) + 1);
   void removePerson() => _setPeople((_scale?.people ?? 0) - 1);

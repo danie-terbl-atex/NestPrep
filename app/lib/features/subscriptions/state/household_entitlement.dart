@@ -47,6 +47,10 @@ final class HouseholdEntitlement extends ChangeNotifier {
 
   DateTime now() => _now();
 
+  /// Whether the server has answered at all, so a loading entitlement is
+  /// never mistaken for a lapsed one.
+  bool get isKnown => _entitlement is AsyncData;
+
   /// Whether this household's lunch plans may be written for [childId]
   /// (lunch-box ADR-0009) — the rules' `lunchPlansFor`: every child with
   /// premium; otherwise the child the free tier recorded, or any child while

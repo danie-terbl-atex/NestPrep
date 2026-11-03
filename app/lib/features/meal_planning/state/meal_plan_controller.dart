@@ -7,6 +7,10 @@ import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../recipes/model/family_size.dart';
+import '../../recipes/model/recipe.dart';
+import '../../recipes/model/recipe_meal_lines.dart';
+import '../../recipes/model/recipe_scale.dart';
 import '../data/meal_repository.dart';
 import '../model/meal.dart';
 import '../model/meal_ingredient.dart';
@@ -106,6 +110,30 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
       );
     });
   }
+
+  Future<void> setSlotFromRecipe(
+    String slotKey,
+    Recipe recipe, {
+    required int familySize,
+  }) => runAction(() async {
+    final scale = RecipeScale(
+      people: startingPeopleFor(recipe, familySize),
+      servings: recipe.servings,
+    );
+    final mealId = await _repository.addRecipeMeal(
+      householdId: householdId,
+      recipeId: recipe.id,
+      name: recipe.name,
+      ingredients: recipeMealLines(recipe, scale),
+      addedBy: memberId,
+    );
+    await _repository.setSlot(
+      householdId: householdId,
+      monday: _weekStart,
+      slotKey: slotKey,
+      mealId: mealId,
+    );
+  });
 
   /// Copies last week forward. Only the empty slots move, unless [overwrite].
   Future<void> copyLastWeek({bool overwrite = false}) async {

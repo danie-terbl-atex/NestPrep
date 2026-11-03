@@ -1,0 +1,174 @@
+{
+  "id": "korean-beef-rice-bowls",
+  "name": "Korean beef mince rice bowls",
+  "summary": "Lean beef mince glazed with garlic, ginger, soy, sesame and a little honey over brown rice, topped with quick-pickled cucumber, carrot ribbons and red cabbage.",
+  "about": "Bulgogi, thin slices of beef marinated in soy, sesame, garlic and something sweet, is a classic of Korean cooking. Cooking the same flavours into mince makes it a weeknight meal ready in the time the rice takes, and the pickle and raw vegetables on top are in the spirit of banchan, the side dishes served with Korean meals.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy",
+    "sesame"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1.25,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 750,
+      "unit": "ml",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the pickle"
+    },
+    {
+      "name": "Rice vinegar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pickle"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pickle"
+    },
+    {
+      "name": "Reduced-salt soy sauce",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Honey",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Rice vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Sesame oil",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "toasted",
+      "group": "For the beef"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Lean beef mince",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the beef"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the beef"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "peeled into ribbons",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Red cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 4,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the bowls"
+    },
+    {
+      "name": "Sesame seeds",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "toasted",
+      "group": "For the bowls"
+    }
+  ],
+  "steps": [
+    "Put the rice, 750 ml water and salt in a saucepan and bring to the boil over high heat. Cover, turn the heat to low and simmer for 40 minutes, until the water is absorbed and the grains are tender. Take off the heat and leave covered for 10 minutes.",
+    "Toss the cucumber with the 3 tbsp rice vinegar and salt in a bowl and leave it in the fridge for at least 15 minutes, until it softens and turns slightly translucent.",
+    "Whisk the soy sauce, honey, 1 tbsp rice vinegar and sesame oil together in a small jug.",
+    "Heat the sunflower oil in a large frying pan over medium-high heat. Add the mince and break it up with a wooden spoon, then cook, stirring now and then, for 6 to 8 minutes, until browned all over with no pink left and the juices have cooked away.",
+    "Add the garlic and ginger and stir for 1 minute, until fragrant. Pour in the sauce and let it bubble for 2 to 3 minutes, stirring, until the mince is glossy and the sauce has almost all been absorbed.",
+    "Divide the rice between four bowls. Spoon the beef over one side and arrange the drained cucumber, carrot ribbons and red cabbage beside it. Scatter with spring onions and sesame seeds. Adults can add chilli sauce at the table."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook the rice and the beef up to a day ahead; the pickled cucumber keeps 3 days in the fridge.",
+  "kcalPerServing": 570,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

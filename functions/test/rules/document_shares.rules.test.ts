@@ -170,9 +170,9 @@ describe('documentShareTokens/{tokenHash}', () => {
 });
 
 describe('appConfig/{configId}', () => {
-  it('anybody reads the switches, signed in or not', async () => {
+  it('anybody signed in reads the switches, and nobody signed out', async () => {
     await assertSucceeds(getDoc(doc(await asUser(STRANGER), FLAGS)));
-    await assertSucceeds(getDoc(doc(await asSignedOut(), FLAGS)));
+    await assertFails(getDoc(doc(await asSignedOut(), FLAGS)));
   });
 
   it('nobody lists the collection or reads another config document', async () => {

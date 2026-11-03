@@ -32,6 +32,7 @@ import { seedGroceries } from './cloud-demo/groceries.mjs';
 import { seedHealth } from './cloud-demo/health.mjs';
 import { seedHomeCare } from './cloud-demo/home-care.mjs';
 import { seedLunch } from './cloud-demo/lunch.mjs';
+import { seedLocation } from './cloud-demo/location.mjs';
 import { seedLunchStock } from './cloud-demo/lunch-stock.mjs';
 import { seedMeals } from './cloud-demo/meals.mjs';
 import { seedNanny } from './cloud-demo/nanny.mjs';
@@ -91,6 +92,7 @@ for (const part of [
   seedNanny,
   seedNannyShifts,
   seedNannyPickups,
+  seedLocation,
   // Last: the digest reads everything above.
   seedNotifications,
 ]) {

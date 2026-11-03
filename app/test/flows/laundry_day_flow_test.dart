@@ -278,8 +278,10 @@ void main() {
         );
       }
 
-      // The whole row is the tick target, so tapping its title is a real tick.
       await tester.tap(find.text('Strip the beds'));
+      await tester.pumpAndSettle();
+      expect(repository.completed, isEmpty, reason: 'a tap only opens it');
+      await tester.tap(find.text(AppCopy.todosComplete));
       await tester.pumpAndSettle();
 
       expect(repository.completed, hasLength(1));

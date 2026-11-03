@@ -108,12 +108,7 @@ describe('and nothing about anybody else', () => {
     await assertFails(getDocs(collection(db, `${HOME}/taskCompletions`)));
   });
 
-  for (const path of [
-    'documentFolders/school',
-    'documents/passport',
-    'memberLocations/m-sam',
-    `kidDevices/${KID}`,
-  ]) {
+  for (const path of ['documentFolders/school', 'documents/passport', `kidDevices/${KID}`]) {
     it(`not ${path.split('/')[0] ?? path}, which the kid defaults do not open`, async () => {
       await assertFails(getDoc(doc(await miasTablet(), `${HOME}/${path}`)));
     });
@@ -210,9 +205,25 @@ describe('a kid device changes nothing else', () => {
     );
   });
 
-  it('never where somebody is — not even its own, which is only for a login', async () => {
-    await assertFails(
+  it('its own position, because a kid phone can share (live-location ADR-0003)', async () => {
+    await assertSucceeds(
       setDoc(doc(await miasTablet(), `${HOME}/memberLocations/${MIA}`), {
+        point: new GeoPoint(-26.2, 28.04),
+        accuracyMetres: 5,
+        reportedAt: serverTimestamp(),
+        sharingUntil: new Date(Date.now() + 60 * 60 * 1000),
+      }),
+    );
+  });
+
+  it('the family map, because the kid defaults let it look', async () => {
+    await assertSucceeds(getDocs(collection(await miasTablet(), `${HOME}/memberLocations`)));
+    await assertSucceeds(getDocs(collection(await miasTablet(), `${HOME}/places`)));
+  });
+
+  it('never a sibling’s position', async () => {
+    await assertFails(
+      setDoc(doc(await miasTablet(), `${HOME}/memberLocations/${LEO}`), {
         point: new GeoPoint(-26.2, 28.04),
         accuracyMetres: 5,
         reportedAt: serverTimestamp(),

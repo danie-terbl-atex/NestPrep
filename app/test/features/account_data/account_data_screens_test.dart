@@ -162,6 +162,7 @@ void main() {
       await tester.pumpAndSettle();
       gateway.exportGate = Completer<void>();
 
+      await scrollTo(tester, find.text(AccountDataCopy.exportPrepare));
       await tester.tap(find.text(AccountDataCopy.exportPrepare));
       await tester.pump();
       expect(find.text(AccountDataCopy.exportPreparing), findsOneWidget);

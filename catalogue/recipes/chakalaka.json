@@ -8,7 +8,7 @@
   "placement": { "dinner": "side", "lunch": "side" },
   "tags": ["traditional", "vegetableForward", "braai", "budget"],
   "allergens": [],
-  "dietTags": ["vegetarian", "vegan"],
+  "dietTags": ["vegetarian", "vegan", "dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 3, "unit": "tbsp", "note": null, "group": null },
     { "name": "Onion", "quantity": 1, "unit": null, "note": "chopped", "group": null },
@@ -38,5 +38,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Tastes better the next day. Keeps 4 days in the fridge; serve cold or warmed.",
+  "kcalPerServing": 180,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

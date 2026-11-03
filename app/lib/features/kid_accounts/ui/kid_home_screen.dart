@@ -13,7 +13,10 @@ import '../../chore_points/model/reward.dart';
 import '../../chore_points/state/kid_points_controller.dart';
 import '../../chore_points/ui/kid_reward_shelf.dart';
 import '../../chore_points/ui/kid_stars_section.dart';
+import '../../live_location/ui/kid_location_sheet.dart';
 import '../../notifications/ui/kid_notifications_button.dart';
+import '../../todos/model/kid_chores.dart';
+import '../../todos/ui/chore_celebration.dart';
 import '../model/kid_day.dart';
 import '../state/kid_home_controller.dart';
 import 'kid_day_view.dart';
@@ -59,6 +62,13 @@ class KidHomeScreen extends StatelessWidget {
         // notifications: the tablet's reminders, behind a tap (notifications
         // ADR-0003).
         const KidNotificationsButton(),
+        if (session.kidIdentity case final kid?)
+          NestIconButton(
+            icon: LucideIcons.mapPin,
+            label: LocationCopy.yours,
+            variant: NestIconButtonVariant.plain,
+            onPressed: () => showKidLocationSheet(context, kid),
+          ),
         NestIconButton(
           icon: LucideIcons.logOut,
           label: KidCopy.signOut,
@@ -92,7 +102,18 @@ class KidHomeScreen extends StatelessWidget {
               emptyBuilder: (_) => const SizedBox.shrink(),
               dataBuilder: (context, value) => KidDayView(
                 day: value,
-                onToggle: (index) => controller.toggle(value.chores[index]),
+                onToggle: (index) {
+                  final chore = value.chores[index];
+                  if (!chore.isDone) {
+                    celebrateChore(
+                      context,
+                      kidName: value.me.displayName,
+                      chore: chore,
+                      finishesTheDay: isLastOpenOf(value.chores, chore),
+                    );
+                  }
+                  controller.toggle(chore);
+                },
                 // Stars follow the jobs' grant (todos ADR-0003): hidden with
                 // them, and never in the way of the rest of the day.
                 stars: points == null

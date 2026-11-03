@@ -19,7 +19,8 @@
     "milk"
   ],
   "dietTags": [
-    "vegetarian"
+    "vegetarian",
+    "glutenFree"
   ],
   "ingredients": [
     {
@@ -91,6 +92,7 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 310,
   "photo": {
     "credit": null,
     "licence": null,

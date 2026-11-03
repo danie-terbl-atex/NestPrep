@@ -123,18 +123,26 @@ void main() {
     },
   );
 
-  testWidgets('a budget is set from the meter, in whole cents', (tester) async {
-    await pump(tester, const LunchBudgetScreen());
-    await arrive(tester);
-    expect(find.text(LunchBudgetCopy.noBudget), findsOneWidget);
-    await tester.tap(find.text(LunchBudgetCopy.setBudget));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), '250');
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(LunchBudgetCopy.saveBudget));
-    await tester.pumpAndSettle();
-    expect(harness.budgetRepository.setBudgets.single.cents, 25000);
-  });
+  testWidgets(
+    'a budget is set from the meter, in whole cents, for every child together',
+    (tester) async {
+      await pump(tester, const LunchBudgetScreen());
+      await arrive(tester);
+      expect(find.text(LunchBudgetCopy.noBudget), findsOneWidget);
+      await tester.tap(find.text(LunchBudgetCopy.setBudget));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(LunchBudgetCopy.budgetFor(['Lwazi', 'Ayanda'])),
+        findsOneWidget,
+      );
+      await tester.enterText(find.byType(TextField), '250');
+      await tester.pumpAndSettle();
+      expect(find.text(LunchBudgetCopy.perChild('R125')), findsOneWidget);
+      await tester.tap(find.text(LunchBudgetCopy.saveBudget));
+      await tester.pumpAndSettle();
+      expect(harness.budgetRepository.setBudgets.single.cents, 25000);
+    },
+  );
 
   testWidgets('a cheaper swap is made in one tap, across the week to come', (
     tester,

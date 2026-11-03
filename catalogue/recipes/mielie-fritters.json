@@ -37,5 +37,6 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 470,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

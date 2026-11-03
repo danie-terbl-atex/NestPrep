@@ -1,0 +1,95 @@
+{
+  "id": "berry-smoothie-bowl",
+  "name": "Berry smoothie bowl",
+  "summary": "Frozen berries and banana blended thick with yoghurt into a spoonable bowl, topped with fresh banana, crunchy seeds and a spoon of peanut butter.",
+  "about": "Smoothie bowls grew out of Brazil's açaí bowls: a smoothie blended thick enough to eat with a spoon, so it can carry crunchy toppings. Frozen berries and banana make the base cold and thick without ice or added sugar, and the bowls are on the table in ten minutes on a school morning.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "quick",
+    "kidFriendly",
+    "healthy"
+  ],
+  "allergens": [
+    "peanut",
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Frozen mixed berries",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "For the smoothie"
+    },
+    {
+      "name": "Banana",
+      "quantity": 1,
+      "unit": null,
+      "note": "ripe, sliced and frozen overnight",
+      "group": "For the smoothie"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the smoothie"
+    },
+    {
+      "name": "Milk",
+      "quantity": 60,
+      "unit": "ml",
+      "note": "plus a little more if needed",
+      "group": "For the smoothie"
+    },
+    {
+      "name": "Banana",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the topping"
+    },
+    {
+      "name": "Sunflower and pumpkin seeds",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the topping"
+    },
+    {
+      "name": "Peanut butter",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "smooth, no added sugar",
+      "group": "For the topping"
+    }
+  ],
+  "steps": [
+    "Let the frozen berries and banana stand for 5 minutes so the blender can grip them.",
+    "Put the yoghurt and milk in the blender first, then the frozen fruit. Blend on low, stopping to push the fruit down with a spatula every 20 seconds, for 1 to 2 minutes, until smooth and as thick as soft-serve ice cream. Add more milk only a tablespoon at a time if the blades stall.",
+    "Spoon into 2 bowls and top straight away with the sliced banana, the seeds and a spoon of peanut butter each, while the base is still thick and cold."
+  ],
+  "servings": 2,
+  "prepMinutes": 10,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Slice and freeze the banana in a bag the night before; frozen chunks keep 2 months.",
+  "kcalPerServing": 380,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

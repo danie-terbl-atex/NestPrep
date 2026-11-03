@@ -39,6 +39,7 @@ export const KID_DEFAULTS = {
   medical: 'none',
   homeCare: 'none',
   nannyHub: 'none',
+  location: 'view',
 };
 
 export function task(

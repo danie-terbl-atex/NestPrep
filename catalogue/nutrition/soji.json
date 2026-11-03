@@ -1,0 +1,114 @@
+{
+  "id": "soji",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sultanas",
+      "amount": "1/3 cup (83 ml), ~153 g per 250 ml cup",
+      "grams": 51,
+      "kcal": 154,
+      "proteinG": 1.7,
+      "fatG": 0.1,
+      "netCarbsG": 39.1,
+      "reference": "Raisins, golden, seedless — USDA FDC 168164: 301 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ghee or butter",
+      "amount": "125 g, counted as ghee",
+      "grams": 125,
+      "kcal": 1095,
+      "proteinG": 0.3,
+      "fatG": 124.3,
+      "netCarbsG": 0.0,
+      "reference": "Butter oil, anhydrous (ghee) — USDA FDC 173412: 876 kcal / 100 g"
+    },
+    {
+      "ingredient": "Semolina",
+      "amount": "170 g",
+      "grams": 170,
+      "kcal": 612,
+      "proteinG": 21.6,
+      "fatG": 1.8,
+      "netCarbsG": 117.2,
+      "reference": "Semolina, enriched — USDA FDC 169715: 360 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "4 pods, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1 stick, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "3 cups = 750 ml × 1.03 g/ml",
+      "grams": 773,
+      "kcal": 472,
+      "proteinG": 24.3,
+      "fatG": 25.1,
+      "netCarbsG": 37.1,
+      "reference": "Milk, whole, 3.25% milkfat — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 580,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 150.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cardamom",
+      "amount": "½ tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.4,
+      "reference": "Spices, cardamom — USDA FDC 170919: 311 kcal / 100 g"
+    },
+    {
+      "ingredient": "Rose water",
+      "amount": "1 tsp",
+      "grams": 5,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Rose water — flavoured water, ~0 kcal: 0 kcal / 100 g"
+    },
+    {
+      "ingredient": "Flaked almonds",
+      "amount": "3 tbsp flaked, ~5.8 g per tbsp",
+      "grams": 17,
+      "kcal": 98,
+      "proteinG": 3.6,
+      "fatG": 8.5,
+      "netCarbsG": 1.5,
+      "reference": "Nuts, almonds — USDA FDC 170567: 579 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3014,
+  "kcalPerServing": 500,
+  "perServing": {
+    "proteinG": 8.6,
+    "fatG": 26.6,
+    "netCarbsG": 57.5
+  },
+  "notes": "Assumptions: 'ghee or butter' counted as ghee (butter would be ~200 kcal less in total); cardamom pods and cinnamon stick removed, 0 kcal; sultanas weighed dry. Cooked mass ~1.1 kg, so a serving is ~185 g at ~270 kcal/100 g. Sanity check: FatSecret generic sooji halwa lists 189 kcal/100 g (378 kcal per 200 g) — ours is ~40 % denser because it carries 125 g ghee, 150 g sugar and whole milk on 170 g semolina; recomputing a typical halwa (1 cup semolina, ½ cup ghee, ¾ cup sugar) from USDA values gives ~240 kcal/100 g, which matches ours. Kept."
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
+import 'package:nestprep/features/calendar/model/calendar_view.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
@@ -240,7 +241,13 @@ void main() {
 
   // -------------------------------------------------------------------- week
 
-  Future<void> week(WidgetTester tester, Brightness brightness) async {
+  /// The calendar on [view]: the week strip, or the month it opens on
+  /// (design-system ADR-0017).
+  Future<void> week(
+    WidgetTester tester,
+    Brightness brightness, {
+    CalendarView view = CalendarView.week,
+  }) async {
     final repository = FakeCalendarRepository();
     addTearDown(repository.close);
     final controller = CalendarController(
@@ -250,12 +257,15 @@ void main() {
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       householdMembers: const [],
+      initialView: view,
     );
     addTearDown(controller.dispose);
 
     await captureScreen(
       tester,
-      'week-${brightness.name}',
+      view == CalendarView.month
+          ? 'calendar-month-${brightness.name}'
+          : 'week-${brightness.name}',
       screen: CalendarScreen(onSelectTab: (_) {}),
       providers: [
         ChangeNotifierProvider<CalendarController>.value(value: controller),
@@ -330,7 +340,8 @@ void main() {
         view: MealsView.week,
         onSelectView: (_) {},
         onSelectTab: (_) {},
-        onOpenRecipe: (_) {},
+        onPickRecipe: (_, _) async => null,
+        onOpenRecipe: (_, {heroTag}) {},
       ),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),
@@ -366,6 +377,10 @@ void main() {
   for (final brightness in Brightness.values) {
     testWidgets('week — ${brightness.name}', (tester) async {
       await week(tester, brightness);
+    });
+
+    testWidgets('calendar month — ${brightness.name}', (tester) async {
+      await week(tester, brightness, view: CalendarView.month);
     });
 
     testWidgets('todos, mine today — ${brightness.name}', (tester) async {

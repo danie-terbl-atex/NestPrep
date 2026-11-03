@@ -62,6 +62,7 @@ abstract final class NotificationsRoute {
     NotificationTarget.coParentLink when targetId != null =>
       TwoHomesRoute.linkPathFor(householdId, targetId),
     NotificationTarget.coParentLink => TwoHomesRoute.pathFor(householdId),
+    NotificationTarget.whereWeAre => HouseholdRoute.wherePathFor(householdId),
   };
 
   /// Where a digest section's link goes.

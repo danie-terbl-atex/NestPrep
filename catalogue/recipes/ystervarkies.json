@@ -39,5 +39,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Bake the sponge a day ahead: day-old sponge cuts and dips more neatly. Keeps 3 days in an airtight tin.",
+  "kcalPerServing": 340,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

@@ -1,0 +1,94 @@
+{
+  "id": "hummus-veg-sticks",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Chickpeas",
+      "amount": "400 g tin, ~240 g drained",
+      "grams": 240,
+      "kcal": 334,
+      "proteinG": 16.9,
+      "fatG": 6.6,
+      "netCarbsG": 38.7,
+      "reference": "Chickpeas, mature seeds, canned, drained solids — USDA FDC 173800: 139 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tahini",
+      "amount": "2 tbsp × 15 g",
+      "grams": 30,
+      "kcal": 178,
+      "proteinG": 5.1,
+      "fatG": 16.1,
+      "netCarbsG": 3.6,
+      "reference": "Seeds, sesame butter, tahini, from roasted and toasted kernels — USDA FDC 170189: 595 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 75 g",
+      "grams": 150,
+      "kcal": 62,
+      "proteinG": 1.4,
+      "fatG": 0.4,
+      "netCarbsG": 10.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cucumber",
+      "amount": "½ of a ~350 g English cucumber",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sweet pepper",
+      "amount": "1 medium, ~130 g edible",
+      "grams": 130,
+      "kcal": 34,
+      "proteinG": 1.3,
+      "fatG": 0.4,
+      "netCarbsG": 5.1,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 887,
+  "kcalPerServing": 220,
+  "perServing": {
+    "proteinG": 6.6,
+    "fatG": 12.7,
+    "netCarbsG": 16.6
+  },
+  "notes": "Assumptions: tin drains to ~240 g; carrots ~75 g each; half an English cucumber ~175 g; one sweet pepper ~130 g edible. The hummus is ~230 kcal/100 g, ~190 kcal a serving, plus ~30 kcal of vegetables. Sanity check: USDA commercial hummus (FDC 174289) 237 kcal/100 g and home-prepared hummus (FDC 172454) 177 kcal/100 g; ours matches the commercial figure because it uses 2 tbsp olive oil and no water."
+}

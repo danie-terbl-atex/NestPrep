@@ -1,0 +1,54 @@
+{
+  "id": "peppermint-crisp-tart",
+  "servings": 12,
+  "lines": [
+    {
+      "ingredient": "Fresh cream",
+      "amount": "500 ml ≈ 500 g",
+      "grams": 500,
+      "kcal": 1700,
+      "proteinG": 14.2,
+      "fatG": 180.4,
+      "netCarbsG": 14.2,
+      "reference": "Cream, fluid, heavy whipping — USDA FDC 170859 (SA fresh cream ~36 % fat): 340 kcal / 100 g"
+    },
+    {
+      "ingredient": "Caramel condensed milk",
+      "amount": "2 tins × 360 g",
+      "grams": 720,
+      "kcal": 2160,
+      "proteinG": 46.8,
+      "fatG": 54.0,
+      "netCarbsG": 381.6,
+      "reference": "Caramelised condensed milk: Nestlé Carnation Caramel label 1281 kJ (306 kcal), SA Caramel Treat 284 kcal (FatSecret ZA); used 300 kcal, 6.5 g protein, 7.5 g fat, 53 g carbohydrate / 100 g (used 300 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Mint-crisp chocolate bars",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 756,
+      "proteinG": 7.0,
+      "fatG": 35.9,
+      "netCarbsG": 99.0,
+      "reference": "Peppermint-crisp milk chocolate, SA (FatSecret ZA): 2107 kJ, 4.7 g protein, 23.9 g fat, 66 g carbohydrate / 100 g (used 504 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Coconut tea biscuits",
+      "amount": "400 g",
+      "grams": 400,
+      "kcal": 1852,
+      "proteinG": 22.0,
+      "fatG": 87.6,
+      "netCarbsG": 244.0,
+      "reference": "Coconut tea biscuits, SA (Bakers Tennis Classic Coconut, FatSecret ZA): 1937 kJ, 21.9 g fat / 100 g; protein 5.5 g, carbohydrate 61 g by difference (used 463 kcal / 100 g)"
+    }
+  ],
+  "totalKcal": 6468,
+  "kcalPerServing": 540,
+  "perServing": {
+    "proteinG": 7.5,
+    "fatG": 29.8,
+    "netCarbsG": 61.6
+  },
+  "notes": "Assumptions that change the number: SA caramelised condensed milk at 300 kcal / 100 g (Nestlé caramel labels run 284–306); coconut tea biscuits at 463 kcal / 100 g; cream ~36 % fat. Sanity check: The Cinnamon Jar's original tart is 361 kcal a slice for 8 slices, made with 1 tin of caramel, 250 ml cream, 1 packet of biscuits and 1 bar. This recipe is double that, cut into 12 rather than 16, so the expected figure is 361 × 16 ÷ 12 ≈ 480. Ours, at 540, is ~12 % higher, from the extra chocolate (150 g against ~100 g). Other home recipes list 180–360 kcal for smaller slices; a café slice (Mugg & Bean) is 828."
+}

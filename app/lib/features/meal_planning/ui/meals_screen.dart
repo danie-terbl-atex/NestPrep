@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/food_switch.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -9,7 +10,6 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
-import '../../recipes/model/recipe.dart';
 import '../../recipes/ui/recipe_discovery_view.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
@@ -17,8 +17,9 @@ import '../model/meals_view.dart';
 import '../state/meal_plan_controller.dart';
 import 'meal_library_sheet.dart';
 import 'meal_week_view.dart';
+import 'planned_day_card.dart';
 
-/// The Meals tab (design-system ADR-0015): one header, and under it the
+/// Meals, under the Food tab (design-system ADR-0015, ADR-0017): one header, and under it the
 /// recipes to choose from — where it opens — or the week they go into,
 /// switched by a segmented control whose choice is the route's [view]
 /// (`FE-07`). Where a recipe opens and how the view changes are the route's
@@ -29,6 +30,7 @@ class MealsScreen extends StatelessWidget {
     required this.onSelectView,
     required this.onSelectTab,
     required this.onOpenRecipe,
+    required this.onPickRecipe,
     super.key,
   });
 
@@ -36,8 +38,11 @@ class MealsScreen extends StatelessWidget {
   final ValueChanged<MealsView> onSelectView;
   final ValueChanged<HouseholdTab> onSelectTab;
 
-  /// A recipe by id — from a card, or from a meal planned from one.
-  final ValueChanged<String> onOpenRecipe;
+  /// A recipe by id — from a card, whose photo flies by [heroTag], or from
+  /// a meal planned from one.
+  final void Function(String recipeId, {String? heroTag}) onOpenRecipe;
+
+  final RecipePicker onPickRecipe;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +74,7 @@ class MealsScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          FoodSwitch(current: HouseholdTab.meals, onSelect: onSelectTab),
           TourAnchor(
             target: TourTarget.mealsViews,
             child: NestSegmentedControl<MealsView>(
@@ -91,9 +97,13 @@ class MealsScreen extends StatelessWidget {
           const SizedBox(height: NestSpace.xl),
           Expanded(
             child: isWeek
-                ? MealWeekView(onOpenRecipe: onOpenRecipe)
+                ? MealWeekView(
+                    onOpenRecipe: onOpenRecipe,
+                    onPickRecipe: onPickRecipe,
+                  )
                 : RecipeDiscoveryView(
-                    onOpen: (Recipe recipe) => onOpenRecipe(recipe.id),
+                    onOpen: (recipe, heroTag) =>
+                        onOpenRecipe(recipe.id, heroTag: heroTag),
                   ),
           ),
         ],

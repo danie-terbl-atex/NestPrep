@@ -19,7 +19,8 @@
     "milk"
   ],
   "dietTags": [
-    "vegetarian"
+    "vegetarian",
+    "glutenFree"
   ],
   "ingredients": [
     {
@@ -85,6 +86,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make a day ahead and reheat gently in the pot with a splash of water.",
+  "kcalPerServing": 330,
   "photo": {
     "credit": null,
     "licence": null,

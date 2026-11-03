@@ -76,6 +76,10 @@ abstract final class RecipeDocument {
           final minutes? when minutes > 0 => minutes,
           _ => 0,
         },
+        kcalPerServing: switch (DocumentFields.whole(data['kcalPerServing'])) {
+          final kcal? when kcal > 0 => kcal,
+          _ => null,
+        },
         difficulty: RecipeDifficulty.fromName(
           DocumentFields.text(data['difficulty']),
         ),

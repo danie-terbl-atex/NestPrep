@@ -1,0 +1,74 @@
+{
+  "id": "gem-squash",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Gem squash",
+      "amount": "4 × ~290 g whole, ~170 g edible flesh each",
+      "grams": 680,
+      "kcal": 272,
+      "proteinG": 5.4,
+      "fatG": 0.7,
+      "netCarbsG": 60.7,
+      "reference": "Squash, winter, acorn, raw (proxy for gem squash) — USDA FDC 168472: 40 kcal / 100 g; gem squash flesh 25–34 kcal / 100 g on SA listings, so this is on the high side"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.25 tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Creamed sweetcorn",
+      "amount": "1 tin, 400 g",
+      "grams": 400,
+      "kcal": 288,
+      "proteinG": 7.0,
+      "fatG": 1.7,
+      "netCarbsG": 67.7,
+      "reference": "Corn, sweet, yellow, canned, cream style, regular pack — USDA FDC 169215: 72 kcal / 100 g"
+    },
+    {
+      "ingredient": "Grated cheddar",
+      "amount": "0.5 cup grated ≈ 50 g",
+      "grams": 50,
+      "kcal": 202,
+      "proteinG": 11.4,
+      "fatG": 16.7,
+      "netCarbsG": 1.7,
+      "reference": "Cheese, cheddar (Includes foods for USDA's Food Distribution Program) — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 965,
+  "kcalPerServing": 240,
+  "perServing": {
+    "proteinG": 6.0,
+    "fatG": 10.4,
+    "netCarbsG": 32.6
+  },
+  "notes": "Edible flesh ~170 g per gem squash (skin and seeds ~40 %); acorn squash stands in for gem squash in USDA. The optional cheddar is counted because it is an ingredient line (it adds ~50 kcal a serving). Sanity check: Foodle Club cheesy gem squash 88 kcal a serving — far below; their figure cannot include a 400 g tin of creamed sweetcorn, 2 tbsp butter and cheese for 4 (those three alone are ~170 kcal a serving). Ours is ingredient-built; using the lower SA gem squash value (25–34 kcal / 100 g) would bring it to ~220."
+}

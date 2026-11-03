@@ -1,0 +1,176 @@
+{
+  "id": "fish-tacos-with-slaw",
+  "name": "Fish tacos with crunchy slaw",
+  "summary": "Spiced, pan-fried hake flaked into warm wholewheat tortillas with a lime-yoghurt cabbage slaw, fresh tomato salsa and avocado, built at the table.",
+  "about": "Fish tacos are street food from Baja California in north-west Mexico, where fish is tucked into tortillas with shredded cabbage, salsa and a creamy sauce. Hake, caught off the South African coast, is firm enough to pan-fry with spices and flake, and putting the fillings out in bowls lets everyone, children included, build their own.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "healthy"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Plain low-fat yoghurt",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the slaw"
+    },
+    {
+      "name": "Limes",
+      "quantity": 2,
+      "unit": null,
+      "note": "zest of 1, juice of both; or 1 lemon",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Red cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": "For the slaw"
+    },
+    {
+      "name": "White cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": "chopped, for the salsa and the slaw",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Garlic powder",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Hake fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "skinless, thawed if frozen and patted dry",
+      "group": "For the fish"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1.5,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the fish"
+    },
+    {
+      "name": "Small wholewheat tortillas",
+      "quantity": 8,
+      "unit": null,
+      "note": "about 20 cm across",
+      "group": "To serve"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, sliced",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Make the slaw dressing: whisk the yoghurt with the zest of 1 lime, the juice of 1 lime and a pinch of salt in a large bowl.",
+    "Add the red and white cabbage, carrots and spring onions to the dressing and toss well. Set aside while you make the rest; the cabbage softens a little as it stands.",
+    "Make the salsa: mix the tomatoes, red onion and half the coriander with the juice of the second lime and a pinch of salt in a small bowl. Stir the rest of the coriander into the slaw.",
+    "Mix the cumin, paprika, garlic powder and salt and sprinkle it over both sides of the hake.",
+    "Heat the oil in a large non-stick frying pan over medium-high heat until it shimmers. Lay in the fillets and cook, without moving them, for 3 minutes, until golden underneath. Turn carefully and cook for 2 to 3 minutes more, until the flesh is white all the way through and flakes when pressed with a fork.",
+    "Lift the fish onto a plate and break it into large flakes, checking for bones as you go.",
+    "Wipe the pan, put it back over medium heat and warm the tortillas one at a time for about 20 seconds a side, until soft and flecked brown. Stack them in a clean tea towel to keep warm.",
+    "Serve everything at the table: fill each tortilla with slaw, fish, salsa and a few slices of avocado, and fold."
+  ],
+  "servings": 4,
+  "prepMinutes": 25,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Shred the cabbage and carrot in the morning and keep them chilled; dress the slaw and cook the fish just before eating.",
+  "kcalPerServing": 560,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "id": "banana-bread",
+  "servings": 10,
+  "lines": [
+    {
+      "ingredient": "Butter",
+      "amount": "125 g + ~5 g for greasing",
+      "grams": 130,
+      "kcal": 932,
+      "proteinG": 1.1,
+      "fatG": 105.4,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ripe bananas",
+      "amount": "3 very ripe, ~115 g peeled each",
+      "grams": 345,
+      "kcal": 307,
+      "proteinG": 3.8,
+      "fatG": 1.0,
+      "netCarbsG": 69.7,
+      "reference": "Bananas, raw — USDA FDC 173944: 89 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 570,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 147.2,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 SA large, 55 g each",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.9,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vanilla essence",
+      "amount": "1 tsp",
+      "grams": 4.2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.6,
+      "reference": "Vanilla extract, imitation, no alcohol (SA vanilla essence) — USDA FDC 172236: 56 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "0.25 cup (62.5 ml)",
+      "grams": 64,
+      "kcal": 39,
+      "proteinG": 2.0,
+      "fatG": 2.1,
+      "netCarbsG": 3.1,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 855,
+      "proteinG": 27.5,
+      "fatG": 3.8,
+      "netCarbsG": 177.5,
+      "reference": "SA cake wheat flour label (PnP Cake Wheat Flour, FatSecret ZA): 342 kcal, 11 g protein, 1.5 g fat (label rounds to 2), 71 g available carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Bicarbonate of soda",
+      "amount": "1 tsp",
+      "grams": 4.6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Leavening agents, baking soda — USDA FDC 175040: 0 kcal"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tsp",
+      "grams": 4.6,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "0.5 tsp",
+      "grams": 1.3,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.4,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 2867,
+  "kcalPerServing": 290,
+  "perServing": {
+    "proteinG": 4.9,
+    "fatG": 12.3,
+    "netCarbsG": 40.1
+  },
+  "notes": "One slice of 10. Assumptions: bananas ~115 g peeled each; full-cream milk; ~5 g butter for greasing counted. Compared against: SparkPeople butter banana breads at 200 and 235 kcal for 1/12 of a loaf, which is 240-280 kcal at 1/10, and FatSecret's 158 kcal generic slice (a thinner slice). Ours, at 290, is in line once the slice size matches."
+}

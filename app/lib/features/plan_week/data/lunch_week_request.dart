@@ -1,4 +1,5 @@
 import '../../lunch_box/model/lunch_slot.dart';
+import '../../lunch_box/model/lunch_variety.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../model/checked_product.dart';
 import '../model/idea_search.dart';
@@ -11,7 +12,8 @@ import '../model/treat_days.dart';
 /// the lunchbox aisle's shelves marked so (ADR-0013), a dish with its
 /// ingredients' products (ADR-0021) —
 /// each with at most [productLimit] kept products, names and brands cut to
-/// the contract's lengths — and the brief's packing choices. Pure, so the
+/// the contract's lengths — the brief's packing choices and the compartments
+/// kept the same all week (ADR-0028). Pure, so the
 /// shape is tested without Functions.
 abstract final class LunchWeekRequest {
   /// The model's 25 ideas and the aisle's 12 shelves.
@@ -30,6 +32,7 @@ abstract final class LunchWeekRequest {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
+    LunchVariety variety = LunchVariety.standard,
   }) => {
     'householdId': householdId,
     'week': week.key,
@@ -37,6 +40,7 @@ abstract final class LunchWeekRequest {
     'slots': wireNames(LunchSlot.values, packing.slots),
     'preferences': wireNames(PackingPreference.values, packing.preferences),
     'treatDays': TreatDays.inOrder(packing.treatDays),
+    'sameAllWeek': variety.names,
     'ideas': [
       for (final search in searches.where((s) => s.hasKept).take(ideaLimit))
         _idea(search, childIds),

@@ -1,0 +1,174 @@
+{
+  "id": "vegetable-frittata",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "2, about 200 g",
+      "grams": 200,
+      "kcal": 34,
+      "proteinG": 2.4,
+      "fatG": 0.6,
+      "netCarbsG": 4.2,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 27,
+      "proteinG": 1.3,
+      "fatG": 0.3,
+      "netCarbsG": 4.0,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 18,
+      "proteinG": 2.3,
+      "fatG": 0.3,
+      "netCarbsG": 1.1,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Large eggs",
+      "amount": "8 SA large × 55 g out of shell",
+      "grams": 440,
+      "kcal": 629,
+      "proteinG": 55.3,
+      "fatG": 41.8,
+      "netCarbsG": 3.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "3 tbsp = 45 ml × 1.03 g/ml",
+      "grams": 46,
+      "kcal": 28,
+      "proteinG": 1.4,
+      "fatG": 1.5,
+      "netCarbsG": 2.2,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "½ tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "¼ tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Feta",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 159,
+      "proteinG": 8.5,
+      "fatG": 12.9,
+      "netCarbsG": 2.3,
+      "reference": "Cheese, feta — USDA FDC 173420: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mixed salad leaves",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 15,
+      "proteinG": 1.4,
+      "fatG": 0.1,
+      "netCarbsG": 1.6,
+      "reference": "Lettuce, green leaf, raw (mixed salad leaves) — USDA FDC 169249: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "½ of a ~350 g English cucumber",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1277,
+  "kcalPerServing": 320,
+  "perServing": {
+    "proteinG": 19.2,
+    "fatG": 21.3,
+    "netCarbsG": 10.8
+  },
+  "notes": "Assumptions that move the number: 8 SA large eggs × 55 g; 60 g feta; 2 tbsp olive oil in all (pan and dressing). Net carbs 10.8 g a serving and fat 60 % of energy — just over the keto carb limit, mostly from the onion (11.5 g) and cucumber. Cross-check: published vegetable frittatas with a side salad list ~280–330 kcal a serving; 320 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

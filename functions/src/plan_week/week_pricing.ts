@@ -116,14 +116,18 @@ export function lineCents(
     .reduce((sum, pack) => sum + Math.ceil(boxes / pack.boxesPerPack) * pack.priceCents, 0);
 }
 
-/** Every pack a placed entry is bought as, once each, with the boxes it does. */
-export function packsPlaced(
-  placed: readonly PlacedEntry[],
+/**
+ * Every pack [entries] are bought as, once each, with the boxes it does —
+ * every product kept, not only the placed ones, so a swap on the phone is
+ * priced at its real pack (lunch-box ADR-0028 §7).
+ */
+export function everyPack(
+  entries: readonly WeekBriefProduct[],
   pricing: WeekPricing,
 ): { productId: string; boxesPerPack: number }[] {
   const packs: Record<string, number> = {};
-  for (const { product } of placed) {
-    for (const pack of pricing.packsOf(product)) packs[pack.productId] ??= pack.boxesPerPack;
+  for (const entry of entries) {
+    for (const pack of pricing.packsOf(entry)) packs[pack.productId] ??= pack.boxesPerPack;
   }
   return Object.entries(packs).map(([productId, boxesPerPack]) => ({ productId, boxesPerPack }));
 }

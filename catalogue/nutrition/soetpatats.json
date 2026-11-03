@@ -1,0 +1,84 @@
+{
+  "id": "soetpatats",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sweet potatoes",
+      "amount": "1 kg peeled",
+      "grams": 1000,
+      "kcal": 860,
+      "proteinG": 15.7,
+      "fatG": 0.5,
+      "netCarbsG": 171.2,
+      "reference": "Sweet potato, raw, unprepared — USDA FDC 168482: 86 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 574,
+      "proteinG": 0.7,
+      "fatG": 64.9,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 570,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 147.1,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1 stick, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole cinnamon stick, lifted out before serving — none counted"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1/2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1/2 lemon ≈ 20 g juice",
+      "grams": 20,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2008,
+  "kcalPerServing": 330,
+  "perServing": {
+    "proteinG": 2.8,
+    "fatG": 10.9,
+    "netCarbsG": 53.3
+  },
+  "notes": "Assumptions that change the number: 1 kg peeled sweet potato; all of the syrup (80 g butter, 150 g brown sugar) spooned over and eaten; cinnamon stick removed. Sanity check: USDA candied sweet potato, home-prepared (FDC 170088) is 164 kcal / 100 g and ours is ~175 kcal / 100 g (2008 kcal over ~1.15 kg), with more butter and sugar per potato."
+}

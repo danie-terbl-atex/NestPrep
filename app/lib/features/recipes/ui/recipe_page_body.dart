@@ -5,6 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../model/recipe.dart';
 import '../state/recipe_page_controller.dart';
+import 'open_on_frame_button.dart';
 import 'people_scaler.dart';
 import 'recipe_allergens.dart';
 import 'recipe_facts.dart';
@@ -15,7 +16,8 @@ import 'recipe_shop_card.dart';
 import 'recipe_step_row.dart';
 
 /// Everything under a recipe's photo, in the order a cook needs it: what it
-/// is, how long, what is in it that matters, where it comes from; then how
+/// is, how long, what is in it that matters, the ways of eating it suits,
+/// where it comes from; then how
 /// many it is for, what to gather at that scale, and how to make it; then
 /// whose photo it was. Ticks, done steps and the scale are the page's
 /// controller's; this lays them out and reports taps.
@@ -48,6 +50,19 @@ class RecipePageBody extends StatelessWidget {
           const NestEyebrow(RecipeCopy.allergensHeader),
           const SizedBox(height: NestSpace.sm),
           RecipeAllergens(allergens: recipe.allergens),
+          if (recipe.dietTags.isNotEmpty) ...[
+            const SizedBox(height: NestSpace.xl),
+            const NestEyebrow(RecipeCopy.dietHeader),
+            const SizedBox(height: NestSpace.sm),
+            Wrap(
+              spacing: NestSpace.xs,
+              runSpacing: NestSpace.xs,
+              children: [
+                for (final tag in recipe.dietTags)
+                  NestTag(label: RecipeCopy.dietTag(tag)),
+              ],
+            ),
+          ],
           if (about != null) ...[
             const SizedBox(height: NestSpace.xxl),
             const NestSectionHeader(title: RecipeCopy.aboutHeader),
@@ -62,6 +77,7 @@ class RecipePageBody extends StatelessWidget {
               onRemove: controller.removePerson,
               onReset: controller.resetToRecipe,
             ),
+            OpenOnFrameButton(recipe: recipe, scale: scale),
           ],
           const SizedBox(height: NestSpace.xxxl),
           const NestSectionHeader(title: RecipeCopy.ingredientsHeader),

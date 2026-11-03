@@ -5,14 +5,19 @@ import {
   weekBriefFrom,
   type WeekBrief,
 } from '../../../src/plan_week/week_brief';
-import { MAX_DAYS_PER_PRODUCT, assembleWeek } from '../../../src/plan_week/week_assembly';
+import { MAX_KINDS, assembleWeek } from '../../../src/plan_week/week_assembly';
 import {
   weekDecisionRequest,
   weekDecisionsFrom,
   type WeekDecisions,
 } from '../../../src/plan_week/week_decisions';
 import type { FoundIdea } from '../../../src/plan_week/schemas';
-import type { LunchPlanFacts } from '../../../src/plan_week/week_documents';
+import type { PackingChoices } from '../../../src/plan_week/packing_preferences';
+import {
+  LUNCH_SLOTS,
+  type LunchPlanFacts,
+  type LunchSlot,
+} from '../../../src/plan_week/week_documents';
 import { MONDAY, productOf, rulesOf, weekOf } from './fixtures';
 
 const MIA = rulesOf({ allergyCodes: ['milk'] });
@@ -182,18 +187,6 @@ describe('the week NestPrep builds from what Jev said', () => {
     }
   });
 
-  it(`uses one product on at most ${String(MAX_DAYS_PER_PRODUCT)} days for a child while another fits`, () => {
-    const b = weekBriefFrom(
-      [fruitIdea({ productId: 'apples' }, { productId: 'pears', name: 'Pears 1kg' })],
-      [{ memberId: 'leo', rules: LEO }],
-      weekOf([], null),
-    );
-    const week = assembleWeek(b, fits(b, { 'p-1': 0.95, 'p-2': 0.6 }));
-    const apples = week.lunches.filter((l) => l.productId === 'apples').length;
-    expect(apples).toBeLessThanOrEqual(MAX_DAYS_PER_PRODUCT);
-    expect(week.lunches).toHaveLength(5);
-  });
-
   it('repeats the only product that fits rather than leave a box empty', () => {
     const b = weekBriefFrom(
       [fruitIdea({ productId: 'apples' })],
@@ -213,7 +206,7 @@ describe('the week NestPrep builds from what Jev said', () => {
     const kids = [{ memberId: 'leo', rules: LEO }];
     const rich = weekBriefFrom(ideas, kids, weekOf([], null));
     const generous = assembleWeek(rich, fits(rich, { 'p-1': 0.99, 'p-2': 0.7 }));
-    expect(generous.lunches.filter((l) => l.productId === 'berries')).toHaveLength(3);
+    expect(generous.lunches.filter((l) => l.productId === 'berries')).toHaveLength(5);
 
     const tight = weekBriefFrom(ideas, kids, weekOf([], 5000));
     const week = assembleWeek(tight, fits(tight, { 'p-1': 0.99, 'p-2': 0.7 }));
@@ -230,5 +223,96 @@ describe('the week NestPrep builds from what Jev said', () => {
         { productId: 'muffins', boxesPerPack: 1 },
       ]),
     );
+  });
+});
+
+const leoOnly = [{ memberId: 'leo', rules: LEO }];
+const bags = [
+  { productId: 'apples', name: 'Apples 1kg', priceCents: 2999, packQuantity: 6 },
+  { productId: 'naartjies', name: 'Naartjies 1kg', priceCents: 3499, packQuantity: 6 },
+  { productId: 'bananas', name: 'Bananas 1kg', priceCents: 2499, packQuantity: 6 },
+];
+const choosing = (sameAllWeek: LunchSlot[]): PackingChoices => ({
+  slots: LUNCH_SLOTS,
+  preferences: [],
+  treatDays: [5],
+  sameAllWeek,
+});
+
+describe('a pack used up before another is opened (lunch-box ADR-0028)', () => {
+  it('fills a week of fruit from one bag when fruit is kept the same, as it is by default', () => {
+    const b = weekBriefFrom([fruitIdea(...bags)], leoOnly, weekOf([], null));
+    expect(b.sameAllWeek).toContain('fruit');
+    const week = assembleWeek(b, fits(b, { 'p-1': 0.9, 'p-2': 0.85, 'p-3': 0.8 }));
+    expect(week.lunches).toHaveLength(5);
+    expect(new Set(week.lunches.map((l) => l.productId))).toEqual(new Set(['apples']));
+    expect(week.weekCents).toBe(2999);
+  });
+
+  it('keeps both children on one product, so one bag does them both until it runs out', () => {
+    const b = weekBriefFrom([fruitIdea(...bags)], twoKids, weekOf([], null));
+    const week = assembleWeek(b, fits(b, { 'p-1': 0.9, 'p-2': 0.85, 'p-3': 0.8 }));
+    expect(week.lunches).toHaveLength(10);
+    expect(new Set(week.lunches.map((l) => l.productId)).size).toBe(1);
+    expect(week.weekCents).toBe(2 * 2999);
+  });
+
+  it('lets a compartment vary when the parent asks, at most a few kinds a child', () => {
+    const b = weekBriefFrom(
+      [
+        fruitIdea(...bags, {
+          productId: 'pears',
+          name: 'Pears 1kg',
+          priceCents: 2999,
+          packQuantity: 6,
+        }),
+      ],
+      leoOnly,
+      weekOf([], null),
+      choosing([]),
+    );
+    const week = assembleWeek(b, fits(b, {}));
+    const kinds = new Set(week.lunches.map((l) => l.productId));
+    expect(kinds.size).toBeGreaterThan(1);
+    expect(kinds.size).toBeLessThanOrEqual(MAX_KINDS);
+  });
+
+  it('gives a varying compartment a box from the open pack before a close second', () => {
+    const b = weekBriefFrom(
+      [
+        fruitIdea(
+          { productId: 'apples', name: 'Apples 1kg', priceCents: 2999, packQuantity: 6 },
+          { productId: 'pears', name: 'Pears 1kg', priceCents: 2999, packQuantity: 6 },
+        ),
+      ],
+      leoOnly,
+      weekOf([], null),
+      choosing([]),
+    );
+    const week = assembleWeek(b, fits(b, { 'p-1': 0.9, 'p-2': 0.82 }));
+    expect(week.lunches.find((l) => l.day === 2)?.productId).toBe('apples');
+  });
+
+  it('merges a line into a pack already bought while the week is over budget', () => {
+    const ideas = [
+      fruitIdea(
+        { productId: 'apples', name: 'Apples 1kg', priceCents: 2999, packQuantity: 6 },
+        { productId: 'pears', name: 'Pears 1kg', priceCents: 2999, packQuantity: 6 },
+      ),
+    ];
+    const roomy = weekBriefFrom(ideas, leoOnly, weekOf([], null), choosing([]));
+    const mixed = assembleWeek(roomy, fits(roomy, { 'p-1': 0.9, 'p-2': 0.85 }));
+    expect(new Set(mixed.lunches.map((l) => l.productId)).size).toBe(2);
+
+    const tight = weekBriefFrom(ideas, leoOnly, weekOf([], 4000), choosing([]));
+    const week = assembleWeek(tight, fits(tight, { 'p-1': 0.9, 'p-2': 0.85 }));
+    expect(new Set(week.lunches.map((l) => l.productId)).size).toBe(1);
+    expect(week.weekCents).toBe(2999);
+  });
+
+  it("returns every kept product's pack, so a swap on the phone is priced right", () => {
+    const b = weekBriefFrom([fruitIdea(...bags)], leoOnly, weekOf([], null));
+    const week = assembleWeek(b, fits(b, { 'p-1': 0.9, 'p-2': 0.85, 'p-3': 0.8 }));
+    expect(week.packs.map((p) => p.productId).sort()).toEqual(['apples', 'bananas', 'naartjies']);
   });
 });

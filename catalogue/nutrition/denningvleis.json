@@ -1,0 +1,154 @@
+{
+  "id": "denningvleis",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp × 13.5 g",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lamb knuckles or neck",
+      "amount": "1.5 kg bone-in × 60 % edible = 900 g",
+      "grams": 900,
+      "kcal": 2079,
+      "proteinG": 156.9,
+      "fatG": 161.1,
+      "netCarbsG": 1.3,
+      "reference": "Lamb, New Zealand, imported, neck chops, separable lean and fat, raw — USDA FDC 172637: 231 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "3 medium × 150 g",
+      "grams": 450,
+      "kcal": 180,
+      "proteinG": 5.0,
+      "fatG": 0.5,
+      "netCarbsG": 34.4,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "4, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed before serving, 0 kcal"
+    },
+    {
+      "ingredient": "Whole allspice berries",
+      "amount": "6 ≈ 0.5 g",
+      "grams": 0.5,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, allspice, ground — USDA FDC 171315: 263 kcal / 100 g"
+    },
+    {
+      "ingredient": "Whole cloves",
+      "amount": "5 ≈ 0.4 g",
+      "grams": 0.4,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.1,
+      "netCarbsG": 0.1,
+      "reference": "Spices, cloves, ground — USDA FDC 171321: 274 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "4 × 5 g",
+      "grams": 20,
+      "kcal": 30,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 6.2,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh green chilli",
+      "amount": "1 ≈ 10 g",
+      "grams": 10,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1.5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Tamarind pulp",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 72,
+      "proteinG": 0.8,
+      "fatG": 0.2,
+      "netCarbsG": 17.2,
+      "reference": "Tamarinds, raw — USDA FDC 167763: 239 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "2 tbsp ≈ 27 g",
+      "grams": 27,
+      "kcal": 103,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 26.5,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground nutmeg",
+      "amount": "0.5 tsp ≈ 1.1 g",
+      "grams": 1.1,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.4,
+      "netCarbsG": 0.3,
+      "reference": "Spices, nutmeg, ground — USDA FDC 171326: 525 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "to taste, 0 kcal"
+    }
+  ],
+  "totalKcal": 2834,
+  "kcalPerServing": 470,
+  "perServing": {
+    "proteinG": 27.4,
+    "fatG": 33.8,
+    "netCarbsG": 14.5
+  },
+  "notes": "Lamb neck/knuckle edible yield 60 % (bone ~40 %), lean and fat both eaten, rendered fat stays in the sauce. All the oil is eaten. Sanity check: Food Network (Hawa Hassan) denningvleis 345 kcal a serving; Woolworths lamb bredie 122 kcal / 100 g. Ours is ~270 g a serving ≈ 175 kcal / 100 g — higher than both because the neck/knuckle fat stays in the pot and there are no vegetables to dilute it; kept."
+}

@@ -1,0 +1,164 @@
+{
+  "id": "baked-hake-tomato-olive",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.0,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.75 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 × 400 g tin",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "100 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Pitted black olives",
+      "amount": "0.5 cup (125 ml) halved ≈ 70 g",
+      "grams": 70,
+      "kcal": 81,
+      "proteinG": 0.6,
+      "fatG": 7.6,
+      "netCarbsG": 3.1,
+      "reference": "Olives, ripe, canned (small-extra large) — USDA FDC 169094: 116 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Hake fillets",
+      "amount": "600 g raw",
+      "grams": 600,
+      "kcal": 474,
+      "proteinG": 102.0,
+      "fatG": 6.6,
+      "netCarbsG": 0.0,
+      "reference": "Cape hake fillet, frozen (Sea Harvest label): 79 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green beans",
+      "amount": "400 g trimmed",
+      "grams": 400,
+      "kcal": 124,
+      "proteinG": 7.3,
+      "fatG": 0.9,
+      "netCarbsG": 17.1,
+      "reference": "Beans, snap, green, raw — USDA FDC 169961: 31 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "2 tbsp chopped × 3.8 g",
+      "grams": 7.6,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1 in wedges ≈ 30 g juice squeezed",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1138,
+  "kcalPerServing": 280,
+  "perServing": {
+    "proteinG": 29.6,
+    "fatG": 11.1,
+    "netCarbsG": 13.5
+  },
+  "notes": "Assumptions that change the number: hake at the Sea Harvest frozen-fillet label value, 150 g a person; all 2 tbsp oil eaten; half a cup of black olives ≈ 70 g; no starch. Published check: baked white fish in a tomato and olive sauce is typically listed at ~220–300 kcal a serving; 280 agrees."
+}

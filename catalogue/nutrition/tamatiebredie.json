@@ -1,0 +1,164 @@
+{
+  "id": "tamatiebredie",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lamb neck or shoulder chops",
+      "amount": "1.2 kg bone-in → 900 g edible (75 %)",
+      "grams": 900,
+      "kcal": 2376,
+      "proteinG": 149.2,
+      "fatG": 193.1,
+      "netCarbsG": 0.0,
+      "reference": "Lamb, shoulder, whole (arm and blade), separable lean and fat, trimmed to 1/4\" fat, choice, raw — USDA FDC 172496: 264 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1 stick, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Whole cloves",
+      "amount": "4 cloves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole spice removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaf, removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Ripe tomatoes",
+      "amount": "1 kg, peeled",
+      "grams": 1000,
+      "kcal": 180,
+      "proteinG": 8.8,
+      "fatG": 2.0,
+      "netCarbsG": 26.9,
+      "reference": "Tomatoes, red, ripe, raw — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tsp",
+      "grams": 8,
+      "kcal": 31,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 8.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "4 medium × 180 g peeled",
+      "grams": 720,
+      "kcal": 554,
+      "proteinG": 14.8,
+      "fatG": 0.6,
+      "netCarbsG": 110.8,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried chilli flakes",
+      "amount": "½ tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.2,
+      "netCarbsG": 0.3,
+      "reference": "Spices, pepper, red or cayenne — USDA FDC 170932: 318 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 3556,
+  "kcalPerServing": 590,
+  "perServing": {
+    "proteinG": 29.8,
+    "fatG": 37.2,
+    "netCarbsG": 29.9
+  },
+  "notes": "Assumptions: 1.2 kg bone-in neck/shoulder chops → 900 g edible (75 %), valued as USDA lamb shoulder trimmed to ¼\" fat; the rendered fat stays in the sauce and is eaten; cinnamon, cloves and bay removed; 4 medium potatoes ~180 g peeled each. Rice to serve not counted. Sanity check: published recipe figures run 245–365 kcal a serving but on smaller portions; FatSecret lists Woolworths lamb tomato bredie at 122 kcal/100 g and Foodie lamb tomato bredie at 197 kcal/100 g; ours is ~140 kcal/100 g on a ~420 g edible serving, which sits between them."
+}

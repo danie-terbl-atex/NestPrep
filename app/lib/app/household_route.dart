@@ -38,6 +38,20 @@ abstract final class HouseholdRoute {
   static String wherePathFor(String householdId) =>
       '/households/$householdId/$whereSegment';
 
+  static const historySegment = 'history';
+  static const placesSegment = 'places';
+
+  static String historyPathFor(String householdId, String memberId) =>
+      '${wherePathFor(householdId)}/$historySegment/$memberId';
+
+  static String placesPathFor(String householdId) =>
+      '${wherePathFor(householdId)}/$placesSegment';
+
+  static String placePathFor(String householdId, String placeId) =>
+      '${placesPathFor(householdId)}/$placeId';
+
+  static const newPlaceId = 'new';
+
   static String setupPathFor(String householdId) =>
       '/households/$householdId/$setupSegment';
 

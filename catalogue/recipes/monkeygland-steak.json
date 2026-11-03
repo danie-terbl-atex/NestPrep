@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["quick", "kidFriendly"],
   "allergens": ["fish"],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": "divided", "group": "For the sauce" },
     { "name": "Onion", "quantity": 1, "unit": null, "note": "finely chopped", "group": "For the sauce" },
@@ -37,5 +37,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "The sauce keeps a week in a jar in the fridge; warm it while the steak cooks.",
+  "kcalPerServing": 640,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

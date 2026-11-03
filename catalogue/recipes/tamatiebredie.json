@@ -16,7 +16,7 @@
     "onePot"
   ],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     {
       "name": "Sunflower oil",
@@ -139,6 +139,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Even better the next day: cool, refrigerate overnight, lift off the fat and reheat gently.",
+  "kcalPerServing": 590,
   "photo": {
     "credit": null,
     "licence": null,

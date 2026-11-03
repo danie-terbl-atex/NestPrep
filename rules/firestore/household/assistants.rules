@@ -1,0 +1,31 @@
+// ---- assistants: connections, what they did, the household's switch (assistants ADR-0003, ADR-0005) ----
+// A connection is the grant itself, written only by `assistantAuth` when a
+// member consents. Its member and the household's family see it, and either
+// may delete it — deleting it is disconnecting, and every token it issued
+// stops working on its next call.
+match /assistantConnections/{grantId} {
+  allow read, delete: if (isSignedIn() && resource.data.uid == uid()) || isFamily(householdId);
+  allow create, update: if false;
+}
+
+// One line per write an assistant made, ids only. The member it acted for
+// and the family see it; only the assistant's own Functions write it.
+match /assistantActivity/{activityId} {
+  allow read: if isFamily(householdId)
+    || (isInHousehold(householdId) && resource.data.memberId == ownMemberId(householdId));
+  allow write: if false;
+}
+
+// `current.allowed: false` stops every assistant in this household on its
+// next call. Absent means allowed. Family sets it, stamped with who and when.
+match /assistantSettings/{settingsId} {
+  allow read: if isInHousehold(householdId);
+  allow create, update: if isFamily(householdId)
+    && settingsId == 'current'
+    && request.resource.data.keys().hasOnly(['allowed', 'updatedBy', 'updatedAt'])
+    && request.resource.data.keys().hasAll(['allowed', 'updatedBy', 'updatedAt'])
+    && request.resource.data.allowed is bool
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt');
+  allow delete: if false;
+}

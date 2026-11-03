@@ -1,0 +1,172 @@
+{
+  "id": "chicken-fajita-traybake",
+  "name": "Chicken fajita traybake",
+  "summary": "Smoky spiced chicken strips and three colours of pepper roasted on one tray, wrapped at the table in warm wholewheat tortillas with fresh salsa, lettuce and avocado.",
+  "about": "Fajitas began with the ranch hands of northern Mexico and Texas, who grilled strips of skirt steak and wrapped them in flour tortillas; chicken came later. Roasting everything on one tray suits a school night, and setting the fillings out lets each child build their own.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "skinless, cut into 1 cm strips",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Red, yellow and green peppers",
+      "quantity": 3,
+      "unit": null,
+      "note": "one of each, deseeded and cut into 1 cm strips",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Red onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "cut into thin wedges",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Garlic powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "leave out for small children",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Limes",
+      "quantity": 2,
+      "unit": null,
+      "note": "1 juiced for the salsa, 1 cut into wedges to serve",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Wholewheat tortillas",
+      "quantity": 8,
+      "unit": null,
+      "note": "about 20 cm across, vegan",
+      "group": "To serve"
+    },
+    {
+      "name": "Cos lettuce",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "half a head, shredded",
+      "group": "To serve"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, sliced",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C if your oven is a fan oven).",
+    "Put the chicken, peppers and onions on a large roasting tray, drizzle with the oil and sprinkle over the paprika, cumin, ground coriander, garlic powder, oregano, chilli powder and salt. Toss with your hands until everything is coated, then spread it out in one layer; use two trays if it is crowded, so it roasts rather than steams.",
+    "Roast for 10 minutes, until the chicken has turned white on the outside.",
+    "While it roasts, mix the tomatoes, coriander and the juice of one lime in a bowl and season with a pinch of salt.",
+    "Toss the chicken and vegetables, wrap the tortillas in foil and put them on the shelf below. Roast for 8 to 10 minutes more, until the peppers are charred at the edges and the thickest strip of chicken is white all the way through with no pink.",
+    "Set the tray on the table with the warm tortillas, salsa, lettuce, avocado and lime wedges, and let everyone fill and roll their own."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Slice and spice the chicken and vegetables up to a day ahead and keep them covered in the fridge on the tray.",
+  "kcalPerServing": 650,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

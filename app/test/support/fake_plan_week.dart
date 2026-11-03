@@ -7,6 +7,7 @@ import 'package:nestprep/features/add_to_checkers/model/retailer_product.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
 import 'package:nestprep/features/plan_week/data/lunch_aisle_source.dart';
 import 'package:nestprep/features/plan_week/data/lunch_idea_drafter.dart';
@@ -60,6 +61,7 @@ final class FakeLunchWeekBuilder implements LunchWeekBuilder {
   Completer<void>? gate;
   final sent = <List<IdeaSearch>>[];
   final packed = <PackingChoice>[];
+  final varieties = <LunchVariety>[];
 
   @override
   Future<LunchWeekReply> build({
@@ -68,9 +70,11 @@ final class FakeLunchWeekBuilder implements LunchWeekBuilder {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
+    required LunchVariety variety,
   }) async {
     sent.add(searches);
     packed.add(packing);
+    varieties.add(variety);
     await gate?.future;
     final failure = failWith;
     if (failure != null) throw failure;

@@ -80,7 +80,7 @@ void main() {
       tester,
       const Column(
         children: [
-          NestRiseIn(child: Text(AppCopy.tabWeek)),
+          NestRiseIn(child: Text(AppCopy.tabCalendar)),
           NestRiseIn(index: 3, child: Text(AppCopy.tabMeals)),
         ],
       ),
@@ -90,7 +90,7 @@ void main() {
     final first = tester.widget<Opacity>(
       find
           .ancestor(
-            of: find.text(AppCopy.tabWeek),
+            of: find.text(AppCopy.tabCalendar),
             matching: find.byType(Opacity),
           )
           .first,

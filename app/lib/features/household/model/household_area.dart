@@ -17,7 +17,8 @@ enum HouseholdArea {
   familyProfiles('familyProfiles', _withOwn),
   medical('medical', _withOwn),
   homeCare('homeCare', _withOwn),
-  nannyHub('nannyHub', _noOwn);
+  nannyHub('nannyHub', _noOwn),
+  location('location', _noOwn);
 
   const HouseholdArea(this.key, this.levels);
 

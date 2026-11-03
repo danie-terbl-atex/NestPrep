@@ -1,0 +1,44 @@
+{
+  "id": "stywe-pap",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Water",
+      "amount": "1.1 l",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "White maize meal",
+      "amount": "420 g",
+      "grams": 420,
+      "kcal": 1441,
+      "proteinG": 31.5,
+      "fatG": 4.2,
+      "netCarbsG": 315.0,
+      "reference": "Iwisa Super Maize Meal label via Checkers: 1434 kJ = 343 kcal, P 7.5, F 1.0, available carbohydrate 75 g, fibre 4.8 g / 100 g: 343 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1441,
+  "kcalPerServing": 240,
+  "perServing": {
+    "proteinG": 5.2,
+    "fatG": 0.7,
+    "netCarbsG": 52.5
+  },
+  "notes": "Assumptions: water and salt 0 kcal; cooked mass ~1.4 kg, ~235 g a serving. Sanity check: Eat This Much stiff maize pap 294 kcal per 316 g (93 kcal/100 g); ours is ~100 kcal/100 g, within 10 %."
+}

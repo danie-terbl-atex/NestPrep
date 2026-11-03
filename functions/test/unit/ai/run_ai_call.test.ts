@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase-admin/firestore';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
@@ -73,7 +74,7 @@ describe('a call that works', () => {
   it('counts against the premium cap when the household has premium', async () => {
     const { deps, ledger } = world(['{"answer":42}']);
     ledger.entitlement = {
-      premiumUntil: { toMillis: (): number => new Date('2027-01-01T00:00:00Z').getTime() },
+      premiumUntil: Timestamp.fromDate(new Date('2027-01-01T00:00:00Z')),
     };
     expect((await runAiCall(deps, call)).callsLeft).toBe(99);
   });

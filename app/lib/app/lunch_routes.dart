@@ -9,9 +9,11 @@ import '../features/household/data/invite_sharer.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
+import '../features/lunch_box/data/lunch_variety_store.dart';
 import '../features/lunch_box/data/platform_lunch_card_sharer.dart';
 import '../features/lunch_box/state/lunch_board_controller.dart';
 import '../features/lunch_box/state/lunch_share_controller.dart';
+import '../features/lunch_box/state/lunch_variety_choice.dart';
 import '../features/lunch_box/ui/card/offscreen_lunch_card_renderer.dart';
 import '../features/lunch_box/ui/lunch_library_screen.dart';
 import '../features/lunch_box/ui/lunch_prep_screen.dart';
@@ -68,6 +70,13 @@ ShellRoute lunchRoutes() => ShellRoute(
       ChangeNotifierProvider(
         create: (context) => LunchShopChoice(
           preference: context.read<LunchShopPreference>(),
+          householdId: HouseholdRoute.idFrom(state),
+        ),
+      ),
+      // Which compartments every fill keeps the same all week (ADR-0028).
+      ChangeNotifierProvider(
+        create: (context) => LunchVarietyChoice(
+          store: context.read<LunchVarietyStore>(),
           householdId: HouseholdRoute.idFrom(state),
         ),
       ),

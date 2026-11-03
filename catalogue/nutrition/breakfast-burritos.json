@@ -1,0 +1,174 @@
+{
+  "id": "breakfast-burritos",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "½ tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, paprika (smoked paprika) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black beans",
+      "amount": "1 × 400 g tin ≈ 240 g drained",
+      "grams": 240,
+      "kcal": 317,
+      "proteinG": 21.3,
+      "fatG": 1.3,
+      "netCarbsG": 36.0,
+      "reference": "Beans, black, mature seeds, cooked, boiled, without salt (for tinned, drained) — USDA FDC 173735: 132 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 14,
+      "proteinG": 1.7,
+      "fatG": 0.2,
+      "netCarbsG": 0.9,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "6 SA large × 55 g",
+      "grams": 330,
+      "kcal": 472,
+      "proteinG": 41.4,
+      "fatG": 31.4,
+      "netCarbsG": 2.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "¼ tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Wholewheat tortillas",
+      "amount": "4 large × 60 g (25 cm)",
+      "grams": 240,
+      "kcal": 744,
+      "proteinG": 23.4,
+      "fatG": 23.4,
+      "netCarbsG": 86.6,
+      "reference": "Tortillas, ready-to-bake or -fry, whole wheat — USDA FDC 174081: 310 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 242,
+      "proteinG": 13.7,
+      "fatG": 20.0,
+      "netCarbsG": 2.0,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2063,
+  "kcalPerServing": 520,
+  "perServing": {
+    "proteinG": 26.8,
+    "fatG": 22.9,
+    "netCarbsG": 38.5
+  },
+  "notes": "Assumptions that move the number: 4 large wholewheat tortillas × 60 g at the USDA whole-wheat tortilla value (744 kcal); 6 SA large eggs; black beans 240 g drained at the boiled value; 60 g cheddar; 1 tbsp olive oil. Cross-check: published breakfast burritos with egg, beans and cheese list ~450–550 kcal each; 520 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

@@ -1,7 +1,7 @@
 name: nestprep
 description: "NestPrep — one household on one app. NullState app `nestprep`."
 publish_to: 'none'
-version: 0.9.0+10
+version: 0.9.0+11
 
 environment:
   sdk: ^3.13.3
@@ -27,6 +27,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   geolocator: ^14.0.3
   go_router: ^18.0.1
+  google_maps_flutter: ^2.19.0
   google_sign_in: ^7.2.0
   http: ^1.6.0
   image: ^4.10.1
@@ -37,6 +38,7 @@ dependencies:
   json_annotation: ^4.12.0
   local_auth: ^3.0.2
   lucide_icons_flutter: ^3.1.21
+  mobile_scanner: ^7.4.2
   path_provider: ^2.1.6
   pdf: ^3.13.1
   printing: ^5.15.1
@@ -61,19 +63,19 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-    - family: DMSans
+    - family: MonaSans
       fonts:
-        - asset: assets/fonts/DMSans-Regular.ttf
+        - asset: assets/fonts/MonaSans-Regular.ttf
           weight: 400
-        - asset: assets/fonts/DMSans-Medium.ttf
+        - asset: assets/fonts/MonaSans-Medium.ttf
           weight: 500
-        - asset: assets/fonts/DMSans-SemiBold.ttf
+        - asset: assets/fonts/MonaSans-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/DMSans-Bold.ttf
+        - asset: assets/fonts/MonaSans-Bold.ttf
           weight: 700
-    - family: Fraunces
+    - family: MonaSansDisplay
       fonts:
-        - asset: assets/fonts/Fraunces-SemiBold.ttf
+        - asset: assets/fonts/MonaSansDisplaySemiExpanded-SemiBold.ttf
           weight: 600
   assets:
     - assets/brand/
@@ -83,5 +85,4 @@ flutter:
     # The shops' own marks, shown as they are (add-to-checkers ADR-0006).
     - assets/retailers/
     # The fonts' own licences, shown on the Licences screen (accounts ADR-0005).
-    - assets/fonts/DMSans-OFL.txt
-    - assets/fonts/Fraunces-OFL.txt
+    - assets/fonts/MonaSans-OFL.txt

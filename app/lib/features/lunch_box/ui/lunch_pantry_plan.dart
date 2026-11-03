@@ -11,6 +11,7 @@ import '../model/lunch_board.dart';
 import '../model/lunch_pantry_week.dart';
 import '../state/lunch_board_controller.dart';
 import '../state/lunch_pantry_controller.dart';
+import '../state/lunch_variety_choice.dart';
 
 /// Planning the week from what is in the house, inside the week's planner
 /// (lunch-box ADR-0006, ADR-0022): the switch, *Fill from the pantry* while
@@ -66,8 +67,11 @@ class LunchPantryPlan extends StatelessWidget {
                   icon: LucideIcons.sparkles,
                   variant: NestButtonVariant.tonal,
                   isLoading: lunch.edit.isFilling,
-                  onPressed: () =>
-                      lunch.edit.autoFill(childWeek.childId, bias: pantry.bias),
+                  onPressed: () => lunch.edit.autoFill(
+                    childWeek.childId,
+                    bias: pantry.bias,
+                    variety: context.read<LunchVarietyChoice>().variety,
+                  ),
                 ),
               ],
               const SizedBox(height: NestSpace.md),

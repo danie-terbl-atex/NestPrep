@@ -8,6 +8,7 @@ import '../../../shared/ui/back_leading.dart';
 import '../../../shared/ui/link_row.dart';
 import '../../accounts/model/session.dart';
 import '../../accounts/state/session_controller.dart';
+import '../../feedback/ui/feedback_screen.dart';
 import '../../legal/ui/about_screen.dart';
 import '../../legal/ui/legal_document_screen.dart';
 import '../../legal/ui/licences_screen.dart';
@@ -95,6 +96,13 @@ class AccountCentreScreen extends StatelessWidget {
                     icon: LucideIcons.info,
                     title: LegalCopy.aboutTitle,
                     path: AboutScreen.path,
+                  ),
+                  LinkRow(
+                    icon: LucideIcons.messageSquareHeart,
+                    title: FeedbackCopy.entry,
+                    subtitle: FeedbackCopy.entryHint,
+                    tint: NestTileTint.butter,
+                    path: FeedbackScreen.path,
                   ),
                   LinkRow(
                     icon: LucideIcons.shieldAlert,

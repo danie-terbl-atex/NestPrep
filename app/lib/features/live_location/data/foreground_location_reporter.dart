@@ -84,7 +84,21 @@ final class ForegroundLocationReporter implements LocationReporter {
     required String memberId,
   }) async {
     await _stopReporting();
-    await _repository.stopSharing(householdId: householdId, memberId: memberId);
+    await removePin(
+      () =>
+          _repository.stopSharing(householdId: householdId, memberId: memberId),
+    );
+  }
+
+  @override
+  Future<void> stopCurrent({required bool removePin}) async {
+    final share = _share;
+    if (share == null) return;
+    if (removePin) {
+      await stop(householdId: share.householdId, memberId: share.memberId);
+    } else {
+      await _stopReporting();
+    }
   }
 
   /// Ends the share and, unlike [stop], has nowhere to throw: the window
@@ -150,6 +164,19 @@ final class ForegroundLocationReporter implements LocationReporter {
   Future<void> dispose() async {
     await _stopReporting();
     await _problems.close();
+  }
+}
+
+/// A delete the backend has not acknowledged in this long is queued, not
+/// lost: offline it completes when the phone reconnects, and waiting for it
+/// would leave the button spinning for ever. A refusal arrives well inside it.
+const pinRemovalWait = Duration(seconds: 4);
+
+Future<void> removePin(Future<void> Function() delete) async {
+  try {
+    await delete().timeout(pinRemovalWait);
+  } on TimeoutException {
+    return;
   }
 }
 

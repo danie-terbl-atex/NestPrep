@@ -33,5 +33,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 2 days wrapped at room temperature; toast or warm slices before serving.",
+  "kcalPerServing": 210,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

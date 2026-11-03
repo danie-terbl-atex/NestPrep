@@ -1,0 +1,164 @@
+{
+  "id": "chilli-bites",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Chickpea flour (chana flour)",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 774,
+      "proteinG": 44.8,
+      "fatG": 13.4,
+      "netCarbsG": 94.0,
+      "reference": "Chickpea flour (besan) — USDA FDC 174288: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "0.25 cup (140 g a cup)",
+      "grams": 35,
+      "kcal": 120,
+      "proteinG": 3.9,
+      "fatG": 0.5,
+      "netCarbsG": 24.9,
+      "reference": "SA cake wheat flour label (PnP Cake Wheat Flour, FatSecret ZA): 342 kcal, 11 g protein, 1.5 g fat (label rounds to 2), 71 g available carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tsp",
+      "grams": 4.6,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "0.5 tsp",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "1 tsp",
+      "grams": 2.7,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 0.4,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 large, 200 g",
+      "grams": 200,
+      "kcal": 80,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 15.2,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spinach",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 23,
+      "proteinG": 2.9,
+      "fatG": 0.4,
+      "netCarbsG": 1.4,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chillies",
+      "amount": "2, 5 g each",
+      "grams": 10,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander (dhania)",
+      "amount": "0.25 cup chopped, ~4 g",
+      "grams": 4,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "2, 15 g each",
+      "grams": 30,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "0.75 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "750 ml in the pot; ~105 g absorbed (13 % of ~790 g batter)",
+      "grams": 105,
+      "kcal": 928,
+      "proteinG": 0.0,
+      "fatG": 105.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1968,
+  "kcalPerServing": 330,
+  "perServing": {
+    "proteinG": 9.3,
+    "fatG": 20.1,
+    "netCarbsG": 23.5
+  },
+  "notes": "Six portions of the batch (about 8 bites each). Assumptions that move the number: the batter is ~790 g and absorbs ~13 % of its weight in oil (~105 g, ~930 kcal), in the middle of the 10-15 % range for battered fritters. Each 5 % of absorption moves a portion by ~60 kcal. Only the absorbed oil is counted, not the 750 ml in the pot. Compared against: Spinneys fried green chilli bites at 397 kcal a serving (4 servings, ~265 at six), and pepperscale daltjies at ~74 kcal a fritter. Ours, at 330, is a little higher than Spinneys because our batch has more flour per portion."
+}

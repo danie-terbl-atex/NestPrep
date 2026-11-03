@@ -8,7 +8,7 @@
   "placement": { "dinner": "side", "lunch": "side" },
   "tags": ["traditional", "budget", "vegetableForward"],
   "allergens": ["milk"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "glutenFree"],
   "ingredients": [
     { "name": "Dried sugar beans", "quantity": 500, "unit": "g", "note": "soaked overnight in plenty of cold water", "group": null },
     { "name": "Water", "quantity": 8, "unit": "cup", "note": "for cooking", "group": null },
@@ -31,5 +31,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Soak the beans the night before. Keeps a week in the fridge. Quick version: 3 x 400 g tins of sugar beans, drained, from step 3.",
+  "kcalPerServing": 310,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

@@ -18,7 +18,7 @@
   "allergens": [
     "wheat"
   ],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     {
       "name": "Cake flour",
@@ -150,6 +150,7 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": "Make the stew a day ahead if you like; reheat to a simmer before steaming fresh dough on top.",
+  "kcalPerServing": 860,
   "photo": {
     "credit": null,
     "licence": null,

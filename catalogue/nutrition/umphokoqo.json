@@ -1,0 +1,64 @@
+{
+  "id": "umphokoqo",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Water",
+      "amount": "2½ cups",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "1 tsp",
+      "grams": 5,
+      "kcal": 36,
+      "proteinG": 0.0,
+      "fatG": 4.1,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "White maize meal",
+      "amount": "400 g",
+      "grams": 400,
+      "kcal": 1372,
+      "proteinG": 30.0,
+      "fatG": 4.0,
+      "netCarbsG": 300.0,
+      "reference": "Iwisa Super Maize Meal label via Checkers: 1434 kJ = 343 kcal, P 7.5, F 1.0, available carbohydrate 75 g, fibre 4.8 g / 100 g: 343 kcal / 100 g"
+    },
+    {
+      "ingredient": "Amasi",
+      "amount": "1 l × 1.03 g/ml",
+      "grams": 1030,
+      "kcal": 628,
+      "proteinG": 31.9,
+      "fatG": 34.0,
+      "netCarbsG": 47.4,
+      "reference": "Clover Amasi via fatsecret.co.za: 63 kcal, P 3.2, F 3.4 / 100 ml; per 100 g at 1.03 g/ml: 61 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2036,
+  "kcalPerServing": 510,
+  "perServing": {
+    "proteinG": 15.5,
+    "fatG": 10.5,
+    "netCarbsG": 86.8
+  },
+  "notes": "Assumptions: optional 1 tsp butter counted as written; amasi from the Clover figure at 1.03 g/ml; all of the litre served. Per serving: 100 g dry maize meal (~343 kcal) and 250 ml amasi (~160 kcal). Sanity check: no published per-serving figure; the parts match published values — Wikipedia gives amasi 64 kcal/100 g (Clover 63), and Food & Home's umphokoqo uses the same 400 g maize meal to 1 l amasi."
+}

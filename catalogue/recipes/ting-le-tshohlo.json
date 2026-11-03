@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["traditional", "festive"],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Sorghum meal", "quantity": 375, "unit": "g", "note": "mabele", "group": "For the ting" },
     { "name": "Lukewarm water", "quantity": 1.5, "unit": "cup", "note": "for the fermenting paste", "group": "For the ting" },
@@ -37,5 +37,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Start the ting 1–2 days ahead. The beef can be cooked and pulled the day before and reheated with a little of its liquid.",
+  "kcalPerServing": 760,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

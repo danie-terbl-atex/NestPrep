@@ -36,7 +36,36 @@ export const RECIPE_TAGS = [
   'capeMalay',
   'streetFood',
   'vegetableForward',
+  'healthy',
 ] as const;
+
+/**
+ * What a recipe as written suits, for families who eat a certain way
+ * (recipes ADR-0006). Informational: nothing is refused for them, so each is
+ * declared only when strictly true — the authoring guide has every rule.
+ */
+export const DIET_TAGS = [
+  'vegetarian',
+  'vegan',
+  'pescatarian',
+  'glutenFree',
+  'dairyFree',
+  'banting',
+  'keto',
+] as const;
+export type DietTag = (typeof DIET_TAGS)[number];
+
+/** A diet tag that only ever comes with another, because it is a stricter form of it. */
+const STRICTER_THAN: Partial<Record<DietTag, DietTag>> = { vegan: 'vegetarian', keto: 'banting' };
+
+/** The allergen a diet tag promises is absent. */
+const WITHOUT: Partial<Record<DietTag, (typeof ALLERGENS)[number][]>> = {
+  vegan: ['milk', 'egg', 'fish', 'shellfish'],
+  vegetarian: ['fish', 'shellfish'],
+  glutenFree: ['wheat'],
+  dairyFree: ['milk'],
+};
+
 export const CUISINES = ['southAfrican', 'international'] as const;
 export const DIFFICULTIES = ['easy', 'medium', 'involved'] as const;
 
@@ -80,7 +109,7 @@ export const recipeSource = z
     placement,
     tags: z.array(z.enum(RECIPE_TAGS)).max(4),
     allergens: z.array(z.enum(ALLERGENS)),
-    dietTags: z.array(z.enum(['vegetarian', 'vegan'])),
+    dietTags: z.array(z.enum(DIET_TAGS)),
     ingredients: z.array(ingredient).min(1).max(30),
     steps: z.array(text(400)).min(1).max(20),
     servings: z.number().int().min(1).max(24),
@@ -89,6 +118,8 @@ export const recipeSource = z
     difficulty: z.enum(DIFFICULTIES),
     prepAhead: z.boolean(),
     prepNote: text(140).nullable(),
+    /** Estimated from `catalogue/nutrition/<id>.json`, which must agree (recipes ADR-0006). */
+    kcalPerServing: z.number().int().min(1).max(3000),
     photo: recipePhotoSource.nullable(),
   })
   .strict()
@@ -103,6 +134,33 @@ export const recipeSource = z
     path: ['allergens'],
   })
   .refine((recipe) => distinct(recipe.tags), { message: 'a tag is listed twice', path: ['tags'] })
+  .refine((recipe) => distinct(recipe.dietTags), {
+    message: 'a diet tag is listed twice',
+    path: ['dietTags'],
+  })
+  .refine(
+    (recipe) =>
+      recipe.dietTags.every((tag) => {
+        const broader = STRICTER_THAN[tag];
+        return broader === undefined || recipe.dietTags.includes(broader);
+      }),
+    { message: 'vegan comes with vegetarian, keto with banting', path: ['dietTags'] },
+  )
+  .refine(
+    (recipe) =>
+      !(recipe.dietTags.includes('pescatarian') && recipe.dietTags.includes('vegetarian')),
+    { message: 'a vegetarian recipe is not also tagged pescatarian', path: ['dietTags'] },
+  )
+  .refine(
+    (recipe) =>
+      recipe.dietTags.every((tag) =>
+        (WITHOUT[tag] ?? []).every((code) => !recipe.allergens.includes(code)),
+      ),
+    {
+      message: 'a diet tag promises an allergen the recipe declares is absent',
+      path: ['dietTags'],
+    },
+  )
   .refine((recipe) => new Set(recipe.ingredients.map(({ group }) => group === null)).size === 1, {
     message: 'a group is set on every ingredient line or on none',
     path: ['ingredients'],

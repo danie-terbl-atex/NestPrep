@@ -1,3 +1,4 @@
+import '../../lunch_box/model/lunch_variety.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../model/idea_search.dart';
 import '../model/lunch_week_reply.dart';
@@ -18,5 +19,6 @@ abstract interface class LunchWeekBuilder {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
+    required LunchVariety variety,
   });
 }

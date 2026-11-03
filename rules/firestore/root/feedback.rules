@@ -1,0 +1,38 @@
+// ---- feedback (feedback ADR-0001) ----
+// What an account tells NestPrep works, does not, or could be better. The
+// account creates it and nobody reads, changes or deletes it from a client:
+// admin tools read it with the Admin SDK. A kid device has no account to
+// erase a child's words with, so it may not send any.
+
+match /feedback/{feedbackId} {
+  allow create: if isSignedIn()
+    && request.auth.token.get('kidProfile', null) == null
+    && isFeedbackShape(request.resource.data);
+
+  allow read, update, delete: if false;
+}
+
+function isFeedbackShape(data) {
+  return data.keys().hasOnly(
+           ['uid', 'kind', 'message', 'area', 'screen', 'householdId', 'mayContact',
+            'appVersion', 'appBuild', 'platform', 'createdAt'])
+    && data.keys().hasAll(
+         ['uid', 'kind', 'message', 'area', 'screen', 'householdId', 'mayContact',
+          'appVersion', 'appBuild', 'platform', 'createdAt'])
+    && data.uid == uid()
+    && data.kind in ['problem', 'praise', 'idea']
+    && data.message is string
+    && data.message.size() >= 1 && data.message.size() <= 2000
+    && data.message == data.message.trim()
+    && (data.area == null
+        || data.area in ['today', 'calendar', 'lunch', 'meals', 'groceries', 'todos',
+                         'documents', 'care', 'family', 'account'])
+    && (data.screen == null
+        || (data.screen is string && data.screen.size() >= 1 && data.screen.size() <= 200))
+    && (data.householdId == null || (data.householdId is string && isMember(data.householdId)))
+    && data.mayContact is bool
+    && data.appVersion is string && data.appVersion.size() >= 1 && data.appVersion.size() <= 32
+    && data.appBuild is int
+    && data.platform in ['android', 'ios', 'other']
+    && data.createdAt == request.time;
+}

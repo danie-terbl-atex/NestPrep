@@ -9,18 +9,18 @@ abstract final class TodayCopy {
     return name == null || name.isEmpty ? '$part.' : '$part, $name.';
   }
 
-  static const lunchEyebrow = 'In the lunchbox';
+  static const lunchEyebrow = 'In the lunchboxes';
   static const firstChildTitle = 'Who are we packing for?';
   static const firstChildBody =
       'Add your children and their allergies once. Every lunch follows them.';
   static const addChild = 'Add a child';
   static String lunchFor(String name) => 'For $name';
   static const nothingPacked = 'Nothing packed yet';
-  static const planLunch = 'Plan';
-  static const viewLunch = 'View lunch';
 
-  static const agendaEyebrow = "What's on";
-  static const agendaEmpty = 'Nothing on the calendar. A quiet one.';
+  static const agendaEyebrow = "What's on today";
+  static const agendaEmpty = 'Nothing on the calendar today. A quiet one.';
+  static const comingUp = 'Coming up this week';
+  static const openCalendar = 'Calendar';
   static const allDay = 'All day';
   static const seeAll = 'See all';
 

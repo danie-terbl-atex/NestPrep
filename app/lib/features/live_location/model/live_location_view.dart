@@ -1,4 +1,5 @@
 import '../../household/model/member.dart';
+import 'family_place.dart';
 import 'located_member.dart';
 import 'member_location.dart';
 
@@ -10,13 +11,18 @@ import 'member_location.dart';
 /// and it is the only place the app asks anybody for their position
 /// (live-location ADR-0002).
 class LiveLocationView {
-  const LiveLocationView({required this.viewer, required this.others});
+  const LiveLocationView({
+    required this.viewer,
+    required this.others,
+    this.places = const [],
+  });
 
   factory LiveLocationView.from({
     required List<Member> members,
     required List<MemberLocation> locations,
     required String viewerMemberId,
     required DateTime now,
+    List<FamilyPlace> places = const [],
   }) {
     final byMember = {for (final location in locations) location.id: location};
     final viewerMember = members
@@ -28,6 +34,7 @@ class LiveLocationView {
             member: viewerMember,
             location: byMember[viewerMember.id],
             now: now,
+            places: places,
           );
 
     final others = [
@@ -38,10 +45,11 @@ class LiveLocationView {
             location: byMember[member.id],
             now: now,
             viewerAt: viewer?.at,
+            places: places,
           ),
     ]..sort(_whoMattersFirst);
 
-    return LiveLocationView(viewer: viewer, others: others);
+    return LiveLocationView(viewer: viewer, others: others, places: places);
   }
 
   /// Null when the signed-in account has claimed no profile here. The household
@@ -53,6 +61,14 @@ class LiveLocationView {
   /// sharing is shown saying so: a household that could not tell *not sharing*
   /// from *not here* would read silence as an answer.
   final List<LocatedMember> others;
+  final List<FamilyPlace> places;
+
+  /// Everybody with a position to draw, the viewer included.
+  List<LocatedMember> get onTheMap => [
+    if (viewer case final viewer? when viewer.isSomewhere) viewer,
+    for (final located in others)
+      if (located.isSomewhere) located,
+  ];
 
   /// A household of one. Nobody is hidden by this — there is nobody else.
   bool get isEmpty => others.isEmpty;

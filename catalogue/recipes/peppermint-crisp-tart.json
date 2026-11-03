@@ -66,6 +66,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make it the day before; it keeps 3 days covered in the fridge.",
+  "kcalPerServing": 540,
   "photo": {
     "credit": null,
     "licence": null,

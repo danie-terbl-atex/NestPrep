@@ -188,6 +188,23 @@ void main() {
     },
   );
 
+  test('signing out stops this phone sharing first, then signs out', () async {
+    final order = <String>[];
+    final hooked = SessionController(
+      authGateway: auth,
+      accountRepository: accounts,
+      beforeSignOut: () async => order.add('stop sharing'),
+    );
+    addTearDown(hooked.dispose);
+    auth.emit(_sam);
+    await pumpEventQueue();
+
+    await hooked.signOut();
+    order.add('signed out: ${auth.signOutCount}');
+
+    expect(order, ['stop sharing', 'signed out: 1']);
+  });
+
   test('signing out ends the session', () async {
     auth.emit(_sam);
     await pumpEventQueue();

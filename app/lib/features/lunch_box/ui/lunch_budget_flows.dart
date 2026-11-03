@@ -46,6 +46,9 @@ abstract final class LunchBudgetFlows {
     final budget = context.read<LunchBudgetController>();
     final outcome = await showLunchBudgetSheet(
       context: context,
+      childNames: [
+        for (final child in week.board.children) child.child.member.displayName,
+      ],
       existing: week.budget,
     );
     switch (outcome) {

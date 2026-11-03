@@ -15,12 +15,12 @@ import '../support/pump_kit.dart';
 /// pushing it, and the system back button closed the app.
 void main() {
   group('the tabs themselves', () {
-    test('the bar is Today, Lunch, Meals, Lists and More '
-        '(design-system ADR-0015)', () {
+    test('the bar is Today, Calendar, Food, Lists and More '
+        '(design-system ADR-0017)', () {
       expect(HouseholdTab.inBar, [
         HouseholdTab.today,
-        HouseholdTab.lunch,
-        HouseholdTab.meals,
+        HouseholdTab.week,
+        HouseholdTab.food,
         HouseholdTab.lists,
         HouseholdTab.more,
       ]);
@@ -29,17 +29,27 @@ void main() {
       }
     });
 
-    test('To do and Groceries light Lists; Week lights More', () {
+    test('To do and Groceries light Lists; Lunch and Meals light Food', () {
       expect(HouseholdTab.todos.barTab, HouseholdTab.lists);
       expect(HouseholdTab.groceries.barTab, HouseholdTab.lists);
-      expect(HouseholdTab.week.barTab, HouseholdTab.more);
-      expect(HouseholdTab.meals.barTab, HouseholdTab.meals);
+      expect(HouseholdTab.lunch.barTab, HouseholdTab.food);
+      expect(HouseholdTab.meals.barTab, HouseholdTab.food);
+      expect(HouseholdTab.week.barTab, HouseholdTab.week);
     });
 
     test('Lists opens To do, or Groceries for somebody who may only shop', () {
       final parent = Fixtures.view().permissions;
       expect(HouseholdTab.lists.landingFor(parent), HouseholdTab.todos);
       expect(HouseholdTab.today.landingFor(parent), HouseholdTab.today);
+    });
+
+    test('Food opens the lunches, or Meals for somebody who may not pack '
+        'them', () {
+      expect(
+        HouseholdTab.food.landingFor(Fixtures.view().permissions),
+        HouseholdTab.lunch,
+      );
+      expect(HouseholdTab.food.area, isNull);
     });
 
     test('a household opens on Today', () {
@@ -132,9 +142,9 @@ void main() {
       handle.dispose();
 
       expect(
-        find.bySemanticsLabel(AppCopy.tabWeek),
+        find.bySemanticsLabel(AppCopy.tabMeals),
         findsNothing,
-        reason: 'the week is on More, not in the bar',
+        reason: 'Meals is under Food, not in the bar',
       );
 
       await tester.tap(find.bySemanticsLabel(MoreCopy.tab));
@@ -158,21 +168,21 @@ void main() {
       }
     });
 
-    testWidgets('lights up More while the week is open', (tester) async {
+    testWidgets('lights up Food while Meals is open', (tester) async {
       await pumpKit(
         tester,
         Provider<HouseholdView>.value(
           value: Fixtures.view(),
-          child: HouseholdTabBar(current: HouseholdTab.week, onSelect: (_) {}),
+          child: HouseholdTabBar(current: HouseholdTab.meals, onSelect: (_) {}),
         ),
       );
 
       final handle = tester.ensureSemantics();
       await tester.pumpAndSettle();
       expect(
-        tester.getSemantics(find.bySemanticsLabel(MoreCopy.tab)),
+        tester.getSemantics(find.bySemanticsLabel(AppCopy.tabFood)),
         matchesSemantics(
-          label: MoreCopy.tab,
+          label: AppCopy.tabFood,
           isButton: true,
           isSelected: true,
           hasSelectedState: true,
@@ -180,7 +190,7 @@ void main() {
         ),
       );
       expect(
-        tester.getSemantics(find.bySemanticsLabel(LunchCopy.tab)),
+        tester.getSemantics(find.bySemanticsLabel(AppCopy.tabCalendar)),
         isNot(matchesSemantics(isSelected: true)),
       );
       handle.dispose();

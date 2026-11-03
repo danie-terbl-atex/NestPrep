@@ -1,0 +1,181 @@
+{
+  "id": "sweet-and-sour-pork-stir-fry",
+  "name": "Sweet and sour pork stir-fry",
+  "summary": "Lean pork strips stir-fried with peppers, carrot and fresh pineapple in a tangy tomato and pineapple sauce with no added sugar, over brown rice.",
+  "about": "Sweet and sour pork comes from Cantonese cooking, where the pork is battered and deep-fried before it meets the sauce. This version stir-fries lean pork fillet instead and sweetens the sauce with pineapple and its juice rather than sugar.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 300,
+      "unit": "g",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Pineapple",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "medium; peeled, cored and cut into bite-sized chunks",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Pineapple juice",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "100% juice, unsweetened",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Apple cider vinegar",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Light soy sauce",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 60,
+      "unit": "ml",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Pork fillet",
+      "quantity": 500,
+      "unit": "g",
+      "note": "trimmed of sinew",
+      "group": "For the pork"
+    },
+    {
+      "name": "Light soy sauce",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pork"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pork"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Carrot",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced on the diagonal",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Green pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the stir-fry"
+    }
+  ],
+  "steps": [
+    "Bring a large saucepan of salted water to the boil over high heat. Add the brown rice and boil, uncovered, for 25–30 minutes, until tender but still a little chewy. Drain well, return it to the pot and cover to keep warm.",
+    "While the rice cooks, prepare the pineapple. Stir the pineapple juice, tomato paste, vinegar, 1 tbsp soy sauce, 1 tbsp cornflour and water together in a jug until smooth.",
+    "Slice the pork into thin strips, about 5 mm thick, and toss with the 2 tsp soy sauce and 2 tsp cornflour.",
+    "Heat 1 tbsp of the oil in a wok or large frying pan over high heat until it shimmers. Stir-fry the pork in two batches for 2–3 minutes each, until browned and no longer pink inside. Tip onto a plate.",
+    "Add the rest of the oil, the onion and carrot and stir-fry for 3 minutes, until the onion starts to soften. Add both peppers, the garlic and the ginger and stir-fry for 2 minutes more; the peppers should still be crisp.",
+    "Add the pineapple and stir-fry for 1 minute to warm it. Stir the sauce, pour it in and let it bubble for 1–2 minutes, until thick and glossy.",
+    "Return the pork and its juices and toss for 1 minute, until hot through. Spoon it over the brown rice and finish with the spring onions."
+  ],
+  "servings": 4,
+  "prepMinutes": 25,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cut the pork, pineapple and vegetables and mix the sauce up to a day ahead; keep them covered in the fridge.",
+  "kcalPerServing": 600,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/chore_points/state/kid_points_controller.dart';
@@ -12,6 +13,7 @@ import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/kid_copy.dart';
+import 'package:nestprep/shared/copy/points_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -98,6 +100,59 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fixture.todos.completed.single.taskId, 'bed');
+  });
+
+  testWidgets('ticking a job off celebrates it; unticking does not', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.runAsync(
+      () => fixture.arrive(
+        tasks: [
+          KidHomeFixture.chore('bed', 'Make your bed', points: 2),
+          KidHomeFixture.chore('teeth', 'Brush teeth'),
+        ],
+        completions: [KidHomeFixture.done('teeth')],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Make your bed'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(fixture.todos.completed.single.taskId, 'bed');
+    expect(find.text(KidCopy.allDone('Kid')), findsOneWidget);
+    expect(find.text(PointsCopy.plusStars(2)), findsNWidgets(2));
+    expect(find.byKey(NestCelebration.confettiKey), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byType(NestCelebration), findsNothing, reason: 'it ends');
+
+    await tester.tap(find.text('Brush teeth'));
+    await tester.pump();
+    expect(fixture.todos.uncompleted.single.taskId, 'teeth');
+    expect(find.byType(NestCelebration), findsNothing);
+  });
+
+  testWidgets('a job that is not the last says well done', (tester) async {
+    await pump(tester);
+    await tester.runAsync(
+      () => fixture.arrive(
+        tasks: [
+          KidHomeFixture.chore('bed', 'Make your bed'),
+          KidHomeFixture.chore('teeth', 'Brush teeth'),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Brush teeth'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(KidCopy.wellDone('Kid')), findsOneWidget);
+    expect(find.text('Brush teeth'), findsNWidgets(2));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('a day with no jobs says so, and still shows the food', (

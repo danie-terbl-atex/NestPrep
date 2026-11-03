@@ -27,6 +27,13 @@ export function bucketName(
   return `${project}.firebasestorage.app`;
 }
 
+export interface StoredObject {
+  readonly name: string;
+  readonly size: number;
+  readonly timeCreated: Date | null;
+  readonly contentType: string | null;
+}
+
 /** What Functions do with Storage, behind an interface so erasure is testable (BE-09). */
 export interface ObjectStore {
   /** Deletes every object under the prefix; returns nothing, fails loudly. */
@@ -40,6 +47,8 @@ export interface ObjectStore {
   /** Objects under the prefix created before the instant, up to `limit`. */
   listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]>;
   deleteObjects(paths: readonly string[]): Promise<void>;
+  /** Objects under the prefix with what is known of each, up to `limit`. */
+  list(prefix: string, limit: number): Promise<StoredObject[]>;
   /** Whether an object is at the path — the catalogue seed skips a photo already published. */
   exists(path: string): Promise<boolean>;
 }
@@ -77,6 +86,15 @@ export function objectStore(): ObjectStore {
       // writes outside a transaction mistakes for one (writes_are_atomic).
       await Promise.all(paths.map((path) => bucket.deleteFiles({ prefix: path, force: true })));
     },
+    async list(prefix: string, limit: number): Promise<StoredObject[]> {
+      const [files] = await bucket.getFiles({ prefix, maxResults: limit });
+      return files.map(({ name, metadata }) => ({
+        name,
+        size: Number(metadata.size ?? 0),
+        timeCreated: metadata.timeCreated === undefined ? null : new Date(metadata.timeCreated),
+        contentType: metadata.contentType ?? null,
+      }));
+    },
     async exists(path: string): Promise<boolean> {
       const [found] = await bucket.file(path).exists();
       return found;
@@ -85,8 +103,9 @@ export function objectStore(): ObjectStore {
 }
 
 /**
- * The same bucket, for documents' shared links (documents ADR-0006), which
- * stream a document to somebody with no account.
+ * The same bucket, for documents' shared links (documents ADR-0006) and a
+ * frame's screensaver photos (photo-frames ADR-0006), which stream bytes to
+ * somebody with no account.
  */
 export function documentsBucket(): ReturnType<ReturnType<typeof getStorage>['bucket']> {
   return getStorage(adminApp()).bucket(bucketName());

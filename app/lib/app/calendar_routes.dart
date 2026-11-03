@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../features/accounts/state/session_controller.dart';
 import '../features/calendar/data/calendar_repository.dart';
+import '../features/calendar/model/calendar_view.dart';
 import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
 import '../features/calendar_sync/data/calendar_sync_directory.dart';
@@ -22,9 +23,10 @@ import 'household_shell.dart';
 import 'household_tab_navigation.dart';
 import 'viewer_member.dart';
 
-/// The calendar's routes under the household shell — the week tab, and the
-/// connected calendars pushed from it (calendar ADR-0001, ADR-0003) — in
-/// their own file so the route table gains one line.
+/// The calendar's routes under the household shell — the Calendar tab,
+/// opening on the month (design-system ADR-0017), and the connected calendars
+/// pushed from it (calendar ADR-0001, ADR-0003) — in their own file so the
+/// route table gains one line.
 List<GoRoute> calendarRoutes(SessionController session) => [
   GoRoute(
     path: '${HouseholdRoute.path}/${HouseholdTab.week.segment}',
@@ -33,9 +35,15 @@ List<GoRoute> calendarRoutes(SessionController session) => [
     // a recolour has to reach it (birthdays ADR-0001).
     builder: (context, state) =>
         ChangeNotifierProxyProvider<HouseholdView, CalendarController>(
-          create: (context) => calendarControllerFor(context, state),
+          create: (context) =>
+              calendarControllerFor(context, state, view: CalendarView.month),
           update: (context, view, controller) =>
-              (controller ?? calendarControllerFor(context, state))
+              (controller ??
+                    calendarControllerFor(
+                      context,
+                      state,
+                      view: CalendarView.month,
+                    ))
                 ..showBirthdaysOf(view.members),
           // co-parenting: the linked children's days on the week, when two
           // homes is on (household ADR-0004).
@@ -71,12 +79,14 @@ List<GoRoute> calendarRoutes(SessionController session) => [
 
 CalendarController calendarControllerFor(
   BuildContext context,
-  GoRouterState state,
-) => CalendarController(
+  GoRouterState state, {
+  CalendarView view = CalendarView.week,
+}) => CalendarController(
   calendarRepository: context.read<CalendarRepository>(),
   calendarSyncRepository: context.read<CalendarSyncRepository>(),
   householdClock: context.read<HouseholdClock>(),
   householdId: HouseholdRoute.idFrom(state),
   memberId: viewerMemberIdOf(context),
   householdMembers: context.read<HouseholdView>().members,
+  initialView: view,
 );

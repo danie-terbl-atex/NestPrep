@@ -1,0 +1,124 @@
+{
+  "id": "kota",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Potatoes",
+      "amount": "1 kg peeled",
+      "grams": 1000,
+      "kcal": 770,
+      "proteinG": 20.5,
+      "fatG": 0.9,
+      "netCarbsG": 153.9,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 l for deep-frying; absorbed ≈ 6 % of the raw chips (60 g) + 1 tbsp for the pan (13.5 g)",
+      "grams": 73.5,
+      "kcal": 650,
+      "proteinG": 0.0,
+      "fatG": 73.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; thick chips absorb ~6 % of their weight"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Chip spice",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 0.6,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g; paprika stands in for chip spice"
+    },
+    {
+      "ingredient": "Russian sausages",
+      "amount": "4 × 85 g",
+      "grams": 340,
+      "kcal": 775,
+      "proteinG": 49.0,
+      "fatG": 61.2,
+      "netCarbsG": 8.5,
+      "reference": "Russian sausage, SA (Eskort, FatSecret ZA): 228 kcal / 100 g"
+    },
+    {
+      "ingredient": "Polony slices",
+      "amount": "8 × 15 g",
+      "grams": 120,
+      "kcal": 200,
+      "proteinG": 13.6,
+      "fatG": 13.0,
+      "netCarbsG": 7.2,
+      "reference": "French polony, SA (PnP No Name, FatSecret ZA): 167 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "4 large × 55 g",
+      "grams": 220,
+      "kcal": 315,
+      "proteinG": 27.6,
+      "fatG": 20.9,
+      "netCarbsG": 1.6,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Unsliced white bread",
+      "amount": "1 × 700 g loaf; ~30 % crumb scooped out and not used = 490 g eaten",
+      "grams": 490,
+      "kcal": 1303,
+      "proteinG": 43.4,
+      "fatG": 16.3,
+      "netCarbsG": 228.9,
+      "reference": "Bread, white, commercially prepared (includes soft bread crumbs) — USDA FDC 174924: 266 kcal / 100 g; the scooped-out crumb is not part of the kota"
+    },
+    {
+      "ingredient": "Processed cheese slices",
+      "amount": "4 × 20 g",
+      "grams": 80,
+      "kcal": 297,
+      "proteinG": 14.5,
+      "fatG": 25.4,
+      "netCarbsG": 3.0,
+      "reference": "Cheese, pasteurized process, American, without added vitamin D — USDA FDC 171290: 371 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mango atchar",
+      "amount": "0.5 cup = 125 ml ≈ 120 g",
+      "grams": 120,
+      "kcal": 217,
+      "proteinG": 1.6,
+      "fatG": 21.1,
+      "netCarbsG": 4.8,
+      "reference": "Mango atchar, SA (Woolworths mild, FatSecret ZA): 181 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato sauce",
+      "amount": "4 tbsp × 17 g",
+      "grams": 68,
+      "kcal": 69,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 18.4,
+      "reference": "Catsup (SA tomato sauce) — USDA FDC 168556: 101 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 4604,
+  "kcalPerServing": 1150,
+  "perServing": {
+    "proteinG": 42.8,
+    "fatG": 58.2,
+    "netCarbsG": 106.7
+  },
+  "notes": "Chips: oil absorbed ≈ 6 % of the 1 kg raw potato plus the 1 tbsp used to fry the sausages, polony and eggs — not the litre in the pot. Loaf 700 g; about 30 % is scooped out as crumb and is not in the kota (eating it too adds ~130 kcal a quarter). Russians 85 g each, polony slices 15 g. Sanity check: FatSecret ZA bunny chow 529 kcal / 285 g (186 kcal / 100 g). A quarter kota here is ~550 g of bread, chips, Russian, polony, egg, cheese and atchar ≈ 210 kcal / 100 g — the same density, twice the portion; kept."
+}

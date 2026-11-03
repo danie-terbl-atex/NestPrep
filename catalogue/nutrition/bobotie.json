@@ -1,0 +1,204 @@
+{
+  "id": "bobotie",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "White bread slices",
+      "amount": "2 slices, crusts removed",
+      "grams": 50,
+      "kcal": 133,
+      "proteinG": 4.4,
+      "fatG": 1.7,
+      "netCarbsG": 23.4,
+      "reference": "Bread, white, commercially prepared — USDA FDC 174924: 266 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "250 ml (258 g), all used",
+      "grams": 258,
+      "kcal": 157,
+      "proteinG": 8.1,
+      "fatG": 8.4,
+      "netCarbsG": 12.4,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves, 5 g each",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tsp grated",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Medium curry powder",
+      "amount": "2 tbsp (6.3 g each)",
+      "grams": 12.6,
+      "kcal": 41,
+      "proteinG": 1.8,
+      "fatG": 1.8,
+      "netCarbsG": 0.3,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1 tsp",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.3,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "1 kg, taken as 15 % fat",
+      "grams": 1000,
+      "kcal": 2150,
+      "proteinG": 186.0,
+      "fatG": 150.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 85% lean meat / 15% fat, raw — USDA FDC 171796: 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "3 tbsp (19 g each)",
+      "grams": 57,
+      "kcal": 103,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 24.5,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ = 180 kcal, 43 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Smooth apricot jam",
+      "amount": "1 tbsp",
+      "grams": 20,
+      "kcal": 48,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 12.8,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    },
+    {
+      "ingredient": "Seedless raisins",
+      "amount": "0.5 cup",
+      "grams": 80,
+      "kcal": 239,
+      "proteinG": 2.6,
+      "fatG": 0.2,
+      "netCarbsG": 59.8,
+      "reference": "Raisins, dark, seedless — USDA FDC 168165: 299 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "3 SA large, 55 g each",
+      "grams": 165,
+      "kcal": 236,
+      "proteinG": 20.8,
+      "fatG": 15.7,
+      "netCarbsG": 1.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "125 ml",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "4 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaves, removed before eating — 0 kcal"
+    }
+  ],
+  "totalKcal": 3593,
+  "kcalPerServing": 600,
+  "perServing": {
+    "proteinG": 38.9,
+    "fatG": 35.0,
+    "netCarbsG": 28.7
+  },
+  "notes": "Assumptions: beef mince 15 % fat (an 80/20 mince adds ~65 kcal a plate); full-cream milk; 2 slices of white bread at 25 g each without crusts; all the soaking milk used in the topping. Compared against: a six-serving lamb bobotie at 410 kcal, an eight-serving beef bobotie at 481 kcal (~640 kcal at six), and a six-serving 300 g bobotie at 639 kcal (bigoven). Ours, at 600, sits with the six-serving versions."
+}

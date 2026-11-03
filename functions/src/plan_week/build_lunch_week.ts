@@ -50,7 +50,12 @@ export const buildLunchWeek = onCall(
       input.ideas,
       children,
       { monday, today, plans: facts.plans, budgetCents: facts.budgetCents, prices: facts.prices },
-      { slots: input.slots, preferences: input.preferences, treatDays: input.treatDays },
+      {
+        slots: input.slots,
+        preferences: input.preferences,
+        treatDays: input.treatDays,
+        sameAllWeek: input.sameAllWeek,
+      },
     );
     const empty = {
       week: input.week,
@@ -95,6 +100,7 @@ export const buildLunchWeek = onCall(
       slots: input.slots.length,
       preferences: input.preferences.length,
       treatDays: input.treatDays.length,
+      sameAllWeek: input.sameAllWeek.length,
       lunches: proposal.lunches.length,
       dishes: proposal.dishes.length,
       dropped: brief.removed,

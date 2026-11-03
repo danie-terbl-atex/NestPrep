@@ -505,7 +505,13 @@ List<ModelFixture> modelFixtures() {
       value: location,
       toJson: location.toJson,
       fromJson: MemberLocation.fromJson,
-      keys: const {'point', 'accuracyMetres', 'reportedAt', 'sharingUntil'},
+      keys: const {
+        'point',
+        'accuracyMetres',
+        'reportedAt',
+        'sharingUntil',
+        'mode',
+      },
       note:
           'the document id is the member id, which is what makes the rule '
           '`isOwnMember` on the path and not on a field — rename the key and '

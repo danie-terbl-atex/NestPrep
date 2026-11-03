@@ -36,6 +36,7 @@ export const LUNCH_SNACK_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Bake a batch on Sunday and freeze half.',
+    kcalPerServing: 100,
     photo: null,
   },
   {
@@ -46,9 +47,9 @@ export const LUNCH_SNACK_RECIPES: readonly Recipe[] = [
     cuisine: 'international',
     contexts: ['lunchBox'],
     placement: { lunchBox: 'snack' },
-    tags: [],
+    tags: ['healthy'],
     allergens: ['sesame'],
-    dietTags: ['vegetarian', 'vegan'],
+    dietTags: ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'],
     ingredients: [
       { name: 'Chickpeas', quantity: 1, unit: 'tin', note: 'drained', group: null },
       { name: 'Tahini', quantity: 2, unit: 'tbsp', note: null, group: null },
@@ -70,6 +71,7 @@ export const LUNCH_SNACK_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Make the hummus on Sunday; it keeps four days in the fridge.',
+    kcalPerServing: 220,
     photo: null,
   },
   {
@@ -82,7 +84,7 @@ export const LUNCH_SNACK_RECIPES: readonly Recipe[] = [
     placement: { lunchBox: 'snack' },
     tags: [],
     allergens: [],
-    dietTags: ['vegetarian', 'vegan'],
+    dietTags: ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'],
     ingredients: [
       { name: 'Popcorn kernels', quantity: 0.5, unit: 'cup', note: null, group: null },
       { name: 'Sunflower oil', quantity: 2, unit: 'tbsp', note: null, group: null },
@@ -99,6 +101,7 @@ export const LUNCH_SNACK_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Pop a big pot on Sunday and bag it in portions.',
+    kcalPerServing: 100,
     photo: null,
   },
 ];

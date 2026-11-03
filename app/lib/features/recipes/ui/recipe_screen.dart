@@ -23,9 +23,13 @@ import 'recipe_picture.dart';
 /// The back button is there in every state, so a link to a retired recipe
 /// is never a dead end; where it goes is the route's [onBack].
 class RecipeScreen extends StatelessWidget {
-  const RecipeScreen({required this.onBack, super.key});
+  const RecipeScreen({required this.onBack, this.heroTag, super.key});
 
   final VoidCallback onBack;
+
+  /// The tag of the card this page was opened from, whose photo flies in to
+  /// become the page's; null for a page reached any other way.
+  final String? heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,11 @@ class RecipeScreen extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: NestSpace.huge),
           children: [
             NestPhotoHero(
-              photo: RecipePicture(path: value.photo?.hero),
+              heroTag: heroTag,
+              photo: RecipePicture(
+                path: value.photo?.hero,
+                previewPath: value.photo?.card,
+              ),
               backLabel: AppCopy.back,
               onBack: onBack,
               semanticsLabel: RecipeCopy.photoOf(value.name),

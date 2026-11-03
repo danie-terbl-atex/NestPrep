@@ -1,0 +1,184 @@
+{
+  "id": "braaied-steak-chimichurri-salad",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Rump steaks",
+      "amount": "600 g raw, fat trimmed",
+      "grams": 600,
+      "kcal": 810,
+      "proteinG": 131.5,
+      "fatG": 27.7,
+      "netCarbsG": 0.0,
+      "reference": "Beef, top sirloin, steak, separable lean only, trimmed to 1/8\" fat, choice, raw (SA rump, fat trimmed) — USDA FDC 174763: 135 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g, rubbed on",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Flat-leaf parsley",
+      "amount": "1 cup packed leaves ≈ 50 g",
+      "grams": 50,
+      "kcal": 18,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 1.5,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 × 5 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red chilli",
+      "amount": "1, deseeded ≈ 8 g",
+      "grams": 8,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.6,
+      "reference": "Peppers, hot chili, red, raw — USDA FDC 170106: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "1 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red wine vinegar",
+      "amount": "3 tbsp × 15 g",
+      "grams": 45,
+      "kcal": 9,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Vinegar, red wine — USDA FDC 172240: 19 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "5 tbsp × 13.5 g; all of the chimichurri counted as eaten",
+      "grams": 67.5,
+      "kcal": 597,
+      "proteinG": 0.0,
+      "fatG": 67.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Mixed salad leaves",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 22,
+      "proteinG": 2.0,
+      "fatG": 0.2,
+      "netCarbsG": 2.4,
+      "reference": "Lettuce, green leaf, raw (for mixed salad leaves) — USDA FDC 169249: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 45,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 6.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "1 ≈ 350 g",
+      "grams": 350,
+      "kcal": 52,
+      "proteinG": 2.3,
+      "fatG": 0.4,
+      "netCarbsG": 11.0,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "half a medium ≈ 75 g",
+      "grams": 75,
+      "kcal": 30,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 5.7,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Avocado",
+      "amount": "1 large ≈ 180 g flesh",
+      "grams": 180,
+      "kcal": 288,
+      "proteinG": 3.6,
+      "fatG": 26.4,
+      "netCarbsG": 3.3,
+      "reference": "Avocados, raw, all commercial varieties — USDA FDC 171705: 160 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2045,
+  "kcalPerServing": 510,
+  "perServing": {
+    "proteinG": 36.5,
+    "fatG": 34.3,
+    "netCarbsG": 10.0
+  },
+  "notes": "Assumptions that change the number: rump trimmed of fat at USDA lean-only values, 150 g raw a person; the whole chimichurri, 5 tbsp oil, is counted as eaten although half goes to the table — if half is left over, ~75 kcal less a serving; the oil rubbed on the steaks all counted; a large avocado gives 180 g of flesh; no starch. Net carbs 9.96 g and 60.4 % of energy from fat a serving: on the keto line, not clearly inside it. Published check: steak salad with chimichurri and avocado is typically listed at ~450–550 kcal a serving; 510 agrees."
+}

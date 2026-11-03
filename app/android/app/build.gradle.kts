@@ -22,6 +22,13 @@ val keystoreProperties = Properties().apply {
 val hasUploadKey = listOf("storeFile", "storePassword", "keyAlias", "keyPassword")
     .all { !keystoreProperties.getProperty(it).isNullOrBlank() }
 
+// The Google Maps key, read from `android/maps.properties` (gitignored) as
+// MAPS_API_KEY=… — a build without it has an empty key and a blank map.
+val mapsProperties = Properties().apply {
+    val file = rootProject.file("maps.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
 android {
     namespace = "io.nullstate.nestprep"
     compileSdk = flutter.compileSdkVersion
@@ -41,6 +48,7 @@ android {
         // number; the name is 0.9.x through the beta and 1.0.0 at launch.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["MAPS_API_KEY"] = mapsProperties.getProperty("MAPS_API_KEY", "")
     }
 
     signingConfigs {
@@ -77,4 +85,16 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // The same BOM FlutterFire pins (FirebaseSDKVersion in firebase_core's android/gradle.properties),
+    // so the location process links the very SDKs the plugins do.
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20250517")
 }

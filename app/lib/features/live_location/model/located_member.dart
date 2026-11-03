@@ -1,5 +1,6 @@
 import '../../household/model/member.dart';
 import 'coordinates.dart';
+import 'family_place.dart';
 import 'member_location.dart';
 
 /// What the screen says about one person, and the only four things it can say.
@@ -34,6 +35,11 @@ class LocatedMember {
     this.age,
     this.sharingUntil,
     this.metresFromViewer,
+    this.mode = ShareMode.window,
+    this.place,
+    this.batteryPercent,
+    this.charging,
+    this.motion,
   });
 
   /// Reads [location] against the clock. [viewerAt] is where the person
@@ -44,21 +50,24 @@ class LocatedMember {
     required MemberLocation? location,
     required DateTime now,
     Coordinates? viewerAt,
+    List<FamilyPlace> places = const [],
   }) {
-    if (!member.isClaimed) {
+    if (location == null || !location.isSharingAt(now)) {
       return LocatedMember(
         member: member,
-        presence: MemberPresence.hasNotJoined,
+        presence: member.isClaimed
+            ? MemberPresence.notSharing
+            : MemberPresence.hasNotJoined,
       );
     }
-    if (location == null || !location.isSharingAt(now)) {
-      return LocatedMember(member: member, presence: MemberPresence.notSharing);
-    }
     final age = location.ageAt(now);
+    final freshFor = location.mode == ShareMode.continuous
+        ? liveWithinAlways
+        : liveWithin;
     return LocatedMember(
       member: member,
       // A write the server has not timed yet was, by definition, a moment ago.
-      presence: age == null || age <= liveWithin
+      presence: age == null || age <= freshFor
           ? MemberPresence.hereNow
           : MemberPresence.lastSeen,
       at: location.point,
@@ -66,6 +75,11 @@ class LocatedMember {
       age: age,
       sharingUntil: location.sharingUntil,
       metresFromViewer: viewerAt?.metresTo(location.point),
+      mode: location.mode,
+      place: FamilyPlace.at(location.point, places),
+      batteryPercent: location.batteryPercent,
+      charging: location.charging,
+      motion: location.motion,
     );
   }
 
@@ -74,6 +88,11 @@ class LocatedMember {
   /// (live-location ADR-0001), so anything past two minutes has stopped
   /// arriving rather than stopped moving.
   static const liveWithin = Duration(minutes: 2);
+
+  /// An always-on phone that is still writes once an hour and wakes the moment
+  /// it moves, so an hour's silence still means *here*; past that the phone
+  /// has stopped, not the person (live-location ADR-0005).
+  static const liveWithinAlways = Duration(minutes: 75);
 
   final Member member;
   final MemberPresence presence;
@@ -89,6 +108,13 @@ class LocatedMember {
   final DateTime? sharingUntil;
 
   final double? metresFromViewer;
+  final ShareMode mode;
+
+  /// The household place this member is inside, when they are in one.
+  final FamilyPlace? place;
+  final int? batteryPercent;
+  final bool? charging;
+  final DeviceMotion? motion;
 
   bool get isSomewhere => at != null;
 

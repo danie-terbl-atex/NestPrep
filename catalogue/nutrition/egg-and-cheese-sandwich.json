@@ -1,0 +1,54 @@
+{
+  "id": "egg-and-cheese-sandwich",
+  "servings": 2,
+  "lines": [
+    {
+      "ingredient": "Eggs",
+      "amount": "2 SA large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Grated cheddar cheese",
+      "amount": "¼ cup grated, ~28 g",
+      "grams": 28,
+      "kcal": 113,
+      "proteinG": 6.4,
+      "fatG": 9.3,
+      "netCarbsG": 0.9,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    },
+    {
+      "ingredient": "Wholewheat bread slices",
+      "amount": "4 × 32 g",
+      "grams": 128,
+      "kcal": 323,
+      "proteinG": 15.9,
+      "fatG": 4.5,
+      "netCarbsG": 47.0,
+      "reference": "Bread, whole-wheat, commercially prepared — USDA FDC 172688: 252 kcal / 100 g"
+    },
+    {
+      "ingredient": "Soft butter",
+      "amount": "1 tbsp",
+      "grams": 14,
+      "kcal": 100,
+      "proteinG": 0.1,
+      "fatG": 11.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 693,
+  "kcalPerServing": 350,
+  "perServing": {
+    "proteinG": 18.1,
+    "fatG": 17.9,
+    "netCarbsG": 24.4
+  },
+  "notes": "Assumptions: SA large eggs 55 g; wholewheat slices ~32 g (USDA slice); ¼ cup grated cheddar ~28 g. One sandwich (2 slices) a serving, ~140 g. Sanity check: USDA egg-and-cheese breakfast sandwiches (FDC 172056/172058) are 272–291 kcal/100 g; ours is ~250 kcal/100 g. No recipe-site figure found because the session's web-search budget ran out."
+}

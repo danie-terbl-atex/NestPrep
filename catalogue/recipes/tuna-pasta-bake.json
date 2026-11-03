@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["budget", "kidFriendly", "comfort"],
   "allergens": ["milk", "wheat", "fish"],
-  "dietTags": [],
+  "dietTags": ["pescatarian"],
   "ingredients": [
     { "name": "Penne pasta", "quantity": 500, "unit": "g", "note": null, "group": null },
     { "name": "Butter", "quantity": 60, "unit": "g", "note": null, "group": null },
@@ -38,5 +38,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Assemble up to a day ahead and refrigerate; bake from cold for 35 to 40 minutes.",
+  "kcalPerServing": 750,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

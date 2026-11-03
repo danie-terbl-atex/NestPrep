@@ -1,0 +1,124 @@
+{
+  "id": "mosbolletjies",
+  "servings": 20,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "750 g (kneading flour not counted)",
+      "grams": 750,
+      "kcal": 2685,
+      "proteinG": 61.5,
+      "fatG": 6.8,
+      "netCarbsG": 570.0,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "120 g",
+      "grams": 120,
+      "kcal": 464,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 120.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Aniseed",
+      "amount": "2 tsp ≈ 4.2 g",
+      "grams": 4.2,
+      "kcal": 14,
+      "proteinG": 0.7,
+      "fatG": 0.7,
+      "netCarbsG": 1.5,
+      "reference": "Spices, anise seed — USDA FDC 171316: 337 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Red or white grape juice",
+      "amount": "300 ml ≈ 312 g",
+      "grams": 312,
+      "kcal": 187,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 45.5,
+      "reference": "Grape juice, canned or bottled, unsweetened — USDA FDC 173042: 60 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "150 ml ≈ 155 g",
+      "grams": 155,
+      "kcal": 95,
+      "proteinG": 4.9,
+      "fatG": 5.0,
+      "netCarbsG": 7.4,
+      "reference": "Milk, whole, 3.25% milkfat — USDA FDC 171265 (SA full-cream milk 3.3 % fat): 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 574,
+      "proteinG": 0.7,
+      "fatG": 64.9,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 large ≈ 55 g",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287 (SA large egg 55 g out of shell): 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp ≈ 25 g (glaze)",
+      "grams": 25,
+      "kcal": 97,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 25.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "3 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    }
+  ],
+  "totalKcal": 4227,
+  "kcalPerServing": 210,
+  "perServing": {
+    "proteinG": 4.0,
+    "fatG": 4.2,
+    "netCarbsG": 38.6
+  },
+  "notes": "Assumptions that change the number: kneading flour and the oiled bowl not counted; whole glaze (2 tbsp sugar) eaten; 20 buns from ~1.34 kg baked (~67 g each). Sanity check: Woolworths mosbolletjie (FatSecret ZA) is 278 kcal / 100 g, about 186 kcal for a 67 g bun; ours is 317 kcal / 100 g and 210 kcal a bun, ~13 % higher because this dough is richer in butter and sugar."
+}

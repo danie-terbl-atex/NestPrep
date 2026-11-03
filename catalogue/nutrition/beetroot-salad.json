@@ -1,0 +1,94 @@
+{
+  "id": "beetroot-salad",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Fresh beetroot",
+      "amount": "1 kg unpeeled; ~85 % left after peeling and trimming",
+      "grams": 850,
+      "kcal": 366,
+      "proteinG": 13.6,
+      "fatG": 1.7,
+      "netCarbsG": 57.8,
+      "reference": "Beets, raw — USDA FDC 169145: 43 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 small, 80 g",
+      "grams": 80,
+      "kcal": 32,
+      "proteinG": 0.9,
+      "fatG": 0.1,
+      "netCarbsG": 6.1,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "White or brown vinegar",
+      "amount": "0.5 cup (125 ml)",
+      "grams": 125,
+      "kcal": 22,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "0.25 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "0.33 cup (210 g a cup)",
+      "grams": 70,
+      "kcal": 271,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 70.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "2 tsp (2.7 g each)",
+      "grams": 5.4,
+      "kcal": 21,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.9,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste, a pinch",
+      "grams": 0.3,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 713,
+  "kcalPerServing": 120,
+  "perServing": {
+    "proteinG": 2.4,
+    "fatG": 0.3,
+    "netCarbsG": 23.2
+  },
+  "notes": "Assumptions: 1 kg beetroot leaves ~850 g after peeling and trimming; all the sweet-sour dressing eaten (70 g sugar, ~12 g a serving); optional cornflour counted. Per 100 g the salad is ~60 kcal. Compared against: KOO beetroot salad and PnP grated beetroot in vinegar, both 67 kcal / 100 g, and Freshmark sweet-and-sour beetroot salad 104 kcal / 100 g (FatSecret ZA). Ours, at ~120 kcal for a 200 g side, matches the vinegar-style salads."
+}

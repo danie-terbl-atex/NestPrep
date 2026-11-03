@@ -146,6 +146,7 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Allow 2 hours for proving. Baked buns freeze for a month; toast from frozen.",
+  "kcalPerServing": 300,
   "photo": {
     "credit": null,
     "licence": null,

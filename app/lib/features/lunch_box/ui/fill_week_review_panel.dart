@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../model/fill_week_preview.dart';
+import '../model/lunch_slot.dart';
 import '../state/fill_week_controller.dart';
 import 'fill_week_day_card.dart';
+import 'lunch_variety_section.dart';
 
 /// Step 2 (lunch-box ADR-0020): the whole week as the fill would leave it,
 /// day by day, each new lunch saying whether a box or NestPrep put it
@@ -29,6 +31,13 @@ class FillWeekReviewPanel extends StatelessWidget {
         const SizedBox(height: NestSpace.xs),
         Text(FillWeekCopy.reviewBody, style: nest.text.bodySecondary),
         const SizedBox(height: NestSpace.lg),
+        if (!(preview?.hasNoDaysLeft ?? false)) ...[
+          LunchVarietySection(
+            choice: controller.variety,
+            slots: LunchSlot.values.toSet(),
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
         if (isEmpty)
           NestEmptyView(
             icon: LucideIcons.calendarCheck,

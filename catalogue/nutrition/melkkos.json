@@ -1,0 +1,84 @@
+{
+  "id": "melkkos",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "120 g",
+      "grams": 120,
+      "kcal": 437,
+      "proteinG": 12.4,
+      "fatG": 1.2,
+      "netCarbsG": 88.3,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.25 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Cold butter",
+      "amount": "40 g",
+      "grams": 40,
+      "kcal": 287,
+      "proteinG": 0.3,
+      "fatG": 32.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Full-cream milk",
+      "amount": "1.5 l × 1.03",
+      "grams": 1545,
+      "kcal": 942,
+      "proteinG": 48.7,
+      "fatG": 50.2,
+      "netCarbsG": 74.2,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "100 g, all sprinkled over",
+      "grams": 100,
+      "kcal": 387,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 100.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "2 tsp ≈ 5 g",
+      "grams": 5,
+      "kcal": 12,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2065,
+  "kcalPerServing": 340,
+  "perServing": {
+    "proteinG": 10.3,
+    "fatG": 14.0,
+    "netCarbsG": 44.0
+  },
+  "notes": "All the cinnamon sugar counted. Sanity check: FatSecret melkkos 109 kcal / 100 g (261 a cup); SparkPeople light melkkos 123 kcal (skim milk). Ours is ~275 g a serving ≈ 125 kcal / 100 g with full-cream milk and cinnamon sugar; consistent."
+}

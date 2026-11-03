@@ -1,0 +1,234 @@
+{
+  "id": "durban-chicken-breyani",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Chicken pieces",
+      "amount": "1.5 kg bone-in, skinless × 70 % edible = 1050 g",
+      "grams": 1050,
+      "kcal": 1250,
+      "proteinG": 224.6,
+      "fatG": 32.3,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, meat only, raw — USDA FDC 171052: 119 kcal / 100 g"
+    },
+    {
+      "ingredient": "Plain yoghurt",
+      "amount": "250 ml × 1.03 g/ml",
+      "grams": 258,
+      "kcal": 157,
+      "proteinG": 9.0,
+      "fatG": 8.4,
+      "netCarbsG": 12.0,
+      "reference": "Yogurt, plain, whole milk — USDA FDC 171284: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ginger and garlic paste",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 14,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 2.6,
+      "reference": "Ginger and garlic paste, bottled (Smith & Jones label, FatSecret): 90 kcal / 100 g"
+    },
+    {
+      "ingredient": "Durban masala",
+      "amount": "2 tbsp ≈ 16 g",
+      "grams": 16,
+      "kcal": 45,
+      "proteinG": 2.2,
+      "fatG": 2.3,
+      "netCarbsG": 2.4,
+      "reference": "Spices, chili powder (proxy for Durban / roasted masala) — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.3,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garam masala",
+      "amount": "2 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 12,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 1.2,
+      "reference": "Garam masala as coriander, cumin, cardamom, pepper, cinnamon 1:1 — USDA FDC 170922/170923/170919/170931/171320: 296 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Ripe tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander (dhania)",
+      "amount": "0.5 cup chopped ≈ 8 g",
+      "grams": 8,
+      "kcal": 2,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh mint leaves",
+      "amount": "2 tbsp chopped ≈ 3 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spearmint, fresh — USDA FDC 173475: 44 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "125 ml × 0.92 g/ml",
+      "grams": 115,
+      "kcal": 1017,
+      "proteinG": 0.0,
+      "fatG": 115.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "3 medium × 150 g",
+      "grams": 450,
+      "kcal": 180,
+      "proteinG": 5.0,
+      "fatG": 0.5,
+      "netCarbsG": 34.4,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "4 medium, peeled × 150 g",
+      "grams": 600,
+      "kcal": 462,
+      "proteinG": 12.3,
+      "fatG": 0.5,
+      "netCarbsG": 92.3,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon sticks",
+      "amount": "2, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, not eaten, 0 kcal"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "4 ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.4,
+      "reference": "Spices, cardamom — USDA FDC 170919: 311 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cumin seeds",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed, 0 kcal"
+    },
+    {
+      "ingredient": "Basmati rice",
+      "amount": "500 g raw",
+      "grams": 500,
+      "kcal": 1825,
+      "proteinG": 35.6,
+      "fatG": 3.3,
+      "netCarbsG": 393.2,
+      "reference": "Rice, white, long-grain, regular, raw, enriched — USDA FDC 168877: 365 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown lentils",
+      "amount": "1 tin, 400 g ≈ 240 g drained",
+      "grams": 240,
+      "kcal": 278,
+      "proteinG": 21.6,
+      "fatG": 0.9,
+      "netCarbsG": 29.4,
+      "reference": "Lentils, mature seeds, cooked, boiled (for tinned, drained) — USDA FDC 172421: 116 kcal / 100 g"
+    },
+    {
+      "ingredient": "Saffron threads",
+      "amount": "0.25 tsp ≈ 0.2 g",
+      "grams": 0.2,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spices, saffron — USDA FDC 170934: 310 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ghee",
+      "amount": "2 tbsp × 13 g",
+      "grams": 26,
+      "kcal": 234,
+      "proteinG": 0.0,
+      "fatG": 26.0,
+      "netCarbsG": 0.0,
+      "reference": "Butter, Clarified butter (ghee) — USDA FDC 171314: 900 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "4 large × 55 g",
+      "grams": 220,
+      "kcal": 341,
+      "proteinG": 27.7,
+      "fatG": 23.3,
+      "netCarbsG": 2.5,
+      "reference": "Egg, whole, cooked, hard-boiled — USDA FDC 173424: 155 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 5882,
+  "kcalPerServing": 980,
+  "perServing": {
+    "proteinG": 57.0,
+    "fatG": 35.7,
+    "netCarbsG": 96.5
+  },
+  "notes": "Chicken pieces skinless, edible yield 70 %. All 125 ml oil stays in the pot (onions, potatoes and chicken are cooked in it and it is layered into the breyani), so all of it is counted. Lentils tinned, drained 240 g. Sanity check: FatSecret ZA chicken biryani 139 kcal / 100 g; UK FSA chicken biryani 646 kcal a serving; Arise chicken biryani with potato 633 kcal. Ours is 980 kcal because a sixth of this pot is a ~730 g plate (rice, chicken, potato, lentils and egg); per 100 g it is ~135 kcal, in line with the published density. The 125 ml oil (~170 kcal a serving) is the biggest single swing."
+}

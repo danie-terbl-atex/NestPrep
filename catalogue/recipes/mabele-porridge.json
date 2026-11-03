@@ -8,7 +8,7 @@
   "placement": { "breakfast": "main" },
   "tags": ["traditional", "budget", "quick"],
   "allergens": ["milk"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "glutenFree"],
   "ingredients": [
     { "name": "Sorghum meal", "quantity": 1, "unit": "cup", "note": "mabele meal, about 160 g", "group": null },
     { "name": "Cold water", "quantity": 1, "unit": "cup", "note": null, "group": null },
@@ -30,5 +30,6 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": "For a sour ting version, mix the paste the night before, cover and leave it on the counter to ferment.",
+  "kcalPerServing": 210,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

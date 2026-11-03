@@ -4,6 +4,7 @@ import '../../../app/household_shell.dart';
 /// (welcome-tour ADR-0002). Lists is two places, so each list is its own.
 enum TourPlace {
   today(HouseholdTab.today),
+  calendar(HouseholdTab.week),
   lunch(HouseholdTab.lunch),
   meals(HouseholdTab.meals),
   todos(HouseholdTab.todos),

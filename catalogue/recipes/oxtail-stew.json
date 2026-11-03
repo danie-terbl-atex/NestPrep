@@ -18,7 +18,7 @@
   "allergens": [
     "wheat"
   ],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     {
       "name": "Oxtail",
@@ -133,6 +133,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Cook it a day ahead; chill overnight, lift off the set fat and reheat gently for 20 minutes.",
+  "kcalPerServing": 490,
   "photo": {
     "credit": null,
     "licence": null,

@@ -1,10 +1,13 @@
 import type { Firestore, QuerySnapshot } from 'firebase-admin/firestore';
 
+import { exportConnections } from '../assistants/connections/export_connections';
 import { CALENDAR_CONNECTIONS } from '../calendar_sync/sync_documents';
 import { GRANTS, VAULT_DOCUMENTS, VIEWS, vaultRef } from '../documents/vault_refs';
+import { FEEDBACK_EXPORT_LIMIT, feedbackOf } from '../feedback/feedback_documents';
 import { type HouseholdDocument, MEMBERS, householdRef, userRef } from '../household/documents';
 import { STORE_PURCHASES } from '../subscriptions/subscription_documents';
 import type { AuthRecord } from './account_auth';
+import { PLACE_EVENTS, TRAIL_DAYS, trailRef } from '../live_location/location_refs';
 import { AUTHORED_LIMIT, AUTHORED_RECORDS } from './authored_records';
 import { HOUSEHOLD_LIMIT } from './deletion_plan';
 import { type PlainValue, isPlainRecord, plainDocument, plainValue } from './plain_value';
@@ -12,6 +15,9 @@ import { personalRefs } from './personal_refs';
 
 /** Vault rows, grants and view-log lines listed per vault, at most (`BE-08`). */
 const VAULT_LIMIT = 500;
+
+/** History is kept thirty days; a day or two of clock skew either side. */
+const LOCATION_DAY_LIMIT = 40;
 
 /**
  * The shape of an export. `formatVersion` changes when a field is renamed or
@@ -39,8 +45,10 @@ export interface PersonalDataExport {
  * (accounts ADR-0006 — POPIA's right of access): the account and what Auth
  * knows, and for each household the person's role and grant, the profile they
  * claimed with its details, medication, last position and vault, the
- * calendars they connected, and what they put into the household. Store
- * subscriptions they linked are listed without the store's purchase token.
+ * calendars and assistants they connected (assistants ADR-0005), and what
+ * they put into the household. Store
+ * subscriptions they linked are listed without the store's purchase token,
+ * and the feedback they sent (feedback ADR-0001) as they sent it.
  *
  * Bounded everywhere (`BE-08`); a list cut short says so beside it.
  */
@@ -71,6 +79,7 @@ export async function assembleExport(
       signIn: subject.auth === null ? null : plainValue({ ...subject.auth }),
       households,
       storeSubscriptions: await exportPurchases(store, uid),
+      feedback: await exportFeedback(store, uid),
       vaultFiles: files.map((file) => plainValue({ ...file })),
     },
   };
@@ -108,7 +117,26 @@ async function exportHousehold(
     aboutYou: member === undefined ? [] : await exportDetails(store, householdId, member.id),
     vault: member === undefined ? null : await exportVault(store, householdId, member.id, files),
     connectedCalendars: connections.docs.map((doc) => plainDocument(doc.id, doc.data())),
+    connectedAssistants: await exportConnections(store, householdId, uid),
     whatYouAdded: member === undefined ? {} : await exportAuthored(store, householdId, member.id),
+    whereYouHaveBeen:
+      member === undefined ? null : await exportLocationHistory(store, householdId, member.id),
+  };
+}
+
+async function exportLocationHistory(
+  store: Firestore,
+  householdId: string,
+  memberId: string,
+): Promise<PlainValue> {
+  const trail = trailRef(store, householdId, memberId);
+  const [days, events] = await Promise.all([
+    trail.collection(TRAIL_DAYS).limit(LOCATION_DAY_LIMIT).get(),
+    trail.collection(PLACE_EVENTS).limit(VAULT_LIMIT).get(),
+  ]);
+  return {
+    days: days.docs.map((doc) => plainDocument(doc.id, doc.data())),
+    placeEvents: events.docs.map((doc) => plainDocument(doc.id, doc.data())),
   };
 }
 
@@ -185,6 +213,18 @@ async function exportPurchases(store: Firestore, uid: string): Promise<PlainValu
       Object.fromEntries(Object.entries(doc.data()).filter(([key]) => key !== 'storeRef')),
     ),
   );
+}
+
+async function exportFeedback(store: Firestore, uid: string): Promise<PlainValue> {
+  const page = await feedbackOf(store, uid)
+    .limit(FEEDBACK_EXPORT_LIMIT + 1)
+    .get();
+  return {
+    records: page.docs
+      .slice(0, FEEDBACK_EXPORT_LIMIT)
+      .map((doc) => plainDocument(doc.id, doc.data())),
+    cutShort: page.size > FEEDBACK_EXPORT_LIMIT,
+  };
 }
 
 function asObject(value: PlainValue | null): Record<string, PlainValue> {

@@ -11,6 +11,7 @@ part 'plan_week_failure.dart';
 part 'checkers_failure.dart';
 part 'document_failure.dart';
 part 'pnp_failure.dart';
+part 'photo_frame_failure.dart';
 
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message
@@ -165,6 +166,12 @@ enum LocationProblem {
 
   /// A share that had started stopped producing positions.
   reportingStopped,
+
+  /// Always-on sharing needs "Allow all the time", and it was not given.
+  alwaysRefused,
+
+  /// The household's premium ended, so always-on sharing stopped.
+  alwaysNeedsPremium,
 }
 
 final class LocationFailure extends AppFailure {

@@ -9,6 +9,7 @@ import 'package:nestprep/features/lunch_box/state/fill_week_controller.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
+import '../../../support/fake_lunch_variety.dart';
 import '../../../support/fake_recipe_repository.dart';
 import '../../../support/fake_starter_boxes.dart';
 import '../../../support/household_fixtures.dart';
@@ -51,6 +52,7 @@ void main() {
       starterBoxes: starterBoxes,
       recipes: recipes,
       lunchRepository: harness.repository,
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       childId: childId,

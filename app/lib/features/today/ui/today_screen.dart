@@ -12,13 +12,14 @@ import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
+import 'home_layout_button.dart';
 import 'today_agenda_section.dart';
 import 'today_lists_section.dart';
 import 'today_lunch_section.dart';
 
-/// The household's home (design-system ADR-0009): the day at a glance, each
-/// section a door into the tab that owns it, and only the sections this
-/// person's grant opens.
+/// The household's home (design-system ADR-0009): the day at a glance, the
+/// calendar first (ADR-0017), each section a door into the tab that owns it,
+/// and only the sections this person's grant opens.
 class TodayScreen extends StatelessWidget {
   const TodayScreen({required this.onSelectTab, super.key});
 
@@ -32,7 +33,13 @@ class TodayScreen extends StatelessWidget {
     final permissions = view.permissions;
     final today = clock.today;
     final firstName = view.viewerMember?.displayName.split(' ').first;
+    // The calendar leads, because the family's day is its events; the
+    // lunches follow the to-dos as a row a child (design-system ADR-0017).
     final sections = [
+      if (permissions.canUse(HouseholdArea.calendar))
+        TodayAgendaSection(onOpen: () => onSelectTab(HouseholdTab.week)),
+      if (permissions.canUse(HouseholdArea.todos))
+        TodayTodoSection(onOpen: () => onSelectTab(HouseholdTab.todos)),
       if (permissions.canUse(HouseholdArea.lunch))
         TourAnchor(
           target: TourTarget.todayLunch,
@@ -40,10 +47,6 @@ class TodayScreen extends StatelessWidget {
             onOpen: () => onSelectTab(HouseholdTab.lunch),
           ),
         ),
-      if (permissions.canUse(HouseholdArea.calendar))
-        TodayAgendaSection(onOpen: () => onSelectTab(HouseholdTab.week)),
-      if (permissions.canUse(HouseholdArea.todos))
-        TodayTodoSection(onOpen: () => onSelectTab(HouseholdTab.todos)),
       if (permissions.canUse(HouseholdArea.groceries))
         TodayGrocerySection(onOpen: () => onSelectTab(HouseholdTab.groceries)),
     ];
@@ -51,6 +54,7 @@ class TodayScreen extends StatelessWidget {
     return NestScaffold(
       leading: const NestBrandLockup(semanticsLabel: AppCopy.appName),
       trailing: const [
+        HomeLayoutButton(),
         TourAnchor(target: TourTarget.bell, child: NotificationBell()),
         TourAnchor(target: TourTarget.accountMenu, child: AccountMenuButton()),
       ],

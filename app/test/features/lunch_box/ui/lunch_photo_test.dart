@@ -73,7 +73,7 @@ void main() {
     final source = await pump(tester, isPremium: true);
 
     expect(source.asked, [
-      '${LunchFixtures.lwaziId} 2026-09-29 main:${LunchFixtures.wrap.id}',
+      '${LunchFixtures.lwaziId} 2026-09-29 main:${LunchFixtures.wrap.id}:${LunchFixtures.wrap.name}',
     ]);
     expect(find.byType(Image), findsOneWidget);
     expect(find.byType(LunchBoxArt), findsOneWidget);

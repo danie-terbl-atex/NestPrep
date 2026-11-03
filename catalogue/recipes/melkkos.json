@@ -32,5 +32,6 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": "Rub the butter into the flour the night before and keep it in the fridge for a fast breakfast.",
+  "kcalPerServing": 340,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

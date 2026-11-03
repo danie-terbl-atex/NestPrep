@@ -131,6 +131,7 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 460,
   "photo": {
     "credit": null,
     "licence": null,

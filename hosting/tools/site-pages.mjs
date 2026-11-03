@@ -18,16 +18,20 @@ import {
 /** Copied byte for byte from the app, never edited on the site. */
 export const COPIED_ASSETS = [
   ['app/assets/brand/nest_mark.png', 'assets/nest_mark.png'],
-  ['app/assets/fonts/DMSans-Regular.ttf', 'assets/fonts/DMSans-Regular.ttf'],
-  ['app/assets/fonts/DMSans-Medium.ttf', 'assets/fonts/DMSans-Medium.ttf'],
-  ['app/assets/fonts/DMSans-SemiBold.ttf', 'assets/fonts/DMSans-SemiBold.ttf'],
-  ['app/assets/fonts/DMSans-Bold.ttf', 'assets/fonts/DMSans-Bold.ttf'],
-  ['app/assets/fonts/DMSans-OFL.txt', 'assets/fonts/DMSans-OFL.txt'],
-  ['app/assets/fonts/Fraunces-SemiBold.ttf', 'assets/fonts/Fraunces-SemiBold.ttf'],
-  ['app/assets/fonts/Fraunces-OFL.txt', 'assets/fonts/Fraunces-OFL.txt'],
+  ['app/assets/fonts/MonaSans-Regular.ttf', 'assets/fonts/MonaSans-Regular.ttf'],
+  ['app/assets/fonts/MonaSans-Medium.ttf', 'assets/fonts/MonaSans-Medium.ttf'],
+  ['app/assets/fonts/MonaSans-SemiBold.ttf', 'assets/fonts/MonaSans-SemiBold.ttf'],
+  ['app/assets/fonts/MonaSans-Bold.ttf', 'assets/fonts/MonaSans-Bold.ttf'],
+  [
+    'app/assets/fonts/MonaSansDisplaySemiExpanded-SemiBold.ttf',
+    'assets/fonts/MonaSansDisplaySemiExpanded-SemiBold.ttf',
+  ],
+  ['app/assets/fonts/MonaSans-OFL.txt', 'assets/fonts/MonaSans-OFL.txt'],
   ['hosting/src/site.css', 'assets/site.css'],
   ['hosting/src/delete-account.js', 'assets/delete-account.js'],
   ['hosting/src/invite.js', 'assets/invite.js'],
+  ['hosting/src/connect.js', 'assets/connect.js'],
+  ['hosting/src/connect-config.json', 'assets/connect-config.json'],
   ['hosting/src/well-known/assetlinks.json', 'well-known/assetlinks.json'],
 ];
 
@@ -47,6 +51,13 @@ export const LEGAL_DOCUMENTS = [
     description: 'The agreement between you and NestPrep.',
   },
 ];
+
+/**
+ * The Firebase web SDK the consent page signs in with, served by Hosting
+ * itself under its reserved `/__/firebase/` path, so the page still loads
+ * nothing from another origin.
+ */
+export const FIREBASE_WEB_SDK = '12.19.0';
 
 const PAGES = [
   {
@@ -73,6 +84,19 @@ const PAGES = [
     nav: '',
     robots: 'noindex',
     head: '    <script src="/assets/invite.js" defer></script>',
+  },
+  {
+    source: 'hosting/src/pages/connect.html',
+    output: 'connect/index.html',
+    title: 'Connect an assistant — NestPrep',
+    description: 'Let Claude or ChatGPT use nestprep as you.',
+    nav: '',
+    robots: 'noindex',
+    head: [
+      `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-app-compat.js" defer></script>`,
+      `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-auth-compat.js" defer></script>`,
+      '    <script src="/assets/connect.js" defer></script>',
+    ].join('\n'),
   },
   {
     source: 'hosting/src/pages/404.html',

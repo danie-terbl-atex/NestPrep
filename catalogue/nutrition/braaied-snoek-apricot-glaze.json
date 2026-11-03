@@ -1,0 +1,104 @@
+{
+  "id": "braaied-snoek-apricot-glaze",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Whole snoek",
+      "amount": "1.8 kg cleaned; ~55 % edible flesh after head, bones, fins",
+      "grams": 990,
+      "kcal": 1208,
+      "proteinG": 212.9,
+      "fatG": 39.6,
+      "netCarbsG": 0.0,
+      "reference": "Cape snoek, raw — S Afr J Sci proximate composition (Thyrsites atun): 21.5 % protein, 4.0 % lipid; 122 kcal / 100 g by 4/9 kcal/g"
+    },
+    {
+      "ingredient": "Coarse salt",
+      "amount": "1 tbsp, rinsed off",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "100 g, all eaten in the glaze",
+      "grams": 100,
+      "kcal": 717,
+      "proteinG": 0.9,
+      "fatG": 81.1,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smooth apricot jam",
+      "amount": "0.5 cup (~165 g)",
+      "grams": 165,
+      "kcal": 399,
+      "proteinG": 1.2,
+      "fatG": 0.3,
+      "netCarbsG": 105.8,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "zest 2 g + juice 48 g",
+      "grams": 50,
+      "kcal": 12,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 3.3,
+      "reference": "Lemon peel, raw — USDA FDC 167749: 47 kcal / 100 g; Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tbsp (13.5 g); ~1/3 reaches the fish",
+      "grams": 4.5,
+      "kcal": 40,
+      "proteinG": 0.0,
+      "fatG": 4.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1 lemon, ~48 g juice squeezed",
+      "grams": 48,
+      "kcal": 11,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 3.2,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2409,
+  "kcalPerServing": 400,
+  "perServing": {
+    "proteinG": 36.1,
+    "fatG": 21.0,
+    "netCarbsG": 19.5
+  },
+  "notes": "Assumptions that move the number: a cleaned, butterflied 1.8 kg snoek yields ~55 % edible flesh (990 g, head, backbone, fins and fine bones out); raw snoek at 122 kcal / 100 g from the SA proximate study (FatSecret's Cape Point braai snoek lists 94 kcal / 100 g, which would take ~50 kcal off each plate); all the glaze is eaten, because the recipe pours what is left over the fish; a third of the grid oil reaches the fish. No published per-serving kcal was found. The Fish Society's version (1.2 kg snoek, 80 g butter, 180 g jam, serves 4) gives ~450 kcal a serving from the same reference values. Ours, with more fish per gram of glaze but 6 servings, gives 400."
+}

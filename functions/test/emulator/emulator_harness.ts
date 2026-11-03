@@ -189,9 +189,12 @@ export function adminStorage(): Storage {
   return getStorage(testApp());
 }
 
-/** Where an HTTP (not callable) Function is served in the emulator. */
-export function httpFunctionUrl(name: string): string {
-  return `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${REGION}/${name}`;
+/**
+ * Where an HTTP (not callable) Function is served in the emulator — in the
+ * callables' region unless it is one Hosting rewrites to.
+ */
+export function httpFunctionUrl(name: string, region: string = REGION): string {
+  return `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${region}/${name}`;
 }
 
 export async function clearFirestore(): Promise<void> {

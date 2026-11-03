@@ -1,0 +1,94 @@
+{
+  "id": "umngqusho",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Samp",
+      "amount": "500 g dry",
+      "grams": 500,
+      "kcal": 1625,
+      "proteinG": 35.5,
+      "fatG": 2.0,
+      "netCarbsG": 360.0,
+      "reference": "Iwisa Samp via fatsecret.co.za: 1361 kJ = 325 kcal, P 7.1, F 0.4, C 72 / 100 g: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar beans",
+      "amount": "250 g dry",
+      "grams": 250,
+      "kcal": 838,
+      "proteinG": 57.6,
+      "fatG": 3.1,
+      "netCarbsG": 88.4,
+      "reference": "Beans, cranberry (roman), mature seeds, raw (sugar beans) — USDA FDC 175189: 335 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2.5 l, absorbed or drained",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp",
+      "grams": 12,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 2963,
+  "kcalPerServing": 490,
+  "perServing": {
+    "proteinG": 15.8,
+    "fatG": 9.2,
+    "netCarbsG": 76.6
+  },
+  "notes": "Assumptions: samp from the Iwisa label; sugar beans valued as USDA dry cranberry beans; the 2 tbsp butter counted (not the vegan swap in the note). Cooked mass ~2.3 kg, ~385 g a serving. Sanity check: Arise app umngqusho 703 kcal for a 415 g serving (169 kcal/100 g, made with more fat); FatSecret Woolworths samp and beans 72–91 kcal/100 g (wetter, ready-made); ours is ~127 kcal/100 g, between the two."
+}

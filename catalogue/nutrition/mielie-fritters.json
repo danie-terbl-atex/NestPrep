@@ -1,0 +1,134 @@
+{
+  "id": "mielie-fritters",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "140 g",
+      "grams": 140,
+      "kcal": 510,
+      "proteinG": 14.5,
+      "fatG": 1.4,
+      "netCarbsG": 103.1,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1.5 tsp ≈ 7 g",
+      "grams": 7,
+      "kcal": 4,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.9,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp ≈ 4.2 g",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.2,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "pinch, 0 kcal"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Creamed sweetcorn",
+      "amount": "1 tin, 410 g",
+      "grams": 410,
+      "kcal": 295,
+      "proteinG": 7.1,
+      "fatG": 1.7,
+      "netCarbsG": 69.4,
+      "reference": "Corn, sweet, yellow, canned, cream style, regular pack — USDA FDC 169215: 72 kcal / 100 g"
+    },
+    {
+      "ingredient": "Whole-kernel sweetcorn",
+      "amount": "1 cup drained ≈ 165 g",
+      "grams": 165,
+      "kcal": 111,
+      "proteinG": 3.8,
+      "fatG": 2.0,
+      "netCarbsG": 20.4,
+      "reference": "Corn, sweet, yellow, canned, whole kernel, drained solids — USDA FDC 169214: 67 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "2 ≈ 30 g",
+      "grams": 30,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "0.5 cup = 110 g for shallow frying; ~55 % taken up = 60 g",
+      "grams": 60,
+      "kcal": 530,
+      "proteinG": 0.0,
+      "fatG": 60.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; shallow-fried batter absorbs ~7 % of its ~870 g weight; the rest stays in the pan"
+    },
+    {
+      "ingredient": "Sour cream",
+      "amount": "0.5 cup = 125 ml ≈ 120 g",
+      "grams": 120,
+      "kcal": 238,
+      "proteinG": 2.9,
+      "fatG": 23.2,
+      "netCarbsG": 5.6,
+      "reference": "Cream, sour, cultured — USDA FDC 171257: 198 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chives",
+      "amount": "to serve",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "garnish, negligible"
+    }
+  ],
+  "totalKcal": 1871,
+  "kcalPerServing": 470,
+  "perServing": {
+    "proteinG": 10.6,
+    "fatG": 24.7,
+    "netCarbsG": 51.7
+  },
+  "notes": "Shallow-fried: the ~870 g of batter takes up ~60 g of the 110 g oil (≈ 7 % of its weight). The optional sour cream is counted (~60 kcal a serving). Sanity check: Rasa Malaysia sweet corn fritters (creamed corn and flour) 441 kcal (4); SparkPeople gluten-free creamed-corn fritters 224 kcal for 4 fritters. Ours 470 includes the optional sour cream (~60 kcal)."
+}

@@ -8,7 +8,7 @@
   "placement": { "dinner": "side", "lunch": "side" },
   "tags": ["vegetableForward", "budget", "traditional"],
   "allergens": [],
-  "dietTags": ["vegetarian", "vegan"],
+  "dietTags": ["vegetarian", "vegan", "glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Fresh beetroot", "quantity": 1, "unit": "kg", "note": "about 5 medium, unpeeled, stalks trimmed to 2 cm", "group": null },
     { "name": "Onion", "quantity": 1, "unit": null, "note": "small, very thinly sliced into rings", "group": null },
@@ -32,5 +32,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make it a day or two ahead; it keeps 5 days covered in the fridge. Short of time, use 2 x 400 g jars of cooked beetroot.",
+  "kcalPerServing": 120,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

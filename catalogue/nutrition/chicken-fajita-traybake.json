@@ -1,0 +1,194 @@
+{
+  "id": "chicken-fajita-traybake",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Chicken breast fillets",
+      "amount": "600 g raw, skinless",
+      "grams": 600,
+      "kcal": 720,
+      "proteinG": 135.0,
+      "fatG": 15.7,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw — USDA FDC 171077: 120 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red, yellow and green peppers",
+      "amount": "3 × 120 g edible, one of each",
+      "grams": 360,
+      "kcal": 88,
+      "proteinG": 3.4,
+      "fatG": 0.8,
+      "netCarbsG": 14.8,
+      "reference": "Peppers, sweet, red / yellow / green, raw, one of each — USDA FDC 170108 / 169383 / 170427: 26 / 27 / 20 kcal / 100 g, mean 24 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g, all on the tray",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "2 tsp × 2.3 g",
+      "grams": 4.6,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 0.9,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1.5 tsp × 2.1 g",
+      "grams": 3.2,
+      "kcal": 12,
+      "proteinG": 0.6,
+      "fatG": 0.7,
+      "netCarbsG": 1.1,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic powder",
+      "amount": "1 tsp ≈ 3.1 g",
+      "grams": 3.1,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.0,
+      "netCarbsG": 2.0,
+      "reference": "Spices, garlic powder — USDA FDC 171325: 331 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "1 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "0.5 tsp ≈ 1.35 g",
+      "grams": 1.4,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "3 medium × 120 g",
+      "grams": 360,
+      "kcal": 65,
+      "proteinG": 3.2,
+      "fatG": 0.7,
+      "netCarbsG": 9.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "3 tbsp chopped × 1 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Limes",
+      "amount": "2 limes ≈ 30 g juice each (salsa and wedges)",
+      "grams": 60,
+      "kcal": 15,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 4.8,
+      "reference": "Lime juice, raw — USDA FDC 168156: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Wholewheat tortillas",
+      "amount": "8 × 40 g (20 cm)",
+      "grams": 320,
+      "kcal": 992,
+      "proteinG": 31.2,
+      "fatG": 31.2,
+      "netCarbsG": 115.5,
+      "reference": "Tortillas, ready-to-bake or -fry, whole wheat — USDA FDC 174081: 310 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cos lettuce",
+      "amount": "half a head ≈ 200 g",
+      "grams": 200,
+      "kcal": 34,
+      "proteinG": 2.5,
+      "fatG": 0.6,
+      "netCarbsG": 2.4,
+      "reference": "Lettuce, cos or romaine, raw — USDA FDC 169247: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Avocado",
+      "amount": "1 large ≈ 180 g flesh",
+      "grams": 180,
+      "kcal": 288,
+      "proteinG": 3.6,
+      "fatG": 26.4,
+      "netCarbsG": 3.3,
+      "reference": "Avocados, raw, all commercial varieties — USDA FDC 171705: 160 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2609,
+  "kcalPerServing": 650,
+  "perServing": {
+    "proteinG": 46.2,
+    "fatG": 26.1,
+    "netCarbsG": 44.5
+  },
+  "notes": "Assumptions that change the number: 2 wholewheat tortillas of 40 g each a person (20 cm), about 250 kcal of the 650; a large avocado gives 180 g of flesh; all 2 tbsp oil on the tray is eaten; peppers 120 g edible each, onions 150 g. Published check: recipe-site chicken fajitas with two tortillas and avocado typically list ~500–650 kcal a serving; this one sits at the top of that range because it carries 150 g chicken and a quarter of a large avocado each."
+}

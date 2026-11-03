@@ -1,0 +1,238 @@
+{
+  "id": "lighter-butter-chicken",
+  "name": "Lighter butter chicken",
+  "summary": "Tender chicken in a mild, spiced tomato sauce made creamy with yoghurt instead of cream, with peas and spinach cooked in and brown basmati on the side.",
+  "about": "Butter chicken, murgh makhani, is usually traced to Delhi restaurant kitchens in the years after 1947, where cooks simmered leftover tandoori chicken in a tomato gravy rich with butter and cream. This version keeps the spiced tomato sauce but finishes it with yoghurt and a single spoon of butter, and adds peas and spinach so the vegetables are in the pot.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "comfort",
+    "healthy"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "glutenFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown basmati rice",
+      "quantity": 1.25,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2.75,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "cut into 3 cm pieces",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garam masala",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Butter",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, finely chopped",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Garam masala",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "more if your family likes heat",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Frozen peas",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "at room temperature",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "To serve"
+    },
+    {
+      "name": "Cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Put the rice and water in a saucepan with a tight lid and bring to the boil over high heat. Turn the heat to low and cook, covered, for 35 minutes, until the water is absorbed and the grains are tender. Take it off the heat and leave it covered for 10 minutes.",
+    "Meanwhile, mix the chicken with the first 1/2 cup yoghurt, the lemon juice, garam masala, turmeric and salt in a bowl and leave it while you start the sauce.",
+    "Melt the butter with the oil in a large, deep frying pan over medium heat. Fry the onion, stirring now and then, until soft and golden, about 8 minutes.",
+    "Add the garlic, ginger, cumin, coriander, paprika, garam masala and chilli powder and stir for 1 minute, until fragrant. Stir in the tomato paste and cook for 1 minute more.",
+    "Add the chopped tomatoes, water and salt, bring to a simmer and cook for 10 minutes, stirring now and then, until the sauce has thickened and darkened. For a smooth sauce children prefer, blitz it in the pan with a stick blender.",
+    "Add the chicken with its marinade and simmer gently, half covered, for 10 to 12 minutes, stirring now and then, until the thickest piece is white all the way through.",
+    "Stir in the peas and cook for 3 minutes, then add the spinach and stir until it wilts, about 1 minute. Take the pan off the heat.",
+    "Stir 3 tbsp of the hot sauce into the second 1/2 cup yoghurt, then stir the yoghurt into the pan; doing it off the heat stops it splitting. Taste for salt, scatter over the coriander and serve with the rice and sliced cucumber."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Marinate the chicken in the morning; the finished curry keeps 2 days in the fridge, reheated gently so the yoghurt does not split.",
+  "kcalPerServing": 620,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

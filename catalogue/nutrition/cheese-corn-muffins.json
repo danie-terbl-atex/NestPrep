@@ -1,0 +1,74 @@
+{
+  "id": "cheese-corn-muffins",
+  "servings": 24,
+  "lines": [
+    {
+      "ingredient": "Self-raising flour",
+      "amount": "2 cups × 140 g",
+      "grams": 280,
+      "kcal": 955,
+      "proteinG": 30.2,
+      "fatG": 4.2,
+      "netCarbsG": 193.2,
+      "reference": "Snowflake Self Raising Wheat Flour via fatsecret.co.za: 1428 kJ = 341 kcal, P 10.8, F 1.5, available carbohydrate 69 g / 100 g: 341 kcal / 100 g"
+    },
+    {
+      "ingredient": "Grated cheddar cheese",
+      "amount": "1 cup grated, ~110 g",
+      "grams": 110,
+      "kcal": 443,
+      "proteinG": 25.2,
+      "fatG": 36.6,
+      "netCarbsG": 3.7,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    },
+    {
+      "ingredient": "Creamed sweetcorn",
+      "amount": "410 g tin",
+      "grams": 410,
+      "kcal": 295,
+      "proteinG": 7.1,
+      "fatG": 1.7,
+      "netCarbsG": 69.4,
+      "reference": "Corn, sweet, yellow, canned, cream style, regular pack — USDA FDC 169215: 72 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 SA large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "½ cup = 125 ml × 1.03 g/ml",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "¼ cup = 63 ml × 0.88 g/ml",
+      "grams": 55,
+      "kcal": 486,
+      "proteinG": 0.0,
+      "fatG": 55.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2415,
+  "kcalPerServing": 100,
+  "perServing": {
+    "proteinG": 3.3,
+    "fatG": 4.7,
+    "netCarbsG": 11.4
+  },
+  "notes": "Assumptions: SA self-raising flour 140 g a cup; grated cheddar ~110 g a cup; the whole 410 g tin of creamed sweetcorn. 24 muffins from ~1.1 kg batter, ~41 g each baked. Sanity check: Asda sweetcorn muffins 246 kcal per 86 g (~286 kcal/100 g) and a cheesy chilli corn muffin 108 kcal per 70 g; ours is ~245 kcal/100 g, below USDA corn muffins from a recipe (316 kcal/100 g) because creamed corn is a quarter of the batter."
+}

@@ -29,6 +29,7 @@ abstract final class NotificationsCopy {
         NotificationCategory.chores => 'Chores and rewards',
         NotificationCategory.photos => 'Photo from a shift',
         NotificationCategory.coParenting => 'The other home',
+        NotificationCategory.places => 'Arrivals and departures',
         NotificationCategory.test => 'Test',
       };
 
@@ -104,6 +105,7 @@ abstract final class NotificationsCopy {
         SwitchableCategory.chores => 'Chores and rewards',
         SwitchableCategory.photos => 'Photos from a shift',
         SwitchableCategory.coParenting => 'The other home',
+        SwitchableCategory.places => 'Arrivals and departures',
       };
   static String categoryHint(SwitchableCategory category) => switch (category) {
     SwitchableCategory.documents =>
@@ -114,6 +116,8 @@ abstract final class NotificationsCopy {
     SwitchableCategory.photos => 'When a carer sends a photo during a shift',
     SwitchableCategory.coParenting =>
       'When the other home asks for a change or leaves a handover note',
+    SwitchableCategory.places =>
+      'When somebody reaches or leaves one of your places',
   };
 
   static const quietTitle = 'Quiet hours';
@@ -141,6 +145,7 @@ abstract final class NotificationsCopy {
     AndroidChannel.chores => 'Chores and rewards',
     AndroidChannel.photos => 'Photos from a shift',
     AndroidChannel.twoHomes => 'The other home',
+    AndroidChannel.places => 'Arrivals and departures',
   };
   static String channelDescription(AndroidChannel channel) => switch (channel) {
     AndroidChannel.digest => 'One summary of your day, each morning',
@@ -149,5 +154,7 @@ abstract final class NotificationsCopy {
     AndroidChannel.chores => 'Chores to check and rewards asked for',
     AndroidChannel.photos => 'When a carer sends a photo during a shift',
     AndroidChannel.twoHomes => 'Changes and handover notes from the other home',
+    AndroidChannel.places =>
+      'When somebody reaches or leaves one of your places',
   };
 }

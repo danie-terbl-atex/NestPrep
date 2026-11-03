@@ -1,0 +1,124 @@
+{
+  "id": "flapjacks",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 910,
+      "proteinG": 25.8,
+      "fatG": 2.5,
+      "netCarbsG": 184.0,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tbsp ≈ 14 g",
+      "grams": 14,
+      "kcal": 7,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.9,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.25 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp × 13 g",
+      "grams": 26,
+      "kcal": 101,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 26.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "250 ml × 1.03 g/ml",
+      "grams": 258,
+      "kcal": 157,
+      "proteinG": 8.1,
+      "fatG": 8.4,
+      "netCarbsG": 12.4,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vanilla essence",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 12,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Vanilla extract — USDA FDC 173471: 288 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp (28 g) + ~5 g for the pan",
+      "grams": 33,
+      "kcal": 237,
+      "proteinG": 0.3,
+      "fatG": 26.8,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "to serve: assumed 5 g a serving",
+      "grams": 20,
+      "kcal": 143,
+      "proteinG": 0.2,
+      "fatG": 16.2,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g; quantity not given; 5 g a serving assumed"
+    },
+    {
+      "ingredient": "Golden syrup",
+      "amount": "to serve: assumed 1 tbsp (21 g) a serving",
+      "grams": 84,
+      "kcal": 270,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 66.4,
+      "reference": "Golden syrup, SA (Pick n Pay label via FatSecret ZA): 322 kcal / 100 g; quantity not given; 1 tbsp a serving assumed"
+    },
+    {
+      "ingredient": "Fresh berries",
+      "amount": "1 cup ≈ 150 g",
+      "grams": 150,
+      "kcal": 67,
+      "proteinG": 1.1,
+      "fatG": 0.5,
+      "netCarbsG": 13.3,
+      "reference": "Fresh berries as strawberries + blueberries 1:1 — USDA FDC 167762 + 171711: 44 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2061,
+  "kcalPerServing": 520,
+  "perServing": {
+    "proteinG": 12.4,
+    "fatG": 16.2,
+    "netCarbsG": 76.8
+  },
+  "notes": "Butter and golden syrup to serve have no quantity in the recipe; assumed 5 g butter and 1 tbsp syrup per serving (together ~115 kcal of the per-serving figure). Whole milk. Sanity check: Tantalise My Taste Buds SA flapjacks 222 kcal a serving from a 10-serving batch (≈ 555 for a quarter); Mugg & Bean flapjack stack 382 kcal; FatSecret flapjack 45 g 207 kcal. A quarter of this batch is ~4 flapjacks plus syrup, butter and berries; ours 520 agrees."
+}

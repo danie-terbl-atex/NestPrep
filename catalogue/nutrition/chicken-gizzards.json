@@ -1,0 +1,174 @@
+{
+  "id": "chicken-gizzards",
+  "servings": 5,
+  "lines": [
+    {
+      "ingredient": "Chicken gizzards",
+      "amount": "1 kg cleaned, raw",
+      "grams": 1000,
+      "kcal": 940,
+      "proteinG": 177.0,
+      "fatG": 21.0,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, gizzard, all classes, raw — USDA FDC 171456: 94 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "6 cups, drained off",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaves, removed before eating — 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tsp grated",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mild curry powder",
+      "amount": "1 tbsp",
+      "grams": 6.3,
+      "kcal": 20,
+      "proteinG": 0.9,
+      "fatG": 0.9,
+      "netCarbsG": 0.2,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "1 tsp",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "0.5 tsp",
+      "grams": 1.4,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "400 g tin",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.4,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken stock cube",
+      "amount": "1 cube, 10 g",
+      "grams": 10,
+      "kcal": 20,
+      "proteinG": 1.5,
+      "fatG": 0.5,
+      "netCarbsG": 2.4,
+      "reference": "Soup, chicken broth cubes, dry (~10 g a cube) — USDA FDC 171563: 198 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste, a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Fresh coriander or parsley",
+      "amount": "to serve, no quantity",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 1580,
+  "kcalPerServing": 320,
+  "perServing": {
+    "proteinG": 37.7,
+    "fatG": 13.0,
+    "netCarbsG": 8.2
+  },
+  "notes": "Assumptions: 1 kg cleaned raw gizzards (200 g a plate); the boiling water is drained and not counted; all 3 tbsp oil eaten; served without pap. Compared against: a SparkPeople curried stewed gizzards recipe at 268 kcal a serving (3 servings, with less meat a serving). Ours, at 320 for 5 plates, fits."
+}

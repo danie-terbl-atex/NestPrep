@@ -115,6 +115,8 @@ describe('deleteAccount — a household that goes on', () => {
     await givenSamsDetails(h);
     const grantToSam = `households/${h.householdId}/vaults/${alexMember}/grants/${h.sam.uid}`;
     await adminDb().doc(grantToSam).set({ memberId: h.samMemberId, grantedBy: alexMember });
+    await adminDb().doc('feedback/sams').set({ uid: h.sam.uid, message: 'Mia’s nut allergy…' });
+    await adminDb().doc('feedback/alexs').set({ uid: alex.uid, message: 'Love the lists.' });
 
     const summary = await callAs<Record<string, number>>(h.sam, 'deleteAccount', DELETE());
     expect(summary).toEqual({ householdsLeft: 0, householdsHandedOver: 1, householdsEnded: 0 });
@@ -137,8 +139,14 @@ describe('deleteAccount — a household that goes on', () => {
       expect(await exists(`${base}/${detail}/${h.samMemberId}`), detail).toBe(false);
     }
     expect(await exists(`${base}/vaults/${h.samMemberId}/vaultDocuments/passport`)).toBe(false);
+    expect(await exists(`${base}/locationTrails/${h.samMemberId}/trailDays/2026-11-02`)).toBe(
+      false,
+    );
+    expect(await exists(`${base}/locationTrails/${h.samMemberId}/placeEvents/e1`)).toBe(false);
     expect(await objectExists(vaultObject(h.householdId, h.samMemberId, 'passport'))).toBe(false);
     expect(await exists(grantToSam)).toBe(false);
+    expect(await exists('feedback/sams')).toBe(false);
+    expect(await exists('feedback/alexs')).toBe(true);
     // The household's own record of what Sam added stays.
     expect(await exists(`${base}/groceryItems/milk`)).toBe(true);
 

@@ -69,6 +69,42 @@ describe('a recipe’s fields', () => {
   });
 });
 
+describe('a recipe’s diet tags (ADR-0006)', () => {
+  it('come from the vocabulary, once each', () => {
+    expect(parses({ ...STEW, dietTags: ['glutenFree', 'dairyFree'] })).toBe(true);
+    expect(parses({ ...STEW, dietTags: ['paleo'] })).toBe(false);
+    expect(parses({ ...STEW, dietTags: ['glutenFree', 'glutenFree'] })).toBe(false);
+  });
+
+  it('carry the broader tag beside the stricter one', () => {
+    expect(parses({ ...STEW, dietTags: ['vegetarian', 'vegan'] })).toBe(true);
+    expect(parses({ ...STEW, dietTags: ['vegan'] })).toBe(false);
+    expect(parses({ ...STEW, dietTags: ['banting', 'keto'] })).toBe(true);
+    expect(parses({ ...STEW, dietTags: ['keto'] })).toBe(false);
+  });
+
+  it('never call a vegetarian recipe pescatarian', () => {
+    expect(parses({ ...STEW, allergens: ['fish'], dietTags: ['pescatarian'] })).toBe(true);
+    expect(parses({ ...STEW, dietTags: ['vegetarian', 'pescatarian'] })).toBe(false);
+  });
+
+  it('never promise away an allergen the recipe declares', () => {
+    expect(parses({ ...STEW, allergens: ['wheat'], dietTags: ['glutenFree'] })).toBe(false);
+    expect(parses({ ...STEW, allergens: ['milk'], dietTags: ['dairyFree'] })).toBe(false);
+    expect(parses({ ...STEW, allergens: ['egg'], dietTags: ['vegetarian', 'vegan'] })).toBe(false);
+    expect(parses({ ...STEW, allergens: ['fish'], dietTags: ['vegetarian'] })).toBe(false);
+  });
+});
+
+describe('a recipe’s energy (ADR-0006)', () => {
+  it('is a whole number of kcal a serving', () => {
+    expect(parses({ ...STEW, kcalPerServing: 480 })).toBe(true);
+    expect(parses({ ...STEW, kcalPerServing: 0 })).toBe(false);
+    expect(parses({ ...STEW, kcalPerServing: 480.5 })).toBe(false);
+    expect(parses({ ...STEW, kcalPerServing: undefined })).toBe(false);
+  });
+});
+
 describe('a recipe’s ingredient lines', () => {
   const line = { name: 'Flour', quantity: 1, unit: 'cup', note: null, group: null };
 

@@ -18,7 +18,7 @@
     "milk",
     "fish"
   ],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "glutenFree", "banting", "keto"],
   "ingredients": [
     {
       "name": "Smoked snoek",
@@ -90,6 +90,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 3 days covered in the fridge and freezes well for a month.",
+  "kcalPerServing": 240,
   "photo": {
     "credit": null,
     "licence": null,

@@ -1,0 +1,314 @@
+{
+  "id": "sugar-bean-curry",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "1 cup raw ≈ 200 g",
+      "grams": 200,
+      "kcal": 740,
+      "proteinG": 15.9,
+      "fatG": 5.8,
+      "netCarbsG": 147.4,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 370 kcal / 100 g (SR Legacy 20036; carbohydrate 77.2 g less 3.5 g fibre)"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2.5 cups",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 small ≈ 80 g",
+      "grams": 80,
+      "kcal": 32,
+      "proteinG": 0.9,
+      "fatG": 0.1,
+      "netCarbsG": 6.1,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato",
+      "amount": "1 medium ≈ 120 g",
+      "grams": 120,
+      "kcal": 22,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.2,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 75 g",
+      "grams": 150,
+      "kcal": 62,
+      "proteinG": 1.4,
+      "fatG": 0.4,
+      "netCarbsG": 10.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "¼ of a ~400 g cucumber ≈ 100 g",
+      "grams": 100,
+      "kcal": 15,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "White spirit vinegar",
+      "amount": "3 tbsp ≈ 45 g",
+      "grams": 45,
+      "kcal": 8,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled (SA white spirit vinegar) — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.25 tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mustard seeds",
+      "amount": "1 tsp ≈ 3.3 g",
+      "grams": 3.3,
+      "kcal": 17,
+      "proteinG": 0.9,
+      "fatG": 1.2,
+      "netCarbsG": 0.5,
+      "reference": "Spices, mustard seed, ground — USDA FDC 170929: 508 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cumin seeds",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fenugreek seeds",
+      "amount": "0.25 tsp ≈ 0.9 g",
+      "grams": 0.9,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Spices, fenugreek seed — USDA FDC 171324: 323 kcal / 100 g (carbohydrate 58.4 g less 24.6 g fibre)"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole cinnamon stick, lifted out before serving — 0 kcal"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 large ≈ 200 g",
+      "grams": 200,
+      "kcal": 80,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 15.2,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Curry leaves",
+      "amount": "12 ≈ 1 g",
+      "grams": 1,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Curry leaves, fresh — Indian Food Composition Tables (NIN): ~108 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chilli",
+      "amount": "1 ≈ 10 g",
+      "grams": 10,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "2 tsp grated × 2 g",
+      "grams": 4,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.6,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Durban masala",
+      "amount": "2 tsp × 2.7 g",
+      "grams": 5.4,
+      "kcal": 15,
+      "proteinG": 0.7,
+      "fatG": 0.8,
+      "netCarbsG": 0.8,
+      "reference": "Spices, chili powder (proxy for Durban / roasted masala) — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "0.5 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "3 medium × 120 g",
+      "grams": 360,
+      "kcal": 65,
+      "proteinG": 3.2,
+      "fatG": 0.7,
+      "netCarbsG": 9.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "2 medium, 300 g peeled",
+      "grams": 300,
+      "kcal": 231,
+      "proteinG": 6.1,
+      "fatG": 0.3,
+      "netCarbsG": 46.2,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "375 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar beans",
+      "amount": "2 × 400 g tins, 240 g drained each",
+      "grams": 480,
+      "kcal": 653,
+      "proteinG": 44.6,
+      "fatG": 2.4,
+      "netCarbsG": 76.3,
+      "reference": "Beans, cranberry (roman), mature seeds, cooked, boiled (drained tinned sugar beans) — USDA FDC 173736: 136 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2240,
+  "kcalPerServing": 560,
+  "perServing": {
+    "proteinG": 20.1,
+    "fatG": 10.2,
+    "netCarbsG": 81.9
+  },
+  "notes": "Brown rice weighed raw at 200 g a 250 ml cup; tinned sugar beans 240 g drained per tin, valued as boiled cranberry beans like the rest of the catalogue; potatoes at the recipe's 300 g peeled; all 2 tbsp oil eaten; cinnamon stick lifted out. Rice is about 185 kcal and the kachumbar about 35 kcal of each serving, so the curry alone is about 340. Sanity check (published figures as recalled; web search was unavailable): bean curries without rice run 250–330 kcal a serving (Durban-style sugar bean curry recipes with 2 tins for 4, 1–3 tbsp oil; vegan bean-and-potato curries 280–320 kcal); adding ¼ cup raw brown rice (~185 kcal) and a raw salad puts comparable plates at 470–550 kcal, so ours at 560 sits at the top of that range because of the potato and the full 2 tbsp oil."
+}

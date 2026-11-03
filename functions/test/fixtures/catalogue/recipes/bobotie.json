@@ -41,5 +41,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make the mince the day before; add the custard just before baking.",
+  "kcalPerServing": 600,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

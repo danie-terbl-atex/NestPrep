@@ -20,7 +20,8 @@
     "egg"
   ],
   "dietTags": [
-    "vegetarian"
+    "vegetarian",
+    "glutenFree"
   ],
   "ingredients": [
     {
@@ -116,6 +117,7 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 380,
   "photo": {
     "credit": null,
     "licence": null,

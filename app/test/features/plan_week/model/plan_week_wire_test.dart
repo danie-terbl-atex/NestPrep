@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/plan_week/data/lunch_ideas_request.dart';
 import 'package:nestprep/features/plan_week/data/lunch_week_request.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
@@ -234,6 +235,26 @@ void main() {
         (aisle.first! as Map<String, Object?>)['products'],
         hasLength(LunchIdeasRequest.namesPerShelf),
       );
+    });
+
+    test('the week hears which compartments stay the same all week', () {
+      final standard = LunchWeekRequest.toWire(
+        householdId: 'h1',
+        week: LunchFixtures.week,
+        childIds: {lwazi},
+        searches: const [],
+        packing: packing,
+      );
+      expect(standard['sameAllWeek'], ['fruit', 'veg', 'snack', 'treat']);
+      final varied = LunchWeekRequest.toWire(
+        householdId: 'h1',
+        week: LunchFixtures.week,
+        childIds: {lwazi},
+        searches: const [],
+        packing: packing,
+        variety: const LunchVariety({LunchSlot.treat, LunchSlot.main}),
+      );
+      expect(varied['sameAllWeek'], ['main', 'treat']);
     });
   });
 }

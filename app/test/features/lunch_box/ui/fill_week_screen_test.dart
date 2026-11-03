@@ -13,6 +13,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_lunch_variety.dart';
 import '../../../support/fake_recipe_repository.dart';
 import '../../../support/fake_starter_boxes.dart';
 import '../../../support/household_fixtures.dart';
@@ -68,6 +69,7 @@ void main() {
       starterBoxes: starterBoxes,
       recipes: FakeRecipeRepository(StarterBoxFixtures.recipes),
       lunchRepository: harness.repository,
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
       childId: LunchFixtures.ayandaId,
@@ -158,6 +160,21 @@ void main() {
     await pump(tester);
     await tapKey(tester, 'fill-week-skip');
     expect(find.text(FillWeekCopy.fromBox('Wrap day')), findsWidgets);
+  });
+
+  testWidgets('the review keeps fruit the same all week until its chip is '
+      'turned off', (tester) async {
+    await pump(tester, favourites: const []);
+    await tapKey(tester, 'fill-week-skip');
+    expect(find.text(LunchVarietyCopy.header), findsOneWidget);
+    Set<String> fruits() => {
+      for (final MapEntry(:key, :value)
+          in controller.preview!.result.picks.entries)
+        if (key.endsWith('_fruit')) value.itemId,
+    };
+    expect(fruits(), hasLength(1));
+    await tapKey(tester, 'variety-fruit');
+    expect(fruits().length, greaterThan(1));
   });
 
   testWidgets('the ready-made list loading is said in its own place', (

@@ -4,11 +4,13 @@ import 'package:nestprep/features/lunch_box/model/lunch_board.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
 import 'package:nestprep/features/plan_week/model/idea_search.dart';
 import 'package:nestprep/features/plan_week/model/lunch_idea.dart';
 import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
 import 'package:nestprep/features/plan_week/model/plan_fallback.dart';
+import 'package:nestprep/features/plan_week/model/shop_week.dart';
 import 'package:nestprep/features/plan_week/model/shop_week_assembly.dart';
 import 'package:nestprep/shared/money/money.dart';
 
@@ -184,6 +186,7 @@ void main() {
         ],
         budget: null,
         packing: packingFor({LunchSlot.snack}),
+        variety: const LunchVariety({}),
         reason: PlanFallbackReason.offline,
       );
       List<String?> snacksOf(String childId) => [
@@ -272,6 +275,81 @@ void main() {
         [for (final (_, p) in forAyanda) p.productId],
         ['apples', 'apples6'],
       );
+    });
+  });
+
+  group('the variety the parent chose (lunch-box ADR-0028)', () {
+    CheckedProduct fruit(String name, String id, int cents) =>
+        CheckedProduct.of(
+          planWeekProduct(name, id: id, cents: cents, ingredients: name),
+          rules,
+        );
+    final bananas = fruit('Bananas 1kg', 'bananas', 1999);
+    final pears = fruit('Pears 1.5kg', 'pears', 3999);
+    final naartjies = fruit('Naartjies 1kg', 'naartjies', 3499);
+    final fruits = [
+      searched('apples', LunchSlot.fruit, [cheapApples]),
+      searched('bananas', LunchSlot.fruit, [bananas]),
+      searched('pears', LunchSlot.fruit, [pears]),
+      searched('naartjies', LunchSlot.fruit, [naartjies]),
+    ];
+    ShopWeek plan(Set<String> childIds, {LunchVariety? variety}) =>
+        ShopWeekAssembly.fallback(
+          board: board(),
+          childIds: childIds,
+          searches: fruits,
+          budget: null,
+          packing: packingFor({LunchSlot.fruit}),
+          variety: variety ?? LunchVariety.standard,
+          reason: PlanFallbackReason.offline,
+        );
+    List<String?> fruitOf(ShopWeek week, String childId) => [
+      for (var day = 1; day <= 5; day++)
+        week.children
+            .singleWhere((child) => child.childId == childId)
+            .addedAt(day, LunchSlot.fruit)
+            ?.productId,
+    ];
+
+    test('keeps fruit the same all week by default, so one pack does it', () {
+      final week = plan({ayanda});
+      expect(fruitOf(week, ayanda), everyElement('apples6'));
+      expect(week.basket.packs, 1);
+    });
+
+    test('lets fruit vary when the parent asks, at most three kinds', () {
+      final week = plan({ayanda}, variety: const LunchVariety({}));
+      expect(fruitOf(week, ayanda).toSet(), {'apples6', 'bananas', 'pears'});
+    });
+
+    test('reckons a bag of fruit by its weight, for every product kept', () {
+      final week = plan({ayanda});
+      expect(week.boxesPerPackOf('apples6'), 6);
+      expect(week.boxesPerPackOf('bananas'), 6);
+      expect(week.boxesPerPackOf('pears'), 10);
+      expect(week.boxesPerPackOf('naartjies'), 6);
+    });
+
+    test('a swap for every day moves the row for each child sharing it', () {
+      var week = plan({lwazi, ayanda});
+      week = week.withPickEveryDay(
+        lwazi,
+        2,
+        LunchSlot.fruit,
+        const ShopPick(
+          ideaId: 'bananas',
+          productId: 'bananas',
+          origin: PickOrigin.swapped,
+        ),
+      );
+      expect(fruitOf(week, lwazi), everyElement('bananas'));
+      expect(fruitOf(week, ayanda), everyElement('bananas'));
+      expect(week.basket.lineFor('apples6'), isNull);
+      expect(week.basket.lineFor('bananas')!.covers, 12);
+
+      week = week.withPickEveryDay(ayanda, 3, LunchSlot.fruit, null);
+      expect(fruitOf(week, ayanda), everyElement(isNull));
+      expect(fruitOf(week, lwazi), everyElement(isNull));
     });
   });
 }

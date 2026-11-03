@@ -1,0 +1,128 @@
+{
+  "id": "veggie-egg-muffins",
+  "name": "Veggie egg cups",
+  "summary": "Eggs baked in little cups over softened pepper, baby marrow, spinach and cherry tomatoes with a sprinkle of cheddar, made ahead for the school-run week.",
+  "about": "Baked egg cups are a make-ahead breakfast: a tray baked on Sunday covers the first school mornings of the week, and each one reheats in under a minute or travels cold.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk",
+    "egg"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree",
+    "banting",
+    "keto"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "1 tsp for the tin, 2 tsp for the vegetables",
+      "group": null
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and finely diced",
+      "group": null
+    },
+    {
+      "name": "Baby marrow",
+      "quantity": 150,
+      "unit": "g",
+      "note": "coarsely grated",
+      "group": null
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 4,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": null
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": "roughly chopped",
+      "group": null
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 125,
+      "unit": "g",
+      "note": "quartered",
+      "group": null
+    },
+    {
+      "name": "Eggs",
+      "quantity": 8,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Milk",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Cheddar cheese",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "grated",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Brush the 12 holes of a muffin tin with 1 tsp of the oil, right up the sides; a silicone tray releases most easily.",
+    "Heat the rest of the oil in a frying pan over medium heat. Cook the red pepper, baby marrow and spring onions for 4 to 5 minutes, until soft and any liquid has cooked away, which stops the cups going watery.",
+    "Add the spinach and stir for 1 minute, until just wilted. Spread the vegetables on a plate to cool for 5 minutes.",
+    "Divide the vegetables and cherry tomatoes between the 12 holes.",
+    "Whisk the eggs, milk, salt and pepper in a jug until no streaks of white remain, then pour over the vegetables, filling each hole about three-quarters full.",
+    "Sprinkle over the cheddar and bake for 20 to 22 minutes, until puffed, golden at the edges and set in the centre; a knife pushed into the middle should come out clean.",
+    "Leave in the tin for 5 minutes, when they will sink a little, then run a knife around each one and lift it out. Serve three each, warm or cold."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 4 days in the fridge or 2 months frozen; reheat in the microwave for 30 to 40 seconds, or eat cold.",
+  "kcalPerServing": 280,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

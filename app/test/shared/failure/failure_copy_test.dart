@@ -27,6 +27,8 @@ void main() {
     // account data (accounts ADR-0006).
     for (final problem in AccountDataProblem.values)
       AccountDataFailure(problem),
+    for (final problem in PhotoFrameProblem.values) PhotoFrameFailure(problem),
+    for (final problem in FramePhotoProblem.values) FramePhotoFailure(problem),
   ];
 
   /// Words that mean something to us and nothing to a person holding a phone.
@@ -53,6 +55,8 @@ void main() {
         KidSignInFailure(:final problem) => '$name.${problem.name}',
         HomeCareFailure(:final problem) => '$name.${problem.name}',
         AccountDataFailure(:final problem) => '$name.${problem.name}',
+        PhotoFrameFailure(:final problem) => '$name.${problem.name}',
+        FramePhotoFailure(:final problem) => '$name.${problem.name}',
         _ => name,
       };
 

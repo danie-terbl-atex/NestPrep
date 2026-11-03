@@ -13,8 +13,10 @@ import '../model/lunch_auto_fill.dart';
 import '../model/lunch_board.dart';
 import '../model/lunch_fill_choice.dart';
 import '../model/lunch_starter_box.dart';
+import '../model/lunch_variety.dart';
 import 'fill_week_step.dart';
 import 'lunch_library_items.dart';
+import 'lunch_variety_choice.dart';
 import 'ready_made_box_offer.dart';
 import 'starter_box_items.dart';
 import 'week_picks_writer.dart';
@@ -31,6 +33,7 @@ final class FillWeekController extends ChangeNotifier {
     required LunchStarterBoxRepository starterBoxes,
     required RecipeRepository recipes,
     required LunchRepository lunchRepository,
+    required this.variety,
     required this.householdId,
     required this.memberId,
     required this.childId,
@@ -49,9 +52,13 @@ final class FillWeekController extends ChangeNotifier {
       recipes: recipes,
       onChange: _changed,
     );
+    variety.addListener(_changed);
     unawaited(readyMade.load());
   }
 
+  /// Which compartments keep the same all week — the review's chips, shared
+  /// with *Plan my week* (lunch-box ADR-0028).
+  final LunchVarietyChoice variety;
   final String householdId;
   final String memberId;
   final String childId;
@@ -202,6 +209,7 @@ final class FillWeekController extends ChangeNotifier {
       },
       chosenIds: _chosen,
       memberId: memberId,
+      variety: variety.variety,
     );
   }
 
@@ -213,6 +221,7 @@ final class FillWeekController extends ChangeNotifier {
   @override
   void dispose() {
     _isDisposed = true;
+    variety.removeListener(_changed);
     readyMade.close();
     super.dispose();
   }
@@ -233,6 +242,7 @@ final class _Derived {
     required StarterBoxOffer? offer,
     required List<String> chosenIds,
     required String memberId,
+    required LunchVariety variety,
   }) {
     final rules = child.child.foodRules;
     final goTo = [
@@ -264,6 +274,7 @@ final class _Derived {
       rules: rules,
       taste: child.taste,
       choice: LunchFillChoice(today: board.today, boxes: chosen),
+      variety: variety,
     );
     return _Derived(
       goTo: goTo,

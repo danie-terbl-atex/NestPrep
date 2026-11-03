@@ -29,6 +29,10 @@ final class SlotTyped extends SlotChoice {
   final String name;
 }
 
+final class SlotRecipe extends SlotChoice {
+  const SlotRecipe();
+}
+
 final class SlotCleared extends SlotChoice {
   const SlotCleared();
 }
@@ -96,11 +100,23 @@ class _SlotPickerBodyState extends State<_SlotPickerBody> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        NestButton(
+          label: MealsCopy.pickRecipe,
+          icon: LucideIcons.chefHat,
+          onPressed: () => Navigator.of(context).pop(const SlotRecipe()),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: NestSpace.md),
+          child: Text(
+            MealsCopy.orTypeYourOwn,
+            textAlign: TextAlign.center,
+            style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
+          ),
+        ),
         NestTextField(
           label: AppCopy.mealsPickTitle,
           hint: AppCopy.mealsTypeHint,
           controller: _name,
-          autofocus: true,
           textInputAction: TextInputAction.done,
           onChanged: (_) => setState(() {}),
           onSubmitted: (_) => _useTyped(),

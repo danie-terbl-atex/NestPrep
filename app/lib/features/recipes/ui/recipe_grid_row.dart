@@ -19,7 +19,7 @@ class RecipeGridRow extends StatelessWidget {
 
   final List<Recipe> recipes;
   final int columns;
-  final ValueChanged<Recipe> onOpen;
+  final RecipeOpened onOpen;
 
   /// Two to a row, or one when the text is so large two names would each
   /// break a word per line (`FE-14`).
@@ -38,7 +38,8 @@ class RecipeGridRow extends StatelessWidget {
                 ? RecipeCard(
                     key: ValueKey(recipes[index].id),
                     recipe: recipes[index],
-                    onOpen: () => onOpen(recipes[index]),
+                    place: 'all',
+                    onOpen: onOpen,
                   )
                 : const SizedBox.shrink(),
           ),

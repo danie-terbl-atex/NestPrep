@@ -1,0 +1,175 @@
+{
+  "id": "bean-corn-spinach-quesadillas",
+  "name": "Bean, corn and spinach quesadillas",
+  "summary": "Wholewheat tortillas folded around spiced kidney beans, sweetcorn, spinach and a little cheddar, toasted crisp in a dry pan and served with fresh tomato salsa.",
+  "about": "Quesadillas come from Mexico, where a tortilla is folded around cheese and heated on a griddle until it melts. Filled mostly with beans and vegetables and only a little cheese, they make a meat-free supper that children can help to fold.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly",
+    "budget"
+  ],
+  "allergens": [
+    "milk",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Tomatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.25,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salsa"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the filling"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 4,
+      "unit": null,
+      "note": "sliced, white and green parts kept apart",
+      "group": "For the filling"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Red kidney beans",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the filling"
+    },
+    {
+      "name": "Sweetcorn kernels",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "frozen, or tinned and drained",
+      "group": "For the filling"
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": "roughly chopped",
+      "group": "For the filling"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the filling"
+    },
+    {
+      "name": "Wholewheat tortilla wraps",
+      "quantity": 6,
+      "unit": null,
+      "note": "about 25 cm across",
+      "group": "To assemble"
+    },
+    {
+      "name": "Cheddar",
+      "quantity": 80,
+      "unit": "g",
+      "note": "grated",
+      "group": "To assemble"
+    },
+    {
+      "name": "Lettuce",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "shredded",
+      "group": "To serve"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "sliced",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Mix the tomatoes, red onion, coriander and lemon juice with a pinch of salt in a small bowl and set aside while you make the filling.",
+    "Heat the oven to 100 °C to keep the cooked quesadillas warm. Heat the oil in a large non-stick frying pan over medium heat, add the red pepper and the white parts of the spring onions and cook for 4 minutes, until soft.",
+    "Stir in the cumin and paprika for 30 seconds, then add the beans and sweetcorn. Roughly mash about half the beans against the pan with a fork and cook for 2 minutes, until hot.",
+    "Add the spinach a handful at a time and stir for 1–2 minutes, until wilted and the mixture looks thick rather than wet. Stir in the green spring onion, season with salt and tip into a bowl. Wipe the pan clean.",
+    "Spread a sixth of the filling over one half of each tortilla, scatter a sixth of the cheddar on top, fold the bare half over and press down gently.",
+    "Heat the clean pan over medium heat with no oil. Toast two quesadillas at a time for 2–3 minutes a side, pressing with a spatula, until crisp with golden spots and the cheese has melted. Keep each batch warm in the oven while you cook the rest.",
+    "Cut each quesadilla into 3 wedges and serve with the salsa and a salad of lettuce and cucumber."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the filling up to 2 days ahead and keep it in the fridge; fill and toast the tortillas when you need them.",
+  "kcalPerServing": 610,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

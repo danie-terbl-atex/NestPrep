@@ -10,6 +10,9 @@ import {
   type Firestore,
 } from './rules_harness';
 import { weeklyOn } from '../recurrence_shape';
+import { frameEventDocument } from '../../src/frames/frame_events';
+import { addFrameEventInput } from '../../src/frames/frame_schemas';
+import { parseInput } from '../../src/household/parse_input';
 
 const SAM = 'uid-sam';
 const THANDI = 'uid-thandi';
@@ -151,6 +154,37 @@ describe('events/{eventId}', () => {
     await assertFails(deleteDoc(doc(await asUser(THANDI), `${EVENTS}/sams-thing`)));
     await assertSucceeds(deleteDoc(doc(await asUser(SAM), `${EVENTS}/sams-thing`)));
     await assertSucceeds(deleteDoc(doc(await asUser(THANDI), `${EVENTS}/school-run`)));
+  });
+});
+
+describe('an event added at a frame (photo-frames ADR-0008)', () => {
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+  });
+
+  it('is a document its adder could have written themselves', async () => {
+    for (const [id, body] of [
+      ['timed', { start: '09:00', end: '10:30', note: 'Bring the card' }],
+      ['all-day', {}],
+      ['late', { start: '22:00', end: '01:00' }],
+      ['weekly', { start: '07:30', repeat: 'weekly' }],
+    ] as const) {
+      const input = parseInput(addFrameEventInput, {
+        secret: 'a'.repeat(43),
+        title: 'Dentist',
+        date: DATE,
+        who: [],
+        by: 'Thandi',
+        ...body,
+      });
+      await assertSucceeds(
+        setDoc(doc(await asUser(THANDI), `${EVENTS}/${id}`), {
+          ...frameEventDocument(input, THANDI_MEMBER, [SAM_MEMBER]),
+          createdAt: serverTimestamp(),
+        }),
+      );
+    }
   });
 });
 

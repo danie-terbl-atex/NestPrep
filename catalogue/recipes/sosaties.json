@@ -16,7 +16,7 @@
     "traditional"
   ],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     {
       "name": "Sunflower oil",
@@ -139,6 +139,7 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Marinate the lamb 1–2 days ahead; the flavour gets better.",
+  "kcalPerServing": 840,
   "photo": {
     "credit": null,
     "licence": null,

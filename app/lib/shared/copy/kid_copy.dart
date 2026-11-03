@@ -46,6 +46,11 @@ abstract final class KidCopy {
 
   static String choresProgress(int done, int total) => '$done of $total done';
 
+  static String wellDone(String name) => 'Well done, $name!';
+  static String allDone(String name) => 'All done, $name!';
+  static const everyChoreDone = 'Every chore done today';
+  static const grownUpWillCheck = 'A grown-up will check it';
+
   // ---- the parent's screen ----
   static const manageTitle = 'Kids’ sign-in';
   static const manageEntry = 'Kids’ sign-in';

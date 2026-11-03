@@ -30,6 +30,7 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
     required this.isAdmin,
     this.isOwnOnly = false,
     this.canEdit = true,
+    this.kidIds = const [],
   }) : _repository = todoRepository,
        _clock = householdClock {
     _subscribe();
@@ -53,6 +54,8 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
   /// their own. The rules decide; this only hides what they would refuse.
   final bool canEdit;
 
+  final List<String> kidIds;
+
   /// Ticking off is what `own` is for; `view` only looks.
   bool get canTick => canEdit || isOwnOnly;
 
@@ -66,19 +69,34 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
 
   AsyncState<TodoBoard> _board = const AsyncLoading();
   String? _memberFilter;
+  String? _openRowId;
 
   AsyncState<TodoBoard> get board => _board;
 
   /// Which member the household view is filtered to, or null for everyone.
   String? get memberFilter => _memberFilter;
 
+  String? get openRowId => _openRowId;
+
   CalendarDate get today => _clock.today;
+  DateTime get now => _clock.now;
   CalendarDate get windowStart => today.addDays(-overdueWindowDays);
   CalendarDate get windowEnd => today.addDays(lookaheadDays);
 
   void filterBy(String? memberId) {
     if (_memberFilter == memberId) return;
     _memberFilter = memberId;
+    notifyListeners();
+  }
+
+  void toggleRow(String rowId) {
+    _openRowId = _openRowId == rowId ? null : rowId;
+    notifyListeners();
+  }
+
+  void closeRow() {
+    if (_openRowId == null) return;
+    _openRowId = null;
     notifyListeners();
   }
 
@@ -228,6 +246,8 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
         routines: routines,
         memberId: memberId,
         today: today,
+        now: now,
+        kidIds: kidIds,
       ),
     );
     notifyListeners();

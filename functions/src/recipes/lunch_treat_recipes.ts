@@ -16,7 +16,7 @@ export const LUNCH_TREAT_RECIPES: readonly Recipe[] = [
     placement: { lunchBox: 'treat' },
     tags: [],
     allergens: [],
-    dietTags: ['vegetarian', 'vegan'],
+    dietTags: ['vegetarian', 'vegan', 'dairyFree'],
     ingredients: [
       { name: 'Ripe bananas', quantity: 2, unit: null, note: 'mashed', group: null },
       { name: 'Rolled oats', quantity: 1, unit: 'cup', note: null, group: null },
@@ -34,6 +34,7 @@ export const LUNCH_TREAT_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Bake on Sunday; they keep four days in a tin.',
+    kcalPerServing: 40,
     photo: null,
   },
   {
@@ -76,6 +77,7 @@ export const LUNCH_TREAT_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Bake a dozen on Sunday; freeze what the week will not eat.',
+    kcalPerServing: 220,
     photo: null,
   },
 ];

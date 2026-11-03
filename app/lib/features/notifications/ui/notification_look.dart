@@ -16,6 +16,7 @@ abstract final class NotificationLook {
         NotificationCategory.chores => LucideIcons.star,
         NotificationCategory.photos => LucideIcons.camera,
         NotificationCategory.coParenting => LucideIcons.house,
+        NotificationCategory.places => LucideIcons.mapPin,
         NotificationCategory.test => LucideIcons.bellRing,
       };
 
@@ -27,6 +28,7 @@ abstract final class NotificationLook {
         NotificationCategory.chores => NestTileTint.basil,
         NotificationCategory.photos => NestTileTint.guava,
         NotificationCategory.coParenting => NestTileTint.butter,
+        NotificationCategory.places => NestTileTint.lilac,
         NotificationCategory.test => NestTileTint.accent,
       };
 
@@ -57,5 +59,6 @@ abstract final class NotificationLook {
         SwitchableCategory.chores => LucideIcons.star,
         SwitchableCategory.photos => LucideIcons.camera,
         SwitchableCategory.coParenting => LucideIcons.house,
+        SwitchableCategory.places => LucideIcons.mapPin,
       };
 }

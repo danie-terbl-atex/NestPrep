@@ -7,7 +7,9 @@ import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart'
 import 'package:nestprep/features/add_to_checkers/model/retailer_switch.dart';
 import 'package:nestprep/features/add_to_checkers/state/cart_push_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/checkers_link_controller.dart';
+import 'package:nestprep/features/add_to_checkers/state/product_finder.dart';
 import 'package:nestprep/features/add_to_checkers/state/product_match_controller.dart';
+import 'package:nestprep/features/add_to_checkers/state/product_type_ahead_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/retailer_choice_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/shop_carts.dart';
 import 'package:nestprep/features/add_to_checkers/ui/checkers_link_screen.dart';
@@ -46,7 +48,7 @@ const pickedMilk = ProductMatch(
 /// The link screen is in the route table so *Add to Checkers* can go there.
 final class CheckersGroceryHarness {
   CheckersGroceryHarness() {
-    matches = ProductMatchController(
+    finder = ProductFinder(
       catalogues: RetailerCatalogues(
         checkers: catalogue,
         pickNPay: pnpCatalogue,
@@ -55,9 +57,18 @@ final class CheckersGroceryHarness {
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),
       ),
+      householdId: Fixtures.householdId,
+      ranker: ranker,
+    );
+    matches = ProductMatchController(
+      finder: finder,
       groceryRepository: list.repository,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      debounce: Duration.zero,
+    );
+    typeAhead = ProductTypeAheadController(
+      finder: finder,
       debounce: Duration.zero,
     );
     push = CartPushController(
@@ -70,11 +81,13 @@ final class CheckersGroceryHarness {
     );
     retailers = RetailerChoiceController(
       preference: retailerPreference,
+      matchAsYouType: retailerPreference,
       householdId: Fixtures.householdId,
       shopsOn: () => shopsOn(flags.isOn),
     );
     addTearDown(() {
       matches.dispose();
+      typeAhead.dispose();
       retailers.dispose();
       ShopCarts(checkers: push, pickNPay: pnpPush).dispose();
     });
@@ -96,7 +109,12 @@ final class CheckersGroceryHarness {
   final directory = FakeCheckersDirectory();
   final pnpCatalogue = FakeShopCatalogue();
   final pnpDirectory = FakePnpDirectory();
+  late final ProductFinder finder;
   late final ProductMatchController matches;
+  late final ProductTypeAheadController typeAhead;
+
+  /// Ranks nothing unless a test gives it fits.
+  final ranker = FakeProductMatchRanker();
 
   /// The Checkers cart push.
   late final CartPushController push;
@@ -149,6 +167,9 @@ final class CheckersGroceryHarness {
       ),
       list.plans.provider,
       ChangeNotifierProvider<ProductMatchController>.value(value: matches),
+      ChangeNotifierProvider<ProductTypeAheadController>.value(
+        value: typeAhead,
+      ),
       Provider<ShopCarts>.value(
         value: ShopCarts(checkers: push, pickNPay: pnpPush),
       ),

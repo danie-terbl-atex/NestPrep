@@ -1,0 +1,144 @@
+{
+  "id": "koeksisters",
+  "servings": 24,
+  "lines": [
+    {
+      "ingredient": "Sugar",
+      "amount": "1 kg in the syrup; ~40 % taken up by the koeksisters = 400 g",
+      "grams": 400,
+      "kcal": 1548,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 399.9,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g; the rest of the syrup is left in the bowls"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "500 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Cinnamon sticks",
+      "amount": "2, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Fresh ginger slices",
+      "amount": "3, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "flavouring, removed, 0 kcal"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "juice ≈ 45 g; ~40 % taken up with the syrup = 18 g",
+      "grams": 18,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.2,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cream of tartar",
+      "amount": "0.25 tsp ≈ 0.8 g",
+      "grams": 0.8,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Leavening agents, cream of tartar — USDA FDC 175041: 258 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "500 g",
+      "grams": 500,
+      "kcal": 1820,
+      "proteinG": 51.6,
+      "fatG": 4.9,
+      "netCarbsG": 368.1,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "4 tsp ≈ 18 g",
+      "grams": 18,
+      "kcal": 10,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 5.0,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Cold butter",
+      "amount": "60 g",
+      "grams": 60,
+      "kcal": 430,
+      "proteinG": 0.5,
+      "fatG": 48.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 large ≈ 55 g",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Buttermilk",
+      "amount": "250 ml × 1.03",
+      "grams": 258,
+      "kcal": 144,
+      "proteinG": 10.6,
+      "fatG": 5.2,
+      "netCarbsG": 13.7,
+      "reference": "Milk, buttermilk, fluid, cultured, reduced fat — USDA FDC 167697: 56 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 l for deep-frying; absorbed ≈ 12 % of ~890 g dough = 107 g",
+      "grams": 107,
+      "kcal": 946,
+      "proteinG": 0.0,
+      "fatG": 107.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; dough absorbs 10–15 % of its weight"
+    }
+  ],
+  "totalKcal": 4983,
+  "kcalPerServing": 210,
+  "perServing": {
+    "proteinG": 2.9,
+    "fatG": 7.1,
+    "netCarbsG": 32.9
+  },
+  "notes": "24 koeksisters. Oil: dough (~890 g) absorbs ~12 % = 107 g, not the 2 l in the pot. Syrup: they are dunked in ice-cold syrup and take up roughly 40 % of it (~400 g sugar of the 1 kg); the remaining syrup is left over. SA buttermilk taken as reduced-fat (~2 %). Sanity check: Cookidoo koeksisters 248 kcal a piece (30); Woolworths mini koeksister 147 kcal / 40 g (367 kcal / 100 g). Ours is ~60 g each ≈ 350 kcal / 100 g; consistent."
+}

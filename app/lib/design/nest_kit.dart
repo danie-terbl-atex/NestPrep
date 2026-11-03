@@ -4,6 +4,7 @@ library;
 
 export 'package:lucide_icons_flutter/lucide_icons.dart' show LucideIcons;
 
+export 'primitives/nest_animated_column.dart';
 export 'primitives/nest_async_view.dart';
 export 'primitives/nest_avatar.dart';
 export 'primitives/nest_badge.dart';
@@ -12,6 +13,7 @@ export 'primitives/nest_bottom_bar.dart';
 export 'primitives/nest_brand_mark.dart';
 export 'primitives/nest_button.dart';
 export 'primitives/nest_card.dart';
+export 'primitives/nest_celebration.dart';
 export 'primitives/nest_check_row.dart';
 export 'primitives/nest_chip.dart';
 export 'primitives/nest_confirm.dart';
@@ -28,6 +30,7 @@ export 'primitives/nest_loading_view.dart';
 export 'primitives/nest_logo_tile.dart';
 export 'primitives/nest_orbit.dart';
 export 'primitives/nest_photo.dart';
+export 'primitives/nest_photo_bytes.dart';
 export 'primitives/nest_photo_hero.dart';
 export 'primitives/nest_place_grid.dart';
 export 'primitives/nest_place_tile.dart';

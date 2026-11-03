@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import '../../../support/checkers_fakes_for_plan_week.dart';
 import '../../../support/fake_checkers.dart';
 import '../../../support/fake_live_location.dart';
+import '../../../support/fake_lunch_variety.dart';
 import '../../../support/fake_plan_week.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
@@ -140,6 +141,7 @@ void main() {
         memberId: Fixtures.samMemberId,
       ),
       packingStore: FakePackingChoiceStore(),
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );
@@ -282,7 +284,7 @@ void main() {
     expect(find.text(PlanWeekCopy.weekHeadline('this week')), findsOneWidget);
     expect(find.text(PlanWeekCopy.basketHeadline), findsOneWidget);
     expect(find.text(LunchBudgetCopy.basketBuy(1)), findsOneWidget);
-    expect(find.text(LunchBudgetCopy.basketCovers(1)), findsOneWidget);
+    expect(find.text(LunchBudgetCopy.basketRoom(6, 1)), findsOneWidget);
 
     await tapKey(tester, 'plan-week-use');
     expect(find.text(PlanWeekCopy.doneTitle), findsOneWidget);

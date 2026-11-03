@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/family_route.dart';
+import '../../../app/food_switch.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
@@ -65,6 +66,7 @@ class LunchScreen extends StatelessWidget {
                 onAction: controller.dismissActionFailure,
               ),
             ),
+          FoodSwitch(current: HouseholdTab.lunch, onSelect: onSelectTab),
           LunchWeekBar(
             week: controller.week,
             isThisWeek: isThisWeek,

@@ -9,10 +9,14 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_permissions.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
+import '../features/live_location/ui/always_sharing_guard.dart';
 import '../features/nanny_hub/ui/carer_scope.dart';
 import '../features/observability/crash_reporting.dart';
+import '../features/photo_frames/ui/share_to_frame_host.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../features/subscriptions/ui/entitlement_scope.dart';
+import '../features/today/model/home_layout.dart';
+import '../features/today/state/home_layout_controller.dart';
 import '../features/welcome_tour/model/tour_target.dart';
 import '../features/welcome_tour/state/tour_anchor_registry.dart';
 import '../features/welcome_tour/state/tour_controller.dart';
@@ -142,7 +146,11 @@ class _HouseholdShellState extends State<HouseholdShell> {
                 location: widget.location,
                 child: WelcomeTourLayer(
                   location: widget.location,
-                  child: CarerScope(child: widget.child),
+                  child: CarerScope(
+                    child: AlwaysSharingGuard(
+                      child: ShareToFrameHost(child: widget.child),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -167,6 +175,10 @@ class HouseholdTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Nullable so a tree without the layout switch keeps the bar.
+    if (context.watch<HomeLayoutController?>()?.layout == HomeLayout.cards) {
+      return _HomeButton(onPressed: () => onSelect(HouseholdTab.today));
+    }
     // Only the tabs this person may use (household ADR-0003). Today and More
     // are open to everybody.
     final permissions = context.watch<HouseholdView>().permissions;
@@ -197,19 +209,42 @@ class HouseholdTabBar extends StatelessWidget {
   }
 }
 
+/// Where the bar sits while the card home is on (design-system ADR-0019):
+/// every place opens from the board, so the way back is the one button.
+class _HomeButton extends StatelessWidget {
+  const _HomeButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    minimum: const EdgeInsets.only(bottom: NestSpace.lg),
+    child: Center(
+      heightFactor: 1,
+      child: NestButton(
+        label: HomeBoardCopy.home,
+        icon: LucideIcons.layoutGrid,
+        onPressed: onPressed,
+        isExpanded: false,
+      ),
+    ),
+  );
+}
+
 /// The household's top-level places, each with its own address
-/// (design-system ADR-0009). Today is the home. Lists is the bar's name for
-/// To do and Groceries, which keep their own addresses and switch between
-/// each other. Meals — recipes and this week — is in the bar, and Week, the
-/// family calendar, is reached from More (design-system ADR-0015).
+/// (design-system ADR-0009). Today is the home and the calendar is in the bar
+/// (design-system ADR-0017). Lists is the bar's name for To do and Groceries,
+/// and Food for Lunch and Meals: each keeps its own address and they switch
+/// between each other.
 enum HouseholdTab {
   today('today', LucideIcons.sun),
-  lunch('lunch', LucideIcons.sandwich),
   week('week', LucideIcons.calendarDays),
+  food('food', LucideIcons.utensils),
+  lunch('lunch', LucideIcons.sandwich),
+  meals('meals', LucideIcons.utensils),
   lists('lists', LucideIcons.listChecks),
   todos('todos', LucideIcons.circleCheck),
   groceries('groceries', LucideIcons.shoppingBasket),
-  meals('meals', LucideIcons.utensils),
   more('more', LucideIcons.layoutGrid);
 
   const HouseholdTab(this.segment, this.icon);
@@ -217,11 +252,11 @@ enum HouseholdTab {
   final String segment;
   final IconData icon;
 
-  static const inBar = [today, lunch, meals, lists, more];
+  static const inBar = [today, week, food, lists, more];
 
   HouseholdTab get barTab => switch (this) {
     todos || groceries => lists,
-    week => more,
+    lunch || meals => food,
     _ => this,
   };
 
@@ -233,29 +268,40 @@ enum HouseholdTab {
     HouseholdTab.todos => HouseholdArea.todos,
     HouseholdTab.groceries => HouseholdArea.groceries,
     HouseholdTab.meals => HouseholdArea.meals,
-    HouseholdTab.today || HouseholdTab.lists || HouseholdTab.more => null,
+    HouseholdTab.today ||
+    HouseholdTab.food ||
+    HouseholdTab.lists ||
+    HouseholdTab.more => null,
   };
 
   bool isOpenTo(HouseholdPermissions permissions) => switch (this) {
     HouseholdTab.lists =>
       permissions.canUse(HouseholdArea.todos) ||
           permissions.canUse(HouseholdArea.groceries),
+    HouseholdTab.food =>
+      permissions.canUse(HouseholdArea.lunch) ||
+          permissions.canUse(HouseholdArea.meals),
     _ => area == null || permissions.canUse(area!),
   };
 
   /// Where tapping this tab goes: Lists opens To do, or Groceries for
-  /// somebody who may only shop.
-  HouseholdTab landingFor(HouseholdPermissions permissions) =>
-      this == HouseholdTab.lists && !permissions.canUse(HouseholdArea.todos)
-      ? HouseholdTab.groceries
-      : this == HouseholdTab.lists
-      ? HouseholdTab.todos
-      : this;
+  /// somebody who may only shop; Food opens the lunches, or Meals for
+  /// somebody who may not pack them.
+  HouseholdTab landingFor(HouseholdPermissions permissions) => switch (this) {
+    HouseholdTab.lists when !permissions.canUse(HouseholdArea.todos) =>
+      HouseholdTab.groceries,
+    HouseholdTab.lists => HouseholdTab.todos,
+    HouseholdTab.food when !permissions.canUse(HouseholdArea.lunch) =>
+      HouseholdTab.meals,
+    HouseholdTab.food => HouseholdTab.lunch,
+    _ => this,
+  };
 
   String get label => switch (this) {
     HouseholdTab.today => AppCopy.tabToday,
+    HouseholdTab.week => AppCopy.tabCalendar,
+    HouseholdTab.food => AppCopy.tabFood,
     HouseholdTab.lunch => LunchCopy.tab,
-    HouseholdTab.week => AppCopy.tabWeek,
     HouseholdTab.lists => AppCopy.tabLists,
     HouseholdTab.todos => AppCopy.tabTodos,
     HouseholdTab.groceries => AppCopy.tabGroceries,

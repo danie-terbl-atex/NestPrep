@@ -53,7 +53,8 @@ void main() {
         view: MealsView.recipes,
         onSelectView: (_) {},
         onSelectTab: (_) {},
-        onOpenRecipe: (_) {},
+        onPickRecipe: (_, _) async => null,
+        onOpenRecipe: (_, {heroTag}) {},
       ),
       providers: harness.providers,
       emit: () async => harness.recipes.emitCatalogue(RecipeFixtures.catalogue),
@@ -66,6 +67,7 @@ void main() {
     String name, {
     Brightness brightness = Brightness.light,
     double textScale = 1,
+    String recipeId = 'bobotie',
     Future<void> Function(RecipePageController page)? act,
   }) {
     final harness = harnessFor(tester);
@@ -73,7 +75,7 @@ void main() {
       mealRepository: harness.meals,
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
-      recipeId: RecipeFixtures.bobotie.id,
+      recipeId: recipeId,
       familySize: 4,
     );
     return captureScreen(
@@ -91,7 +93,10 @@ void main() {
             child: RecipeScreen(onBack: () {}),
           ),
       providers: harness.providers,
-      emit: () async => harness.recipes.emitCatalogue(RecipeFixtures.catalogue),
+      emit: () async => harness.recipes.emitCatalogue([
+        ...RecipeFixtures.catalogue,
+        RecipeFixtures.hakeTraybake,
+      ]),
       act: act == null ? null : () => act(page),
     );
   }
@@ -102,6 +107,16 @@ void main() {
   }
 
   testWidgets('recipes — light', (tester) => recipes(tester, 'recipes-light'));
+
+  testWidgets(
+    'a healthy recipe and the ways of eating it suits — light',
+    (tester) => recipePage(
+      tester,
+      'recipe-healthy-light',
+      recipeId: RecipeFixtures.hakeTraybake.id,
+      act: (_) => scrollBy(tester, 260),
+    ),
+  );
 
   testWidgets(
     'recipes — dark',
@@ -247,7 +262,8 @@ void main() {
           view: MealsView.week,
           onSelectView: (_) {},
           onSelectTab: (_) {},
-          onOpenRecipe: (_) {},
+          onPickRecipe: (_, _) async => null,
+          onOpenRecipe: (_, {heroTag}) {},
         ),
         providers: [
           ...harness.providers,

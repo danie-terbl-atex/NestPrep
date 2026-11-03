@@ -21,7 +21,8 @@
     "milk"
   ],
   "dietTags": [
-    "vegetarian"
+    "vegetarian",
+    "glutenFree"
   ],
   "ingredients": [
     {
@@ -85,6 +86,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Cook it a day ahead and reheat in a covered dish at 180 °C for 20 minutes.",
+  "kcalPerServing": 180,
   "photo": {
     "credit": null,
     "licence": null,

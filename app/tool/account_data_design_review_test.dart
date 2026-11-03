@@ -5,15 +5,20 @@ import 'package:nestprep/features/account_data/state/account_export_controller.d
 import 'package:nestprep/features/account_data/ui/account_centre_screen.dart';
 import 'package:nestprep/features/account_data/ui/account_export_screen.dart';
 import 'package:nestprep/features/account_data/ui/delete_account_screen.dart';
+import 'package:nestprep/features/feedback/model/feedback_draft.dart';
+import 'package:nestprep/features/feedback/state/feedback_controller.dart';
+import 'package:nestprep/features/feedback/ui/feedback_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/fake_account_data.dart';
+import '../test/support/fake_feedback.dart';
 import 'review_press.dart';
 
 /// Account and privacy, Download my data (ready to share) and Delete my
-/// account (a hand-over, an ending and a store subscription), in both themes
-/// (accounts ADR-0006). Pictures to look at rather than assertions:
+/// account (a hand-over, an ending and a store subscription), and Send
+/// feedback half written and sent, in both themes (accounts ADR-0006,
+/// feedback ADR-0001). Pictures to look at rather than assertions:
 ///
 ///     flutter test tool/account_data_design_review_test.dart --update-goldens
 void main() {
@@ -73,6 +78,54 @@ void main() {
         ),
         providers: const [],
         emit: () async {},
+      );
+    });
+
+    FeedbackController feedback() {
+      final controller = FeedbackController(
+        repository: FakeFeedbackRepository(),
+        uid: 'uid-sam',
+      );
+      addTearDown(controller.dispose);
+      return controller;
+    }
+
+    testWidgets('send-feedback-$theme', (tester) async {
+      final controller = feedback();
+      await captureScreen(
+        tester,
+        'send-feedback-$theme',
+        brightness: brightness,
+        screen: ChangeNotifierProvider.value(
+          value: controller,
+          child: const FeedbackScreen(),
+        ),
+        providers: const [],
+        emit: () async {
+          controller
+            ..chooseKind(FeedbackKind.problem)
+            ..chooseArea(FeedbackArea.groceries);
+        },
+      );
+    });
+
+    testWidgets('send-feedback-sent-$theme', (tester) async {
+      final controller = feedback();
+      await captureScreen(
+        tester,
+        'send-feedback-sent-$theme',
+        brightness: brightness,
+        screen: ChangeNotifierProvider.value(
+          value: controller,
+          child: const FeedbackScreen(),
+        ),
+        providers: const [],
+        emit: () async {
+          controller
+            ..chooseKind(FeedbackKind.praise)
+            ..setMessage('Love the lunch board');
+          await controller.send();
+        },
       );
     });
   }

@@ -38,6 +38,7 @@ void main() {
     controller = LiveLocationController(
       liveLocationRepository: repository,
       locationReporter: reporter,
+      placesRepository: FakePlacesRepository(),
       householdId: Fixtures.householdId,
       viewerMemberId: Fixtures.samMemberId,
       members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
@@ -71,7 +72,7 @@ void main() {
       await tester.pump();
 
       expect(find.byKey(const ValueKey('loading')), findsOneWidget);
-      expect(find.text(AppCopy.locationTitle), findsOneWidget);
+      expect(find.text(LocationCopy.title), findsOneWidget);
     });
 
     testWidgets('a household of one says so, and keeps the way to share', (
@@ -82,6 +83,7 @@ void main() {
       final solo = LiveLocationController(
         liveLocationRepository: repository,
         locationReporter: reporter,
+        placesRepository: FakePlacesRepository(),
         householdId: Fixtures.householdId,
         viewerMemberId: Fixtures.samMemberId,
         members: [Fixtures.sam],
@@ -97,9 +99,9 @@ void main() {
       repository.emitLocations([]);
       await tester.pumpAndSettle();
 
-      expect(find.text(AppCopy.locationAloneTitle), findsOneWidget);
+      expect(find.text(LocationCopy.aloneTitle), findsOneWidget);
       expect(
-        find.text(AppCopy.locationOneHour),
+        find.text(LocationCopy.oneHour),
         findsOneWidget,
         reason: 'the empty state must not take away the control that fills it',
       );
@@ -143,7 +145,7 @@ void main() {
       repository.emitLocations([_location(Fixtures.thandiMemberId)]);
       await tester.pumpAndSettle();
 
-      expect(find.textContaining(AppCopy.locationHereNow), findsOneWidget);
+      expect(find.textContaining(LocationCopy.hereNow), findsOneWidget);
       expect(find.textContaining(AppCopy.withinMetres(12)), findsOneWidget);
     });
 
@@ -160,7 +162,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('24 minutes ago'), findsOneWidget);
-      expect(find.textContaining(AppCopy.locationHereNow), findsNothing);
+      expect(find.textContaining(LocationCopy.hereNow), findsNothing);
     });
 
     testWidgets('somebody not sharing is shown saying so', (tester) async {
@@ -168,7 +170,7 @@ void main() {
       repository.emitLocations([]);
       await tester.pumpAndSettle();
 
-      expect(find.textContaining(AppCopy.locationNotSharing), findsOneWidget);
+      expect(find.textContaining(LocationCopy.notSharing), findsOneWidget);
     });
 
     testWidgets('a profile nobody has claimed says that instead', (
@@ -190,7 +192,7 @@ void main() {
       repository.emitLocations([]);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(AppCopy.locationFourHours));
+      await tester.tap(find.text(LocationCopy.fourHours));
       await tester.pumpAndSettle();
 
       expect(reporter.started.single.until, _now.add(const Duration(hours: 4)));
@@ -205,14 +207,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // 14:00 UTC is 16:00 where this household lives.
-      expect(
-        find.text('${AppCopy.locationSharingUntil} 17:00'),
-        findsOneWidget,
-      );
-      expect(find.text(AppCopy.locationStop), findsOneWidget);
-      expect(find.text(AppCopy.locationOneHour), findsNothing);
+      expect(find.text('${LocationCopy.sharingUntil} 17:00'), findsOneWidget);
+      expect(find.text(LocationCopy.stop), findsOneWidget);
+      expect(find.text(LocationCopy.oneHour), findsNothing);
 
-      await tester.tap(find.text(AppCopy.locationStop));
+      await tester.tap(find.text(LocationCopy.stop));
       await tester.pumpAndSettle();
 
       expect(reporter.stopped.single.memberId, Fixtures.samMemberId);
@@ -226,7 +225,7 @@ void main() {
         LocationProblem.switchedOff,
       );
 
-      await tester.tap(find.text(AppCopy.locationOneHour));
+      await tester.tap(find.text(LocationCopy.oneHour));
       await tester.pumpAndSettle();
 
       expect(

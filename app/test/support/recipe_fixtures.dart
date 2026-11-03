@@ -28,6 +28,7 @@ abstract final class RecipeFixtures {
     int prepMinutes = 15,
     int cookMinutes = 30,
     Set<Allergen> allergens = const {},
+    int? kcalPerServing,
   }) => Recipe(
     id: id,
     name: name,
@@ -49,6 +50,7 @@ abstract final class RecipeFixtures {
     tags: tags,
     difficulty: RecipeDifficulty.easy,
     photo: photo(id),
+    kcalPerServing: kcalPerServing,
   );
 
   /// Serves six as written, in two parts, with a line of every kind the
@@ -104,6 +106,7 @@ abstract final class RecipeFixtures {
     tags: const {RecipeTag.capeMalay, RecipeTag.traditional, RecipeTag.comfort},
     difficulty: RecipeDifficulty.medium,
     photo: photo('bobotie'),
+    kcalPerServing: 600,
   );
 
   static final boerewors = meal(
@@ -181,6 +184,22 @@ abstract final class RecipeFixtures {
     summary: 'Shredded chicken and crunchy lettuce in a soft wrap.',
     placement: const {RecipeContext.lunchBox: 'main'},
     servings: 1,
+  );
+
+  /// A healthy weeknight dinner that suits several ways of eating (recipes
+  /// ADR-0006) — kept out of [catalogue], so the discovery tests' shelves
+  /// and chips stay as they are.
+  static final hakeTraybake = meal(
+    'hake-and-vegetable-traybake',
+    'Hake and vegetable traybake',
+    summary:
+        'Hake fillets roasted on one tray with baby potatoes, peppers, '
+        'cherry tomatoes and lemon.',
+    placement: const {RecipeContext.dinner: 'main'},
+    tags: const {RecipeTag.healthy, RecipeTag.onePot},
+    dietTags: const ['pescatarian', 'glutenFree', 'dairyFree'],
+    allergens: const {Allergen.fish},
+    kcalPerServing: 420,
   );
 
   static List<Recipe> get catalogue => [

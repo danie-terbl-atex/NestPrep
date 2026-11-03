@@ -1,0 +1,184 @@
+{
+  "id": "baked-falafel-wraps",
+  "name": "Baked falafel wraps",
+  "summary": "Herby chickpea falafel baked until crisp, rolled into wholewheat wraps with hummus, lettuce, tomato, cucumber and grated carrot for a lunch that packs well.",
+  "about": "Falafel are balls of ground chickpeas or broad beans, street food across Egypt and the Levant, usually fried and eaten in flatbread with salad and tahini sauce. Made from tinned chickpeas and baked instead of fried, they need far less oil, and they keep in the fridge for lunch boxes and next-day wraps.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "budget",
+    "vegetableForward",
+    "healthy"
+  ],
+  "allergens": [
+    "wheat",
+    "sesame"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "vegan",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "for the tray, the mix and brushing",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, roughly chopped",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "peeled",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "leaves, loosely packed",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 0.25,
+      "unit": "cup",
+      "note": "leaves, loosely packed",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Chickpeas",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained, rinsed and patted dry",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Cake flour",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the falafel"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the falafel"
+    },
+    {
+      "name": "Wholewheat wraps",
+      "quantity": 4,
+      "unit": null,
+      "note": "large, vegan",
+      "group": "For the wraps"
+    },
+    {
+      "name": "Hummus",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the wraps"
+    },
+    {
+      "name": "Lettuce",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "shredded",
+      "group": "For the wraps"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the wraps"
+    },
+    {
+      "name": "Cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "cut into thin sticks",
+      "group": "For the wraps"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the wraps"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven). Line a baking tray with baking paper and brush it with 1 tbsp of the oil.",
+    "Pulse the onion, garlic, parsley and coriander in a food processor until finely chopped.",
+    "Add the chickpeas, flour, cumin, ground coriander, baking powder, lemon juice, salt, pepper and 1 tbsp of the oil. Pulse in short bursts, scraping down the sides, until the mix is finely crumbly and holds together when squeezed but is not a smooth paste. Without a processor, chop the herbs and onion finely and mash everything with a potato masher.",
+    "With damp hands, roll the mix into 20 balls of about 2 tbsp each and flatten each slightly into a thick patty. Set them on the tray and brush the tops with the last 1 tbsp oil.",
+    "Bake for 12 minutes, turn them over and bake for 10 to 12 minutes more, until golden brown and crisp on both sides and firm when pressed.",
+    "Warm the wraps in a dry frying pan over medium heat for about 15 seconds a side so they roll without cracking.",
+    "Spread each wrap with 2 tbsp hummus, then line up lettuce, tomato, cucumber, carrot and 5 falafel down the middle. Fold in the sides, roll up tightly and cut in half."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 25,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Bake the falafel up to 3 days ahead and keep them chilled; they are good cold in a lunch box or crisped for 5 minutes in a hot oven.",
+  "kcalPerServing": 590,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

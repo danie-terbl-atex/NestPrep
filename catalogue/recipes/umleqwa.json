@@ -18,7 +18,7 @@
   "allergens": [
     "wheat"
   ],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     {
       "name": "Hardbody chicken",
@@ -119,6 +119,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "It tastes even better the next day; reheat gently with a splash of water.",
+  "kcalPerServing": 460,
   "photo": {
     "credit": null,
     "licence": null,

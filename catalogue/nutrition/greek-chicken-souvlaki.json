@@ -1,0 +1,244 @@
+{
+  "id": "greek-chicken-souvlaki",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Wooden skewers",
+      "amount": "8, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Wooden skewers — not eaten, 0 kcal"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp = 27 g; leftover marinade thrown away, ~2/3 clings = 18 g",
+      "grams": 18,
+      "kcal": 159,
+      "proteinG": 0.0,
+      "fatG": 18.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "3 tbsp = 45 g; ~2/3 clings = 30 g",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g; ~2/3 clings = 10 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "2 tsp = 2 g; ~2/3 clings",
+      "grams": 1.3,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp = 1.2 g; ~2/3 clings",
+      "grams": 0.8,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Skinless chicken thigh fillets",
+      "amount": "700 g raw",
+      "grams": 700,
+      "kcal": 847,
+      "proteinG": 137.6,
+      "fatG": 28.8,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, dark meat, thigh, meat only, raw — USDA FDC 173627: 121 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "half ≈ 175 g, grated and squeezed (water lost, solids counted)",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Plain Greek yoghurt",
+      "amount": "1 cup (250 ml) ≈ 260 g",
+      "grams": 260,
+      "kcal": 252,
+      "proteinG": 23.4,
+      "fatG": 13.0,
+      "netCarbsG": 10.3,
+      "reference": "Yogurt, Greek, plain, whole milk — USDA FDC 171304: 97 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh dill",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Dill weed, fresh — USDA FDC 172233: 43 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.25 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "4 medium × 120 g",
+      "grams": 480,
+      "kcal": 86,
+      "proteinG": 4.2,
+      "fatG": 1.0,
+      "netCarbsG": 12.9,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "half ≈ 175 g",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.0,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "half a medium ≈ 75 g",
+      "grams": 75,
+      "kcal": 30,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 5.7,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Kalamata olives",
+      "amount": "0.5 cup (125 ml) ≈ 70 g, as bought with stones ≈ 60 g flesh",
+      "grams": 60,
+      "kcal": 87,
+      "proteinG": 0.6,
+      "fatG": 9.2,
+      "netCarbsG": 0.3,
+      "reference": "Olives, pickled, canned or bottled, green (proxy for brine-cured Kalamata; SR Legacy has no Kalamata entry) — USDA FDC 169096: 145 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red wine vinegar",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, red wine — USDA FDC 172240: 19 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "0.5 tsp ≈ 0.5 g",
+      "grams": 0.5,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Feta",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 265,
+      "proteinG": 14.2,
+      "fatG": 21.5,
+      "netCarbsG": 3.9,
+      "reference": "Cheese, feta — USDA FDC 173420: 265 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2083,
+  "kcalPerServing": 520,
+  "perServing": {
+    "proteinG": 46.3,
+    "fatG": 29.9,
+    "netCarbsG": 14.0
+  },
+  "notes": "Assumptions that change the number: the leftover marinade is thrown away, so ~2/3 of its oil, lemon and garlic is counted as clinging; Kalamata olives as bought with stones, ~60 g of flesh in half a cup, at USDA pickled-olive values (SR Legacy has no Kalamata entry; branded labels run 115–300 kcal / 100 g); Greek yoghurt counted as full-fat USDA (5 % fat) — a 10 % SA double-cream Greek yoghurt would add ~25 kcal a serving; feta 25 g each; no pita in the recipe. Published check: chicken souvlaki with tzatziki and Greek salad but no pita is typically listed at ~450–550 kcal; 520 agrees."
+}

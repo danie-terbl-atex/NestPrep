@@ -76,7 +76,9 @@ class _Line extends StatelessWidget {
             ],
           ),
           Text(
-            LunchBudgetCopy.basketCovers(line.boxes),
+            line.covers > line.boxes
+                ? LunchBudgetCopy.basketRoom(line.covers, line.boxes)
+                : LunchBudgetCopy.basketCovers(line.boxes),
             style: nest.text.caption,
           ),
         ],

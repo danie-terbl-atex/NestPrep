@@ -1,0 +1,142 @@
+{
+  "id": "vegetable-egg-fried-rice",
+  "name": "Vegetable egg fried rice",
+  "summary": "Cold brown rice stir-fried hot with egg, peas, sweetcorn, carrot, cabbage, red pepper and spring onion, seasoned with soy sauce, ginger and a little sesame oil.",
+  "about": "Egg fried rice comes from Chinese home cooking, where it is made with rice cooked the day before: cold grains stay separate and fry instead of turning sticky. It is the natural home for leftover rice and the vegetables in the fridge.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "budget",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "egg",
+    "wheat",
+    "soy",
+    "sesame"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Eggs",
+      "quantity": 6,
+      "unit": null,
+      "note": "beaten with a pinch of salt",
+      "group": null
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": null
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 6,
+      "unit": null,
+      "note": "sliced, white and green parts kept apart",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "coarsely grated",
+      "group": null
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": null
+    },
+    {
+      "name": "Cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Frozen peas",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Frozen sweetcorn",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cooked brown rice",
+      "quantity": 4,
+      "unit": "cup",
+      "note": "cold, from 1½ cups raw cooked the day before",
+      "group": null
+    },
+    {
+      "name": "Reduced-salt soy sauce",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Sesame oil",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "toasted",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat a large wok or deep frying pan over medium-high heat with 2 tsp of the oil. Pour in the eggs and stir gently for about 1 minute, until just set in soft pieces. Tip onto a plate.",
+    "Turn the heat to high and add the rest of the oil. Add the spring onion whites, carrots, red pepper and cabbage and stir-fry for 3 to 4 minutes, until the cabbage has wilted and the pepper is softening.",
+    "Add the garlic and ginger and stir for 30 seconds, until fragrant, then add the peas and sweetcorn and stir-fry for 2 minutes, until they are hot and bright.",
+    "Add the rice, breaking up any clumps, and spread it over the pan. Leave it for 2 minutes without stirring so it toasts, then toss and cook for another 2 to 3 minutes, until every grain is piping hot.",
+    "Pour the soy sauce and sesame oil over, return the egg, breaking it up, and add the spring onion greens. Toss for 1 minute until evenly coloured, taste and serve straight away."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 12,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook the rice a day ahead, spread it on a tray to cool fast, and keep it covered in the fridge.",
+  "kcalPerServing": 570,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

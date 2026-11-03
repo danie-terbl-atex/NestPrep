@@ -5,4 +5,8 @@ abstract final class MealsCopy {
   static const recipes = 'Recipes';
   static const thisWeek = 'This week';
   static const recipesSubtitle = 'Breakfast, lunch and dinner ideas';
+  static const pickRecipe = 'Pick a NestPrep recipe';
+  static const orTypeYourOwn = 'or type your own';
+  static const pickerTitle = 'Pick a recipe';
+  static const pickerBack = 'Back to the week';
 }

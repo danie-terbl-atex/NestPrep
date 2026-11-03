@@ -20,10 +20,10 @@ class RetailerLogo extends StatelessWidget {
   const RetailerLogo.decorative({
     required this.retailer,
     this.size = NestSize.logoSmall,
+    this.tone = NestLogoTileTone.idle,
     super.key,
   }) : label = null,
-       onTap = null,
-       tone = NestLogoTileTone.idle;
+       onTap = null;
 
   final ProductRetailer retailer;
   final String? label;
@@ -41,7 +41,11 @@ class RetailerLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = this.label;
     if (label == null) {
-      return NestLogoTile.decorative(asset: assetFor(retailer), size: size);
+      return NestLogoTile.decorative(
+        asset: assetFor(retailer),
+        size: size,
+        tone: tone,
+      );
     }
     return NestLogoTile(
       asset: assetFor(retailer),

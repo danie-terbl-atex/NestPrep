@@ -12,4 +12,8 @@ abstract interface class LunchFillBias {
   bool acceptsFavourite(LunchFavourite favourite, Map<String, int> added);
 
   LunchSuggestion? choose(RankedLunchItems ranked, Map<String, int> added);
+
+  /// Whether [itemId] may go in again once [added] is taken — what keeps a
+  /// slot the same all week while there is some (lunch-box ADR-0028).
+  bool hasLeft(String itemId, Map<String, int> added);
 }

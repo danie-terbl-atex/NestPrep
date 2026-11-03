@@ -20,6 +20,7 @@ final class SessionController extends ChangeNotifier {
   SessionController({
     required AuthGateway authGateway,
     required AccountRepository accountRepository,
+    this._beforeSignOut,
   }) : _auth = authGateway,
        _accounts = accountRepository {
     _authSubscription = _auth.authStateChanges().listen(
@@ -30,6 +31,10 @@ final class SessionController extends ChangeNotifier {
 
   final AuthGateway _auth;
   final AccountRepository _accounts;
+
+  /// What this phone must stop doing as the person before they leave it —
+  /// sharing where they are (live-location ADR-0008). Never blocks signing out.
+  final Future<void> Function()? _beforeSignOut;
 
   /// Bumped on every auth event and retry, so work an older one started — an
   /// account write that finally lands after the person tapped *Try again* —
@@ -121,6 +126,8 @@ final class SessionController extends ChangeNotifier {
   );
 
   Future<void> signOut() async {
+    final beforeSignOut = _beforeSignOut;
+    if (beforeSignOut != null) await beforeSignOut();
     try {
       await _auth.signOut();
     } on AppFailure catch (failure) {

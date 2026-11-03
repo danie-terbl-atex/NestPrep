@@ -1,0 +1,262 @@
+{
+  "id": "sugar-bean-curry",
+  "name": "Durban sugar bean curry",
+  "summary": "Speckled sugar beans and a little potato simmered in an onion, tomato and curry-leaf masala gravy, served over brown rice with a sharp carrot, tomato and cucumber kachumbar.",
+  "about": "Sugar beans, the speckled pink beans sold dried and tinned in South African shops, are cooked as a curry in Durban's Indian homes as a meal without meat: braised with whole spices and curry leaves, then simmered in a tomato and masala gravy, often with potato. It goes to the table with rice or roti and a vinegary onion salad called kachumbar.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "traditional",
+    "budget",
+    "healthy",
+    "vegetableForward"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, finely diced",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Tomato",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "coarsely grated",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.25,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "White spirit vinegar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the kachumbar"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Mustard seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Cumin seeds",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Fenugreek seeds",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Cinnamon stick",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, finely chopped",
+      "group": "For the curry"
+    },
+    {
+      "name": "Curry leaves",
+      "quantity": 12,
+      "unit": null,
+      "note": "one sprig",
+      "group": "For the curry"
+    },
+    {
+      "name": "Green chilli",
+      "quantity": 1,
+      "unit": null,
+      "note": "slit lengthways, optional",
+      "group": "For the curry"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the curry"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the curry"
+    },
+    {
+      "name": "Durban masala",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "mild or medium",
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "grated",
+      "group": "For the curry"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": "For the curry"
+    },
+    {
+      "name": "Potatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "medium, about 300 g, peeled and cut into 3 cm chunks",
+      "group": "For the curry"
+    },
+    {
+      "name": "Water",
+      "quantity": 375,
+      "unit": "ml",
+      "note": "plus more as needed",
+      "group": "For the curry"
+    },
+    {
+      "name": "Sugar beans",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the curry"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the curry"
+    }
+  ],
+  "steps": [
+    "Put the rice and water in a saucepan with a tight lid and bring to the boil over high heat. Turn the heat to low and cook, covered, for 40 minutes, until the water is absorbed and the grains are tender. Leave it covered off the heat.",
+    "For the kachumbar, toss the onion, tomato, carrot and cucumber with the vinegar, salt, pepper and coriander. Cover and chill while the curry cooks; the vinegar takes the sharp edge off the raw onion.",
+    "Heat the oil in a large heavy-based pot over medium heat. Add the mustard seeds and, as soon as they start to pop, the cumin seeds, fenugreek seeds and cinnamon. Stir for about 20 seconds, until the cumin darkens a shade; fenugreek turns bitter if it burns, so do not leave the pot.",
+    "Add the onion, curry leaves and green chilli and fry, stirring now and then, for 8 to 10 minutes, until the onion is soft and golden at the edges. Stir in the garlic and ginger for 1 minute.",
+    "Add the masala, ground coriander, ground cumin and turmeric and stir for 30 seconds, until fragrant, adding a spoon of water if the spices start to catch.",
+    "Add the grated tomatoes and the salt and cook, stirring, for 6 to 8 minutes, until they have cooked down to a thick, dark paste and the oil gathers at the edges.",
+    "Add the potatoes and the 375 ml water and stir to coat them in the paste. Bring to a simmer, cover and cook on low for 15 minutes, until a knife goes into the potato with only a little resistance.",
+    "Add the sugar beans and simmer uncovered for 10 to 15 minutes, stirring gently and crushing a few beans against the side of the pot, until the potato is soft and the gravy is thick enough to coat the beans. Add a splash of water if it gets too dry.",
+    "Take out the cinnamon stick, taste for salt and scatter with the coriander. Serve over the brown rice with the kachumbar on the side."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "The curry keeps 3 days in the fridge and freezes well; loosen it with water when reheating. Make the kachumbar on the day.",
+  "kcalPerServing": 560,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

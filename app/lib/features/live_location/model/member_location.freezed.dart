@@ -16,10 +16,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberLocation {
 
-@JsonKey(includeToJson: false) String get id;@CoordinatesConverter() Coordinates get point; int get accuracyMetres;@ServerTimestampConverter() DateTime? get reportedAt;/// When this share ends. The member chose it; the rules refuse a window
-/// longer than [LiveLocationRepository.longestShare] and refuse any write
-/// once it has passed, which is what actually stops a share.
-@InstantConverter() DateTime get sharingUntil;
+@JsonKey(includeToJson: false) String get id;@CoordinatesConverter() Coordinates get point; int get accuracyMetres;@ServerTimestampConverter() DateTime? get reportedAt;/// When this share ends: the member's window, or the lease an always-on
+/// phone renews on every write. The rules refuse any write once it has
+/// passed, which is what actually stops a share.
+@InstantConverter() DateTime get sharingUntil;@JsonKey(unknownEnumValue: ShareMode.window) ShareMode get mode;@JsonKey(includeIfNull: false) int? get batteryPercent;@JsonKey(includeIfNull: false) bool? get charging;@JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown) DeviceMotion? get motion;
 /// Create a copy of MemberLocation
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,20 +33,20 @@ $MemberLocationCopyWith<MemberLocation> get copyWith => _$MemberLocationCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as MemberLocation;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberLocation&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.point, _this.point) || other.point == _this.point)&&(identical(other.accuracyMetres, _this.accuracyMetres) || other.accuracyMetres == _this.accuracyMetres)&&(identical(other.reportedAt, _this.reportedAt) || other.reportedAt == _this.reportedAt)&&(identical(other.sharingUntil, _this.sharingUntil) || other.sharingUntil == _this.sharingUntil));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberLocation&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.point, _this.point) || other.point == _this.point)&&(identical(other.accuracyMetres, _this.accuracyMetres) || other.accuracyMetres == _this.accuracyMetres)&&(identical(other.reportedAt, _this.reportedAt) || other.reportedAt == _this.reportedAt)&&(identical(other.sharingUntil, _this.sharingUntil) || other.sharingUntil == _this.sharingUntil)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&(identical(other.batteryPercent, _this.batteryPercent) || other.batteryPercent == _this.batteryPercent)&&(identical(other.charging, _this.charging) || other.charging == _this.charging)&&(identical(other.motion, _this.motion) || other.motion == _this.motion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as MemberLocation;
-  return Object.hash(runtimeType,_this.id,_this.point,_this.accuracyMetres,_this.reportedAt,_this.sharingUntil);
+  return Object.hash(runtimeType,_this.id,_this.point,_this.accuracyMetres,_this.reportedAt,_this.sharingUntil,_this.mode,_this.batteryPercent,_this.charging,_this.motion);
 }
 
 @override
 String toString() {
   final _this = this as MemberLocation;
-  return 'MemberLocation(id: ${_this.id}, point: ${_this.point}, accuracyMetres: ${_this.accuracyMetres}, reportedAt: ${_this.reportedAt}, sharingUntil: ${_this.sharingUntil})';
+  return 'MemberLocation(id: ${_this.id}, point: ${_this.point}, accuracyMetres: ${_this.accuracyMetres}, reportedAt: ${_this.reportedAt}, sharingUntil: ${_this.sharingUntil}, mode: ${_this.mode}, batteryPercent: ${_this.batteryPercent}, charging: ${_this.charging}, motion: ${_this.motion})';
 }
 
 
@@ -57,7 +57,7 @@ abstract mixin class $MemberLocationCopyWith<$Res>  {
   factory $MemberLocationCopyWith(MemberLocation value, $Res Function(MemberLocation) _then) = _$MemberLocationCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id,@CoordinatesConverter() Coordinates point, int accuracyMetres,@ServerTimestampConverter() DateTime? reportedAt,@InstantConverter() DateTime sharingUntil
+@JsonKey(includeToJson: false) String id,@CoordinatesConverter() Coordinates point, int accuracyMetres,@ServerTimestampConverter() DateTime? reportedAt,@InstantConverter() DateTime sharingUntil,@JsonKey(unknownEnumValue: ShareMode.window) ShareMode mode,@JsonKey(includeIfNull: false) int? batteryPercent,@JsonKey(includeIfNull: false) bool? charging,@JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown) DeviceMotion? motion
 });
 
 
@@ -74,14 +74,18 @@ class _$MemberLocationCopyWithImpl<$Res>
 
 /// Create a copy of MemberLocation
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? point = null,Object? accuracyMetres = null,Object? reportedAt = freezed,Object? sharingUntil = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? point = null,Object? accuracyMetres = null,Object? reportedAt = freezed,Object? sharingUntil = null,Object? mode = null,Object? batteryPercent = freezed,Object? charging = freezed,Object? motion = freezed,}) {
   return _then(MemberLocation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,point: null == point ? _self.point : point // ignore: cast_nullable_to_non_nullable
 as Coordinates,accuracyMetres: null == accuracyMetres ? _self.accuracyMetres : accuracyMetres // ignore: cast_nullable_to_non_nullable
 as int,reportedAt: freezed == reportedAt ? _self.reportedAt : reportedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,sharingUntil: null == sharingUntil ? _self.sharingUntil : sharingUntil // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as ShareMode,batteryPercent: freezed == batteryPercent ? _self.batteryPercent : batteryPercent // ignore: cast_nullable_to_non_nullable
+as int?,charging: freezed == charging ? _self.charging : charging // ignore: cast_nullable_to_non_nullable
+as bool?,motion: freezed == motion ? _self.motion : motion // ignore: cast_nullable_to_non_nullable
+as DeviceMotion?,
   ));
 }
 
@@ -166,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil, @JsonKey(unknownEnumValue: ShareMode.window)  ShareMode mode, @JsonKey(includeIfNull: false)  int? batteryPercent, @JsonKey(includeIfNull: false)  bool? charging, @JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown)  DeviceMotion? motion)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberLocation() when $default != null:
-return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil);case _:
+return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil,_that.mode,_that.batteryPercent,_that.charging,_that.motion);case _:
   return orElse();
 
 }
@@ -187,10 +191,10 @@ return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil, @JsonKey(unknownEnumValue: ShareMode.window)  ShareMode mode, @JsonKey(includeIfNull: false)  int? batteryPercent, @JsonKey(includeIfNull: false)  bool? charging, @JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown)  DeviceMotion? motion)  $default,) {final _that = this;
 switch (_that) {
 case _MemberLocation():
-return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil);case _:
+return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil,_that.mode,_that.batteryPercent,_that.charging,_that.motion);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +211,10 @@ return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id, @CoordinatesConverter()  Coordinates point,  int accuracyMetres, @ServerTimestampConverter()  DateTime? reportedAt, @InstantConverter()  DateTime sharingUntil, @JsonKey(unknownEnumValue: ShareMode.window)  ShareMode mode, @JsonKey(includeIfNull: false)  int? batteryPercent, @JsonKey(includeIfNull: false)  bool? charging, @JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown)  DeviceMotion? motion)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberLocation() when $default != null:
-return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil);case _:
+return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that.sharingUntil,_that.mode,_that.batteryPercent,_that.charging,_that.motion);case _:
   return null;
 
 }
@@ -222,17 +226,21 @@ return $default(_that.id,_that.point,_that.accuracyMetres,_that.reportedAt,_that
 @JsonSerializable()
 
 class _MemberLocation extends MemberLocation {
-  const _MemberLocation({@JsonKey(includeToJson: false) required this.id, @CoordinatesConverter() required this.point, required this.accuracyMetres, @ServerTimestampConverter() this.reportedAt, @InstantConverter() required this.sharingUntil}): super._();
+  const _MemberLocation({@JsonKey(includeToJson: false) required this.id, @CoordinatesConverter() required this.point, required this.accuracyMetres, @ServerTimestampConverter() this.reportedAt, @InstantConverter() required this.sharingUntil, @JsonKey(unknownEnumValue: ShareMode.window) this.mode = ShareMode.window, @JsonKey(includeIfNull: false) this.batteryPercent, @JsonKey(includeIfNull: false) this.charging, @JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown) this.motion}): super._();
   factory _MemberLocation.fromJson(Map<String, dynamic> json) => _$MemberLocationFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
 @override@CoordinatesConverter() final  Coordinates point;
 @override final  int accuracyMetres;
 @override@ServerTimestampConverter() final  DateTime? reportedAt;
-/// When this share ends. The member chose it; the rules refuse a window
-/// longer than [LiveLocationRepository.longestShare] and refuse any write
-/// once it has passed, which is what actually stops a share.
+/// When this share ends: the member's window, or the lease an always-on
+/// phone renews on every write. The rules refuse any write once it has
+/// passed, which is what actually stops a share.
 @override@InstantConverter() final  DateTime sharingUntil;
+@override@JsonKey(unknownEnumValue: ShareMode.window) final  ShareMode mode;
+@override@JsonKey(includeIfNull: false) final  int? batteryPercent;
+@override@JsonKey(includeIfNull: false) final  bool? charging;
+@override@JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown) final  DeviceMotion? motion;
 
 /// Create a copy of MemberLocation
 /// with the given fields replaced by the non-null parameter values.
@@ -247,18 +255,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.point, point) || other.point == point)&&(identical(other.accuracyMetres, accuracyMetres) || other.accuracyMetres == accuracyMetres)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.sharingUntil, sharingUntil) || other.sharingUntil == sharingUntil));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberLocation&&(identical(other.id, id) || other.id == id)&&(identical(other.point, point) || other.point == point)&&(identical(other.accuracyMetres, accuracyMetres) || other.accuracyMetres == accuracyMetres)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.sharingUntil, sharingUntil) || other.sharingUntil == sharingUntil)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.batteryPercent, batteryPercent) || other.batteryPercent == batteryPercent)&&(identical(other.charging, charging) || other.charging == charging)&&(identical(other.motion, motion) || other.motion == motion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,point,accuracyMetres,reportedAt,sharingUntil);
+    return Object.hash(runtimeType,id,point,accuracyMetres,reportedAt,sharingUntil,mode,batteryPercent,charging,motion);
 }
 
 @override
 String toString() {
-    return 'MemberLocation(id: $id, point: $point, accuracyMetres: $accuracyMetres, reportedAt: $reportedAt, sharingUntil: $sharingUntil)';
+    return 'MemberLocation(id: $id, point: $point, accuracyMetres: $accuracyMetres, reportedAt: $reportedAt, sharingUntil: $sharingUntil, mode: $mode, batteryPercent: $batteryPercent, charging: $charging, motion: $motion)';
 }
 
 
@@ -269,7 +277,7 @@ abstract mixin class _$MemberLocationCopyWith<$Res> implements $MemberLocationCo
   factory _$MemberLocationCopyWith(_MemberLocation value, $Res Function(_MemberLocation) _then) = __$MemberLocationCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id,@CoordinatesConverter() Coordinates point, int accuracyMetres,@ServerTimestampConverter() DateTime? reportedAt,@InstantConverter() DateTime sharingUntil
+@JsonKey(includeToJson: false) String id,@CoordinatesConverter() Coordinates point, int accuracyMetres,@ServerTimestampConverter() DateTime? reportedAt,@InstantConverter() DateTime sharingUntil,@JsonKey(unknownEnumValue: ShareMode.window) ShareMode mode,@JsonKey(includeIfNull: false) int? batteryPercent,@JsonKey(includeIfNull: false) bool? charging,@JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown) DeviceMotion? motion
 });
 
 
@@ -286,14 +294,18 @@ class __$MemberLocationCopyWithImpl<$Res>
 
 /// Create a copy of MemberLocation
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? point = null,Object? accuracyMetres = null,Object? reportedAt = freezed,Object? sharingUntil = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? point = null,Object? accuracyMetres = null,Object? reportedAt = freezed,Object? sharingUntil = null,Object? mode = null,Object? batteryPercent = freezed,Object? charging = freezed,Object? motion = freezed,}) {
   return _then(_MemberLocation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,point: null == point ? _self.point : point // ignore: cast_nullable_to_non_nullable
 as Coordinates,accuracyMetres: null == accuracyMetres ? _self.accuracyMetres : accuracyMetres // ignore: cast_nullable_to_non_nullable
 as int,reportedAt: freezed == reportedAt ? _self.reportedAt : reportedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,sharingUntil: null == sharingUntil ? _self.sharingUntil : sharingUntil // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as ShareMode,batteryPercent: freezed == batteryPercent ? _self.batteryPercent : batteryPercent // ignore: cast_nullable_to_non_nullable
+as int?,charging: freezed == charging ? _self.charging : charging // ignore: cast_nullable_to_non_nullable
+as bool?,motion: freezed == motion ? _self.motion : motion // ignore: cast_nullable_to_non_nullable
+as DeviceMotion?,
   ));
 }
 

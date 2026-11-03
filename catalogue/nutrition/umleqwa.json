@@ -1,0 +1,134 @@
+{
+  "id": "umleqwa",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Hardbody chicken",
+      "amount": "1.8 kg bone-in → 1100 g meat and skin (61 %, USDA 276 g per 1 lb ready-to-cook bird)",
+      "grams": 1100,
+      "kcal": 2365,
+      "proteinG": 204.6,
+      "fatG": 165.7,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, meat and skin, raw — USDA FDC 171447: 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1 l, boiled away",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1½ tsp",
+      "grams": 9,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaf, removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tbsp",
+      "grams": 14,
+      "kcal": 124,
+      "proteinG": 0.0,
+      "fatG": 14.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Medium curry powder",
+      "amount": "1 tbsp × 6.3 g",
+      "grams": 6,
+      "kcal": 20,
+      "proteinG": 0.9,
+      "fatG": 0.8,
+      "netCarbsG": 0.2,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "1 tsp",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ripe tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken stock cube",
+      "amount": "one 10 g cube in 500 ml water",
+      "grams": 10,
+      "kcal": 33,
+      "proteinG": 0.5,
+      "fatG": 2.5,
+      "netCarbsG": 2.1,
+      "reference": "Knorrox Chicken Stock Cubes via fatsecret.co.za: 331 kcal, P 5.4, F 25.1, C 21 / 100 g (10 g cube): 331 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "½ tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.4,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2736,
+  "kcalPerServing": 460,
+  "perServing": {
+    "proteinG": 35.5,
+    "fatG": 30.7,
+    "netCarbsG": 6.2
+  },
+  "notes": "Assumptions: a 1.8 kg bird gives ~1100 g raw meat and skin (61 %, USDA yield for ready-to-cook chicken), valued as broiler meat and skin — a hardbody bird is leaner, so this may overstate slightly; the cooking water boils away and the fat stays in the pot and is eaten; the 1 tbsp oil counted as written. Sanity check: FatSecret chicken stew recipe 314 kcal and SparkPeople chicken and vegetable stew 389.5 kcal a serving; USDA stewed meat and skin is 219 kcal/100 g, and ours is ~180 g of it plus gravy, 460 kcal — 18 % above the SparkPeople figure, which uses skinless meat."
+}

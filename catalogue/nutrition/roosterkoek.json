@@ -1,0 +1,104 @@
+{
+  "id": "roosterkoek",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "500 g (shaping flour not counted)",
+      "grams": 500,
+      "kcal": 1790,
+      "proteinG": 41.0,
+      "fatG": 4.5,
+      "netCarbsG": 380.0,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 15,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Lukewarm water",
+      "amount": "325 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g (bowl oil not counted)",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 574,
+      "proteinG": 0.7,
+      "fatG": 64.9,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Apricot jam",
+      "amount": "1/2 cup (125 ml) ≈ 165 g",
+      "grams": 165,
+      "kcal": 399,
+      "proteinG": 1.2,
+      "fatG": 0.3,
+      "netCarbsG": 105.8,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 604,
+      "proteinG": 34.3,
+      "fatG": 50.0,
+      "netCarbsG": 5.1,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3653,
+  "kcalPerServing": 460,
+  "perServing": {
+    "proteinG": 10.2,
+    "fatG": 18.4,
+    "netCarbsG": 62.0
+  },
+  "notes": "Assumptions that change the number: shaping flour and bowl oil not counted; each split roll is filled with 1/8 of the butter (10 g), jam (~21 g) and cheddar (~19 g). Sanity check: plain roosterkoek is 225 kcal (SPAR) and 254 kcal (Pick n Pay) per 90 g roll, FatSecret ZA. Our plain roll is ~260 kcal (~95 g baked), and the filling adds ~200, giving 460."
+}

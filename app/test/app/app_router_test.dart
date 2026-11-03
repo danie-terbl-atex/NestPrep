@@ -39,13 +39,18 @@ import 'package:nestprep/features/lunch_box/ui/lunch_prep_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_screen.dart';
 import 'package:nestprep/features/lunch_box/ui/share/lunch_share_screen.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
+import 'package:nestprep/features/meal_planning/model/meals_view.dart';
+import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
+import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
 import 'package:nestprep/features/recipes/data/recipe_photo_source.dart';
 import 'package:nestprep/features/recipes/data/recipe_repository.dart';
+import 'package:nestprep/features/recipes/model/recipe.dart';
+import 'package:nestprep/features/recipes/ui/recipe_picker_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_screen.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
@@ -78,6 +83,7 @@ import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_notifications.dart';
+import '../support/fake_photo_frames.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_recipe_photos.dart';
 import '../support/fake_recipe_repository.dart';
@@ -174,6 +180,9 @@ void main() {
           Provider<MealRepository>.value(value: meals),
           Provider<RecipeRepository>.value(value: recipes),
           Provider<RecipePhotoSource>.value(value: FakeRecipePhotoSource()),
+          Provider<PhotoFrameRepository>.value(
+            value: FakePhotoFrameRepository(),
+          ),
           Provider<GroceryRepository>.value(value: groceries),
           // Checkers product matches and Add to Checkers, on the grocery tab.
           ...fakeCheckersProviders(),
@@ -292,6 +301,57 @@ void main() {
       find.text(RecipeFixtures.bobotie.name, skipOffstage: false),
       findsWidgets,
     );
+  });
+
+  testWidgets('picking a recipe for a slot hands the recipe back to the week', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+    router.go(MealsRoute.pathFor(Fixtures.householdId, view: MealsView.week));
+    await settle(tester);
+
+    Recipe? picked;
+    unawaited(
+      router
+          .push<Recipe>(
+            MealsRoute.pickPathFor(
+              Fixtures.householdId,
+              slot: MealSlot.dinner,
+              day: CalendarDate(2026, 9, 15),
+            ),
+          )
+          .then((recipe) => picked = recipe),
+    );
+    await settle(tester);
+    recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(RecipePickerScreen), findsOneWidget);
+    final card = find.text(RecipeFixtures.bobotie.name).first;
+    await tester.ensureVisible(card);
+    await settle(tester);
+    await tester.tap(card);
+    await settle(tester);
+
+    expect(picked, RecipeFixtures.bobotie);
+    expect(find.byType(RecipePickerScreen), findsNothing);
+    expect(find.byType(MealsScreen), findsOneWidget);
+  });
+
+  testWidgets('a pick link without its slot lands on the week', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(
+      '${HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.meals)}'
+      '/${MealsRoute.pickSegment}',
+    );
+    await settle(tester);
+
+    expect(find.byType(RecipePickerScreen), findsNothing);
+    expect(find.byType(MealsScreen), findsOneWidget);
   });
 
   testWidgets('and so does the household screen under the shell', (

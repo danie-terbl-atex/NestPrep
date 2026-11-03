@@ -1,0 +1,8 @@
+// ---- photo frame pairing codes (photo-frames ADR-0001) ----
+// Closed for the same reason kid pairings are: a readable collection of
+// codes is a list of ways to put a screen in somebody's home.
+// `startFramePairing`, `pollFramePairing` and `claimFramePairing` are the
+// only way in.
+match /framePairings/{code} {
+  allow read, write: if false;
+}

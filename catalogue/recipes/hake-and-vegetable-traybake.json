@@ -1,0 +1,146 @@
+{
+  "id": "hake-and-vegetable-traybake",
+  "name": "Hake and vegetable traybake",
+  "summary": "Baby potatoes, baby marrow, pepper and red onion roasted in olive oil and smoked paprika, with hake fillets baked on top under lemon, garlic and parsley.",
+  "about": "Hake is caught off South Africa's west and south coasts and sold fresh and frozen across the country, and its mild white flakes suit children who are wary of fish. Here the vegetables get a head start in the oven and the fish goes on top for the last few minutes, so the whole dinner comes out of one tray.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot"
+  ],
+  "allergens": [
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Baby potatoes",
+      "quantity": 600,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 3,
+      "unit": null,
+      "note": "cut into thick rounds",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Hake fillets",
+      "quantity": 4,
+      "unit": null,
+      "note": "skinless, about 150 g each, thawed if frozen",
+      "group": "For the hake"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the hake"
+    },
+    {
+      "name": "Lemons",
+      "quantity": 2,
+      "unit": null,
+      "note": "one zested and juiced, one cut into wedges",
+      "group": "For the hake"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the hake"
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the hake"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the hake"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven). Spread the potatoes, baby marrow, pepper and onion over a large roasting tray, about 40 × 30 cm, in one layer. Toss with 2 tbsp olive oil, the paprika and the salt.",
+    "Roast for 30 minutes, giving the tray a stir at the 15-minute mark, until the potatoes are golden at the edges and nearly tender when pierced with a knife.",
+    "While the vegetables roast, mix 1 tbsp olive oil with the lemon zest and juice, garlic, half the parsley and the pepper. Pat the hake dry with paper towel.",
+    "Take the tray out, stir in the tomatoes and make four spaces among the vegetables. Lay the hake in them and spoon the lemon mixture over the fish.",
+    "Roast for 10 to 12 minutes, until the hake is white all the way through and flakes when you press it with a fork, and the tomatoes have just started to split.",
+    "Scatter over the rest of the parsley and serve from the tray with the lemon wedges for squeezing."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "kcalPerServing": 370,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

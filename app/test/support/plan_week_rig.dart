@@ -5,6 +5,7 @@ import 'package:nestprep/features/plan_week/state/shop_week_saver.dart';
 
 import 'fake_checkers.dart';
 import 'fake_live_location.dart';
+import 'fake_lunch_variety.dart';
 import 'fake_plan_week.dart';
 import 'household_fixtures.dart';
 import 'lunch_fixtures.dart';
@@ -38,6 +39,7 @@ final class PlanWeekRig {
         memberId: Fixtures.samMemberId,
       ),
       packingStore: FakePackingChoiceStore(),
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );

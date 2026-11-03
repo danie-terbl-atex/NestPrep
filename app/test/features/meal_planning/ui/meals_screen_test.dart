@@ -5,7 +5,9 @@ import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
+import 'package:nestprep/features/meal_planning/ui/planned_day_card.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
@@ -50,13 +52,15 @@ void main() {
     MealsView view, {
     Brightness brightness = Brightness.light,
     double scale = 1,
+    RecipePicker? onPickRecipe,
   }) => pumpScreen(
     tester,
     MealsScreen(
       view: view,
       onSelectView: views.add,
       onSelectTab: (_) {},
-      onOpenRecipe: opened.add,
+      onPickRecipe: onPickRecipe ?? (_, _) async => null,
+      onOpenRecipe: (id, {heroTag}) => opened.add(id),
     ),
     providers: [
       ...harness.providers,
@@ -129,6 +133,53 @@ void main() {
 
     await tester.tap(find.text(RecipeCopy.howToMakeShort));
     expect(opened, ['bobotie']);
+  });
+
+  testWidgets('an empty slot picks a NestPrep recipe and plans it there', (
+    tester,
+  ) async {
+    final asked = <(MealSlot, CalendarDate)>[];
+    await pump(
+      tester,
+      MealsView.week,
+      onPickRecipe: (slot, day) async {
+        asked.add((slot, day));
+        return RecipeFixtures.bobotie;
+      },
+    );
+    harness.recipes.emitCatalogue(RecipeFixtures.catalogue);
+    harness.meals
+      ..emitMeals([])
+      ..emitWeek(WeekPlan.empty(plan.weekStart));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(AppCopy.mealsNothingPlanned).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(MealsCopy.pickRecipe));
+    await tester.pumpAndSettle();
+
+    expect(asked, [(MealSlot.breakfast, plan.weekStart)]);
+    expect(harness.meals.recipeMeals.single.recipeId, 'bobotie');
+    expect(harness.meals.writtenSlots.single.slots, {
+      WeekPlan.slotKey(plan.weekStart.weekday, MealSlot.breakfast):
+          Meal.idForRecipe('bobotie'),
+    });
+  });
+
+  testWidgets('backing out of the recipes writes nothing', (tester) async {
+    await pump(tester, MealsView.week);
+    harness.meals
+      ..emitMeals([])
+      ..emitWeek(WeekPlan.empty(plan.weekStart));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(AppCopy.mealsNothingPlanned).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(MealsCopy.pickRecipe));
+    await tester.pumpAndSettle();
+
+    expect(harness.meals.recipeMeals, isEmpty);
+    expect(harness.meals.writtenSlots, isEmpty);
   });
 
   testWidgets('renders the week in dark and at 200% text on a 360-wide phone', (

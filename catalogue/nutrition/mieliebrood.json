@@ -1,0 +1,94 @@
+{
+  "id": "mieliebrood",
+  "servings": 10,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "280 g",
+      "grams": 280,
+      "kcal": 1019,
+      "proteinG": 28.9,
+      "fatG": 2.7,
+      "netCarbsG": 206.1,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tbsp ≈ 14 g",
+      "grams": 14,
+      "kcal": 7,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.9,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp × 13 g",
+      "grams": 26,
+      "kcal": 101,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 26.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 large × 55 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "0.5 cup = 125 ml × 1.03",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "60 g (tin greasing not counted)",
+      "grams": 60,
+      "kcal": 430,
+      "proteinG": 0.5,
+      "fatG": 48.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Creamed sweetcorn",
+      "amount": "1 tin, 410 g",
+      "grams": 410,
+      "kcal": 295,
+      "proteinG": 7.1,
+      "fatG": 1.7,
+      "netCarbsG": 69.4,
+      "reference": "Corn, sweet, yellow, canned, cream style, regular pack — USDA FDC 169215: 72 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2088,
+  "kcalPerServing": 210,
+  "perServing": {
+    "proteinG": 5.4,
+    "fatG": 6.8,
+    "netCarbsG": 31.2
+  },
+  "notes": "10 slices from one loaf. Whole milk. Sanity check: Lil' Luna creamed-corn sweet cornbread 214 kcal (12); SparkPeople creamed corn bread 159–202 kcal. Ours 210 agrees."
+}

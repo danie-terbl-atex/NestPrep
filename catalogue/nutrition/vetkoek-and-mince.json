@@ -1,0 +1,194 @@
+{
+  "id": "vetkoek-and-mince",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "500 g (shaping flour not counted)",
+      "grams": 500,
+      "kcal": 1790,
+      "proteinG": 56.5,
+      "fatG": 9.5,
+      "netCarbsG": 355.0,
+      "reference": "Woolworths Cake Wheat Flour label via fatsecret.co.za: 358 kcal, P 11.3, F 1.9, available carbohydrate 71 g / 100 g: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g sachet",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tbsp × 12.5 g",
+      "grams": 13,
+      "kcal": 50,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 13.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1½ tsp",
+      "grams": 9,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Lukewarm water",
+      "amount": "1½ cups",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 l in the pot; ~108 g absorbed (12 % of ~900 g dough)",
+      "grams": 108,
+      "kcal": 955,
+      "proteinG": 0.0,
+      "fatG": 108.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves × 5 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mild curry powder",
+      "amount": "1 tbsp × 6.3 g",
+      "grams": 6,
+      "kcal": 20,
+      "proteinG": 0.9,
+      "fatG": 0.8,
+      "netCarbsG": 0.2,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "½ tsp",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.9,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "750 g",
+      "grams": 750,
+      "kcal": 1612,
+      "proteinG": 139.4,
+      "fatG": 112.5,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 85% lean meat / 15% fat, raw — USDA FDC 171796: 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato",
+      "amount": "1 medium",
+      "grams": 120,
+      "kcal": 22,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.2,
+      "reference": "Tomatoes, red, ripe, raw — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrot",
+      "amount": "1 medium",
+      "grams": 75,
+      "kcal": 31,
+      "proteinG": 0.7,
+      "fatG": 0.2,
+      "netCarbsG": 5.1,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "½ cup water + one 10 g stock cube",
+      "grams": 10,
+      "kcal": 33,
+      "proteinG": 0.4,
+      "fatG": 2.6,
+      "netCarbsG": 1.8,
+      "reference": "Knorrox Beef Flavour Stock Cubes via fatsecret.co.za: 326 kcal, P 3.9, F 26.1, C 18 / 100 g (10 g cube): 326 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "1 tbsp × 19 g",
+      "grams": 19,
+      "kcal": 34,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 8.2,
+      "reference": "Mrs H.S. Ball's Original Chutney label (Tiger Brands, via McGrocer): 753 kJ = 180 kcal, F 0.1, C 43 / 100 g; protein 0.8 g (fatsecret.co.za): 180 kcal / 100 g"
+    },
+    {
+      "ingredient": "Frozen peas",
+      "amount": "½ cup, ~70 g",
+      "grams": 70,
+      "kcal": 54,
+      "proteinG": 3.7,
+      "fatG": 0.3,
+      "netCarbsG": 6.4,
+      "reference": "Peas, green, frozen, unprepared — USDA FDC 170016: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 4953,
+  "kcalPerServing": 830,
+  "perServing": {
+    "proteinG": 34.9,
+    "fatG": 43.7,
+    "netCarbsG": 68.3
+  },
+  "notes": "Assumptions: deep-frying oil absorbed ~12 % of the ~900 g dough (108 g, ~160 kcal a serving), the rest of the litre not counted; shaping flour not counted; mince 15 % fat; 12 vetkoek = 2 per serving, ~240 kcal each, plus ~350 kcal of curried mince. Sanity check: FatSecret generic vetkoek 280 kcal a piece (unfilled); two of those plus our mince gives ~910, within 10 % of ours (830)."
+}

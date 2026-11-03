@@ -250,6 +250,28 @@ service firebase.storage {
               && resource.metadata.uploadedByUid == request.auth.uid);
     }
 
+    // ==== rules/storage/paths/frame_photos.rules ====
+    // ---- a frame's screensaver photos (photo-frames ADR-0006) ----
+    //
+    // One album per household, which family fills and empties. A frame has no
+    // account, so it never reads here: `getFramePhotos` and `getFramePhoto` read
+    // the album for it, behind the frame's own secret. The app compresses every
+    // photo to a JPEG before it leaves the phone, so the cap is small on purpose.
+    match /households/{householdId}/framePhotos/{photoId} {
+      allow read: if isFamily(householdId);
+
+      allow create: if resource == null
+        && isFamily(householdId)
+        && photoId.matches('^[A-Za-z0-9_-]{8,64}$')
+        && request.resource.size <= 1048576
+        && request.resource.contentType == 'image/jpeg'
+        && isStampedWithTheCaller();
+
+      allow update: if false;
+
+      allow delete: if isFamily(householdId);
+    }
+
     // ==== rules/storage/paths/home_care.rules ====
     // ---- home care photos (home-care ADR-0003) ----
     //

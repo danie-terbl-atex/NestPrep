@@ -9,3 +9,4 @@ export const LEGAL_DOCUMENTS: readonly {
   description: string;
 }[];
 export function buildSite(repoRoot: string): Map<string, string | Buffer>;
+export const FIREBASE_WEB_SDK: string;

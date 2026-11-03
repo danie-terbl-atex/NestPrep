@@ -1,0 +1,209 @@
+{
+  "id": "greek-chicken-souvlaki",
+  "name": "Greek chicken souvlaki with tzatziki",
+  "summary": "Lemon, garlic and oregano chicken skewers, griddled or braaied, with cool cucumber tzatziki and a Greek salad of tomato, cucumber, olives and feta.",
+  "about": "Souvlaki, small pieces of meat grilled on skewers, is Greek street food, often tucked into a pita. Served here with horiatiki, the Greek village salad, in place of the pita, it makes a light braai or a griddle-pan supper.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "braai",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "glutenFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Wooden skewers",
+      "quantity": 8,
+      "unit": null,
+      "note": "soaked in water",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "about 1 lemon",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Skinless chicken thigh fillets",
+      "quantity": 700,
+      "unit": "g",
+      "note": "cut into 3 cm pieces",
+      "group": "For the chicken"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "coarsely grated",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Plain Greek yoghurt",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Fresh dill",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped, or mint",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "For the salad"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the salad"
+    },
+    {
+      "name": "Green pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced into rings",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Kalamata olives",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Red wine vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Feta",
+      "quantity": 100,
+      "unit": "g",
+      "note": "broken into chunks",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Lay the skewers in a tray of cold water so they do not scorch. In a large bowl, mix the olive oil, lemon juice, garlic, oregano, salt and pepper, add the chicken and toss until every piece is coated. Cover and chill for at least 30 minutes, or up to 8 hours.",
+    "For the tzatziki, squeeze the grated cucumber hard in a clean tea towel over the sink until no more water runs out. Stir it into the yoghurt with the garlic, lemon juice, dill and salt, then chill until needed.",
+    "For the salad, put the tomatoes, cucumber chunks, green pepper, red onion and olives in a wide bowl. Drizzle with the olive oil and vinegar, sprinkle with the oregano and lay the feta on top.",
+    "Thread the chicken onto the skewers, about 5 pieces each, so the pieces touch without being squashed. Throw away any marinade left in the bowl.",
+    "Heat a ridged griddle pan or large frying pan over medium-high heat for 3 minutes, until very hot, or braai over medium-hot coals. Cook the skewers, in two batches if they do not fit, turning every 3 minutes, for 10–12 minutes in total, until charred at the edges and a cut piece is white right through with clear juices.",
+    "Rest the skewers for 2 minutes, then serve with the salad and a big spoonful of tzatziki."
+  ],
+  "servings": 4,
+  "prepMinutes": 35,
+  "cookMinutes": 12,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Marinate the chicken in the morning and make the tzatziki up to 2 days ahead; keep both in the fridge.",
+  "kcalPerServing": 520,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

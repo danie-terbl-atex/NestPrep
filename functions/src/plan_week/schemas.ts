@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 import { SCHOOL_DAYS } from './iso_week';
-import { DEFAULT_TREAT_DAYS, PACKING_PREFERENCES } from './packing_preferences';
+import {
+  DEFAULT_SAME_ALL_WEEK,
+  DEFAULT_TREAT_DAYS,
+  PACKING_PREFERENCES,
+} from './packing_preferences';
 import { LUNCH_SLOTS } from './week_documents';
 
 /** A household has a handful of children; this bounds the request (BE-08). */
@@ -49,6 +53,16 @@ const treatDays = z
   .transform((chosen) => SCHOOL_DAYS.filter((day) => chosen.includes(day)))
   .optional()
   .default([...DEFAULT_TREAT_DAYS]);
+/**
+ * The compartments kept the same all week (lunch-box ADR-0028); empty lets
+ * every one vary. A phone from before the choice gets the default.
+ */
+const sameAllWeek = z
+  .array(z.enum(LUNCH_SLOTS))
+  .max(LUNCH_SLOTS.length)
+  .transform((chosen) => LUNCH_SLOTS.filter((slot) => chosen.includes(slot)))
+  .optional()
+  .default([...DEFAULT_SAME_ALL_WEEK]);
 
 /**
  * One shelf of Checkers' Kids Lunchbox range the phone read (lunch-box
@@ -140,5 +154,6 @@ export const buildLunchWeekInput = z.object({
   preferences,
   slots,
   treatDays,
+  sameAllWeek,
 });
 export type BuildLunchWeekInput = z.infer<typeof buildLunchWeekInput>;

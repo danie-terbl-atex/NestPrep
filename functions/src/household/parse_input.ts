@@ -11,12 +11,14 @@ import { refuse } from './errors';
  */
 export function parseInput<T extends z.ZodType>(schema: T, data: unknown): z.infer<T> {
   const result = schema.safeParse(data);
-  if (!result.success) {
-    throw new HttpsError('invalid-argument', 'That request was not something NestPrep can do.', {
-      reason: 'badRequest',
-    });
-  }
+  if (!result.success) throw badRequest();
   return result.data;
+}
+
+export function badRequest(): HttpsError {
+  return new HttpsError('invalid-argument', 'That request was not something NestPrep can do.', {
+    reason: 'badRequest',
+  });
 }
 
 /** Who a callable is being called by: the uid, and the token's claims when there are any. */

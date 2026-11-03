@@ -1,0 +1,154 @@
+{
+  "id": "tuna-nicoise-salad",
+  "name": "Tuna niçoise salad",
+  "summary": "Tinned tuna, baby potatoes, green beans, boiled eggs, tomatoes and olives with a mustard and lemon dressing, packed in layers for the lunchbox.",
+  "about": "Salade niçoise comes from Nice, on the French Riviera, where it was made with tomatoes, anchovies, olives and eggs; potatoes and green beans came later. Made with tinned tuna and packed in layers, it travels well to school and the office.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "healthy"
+  ],
+  "allergens": [
+    "egg",
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Baby potatoes",
+      "quantity": 500,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the potatoes and eggs"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "for the cooking water",
+      "group": "For the potatoes and eggs"
+    },
+    {
+      "name": "Green beans",
+      "quantity": 200,
+      "unit": "g",
+      "note": "trimmed and halved",
+      "group": "For the potatoes and eggs"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "group": "For the potatoes and eggs"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Dijon mustard",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, crushed",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Cos lettuce",
+      "quantity": 1,
+      "unit": null,
+      "note": "small head, torn into pieces",
+      "group": "For the salad"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Pitted black olives",
+      "quantity": 0.33,
+      "unit": "cup",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "Tinned tuna in water",
+      "quantity": 340,
+      "unit": "g",
+      "note": "two 170 g tins, drained",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Put the potatoes in a saucepan, cover with cold water, add the salt and bring to the boil over high heat. Simmer for 10 minutes.",
+    "Add the green beans and simmer for 4 minutes more, until the beans are bright green and a knife slides easily into the potatoes. Drain and rinse under cold water until cool.",
+    "Meanwhile, bring a small saucepan of water to the boil, lower in the eggs and boil for 9 minutes, a minute longer on the Highveld. Move them to a bowl of cold water for 5 minutes, then peel and quarter them.",
+    "Shake the oil, lemon juice, mustard, garlic, salt and pepper together in a jar until thick and creamy.",
+    "Toss the cooled potatoes and beans with half the dressing.",
+    "To eat now, spread the lettuce on a platter, top with the potatoes and beans, tomatoes, cucumber, olives and flakes of tuna, add the eggs and spoon over the rest of the dressing.",
+    "For lunchboxes, pack in layers: dressed potatoes and beans at the bottom, then tomatoes, cucumber, olives and tuna, then the eggs, with the lettuce on top to keep it crisp. Carry the rest of the dressing separately."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Packed boxes keep 2 days in the fridge; add the dressing on the day you eat it.",
+  "kcalPerServing": 400,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -116,21 +116,29 @@ class PlanWeekChildCard extends StatelessWidget {
     required LunchSlot slot,
     required String dayName,
   }) async {
-    final shop = context.read<PlanWeekController>().shop;
+    final controller = context.read<PlanWeekController>();
+    final shop = controller.shop;
     final choice = await showPlanWeekSwapSheet(
       context: context,
       title: PlanWeekCopy.swapTitle(LunchCopy.slotName(slot), dayName),
       options: plan.optionsFor(child.childId, slot),
       current: child.addedAt(day, slot),
+      boxesPerPackOf: plan.boxesPerPackOf,
+      everyDay: controller.variety.variety.keepsSame(slot),
     );
     if (choice == null) return;
-    shop.swap(child.childId, LunchPlan.slotKey(day, slot), switch (choice) {
+    final pick = switch (choice) {
       SwapToProduct(:final ideaId, :final productId) => ShopPick(
         ideaId: ideaId,
         productId: productId,
         origin: PickOrigin.swapped,
       ),
       SwapToEmpty() => null,
-    });
+    };
+    if (choice.everyDay) {
+      shop.swapEveryDay(child.childId, day, slot, pick);
+    } else {
+      shop.swap(child.childId, LunchPlan.slotKey(day, slot), pick);
+    }
   }
 }

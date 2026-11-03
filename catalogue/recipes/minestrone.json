@@ -1,0 +1,170 @@
+{
+  "id": "minestrone",
+  "name": "Minestrone soup",
+  "summary": "A thick Italian vegetable soup of carrot, celery, baby marrow, cabbage and tomato with butter beans and small wholewheat pasta.",
+  "about": "Minestrone is the thick vegetable soup of Italian home cooking, made with whatever vegetables are in season plus beans and a little pasta or rice, so no two families make it alike. A big pot does dinner one night and reheats for lunch the next.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner",
+    "lunch"
+  ],
+  "placement": {
+    "dinner": "main",
+    "lunch": "main"
+  },
+  "tags": [
+    "healthy",
+    "budget",
+    "vegetableForward",
+    "onePot"
+  ],
+  "allergens": [
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "vegan",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Celery sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 1.5,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": null
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Green cabbage",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "finely shredded",
+      "group": null
+    },
+    {
+      "name": "Butter beans",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": null
+    },
+    {
+      "name": "Small wholewheat pasta",
+      "quantity": 150,
+      "unit": "g",
+      "note": "macaroni or small shells",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large soup pot over medium heat. Add the onion, carrot and celery with a pinch of salt and cook, stirring now and then, for 10 minutes, until soft and sweet but not browned.",
+    "Stir in the garlic, oregano and tomato paste and cook for 2 minutes, until the paste darkens.",
+    "Add the tomatoes, water, bay leaves and salt and bring to the boil over high heat. Turn the heat to low, cover and simmer for 15 minutes, until the carrot is just tender.",
+    "Add the baby marrow, cabbage, butter beans and pasta. Simmer uncovered for 10 to 12 minutes, stirring now and then so the pasta does not stick, until the pasta is tender and the cabbage is soft.",
+    "Take out the bay leaves, add the pepper and taste for salt. Stir in the parsley and serve in big bowls."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge; the pasta drinks up the broth, so add a splash of water when reheating.",
+  "kcalPerServing": 270,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

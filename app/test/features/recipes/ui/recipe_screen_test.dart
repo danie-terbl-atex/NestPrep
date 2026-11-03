@@ -72,7 +72,10 @@ void main() {
       brightness: brightness,
       textScale: scale,
     );
-    harness.recipes.emitCatalogue(RecipeFixtures.catalogue);
+    harness.recipes.emitCatalogue([
+      ...RecipeFixtures.catalogue,
+      RecipeFixtures.hakeTraybake,
+    ]);
     await tester.pumpAndSettle();
   }
 
@@ -103,12 +106,32 @@ void main() {
       find.text(RecipeCopy.difficulty(RecipeFixtures.bobotie.difficulty!)),
       findsOneWidget,
     );
+    expect(
+      find.bySemanticsLabel(
+        '${RecipeCopy.energyLabel}: ${RecipeCopy.kcalSpoken(600)}',
+      ),
+      findsOneWidget,
+      reason: 'the estimate is said to be one, not read out as a symbol',
+    );
+    expect(find.text(RecipeCopy.dietHeader.toUpperCase()), findsNothing);
     await scrollTo(tester, find.text(RecipeCopy.aboutHeader));
     expect(
       find.bySemanticsLabel(RegExp('^Contains milk, egg')),
       findsOneWidget,
       reason: 'allergens are said in words, not only shown as tags',
     );
+  });
+
+  testWidgets('says which ways of eating it suits (recipes ADR-0006)', (
+    tester,
+  ) async {
+    await pump(tester, recipeId: RecipeFixtures.hakeTraybake.id);
+
+    expect(find.text(RecipeCopy.kcal(420)), findsOneWidget);
+    await scrollTo(tester, find.text(RecipeCopy.dietHeader.toUpperCase()));
+    for (final diet in ['Pescatarian', 'Gluten-free', 'Dairy-free']) {
+      expect(find.text(diet), findsOneWidget);
+    }
   });
 
   testWidgets('the scaler starts at the family and moves every amount', (
@@ -307,14 +330,22 @@ void main() {
     expect(backs, 1);
   });
 
-  testWidgets('renders in dark and at 200% text on a 360-wide phone', (
-    tester,
-  ) async {
-    await pump(tester, brightness: Brightness.dark, scale: 2);
-    for (var page = 0; page < 12; page++) {
-      await tester.drag(pageList(), const Offset(0, -500));
-      await tester.pumpAndSettle();
-    }
-    expect(tester.takeException(), isNull);
-  });
+  for (final recipe in [RecipeFixtures.bobotie, RecipeFixtures.hakeTraybake]) {
+    testWidgets(
+      '${recipe.name} renders in dark and at 200% text on a 360-wide phone',
+      (tester) async {
+        await pump(
+          tester,
+          recipeId: recipe.id,
+          brightness: Brightness.dark,
+          scale: 2,
+        );
+        for (var page = 0; page < 12; page++) {
+          await tester.drag(pageList(), const Offset(0, -500));
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 }

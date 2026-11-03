@@ -1,0 +1,154 @@
+{
+  "id": "hake-and-vegetable-traybake",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Baby potatoes",
+      "amount": "600 g, skin on",
+      "grams": 600,
+      "kcal": 420,
+      "proteinG": 11.3,
+      "fatG": 0.8,
+      "netCarbsG": 85.2,
+      "reference": "Potatoes, red, flesh and skin, raw (baby potatoes) — USDA FDC 170029: 70 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "3 × 90 g",
+      "grams": 270,
+      "kcal": 46,
+      "proteinG": 3.3,
+      "fatG": 0.9,
+      "netCarbsG": 5.7,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1.5 tsp × 2.3 g",
+      "grams": 3.5,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 45,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 6.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Hake fillets",
+      "amount": "4 × 150 g raw",
+      "grams": 600,
+      "kcal": 474,
+      "proteinG": 102.0,
+      "fatG": 6.6,
+      "netCarbsG": 0.0,
+      "reference": "Cape hake fillet, frozen (Sea Harvest label): 79 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemons",
+      "amount": "2: 96 g juice (one squeezed, one in wedges) + 2 g zest",
+      "grams": 98,
+      "kcal": 22,
+      "proteinG": 0.4,
+      "fatG": 0.2,
+      "netCarbsG": 6.4,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g; Lemon peel, raw (for lemon or lime zest) — USDA FDC 167749: 47 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 × 5 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped × 3.8 g",
+      "grams": 11.4,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1488,
+  "kcalPerServing": 370,
+  "perServing": {
+    "proteinG": 30.9,
+    "fatG": 12.7,
+    "netCarbsG": 31.2
+  },
+  "notes": "Assumptions that change the number: hake at the Sea Harvest frozen-fillet label value, 150 g a person; 150 g raw baby potatoes each; all 3 tbsp oil eaten; lemon juice from both lemons counted. Published check: white fish and potato traybakes are typically listed at ~350–420 kcal a serving; 370 agrees."
+}

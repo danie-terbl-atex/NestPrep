@@ -15,7 +15,7 @@
     "traditional"
   ],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree", "banting", "keto"],
   "ingredients": [
     {
       "name": "Lamb loin chops",
@@ -80,6 +80,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Marinate in the morning and keep covered in the fridge; take out 30 minutes before the braai.",
+  "kcalPerServing": 620,
   "photo": {
     "credit": null,
     "licence": null,

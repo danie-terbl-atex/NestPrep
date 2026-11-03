@@ -36,5 +36,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 3 days wrapped at room temperature. Freeze slices separately and toast or thaw them for school mornings.",
-  "photo": { "credit": "Shisma", "licence": "CC BY 4.0", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Banana_bread_slices.jpg", "generated": false }
+  "kcalPerServing": 290,
+  "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

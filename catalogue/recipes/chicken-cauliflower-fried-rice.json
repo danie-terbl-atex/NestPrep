@@ -1,0 +1,147 @@
+{
+  "id": "chicken-cauliflower-fried-rice",
+  "name": "Chicken cauliflower fried rice",
+  "summary": "Grated cauliflower stir-fried like fried rice with chicken, egg, carrot, red pepper, baby marrow and spring onion, seasoned with garlic, ginger and tamari.",
+  "about": "Fried rice began in Chinese home kitchens as a way to use up cooked rice. Grating cauliflower to stand in for the rice is a swap low-carb and banting cooks use, and the egg, chicken, ginger and soy keep the take-away flavour on a one-pan weeknight supper.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "vegetableForward"
+  ],
+  "allergens": [
+    "egg",
+    "soy"
+  ],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Cauliflower",
+      "quantity": 1,
+      "unit": null,
+      "note": "a large head, about 900 g",
+      "group": null
+    },
+    {
+      "name": "Eggs",
+      "quantity": 3,
+      "unit": null,
+      "note": "beaten with a pinch of salt",
+      "group": null
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2.5,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": null
+    },
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "cut into 2 cm pieces",
+      "group": null
+    },
+    {
+      "name": "Carrot",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": null
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": null
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely diced",
+      "group": null
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 6,
+      "unit": null,
+      "note": "sliced, white and green parts kept apart",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": null
+    },
+    {
+      "name": "Tamari",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "a soy sauce brewed without grain, from the Asian shelf",
+      "group": null
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Cut the cauliflower into florets, discarding the leaves and the hard core. Pulse in a food processor in two batches, 8 to 10 short pulses each, until it looks like rice; or grate it on the coarse side of a box grater. Stop before it turns to crumbs.",
+    "Heat a large wok or deep frying pan over medium heat with 1 tsp of the oil. Pour in the eggs and stir gently for about 1 minute, until just set in soft pieces. Tip onto a plate.",
+    "Turn the heat to high and add 1 tbsp of the oil. Add the chicken in a single layer and cook for 2 minutes without moving it, then stir-fry for 3 to 4 minutes more, until golden and white all the way through. Lift onto the plate with the egg.",
+    "Add the remaining oil with the carrot, red pepper, baby marrows and the white parts of the spring onions. Stir-fry over high heat for 3 minutes, until the carrot is starting to soften. Add the garlic and ginger and stir for 30 seconds, until fragrant.",
+    "Add the cauliflower, spread it over the pan and cook for 4 to 5 minutes, stirring every minute, until hot and just tender with no raw crunch; do not cook it longer or it turns soft and wet.",
+    "Return the chicken and egg, pour over the tamari and toss over high heat for 1 minute until everything is hot and evenly coloured. Stir in the spring onion greens, lemon juice and pepper, taste for salt and serve straight away."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Rice the cauliflower and chop the vegetables up to a day ahead; keep them in a covered bowl in the fridge.",
+  "kcalPerServing": 400,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

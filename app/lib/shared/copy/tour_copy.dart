@@ -20,8 +20,8 @@ abstract final class TourCopy {
 
   static String chapter(TourPlace place) => switch (place) {
     TourPlace.today => AppCopy.tabToday,
-    TourPlace.lunch => LunchCopy.tab,
-    TourPlace.meals => AppCopy.tabMeals,
+    TourPlace.calendar => AppCopy.tabCalendar,
+    TourPlace.lunch || TourPlace.meals => AppCopy.tabFood,
     TourPlace.todos || TourPlace.groceries => AppCopy.tabLists,
     TourPlace.more => MoreCopy.tab,
   };
@@ -43,6 +43,7 @@ abstract final class TourCopy {
         TourTarget.lunchTools => LunchCopy.toolsTitle,
         TourTarget.lunchPrep => LunchCopy.openPrep,
         TourTarget.lunchBudget => LunchPlanningCopy.openBudget,
+        TourTarget.calendarViews => 'The whole family’s month',
         TourTarget.mealsViews => 'Recipes for every meal',
         TourTarget.listsSwitch => 'To do and groceries',
         TourTarget.groceryPlans => GroceryPlanCopy.title,
@@ -95,12 +96,18 @@ abstract final class TourCopy {
       premium,
       'What a box and the week cost, with cheaper swaps they’ll still eat.',
     ),
+    TourTarget.calendarViews when isLookOnly =>
+      'Everyone’s events, birthdays and synced calendars, a dot in each '
+          'person’s colour. Switch to the week for the detail.',
+    TourTarget.calendarViews =>
+      'Everyone’s events, birthdays and synced calendars in one month. Tap '
+          'a day to see it, or type “Soccer Tuesdays at 5” to add one.',
     TourTarget.mealsViews when isLookOnly =>
       'Family recipes for breakfast, lunch and dinner, and what’s planned '
           'this week.',
     TourTarget.mealsViews =>
       'Find a recipe, scale it for your family, and add it to this week in '
-          'a tap. The family calendar is on More now.',
+          'a tap. Lunchboxes are one chip away.',
     TourTarget.listsSwitch =>
       'To do has due dates, repeats and who it’s for. Groceries is one '
           'shared list.',

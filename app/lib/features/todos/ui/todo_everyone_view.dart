@@ -16,14 +16,22 @@ import 'task_occurrence_row.dart';
 /// by member (todos ADR-0001). The filter is a lens on what is showing, so it
 /// lives on the controller and not in the document.
 class TodoEveryoneView extends StatelessWidget {
-  const TodoEveryoneView({required this.board, super.key});
+  const TodoEveryoneView({
+    required this.board,
+    required this.onCompleted,
+    super.key,
+  });
 
   final TodoBoard board;
+  final ValueChanged<TaskOccurrence> onCompleted;
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TodoController>();
-    final members = context.read<HouseholdView>().members;
+    final members = [
+      for (final member in context.read<HouseholdView>().members)
+        if (!board.kidIds.contains(member.id)) member,
+    ];
     final occurrences = board.everyoneFor(controller.memberFilter);
 
     return Column(
@@ -52,7 +60,11 @@ class TodoEveryoneView extends StatelessWidget {
                   message: AppCopy.todosEveryoneEmptyBody,
                 )
               else
-                _GroupedDays(occurrences: occurrences, board: board),
+                _GroupedDays(
+                  occurrences: occurrences,
+                  board: board,
+                  onCompleted: onCompleted,
+                ),
             ],
           ),
         ),
@@ -62,10 +74,15 @@ class TodoEveryoneView extends StatelessWidget {
 }
 
 class _GroupedDays extends StatelessWidget {
-  const _GroupedDays({required this.occurrences, required this.board});
+  const _GroupedDays({
+    required this.occurrences,
+    required this.board,
+    required this.onCompleted,
+  });
 
   final List<TaskOccurrence> occurrences;
   final TodoBoard board;
+  final ValueChanged<TaskOccurrence> onCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +108,7 @@ class _GroupedDays extends StatelessWidget {
                 occurrence: occurrence,
                 today: board.today,
                 showsRoutine: true,
+                onCompleted: onCompleted,
               ),
             ),
           const SizedBox(height: NestSpace.md),

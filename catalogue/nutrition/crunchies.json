@@ -1,0 +1,94 @@
+{
+  "id": "crunchies",
+  "servings": 24,
+  "lines": [
+    {
+      "ingredient": "Rolled oats",
+      "amount": "180 g (2 cups)",
+      "grams": 180,
+      "kcal": 682,
+      "proteinG": 23.7,
+      "fatG": 11.7,
+      "netCarbsG": 103.7,
+      "reference": "Cereals, oats, regular and quick, not fortified, dry — USDA FDC 173904: 379 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "140 g (1 cup)",
+      "grams": 140,
+      "kcal": 510,
+      "proteinG": 14.5,
+      "fatG": 1.4,
+      "netCarbsG": 103.1,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Desiccated coconut",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 528,
+      "proteinG": 5.5,
+      "fatG": 51.6,
+      "netCarbsG": 5.9,
+      "reference": "Nuts, coconut meat, dried (desiccated), not sweetened — USDA FDC 170170: 660 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "180 g",
+      "grams": 180,
+      "kcal": 684,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 176.6,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.25 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "200 g (greasing not counted)",
+      "grams": 200,
+      "kcal": 1434,
+      "proteinG": 1.7,
+      "fatG": 162.2,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Golden syrup",
+      "amount": "2 tbsp ≈ 42 g (1.4 g/ml)",
+      "grams": 42,
+      "kcal": 135,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 33.2,
+      "reference": "Golden syrup, SA (Pick n Pay label via FatSecret ZA): 322 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bicarbonate of soda",
+      "amount": "1 tsp ≈ 5 g",
+      "grams": 5,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Leavening agents, baking soda — USDA FDC 175040: 0 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3973,
+  "kcalPerServing": 170,
+  "perServing": {
+    "proteinG": 1.9,
+    "fatG": 9.5,
+    "netCarbsG": 17.6
+  },
+  "notes": "24 squares. Butter for greasing the tin not counted. Golden syrup 1.4 g/ml. Sanity check: All That Jas crunchies 156 kcal (24 pieces); African Bites 233 kcal a square from a 15-square batch (≈146 at 24); Tantalise My Taste Buds 231 kcal. Ours 170 sits inside the range."
+}

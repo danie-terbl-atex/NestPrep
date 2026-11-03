@@ -20,7 +20,8 @@
   ],
   "dietTags": [
     "vegetarian",
-    "vegan"
+    "vegan",
+    "dairyFree"
   ],
   "ingredients": [
     {
@@ -143,10 +144,11 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 330,
   "photo": {
-    "credit": "Damien Ramon Naidoo",
-    "licence": "CC BY-SA 3.0",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chilli_Bites_(Bhaji).jpg",
-    "generated": false
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
   }
 }

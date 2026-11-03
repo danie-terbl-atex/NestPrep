@@ -6,9 +6,9 @@
   "cuisine": "southAfrican",
   "contexts": ["dinner"],
   "placement": { "dinner": "main" },
-  "tags": ["potjie", "vegetableForward", "budget"],
+  "tags": ["potjie", "vegetableForward", "budget", "healthy"],
   "allergens": ["wheat"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "vegan", "dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 3, "unit": "tbsp", "note": null, "group": null },
     { "name": "Onions", "quantity": 2, "unit": null, "note": "sliced", "group": null },
@@ -48,5 +48,6 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": "Peel and cut the vegetables a few hours ahead and keep them in the fridge in separate bags.",
+  "kcalPerServing": 390,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

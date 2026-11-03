@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
+import 'package:nestprep/features/add_to_checkers/state/product_finder.dart';
 import 'package:nestprep/features/add_to_checkers/state/product_match_controller.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
@@ -43,15 +44,18 @@ final class Harness {
   final ranker = FakeProductMatchRanker();
 
   late final controller = ProductMatchController(
-    catalogues: RetailerCatalogues(checkers: catalogue, pickNPay: pnp),
-    placeResolver: CheckersPlaceResolver(
-      locationSource: location,
-      areaPreference: areas,
+    finder: ProductFinder(
+      catalogues: RetailerCatalogues(checkers: catalogue, pickNPay: pnp),
+      placeResolver: CheckersPlaceResolver(
+        locationSource: location,
+        areaPreference: areas,
+      ),
+      householdId: Fixtures.householdId,
+      ranker: ranker,
     ),
     groceryRepository: groceries,
     householdId: Fixtures.householdId,
     memberId: Fixtures.samMemberId,
-    ranker: ranker,
     debounce: debounce,
   );
 }

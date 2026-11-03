@@ -8,7 +8,7 @@
   "placement": { "breakfast": "main", "lunch": "main" },
   "tags": ["traditional", "budget"],
   "allergens": ["milk"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "glutenFree"],
   "ingredients": [
     { "name": "Water", "quantity": 2.5, "unit": "cup", "note": null, "group": null },
     { "name": "Salt", "quantity": 1, "unit": "tsp", "note": null, "group": null },
@@ -30,5 +30,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make the pap the night before and keep it covered in the fridge; it is meant to be eaten cool.",
+  "kcalPerServing": 510,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

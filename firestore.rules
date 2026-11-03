@@ -93,7 +93,7 @@ service cloud.firestore {
         || (value is map
             && value.keys().hasOnly(
                  ['calendar', 'groceries', 'todos', 'meals', 'documents', 'lunch',
-                  'familyProfiles', 'medical', 'homeCare', 'nannyHub'])
+                  'familyProfiles', 'medical', 'homeCare', 'nannyHub', 'location'])
             && value.values().hasOnly(['none', 'own', 'view', 'edit']));
     }
 
@@ -106,7 +106,7 @@ service cloud.firestore {
     }
 
     // The profile this account claimed, and nothing else — for what only a
-    // person with their own login may do, like sharing where they are.
+    // person with their own login may do.
     function hasClaimed(householdId, memberId) {
       return isSignedIn() && memberData(householdId, memberId).claimedBy == uid();
     }
@@ -398,6 +398,29 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ==== rules/firestore/root/assistants.rules ====
+    // ---- assistants: the authorization server's records (assistants ADR-0002) ----
+    // Clients a metadata document or a registration described, authorizes
+    // waiting for consent, one-minute codes, and access and refresh tokens —
+    // each keyed by a hash and read only by `assistantAuth`. A readable one would
+    // be somebody's standing access to their household.
+
+    match /assistantClients/{clientHash} {
+      allow read, write: if false;
+    }
+
+    match /assistantAuthRequests/{requestId} {
+      allow read, write: if false;
+    }
+
+    match /assistantCodes/{codeHash} {
+      allow read, write: if false;
+    }
+
+    match /assistantTokens/{tokenHash} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/calendar_sync.rules ====
     // ---- calendar sync, the credentials (calendar ADR-0003) ----
     // A refresh token or a calendar link, a connection in flight, and a feed
@@ -446,6 +469,64 @@ service cloud.firestore {
     // many wrong PINs it has seen. Only the shared-link Functions read or
     // write these; a readable one would be a way to test PINs offline.
     match /documentShareTokens/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/feedback.rules ====
+    // ---- feedback (feedback ADR-0001) ----
+    // What an account tells NestPrep works, does not, or could be better. The
+    // account creates it and nobody reads, changes or deletes it from a client:
+    // admin tools read it with the Admin SDK. A kid device has no account to
+    // erase a child's words with, so it may not send any.
+
+    match /feedback/{feedbackId} {
+      allow create: if isSignedIn()
+        && request.auth.token.get('kidProfile', null) == null
+        && isFeedbackShape(request.resource.data);
+
+      allow read, update, delete: if false;
+    }
+
+    function isFeedbackShape(data) {
+      return data.keys().hasOnly(
+               ['uid', 'kind', 'message', 'area', 'screen', 'householdId', 'mayContact',
+                'appVersion', 'appBuild', 'platform', 'createdAt'])
+        && data.keys().hasAll(
+             ['uid', 'kind', 'message', 'area', 'screen', 'householdId', 'mayContact',
+              'appVersion', 'appBuild', 'platform', 'createdAt'])
+        && data.uid == uid()
+        && data.kind in ['problem', 'praise', 'idea']
+        && data.message is string
+        && data.message.size() >= 1 && data.message.size() <= 2000
+        && data.message == data.message.trim()
+        && (data.area == null
+            || data.area in ['today', 'calendar', 'lunch', 'meals', 'groceries', 'todos',
+                             'documents', 'care', 'family', 'account'])
+        && (data.screen == null
+            || (data.screen is string && data.screen.size() >= 1 && data.screen.size() <= 200))
+        && (data.householdId == null || (data.householdId is string && isMember(data.householdId)))
+        && data.mayContact is bool
+        && data.appVersion is string && data.appVersion.size() >= 1 && data.appVersion.size() <= 32
+        && data.appBuild is int
+        && data.platform in ['android', 'ios', 'other']
+        && data.createdAt == request.time;
+    }
+
+    // ==== rules/firestore/root/frame_credentials.rules ====
+    // ---- photo frame credentials (photo-frames ADR-0001) ----
+    // Which household and frame a frame's secret opens, keyed by its hash.
+    // Closed: only `claimFramePairing` and `getFrameDay` read or write it.
+    match /frameCredentials/{secretHash} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/frame_pairings.rules ====
+    // ---- photo frame pairing codes (photo-frames ADR-0001) ----
+    // Closed for the same reason kid pairings are: a readable collection of
+    // codes is a list of ways to put a screen in somebody's home.
+    // `startFramePairing`, `pollFramePairing` and `claimFramePairing` are the
+    // only way in.
+    match /framePairings/{code} {
       allow read, write: if false;
     }
 
@@ -604,6 +685,39 @@ service cloud.firestore {
         match /calls/{callId} {
           allow read, write: if false;
         }
+      }
+
+      // ==== rules/firestore/household/assistants.rules ====
+      // ---- assistants: connections, what they did, the household's switch (assistants ADR-0003, ADR-0005) ----
+      // A connection is the grant itself, written only by `assistantAuth` when a
+      // member consents. Its member and the household's family see it, and either
+      // may delete it — deleting it is disconnecting, and every token it issued
+      // stops working on its next call.
+      match /assistantConnections/{grantId} {
+        allow read, delete: if (isSignedIn() && resource.data.uid == uid()) || isFamily(householdId);
+        allow create, update: if false;
+      }
+
+      // One line per write an assistant made, ids only. The member it acted for
+      // and the family see it; only the assistant's own Functions write it.
+      match /assistantActivity/{activityId} {
+        allow read: if isFamily(householdId)
+          || (isInHousehold(householdId) && resource.data.memberId == ownMemberId(householdId));
+        allow write: if false;
+      }
+
+      // `current.allowed: false` stops every assistant in this household on its
+      // next call. Absent means allowed. Family sets it, stamped with who and when.
+      match /assistantSettings/{settingsId} {
+        allow read: if isInHousehold(householdId);
+        allow create, update: if isFamily(householdId)
+          && settingsId == 'current'
+          && request.resource.data.keys().hasOnly(['allowed', 'updatedBy', 'updatedAt'])
+          && request.resource.data.keys().hasAll(['allowed', 'updatedBy', 'updatedAt'])
+          && request.resource.data.allowed is bool
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+        allow delete: if false;
       }
 
       // ==== rules/firestore/household/calendar.rules ====
@@ -1225,7 +1339,10 @@ service cloud.firestore {
         allow create: if canEdit(householdId, 'groceries')
           && request.resource.data.keys().hasOnly(
                ['name', 'quantity', 'addedBy', 'addedAt', 'boughtAt', 'boughtBy',
-                'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch'])
+                'sourceKey', 'sourceWeek', 'sourceNote', 'productMatch', 'source'])
+          // Where a line nobody typed came from (lunch-box ADR-0006); a typed one
+          // has none. `GrocerySource` in the app spells the same list.
+          && request.resource.data.get('source', 'lunch') in ['lunch', 'pantry']
           && (request.resource.data.get('productMatch', null) == null
                 || groceriesIsProductMatch(householdId, request.resource.data.productMatch))
           && isNonEmptyString(request.resource.data.name)
@@ -1911,57 +2028,123 @@ service cloud.firestore {
       }
 
       // ==== rules/firestore/household/live_location.rules ====
-      // ---- live location (live-location ADR-0001, ADR-0002) ----
+      // ---- live location (live-location ADR-0001, ADR-0003, ADR-0004) ----
       //
-      // The document id is the member id, and that is the whole authorisation
-      // story. `isOwnMember` on the path means a member writes only their own
-      // position; there is no field anybody could put somebody else's id into.
-      // `hasClaimed`, not `isOwnMember`: a kid device acts as its profile
-      // elsewhere, but sharing where somebody is stays a thing only a person
-      // with their own login does (accounts ADR-0004).
-      // It also means **an unclaimed profile cannot have a location at all**:
-      // its `claimedBy` is null, no uid is null, so no caller anywhere can
-      // create that document.
-      //
-      // An admin has no write here. Starting or extending somebody else's
-      // sharing is the one thing this feature must not permit, and it is
-      // refused by the path rather than by a check that could be got wrong.
+      // The document id is the member id, so `isOwnMember` on the path is the whole
+      // authorisation story: nobody can write somebody else's position, and an
+      // admin's only power is delete.
       match /memberLocations/{memberId} {
-        // Membership, and nothing about the window. A read rule comparing
-        // `request.time` to document data fails the *whole* listener the
-        // moment any one member's window closes, because Firestore evaluates a
-        // query against every document in its result and a listener's bounds
-        // are fixed when it opens. The window is enforced on write instead, and
-        // the client reads a closed one as *not sharing* (live-location
-        // ADR-0001). A carer marked shift-only reads nobody's position off shift
-        // (nanny-hub ADR-0006).
-        allow read: if isMember(householdId) && !isShiftOnlyOffShiftNow(householdId);
+        // No expiry check here: Firestore fails a whole listener when one document
+        // in it is denied, and a listener's bounds are fixed when it opens. The
+        // window is enforced on write; the client reads a closed one as not sharing.
+        allow read: if canView(householdId, 'location');
 
-        allow create, update: if hasClaimed(householdId, memberId)
+        allow create, update: if isOwnMember(householdId, memberId)
           && request.resource.data.keys().hasOnly(
-               ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil'])
+               ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil', 'mode',
+                'batteryPercent', 'charging', 'motion'])
           && request.resource.data.point is latlng
           && request.resource.data.accuracyMetres is int
           && request.resource.data.accuracyMetres >= 0
           && isServerTime('reportedAt')
-          && isBoundedShare(request.resource.data.sharingUntil);
+          && isLiveLocationDevice(request.resource.data)
+          && isLiveLocationLease(householdId, request.resource.data)
+          && isLiveLocationPaced();
 
-        // Stopping is deleting: nothing is left for the household to read
-        // (live-location ADR-0002). An admin may clear the pin a removed
-        // member's dead phone left behind — a delete only ever removes what
-        // somebody can see, never reveals it.
-        allow delete: if hasClaimed(householdId, memberId)
-          || isAdmin(householdId);
+        allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
 
-        // The window has to end, and it has to still be open. The first half is
-        // what stops a share running for ever; the second is what actually ends
-        // one, because a device whose window has passed can no longer say
-        // anything. The number is mirrored in
-        // `LiveLocationRepository.longestShare`.
-        function isBoundedShare(sharingUntil) {
-          return sharingUntil is timestamp
-            && sharingUntil > request.time
-            && sharingUntil < request.time + duration.value(4, 'h');
+        function isLiveLocationDevice(data) {
+          return (!('batteryPercent' in data)
+                  || (data.batteryPercent is int
+                      && data.batteryPercent >= 0 && data.batteryPercent <= 100))
+            && (!('charging' in data) || data.charging is bool)
+            && (!('motion' in data)
+                || data.motion in ['still', 'onFoot', 'cycling', 'driving', 'unknown']);
+        }
+
+        // A window share ends within four hours, mirrored in
+        // `LiveLocationRepository.longestShare`. Continuous sharing is premium and a
+        // lease the device renews on every write, so a phone that dies stops
+        // reading as anywhere within a day (live-location ADR-0003). Installed
+        // phase-1 apps write no `mode`, which is a window.
+        function isLiveLocationLease(householdId, data) {
+          let until = data.sharingUntil;
+          let mode = data.get('mode', 'window');
+          return until is timestamp
+            && until > request.time
+            && ((mode == 'window' && until < request.time + duration.value(4, 'h'))
+                || (mode == 'continuous'
+                    && until < request.time + duration.value(25, 'h')
+                    && hasPremium(householdId)));
+        }
+
+        // Ten seconds between writes caps a runaway client's bill. Switching
+        // between a window and continuous is a deliberate tap, so it is never held.
+        function isLiveLocationPaced() {
+          return resource == null
+            || request.resource.data.get('mode', 'window') != resource.data.get('mode', 'window')
+            || request.time > resource.data.reportedAt + duration.value(10, 's');
+        }
+      }
+
+      // ==== rules/firestore/household/location_trails.rules ====
+      // ---- where a member has been, and when they reached a place (live-location ADR-0004, ADR-0006) ----
+      //
+      // Keyed by the member id like `memberLocations`, so only that member's own
+      // device writes their history. One document per household-local day holds
+      // every point of it: a day is one read, and the bill is one write a flush.
+      match /locationTrails/{memberId} {
+        match /trailDays/{day} {
+          allow read: if canView(householdId, 'location');
+
+          allow create: if isOwnMember(householdId, memberId)
+            && hasPremium(householdId)
+            && day.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+            && isLocationTrailDay(request.resource.data)
+            && request.resource.data.points.size() <= 120;
+
+          // `arrayUnion` only ever adds, at most 120 points a flush, a flush at most
+          // every 30 seconds, and a day holds at most 3,000.
+          allow update: if isOwnMember(householdId, memberId)
+            && hasPremium(householdId)
+            && isLocationTrailDay(request.resource.data)
+            && request.resource.data.points.size() <= 3000
+            && request.resource.data.points.size() >= resource.data.points.size()
+            && request.resource.data.points.size() - resource.data.points.size() <= 120
+            && request.time > resource.data.updatedAt + duration.value(30, 's');
+
+          allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
+        }
+
+        match /placeEvents/{eventId} {
+          allow read: if canView(householdId, 'location');
+
+          allow create: if isOwnMember(householdId, memberId)
+            && hasPremium(householdId)
+            && request.resource.data.keys().hasOnly(['placeId', 'kind', 'at', 'expiresAt'])
+            && request.resource.data.kind in ['arrive', 'leave']
+            && request.resource.data.placeId is string
+            && exists(/databases/$(database)/documents/households/$(householdId)/places/$(request.resource.data.placeId))
+            && isServerTime('at')
+            && isLocationTrailExpiry(request.resource.data.expiresAt);
+
+          allow update: if false;
+          allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
+        }
+
+        function isLocationTrailDay(data) {
+          return data.keys().hasOnly(['points', 'updatedAt', 'expiresAt'])
+            && data.points is list
+            && isServerTime('updatedAt')
+            && isLocationTrailExpiry(data.expiresAt);
+        }
+
+        // Thirty days, give or take the device's clock. The TTL policy on
+        // `expiresAt` is what deletes it.
+        function isLocationTrailExpiry(expiresAt) {
+          return expiresAt is timestamp
+            && expiresAt > request.time + duration.value(29, 'd')
+            && expiresAt < request.time + duration.value(31, 'd');
         }
       }
 
@@ -3250,7 +3433,7 @@ service cloud.firestore {
         return value is map
           // `photos` and `coParenting` are the V2 producers' switches (nanny-hub
           // ADR-0004, household ADR-0004).
-          && value.keys().hasOnly(['documents', 'handover', 'chores', 'photos', 'coParenting'])
+          && value.keys().hasOnly(['documents', 'handover', 'chores', 'photos', 'coParenting', 'places'])
           && value.values().hasOnly([true, false]);
       }
 
@@ -3288,6 +3471,100 @@ service cloud.firestore {
           && isOwnMember(householdId, resource.data.memberId);
 
         allow create: if false;
+      }
+
+      // ==== rules/firestore/household/photo_frames.rules ====
+      // ---- photo frames (photo-frames ADR-0001) ----
+      // A wall frame the family linked. Only `claimFramePairing` creates one,
+      // because a frame is linked by the code it shows, not by a client write.
+      // Family renames it, chooses its panels, its screensaver (photo-frames
+      // ADR-0006) and the shop it adds groceries from (ADR-0012), and deletes it — deleting is the unlink. A frame is the household's front door to its whole day, so it is
+      // family's alone, whatever a helper's or a kid's grant says.
+      match /frames/{frameId} {
+        allow read: if isFamily(householdId);
+
+        allow create: if false;
+
+        allow update: if isFamily(householdId)
+          && onlyChanged(['name', 'panels', 'screensaver', 'groceries'])
+          && photoFrameIsName(request.resource.data.name)
+          && photoFrameArePanels(householdId, request.resource.data.panels)
+          && (request.resource.data.get('screensaver', null) == null
+                || photoFrameIsScreensaver(request.resource.data.screensaver))
+          && (request.resource.data.get('groceries', null) == null
+                || photoFrameIsGroceries(request.resource.data.groceries));
+
+        allow delete: if isFamily(householdId);
+      }
+
+      function photoFrameIsName(name) {
+        return name is string && name.size() > 0 && name.size() <= 40;
+      }
+
+      // `lunch`, `addEvents` and `share` are optional: a frame linked by an older
+      // app has none of them, and that is off (photo-frames ADR-0003, ADR-0008).
+      function photoFrameArePanels(householdId, panels) {
+        return panels is map
+          && panels.keys().hasOnly(['calendar', 'todos', 'meals', 'lunch', 'addEvents', 'share', 'helperMemberId'])
+          && panels.keys().hasAll(['calendar', 'todos', 'meals', 'helperMemberId'])
+          && panels.calendar is bool
+          && panels.todos is bool
+          && panels.meals is bool
+          && panels.get('lunch', false) is bool
+          && panels.get('addEvents', false) is bool
+          && panels.get('share', false) is bool
+          && (panels.helperMemberId == null
+                || (isNonEmptyString(panels.helperMemberId)
+                      && exists(/databases/$(database)/documents/households/$(householdId)/members/$(panels.helperMemberId))));
+      }
+
+      // Zero minutes is off, and so is no screensaver at all.
+      function photoFrameIsScreensaver(screensaver) {
+        return screensaver is map
+          && screensaver.keys().hasOnly(['idleMinutes', 'secondsPerPhoto'])
+          && screensaver.keys().hasAll(['idleMinutes', 'secondsPerPhoto'])
+          && screensaver.idleMinutes in [0, 1, 2, 5, 10, 15, 30, 60]
+          && screensaver.secondsPerPhoto in [10, 20, 30, 60];
+      }
+
+      // No groceries at all is off; the area is one of the app's `CheckersArea` codes.
+      function photoFrameIsGroceries(groceries) {
+        return groceries is map
+          && groceries.keys().hasOnly(['shop', 'area'])
+          && groceries.keys().hasAll(['shop', 'area'])
+          && groceries.shop in ['checkers', 'pickNPay']
+          && groceries.area in ['capeTown', 'johannesburg', 'pretoria', 'durban', 'gqeberha',
+                                'bloemfontein', 'eastLondon'];
+      }
+
+      // ==== rules/firestore/household/places.rules ====
+      // ---- the household's places: home, school, gran's (live-location ADR-0006) ----
+      //
+      // A lapsed household keeps its places and may delete them; only creating and
+      // changing one is premium (subscriptions ADR-0001).
+      match /places/{placeId} {
+        allow read: if canView(householdId, 'location');
+
+        allow create, update: if canEdit(householdId, 'location')
+          && hasPremium(householdId)
+          && isHouseholdPlace(request.resource.data);
+
+        allow delete: if canEdit(householdId, 'location');
+
+        function isHouseholdPlace(data) {
+          return data.keys().hasOnly(['name', 'centre', 'radiusMetres', 'icon', 'alerts', 'updatedAt'])
+            && data.name is string
+            && data.name.size() >= 1 && data.name.size() <= 40
+            && data.centre is latlng
+            && data.radiusMetres is int
+            && data.radiusMetres >= 75 && data.radiusMetres <= 500
+            && data.icon in ['home', 'school', 'work', 'sport', 'shop', 'family', 'other']
+            && data.alerts is map
+            && data.alerts.keys().hasOnly(['arrive', 'leave'])
+            && data.alerts.arrive is bool
+            && data.alerts.leave is bool
+            && isServerTime('updatedAt');
+        }
       }
 
       // ==== rules/firestore/household/referrals.rules ====

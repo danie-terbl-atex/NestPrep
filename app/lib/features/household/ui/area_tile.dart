@@ -30,12 +30,15 @@ class AreaTile extends StatelessWidget {
     HouseholdArea.medical => LucideIcons.briefcaseMedical,
     HouseholdArea.homeCare => LucideIcons.sprayCan,
     HouseholdArea.nannyHub => LucideIcons.baby,
+    HouseholdArea.location => LucideIcons.mapPin,
   };
 
   NestTileTint get _tint => switch (area) {
     HouseholdArea.calendar || HouseholdArea.todos => NestTileTint.accent,
     HouseholdArea.groceries || HouseholdArea.meals => NestTileTint.basil,
-    HouseholdArea.documents || HouseholdArea.homeCare => NestTileTint.lilac,
+    HouseholdArea.documents ||
+    HouseholdArea.homeCare ||
+    HouseholdArea.location => NestTileTint.lilac,
     HouseholdArea.lunch || HouseholdArea.familyProfiles => NestTileTint.butter,
     HouseholdArea.medical || HouseholdArea.nannyHub => NestTileTint.guava,
   };

@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["capeMalay", "traditional", "festive"],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 3, "unit": "tbsp", "note": null, "group": null },
     { "name": "Lamb knuckles or neck", "quantity": 1.5, "unit": "kg", "note": "bone-in, cut into chunks", "group": null },
@@ -40,5 +40,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Tastes even better the next day; cool, refrigerate for up to 3 days and reheat gently with a splash of water.",
+  "kcalPerServing": 470,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

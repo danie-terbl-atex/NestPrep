@@ -1,0 +1,44 @@
+{
+  "id": "homemade-popcorn",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Popcorn kernels",
+      "amount": "½ cup = 125 ml, ~100 g kernels",
+      "grams": 100,
+      "kcal": 387,
+      "proteinG": 12.9,
+      "fatG": 4.5,
+      "netCarbsG": 63.3,
+      "reference": "Snacks, popcorn, air-popped (same per gram as the kernels) — USDA FDC 167959: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fine salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 626,
+  "kcalPerServing": 100,
+  "perServing": {
+    "proteinG": 2.1,
+    "fatG": 5.2,
+    "netCarbsG": 10.5
+  },
+  "notes": "Assumptions: ½ cup (125 ml) of kernels ~100 g, valued as air-popped popcorn (the same energy per gram as the kernels); all the oil is taken up. Sanity check: USDA oil-popped white popcorn (FDC 170247) is 500 kcal/100 g; ours is 493 kcal/100 g of finished popcorn."
+}

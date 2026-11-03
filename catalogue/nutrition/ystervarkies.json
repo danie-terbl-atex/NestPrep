@@ -1,0 +1,134 @@
+{
+  "id": "ystervarkies",
+  "servings": 16,
+  "lines": [
+    {
+      "ingredient": "Eggs",
+      "amount": "4 SA large × 55 g",
+      "grams": 220,
+      "kcal": 315,
+      "proteinG": 27.6,
+      "fatG": 20.9,
+      "netCarbsG": 1.6,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 774,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 200.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vanilla essence",
+      "amount": "1 tsp",
+      "grams": 4,
+      "kcal": 12,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Vanilla extract — USDA FDC 173471: 288 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 716,
+      "proteinG": 22.6,
+      "fatG": 3.8,
+      "netCarbsG": 142.0,
+      "reference": "Woolworths Cake Wheat Flour label via fatsecret.co.za: 358 kcal, P 11.3, F 1.9, available carbohydrate 71 g / 100 g: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1½ tsp × 4.6 g",
+      "grams": 7,
+      "kcal": 4,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.9,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "100 g (greasing not counted)",
+      "grams": 100,
+      "kcal": 717,
+      "proteinG": 0.8,
+      "fatG": 81.1,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Icing sugar",
+      "amount": "300 g",
+      "grams": 300,
+      "kcal": 1167,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 299.3,
+      "reference": "Sugars, powdered — USDA FDC 169656: 389 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cocoa powder",
+      "amount": "40 g",
+      "grams": 40,
+      "kcal": 91,
+      "proteinG": 7.8,
+      "fatG": 5.5,
+      "netCarbsG": 8.4,
+      "reference": "Cocoa, dry powder, unsweetened — USDA FDC 169593: 228 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "½ cup = 125 ml × 1.03 g/ml",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Desiccated coconut",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 1320,
+      "proteinG": 13.8,
+      "fatG": 129.1,
+      "netCarbsG": 14.7,
+      "reference": "Nuts, coconut meat, dried (desiccated), not sweetened — USDA FDC 170170: 660 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 5396,
+  "kcalPerServing": 340,
+  "perServing": {
+    "proteinG": 4.8,
+    "fatG": 16.7,
+    "netCarbsG": 42.2
+  },
+  "notes": "Assumptions: everything on the list is counted, including any icing and coconut left over after dipping and the trimmed sponge edges (both could lower the true figure by ~10 %); greasing butter not counted. 16 squares from a 23 cm tin. Sanity check: lamington recipes with 16 squares list 353 kcal (Where Is My Spoon), 360 kcal (Emma Duckworth Bakes) and 404 kcal (International Cuisine) a piece; ours (340) matches."
+}

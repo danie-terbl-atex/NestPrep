@@ -140,6 +140,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "The sauce keeps 3 days in the fridge or 3 months frozen; cook the spaghetti fresh.",
+  "kcalPerServing": 760,
   "photo": {
     "credit": null,
     "licence": null,

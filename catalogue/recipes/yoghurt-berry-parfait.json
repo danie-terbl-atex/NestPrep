@@ -1,0 +1,94 @@
+{
+  "id": "yoghurt-berry-parfait",
+  "name": "Yoghurt, berry and oat parfait",
+  "summary": "Glasses layered with plain yoghurt, berries, banana and crunchy oven-toasted oats and seeds, sweetened only by the fruit.",
+  "about": "Parfait is French for 'perfect' and first meant a frozen dessert; the layered glass of yoghurt, fruit and crunchy oats is the American breakfast version. Toasting plain oats at home leaves out the sugar that most bought granola carries.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Rolled oats",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the toasted oats"
+    },
+    {
+      "name": "Sunflower seeds",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the toasted oats"
+    },
+    {
+      "name": "Pumpkin seeds",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the toasted oats"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the toasted oats"
+    },
+    {
+      "name": "Mixed berries",
+      "quantity": 400,
+      "unit": "g",
+      "note": "fresh, or frozen and thawed",
+      "group": "For the layers"
+    },
+    {
+      "name": "Low-fat plain yoghurt",
+      "quantity": 2.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the layers"
+    },
+    {
+      "name": "Bananas",
+      "quantity": 2,
+      "unit": null,
+      "note": "ripe",
+      "group": "For the layers"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Mix the oats, sunflower seeds, pumpkin seeds and cinnamon on a baking tray and spread them out thinly.",
+    "Toast for 8–10 minutes, stirring halfway, until the oats are golden and smell nutty. Leave to cool on the tray for 5 minutes; they crisp up as they cool.",
+    "Crush half the berries with a fork to a rough purée and swirl it through the yoghurt, leaving pink streaks. Slice the bananas.",
+    "Layer into 4 glasses: a spoonful of yoghurt, a sprinkle of toasted oats, then berries and banana. Repeat, finishing with the whole berries and a last scatter of oats, and serve straight away while the oats are crunchy."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 10,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Toast a double batch of oats; it keeps 2 weeks in an airtight jar. Thaw frozen berries in the fridge overnight.",
+  "kcalPerServing": 330,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

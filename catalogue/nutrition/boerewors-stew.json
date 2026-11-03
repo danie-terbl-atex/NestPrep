@@ -1,0 +1,174 @@
+{
+  "id": "boerewors-stew",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Boerewors",
+      "amount": "1 kg raw",
+      "grams": 1000,
+      "kcal": 2810,
+      "proteinG": 130.0,
+      "fatG": 242.0,
+      "netCarbsG": 20.0,
+      "reference": "Boerewors, raw (FatSecret ZA generic): 1177 kJ = 281 kcal, 13.0 g protein, 24.2 g fat, 2.0 g carbohydrate / 100 g; SA store entries range 221-396 kcal"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "2 tsp",
+      "grams": 4.6,
+      "kcal": 13,
+      "proteinG": 0.6,
+      "fatG": 0.6,
+      "netCarbsG": 0.9,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried thyme",
+      "amount": "1 tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Spices, thyme, dried — USDA FDC 170938: 276 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "400 g tin",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.4,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "2 cups from 1 cube (10 g dry)",
+      "grams": 10,
+      "kcal": 17,
+      "proteinG": 1.7,
+      "fatG": 0.4,
+      "netCarbsG": 1.6,
+      "reference": "Soup, beef broth, cubed, dry (stock cube weighed dry, ~10 g a cube) — USDA FDC 171561: 170 kcal / 100 g"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "4 medium, 170 g each peeled",
+      "grams": 680,
+      "kcal": 524,
+      "proteinG": 13.9,
+      "fatG": 0.7,
+      "netCarbsG": 104.7,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "3 medium, 80 g each",
+      "grams": 240,
+      "kcal": 98,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 16.3,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.2,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "to serve, no quantity",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 3984,
+  "kcalPerServing": 660,
+  "perServing": {
+    "proteinG": 26.5,
+    "fatG": 45.6,
+    "netCarbsG": 31.8
+  },
+  "notes": "Assumptions: boerewors 281 kcal / 100 g, the fat it renders stays in the stew; potatoes 170 g peeled each; stock from 1 cube. Each plate has 167 g raw wors (~470 kcal). No published per-serving figure for wors stew was found (the web search budget ran out); component check against FatSecret ZA generic boerewors (338 kcal per 120 g) agrees with ours for the sausage, and the vegetables and potato add ~150 kcal a plate."
+}

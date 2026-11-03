@@ -4,6 +4,7 @@ import 'package:nestprep/features/add_to_checkers/ui/product_match_line.dart';
 import 'package:nestprep/features/add_to_checkers/ui/retailer_logo.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/basket_compare_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/money/money.dart';
@@ -115,6 +116,37 @@ void main() {
     );
     expect(logoOnLine(ProductRetailer.pickNPay), findsOneWidget);
     expect(logoOnLine(ProductRetailer.checkers), findsNWidgets(2));
+  });
+
+  group('Compare shops', () {
+    const entry = ValueKey('compare-shops');
+
+    testWidgets('is offered with two shops on and items to buy', (
+      tester,
+    ) async {
+      await mixedList(tester);
+      expect(find.byKey(entry), findsOneWidget);
+      expect(find.text(BasketCompareCopy.entryTitle), findsOneWidget);
+    });
+
+    testWidgets('is not offered with one shop on', (tester) async {
+      await mixedList(tester, off: {FeatureFlag.addToPnp});
+      expect(find.byKey(entry), findsNothing);
+    });
+
+    testWidgets('is not offered when everything is bought', (tester) async {
+      final h = CheckersGroceryHarness();
+      await h.pump(tester);
+      h.list.repository.emitItems([
+        groceryItem(
+          'milk',
+          id: 'm',
+          boughtAt: groceryNow.subtract(const Duration(hours: 1)),
+        ),
+      ]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(entry), findsNothing);
+    });
   });
 
   testWidgets('a mixed list fits a 360-wide phone at 200% text in the dark', (

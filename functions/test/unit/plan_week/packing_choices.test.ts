@@ -213,3 +213,28 @@ describe('the packing preferences the model reads', () => {
     expect(JSON.stringify(request.questions)).toContain('every line in `packing`');
   });
 });
+
+describe('the compartments kept the same all week (lunch-box ADR-0028)', () => {
+  const request = { householdId: 'h1', week: '2026-W44', childIds: ['leo'], ideas: [] };
+
+  it('are fruit, veg, snack and treat when the phone does not say', () => {
+    expect(buildLunchWeekInput.parse(request).sameAllWeek).toEqual([
+      'fruit',
+      'veg',
+      'snack',
+      'treat',
+    ]);
+  });
+
+  it('may be none, and come back in compartment order without repeats', () => {
+    expect(buildLunchWeekInput.parse({ ...request, sameAllWeek: [] }).sameAllWeek).toEqual([]);
+    expect(
+      buildLunchWeekInput.parse({ ...request, sameAllWeek: ['snack', 'main', 'snack'] })
+        .sameAllWeek,
+    ).toEqual(['main', 'snack']);
+  });
+
+  it('refuse a compartment that does not exist', () => {
+    expect(() => buildLunchWeekInput.parse({ ...request, sameAllWeek: ['dessert'] })).toThrow();
+  });
+});

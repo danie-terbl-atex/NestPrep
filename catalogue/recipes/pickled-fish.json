@@ -21,7 +21,7 @@
     "wheat",
     "fish"
   ],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "dairyFree"],
   "ingredients": [
     {
       "name": "Hake fillets",
@@ -158,6 +158,7 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Make it 2–3 days before you serve it; the flavour deepens. Keeps 5 days in the fridge.",
+  "kcalPerServing": 300,
   "photo": {
     "credit": null,
     "licence": null,

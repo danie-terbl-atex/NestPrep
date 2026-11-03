@@ -1,0 +1,119 @@
+{
+  "id": "garlic-prawns-baby-marrow-noodles",
+  "name": "Garlic prawns with baby marrow noodles",
+  "summary": "Prawns seared in olive oil with garlic, chilli and lemon, tossed through baby marrow noodles and cherry tomatoes and on the table in 25 minutes.",
+  "about": "Cutting baby marrow into long strands and tossing it like spaghetti puts a whole plate of vegetables into a quick supper. Prawns and baby marrow both need only minutes in the pan, so the whole dish is cooked in about ten.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "quick",
+    "healthy"
+  ],
+  "allergens": [
+    "shellfish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Raw prawns",
+      "quantity": 600,
+      "unit": "g",
+      "note": "peeled and deveined, thawed if frozen",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 5,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": null
+    },
+    {
+      "name": "Dried chilli flakes",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": "halved",
+      "group": null
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 800,
+      "unit": "g",
+      "note": "spiralised or cut into ribbons with a peeler",
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "zested and juiced",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Pat the prawns dry with paper towel and season with half the salt and all the pepper.",
+    "Heat 1 tbsp of the oil in your largest frying pan over high heat until it shimmers. Add half the prawns in one layer and sear for 1 minute a side, until pink and curled into a loose C. Lift onto a plate and repeat with another 1 tbsp of oil and the rest of the prawns.",
+    "Turn the heat to medium, add the last tablespoon of oil with the garlic and chilli flakes and stir for 1 minute, until the garlic is pale gold. Do not let it brown.",
+    "Add the tomatoes and cook for 2 minutes, until they start to soften and give up their juice.",
+    "Add the baby marrow and the rest of the salt and toss with tongs for 2 minutes, until just warmed through but still with some bite; any more and the strands release water and flop.",
+    "Return the prawns and their juices to the pan with the lemon zest, lemon juice and parsley. Toss for 30 seconds and serve straight from the pan."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 10,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "kcalPerServing": 280,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

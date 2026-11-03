@@ -14,6 +14,7 @@ import '../model/lunch_pick.dart';
 import '../model/lunch_plan.dart';
 import '../model/lunch_safety.dart';
 import '../model/lunch_slot.dart';
+import '../model/lunch_variety.dart';
 import '../model/lunch_week.dart';
 
 /// Every change the lunch screens make, one method each (lunch-box
@@ -126,8 +127,13 @@ final class LunchBoardEdits {
 
   /// Fills the empty parts of a child's week from their favourites and what
   /// they eat (lunch-box ADR-0003) — preferring what the pantry has when
-  /// planning from it ([bias], lunch-box ADR-0006).
-  Future<void> autoFill(String childId, {LunchFillBias? bias}) async {
+  /// planning from it ([bias], lunch-box ADR-0006), keeping [variety]'s
+  /// compartments the same all week (ADR-0028).
+  Future<void> autoFill(
+    String childId, {
+    LunchFillBias? bias,
+    LunchVariety variety = LunchVariety.standard,
+  }) async {
     final board = _boardOf();
     final childWeek = _childWeek(childId);
     if (_isFilling || board is! AsyncData<LunchBoard> || childWeek == null) {
@@ -141,6 +147,7 @@ final class LunchBoardEdits {
       rules: childWeek.child.foodRules,
       taste: childWeek.taste,
       bias: bias,
+      variety: variety,
     );
     _isFilling = true;
     _lastAutoFill = null;

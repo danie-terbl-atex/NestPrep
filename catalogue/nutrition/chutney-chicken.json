@@ -1,0 +1,104 @@
+{
+  "id": "chutney-chicken",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Chicken portions",
+      "amount": "1.5 kg bone-in, skin-on; ~70 % edible meat and skin",
+      "grams": 1050,
+      "kcal": 2247,
+      "proteinG": 172.2,
+      "fatG": 168.0,
+      "netCarbsG": 2.1,
+      "reference": "Chicken, broilers or fryers, leg, meat and skin, raw — USDA FDC 172378: 214 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "250 ml (~313 g at 1.25 g/ml)",
+      "grams": 313,
+      "kcal": 563,
+      "proteinG": 1.9,
+      "fatG": 0.6,
+      "netCarbsG": 134.6,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ = 180 kcal, 43 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Mayonnaise",
+      "amount": "125 ml (~119 g)",
+      "grams": 119,
+      "kcal": 594,
+      "proteinG": 0.6,
+      "fatG": 61.9,
+      "netCarbsG": 11.9,
+      "reference": "SA tangy mayonnaise label (Crosse & Blackwell, FatSecret ZA): 2088 kJ = 499 kcal, 52 g fat, 9-11 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Brown onion soup powder",
+      "amount": "50 g packet",
+      "grams": 50,
+      "kcal": 174,
+      "proteinG": 3.4,
+      "fatG": 1.1,
+      "netCarbsG": 36.5,
+      "reference": "SA brown onion soup powder label (Royco, FatSecret ZA): 1452 kJ = 347 kcal, 6.8 g protein, 2.2 g fat, 73 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "1 tbsp (17 g)",
+      "grams": 17,
+      "kcal": 13,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.3,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 large, 200 g",
+      "grams": 200,
+      "kcal": 80,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 15.2,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3674,
+  "kcalPerServing": 610,
+  "perServing": {
+    "proteinG": 30.1,
+    "fatG": 38.6,
+    "netCarbsG": 34.0
+  },
+  "notes": "Assumptions that move the number: bone-in, skin-on thighs and drumsticks ~70 % edible (1.05 kg meat and skin), and all the fat stays in the sauce, which is eaten; SA tangy mayonnaise (52 % fat, 499 kcal / 100 g; US full-oil mayo at 680 would add ~35 kcal a plate); chutney at ~1.25 g/ml. Compared against: Caroline's Cooking chutney chicken at 647 kcal (4 servings), and SparkPeople mayo-and-onion-soup chicken at 330 kcal (breast, light mayo, no chutney). Ours, at 610, sits with the skin-on version."
+}

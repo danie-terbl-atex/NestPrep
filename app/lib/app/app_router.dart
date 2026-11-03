@@ -25,10 +25,6 @@ import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
 import '../features/household/ui/join_invite_screen.dart';
-import '../features/live_location/data/live_location_repository.dart';
-import '../features/live_location/data/location_reporter.dart';
-import '../features/live_location/state/live_location_controller.dart';
-import '../features/live_location/ui/live_location_screen.dart';
 import '../features/product_analytics/data/beta_numbers_repository.dart';
 import '../features/product_analytics/state/beta_numbers_controller.dart';
 import '../features/product_analytics/ui/beta_numbers_screen.dart';
@@ -37,6 +33,8 @@ import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
 import '../shared/time/household_clock.dart';
 import 'account_routes.dart';
+import 'assistants_routes.dart';
+import 'basket_compare_routes.dart';
 import 'calendar_routes.dart';
 import 'checkers_link_routes.dart';
 import 'chore_points_route.dart';
@@ -50,10 +48,12 @@ import 'household_route.dart';
 import 'household_shell.dart';
 import 'household_tab_navigation.dart';
 import 'kid_routes.dart';
+import 'live_location_routes.dart';
 import 'lunch_routes.dart';
 import 'meals_routes.dart';
 import 'nanny_hub_routes.dart';
 import 'notifications_routes.dart';
+import 'photo_frame_routes.dart';
 import 'pnp_link_routes.dart';
 import 'referral_routes.dart';
 import 'session_redirect.dart';
@@ -169,27 +169,23 @@ GoRouter createAppRouter(
         ...twoHomesRoutes(),
         // referrals: give a month, get a month (subscriptions ADR-0002).
         referralRoute(),
+        // photo frames on the wall (photo-frames ADR-0001).
+        photoFrameRoute(),
+        // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
+        assistantsRoute(session),
         // Linking a Checkers account, for Add to Checkers (the Checkers build
         // contract).
         checkersLinkRoute(),
+        // Compare shops, over the grocery list (basket-compare ADR-0001).
+        basketCompareRoute(),
         // Linking a Pick n Pay account, for its cart (add-to-pnp ADR-0003).
         pnpLinkRoute(),
         // notifications: the inbox, its settings and one notification opened
         // (notifications ADR-0001 to ADR-0003).
         ...notificationsRoutes(),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => LiveLocationController(
-              liveLocationRepository: context.read<LiveLocationRepository>(),
-              locationReporter: context.read<LocationReporter>(),
-              householdId: HouseholdRoute.idFrom(state),
-              viewerMemberId: viewerMemberIdOf(context),
-              members: context.read<HouseholdView>().members,
-            ),
-            child: const LiveLocationScreen(),
-          ),
-        ),
+        // family location: the map, a member's day and the household's
+        // places (live-location ADR-0003 to ADR-0007).
+        ...liveLocationRoutes(),
         // todos phase 2: a parent's stars and rewards (todos ADR-0003).
         chorePointsRoute(),
         // The week, and calendar sync's connected calendars (calendar
@@ -211,23 +207,25 @@ GoRouter createAppRouter(
               canEdit: context.read<HouseholdView>().permissions.canEdit(
                 HouseholdArea.todos,
               ),
+              kidIds: context.read<HouseholdView>().kidMemberIds,
             ),
             child: TodoScreen(
               onSelectTab: (tab) => goToTab(context, state, tab),
             ),
           ),
         ),
-        // The Meals tab: recipes, a recipe's page and this week
-        // (design-system ADR-0015, recipes ADR-0003).
+        // Meals, under Food: recipes, a recipe's page and this week
+        // (design-system ADR-0015, ADR-0017, recipes ADR-0003).
         mealsRoutes(),
         // groceries phase 2: the list and the week's plans against it
         // (groceries ADR-0002).
         groceryRoute(),
         todayRoute(),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.lists.segment}',
-          builder: (context, state) => const NestLoadingView(),
-        ),
+        for (final group in const [HouseholdTab.lists, HouseholdTab.food])
+          GoRoute(
+            path: '${HouseholdRoute.path}/${group.segment}',
+            builder: (context, state) => const NestLoadingView(),
+          ),
         // More: the people and every place beyond the bar (design-system
         // ADR-0005).
         GoRoute(

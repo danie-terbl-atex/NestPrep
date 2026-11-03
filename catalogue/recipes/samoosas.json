@@ -8,7 +8,7 @@
   "placement": { "lunch": "snack" },
   "tags": ["capeMalay", "festive", "streetFood"],
   "allergens": ["wheat"],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     { "name": "Onion", "quantity": 1, "unit": null, "note": "large, very finely chopped", "group": "For the filling" },
     { "name": "Salt", "quantity": 1.5, "unit": "tsp", "note": "divided", "group": "For the filling" },
@@ -44,5 +44,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Makes about 30. Freeze folded, unfried samoosas on a tray, then bag; fry from frozen in oil that is not yet fully hot.",
+  "kcalPerServing": 250,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

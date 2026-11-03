@@ -28,6 +28,7 @@ import 'package:nestprep/shared/money/money.dart';
 import '../../../support/checkers_fakes_for_plan_week.dart';
 import '../../../support/fake_checkers.dart';
 import '../../../support/fake_live_location.dart';
+import '../../../support/fake_lunch_variety.dart';
 import '../../../support/fake_plan_week.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_fixtures.dart';
@@ -82,6 +83,7 @@ void main() {
         memberId: Fixtures.samMemberId,
       ),
       packingStore: packingStore,
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );
@@ -462,6 +464,7 @@ void main() {
         ..toggleSlot(LunchSlot.snack)
         ..toggleSlot(LunchSlot.veg)
         ..toggleSlot(LunchSlot.treat);
+      controller.variety.toggle(LunchSlot.fruit);
       drafter.failWith = const AiFailure(AiProblem.aiLimitReached);
       await controller.draftIdeas();
       expect(drafter.packed.single.preferences, {
@@ -480,6 +483,7 @@ void main() {
       builder.failWith = const UnavailableFailure();
       await controller.searchStore();
       expect(builder.packed.single.slots, {LunchSlot.fruit});
+      expect(builder.varieties.single.keepsSame(LunchSlot.fruit), isFalse);
       final week = (controller.shop.state as AsyncData<ShopWeek>).value;
       expect(week.slots, {LunchSlot.fruit});
       for (final child in week.children) {

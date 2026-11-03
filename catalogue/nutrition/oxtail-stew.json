@@ -1,0 +1,154 @@
+{
+  "id": "oxtail-stew",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Oxtail",
+      "amount": "1.5 kg bone-in; 45 % edible = 675 g",
+      "grams": 675,
+      "kcal": 1154,
+      "proteinG": 135.0,
+      "fatG": 68.2,
+      "netCarbsG": 0.0,
+      "reference": "Oxtail, raw, edible portion — UK CoFID (Public Health England) via CalorieCounter AU: 171 kcal, 20 g protein, 10.1 g fat / 100 g (oxtail is not in USDA SR Legacy) (used 171 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "3 tbsp ≈ 24 g; ~20 g clings",
+      "grams": 20,
+      "kcal": 72,
+      "proteinG": 1.6,
+      "fatG": 0.2,
+      "netCarbsG": 15.2,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt; pepper to taste is negligible)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp = 40.5 g",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium ≈ 300 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "4 cloves ≈ 20 g",
+      "grams": 20,
+      "kcal": 30,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 6.2,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "3 medium ≈ 210 g",
+      "grams": 210,
+      "kcal": 86,
+      "proteinG": 2.0,
+      "fatG": 0.5,
+      "netCarbsG": 14.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Celery sticks",
+      "amount": "2 sticks ≈ 80 g",
+      "grams": 80,
+      "kcal": 11,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 1.1,
+      "reference": "Celery, raw — USDA FDC 169988: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp ≈ 33 g",
+      "grams": 33,
+      "kcal": 27,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.9,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 tin, 400 g",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "1 l ≈ 1000 g prepared",
+      "grams": 1000,
+      "kcal": 30,
+      "proteinG": 2.1,
+      "fatG": 0.8,
+      "netCarbsG": 2.5,
+      "reference": "Soup, beef broth, cubed, prepared with water — USDA FDC 172923: 3 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "3 leaves, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, bay leaf — USDA FDC 170917 (leaves removed: 0 g eaten) — none counted"
+    },
+    {
+      "ingredient": "Dried thyme",
+      "amount": "1 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Spices, thyme, dried — USDA FDC 170938: 276 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 15,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.9,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1970,
+  "kcalPerServing": 490,
+  "perServing": {
+    "proteinG": 37.6,
+    "fatG": 28.0,
+    "netCarbsG": 19.4
+  },
+  "notes": "Assumptions that change the number: oxtail 45 % edible meat and fat by weight (bone is the rest), at the UK CoFID raw oxtail value because SR Legacy has none; skimming the fat off at the end is not deducted, though it takes off perhaps 20–40 kcal a serving; ~20 g of the dusting flour stays on; stock made from a cube at 3 kcal / 100 g. Sanity check: Sainsbury's Magazine oxtail stew is 514 kcal a serving (serves 6–8), Jo Cooks is 729 kcal (serves 6) and African Bites is 762 kcal (serves 4). Ours, at 490, is within 5 % of Sainsbury's. The higher two list 74–80 g protein a serving, which only fits if the whole oxtail weight, bones included, is counted as meat. Our 38 g protein is what 170 g of raw edible oxtail gives."
+}

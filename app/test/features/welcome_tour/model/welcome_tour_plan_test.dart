@@ -49,12 +49,13 @@ void main() {
   group('a family admin in a premium household', () {
     final stops = stopsFor(Fixtures.view(), isPremium: true);
 
-    test('walks Today, Lunch, Meals, the lists, More and the account, '
-        'in that order, in about sixteen callouts', () {
+    test('walks Today, Calendar, Lunch, Meals, the lists, More and the '
+        'account, in that order, in about seventeen callouts', () {
       expect(targetsOf(stops), [
         TourTarget.tabBar,
         TourTarget.todayLunch,
         TourTarget.bell,
+        TourTarget.calendarViews,
         TourTarget.lunchChildSwitcher,
         TourTarget.lunchDay,
         TourTarget.lunchPlanner,
@@ -73,6 +74,7 @@ void main() {
 
     test('each callout happens on its own tab', () {
       expect(stopOf(stops, TourTarget.tabBar).place, TourPlace.today);
+      expect(stopOf(stops, TourTarget.calendarViews).place, TourPlace.calendar);
       expect(stopOf(stops, TourTarget.lunchTools).place, TourPlace.lunch);
       expect(stopOf(stops, TourTarget.mealsViews).place, TourPlace.meals);
       expect(stopOf(stops, TourTarget.listsSwitch).place, TourPlace.todos);
@@ -128,6 +130,7 @@ void main() {
     expect(targetsOf(stops), [
       TourTarget.tabBar,
       TourTarget.bell,
+      TourTarget.calendarViews,
       TourTarget.mealsViews,
       TourTarget.listsSwitch,
       TourTarget.groceryPlans,

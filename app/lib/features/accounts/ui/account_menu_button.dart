@@ -6,6 +6,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../account_data/ui/account_centre_screen.dart';
+import '../../feedback/ui/feedback_screen.dart';
 import '../../household/model/household_view.dart';
 import '../../household/ui/switch_household_sheet.dart';
 import '../../product_analytics/ui/beta_numbers_link.dart';
@@ -85,6 +86,19 @@ class AccountMenuButton extends StatelessWidget {
               final router = GoRouter.of(context);
               Navigator.of(sheetContext).pop();
               router.push<void>(AccountCentreScreen.path);
+            },
+          ),
+          const SizedBox(height: NestSpace.md),
+          NestButton(
+            key: const ValueKey('account-send-feedback'),
+            label: FeedbackCopy.entry,
+            variant: NestButtonVariant.outline,
+            icon: LucideIcons.messageSquareHeart,
+            onPressed: () {
+              final router = GoRouter.of(context);
+              final from = router.state.fullPath;
+              Navigator.of(sheetContext).pop();
+              router.push<void>(FeedbackScreen.location(from: from));
             },
           ),
           // The welcome tour again over the real screens, whether or not it

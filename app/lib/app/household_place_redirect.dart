@@ -1,5 +1,6 @@
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
+import 'basket_compare_route.dart';
 import 'documents_route.dart';
 import 'family_route.dart';
 import 'home_care_route.dart';
@@ -37,11 +38,13 @@ String? householdPlaceRedirect({
     return view.viewerIsAdmin ? null : firstPlaceFor(view);
   }
 
-  if (location == HouseholdRoute.pathFor(householdId, HouseholdTab.lists)) {
-    return HouseholdRoute.pathFor(
-      householdId,
-      HouseholdTab.lists.landingFor(view.permissions),
-    );
+  for (final group in const [HouseholdTab.lists, HouseholdTab.food]) {
+    if (location == HouseholdRoute.pathFor(householdId, group)) {
+      return HouseholdRoute.pathFor(
+        householdId,
+        group.landingFor(view.permissions),
+      );
+    }
   }
 
   final area = _areaAt(location, householdId);
@@ -86,6 +89,14 @@ HouseholdArea? _areaAt(String location, String householdId) {
     '${MealsRoute.recipesSegment}/',
   )) {
     return HouseholdArea.meals;
+  }
+  if (location.startsWith(BasketCompareRoute.pathFor(householdId))) {
+    return HouseholdArea.groceries;
+  }
+  // The family map (household ADR-0008): a push tap or a deep link is no way
+  // round a location grant of `none`.
+  if (location.startsWith(HouseholdRoute.wherePathFor(householdId))) {
+    return HouseholdArea.location;
   }
   return null;
 }

@@ -20,6 +20,7 @@ export const MUFFIN: Recipe = {
   difficulty: 'easy',
   prepAhead: false,
   prepNote: null,
+  kcalPerServing: 250,
   photo: null,
 };
 

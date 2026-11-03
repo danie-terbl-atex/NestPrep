@@ -18,6 +18,11 @@ _GroceryItem _$GroceryItemFromJson(Map<String, dynamic> json) => _GroceryItem(
   sourceWeek: json['sourceWeek'] as String?,
   sourceNote: json['sourceNote'] as String?,
   productMatch: const ProductMatchConverter().fromJson(json['productMatch']),
+  addedVia: $enumDecodeNullable(
+    _$AssistantViaEnumMap,
+    json['addedVia'],
+    unknownValue: AssistantVia.assistant,
+  ),
 );
 
 Map<String, dynamic> _$GroceryItemToJson(
@@ -33,4 +38,10 @@ Map<String, dynamic> _$GroceryItemToJson(
   'sourceWeek': instance.sourceWeek,
   'sourceNote': instance.sourceNote,
   'productMatch': ?const ProductMatchConverter().toJson(instance.productMatch),
+};
+
+const _$AssistantViaEnumMap = {
+  AssistantVia.claude: 'claude',
+  AssistantVia.chatgpt: 'chatgpt',
+  AssistantVia.assistant: 'assistant',
 };

@@ -1,0 +1,84 @@
+{
+  "id": "veggie-pasta-salad",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Pasta shells",
+      "amount": "250 g dry",
+      "grams": 250,
+      "kcal": 928,
+      "proteinG": 32.6,
+      "fatG": 3.8,
+      "netCarbsG": 178.7,
+      "reference": "Pasta, dry, enriched — USDA FDC 169736: 371 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "1 cup, ~157 g",
+      "grams": 157,
+      "kcal": 28,
+      "proteinG": 1.4,
+      "fatG": 0.3,
+      "netCarbsG": 4.2,
+      "reference": "Tomatoes, red, ripe, raw — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cucumber",
+      "amount": "½ of a ~350 g English cucumber",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sweetcorn",
+      "amount": "½ cup drained, ~86 g",
+      "grams": 86,
+      "kcal": 58,
+      "proteinG": 2.0,
+      "fatG": 1.0,
+      "netCarbsG": 10.6,
+      "reference": "Corn, sweet, yellow, canned, whole kernel, drained solids — USDA FDC 169214: 67 kcal / 100 g"
+    },
+    {
+      "ingredient": "Feta cheese",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 212,
+      "proteinG": 11.4,
+      "fatG": 17.2,
+      "netCarbsG": 3.1,
+      "reference": "Cheese, feta — USDA FDC 173420: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1494,
+  "kcalPerServing": 370,
+  "perServing": {
+    "proteinG": 12.2,
+    "fatG": 12.4,
+    "netCarbsG": 50.8
+  },
+  "notes": "Assumptions: half an English cucumber ~175 g; ½ cup drained sweetcorn ~86 g; pasta weighed dry. Sanity check: the session's web-search budget ran out before a published pasta salad figure could be found, so this was checked by parts only: ~62 g dry pasta (230 kcal), 20 g feta (53), 7 g olive oil (60) and ~105 g vegetables (~30) a serving."
+}

@@ -25,6 +25,7 @@
   "difficulty": "medium",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 230,
   "photo": {
     "credit": "A. Photographer",
     "licence": "CC BY-SA 4.0",

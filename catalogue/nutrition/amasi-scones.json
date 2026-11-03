@@ -1,0 +1,94 @@
+{
+  "id": "amasi-scones",
+  "servings": 12,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "420 g + ~10 g for dusting",
+      "grams": 430,
+      "kcal": 1471,
+      "proteinG": 47.3,
+      "fatG": 6.5,
+      "netCarbsG": 305.3,
+      "reference": "SA cake wheat flour label (PnP Cake Wheat Flour, FatSecret ZA): 342 kcal, 11 g protein, 1.5 g fat (label rounds to 2), 71 g available carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "4 tsp (4.6 g each)",
+      "grams": 18.4,
+      "kcal": 10,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 5.1,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp (12.6 g each)",
+      "grams": 25,
+      "kcal": 97,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 25.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Cold butter",
+      "amount": "125 g",
+      "grams": 125,
+      "kcal": 896,
+      "proteinG": 1.1,
+      "fatG": 101.4,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 SA large egg, 55 g without shell",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Amasi",
+      "amount": "1 cup (250 ml, 255 g) + ~15 g extra",
+      "grams": 270,
+      "kcal": 157,
+      "proteinG": 8.6,
+      "fatG": 8.9,
+      "netCarbsG": 12.4,
+      "reference": "SA full-cream amasi label (Douglasdale/Inkomazi, FatSecret ZA): 250 kJ, 3.3 g protein, 3.4 g fat, 4.7 g carbohydrate / 100 ml, = 58 kcal / 100 g at 1.03 g/ml"
+    },
+    {
+      "ingredient": "Butter, jam and grated cheese",
+      "amount": "to serve, no quantity — not counted",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 2710,
+  "kcalPerServing": 230,
+  "perServing": {
+    "proteinG": 5.3,
+    "fatG": 10.2,
+    "netCarbsG": 29.0
+  },
+  "notes": "One scone of 12, about 75 g of dough. Assumptions that move the number: SA cake flour label values; full-cream amasi; ~10 g of dusting flour counted; the butter, jam and cheese served with them are not counted (they have no quantity), and a scone with butter and jam is roughly another 100 kcal. Compared against: FatSecret ZA plain scone 148 kcal; a SparkPeople amasi scone 158 kcal (a recipe of 45 small scones). Taste.co.za's amasi-and-raisin scones (12 from 375 g flour and 200 g butter) work out to about 250 kcal each from the same reference values. Ours sits above the small-scone figures because these are full-size scones, with 36 g flour and 10 g butter each."
+}

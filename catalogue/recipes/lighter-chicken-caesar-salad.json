@@ -1,0 +1,180 @@
+{
+  "id": "lighter-chicken-caesar-salad",
+  "name": "Lighter chicken Caesar salad",
+  "summary": "Lemon-garlic chicken sliced over crisp cos, cherry tomatoes and cucumber with oven-baked wholewheat croutons and a tangy yoghurt and Parmesan dressing.",
+  "about": "Caesar salad was created in the 1920s by Caesar Cardini at his restaurant in Tijuana, Mexico, tossed at the table with a rich dressing of olive oil, lemon, garlic, Worcestershire sauce and Parmesan. This version keeps the sharp, savoury flavours but builds the dressing on yoghurt, and bakes the croutons with a single spoon of oil.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "quick",
+    "healthy"
+  ],
+  "allergens": [
+    "milk",
+    "wheat",
+    "soy",
+    "fish"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Wholewheat bread slices",
+      "quantity": 3,
+      "unit": null,
+      "note": "cut into 2 cm cubes",
+      "group": "For the croutons"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the croutons"
+    },
+    {
+      "name": "Plain yoghurt",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Parmesan cheese",
+      "quantity": 30,
+      "unit": "g",
+      "note": "finely grated, plus a little to serve",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Dijon mustard",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Worcestershire sauce",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Cos lettuce",
+      "quantity": 2,
+      "unit": null,
+      "note": "heads, washed and torn",
+      "group": "For the salad"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "Cucumber",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "halved lengthways and sliced",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven).",
+    "Cover the chicken with cling film and flatten it with a rolling pin to an even 1.5 cm thick. Rub with the oil, lemon juice, garlic, salt and pepper and leave it while you make the croutons.",
+    "Toss the bread cubes with the oil on a baking tray and bake for 10 to 12 minutes, shaking the tray halfway, until golden and crisp all the way through.",
+    "Meanwhile, heat a griddle or heavy frying pan over medium-high heat. Cook the chicken for 4 to 5 minutes a side, until golden and white all the way through with clear juices. Rest it on a board for 5 minutes, then slice.",
+    "Whisk the yoghurt, Parmesan, lemon juice, garlic, mustard, Worcestershire sauce and oil together with a good grind of pepper. It should coat a spoon; thin it with a teaspoon of water if it is too thick.",
+    "Toss the lettuce, tomatoes and cucumber with half the dressing in a large bowl, top with the chicken and croutons, and drizzle over the rest of the dressing with a little extra Parmesan. Serve straight away so the croutons stay crisp."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Bake the croutons and make the dressing a day ahead; keep the croutons in an airtight tin and the dressing in the fridge.",
+  "kcalPerServing": 410,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

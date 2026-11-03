@@ -1,0 +1,144 @@
+      <div class="wrap wrap--prose">
+        <h1>Connect an assistant</h1>
+
+        <noscript>
+          <div class="notice notice--info">
+            <p>Connecting an assistant needs JavaScript. Switch it on and open the link again.</p>
+          </div>
+        </noscript>
+
+        <section id="connect-asking" hidden>
+          <p class="lead"><strong id="connect-client"></strong> wants to use nestprep as you.</p>
+          <p class="doc-meta">From <span id="connect-host"></span>. Only connect assistants you trust.</p>
+        </section>
+
+        <div id="connect-status" role="status" aria-live="polite" tabindex="-1">
+          <p data-state="loading">Getting things ready…</p>
+          <div class="notice notice--error" data-state="requestNotFound" hidden>
+            <p>This link has expired. Go back to your assistant and connect nestprep again.</p>
+          </div>
+          <div class="notice notice--error" data-state="switchedOff" hidden>
+            <p>Assistants are switched off in nestprep just now. Try again later.</p>
+          </div>
+          <div class="notice notice--error" data-state="notSetUp" hidden>
+            <p>Connecting assistants isn’t set up on nestprep yet.</p>
+          </div>
+          <div class="notice notice--error" data-state="signInRequired" hidden>
+            <p>That sign-in didn’t work. Try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="staleSignIn" hidden>
+            <p>For your safety, sign in once more to finish connecting.</p>
+          </div>
+          <div class="notice notice--error" data-state="kidAccount" hidden>
+            <p>A kid’s sign-in can’t connect an assistant. Ask a parent to do it.</p>
+          </div>
+          <div class="notice notice--error" data-state="noHouseholds" hidden>
+            <p>
+              You’re not an admin or parent in a household yet. Assistants can only be connected by
+              family for now.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="familyOnly" hidden>
+            <p>Only admins and parents can connect an assistant for now.</p>
+          </div>
+          <div class="notice notice--error" data-state="notAMember" hidden>
+            <p>You’re not in that household any more. Choose another one.</p>
+          </div>
+          <div class="notice notice--error" data-state="householdNotFound" hidden>
+            <p>That household is no longer on nestprep. Choose another one.</p>
+          </div>
+          <div class="notice notice--error" data-state="householdSwitchedOff" hidden>
+            <p>
+              This household has switched assistants off. An admin or parent can switch them back
+              on in the app, under <strong>More</strong> → <strong>Connected assistants</strong>.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="noProfile" hidden>
+            <p>Open the nestprep app and claim your profile in this household first, then try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="noScopes" hidden>
+            <p>Choose at least one thing it may do, or tap <strong>Not now</strong>.</p>
+          </div>
+          <div class="notice notice--error" data-state="tooMany" hidden>
+            <p>There have been a lot of attempts from here just now. Wait a few minutes and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="unavailable" hidden>
+            <p>Something went wrong on our side. Try again in a few minutes.</p>
+          </div>
+          <div class="notice notice--error" data-state="offline" hidden>
+            <p>You seem to be offline. Connect to the internet and try again.</p>
+          </div>
+          <div class="notice notice--success" data-state="sending" hidden>
+            <p>Taking you back to your assistant…</p>
+          </div>
+        </div>
+
+        <section id="connect-sign-in" class="panel" aria-labelledby="sign-in-title" hidden>
+          <h2 id="sign-in-title">Sign in to nestprep</h2>
+          <p>Sign in with the account you use in the app. You’ll sign in fresh every time you connect.</p>
+          <button class="button button--accent" id="connect-google" type="button">Continue with Google</button>
+          <p class="connect-or">or with your email</p>
+          <form id="connect-password" novalidate>
+            <div class="field">
+              <label for="connect-email">Email</label>
+              <input id="connect-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="connect-secret">Password</label>
+              <input
+                id="connect-secret"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <p class="invite-actions">
+              <button class="button button--quiet" type="submit">Sign in</button>
+              <button class="button button--quiet" type="button" data-deny>Not now</button>
+            </p>
+          </form>
+        </section>
+
+        <form id="connect-choose" class="panel" aria-labelledby="choose-title" novalidate hidden>
+          <h2 id="choose-title">What it may do</h2>
+          <div class="field">
+            <label for="connect-household">Which household</label>
+            <select id="connect-household" name="household" required></select>
+          </div>
+          <fieldset class="connect-scopes">
+            <legend>It may</legend>
+            <div class="check" data-scope="household:read" hidden>
+              <input id="scope-household-read" type="checkbox" value="household:read" checked />
+              <label for="scope-household-read">See your household’s name, time zone and everyone’s first name</label>
+            </div>
+            <div class="check" data-scope="calendar:read" hidden>
+              <input id="scope-calendar-read" type="checkbox" value="calendar:read" checked />
+              <label for="scope-calendar-read">See the family calendar</label>
+            </div>
+            <div class="check" data-scope="calendar:write" hidden>
+              <input id="scope-calendar-write" type="checkbox" value="calendar:write" checked />
+              <label for="scope-calendar-write">Add, change and remove events on the calendar</label>
+            </div>
+            <div class="check" data-scope="lists:read" hidden>
+              <input id="scope-lists-read" type="checkbox" value="lists:read" checked />
+              <label for="scope-lists-read">See the grocery list</label>
+            </div>
+            <div class="check" data-scope="lists:write" hidden>
+              <input id="scope-lists-write" type="checkbox" value="lists:write" checked />
+              <label for="scope-lists-write">Add, tick off and remove grocery items</label>
+            </div>
+          </fieldset>
+          <p class="doc-meta">
+            It can only ever do what you can do in nestprep, and never sees medical details, documents
+            or anything about home care, nannies or co-parenting. You can disconnect it any time in the
+            app, under <strong>More</strong> → <strong>Connected assistants</strong>. Read how we handle
+            your information in our <a href="/privacy">Privacy Policy</a>.
+          </p>
+          <p id="connect-only-yours">Only continue if you just chose Connect in your own Claude or ChatGPT.</p>
+          <p class="invite-actions">
+            <button class="button button--accent" type="submit">Allow</button>
+            <button class="button button--quiet" type="button" data-deny>Not now</button>
+          </p>
+        </form>
+      </div>

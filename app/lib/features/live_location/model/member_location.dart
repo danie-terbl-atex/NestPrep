@@ -8,14 +8,16 @@ import 'coordinates_converter.dart';
 part 'member_location.freezed.dart';
 part 'member_location.g.dart';
 
-/// Where one member said they were, at
-/// `households/{id}/memberLocations/{memberId}` (live-location ADR-0001).
-///
-/// **The document id is the member id**, which is the whole authorisation
-/// story: the rule is `isOwnMember` on the path, so nobody can write anybody
-/// else's position and a profile nobody has claimed has no writer at all. It is
-/// one document overwritten in place, never a trail — the household can see
-/// where somebody is, never where they have been.
+/// How a member is sharing: a window they chose, or always (premium,
+/// live-location ADR-0003). A document with no mode is a window.
+enum ShareMode { window, continuous }
+
+/// What the phone last said about how its owner is moving.
+enum DeviceMotion { still, onFoot, cycling, driving, unknown }
+
+/// Where one member last was, at `households/{id}/memberLocations/{memberId}`
+/// (live-location ADR-0004). The document id is the member id, so only that
+/// member's own device can write it. Their trail lives in `locationTrails`.
 @freezed
 abstract class MemberLocation with _$MemberLocation {
   const factory MemberLocation({
@@ -24,10 +26,17 @@ abstract class MemberLocation with _$MemberLocation {
     required int accuracyMetres,
     @ServerTimestampConverter() DateTime? reportedAt,
 
-    /// When this share ends. The member chose it; the rules refuse a window
-    /// longer than [LiveLocationRepository.longestShare] and refuse any write
-    /// once it has passed, which is what actually stops a share.
+    /// When this share ends: the member's window, or the lease an always-on
+    /// phone renews on every write. The rules refuse any write once it has
+    /// passed, which is what actually stops a share.
     @InstantConverter() required DateTime sharingUntil,
+    @Default(ShareMode.window)
+    @JsonKey(unknownEnumValue: ShareMode.window)
+    ShareMode mode,
+    @JsonKey(includeIfNull: false) int? batteryPercent,
+    @JsonKey(includeIfNull: false) bool? charging,
+    @JsonKey(includeIfNull: false, unknownEnumValue: DeviceMotion.unknown)
+    DeviceMotion? motion,
   }) = _MemberLocation;
 
   const MemberLocation._();

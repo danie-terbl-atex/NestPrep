@@ -13,7 +13,7 @@ class LunchCardDayLabel extends StatelessWidget {
   final CalendarDate date;
 
   /// Wide enough for the widest short name, "Wed", in the title face.
-  static const width = NestSize.controlSmall;
+  static const width = NestSize.controlMedium;
 
   @override
   Widget build(BuildContext context) {

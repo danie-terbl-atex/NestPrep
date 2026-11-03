@@ -105,8 +105,8 @@ final class ShopWeek {
   /// The ideas with what the shop had for them, to swap from.
   final List<IdeaSearch> searches;
 
-  /// Product id → boxes one pack does, as the model reckoned or the parent
-  /// corrected.
+  /// Product id → boxes one pack does for every product kept, as the model
+  /// reckoned or `LunchPackBoxes` estimated.
   final Map<String, int> boxesPerPack;
 
   /// The household's weekly lunch budget, when one is set.
@@ -265,6 +265,52 @@ final class ShopWeek {
           child,
     ],
   );
+
+  /// [pick] in [slot] on every day the plan holds it for [childId] — and
+  /// for every other child whose [slot] held the same product on [day] and
+  /// who may have [pick] — so a week is swapped in one go (lunch-box
+  /// ADR-0028 §6). Null empties those days.
+  ShopWeek withPickEveryDay(
+    String childId,
+    int day,
+    LunchSlot slot,
+    ShopPick? pick,
+  ) {
+    final was = children
+        .where((child) => child.childId == childId)
+        .firstOrNull
+        ?.addedAt(day, slot);
+    bool shares(ShopChildWeek child) =>
+        child.childId == childId ||
+        (was != null &&
+            child.addedAt(day, slot)?.productId == was.productId &&
+            (pick == null || _mayHave(child.childId, pick)));
+    return _copy(
+      children: [
+        for (final child in children)
+          if (shares(child))
+            ShopChildWeek(
+              child: child.child,
+              existing: child.existing,
+              added: {
+                for (final entry in child.added.entries)
+                  if (!entry.key.endsWith('_${slot.name}'))
+                    entry.key: entry.value,
+                for (var each = 1; each <= LunchWeek.schoolDayCount; each++)
+                  if (child.addedAt(each, slot) != null ||
+                      (child.childId == childId && each == day))
+                    LunchPlan.slotKey(each, slot): ?pick,
+              },
+            )
+          else
+            child,
+      ],
+    );
+  }
+
+  bool _mayHave(String childId, ShopPick pick) => dishOf(pick) == null
+      ? productOf(pick)?.childIds.contains(childId) ?? false
+      : searchFor(pick.ideaId)?.dishChildIds.contains(childId) ?? false;
 
   ShopWeek _copy({List<ShopChildWeek>? children}) => ShopWeek(
     week: week,

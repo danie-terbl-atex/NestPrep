@@ -1,0 +1,204 @@
+{
+  "id": "hoenderpastei",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Chicken pieces",
+      "amount": "1.5 kg bone-in, skinless × 70 % edible = 1050 g",
+      "grams": 1050,
+      "kcal": 1250,
+      "proteinG": 224.6,
+      "fatG": 32.3,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, meat only, raw — USDA FDC 171052: 119 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "4 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 large ≈ 200 g",
+      "grams": 200,
+      "kcal": 80,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 15.3,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed, 0 kcal"
+    },
+    {
+      "ingredient": "Whole allspice",
+      "amount": "6 ≈ 0.5 g",
+      "grams": 0.5,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, allspice, ground — USDA FDC 171315: 263 kcal / 100 g"
+    },
+    {
+      "ingredient": "Whole cloves",
+      "amount": "4 ≈ 0.3 g",
+      "grams": 0.3,
+      "kcal": 1,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spices, cloves, ground — USDA FDC 171321: 274 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black peppercorns",
+      "amount": "10 ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken stock cube",
+      "amount": "1 × 10 g",
+      "grams": 10,
+      "kcal": 27,
+      "proteinG": 1.7,
+      "fatG": 1.4,
+      "netCarbsG": 1.8,
+      "reference": "Soup, chicken broth or bouillon, dry — USDA FDC 171562: 267 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Dry white wine",
+      "amount": "0.5 cup = 125 ml ≈ 124 g",
+      "grams": 124,
+      "kcal": 35,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 3.2,
+      "reference": "Wine, table, white — USDA FDC 174837: 82 kcal / 100 g; 25 % of the alcohol energy kept after simmering"
+    },
+    {
+      "ingredient": "Sago",
+      "amount": "3 tbsp ≈ 28 g dry",
+      "grams": 28,
+      "kcal": 100,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 24.6,
+      "reference": "Tapioca, pearl, dry (sago) — USDA FDC 169717: 358 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "1 tbsp ≈ 14 g",
+      "grams": 14,
+      "kcal": 100,
+      "proteinG": 0.1,
+      "fatG": 11.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground nutmeg",
+      "amount": "0.25 tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, nutmeg, ground — USDA FDC 171326: 525 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg yolk",
+      "amount": "1 × 17 g",
+      "grams": 17,
+      "kcal": 55,
+      "proteinG": 2.7,
+      "fatG": 4.5,
+      "netCarbsG": 0.6,
+      "reference": "Egg, yolk, raw, fresh — USDA FDC 172184: 322 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Hard-boiled eggs",
+      "amount": "3 large × 55 g",
+      "grams": 165,
+      "kcal": 256,
+      "proteinG": 20.8,
+      "fatG": 17.5,
+      "netCarbsG": 1.8,
+      "reference": "Egg, whole, cooked, hard-boiled — USDA FDC 173424: 155 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cooked ham",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 164,
+      "proteinG": 16.6,
+      "fatG": 8.8,
+      "netCarbsG": 2.3,
+      "reference": "Ham, sliced, regular (approximately 11% fat) — USDA FDC 173864: 164 kcal / 100 g"
+    },
+    {
+      "ingredient": "Puff pastry",
+      "amount": "1 × 400 g roll, all used",
+      "grams": 400,
+      "kcal": 1456,
+      "proteinG": 24.0,
+      "fatG": 77.2,
+      "netCarbsG": 166.4,
+      "reference": "Puff pastry, frozen, SA (Pick n Pay, 1525 kJ, FatSecret ZA; protein from USDA 172790 ratio): 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 beaten; about half brushed on ≈ 27 g",
+      "grams": 27,
+      "kcal": 39,
+      "proteinG": 3.4,
+      "fatG": 2.6,
+      "netCarbsG": 0.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3576,
+  "kcalPerServing": 600,
+  "perServing": {
+    "proteinG": 49.4,
+    "fatG": 26.0,
+    "netCarbsG": 36.5
+  },
+  "notes": "Chicken edible yield 70 % (simmered, then taken off the bone). Wine simmered: 25 % of its alcohol energy kept. The whole 400 g pastry roll is counted (trimmings used as decoration); about half of the beaten egg goes on as glaze. The optional ham is counted (~25 kcal a serving). Sanity check: delicious. chicken puff pie 776 kcal (4); SparkPeople Jamie-style chicken pie 532 kcal (6); SOS Cuisine savoury pie 650 kcal / 210 g. Ours 600 sits in the range."
+}

@@ -8,13 +8,18 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/grocery_plan_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../add_to_checkers/model/product_match_from.dart';
+import '../../add_to_checkers/model/retailer_product.dart';
 import '../../add_to_checkers/state/product_match_controller.dart';
+import '../../add_to_checkers/state/product_type_ahead_controller.dart';
 import '../../add_to_checkers/state/retailer_choice_controller.dart';
 import '../../add_to_checkers/ui/checkers_item_footer.dart';
 import '../../add_to_checkers/ui/find_at_checkers_button.dart';
-import '../../add_to_checkers/ui/retailer_choice_bar.dart';
+import '../../add_to_checkers/ui/match_as_you_type_button.dart';
+import '../../add_to_checkers/ui/product_type_ahead_card.dart';
 import '../../add_to_checkers/ui/shop_carts_bar.dart';
 import '../../add_to_checkers/ui/shops_on_list.dart';
+import '../../basket_compare/ui/compare_shops_entry.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
@@ -39,10 +44,62 @@ import 'grocery_suggestion_chips.dart';
 /// Above the list, the week's meals and lunch boxes offer what they need —
 /// and nothing lands on the list until somebody says so, or has asked for it
 /// to be kept in step.
-class GroceryListScreen extends StatelessWidget {
+///
+/// While somebody types, the chosen shop's products for it lead the list, so
+/// one tap adds the item already matched (add-to-checkers ADR-0007).
+class GroceryListScreen extends StatefulWidget {
   const GroceryListScreen({required this.onSelectTab, super.key});
 
   final ValueChanged<HouseholdTab> onSelectTab;
+
+  @override
+  State<GroceryListScreen> createState() => _GroceryListScreenState();
+}
+
+class _GroceryListScreenState extends State<GroceryListScreen> {
+  final _name = TextEditingController();
+  final _focus = FocusNode();
+  RetailerChoiceController? _choice;
+  var _isAddingPick = false;
+
+  ValueChanged<HouseholdTab> get onSelectTab => widget.onSelectTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _name.addListener(_lookUp);
+    _choice = Provider.of<RetailerChoiceController?>(context, listen: false)
+      ?..addListener(_lookUp);
+  }
+
+  @override
+  void dispose() {
+    _choice?.removeListener(_lookUp);
+    _name.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  /// The shop's products for what is typed, while matching as you type is
+  /// on and there is a shop to ask.
+  void _lookUp() {
+    final typeAhead = Provider.of<ProductTypeAheadController?>(
+      context,
+      listen: false,
+    );
+    final choice = _choice;
+    if (typeAhead == null || choice == null) return;
+    final canEdit = context.read<HouseholdView>().permissions.canEdit(
+      HouseholdArea.groceries,
+    );
+    if (!canEdit ||
+        !choice.matchesAsYouType ||
+        shopsOnList(context, listen: false).isEmpty) {
+      typeAhead.clear();
+      return;
+    }
+    typeAhead.lookUp(_name.text, shop: choice.chosen);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +124,16 @@ class GroceryListScreen extends StatelessWidget {
     // with the list rather than sit under the add field: anything fixed above
     // the list takes its height from the one part that can give it back, and
     // at 200% text that leaves no list at all.
+    final typeAhead =
+        Provider.of<ProductTypeAheadController?>(context, listen: false) ==
+                null ||
+            !canEdit
+        ? null
+        : ProductTypeAheadCard(
+            isAdding: _isAddingPick,
+            onAdd: _addPicked,
+            onJustAdd: _justAdd,
+          );
     final suggestions = switch (controller.list) {
       AsyncData(value: final view)
           when canEdit && view.suggestions.isNotEmpty =>
@@ -120,6 +187,9 @@ class GroceryListScreen extends StatelessWidget {
             ),
           if (canEdit)
             GroceryAddField(
+              controller: _name,
+              focusNode: _focus,
+              leading: checkersOn ? const MatchAsYouTypeButton() : null,
               onSubmit: (name, {quantity}) async {
                 final added = await controller.add(name, quantity: quantity);
                 if (context.mounted) _matchAfterAdding(context, added);
@@ -137,6 +207,7 @@ class GroceryListScreen extends StatelessWidget {
               // left, and scrolls under them when nothing is.
               emptyBuilder: (_) => CustomScrollView(
                 slivers: [
+                  if (typeAhead != null) SliverToBoxAdapter(child: typeAhead),
                   if (suggestions != null)
                     SliverToBoxAdapter(child: suggestions),
                   if (prompt != null) SliverToBoxAdapter(child: prompt),
@@ -152,6 +223,7 @@ class GroceryListScreen extends StatelessWidget {
               dataBuilder: (_, view) => _GroceryList(
                 householdId: controller.householdId,
                 view: view,
+                typeAhead: typeAhead,
                 suggestions: suggestions,
                 header: prompt,
                 checkersOn: checkersOn,
@@ -162,6 +234,27 @@ class GroceryListScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _addPicked(RetailerProduct product) async {
+    final controller = context.read<GroceryListController>();
+    setState(() => _isAddingPick = true);
+    final added = await controller.addMatched(
+      _name.text,
+      productMatchFrom(product, pickedBy: controller.memberId),
+    );
+    if (!mounted) return;
+    setState(() => _isAddingPick = false);
+    if (!added) return;
+    _name.clear();
+    _focus.requestFocus();
+  }
+
+  Future<void> _justAdd() async {
+    final name = _name.text;
+    _name.clear();
+    _focus.requestFocus();
+    await context.read<GroceryListController>().add(name);
   }
 
   Future<void> _addSuggestion(
@@ -199,6 +292,7 @@ class _GroceryList extends StatelessWidget {
     required this.view,
     required this.checkersOn,
     required this.canEdit,
+    this.typeAhead,
     this.suggestions,
     this.header,
   });
@@ -207,6 +301,7 @@ class _GroceryList extends StatelessWidget {
   final GroceryListView view;
   final bool checkersOn;
   final bool canEdit;
+  final Widget? typeAhead;
   final Widget? suggestions;
   final Widget? header;
 
@@ -215,21 +310,26 @@ class _GroceryList extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
       children: [
+        ?typeAhead,
         ?suggestions,
         if (header case final prompt?) ...[
           prompt,
           const SizedBox(height: NestSpace.lg),
         ],
-        // Both scroll with the list, so at 200% text they never squeeze the
-        // list out from under the add field.
-        if (checkersOn && canEdit) ...[
-          const RetailerChoiceBar(),
+        // Scrolls with the list, so at 200% text it never squeezes the list
+        // out from under the add field.
+        if (checkersOn && canEdit)
           ShopCartsBar(
             householdId: householdId,
             toBuy: view.toBuy,
             shops: shopsOnList(context),
           ),
-        ],
+        if (shopsOnList(context) case final shops
+            when shops.length > 1 && view.toBuy.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: NestSpace.lg),
+            child: CompareShopsEntry(householdId: householdId, shops: shops),
+          ),
         if (view.toBuy.isNotEmpty) ...[
           const NestSectionHeader(title: AppCopy.groceriesToBuy),
           const SizedBox(height: NestSpace.sm),

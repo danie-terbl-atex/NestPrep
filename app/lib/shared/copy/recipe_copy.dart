@@ -55,8 +55,17 @@ abstract final class RecipeCopy {
     return note == null ? line : '$line ($note)';
   }
 
-  /// A diet tag as stored ("vegetarian", "dairyFree") in sentence case.
-  static String dietTag(String tag) {
+  /// A diet tag as stored ("vegetarian", "dairyFree") in sentence case; one
+  /// this build does not know is spelled out from its name.
+  static String dietTag(String tag) => switch (tag) {
+    'glutenFree' => 'Gluten-free',
+    'dairyFree' => 'Dairy-free',
+    'banting' => 'Banting',
+    'keto' => 'Keto',
+    _ => _sentenceCase(tag),
+  };
+
+  static String _sentenceCase(String tag) {
     final words = tag
         .replaceAllMapped(RegExp('[A-Z]'), (match) => ' ${match[0]}')
         .replaceAll(RegExp('[-_]'), ' ')
@@ -90,9 +99,14 @@ abstract final class RecipeCopy {
   static String facet(RecipeFacet facet) => switch (facet) {
     RecipeFacet.braai => 'Braai',
     RecipeFacet.quick => 'Quick',
+    RecipeFacet.healthy => 'Healthy',
     RecipeFacet.budget => 'Budget',
     RecipeFacet.kidFriendly => 'Kid-friendly',
     RecipeFacet.vegetarian => 'Vegetarian',
+    RecipeFacet.banting => 'Banting',
+    RecipeFacet.keto => 'Keto',
+    RecipeFacet.glutenFree => 'Gluten-free',
+    RecipeFacet.dairyFree => 'Dairy-free',
     RecipeFacet.traditional => 'Traditional',
     RecipeFacet.baking => 'Baking',
     RecipeFacet.onePot => 'One pot',
@@ -108,6 +122,7 @@ abstract final class RecipeCopy {
   static const tonightAction = 'Cook this';
 
   static String shelf(RecipeShelfKind kind) => switch (kind) {
+    RecipeShelfKind.healthyWeeknights => 'Healthy weeknights',
     RecipeShelfKind.sundayClassics => 'Sunday classics',
     RecipeShelfKind.braaiDay => 'Braai day',
     RecipeShelfKind.quickWeeknights => 'Quick weeknights',
@@ -156,6 +171,10 @@ abstract final class RecipeCopy {
   static const totalLabel = 'Total';
   static const difficultyLabel = 'Effort';
   static const servesLabel = 'Serves';
+  static const energyLabel = 'Per serving';
+  static String kcal(int kcal) => '~$kcal kcal';
+  static String kcalSpoken(int kcal) => 'about $kcal kilocalories, estimated';
+  static const dietHeader = 'Suits';
   static const aboutHeader = 'About this dish';
   static const allergensHeader = 'Allergens';
 

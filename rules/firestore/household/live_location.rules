@@ -1,53 +1,58 @@
-// ---- live location (live-location ADR-0001, ADR-0002) ----
+// ---- live location (live-location ADR-0001, ADR-0003, ADR-0004) ----
 //
-// The document id is the member id, and that is the whole authorisation
-// story. `isOwnMember` on the path means a member writes only their own
-// position; there is no field anybody could put somebody else's id into.
-// `hasClaimed`, not `isOwnMember`: a kid device acts as its profile
-// elsewhere, but sharing where somebody is stays a thing only a person
-// with their own login does (accounts ADR-0004).
-// It also means **an unclaimed profile cannot have a location at all**:
-// its `claimedBy` is null, no uid is null, so no caller anywhere can
-// create that document.
-//
-// An admin has no write here. Starting or extending somebody else's
-// sharing is the one thing this feature must not permit, and it is
-// refused by the path rather than by a check that could be got wrong.
+// The document id is the member id, so `isOwnMember` on the path is the whole
+// authorisation story: nobody can write somebody else's position, and an
+// admin's only power is delete.
 match /memberLocations/{memberId} {
-  // Membership, and nothing about the window. A read rule comparing
-  // `request.time` to document data fails the *whole* listener the
-  // moment any one member's window closes, because Firestore evaluates a
-  // query against every document in its result and a listener's bounds
-  // are fixed when it opens. The window is enforced on write instead, and
-  // the client reads a closed one as *not sharing* (live-location
-  // ADR-0001). A carer marked shift-only reads nobody's position off shift
-  // (nanny-hub ADR-0006).
-  allow read: if isMember(householdId) && !isShiftOnlyOffShiftNow(householdId);
+  // No expiry check here: Firestore fails a whole listener when one document
+  // in it is denied, and a listener's bounds are fixed when it opens. The
+  // window is enforced on write; the client reads a closed one as not sharing.
+  allow read: if canView(householdId, 'location');
 
-  allow create, update: if hasClaimed(householdId, memberId)
+  allow create, update: if isOwnMember(householdId, memberId)
     && request.resource.data.keys().hasOnly(
-         ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil'])
+         ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil', 'mode',
+          'batteryPercent', 'charging', 'motion'])
     && request.resource.data.point is latlng
     && request.resource.data.accuracyMetres is int
     && request.resource.data.accuracyMetres >= 0
     && isServerTime('reportedAt')
-    && isBoundedShare(request.resource.data.sharingUntil);
+    && isLiveLocationDevice(request.resource.data)
+    && isLiveLocationLease(householdId, request.resource.data)
+    && isLiveLocationPaced();
 
-  // Stopping is deleting: nothing is left for the household to read
-  // (live-location ADR-0002). An admin may clear the pin a removed
-  // member's dead phone left behind — a delete only ever removes what
-  // somebody can see, never reveals it.
-  allow delete: if hasClaimed(householdId, memberId)
-    || isAdmin(householdId);
+  allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
 
-  // The window has to end, and it has to still be open. The first half is
-  // what stops a share running for ever; the second is what actually ends
-  // one, because a device whose window has passed can no longer say
-  // anything. The number is mirrored in
-  // `LiveLocationRepository.longestShare`.
-  function isBoundedShare(sharingUntil) {
-    return sharingUntil is timestamp
-      && sharingUntil > request.time
-      && sharingUntil < request.time + duration.value(4, 'h');
+  function isLiveLocationDevice(data) {
+    return (!('batteryPercent' in data)
+            || (data.batteryPercent is int
+                && data.batteryPercent >= 0 && data.batteryPercent <= 100))
+      && (!('charging' in data) || data.charging is bool)
+      && (!('motion' in data)
+          || data.motion in ['still', 'onFoot', 'cycling', 'driving', 'unknown']);
+  }
+
+  // A window share ends within four hours, mirrored in
+  // `LiveLocationRepository.longestShare`. Continuous sharing is premium and a
+  // lease the device renews on every write, so a phone that dies stops
+  // reading as anywhere within a day (live-location ADR-0003). Installed
+  // phase-1 apps write no `mode`, which is a window.
+  function isLiveLocationLease(householdId, data) {
+    let until = data.sharingUntil;
+    let mode = data.get('mode', 'window');
+    return until is timestamp
+      && until > request.time
+      && ((mode == 'window' && until < request.time + duration.value(4, 'h'))
+          || (mode == 'continuous'
+              && until < request.time + duration.value(25, 'h')
+              && hasPremium(householdId)));
+  }
+
+  // Ten seconds between writes caps a runaway client's bill. Switching
+  // between a window and continuous is a deliberate tap, so it is never held.
+  function isLiveLocationPaced() {
+    return resource == null
+      || request.resource.data.get('mode', 'window') != resource.data.get('mode', 'window')
+      || request.time > resource.data.reportedAt + duration.value(10, 's');
   }
 }

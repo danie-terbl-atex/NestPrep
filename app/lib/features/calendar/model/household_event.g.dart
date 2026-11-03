@@ -24,6 +24,11 @@ _HouseholdEvent _$HouseholdEventFromJson(Map<String, dynamic> json) =>
           const <String>[],
       createdBy: json['createdBy'] as String,
       createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
+      createdVia: $enumDecodeNullable(
+        _$AssistantViaEnumMap,
+        json['createdVia'],
+        unknownValue: AssistantVia.assistant,
+      ),
     );
 
 Map<String, dynamic> _$HouseholdEventToJson(_HouseholdEvent instance) =>
@@ -38,3 +43,9 @@ Map<String, dynamic> _$HouseholdEventToJson(_HouseholdEvent instance) =>
       'createdBy': instance.createdBy,
       'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),
     };
+
+const _$AssistantViaEnumMap = {
+  AssistantVia.claude: 'claude',
+  AssistantVia.chatgpt: 'chatgpt',
+  AssistantVia.assistant: 'assistant',
+};

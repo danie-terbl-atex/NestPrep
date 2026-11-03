@@ -1,0 +1,134 @@
+{
+  "id": "monkeygland-steak",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves ≈ 10 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato sauce",
+      "amount": "1/2 cup (125 ml) ≈ 140 g",
+      "grams": 140,
+      "kcal": 141,
+      "proteinG": 1.5,
+      "fatG": 0.1,
+      "netCarbsG": 37.9,
+      "reference": "Catsup — USDA FDC 168556 (SA tomato sauce is the same product): 101 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fruit chutney",
+      "amount": "1/2 cup (125 ml) ≈ 160 g",
+      "grams": 160,
+      "kcal": 288,
+      "proteinG": 1.3,
+      "fatG": 0.3,
+      "netCarbsG": 68.8,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ, 43 g carbohydrate / 100 g (FatSecret ZA 730 kJ) (used 180 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "3 tbsp (45 ml) ≈ 51 g",
+      "grams": 51,
+      "kcal": 39,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 9.8,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown vinegar",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237 (SA brown/white spirit vinegar): 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "1 tbsp ≈ 12 g",
+      "grams": 12,
+      "kcal": 46,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 11.8,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1/4 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Hot sauce",
+      "amount": "a few drops",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bottled peri-peri sauce, hot (Nando's, FatSecret ZA): 236 kJ, 4.7 g fat, 2.0 g carbohydrate / 100 g — none counted"
+    },
+    {
+      "ingredient": "Rump steaks",
+      "amount": "4 × 200 g raw, fat on",
+      "grams": 800,
+      "kcal": 1712,
+      "proteinG": 159.4,
+      "fatG": 114.2,
+      "netCarbsG": 0.0,
+      "reference": "Beef, top sirloin, steak, separable lean and fat, trimmed to 1/8\" fat, choice, raw — USDA FDC 168728 (SA rump): 214 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt; pepper to taste is negligible)"
+    }
+  ],
+  "totalKcal": 2543,
+  "kcalPerServing": 640,
+  "perServing": {
+    "proteinG": 41.1,
+    "fatG": 35.5,
+    "netCarbsG": 35.7
+  },
+  "notes": "Assumptions that change the number: four 200 g rump steaks with their fat cap (USDA top sirloin 1/8\" trim); all of the sauce eaten; 1/2 cup chutney ≈ 160 g, 1/2 cup tomato sauce ≈ 140 g; both tbsp of oil counted. Sanity check: Lecker.de's monkey gland steak lists ~850 kcal per person for a 225 g rump with potatoes, corn and tomatoes; our 640 kcal is steak and sauce only, so it sits where that plate minus its sides would be. The sauce alone is ~210 kcal a serving, mostly sugar from the chutney and tomato sauce."
+}

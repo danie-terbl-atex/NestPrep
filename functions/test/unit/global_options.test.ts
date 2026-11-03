@@ -45,6 +45,17 @@ const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
   // ADR-0003, ADR-0004).
   pnpCompleteLink: 60,
   pnpPushToCart: 120,
+  // A screensaver photo streams to a frame on whatever Wi-Fi it has
+  // (photo-frames ADR-0006), and so does a lunch box's picture (ADR-0009).
+  getFramePhoto: 60,
+  getFrameLunchPhoto: 60,
+  getFrameRecipePhoto: 60,
+  // A frame's long poll for a page shared from a phone holds for fifty seconds.
+  waitFrameShare: 90,
+  // A frame's product search finds the shop's store for its area, then
+  // searches there, each call with its own eight-second limit (photo-frames
+  // ADR-0012).
+  searchFrameProducts: 60,
 };
 
 /** The functions allowed more than the global limits, and exactly how much. */
@@ -70,7 +81,7 @@ function isScheduled(endpoint: Endpoint): boolean {
 }
 
 describe('every function — callable, trigger or schedule', () => {
-  it('there are ninety-two of them, so a new one cannot slip past these checks', () => {
+  it('there are one hundred and twelve of them, so a new one cannot slip past these checks', () => {
     // Guards the loops below: they would all pass vacuously on an empty export.
     // Household and documents: eleven callables (`setMemberAccess` is household
     // ADR-0003's, `previewInvite` household ADR-0005's). Product analytics: recordActivity, three Firestore triggers
@@ -104,19 +115,33 @@ describe('every function — callable, trigger or schedule', () => {
     // grocery line's matches: rankProductMatches (foundation ADR-0021). Saving
     // the dishes a parent uses as household recipes: saveLunchRecipes (recipes
     // ADR-0002). Add to Pick n Pay: five callables — link status, start and
-    // complete a link, fill the cart, unlink (add-to-pnp ADR-0003). A feature
-    // adds its count and its line.
-    expect(endpoints()).toHaveLength(92);
+    // complete a link, fill the cart, unlink (add-to-pnp ADR-0003). Photo
+    // frames: five callables — start, poll and claim a pairing, read the day
+    // (photo-frames ADR-0001), and the frame's own unlink (photo-frames
+    // ADR-0004); the month (photo-frames ADR-0005); the screensaver's album
+    // and one photo's bytes (photo-frames ADR-0006); ticking a chore or a
+    // routine step from the wall (photo-frames ADR-0007); adding an event
+    // from the wall (photo-frames ADR-0008); today's lunch-box pictures
+    // (photo-frames ADR-0009); a page shared from a phone and the frame's wait
+    // for it (C-0023 rev 9), and a shared recipe's photo (photo-frames
+    // ADR-0013); searching the family's shop and adding to the
+    // grocery list from the wall (photo-frames ADR-0012). Assistants: the authorization server and the MCP
+    // endpoint Hosting rewrites to, and the trigger that disconnects a member
+    // who leaves (assistants ADR-0001 to ADR-0003). Family location: the
+    // trigger that tells the household about an arrival (live-location
+    // ADR-0006). A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(112);
   });
 
-  it('runs in the database region, except a schedule and the site’s rewrite target', () => {
+  it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
     // Cloud Scheduler and Hosting rewrites have no africa-south1 location
     // (foundation ADR-0017).
+    const rewriteTargets = ['requestAccountDeletion', 'assistantAuth', 'assistantMcp'];
     for (const [name, endpoint] of endpoints()) {
       const region =
         'scheduleTrigger' in endpoint
           ? SCHEDULER_REGION
-          : name === 'requestAccountDeletion'
+          : rewriteTargets.includes(name)
             ? HOSTING_REGION
             : FUNCTIONS_REGION;
       expect(endpoint.region, name).toEqual([region]);

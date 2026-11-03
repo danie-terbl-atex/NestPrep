@@ -47,5 +47,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "The bean curry keeps 3 days in the fridge and freezes well; fill the bread only when serving.",
+  "kcalPerServing": 890,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

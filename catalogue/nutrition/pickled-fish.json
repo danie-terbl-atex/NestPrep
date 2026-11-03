@@ -1,0 +1,184 @@
+{
+  "id": "pickled-fish",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "Hake fillets",
+      "amount": "1.2 kg skinned fillet, raw",
+      "grams": 1200,
+      "kcal": 948,
+      "proteinG": 204.0,
+      "fatG": 13.2,
+      "netCarbsG": 0.0,
+      "reference": "Cape hake fillet, raw (Sea Harvest spec): 333 kJ, 17 g protein, 1.1 g fat / 100 g (I&J 307 kJ) (used 79 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1/2 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "1/2 cup ≈ 70 g; ~40 g clings",
+      "grams": 40,
+      "kcal": 143,
+      "proteinG": 3.3,
+      "fatG": 0.4,
+      "netCarbsG": 30.4,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "125 ml = 115 g; ~45 g absorbed",
+      "grams": 45,
+      "kcal": 398,
+      "proteinG": 0.0,
+      "fatG": 45.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown or white vinegar",
+      "amount": "375 ml ≈ 378 g",
+      "grams": 378,
+      "kcal": 68,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Vinegar, distilled — USDA FDC 172237 (SA brown/white spirit vinegar): 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "250 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Medium curry powder",
+      "amount": "2 tbsp ≈ 12 g",
+      "grams": 12,
+      "kcal": 39,
+      "proteinG": 1.7,
+      "fatG": 1.7,
+      "netCarbsG": 0.3,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "2 tsp ≈ 6 g",
+      "grams": 6,
+      "kcal": 19,
+      "proteinG": 0.6,
+      "fatG": 0.2,
+      "netCarbsG": 2.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Coriander seeds",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black peppercorns",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 8,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "5 leaves, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, bay leaf — USDA FDC 170917 (leaves removed: 0 g eaten) — none counted"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "4 large × 200 g",
+      "grams": 800,
+      "kcal": 320,
+      "proteinG": 8.8,
+      "fatG": 0.8,
+      "netCarbsG": 61.1,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1/2 cup ≈ 105 g",
+      "grams": 105,
+      "kcal": 406,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 105.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "1 tbsp ≈ 8 g",
+      "grams": 8,
+      "kcal": 30,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 7.2,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smooth apricot jam",
+      "amount": "1 tbsp ≈ 20 g",
+      "grams": 20,
+      "kcal": 48,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 12.8,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2437,
+  "kcalPerServing": 300,
+  "perServing": {
+    "proteinG": 27.4,
+    "fatG": 7.7,
+    "netCarbsG": 27.7
+  },
+  "notes": "Assumptions that change the number: ~40 g of the dusting flour stays on the fish; ~45 g of the 125 ml frying oil is absorbed (~4 % of the fish weight, shallow-fried); the whole pickling sauce with its onions, sugar and jam is counted, although some liquid is usually left in the dish (~30 kcal a serving); whole peppercorns counted, bay leaves not. Sanity check: Tantalise My Tastebuds' Cape Malay pickled fish is 356 kcal a serving (serves 6) and East After Noon's hake version on SideChef is 277 kcal (serves 8). Ours is 300."
+}

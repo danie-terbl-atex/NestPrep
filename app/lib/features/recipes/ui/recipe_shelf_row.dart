@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../model/recipe.dart';
 import '../model/recipe_shelf.dart';
 import 'recipe_card.dart';
 
@@ -15,7 +14,7 @@ class RecipeShelfRow extends StatelessWidget {
   const RecipeShelfRow({required this.shelf, required this.onOpen, super.key});
 
   final RecipeShelf shelf;
-  final ValueChanged<Recipe> onOpen;
+  final RecipeOpened onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,8 @@ class RecipeShelfRow extends StatelessWidget {
                   child: RecipeCard(
                     key: ValueKey(recipe.id),
                     recipe: recipe,
-                    onOpen: () => onOpen(recipe),
+                    place: shelf.kind.name,
+                    onOpen: onOpen,
                   ),
                 ),
               ],

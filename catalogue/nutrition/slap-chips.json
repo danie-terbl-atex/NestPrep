@@ -1,0 +1,54 @@
+{
+  "id": "slap-chips",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Large potatoes",
+      "amount": "1.2 kg peeled",
+      "grams": 1200,
+      "kcal": 924,
+      "proteinG": 24.6,
+      "fatG": 1.1,
+      "netCarbsG": 184.7,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1.5 l; ~8 % of raw chip weight (96 g) absorbed",
+      "grams": 96,
+      "kcal": 849,
+      "proteinG": 0.0,
+      "fatG": 96.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown spirit vinegar",
+      "amount": "4 tbsp = 60 g",
+      "grams": 60,
+      "kcal": 11,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237 (SA brown/white spirit vinegar): 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    }
+  ],
+  "totalKcal": 1784,
+  "kcalPerServing": 450,
+  "perServing": {
+    "proteinG": 6.2,
+    "fatG": 24.3,
+    "netCarbsG": 46.2
+  },
+  "notes": "Assumptions that change the number: oil absorbed is ~8 % of the raw chip weight (96 g of the 1.5 l): thick-cut, single-fried at 160 °C and soft, so less than crisp fries; vinegar has no carbohydrate. Sanity check: UK Public Health England takeaway chip-shop chips are 214 kcal / 100 g with 8.4 g fat, and FatSecret's generic chip-shop chips are 278 kcal / 100 g. Ours are ~190–220 kcal / 100 g depending on how much water the chips lose (~820–940 g cooked), so ~450 kcal for a quarter. Crisp thin fast-food fries (USDA FDC 170698) are 312 kcal / 100 g."
+}

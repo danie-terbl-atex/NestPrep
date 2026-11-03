@@ -1,0 +1,94 @@
+{
+  "id": "geelrys",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Long-grain white rice",
+      "amount": "400 g raw",
+      "grams": 400,
+      "kcal": 1460,
+      "proteinG": 28.5,
+      "fatG": 2.6,
+      "netCarbsG": 314.6,
+      "reference": "Rice, white, long-grain, regular, raw, enriched — USDA FDC 168877: 365 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "875 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Turmeric",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.3,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tbsp × 13 g",
+      "grams": 13,
+      "kcal": 50,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 13.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Seedless raisins",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 239,
+      "proteinG": 2.6,
+      "fatG": 0.2,
+      "netCarbsG": 59.9,
+      "reference": "Raisins, dark, seedless (Includes foods for USDA's Food Distribution Program) — USDA FDC 168165: 299 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "1 tbsp ≈ 14 g",
+      "grams": 14,
+      "kcal": 100,
+      "proteinG": 0.1,
+      "fatG": 11.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1858,
+  "kcalPerServing": 310,
+  "perServing": {
+    "proteinG": 5.3,
+    "fatG": 2.4,
+    "netCarbsG": 64.8
+  },
+  "notes": "Rice raw weight. A side dish of 6. Sanity check: Greedy Gourmet geelrys 262 kcal (6); The Cinnamon Jar 347 kcal (6); International Cuisine 254 kcal. Ours 310 sits in the range."
+}

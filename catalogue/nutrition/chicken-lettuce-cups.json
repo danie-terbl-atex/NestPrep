@@ -1,0 +1,184 @@
+{
+  "id": "chicken-lettuce-cups",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Soy sauce",
+      "amount": "3 tbsp × 16 g, reduced-salt",
+      "grams": 48,
+      "kcal": 27,
+      "proteinG": 4.3,
+      "fatG": 0.1,
+      "netCarbsG": 2.3,
+      "reference": "Soy sauce made from soy and wheat (shoyu), low sodium — USDA FDC 172473: 57 kcal / 100 g"
+    },
+    {
+      "ingredient": "Oyster sauce",
+      "amount": "2 tbsp × 18 g",
+      "grams": 36,
+      "kcal": 18,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 3.8,
+      "reference": "Sauce, oyster, ready-to-serve — USDA FDC 174529: 51 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sesame oil",
+      "amount": "1 tsp ≈ 4.5 g",
+      "grams": 4.5,
+      "kcal": 40,
+      "proteinG": 0.0,
+      "fatG": 4.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sesame, salad or cooking — USDA FDC 171016: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "1 tsp ≈ 2.7 g",
+      "grams": 2.7,
+      "kcal": 10,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.4,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "3 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Iceberg lettuce",
+      "amount": "1 large head ≈ 750 g, core and torn outer leaves off ≈ 600 g of cups",
+      "grams": 600,
+      "kcal": 84,
+      "proteinG": 5.4,
+      "fatG": 0.8,
+      "netCarbsG": 10.6,
+      "reference": "Lettuce, iceberg (includes crisphead types), raw — USDA FDC 169248: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "4 × 15 g",
+      "grams": 60,
+      "kcal": 19,
+      "proteinG": 1.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.8,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken mince",
+      "amount": "500 g raw",
+      "grams": 500,
+      "kcal": 715,
+      "proteinG": 87.2,
+      "fatG": 40.5,
+      "netCarbsG": 0.2,
+      "reference": "Chicken, ground, raw — USDA FDC 171116: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Button mushrooms",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 55,
+      "proteinG": 7.7,
+      "fatG": 0.8,
+      "netCarbsG": 5.7,
+      "reference": "Mushrooms, white, raw — USDA FDC 169251: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 80 g",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 10.8,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "2 × 90 g",
+      "grams": 180,
+      "kcal": 31,
+      "proteinG": 2.2,
+      "fatG": 0.6,
+      "netCarbsG": 3.8,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water chestnuts",
+      "amount": "1 × 225 g tin ≈ 140 g drained",
+      "grams": 140,
+      "kcal": 70,
+      "proteinG": 1.2,
+      "fatG": 0.1,
+      "netCarbsG": 13.7,
+      "reference": "Waterchestnuts, chinese, canned, solids and liquids (used for the drained solids) — USDA FDC 170067: 50 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped × 1 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lime",
+      "amount": "1 lime, wedges ≈ 30 g juice",
+      "grams": 30,
+      "kcal": 8,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 2.4,
+      "reference": "Lime juice, raw — USDA FDC 168156: 25 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1289,
+  "kcalPerServing": 320,
+  "perServing": {
+    "proteinG": 28.1,
+    "fatG": 15.4,
+    "netCarbsG": 16.0
+  },
+  "notes": "Assumptions that change the number: chicken mince at USDA ground-chicken values (8 % fat; SA chicken mince with skin can be higher); a 225 g tin of water chestnuts drains to ~140 g; the whole trimmed head of iceberg (~600 g) counted, though it adds only ~85 kcal; no rice. Published check: chicken lettuce wraps are usually listed at ~250–350 kcal a serving; 320 agrees."
+}

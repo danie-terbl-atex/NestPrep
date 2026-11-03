@@ -164,7 +164,7 @@ describe('a grant', () => {
   });
 
   it('refuses `own` where the area has no meaning of "theirs"', () => {
-    for (const area of ['calendar', 'groceries', 'meals', 'documents', 'nannyHub']) {
+    for (const area of ['calendar', 'groceries', 'meals', 'documents', 'nannyHub', 'location']) {
       const access = { ...ROLE_DEFAULTS.helper, [area]: 'own' };
       expect(() => parseInput(schema, { ...body, access }), area).toThrow(HttpsError);
     }

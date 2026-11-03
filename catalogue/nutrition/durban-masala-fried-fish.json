@@ -1,0 +1,124 @@
+{
+  "id": "durban-masala-fried-fish",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Hake fillets",
+      "amount": "800 g skinned",
+      "grams": 800,
+      "kcal": 632,
+      "proteinG": 136.0,
+      "fatG": 8.8,
+      "netCarbsG": 0.0,
+      "reference": "Cape hake fillet, frozen (Sea Harvest label): 79 kcal / 100 g"
+    },
+    {
+      "ingredient": "Durban masala",
+      "amount": "1.5 tbsp ≈ 12 g",
+      "grams": 12,
+      "kcal": 34,
+      "proteinG": 1.6,
+      "fatG": 1.7,
+      "netCarbsG": 1.8,
+      "reference": "Spices, chili powder (proxy for Durban / roasted masala) — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "0.5 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander and cumin",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.4,
+      "netCarbsG": 0.5,
+      "reference": "Ground coriander and cumin 1:1 — USDA FDC 170922 + 170923: 336 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ginger and garlic paste",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 14,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 2.6,
+      "reference": "Ginger and garlic paste, bottled (Smith & Jones label, FatSecret): 90 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "4 tbsp (54 g), half absorbed/eaten = 27 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; about half of a shallow-fry stays in the pan"
+    },
+    {
+      "ingredient": "Curry leaves",
+      "amount": "10 ≈ 1 g",
+      "grams": 1,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Curry leaves, fresh — Indian Food Composition Tables (NIN): ~108 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon wedges",
+      "amount": "4 wedges ≈ 30 g flesh",
+      "grams": 30,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemons, raw, without peel — USDA FDC 167746: 29 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 948,
+  "kcalPerServing": 240,
+  "perServing": {
+    "proteinG": 34.8,
+    "fatG": 9.6,
+    "netCarbsG": 2.4
+  },
+  "notes": "Shallow-fried in 4 tbsp oil: about half (2 tbsp) is taken up by the paste-coated fish, the rest stays in the pan. Rice and salad suggested in the steps are not counted. Sanity check: Yummy Tummy masala fish fry 256 kcal a serving (4); Sea Harvest hake 79 kcal / 100 g ×200 g = 158 plus oil and paste. Ours 240 agrees."
+}

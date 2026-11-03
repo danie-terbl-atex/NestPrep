@@ -12,15 +12,18 @@ import '../../../shared/copy/points_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../model/task_occurrence.dart';
 import '../model/todo_board.dart';
 import '../state/todo_controller.dart';
 import 'task_sheet.dart';
+import 'todo_chores_view.dart';
 import 'todo_everyone_view.dart';
 import 'todo_mine_view.dart';
 
-/// Two views over the same occurrences: what this person has to do, and what
-/// the household has to do (todos ADR-0001). Which one is showing is local
-/// state — it is a lens, not a place, so it is not in the URL (`FE-07`).
+/// Lenses over the same occurrences: what this person has to do, what the
+/// household has to do, and the children's chores (todos ADR-0001). Which one
+/// is showing is local state — it is a lens, not a place, so it is not in the
+/// URL (`FE-07`).
 class TodoScreen extends StatefulWidget {
   const TodoScreen({required this.onSelectTab, super.key});
 
@@ -30,14 +33,54 @@ class TodoScreen extends StatefulWidget {
   State<TodoScreen> createState() => _TodoScreenState();
 }
 
+enum _Lens { mine, everyone, chores }
+
 class _TodoScreenState extends State<TodoScreen> {
-  bool _showingEveryone = false;
+  _Lens _picked = _Lens.mine;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _undo;
+
+  @override
+  void dispose() {
+    _undo?.close();
+    super.dispose();
+  }
+
+  void _show(_Lens lens, TodoController controller) {
+    controller.closeRow();
+    setState(() => _picked = lens);
+  }
+
+  void _offerUndo(TaskOccurrence occurrence) {
+    final controller = context.read<TodoController>();
+    final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+    final undo = messenger.showSnackBar(
+      SnackBar(
+        content: Text(AppCopy.todosDoneToast(occurrence.task.title)),
+        duration: NestMotion.undoWindow,
+        persist: false,
+        action: SnackBarAction(
+          label: AppCopy.todosUndo,
+          onPressed: () => controller.setDone(occurrence, isDone: false),
+        ),
+      ),
+    );
+    _undo = undo;
+    undo.closed.whenComplete(() {
+      if (_undo == undo) _undo = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TodoController>();
     final view = context.read<HouseholdView>();
     final failure = controller.actionFailure;
+    final board = switch (controller.board) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    final showsChores = !controller.isOwnOnly && (board?.hasKids ?? false);
+    final lens = _picked == _Lens.chores && !showsChores ? _Lens.mine : _picked;
 
     return NestScaffold(
       title: ListsSwitch.titleFor(view.permissions, AppCopy.todosTitle),
@@ -58,14 +101,11 @@ class _TodoScreenState extends State<TodoScreen> {
         onSelect: widget.onSelectTab,
       ),
       floatingAction: controller.canEdit
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight),
-              child: NestButton(
-                label: AppCopy.todosAddTask,
-                icon: LucideIcons.plus,
-                isExpanded: false,
-                onPressed: () => _addTask(context, controller, view),
-              ),
+          ? NestButton(
+              label: AppCopy.todosAddTask,
+              icon: LucideIcons.plus,
+              isExpanded: false,
+              onPressed: () => _addTask(context, controller, view),
             )
           : null,
       body: Column(
@@ -93,18 +133,31 @@ class _TodoScreenState extends State<TodoScreen> {
                 Expanded(
                   child: NestChip(
                     label: AppCopy.todosMine,
-                    isSelected: !_showingEveryone,
-                    onTap: () => setState(() => _showingEveryone = false),
+                    isSelected: lens == _Lens.mine,
+                    onTap: () => _show(_Lens.mine, controller),
                   ),
                 ),
                 const SizedBox(width: NestSpace.sm),
                 Expanded(
                   child: NestChip(
                     label: AppCopy.todosEveryone,
-                    isSelected: _showingEveryone,
-                    onTap: () => setState(() => _showingEveryone = true),
+                    isSelected: lens == _Lens.everyone,
+                    onTap: () => _show(_Lens.everyone, controller),
                   ),
                 ),
+                if (showsChores) ...[
+                  const SizedBox(width: NestSpace.sm),
+                  Expanded(
+                    child: NestChip(
+                      label: AppCopy.todosChoresChip(board!.openChoreCount),
+                      semanticLabel: AppCopy.todosChoresChipSaid(
+                        board.openChoreCount,
+                      ),
+                      isSelected: lens == _Lens.chores,
+                      onTap: () => _show(_Lens.chores, controller),
+                    ),
+                  ),
+                ],
               ],
             ),
           const SizedBox(height: NestSpace.lg),
@@ -116,16 +169,30 @@ class _TodoScreenState extends State<TodoScreen> {
               // a household that has no tasks yet. Replacing it would take away
               // the only way in — the same mistake the grocery suggestions and
               // the meal grid each made once.
-              isEmpty: (board) => !_showingEveryone && board.mine.isEmpty,
+              isEmpty: (board) =>
+                  lens == _Lens.mine &&
+                  board.mine.isEmpty &&
+                  board.justDone.isEmpty,
               onRetry: controller.retry,
               emptyBuilder: (_) => const NestEmptyView(
                 title: AppCopy.todosMineEmptyTitle,
                 message: AppCopy.todosMineEmptyBody,
                 icon: LucideIcons.circleCheck,
               ),
-              dataBuilder: (_, board) => _showingEveryone
-                  ? TodoEveryoneView(board: board)
-                  : TodoMineView(board: board),
+              dataBuilder: (_, board) => switch (lens) {
+                _Lens.mine => TodoMineView(
+                  board: board,
+                  onCompleted: _offerUndo,
+                ),
+                _Lens.everyone => TodoEveryoneView(
+                  board: board,
+                  onCompleted: _offerUndo,
+                ),
+                _Lens.chores => TodoChoresView(
+                  board: board,
+                  onCompleted: _offerUndo,
+                ),
+              },
             ),
           ),
         ],

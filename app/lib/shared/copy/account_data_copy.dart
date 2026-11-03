@@ -30,6 +30,7 @@ abstract final class AccountDataCopy {
     'Your profile, allergies, medication and last shared location',
     'A list of the files in your vault, and who opened them',
     'The things you added — events, tasks, lists, meals and more',
+    'Feedback you sent us',
   ];
   static const exportFilesNote =
       'Vault files are listed, not copied. Open them from your vault any time.';
@@ -59,6 +60,7 @@ abstract final class AccountDataCopy {
     'Your profile details, allergies, medication and shared location',
     'Your vault and every file in it',
     'Calendars you connected',
+    'Feedback you sent us',
   ];
   static const deleteStaysTitle = 'What stays with a household that goes on';
   static const deleteStays = [

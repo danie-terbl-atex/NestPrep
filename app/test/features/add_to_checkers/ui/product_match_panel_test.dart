@@ -20,6 +20,10 @@ void main() {
     await h.pump(tester);
     h.list.repository.emitItems([groceryItem('milk')]);
     await tester.pumpAndSettle();
+    await bringIntoView(
+      tester,
+      find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
+    );
     await tester.tap(
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
     );
@@ -31,6 +35,10 @@ void main() {
     await h.pump(tester);
     h.list.repository.emitItems([groceryItem('milk')]);
     await tester.pumpAndSettle();
+    await bringIntoView(
+      tester,
+      find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
+    );
     await tester.tap(
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
     );
@@ -68,6 +76,10 @@ void main() {
     await h.pump(tester);
     h.list.repository.emitItems([groceryItem('unobtainium')]);
     await tester.pumpAndSettle();
+    await bringIntoView(
+      tester,
+      find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
+    );
     await tester.tap(
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
     );
@@ -90,6 +102,10 @@ void main() {
     await h.pump(tester);
     h.list.repository.emitItems([groceryItem('milk')]);
     await tester.pumpAndSettle();
+    await bringIntoView(
+      tester,
+      find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
+    );
     await tester.tap(
       find.byTooltip(CheckersCopy.findAt(ProductRetailer.checkers)),
     );

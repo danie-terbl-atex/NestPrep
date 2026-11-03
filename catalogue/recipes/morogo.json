@@ -8,7 +8,7 @@
   "placement": { "dinner": "side" },
   "tags": ["traditional", "vegetableForward", "quick", "budget"],
   "allergens": [],
-  "dietTags": ["vegetarian", "vegan"],
+  "dietTags": ["vegetarian", "vegan", "glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Morogo or spinach leaves", "quantity": 600, "unit": "g", "note": "washed well, stalks removed", "group": null },
     { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
@@ -33,5 +33,6 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 120,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

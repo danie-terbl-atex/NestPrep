@@ -45,6 +45,7 @@ abstract final class AccessCopy {
     HouseholdArea.medical => 'Medication',
     HouseholdArea.homeCare => 'Home care',
     HouseholdArea.nannyHub => 'Nanny hub',
+    HouseholdArea.location => 'Where we are',
   };
 
   static String areaBlurb(HouseholdArea area) => switch (area) {
@@ -60,6 +61,8 @@ abstract final class AccessCopy {
     HouseholdArea.homeCare => 'Cleaning jobs, with photos and steps.',
     HouseholdArea.nannyHub =>
       'Child cards, emergency sheet, house rules, handover.',
+    HouseholdArea.location =>
+      'The family map, where everybody has been, and arrival alerts.',
   };
 
   static String levelName(AccessLevel level) => switch (level) {

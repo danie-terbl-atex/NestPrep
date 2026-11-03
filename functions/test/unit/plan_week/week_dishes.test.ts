@@ -10,7 +10,7 @@ import {
   type WeekDecisions,
 } from '../../../src/plan_week/week_decisions';
 import { dishProductId } from '../../../src/plan_week/week_dishes';
-import { packsPlaced, weekCostOf, weekPricing } from '../../../src/plan_week/week_pricing';
+import { everyPack, weekCostOf, weekPricing } from '../../../src/plan_week/week_pricing';
 import { productOf, rulesOf, weekOf } from './fixtures';
 
 /**
@@ -297,7 +297,7 @@ describe('one pack size per product, for the total and the packs alike', () => {
     // Jev reckoned the same product differently under each idea.
     const pricing = weekPricing({ fit: {}, boxes: { 'p-1': 6, 'p-2': 1 } }, [], brief.products);
     const placed = [{ product: first }, { product: second }];
-    const [pack] = packsPlaced(placed, pricing);
+    const [pack] = everyPack([first, second], pricing);
     expect(pack?.productId).toBe('yog');
     expect(weekCostOf(placed, pricing)).toBe(
       Math.ceil(placed.length / (pack?.boxesPerPack ?? 1)) * 1000,

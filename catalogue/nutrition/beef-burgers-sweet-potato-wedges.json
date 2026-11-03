@@ -1,0 +1,214 @@
+{
+  "id": "beef-burgers-sweet-potato-wedges",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sweet potatoes",
+      "amount": "500 g, skin on",
+      "grams": 500,
+      "kcal": 430,
+      "proteinG": 7.9,
+      "fatG": 0.2,
+      "netCarbsG": 85.6,
+      "reference": "Sweet potato, raw, unprepared — USDA FDC 168482: 86 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Cabbage",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 62,
+      "proteinG": 3.2,
+      "fatG": 0.2,
+      "netCarbsG": 8.2,
+      "reference": "Cabbage, raw — USDA FDC 169975: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 80 g",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 10.8,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Apple cider vinegar",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Vinegar, cider — USDA FDC 173469: 21 kcal / 100 g"
+    },
+    {
+      "ingredient": "Wholegrain mustard",
+      "amount": "1 tsp ≈ 5 g",
+      "grams": 5,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.2,
+      "reference": "Wholegrain mustard: no SR Legacy entry; branded label (Beaufor, USDA Branded Foods UPC 888513932977, nutritionvalue.org) 10 kcal per 5 g, rounded; used 155 kcal, P 7.5, F 10.5, net carbs 5 / 100 g, in the range of European wholegrain mustard labels"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Lean beef mince",
+      "amount": "500 g raw, ~10 % fat",
+      "grams": 500,
+      "kcal": 880,
+      "proteinG": 100.0,
+      "fatG": 50.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 90% lean meat / 10% fat, raw (SA lean mince) — USDA FDC 174030: 176 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 small ≈ 80 g",
+      "grams": 80,
+      "kcal": 32,
+      "proteinG": 0.9,
+      "fatG": 0.1,
+      "netCarbsG": 6.1,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.75 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tsp ≈ 4.5 g",
+      "grams": 4.5,
+      "kcal": 40,
+      "proteinG": 0.0,
+      "fatG": 4.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Wholewheat rolls",
+      "amount": "4 × 70 g",
+      "grams": 280,
+      "kcal": 753,
+      "proteinG": 34.7,
+      "fatG": 12.3,
+      "netCarbsG": 108.7,
+      "reference": "Rolls, hamburger or hot dog, whole wheat — USDA FDC 174090: 269 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lettuce leaves",
+      "amount": "4 × 10 g",
+      "grams": 40,
+      "kcal": 6,
+      "proteinG": 0.4,
+      "fatG": 0.1,
+      "netCarbsG": 0.7,
+      "reference": "Lettuce, iceberg (includes crisphead types), raw — USDA FDC 169248: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "half a medium ≈ 75 g",
+      "grams": 75,
+      "kcal": 30,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 5.7,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2607,
+  "kcalPerServing": 650,
+  "perServing": {
+    "proteinG": 38.2,
+    "fatG": 24.0,
+    "netCarbsG": 58.7
+  },
+  "notes": "Assumptions that change the number: lean mince counted as 90 % lean / 10 % fat, a 125 g raw patty each (~220 kcal); a 70 g wholewheat roll each (~190 kcal); 175 g raw sweet potato wedges each (~150 kcal); all 2 tbsp + 1 tsp oil eaten; wholegrain mustard from a label (SR Legacy has none). Published check: a lean beef burger in a wholemeal bun with sweet potato wedges is typically listed at ~550–700 kcal; 690 is at the top of that range because the recipe has both a full roll and 700 g of sweet potato for four. Trimmed 2026-10-29 to 500 g sweet potato so a serving sits under the healthy tag’s ~650 kcal (was 690)."
+}

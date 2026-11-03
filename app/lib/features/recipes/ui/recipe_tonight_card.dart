@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../model/recipe.dart';
+import 'recipe_card.dart';
 import 'recipe_meta_line.dart';
 import 'recipe_picture.dart';
 
@@ -18,19 +19,21 @@ class RecipeTonightCard extends StatelessWidget {
   });
 
   final Recipe recipe;
-  final VoidCallback onOpen;
+  final RecipeOpened onOpen;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
+    final heroTag = RecipeCard.heroTagFor('tonight', recipe.id);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const NestEyebrow(RecipeCopy.tonightEyebrow),
         const SizedBox(height: NestSpace.sm),
         NestPhotoCard(
+          heroTag: heroTag,
           photo: RecipePicture(path: recipe.photo?.hero),
-          onTap: onOpen,
+          onTap: () => onOpen(recipe, heroTag),
           actionLabel: RecipeCopy.tonightAction,
           actionIcon: LucideIcons.arrowUpRight,
           semanticsLabel: RecipeCopy.cardLabel(

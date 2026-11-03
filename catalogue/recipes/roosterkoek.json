@@ -35,5 +35,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Make the dough in the morning and keep it covered in the fridge; let it come to room temperature for 30 minutes before shaping.",
+  "kcalPerServing": 460,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

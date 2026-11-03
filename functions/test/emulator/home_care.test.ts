@@ -1,6 +1,7 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { RUNNING_LOW } from '../../src/home_care/add_low_stock_to_groceries';
 import { translationId } from '../../src/home_care/translation_id';
 import { monthKey } from '../../src/home_care/translation_cap';
 import { expectRefusal, householdOfTwo } from './calendar_sync_fixture';
@@ -185,8 +186,8 @@ describe('a product marked low goes onto the grocery list', () => {
       addedBy: 'm-thandi',
       boughtAt: null,
       boughtBy: null,
-      source: 'homeCare',
-      sourceId: product.id,
+      sourceKey: 'jik',
+      sourceNote: RUNNING_LOW,
     });
   });
 

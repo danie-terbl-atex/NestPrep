@@ -6,6 +6,7 @@ import '../../features/plan_week/model/plan_fallback.dart';
 import '../../features/plan_week/model/treat_days.dart';
 import '../../features/plan_week/model/treat_days_shortcut.dart';
 import '../failure/app_failure.dart';
+import '../money/money.dart';
 import 'app_copy.dart' show AppCopy;
 import 'checkers_copy.dart';
 import 'family_copy.dart';
@@ -54,7 +55,8 @@ abstract final class PlanWeekCopy {
       'product against them itself, before and after.';
   static const budgetHeader = 'Weekly lunch budget';
   static const budgetBody =
-      'For every child’s lunches together — what you’d pay at the till.';
+      'One total for all the children together, not per child — what '
+      'you’d pay at the till.';
   static String budgetIs(String amount) => '$amount a week';
   static const noBudget =
       'No budget yet. The plan still says what the basket costs.';
@@ -217,6 +219,15 @@ abstract final class PlanWeekCopy {
   static const originSwapped = 'Your pick';
   static String swapTitle(String slot, String day) => '$slot on $day';
   static const leaveEmpty = 'Leave it empty';
+  static const swapEveryDay = 'Every day this week';
+  static String swapOption({
+    required String idea,
+    required Money price,
+    required int boxesPerPack,
+  }) => boxesPerPack <= 1
+      ? '$idea · ${price.display}'
+      : '$idea · ${price.display} · about $boxesPerPack lunches a pack · '
+            '${Money((price.cents / boxesPerPack).round(), currency: price.currency).display} a lunch';
   static const basketHeadline = 'The basket';
   static const basketBody =
       'Every child’s new lunches together, in whole packs — what you’d pay '

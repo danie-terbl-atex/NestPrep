@@ -39,5 +39,6 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Keeps 5 days in an airtight tin, or 2 months frozen.",
+  "kcalPerServing": 190,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

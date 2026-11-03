@@ -1,0 +1,194 @@
+{
+  "id": "bean-corn-spinach-quesadillas",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Tomatoes",
+      "amount": "3 medium × 120 g",
+      "grams": 360,
+      "kcal": 65,
+      "proteinG": 3.2,
+      "fatG": 0.7,
+      "netCarbsG": 9.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "¼ medium onion of 150 g",
+      "grams": 38,
+      "kcal": 15,
+      "proteinG": 0.4,
+      "fatG": 0.0,
+      "netCarbsG": 2.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 tsp ≈ 4.5 g",
+      "grams": 4.5,
+      "kcal": 40,
+      "proteinG": 0.0,
+      "fatG": 4.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "4 × 15 g",
+      "grams": 60,
+      "kcal": 19,
+      "proteinG": 1.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.8,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "½ tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, paprika (smoked paprika) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red kidney beans",
+      "amount": "2 × 400 g tins ≈ 240 g drained each",
+      "grams": 480,
+      "kcal": 595,
+      "proteinG": 38.3,
+      "fatG": 5.0,
+      "netCarbsG": 76.8,
+      "reference": "Beans, kidney, red, mature seeds, canned, drained solids — USDA FDC 174285: 124 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sweetcorn kernels",
+      "amount": "1 cup frozen ≈ 144 g",
+      "grams": 144,
+      "kcal": 127,
+      "proteinG": 4.3,
+      "fatG": 1.1,
+      "netCarbsG": 26.8,
+      "reference": "Corn, sweet, yellow, frozen, kernels cut off cob, unprepared — USDA FDC 168398: 88 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 23,
+      "proteinG": 2.9,
+      "fatG": 0.4,
+      "netCarbsG": 1.4,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Wholewheat tortilla wraps",
+      "amount": "6 × 60 g (25 cm)",
+      "grams": 360,
+      "kcal": 1116,
+      "proteinG": 35.1,
+      "fatG": 35.1,
+      "netCarbsG": 129.9,
+      "reference": "Tortillas, ready-to-bake or -fry, whole wheat — USDA FDC 174081: 310 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar",
+      "amount": "80 g",
+      "grams": 80,
+      "kcal": 322,
+      "proteinG": 18.3,
+      "fatG": 26.6,
+      "netCarbsG": 2.7,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lettuce",
+      "amount": "½ head of a ~540 g iceberg",
+      "grams": 270,
+      "kcal": 38,
+      "proteinG": 2.4,
+      "fatG": 0.4,
+      "netCarbsG": 4.8,
+      "reference": "Lettuce, iceberg (includes crisphead types), raw — USDA FDC 169248: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "English cucumber",
+      "amount": "½ of a ~350 g English cucumber",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2431,
+  "kcalPerServing": 610,
+  "perServing": {
+    "proteinG": 27.2,
+    "fatG": 18.8,
+    "netCarbsG": 67.5
+  },
+  "notes": "Assumptions that move the number: 6 wholewheat tortillas × 60 g (25 cm) at the USDA whole-wheat tortilla value (1116 kcal, 46 % of the total; SA wraps run 280–310 kcal / 100 g); kidney beans 240 g drained per tin; 80 g cheddar; quesadillas dry-toasted, the only oil is 1 tsp. Lettuce taken as ½ an iceberg (270 g). Cross-check: published bean quesadillas list ~450–550 kcal for 1–1½ tortillas; this is 1½ tortillas plus salsa and salad, so 610 is within ~20 %. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

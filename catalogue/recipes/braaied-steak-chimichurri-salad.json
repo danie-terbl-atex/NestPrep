@@ -1,0 +1,166 @@
+{
+  "id": "braaied-steak-chimichurri-salad",
+  "name": "Braaied steak salad with chimichurri",
+  "summary": "Rump steak seared over hot coals and sliced over a big crunchy salad, dressed with a sharp parsley, garlic and chilli chimichurri.",
+  "about": "Chimichurri is the uncooked sauce of parsley, garlic, vinegar and oil served with grilled beef in Argentina and Uruguay. Here it dresses both the steak and the salad, so a weeknight braai becomes a whole meal without pap or rolls.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "braai",
+    "healthy"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Rump steaks",
+      "quantity": 600,
+      "unit": "g",
+      "note": "2 steaks about 2.5 cm thick, fat trimmed",
+      "group": "For the steak"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the steak"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the steak"
+    },
+    {
+      "name": "Flat-leaf parsley",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "packed leaves, finely chopped",
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Red chilli",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and finely chopped",
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Red wine vinegar",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 5,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chimichurri"
+    },
+    {
+      "name": "Mixed salad leaves",
+      "quantity": 150,
+      "unit": "g",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "halved lengthways and sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and thinly sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "very thinly sliced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, sliced",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Make a fire and let it burn down to coals covered in white ash, about 40 minutes; the grid is ready when you can hold your hand 10 cm above it for only 3 to 4 seconds. Indoors, heat a ridged griddle pan over high heat for 5 minutes instead.",
+    "Take the steaks out of the fridge 30 minutes before cooking. Pat them dry, rub with the oil and season with the salt and pepper.",
+    "Stir the parsley, garlic, chilli, oregano, vinegar, oil and salt together in a bowl and leave for 15 minutes so the garlic mellows.",
+    "Spread the salad leaves on a large platter and scatter over the tomatoes, cucumber, red pepper, onion and avocado.",
+    "Braai the steaks for 4 minutes a side for medium-rare, when the centre springs back softly under a finger, or 5 minutes a side for medium. Turn them once only.",
+    "Rest the steaks on a board for 5 minutes, then slice thinly across the grain.",
+    "Lay the steak over the salad, spoon half the chimichurri over the steak and leaves, and put the rest on the table."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the chimichurri up to a day ahead and keep it covered in the fridge; bring it to room temperature before serving.",
+  "kcalPerServing": 510,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "id": "mediterranean-chickpea-salad",
+  "name": "Mediterranean chickpea salad",
+  "summary": "Chickpeas, cucumber, cherry tomatoes, red pepper, olives and feta in a lemon and oregano dressing, a crunchy lunch that keeps for days in the fridge.",
+  "about": "This salad borrows from the eastern Mediterranean, where chickpeas, olives, tomato, cucumber and feta are everyday foods. The chickpeas soak up the lemon dressing instead of going soggy, so a bowl made on Sunday lasts for weekday lunchboxes.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "vegetableForward"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "zest finely grated, then juiced",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Red wine vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.75,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the dressing"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the dressing"
+    },
+    {
+      "name": "Chickpeas",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the salad"
+    },
+    {
+      "name": "English cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "seeds scraped out, diced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "diced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Pitted kalamata olives",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "halved",
+      "group": "For the salad"
+    },
+    {
+      "name": "Flat-leaf parsley",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Feta",
+      "quantity": 100,
+      "unit": "g",
+      "note": "crumbled",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Shake the olive oil, lemon zest and juice, vinegar, oregano, garlic, salt and pepper together in a jar with a lid for 20 seconds, until the dressing looks cloudy and slightly thick.",
+    "Shake the rinsed chickpeas dry in a sieve so they take up more of the dressing. Tip them into a large bowl, pour over the dressing, stir and leave for 10 minutes while you chop the vegetables.",
+    "Add the cucumber, tomatoes, red pepper, red onion, olives and parsley and toss until everything is glossy with dressing. Taste and add a little more salt if it needs it.",
+    "Scatter the feta over the top and serve, or pack into lidded containers for the week; the flavour is even better on the second day."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 0,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 4 days in a covered container in the fridge; scraping the seeds from the cucumber keeps it crisp.",
+  "kcalPerServing": 400,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

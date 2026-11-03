@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_directory.dart';
+import 'package:nestprep/features/add_to_checkers/data/match_as_you_type_preference.dart';
 import 'package:nestprep/features/add_to_checkers/data/product_match_ranker.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogue.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
@@ -85,7 +86,8 @@ final class FakeCheckersAreaPreference implements CheckersAreaPreference {
       chosen[householdId] = area;
 }
 
-final class FakeRetailerPreference implements RetailerPreference {
+final class FakeRetailerPreference
+    implements RetailerPreference, MatchAsYouTypePreference {
   final chosen = <String, ProductRetailer>{};
 
   @override
@@ -95,6 +97,18 @@ final class FakeRetailerPreference implements RetailerPreference {
   @override
   Future<void> write(String householdId, ProductRetailer retailer) async =>
       chosen[householdId] = retailer;
+
+  final matchAsYouType = <String, bool>{};
+
+  @override
+  Future<bool?> readMatchAsYouType(String householdId) async =>
+      matchAsYouType[householdId];
+
+  @override
+  Future<void> writeMatchAsYouType(
+    String householdId, {
+    required bool isOn,
+  }) async => matchAsYouType[householdId] = isOn;
 }
 
 /// The five callables, answered by the test.
@@ -197,6 +211,7 @@ List<SingleChildWidget> fakeCheckersProviders({
   ),
   Provider<CheckersAreaPreference>.value(value: FakeCheckersAreaPreference()),
   Provider<RetailerPreference>.value(value: FakeRetailerPreference()),
+  Provider<MatchAsYouTypePreference>.value(value: FakeRetailerPreference()),
   Provider<CheckersDirectory>.value(
     value: directory ?? FakeCheckersDirectory(),
   ),

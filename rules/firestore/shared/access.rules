@@ -77,7 +77,7 @@ function isGrant(value) {
     || (value is map
         && value.keys().hasOnly(
              ['calendar', 'groceries', 'todos', 'meals', 'documents', 'lunch',
-              'familyProfiles', 'medical', 'homeCare', 'nannyHub'])
+              'familyProfiles', 'medical', 'homeCare', 'nannyHub', 'location'])
         && value.values().hasOnly(['none', 'own', 'view', 'edit']));
 }
 
@@ -90,7 +90,7 @@ function isOwnMember(householdId, memberId) {
 }
 
 // The profile this account claimed, and nothing else — for what only a
-// person with their own login may do, like sharing where they are.
+// person with their own login may do.
 function hasClaimed(householdId, memberId) {
   return isSignedIn() && memberData(householdId, memberId).claimedBy == uid();
 }

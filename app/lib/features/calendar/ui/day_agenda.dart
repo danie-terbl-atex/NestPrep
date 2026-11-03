@@ -20,6 +20,7 @@ class DayAgenda extends StatelessWidget {
     required this.day,
     required this.householdId,
     this.lead,
+    this.isScrollable = true,
     super.key,
   });
 
@@ -36,6 +37,10 @@ class DayAgenda extends StatelessWidget {
   /// screen (`FE-14`).
   final Widget? lead;
 
+  /// False when the day sits inside something that already scrolls — under
+  /// the month grid (design-system ADR-0017).
+  final bool isScrollable;
+
   @override
   Widget build(BuildContext context) {
     final entries = week.on(day);
@@ -50,36 +55,44 @@ class DayAgenda extends StatelessWidget {
             '${NestDates.relative(day, week.today).toLowerCase()}',
         message: AppCopy.calendarEmptyBody,
       );
+      if (!isScrollable) return Column(children: [?lead, empty]);
       return lead == null ? empty : ListView(children: [lead, empty]);
     }
 
+    final children = [
+      ?lead,
+      NestSectionHeader(title: NestDates.relative(day, week.today)),
+      const SizedBox(height: NestSpace.sm),
+      for (final entry in entries)
+        Padding(
+          padding: const EdgeInsets.only(bottom: NestSpace.sm),
+          child: switch (entry) {
+            EventEntry(:final occurrence) => EventRow(
+              key: ValueKey(entry.key),
+              occurrence: occurrence,
+              today: week.today,
+            ),
+            BirthdayEntry(:final birthday) => BirthdayRow(
+              key: ValueKey(entry.key),
+              occurrence: birthday,
+              householdId: householdId,
+            ),
+            SyncedEntry(:final event) => SyncedEventRow(
+              key: ValueKey(entry.key),
+              event: event,
+            ),
+          },
+        ),
+    ];
+    if (!isScrollable) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      );
+    }
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
-      children: [
-        ?lead,
-        NestSectionHeader(title: NestDates.relative(day, week.today)),
-        const SizedBox(height: NestSpace.sm),
-        for (final entry in entries)
-          Padding(
-            padding: const EdgeInsets.only(bottom: NestSpace.sm),
-            child: switch (entry) {
-              EventEntry(:final occurrence) => EventRow(
-                key: ValueKey(entry.key),
-                occurrence: occurrence,
-                today: week.today,
-              ),
-              BirthdayEntry(:final birthday) => BirthdayRow(
-                key: ValueKey(entry.key),
-                occurrence: birthday,
-                householdId: householdId,
-              ),
-              SyncedEntry(:final event) => SyncedEventRow(
-                key: ValueKey(entry.key),
-                event: event,
-              ),
-            },
-          ),
-      ],
+      children: children,
     );
   }
 }

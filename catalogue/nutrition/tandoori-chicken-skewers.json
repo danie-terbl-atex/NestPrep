@@ -1,0 +1,264 @@
+{
+  "id": "tandoori-chicken-skewers",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Skinless chicken thigh fillets",
+      "amount": "800 g raw",
+      "grams": 800,
+      "kcal": 968,
+      "proteinG": 157.3,
+      "fatG": 33.0,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, dark meat, thigh, meat only, raw — USDA FDC 173627: 121 kcal / 100 g"
+    },
+    {
+      "ingredient": "Plain yoghurt",
+      "amount": "0.75 cup = 193 g; 75 % clings after wiping = 145 g",
+      "grams": 145,
+      "kcal": 88,
+      "proteinG": 5.0,
+      "fatG": 4.7,
+      "netCarbsG": 6.8,
+      "reference": "Yogurt, plain, whole milk — USDA FDC 171284: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp = 30 g; 75 % clings",
+      "grams": 22.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 1.5,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g; 75 % clings",
+      "grams": 11.3,
+      "kcal": 17,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 3.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g; 75 % clings",
+      "grams": 4.5,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "2 tsp × 2.3 g; 75 % clings",
+      "grams": 3.5,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "2 tsp × 2.1 g; 75 % clings",
+      "grams": 3.2,
+      "kcal": 12,
+      "proteinG": 0.6,
+      "fatG": 0.7,
+      "netCarbsG": 1.1,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garam masala",
+      "amount": "2 tsp × 2 g; 75 % clings",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.9,
+      "reference": "Garam masala as coriander, cumin, cardamom, pepper, cinnamon 1:1 — USDA FDC 170922/170923/170919/170931/171320: 296 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g; 75 % clings",
+      "grams": 1.4,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1 tsp ≈ 3 g; 75 % clings",
+      "grams": 2.3,
+      "kcal": 7,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 1.0,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "0.5 tsp ≈ 1.35 g; 75 % clings",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.1,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g: 1 tbsp in the marinade at 75 %, 1 tbsp brushed on at 100 %",
+      "grams": 23.6,
+      "kcal": 209,
+      "proteinG": 0.0,
+      "fatG": 23.6,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Skewers",
+      "amount": "8 wooden skewers, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Wooden skewers — not eaten, 0 kcal"
+    },
+    {
+      "ingredient": "Cucumber",
+      "amount": "half ≈ 175 g, grated and squeezed (water lost, solids counted)",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Plain yoghurt",
+      "amount": "1 cup = 258 g",
+      "grams": 258,
+      "kcal": 157,
+      "proteinG": 9.0,
+      "fatG": 8.4,
+      "netCarbsG": 12.0,
+      "reference": "Yogurt, plain, whole milk — USDA FDC 171284: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh mint",
+      "amount": "2 tbsp chopped × 1.6 g",
+      "grams": 3.2,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Spearmint, fresh — USDA FDC 173475: 44 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "0.25 tsp ≈ 0.5 g",
+      "grams": 0.5,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "4 medium × 120 g",
+      "grams": 480,
+      "kcal": 86,
+      "proteinG": 4.2,
+      "fatG": 1.0,
+      "netCarbsG": 12.9,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cucumber",
+      "amount": "half ≈ 175 g",
+      "grams": 175,
+      "kcal": 26,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 5.5,
+      "reference": "Cucumber, with peel, raw — USDA FDC 168409: 15 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "1 small ≈ 80 g",
+      "grams": 80,
+      "kcal": 32,
+      "proteinG": 0.9,
+      "fatG": 0.1,
+      "netCarbsG": 6.1,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "3 tbsp chopped × 1 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 1670,
+  "kcalPerServing": 420,
+  "perServing": {
+    "proteinG": 45.4,
+    "fatG": 18.4,
+    "netCarbsG": 15.0
+  },
+  "notes": "Assumptions that change the number: 75 % of the marinade (yoghurt, lemon, spices and the first tbsp of oil) clings once threaded and wiped, the second tbsp brushed on is all counted; plain yoghurt counted as full-cream (61 kcal / 100 g); thighs at USDA meat-only values; the raita uses a whole cup of yoghurt, ~65 g a person. Published check: tandoori chicken skewers are usually listed at ~250–320 kcal for the chicken alone; with raita and a tomato-cucumber salad ~400–450 kcal, in line with 420."
+}

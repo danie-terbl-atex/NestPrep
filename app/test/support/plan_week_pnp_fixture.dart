@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 
 import 'fake_checkers.dart';
 import 'fake_live_location.dart';
+import 'fake_lunch_variety.dart';
 import 'fake_plan_week.dart';
 import 'fake_pnp.dart';
 import 'household_fixtures.dart';
@@ -119,6 +120,7 @@ final class PlanWeekPnpFixture {
         memberId: Fixtures.samMemberId,
       ),
       packingStore: FakePackingChoiceStore(),
+      variety: lunchVarietyChoice(Fixtures.householdId),
       householdId: Fixtures.householdId,
       week: LunchFixtures.week,
     );

@@ -4,6 +4,8 @@ import '../../../shared/money/money.dart';
 import '../../groceries/model/product_match.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/model/lunch_budget_week.dart';
+import '../../lunch_box/model/lunch_slot.dart';
+import '../../lunch_box/model/lunch_variety.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../data/lunch_week_builder.dart';
 import '../data/shop_week_groceries.dart';
@@ -75,6 +77,7 @@ final class PlanWeekShop {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
+    required LunchVariety variety,
     required LunchBudgetWeek? budgetWeek,
   }) async {
     final budget = budgetWeek?.budget?.money;
@@ -89,6 +92,7 @@ final class PlanWeekShop {
         childIds: childIds,
         searches: searches,
         packing: packing,
+        variety: variety,
       );
       next = AsyncData(
         ShopWeekAssembly.fromReply(
@@ -115,6 +119,7 @@ final class PlanWeekShop {
                 searches: searches,
                 budget: budget,
                 packing: packing,
+                variety: variety,
                 reason: reason,
                 weekSoFar: budgetWeek,
               ),
@@ -127,6 +132,11 @@ final class PlanWeekShop {
 
   void swap(String childId, String slotKey, ShopPick? pick) =>
       _edit((week) => week.withPick(childId, slotKey, pick));
+
+  /// [pick] on every day [childId]'s [slot] is planned, and for the
+  /// children sharing it (lunch-box ADR-0028 §6).
+  void swapEveryDay(String childId, int day, LunchSlot slot, ShopPick? pick) =>
+      _edit((week) => week.withPickEveryDay(childId, day, slot, pick));
 
   /// Writes the week; true when it went in.
   Future<bool> use(LunchBoard board) async {

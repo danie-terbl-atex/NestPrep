@@ -1,0 +1,174 @@
+{
+  "id": "chicken-and-vegetable-stir-fry",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Wholewheat noodles",
+      "amount": "250 g dry",
+      "grams": 250,
+      "kcal": 880,
+      "proteinG": 34.8,
+      "fatG": 7.3,
+      "netCarbsG": 160.5,
+      "reference": "Pasta, whole-wheat, dry — USDA FDC 169738: 352 kcal / 100 g (carbohydrate 73.4 g less 9.2 g fibre)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Reduced-salt soy sauce",
+      "amount": "3 tbsp × 16 g",
+      "grams": 48,
+      "kcal": 25,
+      "proteinG": 3.9,
+      "fatG": 0.3,
+      "netCarbsG": 2.0,
+      "reference": "Soy sauce made from soy and wheat (shoyu) — USDA FDC 174277: 53 kcal / 100 g (reduced-salt soy sauce differs in sodium, not energy)"
+    },
+    {
+      "ingredient": "Limes",
+      "amount": "2, juiced or squeezed at the table ≈ 30 g juice each",
+      "grams": 60,
+      "kcal": 15,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 4.8,
+      "reference": "Lime juice, raw — USDA FDC 168156: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "4 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "1 tsp ≈ 2.7 g",
+      "grams": 2.7,
+      "kcal": 10,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.4,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken breast fillets",
+      "amount": "500 g raw",
+      "grams": 500,
+      "kcal": 600,
+      "proteinG": 112.5,
+      "fatG": 13.1,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw — USDA FDC 171077: 120 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby corn",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 56,
+      "proteinG": 3.3,
+      "fatG": 0.6,
+      "netCarbsG": 4.5,
+      "reference": "Baby corn, frozen (nutritionvalue.org shared food 25850, USDA-based): 37 kcal, 2.2 g protein, 0.4 g fat, 5 g carbohydrate / 100 g; ~2 g fibre assumed, as in sweet corn"
+    },
+    {
+      "ingredient": "Sugar snap peas",
+      "amount": "150 g trimmed",
+      "grams": 150,
+      "kcal": 63,
+      "proteinG": 4.2,
+      "fatG": 0.3,
+      "netCarbsG": 7.4,
+      "reference": "Peas, edible-podded, raw — USDA FDC 170012: 42 kcal / 100 g (carbohydrate 7.55 g less 2.6 g fibre)"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Pak choi",
+      "amount": "300 g",
+      "grams": 300,
+      "kcal": 39,
+      "proteinG": 4.5,
+      "fatG": 0.6,
+      "netCarbsG": 3.5,
+      "reference": "Cabbage, chinese (pak-choi), raw — USDA FDC 170390: 13 kcal / 100 g (carbohydrate 2.18 g less 1.0 g fibre)"
+    },
+    {
+      "ingredient": "Green cabbage",
+      "amount": "2 cups shredded × 74 g",
+      "grams": 148,
+      "kcal": 37,
+      "proteinG": 1.9,
+      "fatG": 0.1,
+      "netCarbsG": 4.9,
+      "reference": "Cabbage, raw — USDA FDC 169975: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "3 × 15 g",
+      "grams": 45,
+      "kcal": 14,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 2.1,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2036,
+  "kcalPerServing": 510,
+  "perServing": {
+    "proteinG": 42.1,
+    "fatG": 12.5,
+    "netCarbsG": 50.6
+  },
+  "notes": "Noodles weighed dry (wholewheat pasta value, as SA wholewheat noodles are durum/wholewheat flour and water, no egg); chicken breast raw, skinless; all 2 tbsp oil eaten; both limes' juice counted since the wedges are squeezed over (~4 kcal a serving either way); shredded cabbage ~74 g a 250 ml cup; baby corn from a USDA-based frozen baby corn entry because SR Legacy has none (fresh sweet corn kernels at 86 kcal would add ~25 kcal a serving). Sanity check (published figures as recalled; web search was unavailable): chicken and vegetable noodle stir-fries for 4 with 200–250 g dry noodles and 400–500 g chicken list 430–520 kcal a serving (e.g. wholewheat-noodle chicken stir-fries at ~450–500 kcal; versions with honey or oyster sauce run 550+). Ours at 510 is within that range; it has more chicken than most and no sweet sauce."
+}

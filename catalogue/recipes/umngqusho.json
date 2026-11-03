@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["traditional", "budget", "onePot"],
   "allergens": ["milk"],
-  "dietTags": ["vegetarian"],
+  "dietTags": ["vegetarian", "glutenFree"],
   "ingredients": [
     { "name": "Samp", "quantity": 500, "unit": "g", "note": null, "group": null },
     { "name": "Sugar beans", "quantity": 250, "unit": "g", "note": "dried red speckled beans", "group": null },
@@ -33,5 +33,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Soak overnight. Keeps 3 days in the fridge or 3 months frozen; loosen with a little water when reheating.",
+  "kcalPerServing": 490,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

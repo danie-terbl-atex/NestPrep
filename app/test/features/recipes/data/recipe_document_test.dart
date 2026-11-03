@@ -108,6 +108,16 @@ void main() {
     );
   });
 
+  test('the estimated energy reads as a whole number, or none', () {
+    expect(valid({...fields(), 'kcalPerServing': 420.0}).kcalPerServing, 420);
+    expect(valid(fields()).kcalPerServing, isNull);
+    expect(valid({...fields(), 'kcalPerServing': 0}).kcalPerServing, isNull);
+    expect(
+      valid({...fields(), 'kcalPerServing': '420'}).kcalPerServing,
+      isNull,
+    );
+  });
+
   test('optional words fall back quietly', () {
     final recipe = valid(
       {...fields()}

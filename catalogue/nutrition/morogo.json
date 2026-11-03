@@ -1,0 +1,104 @@
+{
+  "id": "morogo",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Morogo or spinach leaves",
+      "amount": "600 g leaves, stalks off",
+      "grams": 600,
+      "kcal": 138,
+      "proteinG": 17.2,
+      "fatG": 2.3,
+      "netCarbsG": 8.6,
+      "reference": "Spinach, raw — USDA FDC 168462 (morogo / spinach leaves): 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 clove ≈ 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "2 medium ≈ 240 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chilli",
+      "amount": "1 ≈ 15 g",
+      "grams": 15,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.2,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1/4 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1/2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, pepper, black — USDA FDC 170931 — none counted"
+    }
+  ],
+  "totalKcal": 493,
+  "kcalPerServing": 120,
+  "perServing": {
+    "proteinG": 5.4,
+    "fatG": 7.5,
+    "netCarbsG": 7.3
+  },
+  "notes": "Assumptions that change the number: 600 g leaves after the stalks are off, at the USDA raw spinach value (wild morogo greens are similar); both tbsp of oil eaten; medium onion 150 g, tomatoes 120 g each. Sanity check: plain cooked spinach is 23 kcal / 100 g (USDA FDC 168463), so the greens, onion and tomato are ~250 kcal for the pot; the oil (239 kcal) is half the energy, giving ~120 kcal for a ~250 g side portion. The web search budget ran out before a published morogo figure could be found."
+}

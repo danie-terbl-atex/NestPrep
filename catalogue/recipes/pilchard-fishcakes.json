@@ -20,7 +20,7 @@
     "wheat",
     "fish"
   ],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "dairyFree"],
   "ingredients": [
     {
       "name": "Pilchards in tomato sauce",
@@ -120,6 +120,7 @@
   "difficulty": "easy",
   "prepAhead": false,
   "prepNote": null,
+  "kcalPerServing": 340,
   "photo": {
     "credit": null,
     "licence": null,

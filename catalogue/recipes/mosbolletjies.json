@@ -119,10 +119,11 @@
   "difficulty": "medium",
   "prepAhead": true,
   "prepNote": "Keep 2 days in a tin. For rusks, pull apart and dry in a 90 °C oven overnight.",
+  "kcalPerServing": 210,
   "photo": {
-    "credit": "Lucinda jolly",
-    "licence": "CC BY-SA 4.0",
-    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mosbolletjies_with_green_fig_preserve.JPG",
-    "generated": false
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
   }
 }

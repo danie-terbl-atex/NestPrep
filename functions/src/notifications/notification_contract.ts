@@ -23,6 +23,7 @@ export const NOTIFICATION_CATEGORIES = [
   'chores',
   'photos',
   'coParenting',
+  'places',
   'test',
 ] as const;
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
@@ -34,6 +35,7 @@ export const SWITCHABLE_CATEGORIES = [
   'chores',
   'photos',
   'coParenting',
+  'places',
 ] as const;
 export type SwitchableCategory = (typeof SWITCHABLE_CATEGORIES)[number];
 
@@ -61,6 +63,7 @@ export const NOTIFICATION_TARGETS = [
   'stars',
   'photoUpdates',
   'coParentLink',
+  'whereWeAre',
 ] as const;
 export type NotificationTarget = (typeof NOTIFICATION_TARGETS)[number];
 
@@ -75,6 +78,7 @@ export const ANDROID_CHANNELS: Record<NotificationCategory, string> = {
   chores: 'nestprep_chores',
   photos: 'nestprep_photos',
   coParenting: 'nestprep_two_homes',
+  places: 'nestprep_places',
   test: 'nestprep_digest',
 };
 

@@ -1,0 +1,202 @@
+{
+  "id": "lean-chilli-con-carne",
+  "name": "Lean beef chilli con carne",
+  "summary": "Lean mince and kidney beans simmered with peppers, mushrooms, carrot and tomato in a mildly spiced sauce, served over brown rice with yoghurt and coriander.",
+  "about": "Chilli con carne, beef stewed with dried chillies, is a Texan dish from the 1800s; beans and tomato are later additions. Cooked with plenty of vegetables and two tins of beans, a modest amount of mince feeds six, and leftovers freeze well for another night.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "kidFriendly",
+    "budget",
+    "healthy"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "glutenFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 2,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and diced",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Button mushrooms",
+      "quantity": 250,
+      "unit": "g",
+      "note": "sliced",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Extra-lean beef mince",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "use 1/2 tsp for young children",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Red kidney beans",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Water",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Plain low-fat yoghurt",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Put the rice and water in a saucepan with a tight lid and bring to the boil over high heat. Turn the heat to low and cook, covered, for 40 to 45 minutes, until the water is absorbed and the grains are tender. Leave it covered off the heat until the chilli is ready.",
+    "Meanwhile, heat the oil in a large heavy-based pot over medium heat. Fry the onions, pepper and carrots, stirring now and then, until soft, about 7 minutes.",
+    "Add the mushrooms and garlic and cook for 5 minutes, until the mushrooms have given off their liquid and it has mostly cooked away.",
+    "Raise the heat to medium-high and add the mince, pressing it apart with a wooden spoon. Cook, stirring, until no pink remains, about 6 minutes.",
+    "Stir in the cumin, paprika, coriander, oregano, chilli powder and tomato paste and cook for 1 minute, until the spices smell toasty.",
+    "Add the chopped tomatoes, kidney beans, water, salt and pepper. Bring to the boil, then turn the heat to low and simmer, half covered, for 25 minutes, stirring now and then, until thick enough that a spoon dragged across the bottom leaves a clear path. Add a splash of water if it catches.",
+    "Taste for salt and spoon over the rice. Top each bowl with a spoon of yoghurt and some coriander."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 3 days in the fridge and 3 months in the freezer; it tastes even better the next day.",
+  "kcalPerServing": 580,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

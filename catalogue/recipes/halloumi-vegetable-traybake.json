@@ -1,0 +1,174 @@
+{
+  "id": "halloumi-vegetable-traybake",
+  "name": "Halloumi and roast vegetable traybake",
+  "summary": "Brinjal, baby marrow, peppers and chickpeas roasted with oregano and smoked paprika, topped with golden slices of halloumi and served with a lemony rocket salad.",
+  "about": "Halloumi is a brined cheese from Cyprus, made traditionally from sheep's and goat's milk. It holds its shape in a hot oven and browns instead of melting, so it can roast on the same tray as the vegetables.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "vegetableForward"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brinjal",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, cut into 2 cm cubes",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 400,
+      "unit": "g",
+      "note": "cut into 2 cm rounds",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and cut into chunks",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Yellow pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and cut into chunks",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Red onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "lightly crushed",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the traybake"
+    },
+    {
+      "name": "Chickpeas",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, drained and rinsed",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Halloumi",
+      "quantity": 250,
+      "unit": "g",
+      "note": "cut into 1 cm slices",
+      "group": "For the traybake"
+    },
+    {
+      "name": "Wild rocket",
+      "quantity": 80,
+      "unit": "g",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "juiced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salad"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salad"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C if your oven is a fan oven).",
+    "Put the brinjal, baby marrow, peppers, onions and garlic on your largest roasting tray, or two trays, so they sit in one layer. Drizzle with the oil, sprinkle with the oregano, paprika, salt and pepper and toss until everything is coated.",
+    "Roast for 25 minutes, until the brinjal is soft and the edges of the vegetables are browning.",
+    "Toss the vegetables, scatter over the cherry tomatoes and chickpeas, and lay the halloumi slices on top.",
+    "Roast for 15 minutes more, until the halloumi is golden at the edges and the tomatoes have started to burst. For more colour, switch to the grill for the last 2 to 3 minutes and watch it closely.",
+    "Just before serving, toss the rocket with the lemon juice, oil and a pinch of salt.",
+    "Serve straight from the tray with the salad alongside."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "kcalPerServing": 520,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

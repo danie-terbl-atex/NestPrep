@@ -55,7 +55,14 @@ export interface NotificationSettings {
 export const DEFAULT_SETTINGS: NotificationSettings = {
   digestEnabled: false,
   digestMinute: DEFAULT_DIGEST_MINUTE,
-  categories: { documents: true, handover: true, chores: true, photos: true, coParenting: true },
+  categories: {
+    documents: true,
+    handover: true,
+    chores: true,
+    photos: true,
+    coParenting: true,
+    places: true,
+  },
   quietHours: { enabled: true, startMinute: DEFAULT_QUIET_START, endMinute: DEFAULT_QUIET_END },
 };
 

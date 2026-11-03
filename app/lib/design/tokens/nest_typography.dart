@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'nest_colors.dart';
 
-/// The type scale (design-system ADR-0008): Fraunces 600 heads, DM Sans reads.
+/// The type scale (design-system ADR-0020): Mona Sans Display SemiExpanded 600
+/// heads, Mona Sans reads.
 /// Colour comes from the ink roles.
 @immutable
 class NestTextStyles {
@@ -25,8 +26,8 @@ class NestTextStyles {
     required this.button,
   });
 
-  static const fontFamily = 'DMSans';
-  static const displayFamily = 'Fraunces';
+  static const fontFamily = 'MonaSans';
+  static const displayFamily = 'MonaSansDisplay';
 
   final TextStyle display;
   final TextStyle headline;
@@ -57,7 +58,7 @@ class NestTextStyles {
   final TextStyle button;
 
   factory NestTextStyles.from(NestColors colors) {
-    TextStyle serif({
+    TextStyle display({
       required double size,
       required double height,
       required double tracking,
@@ -69,8 +70,6 @@ class NestTextStyles {
       height: height,
       letterSpacing: tracking,
       color: color ?? colors.ink,
-      // Fraunces keeps its optical-size axis; each style is drawn at its own.
-      fontVariations: [FontVariation('opsz', size)],
     );
 
     TextStyle sans({
@@ -93,12 +92,12 @@ class NestTextStyles {
     const tabular = [FontFeature.tabularFigures()];
 
     return NestTextStyles(
-      display: serif(size: 40, height: 1.05, tracking: -0.8),
-      headline: serif(size: 30, height: 1.1, tracking: -0.45),
-      screenTitle: serif(size: 26, height: 1.15, tracking: -0.3),
-      title: serif(size: 20, height: 1.2, tracking: -0.1),
-      cardTitle: serif(size: 17, height: 1.25, tracking: -0.1),
-      titleLight: serif(
+      display: display(size: 40, height: 1.05, tracking: -0.8),
+      headline: display(size: 30, height: 1.1, tracking: -0.45),
+      screenTitle: display(size: 26, height: 1.15, tracking: -0.3),
+      title: display(size: 20, height: 1.2, tracking: -0.1),
+      cardTitle: display(size: 17, height: 1.25, tracking: -0.1),
+      titleLight: display(
         size: 24,
         height: 1.15,
         tracking: -0.2,

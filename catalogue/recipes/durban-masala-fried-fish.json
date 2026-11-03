@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["quick", "kidFriendly"],
   "allergens": ["fish"],
-  "dietTags": [],
+  "dietTags": ["pescatarian", "glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Hake fillets", "quantity": 800, "unit": "g", "note": "skinned, cut into 8 portions", "group": null },
     { "name": "Durban masala", "quantity": 1.5, "unit": "tbsp", "note": "use 2 tsp for children", "group": null },
@@ -35,5 +35,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Rub the fish with the masala paste up to 2 hours ahead and keep it covered in the fridge.",
+  "kcalPerServing": 240,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

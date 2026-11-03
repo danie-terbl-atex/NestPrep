@@ -11,6 +11,9 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/state/lunch_board_controller.dart';
+import '../features/today/model/home_layout.dart';
+import '../features/today/state/home_layout_controller.dart';
+import '../features/today/ui/home_board_screen.dart';
 import '../features/today/ui/today_screen.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
@@ -30,9 +33,17 @@ GoRoute todayRoute() => GoRoute(
     final permissions = view.permissions;
     final householdId = HouseholdRoute.idFrom(state);
     final memberId = viewerMemberIdOf(context);
-    final screen = TodayScreen(
-      onSelectTab: (tab) => goToTab(context, state, tab),
-    );
+    final layout = context.watch<HomeLayoutController?>()?.layout;
+    final screen = switch (layout ?? HomeLayout.tabs) {
+      HomeLayout.tabs => TodayScreen(
+        onSelectTab: (tab) => goToTab(context, state, tab),
+      ),
+      HomeLayout.cards => HomeBoardScreen(
+        onOpenTab: (tab) => context.push(
+          HouseholdRoute.pathFor(householdId, tab.landingFor(permissions)),
+        ),
+      ),
+    };
     final providers = <SingleChildWidget>[
       if (permissions.canUse(HouseholdArea.lunch)) ...[
         ChangeNotifierProxyProvider<HouseholdView, FamilyController>(
@@ -71,6 +82,7 @@ GoRoute todayRoute() => GoRoute(
             isAdmin: view.viewerIsAdmin,
             isOwnOnly: permissions.hasOwnOnly(HouseholdArea.todos),
             canEdit: permissions.canEdit(HouseholdArea.todos),
+            kidIds: view.kidMemberIds,
           ),
         ),
       if (permissions.canUse(HouseholdArea.groceries))

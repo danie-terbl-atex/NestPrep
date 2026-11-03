@@ -4,21 +4,23 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../lunch_box/model/lunch_slot.dart';
+import '../../lunch_box/ui/lunch_variety_section.dart';
 import '../model/packing_preference.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_treat_days_section.dart';
 
 /// The brief's packing choices: which compartments get filled — the last one
 /// on cannot be switched off — the treat days when a treat is filled
-/// (lunch-box ADR-0025), and how the parent likes to pack, any number or
-/// none.
+/// (lunch-box ADR-0025), which of them keep the same all week (ADR-0028),
+/// and how the parent likes to pack, any number or none.
 class PlanWeekPackingSection extends StatelessWidget {
   const PlanWeekPackingSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final packing = context.watch<PlanWeekController>().packing;
+    final controller = context.watch<PlanWeekController>();
+    final packing = controller.packing;
     final slots = packing.slots;
     final preferences = packing.preferences;
     return Column(
@@ -45,6 +47,11 @@ class PlanWeekPackingSection extends StatelessWidget {
           ],
         ),
         const PlanWeekTreatDaysSection(),
+        const SizedBox(height: NestSpace.xl),
+        LunchVarietySection(
+          choice: controller.variety,
+          slots: packing.plannedSlots,
+        ),
         const SizedBox(height: NestSpace.xl),
         const NestSectionHeader(title: PlanWeekCopy.packingHeader),
         const SizedBox(height: NestSpace.xs),

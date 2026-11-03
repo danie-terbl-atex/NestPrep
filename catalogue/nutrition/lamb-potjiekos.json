@@ -1,0 +1,194 @@
+{
+  "id": "lamb-potjiekos",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lamb neck or knuckles",
+      "amount": "1.5 kg bone-in × 60 % edible = 900 g",
+      "grams": 900,
+      "kcal": 2079,
+      "proteinG": 156.9,
+      "fatG": 161.1,
+      "netCarbsG": 1.3,
+      "reference": "Lamb, New Zealand, imported, neck chops, separable lean and fat, raw — USDA FDC 172637: 231 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "4 × 5 g",
+      "grams": 20,
+      "kcal": 30,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 6.2,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried rosemary",
+      "amount": "1 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.2,
+      "netCarbsG": 0.3,
+      "reference": "Spices, rosemary, dried — USDA FDC 171333: 331 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed, 0 kcal"
+    },
+    {
+      "ingredient": "Lamb or beef stock",
+      "amount": "2 cup made with 1 cube (10 g)",
+      "grams": 10,
+      "kcal": 21,
+      "proteinG": 1.6,
+      "fatG": 0.9,
+      "netCarbsG": 1.7,
+      "reference": "Soup, beef broth or bouillon, powder, dry — USDA FDC 171560: 213 kcal / 100 g; energy is the cube; water 0"
+    },
+    {
+      "ingredient": "Baby potatoes",
+      "amount": "600 g",
+      "grams": 600,
+      "kcal": 420,
+      "proteinG": 11.3,
+      "fatG": 0.8,
+      "netCarbsG": 85.2,
+      "reference": "Potatoes, red, flesh and skin, raw — USDA FDC 170029: 70 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "4 medium × 70 g",
+      "grams": 280,
+      "kcal": 115,
+      "proteinG": 2.6,
+      "fatG": 0.7,
+      "netCarbsG": 19.0,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butternut",
+      "amount": "500 g peeled",
+      "grams": 500,
+      "kcal": 225,
+      "proteinG": 5.0,
+      "fatG": 0.5,
+      "netCarbsG": 48.5,
+      "reference": "Squash, winter, butternut, raw — USDA FDC 169295: 45 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green beans",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 62,
+      "proteinG": 3.7,
+      "fatG": 0.4,
+      "netCarbsG": 8.5,
+      "reference": "Beans, snap, green, raw — USDA FDC 169961: 31 kcal / 100 g"
+    },
+    {
+      "ingredient": "Button mushrooms",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 55,
+      "proteinG": 7.7,
+      "fatG": 0.8,
+      "netCarbsG": 5.7,
+      "reference": "Mushrooms, white, raw — USDA FDC 169251: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste, without salt added (Includes foods for USDA's Food Distribution Program) — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "2 tbsp × 20 g",
+      "grams": 40,
+      "kcal": 76,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 18.2,
+      "reference": "Fruit chutney, SA original recipe (Mrs Ball's label, 797 kJ): 190 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "to taste, 0 kcal"
+    }
+  ],
+  "totalKcal": 3483,
+  "kcalPerServing": 580,
+  "perServing": {
+    "proteinG": 32.6,
+    "fatG": 32.3,
+    "netCarbsG": 37.1
+  },
+  "notes": "Lamb neck/knuckle edible yield 60 %, lean and fat eaten, rendered fat stays in the pot. Stock from 1 cube. Sanity check: Eat This Much lamb potjiekos 588 kcal (8); SparkPeople lamb and vegetable potjie 173 kcal (12 small servings, lean chops). Ours 580 agrees with the like-for-like version."
+}

@@ -1,0 +1,134 @@
+{
+  "id": "sticky-braai-ribs",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Pork spare ribs",
+      "amount": "2 kg bone-in raw → 780 g cooked edible (USDA yield: 177 g braised meat per 453.6 g raw with bone)",
+      "grams": 780,
+      "kcal": 3097,
+      "proteinG": 226.7,
+      "fatG": 236.3,
+      "netCarbsG": 0.0,
+      "reference": "Pork, fresh, spareribs, separable lean and fat, cooked, braised — USDA FDC 167854: 397 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "1 tsp",
+      "grams": 2,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.8,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1 cup, steaming liquid, discarded",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Tomato sauce",
+      "amount": "¾ cup = 188 ml × 1.1 g/ml",
+      "grams": 206,
+      "kcal": 196,
+      "proteinG": 2.5,
+      "fatG": 0.2,
+      "netCarbsG": 43.3,
+      "reference": "All Gold Tomato Sauce label (Woolworths NZ listing): 398 kJ = 95 kcal, carbohydrate 21 g / 100 g; protein, fat from Catsup — USDA FDC 168556: 95 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "½ cup = 125 ml × 1.25 g/ml",
+      "grams": 156,
+      "kcal": 281,
+      "proteinG": 1.2,
+      "fatG": 0.2,
+      "netCarbsG": 67.1,
+      "reference": "Mrs H.S. Ball's Original Chutney label (Tiger Brands, via McGrocer): 753 kJ = 180 kcal, F 0.1, C 43 / 100 g; protein 0.8 g (fatsecret.co.za): 180 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "4 tbsp × 13 g",
+      "grams": 52,
+      "kcal": 198,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 51.0,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "2 tbsp × 17 g",
+      "grams": 34,
+      "kcal": 26,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 6.5,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Soy sauce",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 17,
+      "proteinG": 2.6,
+      "fatG": 0.2,
+      "netCarbsG": 1.3,
+      "reference": "Soy sauce made from soy and wheat (shoyu) — USDA FDC 174277: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "2 tsp",
+      "grams": 5,
+      "kcal": 14,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 1.0,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3863,
+  "kcalPerServing": 970,
+  "perServing": {
+    "proteinG": 58.8,
+    "fatG": 59.4,
+    "netCarbsG": 44.4
+  },
+  "notes": "Assumptions: 2 kg bone-in spare ribs give ~780 g cooked edible meat (USDA yield: 177 g braised meat per 453.6 g raw with bone), valued as USDA braised spareribs — the fat rendered into the steaming water is discarded with it; all basting eaten (brushed on and the rest served for dipping, ~190 kcal a serving). 500 g raw ribs per serving. Sanity check: Asda sticky ribs 325 kcal per 218 g serving (2 kg ribs over 8, so ~650 per 500 g raw ribs), Delicious magazine 571 kcal (serves 6), Food Network 692 kcal (baby back ribs). Ours is ~40 % above the Asda figure scaled to our portion: those recipes use leaner loin/baby-back ribs and less glaze, whereas USDA spareribs (belly side) are 30 % fat cooked. Kept, because SA spare ribs are the belly cut."
+}

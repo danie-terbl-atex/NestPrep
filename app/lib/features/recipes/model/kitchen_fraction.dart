@@ -2,7 +2,7 @@
 /// `1.5`, `0.75`, `2.333` (recipes ADR-0003 §5). Used for spoons, cups and
 /// counts on the recipe page, and for how far a recipe is scaled.
 ///
-/// Written with a slash, never as `⅓`: the bundled DM Sans has no glyph for
+/// Written with a slash, never as `⅓`: the bundled Mona Sans has no glyph for
 /// thirds or eighths, but it does have the OpenType `frac` feature, so the
 /// page sets these with `FontFeature.fractions()` and every fraction is drawn
 /// alike in the app's own face.

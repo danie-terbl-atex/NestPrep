@@ -162,6 +162,50 @@ describe('redeemInvite', () => {
 describe('leaveHousehold', () => {
   beforeEach(clearFirestore);
 
+  it('takes where they were with them, and the arrivals that named them (live-location ADR-0009)', async () => {
+    const { thandi, householdId, helperMemberId } = await householdWithHelper();
+    const household = adminDb().collection('households').doc(householdId);
+    await household.collection('memberLocations').doc(helperMemberId).set({ accuracyMetres: 5 });
+    await household
+      .collection('locationTrails')
+      .doc(helperMemberId)
+      .collection('trailDays')
+      .doc('2026-11-02')
+      .set({ points: [] });
+    await household
+      .collection('notificationInbox')
+      .doc('place_e1_m-sam')
+      .set({
+        source: { kind: 'placeEvent', id: 'e1' },
+        target: { kind: 'whereWeAre', id: helperMemberId },
+      });
+    await household
+      .collection('notificationInbox')
+      .doc('chore_x')
+      .set({
+        source: { kind: 'choreCheck', id: 'x' },
+        target: { kind: 'stars', id: helperMemberId },
+      });
+
+    await callAs(thandi, 'leaveHousehold', { householdId });
+
+    expect((await household.collection('memberLocations').doc(helperMemberId).get()).exists).toBe(
+      false,
+    );
+    const days = await household
+      .collection('locationTrails')
+      .doc(helperMemberId)
+      .collection('trailDays')
+      .get();
+    expect(days.empty).toBe(true);
+    expect(
+      (await household.collection('notificationInbox').doc('place_e1_m-sam').get()).exists,
+    ).toBe(false);
+    expect((await household.collection('notificationInbox').doc('chore_x').get()).exists).toBe(
+      true,
+    );
+  });
+
   it('refuses the last admin, and lets them go once somebody else is one', async () => {
     const { sam, thandi, householdId, helperMemberId } = await householdWithHelper();
 
@@ -247,6 +291,30 @@ describe('removeMember', () => {
     // Only theirs: a sibling's allergies are not collateral.
     expect((await household.collection('familyProfiles').doc(siblingId).get()).exists).toBe(true);
     expect((await household.collection('memberHealth').doc(siblingId).get()).exists).toBe(true);
+  });
+
+  it('takes where they were with them (live-location ADR-0004)', async () => {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const kidId = await addMember(householdId, 'Kid');
+    const household = adminDb().collection('households').doc(householdId);
+    await household.collection('memberLocations').doc(kidId).set({ accuracyMetres: 5 });
+    await household
+      .collection('locationTrails')
+      .doc(kidId)
+      .collection('trailDays')
+      .doc('2026-11-02')
+      .set({ points: [] });
+
+    await callAs(sam, 'removeMember', { householdId, memberId: kidId });
+
+    expect((await household.collection('memberLocations').doc(kidId).get()).exists).toBe(false);
+    const days = await household
+      .collection('locationTrails')
+      .doc(kidId)
+      .collection('trailDays')
+      .get();
+    expect(days.empty).toBe(true);
   });
 
   it('removes a member who never had a profile, as before', async () => {

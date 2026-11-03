@@ -1,0 +1,184 @@
+{
+  "id": "beef-and-broccoli-stir-fry",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "300 g raw, boiled and drained",
+      "grams": 300,
+      "kcal": 1101,
+      "proteinG": 22.6,
+      "fatG": 9.6,
+      "netCarbsG": 217.9,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp, in the cooking water",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Beef rump steak",
+      "amount": "500 g raw, fat trimmed off",
+      "grams": 500,
+      "kcal": 675,
+      "proteinG": 109.5,
+      "fatG": 23.1,
+      "netCarbsG": 0.0,
+      "reference": "Beef, top sirloin, steak, separable lean only, trimmed to 1/8\" fat, choice, raw (SA rump, fat trimmed) — USDA FDC 174763: 135 kcal / 100 g"
+    },
+    {
+      "ingredient": "Light soy sauce",
+      "amount": "1 tbsp ≈ 16 g",
+      "grams": 16,
+      "kcal": 8,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.7,
+      "reference": "Soy sauce made from soy and wheat (shoyu) — USDA FDC 174277: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "2 tsp × 2.7 g",
+      "grams": 5.4,
+      "kcal": 21,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.9,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Light soy sauce",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 17,
+      "proteinG": 2.6,
+      "fatG": 0.2,
+      "netCarbsG": 1.3,
+      "reference": "Soy sauce made from soy and wheat (shoyu) — USDA FDC 174277: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "180 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "1 tbsp ≈ 8 g",
+      "grams": 8,
+      "kcal": 30,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 7.2,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Honey",
+      "amount": "2 tsp × 7 g",
+      "grams": 14,
+      "kcal": 43,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 11.5,
+      "reference": "Honey — USDA FDC 169640: 304 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g, all in the wok",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Broccoli",
+      "amount": "400 g",
+      "grams": 400,
+      "kcal": 136,
+      "proteinG": 11.3,
+      "fatG": 1.5,
+      "netCarbsG": 16.2,
+      "reference": "Broccoli, raw — USDA FDC 170379: 34 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrot",
+      "amount": "1 medium ≈ 80 g",
+      "grams": 80,
+      "kcal": 33,
+      "proteinG": 0.7,
+      "fatG": 0.2,
+      "netCarbsG": 5.4,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "3 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "2 × 15 g",
+      "grams": 30,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2371,
+  "kcalPerServing": 590,
+  "perServing": {
+    "proteinG": 37.7,
+    "fatG": 15.6,
+    "netCarbsG": 69.2
+  },
+  "notes": "Assumptions that change the number: rump with the fat trimmed off at USDA lean-only top sirloin values (125 g a person); 75 g raw brown rice a person (~275 kcal of the 590); all 2 tbsp oil eaten; light soy at USDA shoyu values. Published check: beef and broccoli stir-fry is usually listed at ~300–380 kcal without rice; with 75 g raw rice ~600 kcal, in line with 590."
+}

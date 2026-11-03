@@ -1,0 +1,182 @@
+{
+  "id": "teriyaki-chicken-rice-bowls",
+  "name": "Teriyaki chicken rice bowls",
+  "summary": "Chicken thigh pieces in a glossy soy, ginger and honey glaze with broccoli, carrot, red pepper and mange tout over brown rice.",
+  "about": "Teriyaki is a Japanese way of cooking in which food is pan-fried or grilled and glazed with a soy-based sauce; the name joins teri, the shine of the glaze, and yaki, grilling. Made at home with a spoon of honey instead of a bottled sauce, it puts chicken, rice and four vegetables in one bowl on a school night.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy",
+    "sesame"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1.25,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 750,
+      "unit": "ml",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Reduced-salt soy sauce",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Honey",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Rice vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 4,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Sesame seeds",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1.5,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Chicken thigh fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "skinless, cut into 2–3 cm pieces",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced into thin coins",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Broccoli",
+      "quantity": 1,
+      "unit": null,
+      "note": "a medium head, about 350 g, cut into small florets",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Water",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "for steaming",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into strips",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Mange tout",
+      "quantity": 150,
+      "unit": "g",
+      "note": "halved on the diagonal",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 3,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the stir-fry"
+    }
+  ],
+  "steps": [
+    "Put the rice, 750 ml water and salt in a saucepan and bring to the boil over high heat. Cover, turn the heat to low and simmer for 40 minutes, until the water is absorbed and the grains are tender. Take off the heat and leave covered for 10 minutes.",
+    "While the rice cooks, whisk the soy sauce, honey, rice vinegar, garlic, ginger, cornflour and 4 tbsp water together in a jug until no lumps of cornflour remain.",
+    "Toast the sesame seeds in a large dry frying pan or wok over medium heat for 2 to 3 minutes, shaking the pan, until pale golden. Tip them into a small bowl.",
+    "Heat 1 tbsp of the oil in the same pan over high heat. Add the chicken in a single layer and leave it for 2 minutes to brown, then stir-fry for 4 to 5 minutes more, until golden and no pink shows when you cut the thickest piece. Lift onto a plate.",
+    "Add the remaining oil, the carrots and broccoli and 3 tbsp water. Cover and cook over medium-high heat for 3 minutes, then add the red pepper and mange tout and stir-fry uncovered for 2 minutes, until the vegetables are bright and just tender but still have some crunch.",
+    "Return the chicken and any juices to the pan. Stir the sauce, pour it in and let it bubble for 1 to 2 minutes, stirring, until it thickens into a glossy glaze that coats everything.",
+    "Fluff the rice with a fork and divide it between four bowls. Spoon the chicken and vegetables on top and scatter over the spring onions and toasted sesame seeds."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook the rice and mix the sauce up to a day ahead and chill; the stir-fry takes 15 minutes.",
+  "kcalPerServing": 580,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

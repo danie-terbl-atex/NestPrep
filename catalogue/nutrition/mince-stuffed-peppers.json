@@ -1,0 +1,174 @@
+{
+  "id": "mince-stuffed-peppers",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "100 g raw",
+      "grams": 100,
+      "kcal": 367,
+      "proteinG": 7.5,
+      "fatG": 3.2,
+      "netCarbsG": 72.7,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp, in the cooking water",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Red peppers",
+      "amount": "2 large × 160 g edible",
+      "grams": 320,
+      "kcal": 83,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 12.6,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Yellow peppers",
+      "amount": "2 large × 160 g edible",
+      "grams": 320,
+      "kcal": 86,
+      "proteinG": 3.2,
+      "fatG": 0.7,
+      "netCarbsG": 17.3,
+      "reference": "Peppers, sweet, yellow, raw — USDA FDC 169383: 27 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 × 5 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1 tsp ≈ 2.3 g",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "1 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lean beef mince",
+      "amount": "500 g raw, ~10 % fat",
+      "grams": 500,
+      "kcal": 880,
+      "proteinG": 100.0,
+      "fatG": 50.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 90% lean meat / 10% fat, raw (SA lean mince) — USDA FDC 174030: 176 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "2 × 90 g",
+      "grams": 180,
+      "kcal": 31,
+      "proteinG": 2.2,
+      "fatG": 0.6,
+      "netCarbsG": 3.8,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 × 400 g tin",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "1 tbsp ≈ 16 g",
+      "grams": 16,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 2.4,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Grated cheddar",
+      "amount": "0.5 cup × 100 g/cup = 50 g",
+      "grams": 50,
+      "kcal": 202,
+      "proteinG": 11.4,
+      "fatG": 16.7,
+      "netCarbsG": 1.7,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1932,
+  "kcalPerServing": 480,
+  "perServing": {
+    "proteinG": 33.5,
+    "fatG": 21.8,
+    "netCarbsG": 33.1
+  },
+  "notes": "Assumptions that change the number: lean mince counted as 90 % lean / 10 % fat; large peppers ~160 g edible each, two halves a person; 25 g raw brown rice a person; half a cup of grated cheddar ≈ 50 g. Regular 15 %-fat mince would add ~50 kcal a serving. Published check: beef-and-rice stuffed peppers with a cheese topping are typically listed at ~400–500 kcal for two halves; 480 agrees."
+}

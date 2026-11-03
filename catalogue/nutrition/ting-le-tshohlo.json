@@ -1,0 +1,124 @@
+{
+  "id": "ting-le-tshohlo",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sorghum meal",
+      "amount": "375 g",
+      "grams": 375,
+      "kcal": 1162,
+      "proteinG": 33.8,
+      "fatG": 12.8,
+      "netCarbsG": 221.2,
+      "reference": "King Korn Mabele Meal via fatsecret.co.za: 1299 kJ = 310 kcal, P 9.0, F 3.4, available carbohydrate 59 g, fibre 16.1 g / 100 g: 310 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lukewarm water",
+      "amount": "1½ cups",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1 l",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Maize meal",
+      "amount": "125 g",
+      "grams": 125,
+      "kcal": 429,
+      "proteinG": 9.4,
+      "fatG": 1.2,
+      "netCarbsG": 93.8,
+      "reference": "Iwisa Super Maize Meal label via Checkers: 1434 kJ = 343 kcal, P 7.5, F 1.0, available carbohydrate 75 g, fibre 4.8 g / 100 g: 343 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Beef brisket",
+      "amount": "1.5 kg on the bone → 1200 g boneless raw (80 %) → ~870 g braised (USDA 329 g braised per 453.6 g raw)",
+      "grams": 870,
+      "kcal": 2880,
+      "proteinG": 224.9,
+      "fatG": 213.2,
+      "netCarbsG": 0.0,
+      "reference": "Beef, brisket, whole, separable lean and fat, trimmed to 1/8\" fat, cooked, braised — USDA FDC 168665: 331 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaf, removed before serving: 0 kcal"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1.5 l, mostly discarded",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp",
+      "grams": 12,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 4531,
+  "kcalPerServing": 760,
+  "perServing": {
+    "proteinG": 45.0,
+    "fatG": 37.9,
+    "netCarbsG": 54.4
+  },
+  "notes": "Assumptions: brisket on the bone ~80 % boneless → 1200 g raw → ~870 g braised (USDA yield 329 g braised per 453.6 g boneless raw), valued as USDA braised brisket because most of the 1.5 l cooking liquid, with its fat, is not returned (only ~1 cup); fermentation of the sorghum paste ignored (it converts little energy); mabele from King Korn label. Sanity check: no published per-serving figure for ting with tshohlo; the parts check out — the ting (~265 kcal) is ~95 kcal/100 g cooked, like Eat This Much's stiff pap at 93 kcal/100 g, and the beef (~480 kcal) is ~145 g braised brisket."
+}

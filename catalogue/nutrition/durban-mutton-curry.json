@@ -1,0 +1,214 @@
+{
+  "id": "durban-mutton-curry",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "4 tbsp × 13.5 g",
+      "grams": 54,
+      "kcal": 477,
+      "proteinG": 0.0,
+      "fatG": 54.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "4 ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.4,
+      "reference": "Spices, cardamom — USDA FDC 170919: 311 kcal / 100 g"
+    },
+    {
+      "ingredient": "Star anise",
+      "amount": "1, not eaten",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "whole spice, 0 kcal"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed, 0 kcal"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 large × 200 g",
+      "grams": 400,
+      "kcal": 160,
+      "proteinG": 4.4,
+      "fatG": 0.4,
+      "netCarbsG": 30.6,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Curry leaf sprigs",
+      "amount": "2 ≈ 2 g",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Curry leaves, fresh — Indian Food Composition Tables (NIN): ~108 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ginger and garlic paste",
+      "amount": "2 tbsp ≈ 30 g",
+      "grams": 30,
+      "kcal": 27,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 5.2,
+      "reference": "Ginger and garlic paste, bottled (Smith & Jones label, FatSecret): 90 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mutton",
+      "amount": "1.2 kg on the bone × 65 % edible = 780 g",
+      "grams": 780,
+      "kcal": 2059,
+      "proteinG": 129.3,
+      "fatG": 167.3,
+      "netCarbsG": 0.0,
+      "reference": "Lamb, shoulder, whole, lean and fat, 1/4\" trim, raw (proxy for mutton) — USDA FDC 172496: 264 kcal / 100 g"
+    },
+    {
+      "ingredient": "Durban masala",
+      "amount": "3 tbsp ≈ 24 g",
+      "grams": 24,
+      "kcal": 68,
+      "proteinG": 3.2,
+      "fatG": 3.4,
+      "netCarbsG": 3.6,
+      "reference": "Spices, chili powder (proxy for Durban / roasted masala) — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.3,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander and cumin",
+      "amount": "2 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 13,
+      "proteinG": 0.6,
+      "fatG": 0.8,
+      "netCarbsG": 0.9,
+      "reference": "Ground coriander and cumin 1:1 — USDA FDC 170922 + 170923: 336 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "3 medium × 120 g",
+      "grams": 360,
+      "kcal": 65,
+      "proteinG": 3.2,
+      "fatG": 0.7,
+      "netCarbsG": 9.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "1 tbsp ≈ 16 g",
+      "grams": 16,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 2.4,
+      "reference": "Tomato products, canned, paste, without salt added (Includes foods for USDA's Food Distribution Program) — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chillies",
+      "amount": "2 × 10 g",
+      "grams": 20,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.0,
+      "netCarbsG": 1.6,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2.5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "4 medium, peeled × 150 g",
+      "grams": 600,
+      "kcal": 462,
+      "proteinG": 12.3,
+      "fatG": 0.5,
+      "netCarbsG": 92.3,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garam masala",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.6,
+      "reference": "Garam masala as coriander, cumin, cardamom, pepper, cinnamon 1:1 — USDA FDC 170922/170923/170919/170931/171320: 296 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "to serve",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "garnish, negligible"
+    }
+  ],
+  "totalKcal": 3372,
+  "kcalPerServing": 560,
+  "perServing": {
+    "proteinG": 26.0,
+    "fatG": 37.9,
+    "netCarbsG": 24.8
+  },
+  "notes": "Mutton (neck/shoulder/knuckle on the bone) edible yield 65 %; USDA has no mutton so lamb shoulder 1/4\" trim (21 % fat) stands in, which is close to SA mutton. All oil and rendered fat eaten. Rice or roti not counted. Sanity check: ClearCals potato mutton curry 126 kcal / 100 g; Arise aloo gosht 188 kcal / 100 g. Ours is ~350 g a serving ≈ 160 kcal / 100 g, between the two."
+}

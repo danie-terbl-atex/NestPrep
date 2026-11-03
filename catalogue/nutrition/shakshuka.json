@@ -1,0 +1,164 @@
+{
+  "id": "shakshuka",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Olive oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.0,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1½ tsp × 2.1 g",
+      "grams": 3.2,
+      "kcal": 12,
+      "proteinG": 0.6,
+      "fatG": 0.7,
+      "netCarbsG": 1.1,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1½ tsp × 2.3 g",
+      "grams": 3.5,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, paprika (smoked paprika) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried chilli flakes",
+      "amount": "¼ tsp ≈ 0.5 g",
+      "grams": 0.5,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.1,
+      "reference": "Spices, pepper, red or cayenne (chilli flakes) — USDA FDC 170932: 318 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "1 tbsp ≈ 16 g",
+      "grams": 16,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.1,
+      "netCarbsG": 2.4,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "2 × 400 g tins, with juice",
+      "grams": 800,
+      "kcal": 128,
+      "proteinG": 6.3,
+      "fatG": 2.0,
+      "netCarbsG": 12.6,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "¼ tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "8 SA large × 55 g out of shell",
+      "grams": 440,
+      "kcal": 629,
+      "proteinG": 55.3,
+      "fatG": 41.8,
+      "netCarbsG": 3.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "2 tbsp chopped ≈ 2 g",
+      "grams": 2,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "2 tbsp chopped × 3.8 g",
+      "grams": 7.6,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1175,
+  "kcalPerServing": 290,
+  "perServing": {
+    "proteinG": 17.1,
+    "fatG": 18.3,
+    "netCarbsG": 11.2
+  },
+  "notes": "Assumptions that move the number: 8 SA large eggs at 55 g out of shell (629 kcal, 54 % of the total); 2 tbsp olive oil; no bread in the recipe. Net carbs 11.2 g a serving, fat 56 % of energy: inside banting (≤ 25 g), not keto (needs ≤ 10 g and ≥ 60 %). Cross-check: published shakshuka with two eggs a serving lists ~250–300 kcal; 290 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

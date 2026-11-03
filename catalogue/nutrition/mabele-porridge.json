@@ -1,0 +1,84 @@
+{
+  "id": "mabele-porridge",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Sorghum meal",
+      "amount": "1 cup ≈ 160 g",
+      "grams": 160,
+      "kcal": 496,
+      "proteinG": 14.4,
+      "fatG": 5.4,
+      "netCarbsG": 94.4,
+      "reference": "Mabele (sorghum) meal, SA (King Korn label via FatSecret ZA): 310 kcal / 100 g, 16 g fibre"
+    },
+    {
+      "ingredient": "Cold water",
+      "amount": "1 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Boiling water",
+      "amount": "3 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.25 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "1 cup = 250 ml × 1.03",
+      "grams": 258,
+      "kcal": 157,
+      "proteinG": 8.1,
+      "fatG": 8.4,
+      "netCarbsG": 12.4,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "4 tsp × 4.7 g",
+      "grams": 19,
+      "kcal": 136,
+      "proteinG": 0.2,
+      "fatG": 15.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar or honey",
+      "amount": "4 tsp sugar × 4.2 g",
+      "grams": 17,
+      "kcal": 66,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 17.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g; honey instead adds ~5 kcal a serving"
+    }
+  ],
+  "totalKcal": 855,
+  "kcalPerServing": 210,
+  "perServing": {
+    "proteinG": 5.7,
+    "fatG": 7.3,
+    "netCarbsG": 31.0
+  },
+  "notes": "Whole milk. Sugar used for 'sugar or honey' (4 tsp honey ≈ 28 g would add ~20 kcal in all). Sanity check: Oldways sorghum bowl with milk 200 kcal; Arise Maltabella with milk and sugar 297 kcal (362 g). Ours 210 agrees."
+}

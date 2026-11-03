@@ -1,11 +1,13 @@
 import { FieldPath, type Firestore } from 'firebase-admin/firestore';
 
+import { deleteActivityOf, deleteGrantsOf } from '../assistants/connections/delete_grants';
 import { removeCalendarConnection } from '../calendar_sync/remove_connection';
 import { CALENDAR_CONNECTIONS, PROVIDERS, type Provider } from '../calendar_sync/sync_documents';
 import { VAULT_OPENINGS, grantRef, vaultRef } from '../documents/vault_refs';
 import { pushAccountClaims } from '../household/access_claim';
 import { MEMBERS, householdRef, memberRef } from '../household/documents';
 import { detachMember, findClaimedMember, recordClaim } from '../household/membership';
+import { forgetWhereTheyWere } from '../live_location/forget_location';
 import type { ObjectStore } from '../shared/storage';
 import type { HouseholdPlan } from './deletion_plan';
 import { refuseAccountData } from './errors';
@@ -21,8 +23,9 @@ const PAGE = 400;
  * An account leaves a household that goes on without it (accounts ADR-0006):
  * a hand-over first when it was the last admin, then the same detachment
  * leaving does, and the person's own details erased — their profile's
- * details, medication, position and vault, the grants they held to other
- * vaults, and the calendars they connected.
+ * details, medication, position, location history and vault, the grants they held to other
+ * vaults, the calendars they connected, the assistants they connected and
+ * what those assistants did as them (assistants ADR-0005).
  *
  * The membership part is one transaction (BE-07). What follows it — the vault's
  * rows and bytes, calendar credentials — is idempotent and keyed by ids that
@@ -73,10 +76,13 @@ export async function leaveErasing(
 
   if (memberId !== null) {
     await store.recursiveDelete(vaultRef(store, householdId, memberId));
+    await forgetWhereTheyWere(store, householdId, memberId);
     await objects.deletePrefix(vaultObjectPrefix(householdId, memberId));
+    await deleteActivityOf(store, householdId, memberId);
   }
   await deleteOpeningTickets(store, householdId, uid);
   await removeOwnedCalendars(store, householdId, uid);
+  await deleteGrantsOf(store, householdId, uid);
   if (outcome.kind === 'handOver') await pushAccountClaims(store, outcome.toUid);
 }
 

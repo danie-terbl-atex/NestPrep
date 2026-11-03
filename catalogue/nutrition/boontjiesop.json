@@ -1,0 +1,154 @@
+{
+  "id": "boontjiesop",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Dried sugar beans",
+      "amount": "500 g dry weight",
+      "grams": 500,
+      "kcal": 1675,
+      "proteinG": 115.0,
+      "fatG": 6.0,
+      "netCarbsG": 177.0,
+      "reference": "Beans, cranberry (roman), mature seeds, raw (sugar beans) — USDA FDC 175189: 335 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef shin",
+      "amount": "800 g bone-in; ~65 % edible meat",
+      "grams": 520,
+      "kcal": 666,
+      "proteinG": 113.4,
+      "fatG": 20.3,
+      "netCarbsG": 0.0,
+      "reference": "Beef, shank crosscuts, separable lean only, choice, raw — USDA FDC 169441: 128 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium, 80 g each",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.4,
+      "fatG": 0.3,
+      "netCarbsG": 10.9,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Celery sticks",
+      "amount": "2 sticks, 40 g each",
+      "grams": 80,
+      "kcal": 11,
+      "proteinG": 0.6,
+      "fatG": 0.2,
+      "netCarbsG": 1.1,
+      "reference": "Celery, raw — USDA FDC 169988: 14 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "2 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaves, removed before eating — 0 kcal"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "2.5 l",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "2 medium, 170 g each peeled",
+      "grams": 340,
+      "kcal": 262,
+      "proteinG": 7.0,
+      "fatG": 0.3,
+      "netCarbsG": 52.4,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "1 tsp",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.9,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped (3.8 g each)",
+      "grams": 11,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3074,
+  "kcalPerServing": 510,
+  "perServing": {
+    "proteinG": 40.4,
+    "fatG": 9.1,
+    "netCarbsG": 45.2
+  },
+  "notes": "Assumptions that move the number: 800 g bone-in shin yields ~65 % meat (520 g); 500 g dried sugar beans counted dry (83 g a bowl, ~280 kcal). The checker warns that macros give ~17 % less energy than the kcal total. That is fibre: USDA's 335 kcal for dry cranberry beans includes 24.7 g fibre / 100 g at the legume Atwater factor. Counting fibre at 2 kcal/g instead would give ~470 kcal a bowl. Compared against: FatSecret generic bean soup at 137 kcal a cup and a community bean soup with potato at 233 kcal a serving. A boontjiesop bowl is ~650 g (about 2.7 cups), which gives ~370 kcal at the generic density. Ours is higher because it carries far more beans than a generic bean soup, plus 87 g of beef a bowl."
+}

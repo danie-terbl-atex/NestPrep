@@ -17,7 +17,7 @@ export const LUNCH_MAIN_RECIPES: readonly Recipe[] = [
     placement: { lunchBox: 'main' },
     tags: [],
     allergens: ['egg', 'wheat'],
-    dietTags: [],
+    dietTags: ['dairyFree'],
     ingredients: [
       { name: 'Cooked chicken breast', quantity: 1, unit: 'cup', note: 'shredded', group: null },
       { name: 'Mayonnaise', quantity: 2, unit: 'tbsp', note: null, group: null },
@@ -36,6 +36,7 @@ export const LUNCH_MAIN_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: false,
     prepNote: null,
+    kcalPerServing: 380,
     photo: null,
   },
   {
@@ -69,6 +70,7 @@ export const LUNCH_MAIN_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Cook the pasta on Sunday; the salad keeps three days in the fridge.',
+    kcalPerServing: 370,
     photo: null,
   },
   {
@@ -99,6 +101,7 @@ export const LUNCH_MAIN_RECIPES: readonly Recipe[] = [
     difficulty: 'easy',
     prepAhead: true,
     prepNote: 'Boil the eggs on Sunday; they keep five days in the fridge.',
+    kcalPerServing: 350,
     photo: null,
   },
 ];

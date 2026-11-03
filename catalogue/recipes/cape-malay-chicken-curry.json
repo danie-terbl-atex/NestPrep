@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["capeMalay", "comfort", "onePot"],
   "allergens": [],
-  "dietTags": [],
+  "dietTags": ["glutenFree", "dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 3, "unit": "tbsp", "note": null, "group": null },
     { "name": "Onions", "quantity": 2, "unit": null, "note": "finely chopped", "group": null },
@@ -43,5 +43,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Tastes even better the next day; cool, refrigerate for up to 2 days and reheat gently with a splash of water.",
+  "kcalPerServing": 430,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

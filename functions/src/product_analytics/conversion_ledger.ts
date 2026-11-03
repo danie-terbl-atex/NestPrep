@@ -33,6 +33,7 @@ export const CONVERSION_TRIGGERS = [
   'budgetMode',
   'lunchPhoto',
   'recipeShopping',
+  'familyLocation',
   'direct',
 ] as const;
 export type ConversionTrigger = (typeof CONVERSION_TRIGGERS)[number];

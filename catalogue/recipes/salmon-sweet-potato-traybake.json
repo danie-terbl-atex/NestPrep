@@ -1,0 +1,139 @@
+{
+  "id": "salmon-sweet-potato-traybake",
+  "name": "Salmon, sweet potato and broccoli traybake",
+  "summary": "Roast sweet potato and red onion with broccoli and salmon fillets brushed in a lemon, garlic and wholegrain mustard glaze, all cooked on one tray.",
+  "about": "A traybake cooks the whole meal in one tin: the sweet potato goes in first because it takes longest, and the fish and broccoli join it for the last few minutes. Rainbow trout, farmed in the Western Cape and Mpumalanga, cooks the same way in place of the salmon.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot"
+  ],
+  "allergens": [
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Sweet potatoes",
+      "quantity": 700,
+      "unit": "g",
+      "note": "peeled and cut into 2–3 cm chunks",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into 8 wedges",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "divided",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "divided",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Broccoli",
+      "quantity": 500,
+      "unit": "g",
+      "note": "about 1½ heads, cut into florets",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Wholegrain mustard",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salmon"
+    },
+    {
+      "name": "Honey",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salmon"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "zested and juiced",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Salmon fillets",
+      "quantity": 4,
+      "unit": null,
+      "note": "about 150 g each, skin on, or trout fillets",
+      "group": "For the salmon"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into wedges, to serve",
+      "group": "For the salmon"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C if your oven is a fan oven). Toss the sweet potatoes and onion on a large roasting tray with 1½ tbsp of the oil, the paprika, ½ tsp of the salt and the pepper, and spread them in a single layer.",
+    "Roast for 20 minutes, until the sweet potato is browning underneath and nearly tender.",
+    "Meanwhile, toss the broccoli with the remaining oil and a pinch of the salt. Mix the mustard, honey, lemon zest and juice and garlic in a small bowl.",
+    "Take the tray out, turn the sweet potato and push it to the sides. Lay the salmon skin side down in the middle, season with the rest of the salt and spread the glaze over the top. Scatter the broccoli in the gaps.",
+    "Roast for 12 to 14 minutes, until the salmon is opaque and flakes easily at the thickest point, the broccoli is tender with charred tips and the sweet potato is soft when pierced.",
+    "Serve straight from the tray with the lemon wedges for squeezing over."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cut the vegetables and mix the glaze in the morning; keep them covered in the fridge.",
+  "kcalPerServing": 620,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "id": "baked-hake-tomato-olive",
+  "name": "Baked hake in tomato, pepper and olive sauce",
+  "summary": "Hake fillets baked in a smoky sauce of tomato, red and green peppers and olives until they just flake, served with lemon and steamed green beans.",
+  "about": "Hake, caught in deep water off South Africa's west and south coasts, is sold fresh and frozen across the country. Baking it in a Mediterranean-style tomato, pepper and olive sauce keeps the mild, flaky fillets moist.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "vegetableForward"
+  ],
+  "allergens": [
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": null
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": null
+    },
+    {
+      "name": "Green pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "sliced",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.75,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": null
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 100,
+      "unit": "ml",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Pitted black olives",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "kalamata if you can, halved",
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Hake fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "4 skinless fillets, thawed if frozen",
+      "group": null
+    },
+    {
+      "name": "Green beans",
+      "quantity": 400,
+      "unit": "g",
+      "note": "trimmed",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven). Warm the olive oil in a large ovenproof frying pan over medium heat. Tip in the onion and both peppers, sprinkle with a pinch of the salt and let them soften for about 10 minutes, stirring every few minutes, until limp and lightly browned in places.",
+    "Stir in the garlic and smoked paprika and cook for 1 minute, until fragrant.",
+    "Add the chopped tomatoes, water, olives, black pepper and most of the remaining salt. Simmer gently for 10 minutes, until the sauce is thick enough to hold a line when you drag a spoon through it.",
+    "If your pan is not ovenproof, tip the sauce into a baking dish of about 30 × 20 cm. Pat the hake dry, season it with the last of the salt and nestle the fillets into the sauce, spooning a little over the edges.",
+    "Bake uncovered for 12–15 minutes, until the fish is white all the way through and flakes when pressed with a fork.",
+    "While the fish bakes, steam or boil the green beans for 5–6 minutes, until bright green and tender but still with a little bite. Drain.",
+    "Scatter the parsley over the fish and serve with the beans and lemon wedges for squeezing."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the sauce up to 2 days ahead and chill it; reheat it until bubbling before adding the fish.",
+  "kcalPerServing": 280,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

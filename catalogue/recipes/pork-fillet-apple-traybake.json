@@ -1,0 +1,135 @@
+{
+  "id": "pork-fillet-apple-traybake",
+  "name": "Pork fillet traybake with apple and butternut",
+  "summary": "Pork fillet rubbed with mustard, garlic, paprika and thyme, roasted on one tray with butternut, red onion and apple wedges, with green beans added at the end.",
+  "about": "Pork and apple are an old pairing in European cooking, the fruit's sharpness cutting the richness of the meat. Pork fillet is one of the leanest cuts of the pig and roasts in under half an hour, so it can go straight onto a tray of butternut for a weeknight supper.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Butternut",
+      "quantity": 800,
+      "unit": "g",
+      "note": "peeled, seeded and cut into 2–3 cm cubes",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "each cut into 8 wedges",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Dried thyme",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "divided",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "divided",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Pork fillets",
+      "quantity": 600,
+      "unit": "g",
+      "note": "2 fillets, silver skin trimmed",
+      "group": "For the pork"
+    },
+    {
+      "name": "Wholegrain mustard",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pork"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the pork"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the pork"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pork"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the pork"
+    },
+    {
+      "name": "Red apples",
+      "quantity": 2,
+      "unit": null,
+      "note": "cored and cut into 8 wedges each",
+      "group": "For the pork"
+    },
+    {
+      "name": "Green beans",
+      "quantity": 200,
+      "unit": "g",
+      "note": "trimmed",
+      "group": "For the pork"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 200 °C (180 °C if your oven is a fan oven). Toss the butternut and onions on a large roasting tray with the oil, ½ tsp of the thyme and ½ tsp of the salt. Spread out in a single layer and roast for 20 minutes, until the butternut is starting to brown at the edges.",
+    "Meanwhile, pat the pork dry. Mix the mustard, oil, garlic, paprika, pepper and the rest of the thyme and salt into a paste and rub it all over the fillets.",
+    "Take out the tray, add the apple wedges and turn everything in the oil. Lay the pork fillets in the middle and roast for 15 minutes.",
+    "Toss the green beans in the tray juices around the pork and roast for 8 to 10 minutes more, until the pork is cooked through with clear juices when pierced at the thickest point (63 °C on a meat thermometer), the butternut is soft and the beans are tender.",
+    "Lift the pork onto a board, cover loosely with foil and rest for 5 minutes. Slice it 1–2 cm thick and lay it back on the vegetables, spooning over the juices from the board."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Rub the pork and cut the butternut and onions up to a day ahead; cut the apples just before cooking.",
+  "kcalPerServing": 430,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

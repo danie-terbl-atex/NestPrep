@@ -2,6 +2,7 @@ import { inWeekItems, type InWeekItem } from './basket';
 import { isProductAllowedFor } from './child_exclusion';
 import { openCompartments, type SchoolWeek } from './open_compartments';
 import {
+  DEFAULT_SAME_ALL_WEEK,
   NO_PACKING_CHOICES,
   type PackingChoices,
   type PackingPreference,
@@ -64,6 +65,8 @@ export interface WeekBrief {
   /** Products the phone sent that no child may have after all. */
   readonly removed: number;
   readonly preferences: readonly PackingPreference[];
+  /** Compartments that keep one product all week (lunch-box ADR-0028). */
+  readonly sameAllWeek: readonly LunchSlot[];
 }
 
 export function weekBriefFrom(
@@ -129,5 +132,6 @@ export function weekBriefFrom(
     products,
     removed,
     preferences: choices.preferences,
+    sameAllWeek: choices.sameAllWeek ?? DEFAULT_SAME_ALL_WEEK,
   };
 }

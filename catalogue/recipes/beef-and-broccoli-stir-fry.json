@@ -1,0 +1,167 @@
+{
+  "id": "beef-and-broccoli-stir-fry",
+  "name": "Beef and broccoli stir-fry",
+  "summary": "Thin strips of lean rump with crisp-tender broccoli, carrot and red pepper in a glossy garlic, ginger and soy sauce, served over brown rice.",
+  "about": "Beef with broccoli is a Chinese-American takeaway dish that grew out of the Cantonese pairing of beef with Chinese broccoli. Cooked at home it needs only a little oil and sugar, and thin strips of rump cook in a couple of minutes.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 300,
+      "unit": "g",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "for the cooking water",
+      "group": "For the rice"
+    },
+    {
+      "name": "Beef rump steak",
+      "quantity": 500,
+      "unit": "g",
+      "note": "fat trimmed off",
+      "group": "For the beef"
+    },
+    {
+      "name": "Light soy sauce",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the beef"
+    },
+    {
+      "name": "Light soy sauce",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 180,
+      "unit": "ml",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Honey",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Broccoli",
+      "quantity": 400,
+      "unit": "g",
+      "note": "one large head, cut into small florets",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Carrot",
+      "quantity": 1,
+      "unit": null,
+      "note": "thinly sliced on the diagonal",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Water",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "for steaming",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into strips",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the stir-fry"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "thinly sliced",
+      "group": "For the stir-fry"
+    }
+  ],
+  "steps": [
+    "Bring a large saucepan of salted water to the boil over high heat. Add the brown rice and boil, uncovered, for 25–30 minutes, until tender but still a little chewy. Drain well, return it to the pot and cover to keep warm.",
+    "Slice the steak across the grain into strips about 5 mm thick; 20 minutes in the freezer first makes this easier. Toss the strips with the 1 tbsp soy sauce and 2 tsp cornflour and leave for 10 minutes.",
+    "Stir the 2 tbsp soy sauce, the water, the 1 tbsp cornflour and the honey together in a jug until smooth.",
+    "Heat 2 tsp of the oil in a wok or large frying pan over high heat until it shimmers. Add half the beef in one layer, leave it for 1 minute to brown, then stir-fry for 1 minute more, until browned outside but still a little pink inside. Tip onto a plate and repeat with another 2 tsp oil and the rest of the beef.",
+    "Add the last of the oil, the broccoli, carrot and 3 tbsp water. Cover and cook for 2 minutes, then uncover, add the red pepper, garlic and ginger and stir-fry for 2 minutes, until the broccoli is bright green and just tender and the water has gone.",
+    "Stir the sauce, pour it in and stir for about 1 minute, until it boils and turns thick and glossy. Return the beef and its juices and toss for 30 seconds, just to heat through, so it stays tender.",
+    "Scatter with the spring onions and serve over the brown rice."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Slice the beef and vegetables and mix the sauce up to a day ahead; keep them covered in the fridge.",
+  "kcalPerServing": 590,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

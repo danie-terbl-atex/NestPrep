@@ -1,0 +1,154 @@
+{
+  "id": "chicken-cauliflower-fried-rice",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Cauliflower",
+      "amount": "1 large head ≈ 900 g, leaves and core off ≈ 75 % = 675 g florets",
+      "grams": 675,
+      "kcal": 169,
+      "proteinG": 13.0,
+      "fatG": 1.9,
+      "netCarbsG": 20.0,
+      "reference": "Cauliflower, raw — USDA FDC 169986: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "3 SA large × 55 g",
+      "grams": 165,
+      "kcal": 236,
+      "proteinG": 20.7,
+      "fatG": 15.7,
+      "netCarbsG": 1.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "2.5 tbsp × 13.5 g, all in the pan",
+      "grams": 33.8,
+      "kcal": 299,
+      "proteinG": 0.0,
+      "fatG": 33.8,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken breast fillets",
+      "amount": "600 g raw",
+      "grams": 600,
+      "kcal": 720,
+      "proteinG": 135.0,
+      "fatG": 15.7,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw — USDA FDC 171077: 120 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrot",
+      "amount": "1 medium ≈ 80 g",
+      "grams": 80,
+      "kcal": 33,
+      "proteinG": 0.7,
+      "fatG": 0.2,
+      "netCarbsG": 5.4,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "2 × 90 g",
+      "grams": 180,
+      "kcal": 31,
+      "proteinG": 2.2,
+      "fatG": 0.6,
+      "netCarbsG": 3.8,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "6 × 15 g",
+      "grams": 90,
+      "kcal": 29,
+      "proteinG": 1.6,
+      "fatG": 0.2,
+      "netCarbsG": 4.3,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tamari",
+      "amount": "3 tbsp × 16 g",
+      "grams": 48,
+      "kcal": 29,
+      "proteinG": 5.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.3,
+      "reference": "Soy sauce made from soy (tamari) — USDA FDC 174278: 60 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 1610,
+  "kcalPerServing": 400,
+  "perServing": {
+    "proteinG": 45.2,
+    "fatG": 17.1,
+    "netCarbsG": 12.2
+  },
+  "notes": "Assumptions that change the number: the 900 g cauliflower head gives ~675 g of florets once the leaves and core are cut off; all 2.5 tbsp oil eaten; 150 g chicken breast and nearly one egg a person; tamari at USDA values. Published check: cauliflower fried rice with chicken and egg is typically listed at ~350–450 kcal a serving; 400 agrees."
+}

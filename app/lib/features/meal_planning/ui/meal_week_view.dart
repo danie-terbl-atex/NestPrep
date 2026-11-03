@@ -15,9 +15,14 @@ import 'planned_day_card.dart';
 /// from a single cached document. A slot planned from a recipe opens it
 /// through [onOpenRecipe] (recipes ADR-0003 §6).
 class MealWeekView extends StatelessWidget {
-  const MealWeekView({required this.onOpenRecipe, super.key});
+  const MealWeekView({
+    required this.onOpenRecipe,
+    required this.onPickRecipe,
+    super.key,
+  });
 
   final ValueChanged<String> onOpenRecipe;
+  final RecipePicker onPickRecipe;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +102,7 @@ class MealWeekView extends StatelessWidget {
                       today: week.today,
                       library: week.library,
                       onOpenRecipe: onOpenRecipe,
+                      onPickRecipe: onPickRecipe,
                     ),
                   ),
               ],

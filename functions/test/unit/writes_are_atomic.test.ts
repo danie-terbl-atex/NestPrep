@@ -253,6 +253,7 @@ describe('every callable declares what it may cost', () => {
         'notifyCoParentHandover',
         'notifyCoParentRequest',
         'notifyPhotoUpdate',
+        'notifyPlaceEvent',
         // Plan my week: two proposals from the model — ideas, then the week
         // from the store's products — behind premium and the same monthly
         // cap; they write nothing but the cap's own ledger (lunch-box
@@ -284,6 +285,43 @@ describe('every callable declares what it may cost', () => {
         // A household recipe's allergen codes come from word lists no rule
         // can run, so only a Function writes one (recipes ADR-0002).
         'saveLunchRecipes',
+        // Photo frames: a device with no Auth user pairs by a code a parent
+        // claims, and reads a day assembled across areas no grant opens to it
+        // (photo-frames ADR-0001), and unlinks itself with its own secret
+        // (photo-frames ADR-0004). It reads a month (photo-frames ADR-0005)
+        // and its household's screensaver album (photo-frames ADR-0006) the
+        // same way, ticks what its panels show (photo-frames ADR-0007),
+        // adds an event in the name of whoever says they are adding it
+        // (photo-frames ADR-0008), fetches today's lunch-box pictures
+        // (photo-frames ADR-0009), opens a page family shares from a phone,
+        // which only family may put on the wall (C-0023 rev 9), streams a
+        // shared recipe's photo (photo-frames ADR-0013), and searches the
+        // family's shop and adds to the grocery list in the name of whoever
+        // says they are adding it (photo-frames ADR-0012).
+        'addFrameEvent',
+        'addFrameGroceryItem',
+        'claimFramePairing',
+        'getFrameDay',
+        'getFrameLunchPhoto',
+        'getFrameMonth',
+        'getFrameRecipePhoto',
+        'getFramePhoto',
+        'getFramePhotos',
+        'pollFramePairing',
+        'searchFrameProducts',
+        'shareToFrame',
+        'startFramePairing',
+        'tickFrameItem',
+        'unlinkFrame',
+        'waitFrameShare',
+        // Assistants: an OAuth authorization server — codes, tokens and a
+        // fetched client document no rule can issue, hash or check — the MCP
+        // endpoint, which acts for a bearer token no rule can read, and the
+        // trigger that disconnects a member who leaves or stops being family
+        // (assistants ADR-0001 to ADR-0003).
+        'assistantAuth',
+        'assistantMcp',
+        'pruneAssistantConnections',
       ].sort(),
     );
   });

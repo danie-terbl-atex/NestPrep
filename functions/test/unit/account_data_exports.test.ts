@@ -89,6 +89,7 @@ describe('the export link lives an hour, and no longer', () => {
         deleted.push(...paths);
         return Promise.resolve();
       },
+      list: () => Promise.resolve([]),
       exists: () => Promise.resolve(false),
     };
     const removed = await sweepExpiredExports(objects, new Date(Date.UTC(2026, 8, 29, 8, 0)));
@@ -145,6 +146,19 @@ describe('the inventory of what is a person’s', () => {
     'homeCareJobs.by',
     'entries.byMemberId',
     'rewardRequests.memberId',
+    'homeCareProducts.stockChangedBy',
+    'homeCareRoutineTicks.updatedBy',
+    'lunchPacked.by',
+    'nannyShifts.byMemberId',
+    // A household setting someone last changed, not something they made.
+    'grocerySettings.updatedBy',
+    'homeCareHelpers.updatedBy',
+    'lunchBudget.updatedBy',
+    'lunchPantry.updatedBy',
+    'lunchPrices.updatedBy',
+    'nannySchoolRuns.updatedBy',
+    // A door or alarm code is the household's, and never goes into a download.
+    'nannySecrets.createdBy',
   ];
 
   it('lists every collection whose rules stamp who made a record', () => {

@@ -1,0 +1,161 @@
+{
+  "id": "breakfast-burritos",
+  "name": "Egg and bean breakfast burritos",
+  "summary": "Soft scrambled eggs, black beans, red pepper, onion and spinach with a little cheddar and fresh tomato salsa, rolled in wholewheat tortillas.",
+  "about": "Breakfast burritos, eggs and fillings rolled in a flour tortilla, come from the American Southwest, especially New Mexico. Rolled up and frozen, they are a breakfast that reheats in a few minutes on a busy morning.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the salsa"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salsa"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the filling"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the filling"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the filling"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Black beans",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, drained and rinsed",
+      "group": "For the filling"
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 60,
+      "unit": "g",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 6,
+      "unit": null,
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Wholewheat tortillas",
+      "quantity": 4,
+      "unit": null,
+      "note": "large, about 25 cm",
+      "group": "To assemble"
+    },
+    {
+      "name": "Cheddar cheese",
+      "quantity": 60,
+      "unit": "g",
+      "note": "grated",
+      "group": "To assemble"
+    }
+  ],
+  "steps": [
+    "Mix the tomatoes, coriander and lemon juice for the salsa, season with salt and set aside.",
+    "Heat the oil in a large non-stick frying pan over medium heat. Fry the onion and red pepper, stirring now and then, for 6 minutes, until soft. Add the garlic, cumin and paprika and stir for 30 seconds, until fragrant.",
+    "Add the black beans and cook for 2 to 3 minutes, lightly crushing about a third of them with the back of a spoon, until hot. Add the spinach and stir for 1 minute, until wilted. Tip into a bowl and wipe out the pan.",
+    "Beat the eggs with the salt. Pour into the pan over low heat and stir slowly with a spatula for 2 to 3 minutes, until just set in soft, creamy curds. Take off the heat straight away.",
+    "Warm the tortillas one at a time in a dry frying pan over medium heat for about 20 seconds a side, until soft and pliable.",
+    "Spoon a line of the bean mixture down the middle of each tortilla, top with egg, cheese and a spoon of salsa, fold in the sides and roll up tightly. For a crisp outside, put them seam side down in the hot dry pan for 1 to 2 minutes, until golden. Cut in half and serve."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 15,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Roll without the salsa, wrap each in foil and freeze for 2 months; reheat from frozen in foil at 180 °C for 25 minutes.",
+  "kcalPerServing": 520,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

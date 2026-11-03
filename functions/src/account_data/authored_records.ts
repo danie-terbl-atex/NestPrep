@@ -24,10 +24,16 @@ export const AUTHORED_RECORDS: readonly { collection: string; authorField: strin
   { collection: 'homeCareJobs', authorField: 'createdBy' },
   { collection: 'homeCareProducts', authorField: 'createdBy' },
   { collection: 'homeCareRooms', authorField: 'createdBy' },
+  { collection: 'homeCareRoutines', authorField: 'createdBy' },
+  { collection: 'lunchChoices', authorField: 'updatedBy' },
+  { collection: 'nannyBookings', authorField: 'createdBy' },
+  { collection: 'nannyPickupChanges', authorField: 'updatedBy' },
+  { collection: 'nannyPickupPeople', authorField: 'createdBy' },
   { collection: 'nannyContacts', authorField: 'createdBy' },
   { collection: 'nannyGuide', authorField: 'createdBy' },
   { collection: 'nannyRules', authorField: 'createdBy' },
   { collection: 'nannyShifts', authorField: 'carerMemberId' },
+  { collection: 'assistantSettings', authorField: 'updatedBy' },
 ];
 
 /** The most records of one kind an export lists; past it, the export says so (`BE-08`). */

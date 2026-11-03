@@ -1,0 +1,234 @@
+{
+  "id": "lean-chilli-con-carne",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "2 cup raw × 200 g/cup = 400 g",
+      "grams": 400,
+      "kcal": 1468,
+      "proteinG": 30.2,
+      "fatG": 12.8,
+      "netCarbsG": 290.6,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "1 tbsp ≈ 13.5 g",
+      "grams": 13.5,
+      "kcal": 119,
+      "proteinG": 0.0,
+      "fatG": 13.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 80 g",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 10.8,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Button mushrooms",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 55,
+      "proteinG": 7.7,
+      "fatG": 0.8,
+      "netCarbsG": 5.7,
+      "reference": "Mushrooms, white, raw — USDA FDC 169251: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Extra-lean beef mince",
+      "amount": "500 g raw, ~5 % fat",
+      "grams": 500,
+      "kcal": 685,
+      "proteinG": 107.0,
+      "fatG": 25.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 95% lean meat / 5% fat, raw (SA extra-lean mince) — USDA FDC 171790: 137 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "2 tsp × 2.1 g",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.7,
+      "fatG": 0.9,
+      "netCarbsG": 1.4,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "2 tsp × 2.3 g",
+      "grams": 4.6,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 0.9,
+      "reference": "Spices, paprika (smoked paprika is the same per gram) — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried oregano",
+      "amount": "1 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "1 tsp ≈ 2.7 g",
+      "grams": 2.7,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.4,
+      "netCarbsG": 0.4,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "2 × 400 g tins",
+      "grams": 800,
+      "kcal": 128,
+      "proteinG": 6.3,
+      "fatG": 2.0,
+      "netCarbsG": 12.6,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red kidney beans",
+      "amount": "2 × 400 g tins ≈ 240 g drained each",
+      "grams": 480,
+      "kcal": 595,
+      "proteinG": 38.3,
+      "fatG": 5.0,
+      "netCarbsG": 76.8,
+      "reference": "Beans, kidney, red, mature seeds, canned, drained solids — USDA FDC 174285: 124 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "0.5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Plain low-fat yoghurt",
+      "amount": "0.75 cup = 193 g",
+      "grams": 193,
+      "kcal": 122,
+      "proteinG": 10.1,
+      "fatG": 3.0,
+      "netCarbsG": 13.6,
+      "reference": "Yogurt, plain, low fat — USDA FDC 170886: 63 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "3 tbsp chopped × 1 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3486,
+  "kcalPerServing": 580,
+  "perServing": {
+    "proteinG": 35.0,
+    "fatG": 10.9,
+    "netCarbsG": 75.1
+  },
+  "notes": "Assumptions that change the number: extra-lean mince counted as 95 % lean / 5 % fat; two tins of kidney beans drain to 480 g; ~67 g raw brown rice a person (~245 kcal of the 580); a spoon of low-fat yoghurt each (~32 g). Published check: lean chilli con carne is typically listed at ~300–350 kcal without rice; with rice and yoghurt ~550–600 kcal, in line with 580."
+}

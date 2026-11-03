@@ -69,7 +69,8 @@ void main() {
         view: MealsView.week,
         onSelectView: (_) {},
         onSelectTab: (_) {},
-        onOpenRecipe: (_) {},
+        onPickRecipe: (_, _) async => null,
+        onOpenRecipe: (_, {heroTag}) {},
       ),
       view: Fixtures.view(viewerUid: viewerUid),
       providers: [

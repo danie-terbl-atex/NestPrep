@@ -8,6 +8,7 @@ import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_price.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_week_cost.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
 import 'package:nestprep/features/plan_week/model/idea_search.dart';
@@ -112,6 +113,7 @@ void main() {
       ],
       budget: const Money(50000),
       packing: packingFor({LunchSlot.snack}),
+      variety: const LunchVariety({}),
       reason: PlanFallbackReason.offline,
       weekSoFar:
           weekSoFar ??

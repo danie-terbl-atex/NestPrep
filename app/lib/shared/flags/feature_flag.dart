@@ -91,7 +91,16 @@ enum FeatureFlag {
 
   /// *Plan my week* at Pick n Pay, linking a member's own Pick n Pay
   /// account, and pushing the week's basket into their own cart.
-  addToPnp('addToPnp');
+  addToPnp('addToPnp'),
+
+  // ---- photo frames (photo-frames ADR-0001) ----
+
+  /// Linking a wall photo frame running NestPrep Home to the household.
+  photoFrames('photoFrames'),
+
+  /// NestPrep in Claude and ChatGPT: a member connects an assistant that adds
+  /// events and grocery items as them (assistants ADR-0001).
+  assistants('assistants');
 
   const FeatureFlag(this.field);
 

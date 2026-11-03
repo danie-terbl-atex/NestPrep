@@ -1,0 +1,94 @@
+{
+  "id": "braaibroodjies",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "White bread slices",
+      "amount": "16 slices, 38 g each (700 g loaf)",
+      "grams": 608,
+      "kcal": 1617,
+      "proteinG": 53.8,
+      "fatG": 20.1,
+      "netCarbsG": 283.9,
+      "reference": "Bread, white, commercially prepared — USDA FDC 174924: 266 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 717,
+      "proteinG": 0.9,
+      "fatG": 81.1,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "8 tbsp (19 g each)",
+      "grams": 152,
+      "kcal": 274,
+      "proteinG": 0.9,
+      "fatG": 0.3,
+      "netCarbsG": 65.4,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ = 180 kcal, 43 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "300 g",
+      "grams": 300,
+      "kcal": 1209,
+      "proteinG": 68.7,
+      "fatG": 99.9,
+      "netCarbsG": 10.2,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "3 medium, 123 g each",
+      "grams": 369,
+      "kcal": 66,
+      "proteinG": 3.3,
+      "fatG": 0.7,
+      "netCarbsG": 10.0,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium, 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.7,
+      "fatG": 0.2,
+      "netCarbsG": 11.4,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste, a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 3943,
+  "kcalPerServing": 490,
+  "perServing": {
+    "proteinG": 16.2,
+    "fatG": 25.3,
+    "netCarbsG": 47.6
+  },
+  "notes": "One sandwich of 8 (2 slices of bread). Assumptions: 38 g slices from a 700 g loaf; all 100 g butter used on the outsides; full-fat cheddar. Compared against: SideChef braaibroodjie 514 kcal (6 servings), African Bites 376 kcal, The Online Grill 312 kcal (6 servings). Ours, at 490, is with SideChef. The lower ones use less cheese (Online Grill) or thinner bread."
+}

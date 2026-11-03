@@ -1,0 +1,169 @@
+{
+  "id": "chicken-lettuce-cups",
+  "name": "Chicken lettuce cups",
+  "summary": "Chicken mince stir-fried with mushrooms, carrot, baby marrow and water chestnuts in a glossy soy and ginger sauce, spooned into crisp iceberg leaves.",
+  "about": "San choy bow is a Cantonese dish of minced meat stir-fried with crunchy vegetables and eaten wrapped in a lettuce leaf; the name means lettuce wrap. Chicken mince keeps it light, it is on the table in about half an hour, and children enjoy filling and folding their own cups.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy",
+    "shellfish",
+    "sesame"
+  ],
+  "dietTags": [
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Soy sauce",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "reduced-salt",
+      "group": "For the sauce"
+    },
+    {
+      "name": "Oyster sauce",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Sesame oil",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Cornflour",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Water",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sauce"
+    },
+    {
+      "name": "Iceberg lettuce",
+      "quantity": 1,
+      "unit": null,
+      "note": "a large head",
+      "group": "For the filling"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the filling"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "grated",
+      "group": "For the filling"
+    },
+    {
+      "name": "Spring onions",
+      "quantity": 4,
+      "unit": null,
+      "note": "sliced, white and green parts kept apart",
+      "group": "For the filling"
+    },
+    {
+      "name": "Chicken mince",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the filling"
+    },
+    {
+      "name": "Button mushrooms",
+      "quantity": 250,
+      "unit": "g",
+      "note": "finely chopped",
+      "group": "For the filling"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the filling"
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the filling"
+    },
+    {
+      "name": "Water chestnuts",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "about 225 g, drained and finely chopped",
+      "group": "For the filling"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped, optional",
+      "group": "To serve"
+    },
+    {
+      "name": "Lime",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Stir the soy sauce, oyster sauce, sesame oil, cornflour and water together in a small bowl until no lumps of cornflour remain.",
+    "Cut the core out of the lettuce, run cold water into the hole and gently peel off the leaves whole. Trim them into cup shapes with scissors, shake dry and keep them in the fridge so they stay crisp.",
+    "Heat the oil in a wok or large frying pan over high heat. Stir-fry the garlic, ginger and white spring onion for 30 seconds, until fragrant but not brown.",
+    "Add the chicken mince and break it up with a wooden spoon. Stir-fry for 5 to 6 minutes, until it is white all the way through with no pink, and starting to brown in places.",
+    "Add the mushrooms, carrot and baby marrow and stir-fry for 3 minutes, until the mushrooms have collapsed and the carrot has softened. Stir in the water chestnuts.",
+    "Stir the sauce again, pour it in and toss for 1 to 2 minutes, until it bubbles, turns glossy and clings to the mince with no liquid pooling in the pan. Take it off the heat and stir in the green spring onion.",
+    "Spoon the filling into a serving bowl and put it on the table with the lettuce cups, coriander and lime wedges. Everyone spoons two or three tablespoons into a leaf, adds a squeeze of lime, folds it and eats it with their hands."
+  ],
+  "servings": 4,
+  "prepMinutes": 20,
+  "cookMinutes": 12,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Chop the vegetables and make the sauce in the morning; the lettuce cups keep crisp in the fridge for a day.",
+  "kcalPerServing": 320,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

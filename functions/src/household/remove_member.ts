@@ -4,6 +4,7 @@ import { logger } from 'firebase-functions/v2';
 import { kidAuthAccounts } from '../accounts/kid_auth_accounts';
 import { detachKidDevices, readKidDeviceUids } from '../accounts/kid_devices';
 import { memberDetailRefs } from '../family_profiles/member_details';
+import { forgetWhereTheyWere } from '../live_location/forget_location';
 import { db } from '../shared/firestore';
 import { adminCount, memberRef, readHousehold, roleOf } from './documents';
 import { refuse } from './errors';
@@ -22,7 +23,8 @@ import { removeMemberInput } from './schemas';
  * (accounts ADR-0003).
  *
  * What the household knew about the person — their family profile and their
- * medication — is deleted with them (family-profiles ADR-0001).
+ * medication — is deleted with them (family-profiles ADR-0001), and so is
+ * where they were (live-location ADR-0004).
  */
 export const removeMember = onCall(async (request) => {
   const uid = requireUid(request.auth);
@@ -59,6 +61,7 @@ export const removeMember = onCall(async (request) => {
     return devices;
   });
   await kidAuthAccounts().close(kidDevices);
+  await forgetWhereTheyWere(store, input.householdId, input.memberId);
 
   logger.info('member removed', { householdId: input.householdId });
   return { householdId: input.householdId };

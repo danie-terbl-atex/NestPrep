@@ -7,6 +7,7 @@ import 'package:nestprep/features/recipes/model/recipe_facet.dart';
 import 'package:nestprep/features/recipes/model/recipe_filter.dart';
 import 'package:nestprep/features/recipes/model/recipe_meal_filter.dart';
 import 'package:nestprep/features/recipes/model/recipe_shelf.dart';
+import 'package:nestprep/features/recipes/model/recipe_tag.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import '../../../support/recipe_fixtures.dart';
@@ -147,6 +148,70 @@ void main() {
       RecipeFacet.braai,
       reason: 'in the order a family reaches for them',
     );
+  });
+
+  group('healthy and the ways a family eats (recipes ADR-0006)', () {
+    final salmon = RecipeFixtures.meal(
+      'salmon-traybake',
+      'Salmon traybake',
+      placement: const {RecipeContext.dinner: 'main'},
+      tags: const {RecipeTag.healthy, RecipeTag.quick},
+      dietTags: const ['pescatarian', 'glutenFree', 'banting', 'keto'],
+    );
+    final stirFry = RecipeFixtures.meal(
+      'chicken-stir-fry',
+      'Chicken stir-fry',
+      placement: const {RecipeContext.dinner: 'main'},
+      tags: const {RecipeTag.healthy},
+      dietTags: const ['dairyFree'],
+    );
+    final salad = RecipeFixtures.meal(
+      'lentil-salad',
+      'Lentil salad',
+      placement: const {
+        RecipeContext.lunch: 'main',
+        RecipeContext.dinner: 'side',
+      },
+      tags: const {RecipeTag.healthy},
+      dietTags: const ['vegetarian', 'vegan', 'glutenFree', 'dairyFree'],
+    );
+    final healthy = RecipeCatalogue(
+      [...RecipeFixtures.catalogue, salmon, stirFry, salad]
+        ..sort((a, b) => a.name.compareTo(b.name)),
+    );
+
+    RecipeDiscovery among([RecipeFilter filter = const RecipeFilter()]) =>
+        RecipeDiscovery.of(healthy, filter: filter, today: today);
+
+    test('the page opens on a shelf of healthy dinner mains', () {
+      final shelf = among().shelves.first;
+      expect(shelf.kind, RecipeShelfKind.healthyWeeknights);
+      expect(shelf.recipes, [stirFry, salmon], reason: 'a healthy side is not');
+    });
+
+    test('a diet chip finds what is tagged with it', () {
+      expect(names(among(const RecipeFilter(facet: RecipeFacet.banting))), [
+        'Salmon traybake',
+      ]);
+      expect(names(among(const RecipeFilter(facet: RecipeFacet.glutenFree))), [
+        'Lentil salad',
+        'Salmon traybake',
+      ]);
+      expect(names(among(const RecipeFilter(facet: RecipeFacet.healthy))), [
+        'Chicken stir-fry',
+        'Lentil salad',
+        'Salmon traybake',
+      ]);
+    });
+
+    test('a diet chip is offered only once something carries it', () {
+      expect(
+        healthy.facets,
+        containsAll([RecipeFacet.keto, RecipeFacet.dairyFree]),
+      );
+      expect(catalogue.facets, isNot(contains(RecipeFacet.keto)));
+      expect(catalogue.facets, isNot(contains(RecipeFacet.healthy)));
+    });
   });
 
   test('with no dinner main at all there is no pick for tonight', () {

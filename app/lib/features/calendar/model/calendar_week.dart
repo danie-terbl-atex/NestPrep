@@ -4,13 +4,15 @@ import 'birthday_occurrence.dart';
 import 'day_entry.dart';
 import 'event_occurrence.dart';
 
-/// One week of the household's calendar, already grouped by day — so neither
-/// view groups in a build method (`FE-12`).
+/// A run of the household's calendar already grouped by day, so no view
+/// groups in a build method (`FE-12`). It is one week, or the whole weeks a
+/// month grid shows (design-system ADR-0017).
 class CalendarWeek {
   const CalendarWeek({
     required this.weekStart,
     required this.today,
     required this.byDay,
+    this.dayCount = daysInAWeek,
   });
 
   /// Both lists arrive in the order their own expansion produced, so a day is
@@ -28,9 +30,10 @@ class CalendarWeek {
     List<BirthdayOccurrence> birthdays = const [],
     List<SyncedEvent> synced = const [],
     String? memberFilter,
+    int dayCount = daysInAWeek,
   }) {
     final byDay = <String, List<DayEntry>>{
-      for (var day = 0; day < daysInAWeek; day++)
+      for (var day = 0; day < dayCount; day++)
         weekStart.addDays(day).iso: <DayEntry>[],
     };
     for (final birthday in birthdays) {
@@ -43,7 +46,7 @@ class CalendarWeek {
       }
       byDay[occurrence.date.iso]?.add(EventEntry(occurrence));
     }
-    final weekEnd = weekStart.addDays(daysInAWeek - 1);
+    final weekEnd = weekStart.addDays(dayCount - 1);
     final importedByDay = <String, List<SyncedEntry>>{};
     for (final event in synced) {
       if (memberFilter != null && event.memberId != memberFilter) continue;
@@ -55,7 +58,12 @@ class CalendarWeek {
       final entries = byDay[day];
       if (entries != null) byDay[day] = _mergeByTime(entries, imported);
     }
-    return CalendarWeek(weekStart: weekStart, today: today, byDay: byDay);
+    return CalendarWeek(
+      weekStart: weekStart,
+      today: today,
+      byDay: byDay,
+      dayCount: dayCount,
+    );
   }
 
   /// [entries] in their own order, with [imported] slotted in by start time.
@@ -87,13 +95,14 @@ class CalendarWeek {
 
   static const daysInAWeek = 7;
 
-  /// The Monday this week starts on (calendar phase 1).
+  /// The Monday this run starts on (calendar phase 1).
   final CalendarDate weekStart;
   final CalendarDate today;
   final Map<String, List<DayEntry>> byDay;
+  final int dayCount;
 
   List<CalendarDate> get days => [
-    for (var day = 0; day < daysInAWeek; day++) weekStart.addDays(day),
+    for (var day = 0; day < dayCount; day++) weekStart.addDays(day),
   ];
 
   List<DayEntry> on(CalendarDate date) => byDay[date.iso] ?? const [];
@@ -101,5 +110,5 @@ class CalendarWeek {
   bool get isEmpty => byDay.values.every((entries) => entries.isEmpty);
 
   bool get containsToday =>
-      !today.isBefore(weekStart) && !today.isAfter(weekStart.addDays(6));
+      today.isInRange(weekStart, weekStart.addDays(dayCount - 1));
 }

@@ -9,7 +9,7 @@ enum TourTarget {
   /// The bar's five places.
   tabBar,
 
-  /// Today's lunchbox cards — or, with no child yet, the way to add one.
+  /// Today's lunchbox rows — or, with no child yet, the way to add one.
   todayLunch,
 
   /// The bell in the header.
@@ -44,6 +44,10 @@ enum TourTarget {
 
   /// The budget tile.
   lunchBudget,
+
+  /// *Month | Week* at the top of the Calendar tab (design-system
+  /// ADR-0017).
+  calendarViews,
 
   /// *Recipes | This week* at the top of the Meals tab (design-system
   /// ADR-0015).

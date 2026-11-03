@@ -5,6 +5,7 @@ import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/recurrence/calendar_date_converter.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../assistants/model/assistant_via.dart';
 
 part 'household_event.freezed.dart';
 part 'household_event.g.dart';
@@ -36,6 +37,13 @@ abstract class HouseholdEvent with _$HouseholdEvent {
     @Default(<String>[]) List<String> memberIds,
     required String createdBy,
     @ServerTimestampConverter() DateTime? createdAt,
+
+    /// The assistant that made it, on an event an assistant made (assistants
+    /// ADR-0005). Only a Function writes it, so it is read and never written:
+    /// the rules refuse it on a create, and an edit sends only the fields it
+    /// changes, which leaves it where it is.
+    @JsonKey(includeToJson: false, unknownEnumValue: AssistantVia.assistant)
+    AssistantVia? createdVia,
   }) = _HouseholdEvent;
 
   const HouseholdEvent._();

@@ -4,10 +4,9 @@ import 'package:flutter/widgets.dart';
 /// small raised numerator, the fraction slash, a small denominator — so
 /// `1 1/3 cups` reads as a cook writes it, in the app's own face.
 ///
-/// The bundled DM Sans is subset: it carries ½ ¼ ¾ but not ⅓ ⅔ ⅛, and its
-/// `frac` feature knows only those three. Drawing every fraction this way
-/// keeps a third looking like a half, rather than one glyph from the font
-/// and another from whatever the phone falls back to. It grows with the text
+/// The bundled Mona Sans carries ½ ¼ ¾ but not ⅓ ⅔ ⅛. Drawing every
+/// fraction this way keeps a third looking like a half, rather than one glyph
+/// from the font and another from whatever the phone falls back to. It grows with the text
 /// setting like the words around it (`FE-13`). A screen reader is given the
 /// words by the widget that uses it.
 InlineSpan nestFractionSpan(String text, TextStyle style) {

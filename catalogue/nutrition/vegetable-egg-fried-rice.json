@@ -1,0 +1,144 @@
+{
+  "id": "vegetable-egg-fried-rice",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Eggs",
+      "amount": "6 SA large × 55 g",
+      "grams": 330,
+      "kcal": 472,
+      "proteinG": 41.4,
+      "fatG": 31.4,
+      "netCarbsG": 2.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "6 × 15 g",
+      "grams": 90,
+      "kcal": 29,
+      "proteinG": 1.6,
+      "fatG": 0.2,
+      "netCarbsG": 4.3,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 75 g",
+      "grams": 150,
+      "kcal": 62,
+      "proteinG": 1.4,
+      "fatG": 0.4,
+      "netCarbsG": 10.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cabbage",
+      "amount": "2 cups shredded ≈ 148 g (70 g per 237 ml US cup)",
+      "grams": 148,
+      "kcal": 37,
+      "proteinG": 1.9,
+      "fatG": 0.1,
+      "netCarbsG": 4.9,
+      "reference": "Cabbage, raw — USDA FDC 169975: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Frozen peas",
+      "amount": "1 cup ≈ 141 g (134 g per US cup)",
+      "grams": 141,
+      "kcal": 109,
+      "proteinG": 7.4,
+      "fatG": 0.6,
+      "netCarbsG": 12.9,
+      "reference": "Peas, green, frozen, unprepared — USDA FDC 170016: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Frozen sweetcorn",
+      "amount": "1 cup ≈ 144 g (136 g per US cup)",
+      "grams": 144,
+      "kcal": 127,
+      "proteinG": 4.3,
+      "fatG": 1.1,
+      "netCarbsG": 26.8,
+      "reference": "Corn, sweet, yellow, frozen, kernels cut off cob, unprepared — USDA FDC 168398: 88 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cooked brown rice",
+      "amount": "4 cups cooked ≈ 852 g (202 g per US cup; ≈ 1½ cups raw)",
+      "grams": 852,
+      "kcal": 1048,
+      "proteinG": 23.3,
+      "fatG": 8.3,
+      "netCarbsG": 204.3,
+      "reference": "Rice, brown, long-grain, cooked — USDA FDC 169704: 123 kcal / 100 g"
+    },
+    {
+      "ingredient": "Reduced-salt soy sauce",
+      "amount": "3 tbsp × 16 g",
+      "grams": 48,
+      "kcal": 27,
+      "proteinG": 4.3,
+      "fatG": 0.1,
+      "netCarbsG": 2.3,
+      "reference": "Soy sauce made from soy and wheat (shoyu), low sodium — USDA FDC 172473: 57 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sesame oil",
+      "amount": "2 tsp × 4.5 g",
+      "grams": 9,
+      "kcal": 80,
+      "proteinG": 0.0,
+      "fatG": 9.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sesame, salad or cooking — USDA FDC 171016: 884 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2288,
+  "kcalPerServing": 570,
+  "perServing": {
+    "proteinG": 22.0,
+    "fatG": 19.7,
+    "netCarbsG": 69.6
+  },
+  "notes": "Assumptions that move the number: 4 cups cooked brown rice ≈ 852 g at the cooked value (1048 kcal; consistent with 1½ cups ≈ 292 g raw); 6 SA large eggs; 2 tbsp sunflower and 2 tsp sesame oil all eaten; reduced-salt soy at 16 g a tbsp. Cross-check: published vegetable egg fried rice lists ~450–550 kcal a serving; 570 is at the top because the portion carries 1 cup of cooked rice plus peas and corn. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

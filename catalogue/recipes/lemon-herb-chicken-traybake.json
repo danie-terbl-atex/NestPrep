@@ -1,0 +1,157 @@
+{
+  "id": "lemon-herb-chicken-traybake",
+  "name": "Lemon and herb chicken traybake",
+  "summary": "Chicken thighs roasted on one tray with baby marrow, peppers, red onion, cherry tomatoes and olives in olive oil, lemon, garlic and oregano.",
+  "about": "A one-tray roast in the Mediterranean style, where chicken and vegetables cook together in olive oil, lemon, garlic and oregano and share their juices. It needs ten minutes of chopping and then looks after itself in the oven, and leftovers make a good lunch the next day.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Lemons",
+      "quantity": 2,
+      "unit": null,
+      "note": "one zested and juiced, one cut into wedges",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 4,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Dried thyme",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Boneless skinless chicken thighs",
+      "quantity": 800,
+      "unit": "g",
+      "note": "about 8",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Baby marrows",
+      "quantity": 4,
+      "unit": null,
+      "note": "cut into thick rounds",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Yellow pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "cut into chunks",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Red onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "cut into wedges",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Cherry tomatoes",
+      "quantity": 250,
+      "unit": "g",
+      "note": null,
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Pitted black olives",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "Kalamata if you can find them",
+      "group": "For the vegetables"
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the vegetables"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C if your oven is a fan oven). In a large bowl mix 2 tbsp olive oil with the lemon zest and juice, garlic, oregano, thyme, salt and pepper. Add the chicken, turn it to coat and leave it while you cut the vegetables.",
+    "Spread the baby marrow, peppers and onion over a large roasting tray, about 40 × 30 cm, in one layer; use two trays if they crowd. Toss with the other 2 tbsp olive oil and a pinch of salt and roast for 15 minutes, until the edges start to soften and colour.",
+    "Take the tray out and push the vegetables aside to make room for the chicken. Lay the thighs flat among them, smooth side up, and pour over any marinade left in the bowl. Scatter over the tomatoes, olives and lemon wedges.",
+    "Roast for 20 to 25 minutes, until the chicken is golden and the juices run clear when you cut into the thickest piece, with no pink left, and the tomatoes have split and softened.",
+    "Squeeze the roasted lemon wedges over the tray, scatter with the parsley and serve straight from the tray with a big green salad."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 40,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Marinate the chicken in the fridge up to a day ahead and cut the vegetables in the morning.",
+  "kcalPerServing": 470,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

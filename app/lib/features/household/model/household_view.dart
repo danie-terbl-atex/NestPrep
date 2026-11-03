@@ -32,6 +32,11 @@ class HouseholdView {
   Member? get viewerMember =>
       members.where((member) => member.isClaimedBy(viewerUid)).firstOrNull;
 
+  late final List<String> kidMemberIds = [
+    for (final member in members)
+      if (member.role == MemberRole.kid) member.id,
+  ];
+
   List<Member> get unclaimedMembers =>
       members.where((member) => !member.isClaimed).toList();
 

@@ -17,6 +17,7 @@ export const AREAS = [
   'medical',
   'homeCare',
   'nannyHub',
+  'location',
 ] as const;
 export type Area = (typeof AREAS)[number];
 
@@ -41,6 +42,7 @@ export const AREA_LEVELS: Record<Area, readonly Level[]> = {
   medical: ['none', 'own', 'view', 'edit'],
   homeCare: ['none', 'own', 'view', 'edit'],
   nannyHub: ['none', 'view', 'edit'],
+  location: ['none', 'view', 'edit'],
 };
 
 /** The areas whose bytes live in Cloud Storage, and so travel on the token. */
@@ -74,6 +76,7 @@ export const ROLE_DEFAULTS: Record<RestrictedRole, Grant> = {
     medical: 'none',
     homeCare: 'none',
     nannyHub: 'none',
+    location: 'view',
   },
   helper: {
     calendar: 'view',
@@ -86,6 +89,7 @@ export const ROLE_DEFAULTS: Record<RestrictedRole, Grant> = {
     medical: 'none',
     homeCare: 'own',
     nannyHub: 'none',
+    location: 'none',
   },
   carer: {
     calendar: 'view',
@@ -98,6 +102,7 @@ export const ROLE_DEFAULTS: Record<RestrictedRole, Grant> = {
     medical: 'view',
     homeCare: 'none',
     nannyHub: 'edit',
+    location: 'none',
   },
 };
 

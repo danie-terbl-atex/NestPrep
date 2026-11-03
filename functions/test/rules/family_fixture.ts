@@ -39,6 +39,7 @@ export const NONE: Grant = {
   medical: 'none',
   homeCare: 'none',
   nannyHub: 'none',
+  location: 'none',
 };
 /** A parent let this helper see the family's profiles, and not their medicine. */
 export const PROFILES_ONLY: Grant = { ...NONE, familyProfiles: 'view' };

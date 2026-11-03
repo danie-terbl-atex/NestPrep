@@ -57,6 +57,7 @@ final class WelcomeTourPlan {
     if (_seesLunches)
       const TourStop(TourTarget.todayLunch, place: TourPlace.today),
     const TourStop(TourTarget.bell, place: TourPlace.today),
+    if (HouseholdTab.week.isOpenTo(_permissions)) _calendar(),
     if (_seesLunches) ..._lunch(),
     if (HouseholdTab.meals.isOpenTo(_permissions)) _meals(),
     ..._lists(),
@@ -110,8 +111,15 @@ final class WelcomeTourPlan {
     ];
   }
 
-  /// The Meals tab, where the bar's third place goes since design-system
-  /// ADR-0015: its recipes and the week they go into. Somebody who may only
+  /// The calendar, the bar's second place since design-system ADR-0017.
+  TourStop _calendar() => TourStop(
+    TourTarget.calendarViews,
+    place: TourPlace.calendar,
+    isLookOnly: !_permissions.canEdit(HouseholdArea.calendar),
+  );
+
+  /// Meals, under Food since design-system ADR-0017: its recipes and the
+  /// week they go into. Somebody who may only
   /// look at meals is told what they can see, not what they can plan.
   TourStop _meals() => TourStop(
     TourTarget.mealsViews,

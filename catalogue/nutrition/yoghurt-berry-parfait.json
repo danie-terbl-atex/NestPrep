@@ -1,0 +1,84 @@
+{
+  "id": "yoghurt-berry-parfait",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Rolled oats",
+      "amount": "1 cup ≈ 85 g",
+      "grams": 85,
+      "kcal": 322,
+      "proteinG": 11.2,
+      "fatG": 5.5,
+      "netCarbsG": 49.0,
+      "reference": "Cereals, oats, regular and quick, not fortified, dry — USDA FDC 173904: 379 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower seeds",
+      "amount": "2 tbsp × 9 g",
+      "grams": 18,
+      "kcal": 105,
+      "proteinG": 3.7,
+      "fatG": 9.3,
+      "netCarbsG": 2.1,
+      "reference": "Seeds, sunflower seed kernels, dried — USDA FDC 170562: 584 kcal / 100 g"
+    },
+    {
+      "ingredient": "Pumpkin seeds",
+      "amount": "2 tbsp × 8 g",
+      "grams": 16,
+      "kcal": 89,
+      "proteinG": 4.8,
+      "fatG": 7.8,
+      "netCarbsG": 0.8,
+      "reference": "Seeds, pumpkin and squash seed kernels, dried — USDA FDC 170556: 559 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mixed berries",
+      "amount": "400 g",
+      "grams": 400,
+      "kcal": 176,
+      "proteinG": 2.8,
+      "fatG": 1.2,
+      "netCarbsG": 35.6,
+      "reference": "Fresh berries as strawberries + blueberries 1:1 — USDA FDC 167762 + 171711: 44 kcal / 100 g"
+    },
+    {
+      "ingredient": "Low-fat plain yoghurt",
+      "amount": "2½ cups = 625 ml × 1.03 g/ml",
+      "grams": 644,
+      "kcal": 406,
+      "proteinG": 33.8,
+      "fatG": 10.0,
+      "netCarbsG": 45.3,
+      "reference": "Yogurt, plain, low fat — USDA FDC 170886: 63 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bananas",
+      "amount": "2 medium × 115 g peeled",
+      "grams": 230,
+      "kcal": 205,
+      "proteinG": 2.5,
+      "fatG": 0.8,
+      "netCarbsG": 46.6,
+      "reference": "Bananas, raw — USDA FDC 173944: 89 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1309,
+  "kcalPerServing": 330,
+  "perServing": {
+    "proteinG": 14.7,
+    "fatG": 8.6,
+    "netCarbsG": 45.0
+  },
+  "notes": "Assumptions that move the number: 2½ cups low-fat yoghurt ≈ 644 g (406 kcal); oats 85 g a cup, toasted dry (no oil or honey in the recipe); seeds ≈ 8–9 g a tbsp. Cross-check: published yoghurt, berry and oat parfaits list ~280–350 kcal a glass; 330 agrees. Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

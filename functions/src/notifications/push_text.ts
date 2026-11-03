@@ -84,3 +84,13 @@ export const COPARENT_HANDOVER_TEXT: PushText = {
   title: 'A handover note from the other home',
   body: 'See what is coming across before the switch.',
 };
+
+export const PLACE_ARRIVAL_TEXT: PushText = {
+  title: 'An arrival',
+  body: 'Somebody reached one of your places — open NestPrep to see who.',
+};
+
+export const PLACE_DEPARTURE_TEXT: PushText = {
+  title: 'A departure',
+  body: 'Somebody left one of your places — open NestPrep to see who.',
+};

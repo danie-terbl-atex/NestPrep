@@ -5,7 +5,12 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { parseBlocks, parseDocument, renderInline } from '../../../hosting/tools/site-markdown.mjs';
-import { LEGAL_DOCUMENTS, buildSite } from '../../../hosting/tools/site-pages.mjs';
+import {
+  FIREBASE_WEB_SDK,
+  LEGAL_DOCUMENTS,
+  buildSite,
+} from '../../../hosting/tools/site-pages.mjs';
+import { ASSISTANT_SCOPES } from '../../src/assistants/assistant_scopes';
 
 /**
  * The public site (`hosting/`) is generated into `hosting/public/` and
@@ -32,9 +37,10 @@ describe('the public site is generated', () => {
     ).not.toThrow();
   });
 
-  it('with the landing page, both legal documents, the deletion and invite pages and a 404', () => {
+  it('with the landing page, both legal documents, the deletion, invite and connect pages and a 404', () => {
     expect(pages.map((page) => page.path).sort()).toEqual([
       '404.html',
+      'connect/index.html',
       'delete-account/index.html',
       'index.html',
       'invite/index.html',
@@ -230,6 +236,104 @@ describe('an invite link opens the app or says how to join (household ADR-0005)'
     )?.[1];
     expect(links[0]?.target.package_name).toBe(applicationId);
     expect(links[0]?.target.sha256_cert_fingerprints.length).toBeGreaterThan(0);
+  });
+});
+
+describe('the consent page an assistant sends a member to (assistants ADR-0002)', () => {
+  const page = read('hosting/src/pages/connect.html');
+  const script = read('hosting/src/connect.js');
+  const firebase = JSON.parse(read('firebase.json')) as {
+    hosting: {
+      rewrites: object[];
+      headers: { source: string; headers: { key: string; value: string }[] }[];
+    };
+  };
+  const built = String(site.get('connect/index.html'));
+
+  it('says, just above Allow, to continue only from one’s own assistant', () => {
+    const warning = built.indexOf(
+      'Only continue if you just chose Connect in your own Claude or ChatGPT.',
+    );
+    expect(warning).toBeGreaterThan(0);
+    expect(built.indexOf('type="submit">Allow</button>', warning)).toBeGreaterThan(warning);
+  });
+
+  it('offers a labelled switch for every scope, and only those', () => {
+    const offered = [...page.matchAll(/data-scope="([a-z:]+)"/g)].map((match) => match[1]);
+    expect(offered.sort()).toEqual([...ASSISTANT_SCOPES].sort());
+    for (const scope of ASSISTANT_SCOPES) {
+      expect(page).toMatch(new RegExp(`value="${scope}"[^>]*/>\\s*<label`));
+    }
+  });
+
+  it('has words for every state the script shows and every refusal the server gives', () => {
+    const shown = [...script.matchAll(/(?:show|signOut)\('([a-zA-Z]+)'\)/g)].map((m) => m[1]);
+    const consent = read('functions/src/assistants/auth/consent.ts');
+    const access = read('functions/src/assistants/assistant_access.ts');
+    const answered = [...consent.matchAll(/error: '([a-zA-Z]+)'/g)].map((m) => m[1]);
+    const refused = [...access.matchAll(/AssistantRefusal\(\s*'\w+',\s*'(\w+)'/g)]
+      .map((m) => m[1])
+      .filter((reason) => reason !== 'scopeNotGranted' && reason !== 'noAccess');
+    const signIn = ['signInRequired', 'staleSignIn', 'kidAccount'];
+    expect(refused.length).toBeGreaterThan(4);
+    for (const state of [...shown, ...answered, ...refused, ...signIn]) {
+      if (state === 'invalidRequest' || state === 'notFound' || state === 'invalidScopes') continue;
+      expect(page, String(state)).toContain(`data-state="${String(state)}"`);
+    }
+  });
+
+  it('signs in with the Firebase SDK Hosting serves itself, and reads its config from the site', () => {
+    expect(built).toContain(`src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-app-compat.js"`);
+    expect(built).toContain(`src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-auth-compat.js"`);
+    expect(script).toContain("'/assets/connect-config.json'");
+    const config = JSON.parse(String(site.get('assets/connect-config.json'))) as Record<
+      string,
+      unknown
+    >;
+    expect(Object.keys(config).sort()).toEqual(['apiKey', 'appId', 'authDomain', 'projectId']);
+    expect(config['projectId']).toBe('nestprep-643b7');
+    expect(script).toContain('Persistence.NONE');
+  });
+
+  it('has its own CSP for exactly what Firebase sign-in needs, and the rest of the site keeps its own', () => {
+    const csp = (source: string): string =>
+      firebase.hosting.headers
+        .find((block) => block.source === source)
+        ?.headers.find((header) => header.key === 'Content-Security-Policy')?.value ?? '';
+    expect(csp('**')).toContain("connect-src 'self';");
+    const connect = csp('/connect');
+    expect(connect).toContain("script-src 'self' https://apis.google.com;");
+    expect(connect).toContain(
+      "connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;",
+    );
+    const authDomain = (
+      JSON.parse(String(site.get('assets/connect-config.json'))) as { authDomain: string }
+    ).authDomain;
+    expect(connect).toContain(`frame-src https://${authDomain};`);
+    expect(connect).toContain("frame-ancestors 'none'");
+  });
+
+  it('is reached through the rewrites the assistants call, all answered with no-store', () => {
+    const auth = { functionId: 'assistantAuth', region: 'europe-west1' };
+    for (const source of [
+      '/oauth/**',
+      '/.well-known/oauth-protected-resource',
+      '/.well-known/oauth-protected-resource/**',
+      '/.well-known/oauth-authorization-server',
+      '/.well-known/oauth-authorization-server/**',
+    ]) {
+      expect(firebase.hosting.rewrites).toContainEqual({ source, function: auth });
+    }
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/mcp',
+      function: { functionId: 'assistantMcp', region: 'europe-west1' },
+    });
+    const noStore = firebase.hosting.headers.find((block) => block.source.includes('/oauth/**'));
+    expect(noStore?.headers).toContainEqual({ key: 'Cache-Control', value: 'no-store' });
+    expect(script).toContain('`/oauth/consent/${action}`');
+    for (const action of ['describe', 'households', 'decide']) {
+      expect(script).toContain(`consent('${action}'`);
+    }
   });
 });
 

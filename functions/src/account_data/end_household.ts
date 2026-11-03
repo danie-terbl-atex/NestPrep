@@ -1,9 +1,11 @@
 import { FieldValue, type Firestore } from 'firebase-admin/firestore';
 
 import type { KidAuthAccounts } from '../accounts/kid_auth_accounts';
+import { deleteHouseholdCredentials } from '../assistants/connections/delete_grants';
 import { KID_PAIRINGS } from '../accounts/kid_documents';
 import { FEED_TOKENS } from '../calendar_sync/sync_documents';
 import { endHouseholdLinks } from '../coparent/end_household_links';
+import { FRAME_CREDENTIALS, FRAME_PAIRINGS } from '../frames/frame_documents';
 import { pushAccountClaims } from '../household/access_claim';
 import { type HouseholdDocument, INVITES, householdRef, userRef } from '../household/documents';
 import { STORE_PURCHASES } from '../subscriptions/subscription_documents';
@@ -28,8 +30,9 @@ export interface HouseholdEnding {
  *
  * The order is `BE-07`'s. The other accounts stop listing the household
  * first, so nobody is left pointing at a household that is half gone; then the
- * records that live outside it (invites, pairing codes, feed tokens, calendar
- * credentials, store links); then the household itself and its bytes; and
+ * records that live outside it (invites, pairing codes, feed tokens, frame and
+ * calendar credentials, assistants' tokens and codes, store links); then the
+ * household itself and its bytes; and
  * last the kid devices' users and the other accounts' claims, which are
  * cleanup after the household has already stopped trusting anyone. Every step
  * is safe to run again, and a household already gone is simply finished.
@@ -52,6 +55,9 @@ export async function endHousehold(
   await deleteWhereHousehold(store, INVITES, householdId);
   await deleteWhereHousehold(store, KID_PAIRINGS, householdId);
   await deleteWhereHousehold(store, FEED_TOKENS, householdId);
+  await deleteWhereHousehold(store, FRAME_CREDENTIALS, householdId);
+  await deleteWhereHousehold(store, FRAME_PAIRINGS, householdId);
+  await deleteHouseholdCredentials(store, householdId);
   await unlinkPurchases(store, householdId);
   // The other home of a child in two homes is told, and keeps what it saw.
   await endHouseholdLinks(store, householdId);

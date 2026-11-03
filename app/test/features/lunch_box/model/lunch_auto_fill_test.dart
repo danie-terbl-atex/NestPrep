@@ -6,6 +6,7 @@ import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_taste.dart';
+import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_week.dart';
 
 import '../../../support/household_fixtures.dart';
@@ -46,6 +47,7 @@ void main() {
     List<LunchFavourite> favourites = const [],
     LunchWeek? on,
     bool forLwazi = false,
+    LunchVariety variety = LunchVariety.standard,
   }) => LunchAutoFill.fill(
     plan:
         plan ??
@@ -58,6 +60,7 @@ void main() {
     library: LunchFixtures.library,
     rules: forLwazi ? lwazi.foodRules : ayanda.foodRules,
     taste: LunchTaste.nothingYet,
+    variety: variety,
   );
 
   test('fills every empty slot of an empty week, a treat on Friday only', () {
@@ -104,20 +107,43 @@ void main() {
     );
   });
 
-  test('varies the week rather than repeating one favourite item', () {
+  test('keeps the fruit the same all week and varies the main, by default', () {
     final result = fill();
     final mains = [
       for (var day = 1; day <= 5; day++)
         result.picks[key(day, LunchSlot.main)]!.itemId,
     ];
-    // Two mains are open to Ayanda (she dislikes the third), and two fruits:
-    // each pair alternates rather than one filling the week.
     final fruits = [
       for (var day = 1; day <= 5; day++)
         result.picks[key(day, LunchSlot.fruit)]!.itemId,
     ];
+    // Two mains are open to Ayanda (she dislikes the third): they alternate.
+    // Fruit is kept the same, so one bag does the week (lunch-box ADR-0028).
     expect(mains.toSet(), {'wrap', 'pb'});
+    expect(fruits.toSet(), hasLength(1));
+  });
+
+  test('varies a compartment the parent lets change', () {
+    final result = fill(variety: const LunchVariety({}));
+    final fruits = [
+      for (var day = 1; day <= 5; day++)
+        result.picks[key(day, LunchSlot.fruit)]!.itemId,
+    ];
     expect(fruits.toSet(), {'grapes', 'apple'});
+  });
+
+  test('keeps to what a person already packed in a compartment', () {
+    final grapes = LunchFixtures.library.firstWhere((i) => i.id == 'grapes');
+    final result = fill(
+      plan: LunchFixtures.plan(
+        LunchFixtures.ayandaId,
+        slots: {key(1, LunchSlot.fruit): LunchPick.of(grapes)},
+      ),
+    );
+    expect([
+      for (var day = 2; day <= 5; day++)
+        result.picks[key(day, LunchSlot.fruit)]!.itemId,
+    ], everyElement('grapes'));
   });
 
   test('packs favourites into empty days first, each once', () {

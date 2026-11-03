@@ -40,6 +40,7 @@ void main() {
     final controller = LiveLocationController(
       liveLocationRepository: repository,
       locationReporter: reporter,
+      placesRepository: FakePlacesRepository(),
       householdId: Fixtures.householdId,
       viewerMemberId: viewerMemberId,
       members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
@@ -82,6 +83,27 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(controller.view, isA<AsyncFailure<LiveLocationView>>());
+  });
+
+  testWidgets('the age ticker never turns a failure into "not sharing"', (
+    tester,
+  ) async {
+    // Disposed in the body: its ticker is a pending timer the binding counts.
+    final controller = LiveLocationController(
+      liveLocationRepository: repository,
+      locationReporter: reporter,
+      placesRepository: FakePlacesRepository(),
+      householdId: Fixtures.householdId,
+      viewerMemberId: Fixtures.samMemberId,
+      members: [Fixtures.sam],
+      now: () => now,
+    );
+    repository.failLocationsWith(const PermissionDeniedFailure());
+    await tester.pump();
+    await tester.pump(LiveLocationController.recount * 3);
+
+    expect(controller.view, isA<AsyncFailure<LiveLocationView>>());
+    controller.dispose();
   });
 
   test(

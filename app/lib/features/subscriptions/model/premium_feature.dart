@@ -25,6 +25,10 @@ enum PremiumFeature {
   /// grocery list in one go (recipes ADR-0005).
   recipeShopping,
 
+  /// Always-on sharing, where the family has been and arrival alerts
+  /// (live-location ADR-0003).
+  familyLocation,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

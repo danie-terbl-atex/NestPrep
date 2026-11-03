@@ -1,0 +1,199 @@
+{
+  "id": "lentil-bobotie",
+  "name": "Lentil bobotie",
+  "summary": "Curry-spiced brown lentils with grated apple, carrot and a few raisins, baked under a golden egg custard with bay leaves.",
+  "about": "Bobotie is the Cape's curried mince baked under an egg custard. This version keeps the spices, the fruit and the bay-leaf custard and swaps the mince for brown lentils, with grated apple and carrot to keep it moist. It costs far less than the beef version and goes to the table with brown rice and a sambal.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "budget",
+    "vegetableForward"
+  ],
+  "allergens": [
+    "milk",
+    "egg",
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Wholewheat bread slice",
+      "quantity": 1,
+      "unit": null,
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Milk",
+      "quantity": 125,
+      "unit": "ml",
+      "note": "for soaking the bread",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Onions",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Medium curry powder",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Apple",
+      "quantity": 1,
+      "unit": null,
+      "note": "peeled and grated",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Brown lentils",
+      "quantity": 3,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Water",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Chutney",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "fruit chutney",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Seedless raisins",
+      "quantity": 0.25,
+      "unit": "cup",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the lentils"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the lentils"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 3,
+      "unit": null,
+      "note": null,
+      "group": "For the topping"
+    },
+    {
+      "name": "Milk",
+      "quantity": 250,
+      "unit": "ml",
+      "note": "plus the milk squeezed from the bread",
+      "group": "For the topping"
+    },
+    {
+      "name": "Bay leaves",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "group": "For the topping"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 180 °C (160 °C if your oven is a fan oven). Soak the bread in the 125 ml milk for 10 minutes while you start the lentils.",
+    "Heat the oil in a large pan over medium heat and fry the onions, stirring now and then, until soft and golden, about 8 minutes. Add the garlic, ginger, curry powder, turmeric and coriander and stir for 1 minute, until fragrant.",
+    "Add the carrot and apple and cook for 3 minutes, stirring, until they soften and soak up the spices.",
+    "Add the lentils, water, chutney, raisins, lemon juice, salt and pepper and simmer for 5 minutes, stirring. Mash about a third of the lentils against the pan with a potato masher so the mixture holds together.",
+    "Squeeze the bread over a jug to keep the milk, then crumble the bread into the lentils and stir it through. The mixture should be thick and moist, not soupy. Taste and adjust the salt.",
+    "Spoon it into a greased ovenproof dish of about 30 × 20 cm and press it into an even layer.",
+    "Whisk the eggs with the 250 ml milk and the milk from the bread. Pour it slowly over the back of a spoon onto the lentils so it floats on top, then push the bay leaves into the surface.",
+    "Bake uncovered for 30 to 35 minutes, until the custard is set with no wobble in the centre and golden at the edges. Rest for 5 minutes, then cut into squares and serve with brown rice and a green salad."
+  ],
+  "servings": 6,
+  "prepMinutes": 20,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the lentil layer up to a day ahead and chill it; add the egg topping just before baking.",
+  "kcalPerServing": 360,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

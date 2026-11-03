@@ -1,0 +1,94 @@
+{
+  "id": "snoek-pate",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Smoked snoek",
+      "amount": "350 g; 250 g flesh once skinned and boned",
+      "grams": 250,
+      "kcal": 395,
+      "proteinG": 69.5,
+      "fatG": 12.0,
+      "netCarbsG": 0.0,
+      "reference": "Smoked snoek, SA (Woolworths, FatSecret ZA): 661 kJ, 27.8 g protein, 4.8 g fat / 100 g, edible flesh (used 158 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Cream cheese",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 875,
+      "proteinG": 15.4,
+      "fatG": 86.1,
+      "netCarbsG": 13.8,
+      "reference": "Cheese, cream — USDA FDC 173418: 350 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sour cream",
+      "amount": "4 tbsp ≈ 60 g",
+      "grams": 60,
+      "kcal": 119,
+      "proteinG": 1.5,
+      "fatG": 11.6,
+      "netCarbsG": 2.8,
+      "reference": "Cream, sour, cultured — USDA FDC 171257: 198 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "zest ≈ 2 g + juice of half ≈ 20 g",
+      "grams": 22,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 1.5,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "2 × 15 g",
+      "grams": 30,
+      "kcal": 10,
+      "proteinG": 0.5,
+      "fatG": 0.1,
+      "netCarbsG": 1.4,
+      "reference": "Onions, spring or scallions, raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "2 tbsp chopped ≈ 8 g",
+      "grams": 8,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "1/2 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, pepper, black — USDA FDC 170931 — none counted"
+    }
+  ],
+  "totalKcal": 1410,
+  "kcalPerServing": 240,
+  "perServing": {
+    "proteinG": 14.6,
+    "fatG": 18.4,
+    "netCarbsG": 3.3
+  },
+  "notes": "Assumptions that change the number: 250 g snoek flesh once skinned and boned; full-fat cream cheese (USDA 350 kcal / 100 g) and sour cream, not yoghurt; crackers and toast are a serving suggestion and not counted. Sanity check: Woolworths smoked snoek pâté is 270–294 kcal / 100 g (FatSecret ZA) and ours is ~227 kcal / 100 g (1410 kcal over ~620 g), ~20 % lower because a larger share of ours is fish. A serving is ~100 g."
+}

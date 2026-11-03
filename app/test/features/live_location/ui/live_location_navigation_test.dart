@@ -45,7 +45,7 @@ void main() {
         builder: (context, state) => NestScaffold(
           title: householdTitle,
           body: NestListRow(
-            title: AppCopy.locationTitle,
+            title: LocationCopy.title,
             onTap: () => context.push(
               HouseholdRoute.wherePathFor(HouseholdRoute.idFrom(state)),
             ),
@@ -66,6 +66,7 @@ void main() {
     final controller = LiveLocationController(
       liveLocationRepository: repository,
       locationReporter: reporter,
+      placesRepository: FakePlacesRepository(),
       householdId: Fixtures.householdId,
       viewerMemberId: Fixtures.samMemberId,
       members: [Fixtures.sam, Fixtures.thandi],
@@ -78,7 +79,7 @@ void main() {
         ChangeNotifierProvider<LiveLocationController>.value(value: controller),
       ],
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
     return controller;
   }
 
@@ -92,7 +93,7 @@ void main() {
     repository.emitLocations([]);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(AppCopy.locationTitle));
+    await tester.tap(find.text(LocationCopy.title));
     await tester.pumpAndSettle();
     expect(find.text(householdTitle), findsNothing);
 
@@ -119,7 +120,7 @@ void main() {
     repository.emitLocations([]);
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.locationTitle), findsOneWidget);
+    expect(find.text(LocationCopy.title), findsOneWidget);
     expect(
       find.bySemanticsLabel(AppCopy.back),
       findsNothing,

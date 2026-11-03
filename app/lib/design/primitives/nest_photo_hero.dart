@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 import 'nest_icon_button.dart';
+import 'nest_photo.dart';
 
 /// The top of a page that opens on a photograph — a recipe: the picture
 /// edge to edge and under the status bar at a fixed [aspectRatio], so
@@ -23,6 +24,7 @@ class NestPhotoHero extends StatelessWidget {
     required this.onBack,
     this.aspectRatio = 4 / 3,
     this.semanticsLabel,
+    this.heroTag,
     super.key,
   });
 
@@ -35,20 +37,26 @@ class NestPhotoHero extends StatelessWidget {
   /// decoration beside a heading that already says it.
   final String? semanticsLabel;
 
+  /// The tag of the card this page was opened from: the photo flies from it
+  /// to the page's edges, its corners squaring on the way.
+  final Object? heroTag;
+
   @override
   Widget build(BuildContext context) {
     final c = NestTheme.of(context).colors;
     final top = MediaQuery.paddingOf(context).top;
-    final label = semanticsLabel;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Stack(
         children: [
           AspectRatio(
             aspectRatio: aspectRatio,
-            child: label == null
-                ? ExcludeSemantics(child: photo)
-                : Semantics(image: true, label: label, child: photo),
+            child: NestPhotoFrame(
+              heroTag: heroTag,
+              radius: 0,
+              semanticsLabel: semanticsLabel,
+              child: photo,
+            ),
           ),
           Positioned(
             left: 0,

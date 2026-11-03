@@ -55,6 +55,8 @@ abstract final class FailureCopy {
     CheckersFailure(:final problem) => CheckersCopy.problem(problem),
     // Pick n Pay: the catalogue, the link and the cart (add-to-pnp ADR-0001).
     PnpFailure(:final problem) => PnpCopy.problem(problem),
+    PhotoFrameFailure(:final problem) => PhotoFrameCopy.problem(problem),
+    FramePhotoFailure(:final problem) => PhotoFrameCopy.photoProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 
@@ -133,6 +135,11 @@ abstract final class FailureCopy {
           'you are.',
     LocationProblem.reportingStopped =>
       'Sharing stopped, because this phone stopped saying where it is.',
+    LocationProblem.alwaysRefused =>
+      'Always sharing needs location set to “Allow all the time” for '
+          'NestPrep. Change it in your phone settings.',
+    LocationProblem.alwaysNeedsPremium =>
+      'Always sharing stopped because Premium ended. Short shares still work.',
   };
 
   static String signInProblem(SignInProblem problem) => switch (problem) {

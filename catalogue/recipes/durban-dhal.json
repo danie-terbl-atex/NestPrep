@@ -12,12 +12,15 @@
   },
   "tags": [
     "budget",
-    "vegetableForward"
+    "vegetableForward",
+    "healthy"
   ],
   "allergens": [],
   "dietTags": [
     "vegetarian",
-    "vegan"
+    "vegan",
+    "glutenFree",
+    "dairyFree"
   ],
   "ingredients": [
     {
@@ -139,6 +142,7 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 3 days in the fridge; it thickens as it cools, so loosen with hot water when reheating.",
+  "kcalPerServing": 400,
   "photo": {
     "credit": null,
     "licence": null,

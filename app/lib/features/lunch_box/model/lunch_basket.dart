@@ -26,6 +26,9 @@ final class LunchBasketLine {
   /// Whole packs: the till sells no fraction of one.
   int get packs => boxes <= 0 ? 0 : (boxes + boxesPerPack - 1) ~/ boxesPerPack;
 
+  /// The boxes the packs bought fill — more than [boxes] when one has room.
+  int get covers => packs * boxesPerPack;
+
   Money get cost =>
       Money(packs * packPrice.cents, currency: packPrice.currency);
 }

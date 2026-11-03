@@ -1,0 +1,274 @@
+{
+  "id": "butternut-chickpea-curry",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "1 cup raw ≈ 195 g",
+      "grams": 195,
+      "kcal": 716,
+      "proteinG": 14.7,
+      "fatG": 6.2,
+      "netCarbsG": 141.7,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "625 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "½ tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp × 13.5 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon stick",
+      "amount": "1, lifted out before serving",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Cardamom pods",
+      "amount": "4 pods ≈ 1 g",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 0.4,
+      "reference": "Spices, cardamom — USDA FDC 170919: 311 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cumin seeds",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium × 150 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "4 × 5 g",
+      "grams": 20,
+      "kcal": 30,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 6.2,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "2 tsp × 1.8 g",
+      "grams": 3.6,
+      "kcal": 11,
+      "proteinG": 0.4,
+      "fatG": 0.6,
+      "netCarbsG": 0.5,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1 tsp ≈ 3 g",
+      "grams": 3,
+      "kcal": 9,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 1.3,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mild chilli powder",
+      "amount": "½ tsp ≈ 1.4 g",
+      "grams": 1.4,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 × 400 g tin, with juice",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butternut",
+      "amount": "800 g peeled and seeded",
+      "grams": 800,
+      "kcal": 360,
+      "proteinG": 8.0,
+      "fatG": 0.8,
+      "netCarbsG": 77.5,
+      "reference": "Squash, winter, butternut, raw — USDA FDC 169295: 45 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "375 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    },
+    {
+      "ingredient": "Chickpeas",
+      "amount": "2 × 400 g tins ≈ 240 g drained each",
+      "grams": 480,
+      "kcal": 667,
+      "proteinG": 33.8,
+      "fatG": 13.3,
+      "netCarbsG": 77.4,
+      "reference": "Chickpeas, mature seeds, canned, drained solids — USDA FDC 173800: 139 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby spinach",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 23,
+      "proteinG": 2.9,
+      "fatG": 0.4,
+      "netCarbsG": 1.4,
+      "reference": "Spinach, raw — USDA FDC 168462: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garam masala",
+      "amount": "1 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.6,
+      "reference": "Garam masala as coriander, cumin, cardamom, pepper, cinnamon 1:1 — USDA FDC 170922/170923/170919/170931/171320: 296 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomatoes",
+      "amount": "2 medium × 120 g",
+      "grams": 240,
+      "kcal": 43,
+      "proteinG": 2.1,
+      "fatG": 0.5,
+      "netCarbsG": 6.5,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "½ medium onion of 150 g",
+      "grams": 75,
+      "kcal": 30,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 5.7,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "3 tbsp chopped ≈ 3 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "2 tbsp × 15 g",
+      "grams": 30,
+      "kcal": 7,
+      "proteinG": 0.1,
+      "fatG": 0.1,
+      "netCarbsG": 2.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt / water / removed bay leaf or cinnamon stick) — 0 kcal"
+    }
+  ],
+  "totalKcal": 2354,
+  "kcalPerServing": 590,
+  "perServing": {
+    "proteinG": 18.1,
+    "fatG": 13.0,
+    "netCarbsG": 88.2
+  },
+  "notes": "Assumptions that move the number: brown rice 195 g raw (716 kcal); 2 tbsp oil all eaten; chickpeas 240 g drained per tin; cinnamon stick lifted out (0), cardamom pods counted at ~1 g. Cross-check: published chickpea and butternut curries list ~330–400 kcal before rice; plus ~49 g raw brown rice (~180) that is ~510–580, so 590 is in range (this one uses a little more oil). Published figures are recalled, not re-fetched (the shared web budget was spent)."
+}

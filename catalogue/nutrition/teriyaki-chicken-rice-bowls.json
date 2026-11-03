@@ -1,0 +1,204 @@
+{
+  "id": "teriyaki-chicken-rice-bowls",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Brown rice",
+      "amount": "1.25 cup raw × 200 g/cup = 250 g",
+      "grams": 250,
+      "kcal": 918,
+      "proteinG": 18.9,
+      "fatG": 8.0,
+      "netCarbsG": 181.6,
+      "reference": "Rice, brown, long-grain, raw — USDA FDC 169703: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "750 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "0.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Reduced-salt soy sauce",
+      "amount": "4 tbsp × 16 g",
+      "grams": 64,
+      "kcal": 36,
+      "proteinG": 5.8,
+      "fatG": 0.2,
+      "netCarbsG": 3.1,
+      "reference": "Soy sauce made from soy and wheat (shoyu), low sodium — USDA FDC 172473: 57 kcal / 100 g"
+    },
+    {
+      "ingredient": "Honey",
+      "amount": "1 tbsp ≈ 21 g",
+      "grams": 21,
+      "kcal": 64,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 17.3,
+      "reference": "Honey — USDA FDC 169640: 304 kcal / 100 g"
+    },
+    {
+      "ingredient": "Rice vinegar",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled (unseasoned rice vinegar is the same) — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tbsp grated ≈ 6 g",
+      "grams": 6,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.9,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cornflour",
+      "amount": "2 tsp × 2.7 g",
+      "grams": 5.4,
+      "kcal": 21,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.9,
+      "reference": "Cornstarch — USDA FDC 169698: 381 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "4 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Sesame seeds",
+      "amount": "1 tbsp ≈ 9 g",
+      "grams": 9,
+      "kcal": 52,
+      "proteinG": 1.6,
+      "fatG": 4.5,
+      "netCarbsG": 1.0,
+      "reference": "Seeds, sesame seeds, whole, dried — USDA FDC 170150: 573 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1.5 tbsp × 13.5 g, all in the stir-fry",
+      "grams": 20.3,
+      "kcal": 179,
+      "proteinG": 0.0,
+      "fatG": 20.3,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken thigh fillets",
+      "amount": "600 g raw, skinless",
+      "grams": 600,
+      "kcal": 726,
+      "proteinG": 118.0,
+      "fatG": 24.7,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, dark meat, thigh, meat only, raw — USDA FDC 173627: 121 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 80 g",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.5,
+      "fatG": 0.4,
+      "netCarbsG": 10.8,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Broccoli",
+      "amount": "1 medium head ≈ 350 g",
+      "grams": 350,
+      "kcal": 119,
+      "proteinG": 9.9,
+      "fatG": 1.3,
+      "netCarbsG": 14.1,
+      "reference": "Broccoli, raw — USDA FDC 170379: 34 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "3 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 ≈ 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mange tout",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 63,
+      "proteinG": 4.2,
+      "fatG": 0.3,
+      "netCarbsG": 7.4,
+      "reference": "Peas, edible-podded, raw (mange tout) — USDA FDC 170010: 42 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "3 × 15 g",
+      "grams": 45,
+      "kcal": 14,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 2.1,
+      "reference": "Onions, spring or scallions (includes tops and bulb), raw — USDA FDC 170005: 32 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2319,
+  "kcalPerServing": 580,
+  "perServing": {
+    "proteinG": 40.8,
+    "fatG": 15.1,
+    "netCarbsG": 63.1
+  },
+  "notes": "Assumptions that change the number: 62.5 g raw brown rice a person (~230 kcal); reduced-salt soy at USDA low-sodium shoyu values; all 1.5 tbsp oil eaten; skinless thighs at USDA meat-only values; broccoli at the stated 350 g. Published check: teriyaki chicken rice bowls on recipe sites are typically ~500–600 kcal a serving with rice; 580 agrees."
+}

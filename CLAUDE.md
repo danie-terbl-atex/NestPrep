@@ -1,25 +1,30 @@
 # NestPrep — NullState app `nestprep`
 
 This repo is code for the NullState app **nestprep**. Its memory — what it is for, what v1 is, every
-decision and why, what is in flight and what it breaks — lives in the NullState vault, not here:
+decision and why, what is in flight and what it breaks — lives in **Godfather**, not here. This repo
+is the `nestprep` software node (`nullstate/nestprep-2/nestprep-2`,
+`c7690dc3-6c26-4101-b191-a0870b9c9404`) under the NestPrep project; each feature is a child node.
 
-    ../nullstate-vault/   (also $NULLSTATE_VAULT)
+Godfather has been the only source of truth since 2026-10-23. `../nullstate-vault/nestprep-project/`
+and `ideas/nestprep/` are a frozen copy from before then: never read them as current, and never
+write to them.
 
 ## Before any task
 
-1. Run the **nullstate-memory** skill. It reads `nullstate-global.md`, then
-   `nestprep-project/work-index.md`, then only the feature notes the task needs.
-2. State back the constraints, whether the work is in v1, and the blast radius before writing code.
-3. If the task contradicts an ADR or the verdict, say so; do not silently comply or refuse.
+1. Start the session with `godfather launch` so the node's context, rules and the `godfather` MCP
+   tools are loaded. Otherwise, read `godfather context --node c7690dc3-6c26-4101-b191-a0870b9c9404` first.
+2. Call `route` with the task. It walks the work index to the feature overview, and from there to
+   only the ADRs, lessons and contracts that matter.
+3. State back the constraints, whether the work is in v1, and the blast radius before writing code.
+4. If the task contradicts an ADR or the verdict, say so; do not silently comply or refuse.
 
 ## After any change
 
-A change is not done until the vault reflects it, in the same change: feature overview, ADR
-ledger, phase note's Next action, integration-map rows. Then run
-`python3 ../nullstate-vault/tools/vault-lint.py` and clear every error. Delivery procedure: the
-**nullstate-deliver** skill.
+A change is not done until Godfather reflects it, in the same change: feature overview, ADR,
+phase doc's next action, and contracts. The write-back rules are in the node's context. Then run
+`lint` on the node, clear every error, and `append_session_log`.
 
-Never put secrets or customer data in the vault.
+Never put secrets or customer data in Godfather memory.
 
 ## Running this app
 
@@ -64,10 +69,10 @@ generates `firebase.lan.json` (gitignored; never edit it). A phone reaches it wi
 The plain `firebase emulators:start --project nestprep-643b7` still works, in memory, and then
 `npm --prefix functions run build && npm --prefix functions run seed`.
 
-The project id is `nestprep-643b7`. It lives here and in the generated config files, never in the
-vault. A `demo-` project id no longer works: the Android Cloud Functions SDK validates the client
+The project id is `nestprep-643b7`. It lives here and in the generated config files, never in
+Godfather memory. A `demo-` project id no longer works: the Android Cloud Functions SDK validates the client
 configuration before every callable, and only a real project has any — foundation ADR-0008 and the
-vault lesson on what Auth and Functions need that Firestore does not.
+Godfather lesson on what Auth and Functions need that Firestore does not.
 
 What keeps an emulator build off the cloud is `bootstrapFirebase`, which points Firestore, Auth,
 Functions and Storage at the emulator in one place before anything uses them. **A Firebase service added
@@ -77,7 +82,7 @@ The suite is still the environment for the rules suite, the Functions tests and
 `app/integration_test/`; those name their target explicitly and are unaffected by the default. Start
 it before an emulator run, because a Firestore **write** against a backend that is not listening
 never completes and never throws — the app sits on "Getting things ready" for ever with no error.
-That is a vault lesson, not a bug to rediscover.
+That is a Godfather lesson, not a bug to rediscover.
 
 **Live demo accounts** exist in the cloud too (foundation ADR-0019): five `demo-` accounts in the
 populated household *The Oak Street Nest* (`demo-oak-street`). A cloud build compiled with
@@ -143,7 +148,11 @@ Edit a source, then `npm --prefix functions run site:build` and commit it with `
 `functions/test/unit/site_is_generated.test.ts` fails when the two differ, when a page loads
 anything from another origin or carries inline script, and when `site.css` drifts from
 `nest_colors.dart`. `/api/account-deletion-request` is rewritten to the `requestAccountDeletion`
-Function. Changing a legal document's text means raising its `version`, which makes the app ask
+Function, and `/oauth/**`, `/.well-known/oauth-*` and `/mcp` to the assistants' Functions. `/connect`
+is the consent page an assistant sends a member to; it signs in with the Firebase web SDK Hosting
+serves at `/__/firebase/<version>/` and reads its web configuration from
+`hosting/src/connect-config.json` (published as `/assets/connect-config.json`) — an `apiKey` left
+empty makes the page say connecting is not set up. Changing a legal document's text means raising its `version`, which makes the app ask
 everybody to accept it again. Deploying is `firebase deploy --only hosting --project nestprep-643b7`
 (it runs `site:check` first), done by Daniel or the orchestrator — never from a feature branch.
 

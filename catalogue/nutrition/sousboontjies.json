@@ -1,0 +1,84 @@
+{
+  "id": "sousboontjies",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "Dried sugar beans",
+      "amount": "500 g dry",
+      "grams": 500,
+      "kcal": 1675,
+      "proteinG": 115.2,
+      "fatG": 6.2,
+      "netCarbsG": 176.7,
+      "reference": "Beans, cranberry (roman), mature seeds, raw (sugar beans) — USDA FDC 175189: 335 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "8 cups, for cooking",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1½ tsp",
+      "grams": 9,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Brown vinegar",
+      "amount": "½ cup = 125 ml",
+      "grams": 125,
+      "kcal": 22,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.1,
+      "reference": "Vinegar, distilled (SA brown vinegar is coloured spirit vinegar) — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "¾ cup lightly packed, ~200 g per 250 ml cup",
+      "grams": 150,
+      "kcal": 570,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 147.1,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "2 tbsp × 14 g",
+      "grams": 28,
+      "kcal": 201,
+      "proteinG": 0.2,
+      "fatG": 22.7,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 2468,
+  "kcalPerServing": 310,
+  "perServing": {
+    "proteinG": 14.5,
+    "fatG": 3.6,
+    "netCarbsG": 40.5
+  },
+  "notes": "Assumptions: brown sugar ¾ cup lightly packed (~150 g); soaking and cooking water drained or absorbed, 0 kcal; dry sugar beans valued as USDA cranberry (roman) beans. The checker's macro WARN is the beans' 24.7 g fibre/100 g: USDA's 335 kcal for dry beans counts more energy than protein + fat + net carbs give. Sanity check: Forage and Feast sousboontjies (FatSecret) 110 kcal/100 g; ours is ~160 kcal/100 g on a ~190 g serving because it has ~19 g added sugar and butter per serving; USDA cooked cranberry beans (136 kcal/100 g) plus the sugar reproduce our total. Kept."
+}

@@ -1,0 +1,164 @@
+{
+  "id": "peri-peri-chicken-livers",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Chicken livers",
+      "amount": "750 g raw, trimmed",
+      "grams": 750,
+      "kcal": 892,
+      "proteinG": 126.9,
+      "fatG": 36.2,
+      "netCarbsG": 5.5,
+      "reference": "Chicken, liver, all classes, raw — USDA FDC 171060: 119 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "1 tbsp = 14 g",
+      "grams": 14,
+      "kcal": 100,
+      "proteinG": 0.1,
+      "fatG": 11.4,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "4 cloves ≈ 20 g",
+      "grams": 20,
+      "kcal": 30,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 6.2,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red bird's-eye chillies",
+      "amount": "2 × 1.5 g",
+      "grams": 3,
+      "kcal": 1,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Peppers, hot chili, red, raw — USDA FDC 170106: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Smoked paprika",
+      "amount": "2 tsp ≈ 4.6 g",
+      "grams": 4.6,
+      "kcal": 13,
+      "proteinG": 0.7,
+      "fatG": 0.6,
+      "netCarbsG": 0.9,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp ≈ 33 g",
+      "grams": 33,
+      "kcal": 27,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.9,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Hot peri-peri sauce",
+      "amount": "3 tbsp ≈ 45 g",
+      "grams": 45,
+      "kcal": 25,
+      "proteinG": 0.2,
+      "fatG": 2.1,
+      "netCarbsG": 0.9,
+      "reference": "Bottled peri-peri sauce, hot (Nando's, FatSecret ZA): 236 kJ, 4.7 g fat, 2.0 g carbohydrate / 100 g (used 56 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "1 tbsp ≈ 17 g",
+      "grams": 17,
+      "kcal": 13,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.3,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh cream",
+      "amount": "1 cup (250 ml) ≈ 248 g",
+      "grams": 248,
+      "kcal": 843,
+      "proteinG": 7.0,
+      "fatG": 89.5,
+      "netCarbsG": 7.0,
+      "reference": "Cream, fluid, heavy whipping — USDA FDC 170859 (SA fresh cream ~36 % fat): 340 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "no quantity given",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Parsley, fresh — USDA FDC 170416 — none counted"
+    },
+    {
+      "ingredient": "Portuguese rolls",
+      "amount": "4 rolls × 70 g",
+      "grams": 280,
+      "kcal": 706,
+      "proteinG": 28.0,
+      "fatG": 6.2,
+      "netCarbsG": 134.4,
+      "reference": "Portuguese rolls, SA (Pick n Pay, FatSecret ZA): 1056 kJ, 10 g protein, 48 g carbohydrate / 100 g, fat by difference 2.2 g; 70 g roll (Woolworths 70 g, SPAR 55 g) (used 252 kcal / 100 g)"
+    }
+  ],
+  "totalKcal": 2952,
+  "kcalPerServing": 740,
+  "perServing": {
+    "proteinG": 41.8,
+    "fatG": 43.3,
+    "netCarbsG": 44.0
+  },
+  "notes": "Assumptions that change the number: livers raw and trimmed; full 250 ml fresh cream (~36 % fat); the four Portuguese rolls (70 g each, 176 kcal) are counted because they are an ingredient line; no quantity was given for the parsley, so none is counted. Sanity check: published creamy peri-peri livers for 4 come in at 220–423 kcal without bread (Tantalise My Tastebuds 423 kcal, a Portuguese-style one 402). Ours is 560 without the rolls, about 33 % more, because this recipe uses 750 g livers and a full cup of cream where those use ~500 g livers and about ½ cup."
+}

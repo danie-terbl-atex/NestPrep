@@ -1,0 +1,144 @@
+{
+  "id": "smoorsnoek",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Smoked snoek",
+      "amount": "500 g; 350 g flesh once skinned and boned",
+      "grams": 350,
+      "kcal": 553,
+      "proteinG": 97.3,
+      "fatG": 16.8,
+      "netCarbsG": 0.0,
+      "reference": "Smoked snoek, SA (Woolworths, FatSecret ZA): 661 kJ, 27.8 g protein, 4.8 g fat / 100 g, edible flesh (used 158 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp = 40.5 g",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium ≈ 300 g",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.9,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "4 medium × 150 g peeled",
+      "grams": 600,
+      "kcal": 462,
+      "proteinG": 12.3,
+      "fatG": 0.5,
+      "netCarbsG": 92.3,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves ≈ 10 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chilli",
+      "amount": "1 ≈ 15 g",
+      "grams": 15,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.2,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "1 tin, 400 g",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.3,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp ≈ 4 g",
+      "grams": 4,
+      "kcal": 15,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Spices, pepper, black — USDA FDC 170931 — none counted"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "2 tbsp chopped ≈ 8 g",
+      "grams": 8,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 0.2,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1/2 lemon ≈ 20 g juice",
+      "grams": 20,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Apricot jam",
+      "amount": "no quantity given, served on the side",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645 — none counted"
+    }
+  ],
+  "totalKcal": 1600,
+  "kcalPerServing": 400,
+  "perServing": {
+    "proteinG": 29.3,
+    "fatG": 14.8,
+    "netCarbsG": 32.8
+  },
+  "notes": "Assumptions that change the number: 350 g snoek flesh once skinned and boned (Woolworths smoked snoek 158 kcal / 100 g); 4 medium potatoes of 150 g peeled; all 3 tbsp oil eaten; the apricot jam has no quantity and is served on the side, so it is not counted (1 tbsp adds ~50 kcal); rice is a serving suggestion, not an ingredient. Sanity check: no published smoorsnoek figure was found before the web search budget ran out. Woolworths smoor snoek fish cakes (FatSecret ZA) are 219 kcal / 100 g, but they are fried and crumbed; this stew is ~91 kcal / 100 g (~1.75 kg), as expected for fish, potato and tomato with one oil measure."
+}

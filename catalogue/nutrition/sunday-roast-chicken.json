@@ -1,0 +1,274 @@
+{
+  "id": "sunday-roast-chicken",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Chicken pieces",
+      "amount": "2 kg bone-in → 1400 g raw edible (70 %) → ~1010 g roasted (72 % cooking yield)",
+      "grams": 1010,
+      "kcal": 2414,
+      "proteinG": 275.7,
+      "fatG": 137.4,
+      "netCarbsG": 0.0,
+      "reference": "Chicken, broilers or fryers, meat and skin, cooked, roasted — USDA FDC 171450: 239 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g, half counted (the rest poured off with the tin fat)",
+      "grams": 14,
+      "kcal": 124,
+      "proteinG": 0.0,
+      "fatG": 14.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken spice",
+      "amount": "2 tsp",
+      "grams": 5,
+      "kcal": 15,
+      "proteinG": 0.5,
+      "fatG": 0.4,
+      "netCarbsG": 2.7,
+      "reference": "Spices, poultry seasoning (proxy for SA chicken spice) — USDA FDC 171331: 307 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "1 tsp",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves × 5 g",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.6,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Gravy powder",
+      "amount": "3 tbsp × 6 g",
+      "grams": 18,
+      "kcal": 66,
+      "proteinG": 1.9,
+      "fatG": 1.7,
+      "netCarbsG": 10.3,
+      "reference": "Gravy, brown, dry — USDA FDC 171565: 367 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "1½ cups, for the gravy",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "White rice",
+      "amount": "2 cups raw × 200 g",
+      "grams": 400,
+      "kcal": 1460,
+      "proteinG": 28.5,
+      "fatG": 2.6,
+      "netCarbsG": 314.6,
+      "reference": "Rice, white, long-grain, regular, raw, enriched — USDA FDC 168877: 365 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "4 cups, absorbed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water: 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 6,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "1 kg peeled",
+      "grams": 1000,
+      "kcal": 770,
+      "proteinG": 20.5,
+      "fatG": 0.9,
+      "netCarbsG": 153.9,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "3 SA large × 55 g",
+      "grams": 165,
+      "kcal": 236,
+      "proteinG": 20.7,
+      "fatG": 15.7,
+      "netCarbsG": 1.2,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mayonnaise",
+      "amount": "¾ cup = 188 ml × 0.93 g/ml",
+      "grams": 174,
+      "kcal": 868,
+      "proteinG": 0.7,
+      "fatG": 90.5,
+      "netCarbsG": 19.1,
+      "reference": "Crosse & Blackwell Tangy Mayonnaise (SA) via fatsecret.co.za: 2088 kJ = 499 kcal, F 52, C 11, P 0.4 / 100 g: 499 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "3 × 15 g",
+      "grams": 45,
+      "kcal": 14,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 2.1,
+      "reference": "Onions, spring or scallions, raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beetroot",
+      "amount": "500 g cooked",
+      "grams": 500,
+      "kcal": 220,
+      "proteinG": 8.4,
+      "fatG": 0.9,
+      "netCarbsG": 39.8,
+      "reference": "Beets, cooked, boiled, drained — USDA FDC 169146: 44 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red onion",
+      "amount": "½ medium",
+      "grams": 75,
+      "kcal": 30,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 5.7,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown vinegar",
+      "amount": "4 tbsp",
+      "grams": 60,
+      "kcal": 11,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled (SA brown vinegar is coloured spirit vinegar) — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp × 12.5 g",
+      "grams": 25,
+      "kcal": 97,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 25.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butternut",
+      "amount": "1 kg peeled",
+      "grams": 1000,
+      "kcal": 450,
+      "proteinG": 10.0,
+      "fatG": 1.0,
+      "netCarbsG": 96.9,
+      "reference": "Squash, winter, butternut, raw — USDA FDC 169295: 45 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "30 g",
+      "grams": 30,
+      "kcal": 215,
+      "proteinG": 0.3,
+      "fatG": 24.3,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "1 tbsp",
+      "grams": 13,
+      "kcal": 49,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 12.8,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "½ tsp",
+      "grams": 1,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green cabbage",
+      "amount": "¼ of a ~700 g small head",
+      "grams": 175,
+      "kcal": 44,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 5.8,
+      "reference": "Cabbage, raw — USDA FDC 169975: 25 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium × 75 g",
+      "grams": 150,
+      "kcal": 62,
+      "proteinG": 1.4,
+      "fatG": 0.4,
+      "netCarbsG": 10.2,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mayonnaise",
+      "amount": "½ cup = 125 ml × 0.93 g/ml",
+      "grams": 116,
+      "kcal": 579,
+      "proteinG": 0.5,
+      "fatG": 60.3,
+      "netCarbsG": 12.8,
+      "reference": "Crosse & Blackwell Tangy Mayonnaise (SA) via fatsecret.co.za: 2088 kJ = 499 kcal, F 52, C 11, P 0.4 / 100 g: 499 kcal / 100 g"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt, table: 0 kcal — USDA FDC 173468"
+    }
+  ],
+  "totalKcal": 7754,
+  "kcalPerServing": 1290,
+  "perServing": {
+    "proteinG": 62.4,
+    "fatG": 58.5,
+    "netCarbsG": 119.7
+  },
+  "notes": "Assumptions: 2 kg bone-in pieces → 1400 g raw meat and skin (70 % edible) → ~1010 g roasted (72 % cooking yield), valued as USDA roasted meat and skin, since most of the rendered fat is poured off before the gravy; half of the 2 tbsp oil counted for the same reason; rice 200 g raw per cup; SA tangy mayonnaise (499 kcal/100 g) for both salads. This is the whole Sunday spread, ~1 kg of food per plate: chicken ~400, rice ~245, potato salad ~315, coleslaw ~115, butternut ~120, beetroot ~60, gravy ~11 kcal. Sanity check: Arise app 'South African Sunday kos plate' 922 kcal for a 670 g plate (~138 kcal/100 g); our plate is ~130 kcal/100 g, so the density matches and the difference is plate size. Kept."
+}

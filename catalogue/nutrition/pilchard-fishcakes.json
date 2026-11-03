@@ -1,0 +1,134 @@
+{
+  "id": "pilchard-fishcakes",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Pilchards in tomato sauce",
+      "amount": "1 tin, 400 g fish and sauce",
+      "grams": 400,
+      "kcal": 420,
+      "proteinG": 68.0,
+      "fatG": 20.4,
+      "netCarbsG": 8.0,
+      "reference": "Pilchards in tomato sauce, SA (Lucky Star 400 g, Open Food Facts 6001115001535): 438 kJ, 17 g protein, 5.1 g fat, 2.0 g net carbohydrate / 100 g, bones included (used 105 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 small ≈ 100 g",
+      "grams": 100,
+      "kcal": 40,
+      "proteinG": 1.1,
+      "fatG": 0.1,
+      "netCarbsG": 7.6,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrot",
+      "amount": "1 medium ≈ 80 g",
+      "grams": 80,
+      "kcal": 33,
+      "proteinG": 0.7,
+      "fatG": 0.2,
+      "netCarbsG": 5.4,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Eggs",
+      "amount": "2 large ≈ 110 g",
+      "grams": 110,
+      "kcal": 157,
+      "proteinG": 13.8,
+      "fatG": 10.5,
+      "netCarbsG": 0.8,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287 (SA large egg 55 g out of shell): 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "1/2 cup ≈ 70 g",
+      "grams": 70,
+      "kcal": 251,
+      "proteinG": 5.7,
+      "fatG": 0.6,
+      "netCarbsG": 53.2,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "1 tsp ≈ 4.6 g",
+      "grams": 4.6,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Leavening agents, baking powder, double-acting — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Rolled oats",
+      "amount": "1/3 cup ≈ 30 g",
+      "grams": 30,
+      "kcal": 117,
+      "proteinG": 5.1,
+      "fatG": 2.1,
+      "netCarbsG": 16.7,
+      "reference": "Oats — USDA FDC 169705: 389 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped ≈ 11 g",
+      "grams": 11,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon juice",
+      "amount": "1 tbsp = 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.0,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1/2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "1/4 tsp ≈ 0.6 g",
+      "grams": 0.6,
+      "kcal": 2,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.2,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "4 tbsp = 54 g; ~70 % (38 g) absorbed",
+      "grams": 38,
+      "kcal": 336,
+      "proteinG": 0.0,
+      "fatG": 38.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1365,
+  "kcalPerServing": 340,
+  "perServing": {
+    "proteinG": 23.7,
+    "fatG": 18.0,
+    "netCarbsG": 23.6
+  },
+  "notes": "Assumptions that change the number: the whole 400 g tin, sauce and soft bones included (Lucky Star label 105 kcal / 100 g); ~70 % (38 g) of the 4 tbsp oil is soaked up in shallow frying; 1/3 cup oats ≈ 30 g; makes ~12 cakes, 3 a serving. Sanity check: SparkPeople's basic fishcakes (pilchards and whiting, not fried in added oil) are 76 kcal per cake for 12. Ours are 86 kcal a cake before frying and 114 after, so ~340 for three."
+}

@@ -21,7 +21,11 @@ class MemberStripe extends StatelessWidget {
         : [for (final color in colors) nest.members.of(color).fill];
     return SizedBox(
       width: NestSpace.xs,
+      // Stretched, because a ColoredBox with no child takes the smallest
+      // width it is allowed — zero under a centring column — and the stripe
+      // never painted.
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (final color in stripes)
             Expanded(child: ColoredBox(color: color)),

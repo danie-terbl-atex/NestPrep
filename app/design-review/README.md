@@ -33,6 +33,7 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `todos-mine-light.png` / `todos-mine-dark.png` | what one person is being asked to do, overdue first |
 | `todos-everyone-light.png` / `todos-everyone-dark.png` | the whole household's list, the member filter and the routines |
 | `groceries-light.png` / `groceries-dark.png` | the one list, with something already ticked, and the week's plans offering three things above it (groceries phase 2) |
+| `groceries-match-as-you-type-light.png` / `-dark.png` / `-dark-200-percent-text.png` | matching as you type: the chosen shop's logo, ringed, at the start of the add field, and *milk* typed with what Checkers sells for it leading the list — Jev's best first with Twig, a deal, one tap per row adds it matched, *Just add “milk”* last — `tool/grocery_type_ahead_design_review_test.dart` (add-to-checkers ADR-0007) |
 | `grocery-plans-light.png` / `grocery-plans-dark.png` | *From this week's plans*: keep-in-step, what to add with its reasons and amounts, an amount that changed, something bought yesterday — `tool/grocery_plans_design_review_test.dart` |
 | `meal-ingredients-light.png` / `meal-ingredients-dark.png` | *What goes in* a meal, from the library: its lines, and the form for the next one (meal-planning ADR-0002) |
 | `meals-light.png` / `meals-dark.png` | the Meals tab's *This week*: the week's twenty-one slots, some filled, under the *Recipes / This week* switch (design-system ADR-0015) |
@@ -46,6 +47,8 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `recipe-dark-200-percent-text.png` | the recipe's page at the largest text a phone offers |
 | `recipe-add-to-week-light.png` / `recipe-add-to-week-dark.png` | *Add to the week*: for how many, this week or next, a day from today on, the meal the recipe is for chosen already, and the one button that writes it |
 | `meals-week-recipes-light.png` / `meals-week-recipes-dark.png` | the week with recipes planned: each recipe's photo beside its meal and *How to make it* under its name |
+| `assistants-light.png` / `assistants-dark.png` / `assistants-dark-200-percent-text.png` | *Connected assistants* from More: the household's switch, a parent's own Claude and the other parent's ChatGPT — whose each is, what it may do, when it was last used, what it did lately, Disconnect — `tool/assistants_design_review_test.dart` (assistants ADR-0001, ADR-0003) |
+| `assistants-empty-light.png` / `assistants-empty-dark.png` | nothing connected yet, and how to connect Claude with the address to copy |
 | `launch-light.png` / `launch-dark.png` | what the native splash hands over to while the session is read: the nest at the splash's size, the words, one pulsing bar |
 | `sign-in-light.png` / `sign-in-dark.png` | the first screen anybody sees: the logo's nest with the household's five member marks circling it, the wordmark, the tagline, and the way in |
 | `household-gate-light.png` / `household-gate-dark.png` | the screen after it: the nest and wordmark, the question, then making or joining a household |
@@ -71,6 +74,8 @@ decodes every image for real before it fires; without that the nest is a blank b
 | `home-care-steps-light.png` / `home-care-steps-dark.png` | the helper's step-through in her own language (isiZulu here): the language bar, progress, the spot, and each step as a big tile she ticks with its read-aloud button beside it (home-care ADR-0006) |
 | `home-care-routines-light.png` / `home-care-routines-dark.png` | the parent's room routines: this week per day, today per room, then every routine by room (home-care ADR-0004) |
 | `home-care-today-light.png` / `home-care-today-dark.png` | a helper's rooms today, in isiZulu: one big card per room, done in words and green, each item a tile to tick and a button to hear it |
+| `home-board-light.png` / `home-board-dark.png` | the card home, behind the development-only layout switch (design-system ADR-0019): every place a card with a live line, today's agenda, then family and home |
+| `home-board-dark-200-percent-text.png` | the card home at the largest text a phone offers — one card to a row, so no name breaks |
 | `home-care-stock-light.png` / `home-care-stock-dark.png` | the stock tracker: what is running low first, *on the grocery list* and who marked it, four big levels per product (home-care ADR-0005) |
 | `home-care-languages-light.png` / `home-care-languages-dark.png` | everybody's languages: the viewer's own, a line to hear in it, then each helper's (home-care ADR-0006) |
 | `home-care-review-light.png` / `home-care-review-dark.png` | the parent's review: before and after side by side, the checklist, approve or send it back |

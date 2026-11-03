@@ -1,0 +1,147 @@
+{
+  "id": "lentil-and-vegetable-soup",
+  "name": "Lentil and vegetable soup",
+  "summary": "Red lentils simmered with carrot, celery, tomato, cumin and smoked paprika until thick, with baby spinach stirred through at the end.",
+  "about": "Red lentil soup is cooked from Turkey and the Middle East to India. Red lentils need no soaking and break down in under half an hour into a thick, filling soup, and made with water and spices rather than a stock cube it suits a flask for school or work.",
+  "cuisine": "international",
+  "contexts": [
+    "lunch"
+  ],
+  "placement": {
+    "lunch": "main"
+  },
+  "tags": [
+    "healthy",
+    "budget",
+    "vegetableForward",
+    "onePot"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "finely chopped",
+      "group": null
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Celery sticks",
+      "quantity": 2,
+      "unit": null,
+      "note": "diced",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Red lentils",
+      "quantity": 300,
+      "unit": "g",
+      "note": "rinsed until the water runs clear",
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g",
+      "group": null
+    },
+    {
+      "name": "Water",
+      "quantity": 1.5,
+      "unit": "l",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": null
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large pot over medium heat. Add the onion, carrot and celery with a pinch of salt and cook, stirring now and then, for 8 minutes, until soft.",
+    "Stir in the garlic, cumin and paprika and cook for 1 minute, until fragrant.",
+    "Add the lentils, tomatoes, water and salt and bring to the boil over high heat. Skim off any foam, then turn the heat to low and simmer, half covered, for 25 minutes, stirring now and then, until the lentils have broken down and the carrot is soft.",
+    "Blend the soup briefly with a stick blender, leaving some pieces of vegetable, so it is thick and smooth but still has body.",
+    "Stir in the spinach and simmer for 1 to 2 minutes, until it wilts. Add the lemon juice and pepper, taste for salt and loosen with a little hot water if it is too thick.",
+    "Serve in bowls, or pour it boiling hot into a flask that you have first warmed with boiling water."
+  ],
+  "servings": 6,
+  "prepMinutes": 15,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 4 days in the fridge or 3 months in the freezer; it thickens as it stands, so add water when reheating.",
+  "kcalPerServing": 260,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

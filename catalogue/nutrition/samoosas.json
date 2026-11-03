@@ -1,0 +1,184 @@
+{
+  "id": "samoosas",
+  "servings": 10,
+  "lines": [
+    {
+      "ingredient": "Onion",
+      "amount": "1 large ≈ 200 g",
+      "grams": 200,
+      "kcal": 80,
+      "proteinG": 2.2,
+      "fatG": 0.2,
+      "netCarbsG": 15.3,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "500 g raw (beef taken)",
+      "grams": 500,
+      "kcal": 1075,
+      "proteinG": 93.0,
+      "fatG": 75.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 85% lean meat / 15% fat, raw — USDA FDC 171796 (SA regular beef mince): 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ginger and garlic paste",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 17,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.5,
+      "reference": "Ginger and garlic paste, taken as half Ginger root, raw (USDA FDC 169231) and half Garlic, raw (USDA FDC 169230): 115 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground turmeric",
+      "amount": "1/2 tsp ≈ 1.5 g",
+      "grams": 1.5,
+      "kcal": 5,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, turmeric, ground — USDA FDC 172231: 312 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chilli powder",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.4,
+      "netCarbsG": 0.4,
+      "reference": "Spices, chili powder — USDA FDC 171319: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cumin",
+      "amount": "1 tsp ≈ 2.1 g",
+      "grams": 2.1,
+      "kcal": 8,
+      "proteinG": 0.4,
+      "fatG": 0.5,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cumin seed — USDA FDC 170923: 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garam masala",
+      "amount": "1/2 tsp ≈ 1 g",
+      "grams": 1,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.3,
+      "reference": "Garam masala, taken as Spices, cumin seed — USDA FDC 170923 (garam masala is not in SR Legacy): 375 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chillies",
+      "amount": "2 × 5 g",
+      "grams": 10,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh coriander",
+      "amount": "1 cup chopped ≈ 16 g",
+      "grams": 16,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.1,
+      "reference": "Coriander (cilantro) leaves, raw — USDA FDC 169997: 23 kcal / 100 g"
+    },
+    {
+      "ingredient": "Spring onions",
+      "amount": "3 × 15 g",
+      "grams": 45,
+      "kcal": 14,
+      "proteinG": 0.8,
+      "fatG": 0.1,
+      "netCarbsG": 2.1,
+      "reference": "Onions, spring or scallions, raw — USDA FDC 170005: 32 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cake flour",
+      "amount": "4 tbsp ≈ 32 g; ~half used as paste",
+      "grams": 16,
+      "kcal": 57,
+      "proteinG": 1.3,
+      "fatG": 0.1,
+      "netCarbsG": 12.2,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "3 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Samoosa pastry strips",
+      "amount": "30 strips × 7 g",
+      "grams": 210,
+      "kcal": 645,
+      "proteinG": 15.5,
+      "fatG": 10.3,
+      "netCarbsG": 121.8,
+      "reference": "Samoosa / spring roll pastry (Sysco spring roll pastry label): 1289 kJ, 7.4 g protein, 4.9 g fat, 58 g carbohydrate / 100 g; 7 g per pur pastry strip (used 307 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "1 l; ~70 g absorbed",
+      "grams": 70,
+      "kcal": 619,
+      "proteinG": 0.0,
+      "fatG": 70.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon wedges",
+      "amount": "4 wedges; ~20 g juice",
+      "grams": 20,
+      "kcal": 4,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 1.3,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 2548,
+  "kcalPerServing": 250,
+  "perServing": {
+    "proteinG": 11.5,
+    "fatG": 15.7,
+    "netCarbsG": 15.9
+  },
+  "notes": "Assumptions that change the number: beef mince 15 % fat; 30 pur pastry strips at ~7 g each; of the litre of oil, ~70 g is absorbed (about a third of the pastry's weight); only half the flour sealing paste is used; 3 samoosas a serving. Sanity check: Checkers beef samoosas are 306 kcal / 100 g (FatSecret ZA) and ours are ~294 kcal / 100 g (~29 g and ~85 kcal each). Farm Boy's 70 g fried beef samosa is 220 kcal (314 kcal / 100 g)."
+}

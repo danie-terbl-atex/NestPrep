@@ -1,0 +1,118 @@
+{
+  "id": "banana-oat-pancakes",
+  "name": "Banana oat pancakes",
+  "summary": "Small, soft pancakes of blended oats, ripe banana, egg and milk with a hint of cinnamon and no sugar, served with yoghurt and fresh fruit.",
+  "about": "These pancakes are made from rolled oats and ripe banana, which sweetens the batter on its own, so no sugar goes in. They are a good use for bananas that have gone spotty, and the batter comes together in a blender in a couple of minutes.",
+  "cuisine": "international",
+  "contexts": [
+    "breakfast"
+  ],
+  "placement": {
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "quick",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "milk",
+    "egg"
+  ],
+  "dietTags": [
+    "vegetarian"
+  ],
+  "ingredients": [
+    {
+      "name": "Rolled oats",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Ripe bananas",
+      "quantity": 3,
+      "unit": null,
+      "note": "the spottier the better",
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Eggs",
+      "quantity": 2,
+      "unit": null,
+      "note": null,
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Milk",
+      "quantity": 250,
+      "unit": "ml",
+      "note": null,
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Baking powder",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "a pinch",
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "for the pan",
+      "group": "For the pancakes"
+    },
+    {
+      "name": "Low-fat plain yoghurt",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh berries or sliced fruit",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Blend the oats in a blender for about 30 seconds, until they look like coarse flour.",
+    "Break in the bananas and add the eggs, milk, baking powder, cinnamon and salt. Blend for 30 seconds, until smooth, then leave the batter to stand for 5 minutes so the oats thicken it.",
+    "Heat a large non-stick frying pan over medium-low heat and brush it with a little of the oil. Pour in 3 tbsp batter per pancake, leaving space between them, so each spreads to about 10 cm.",
+    "Cook for 2 to 3 minutes, until bubbles appear on top, the edges look set and the underside is golden brown. Flip carefully and cook for 1 to 2 minutes more, until golden and springy in the middle.",
+    "Keep the cooked pancakes warm under a clean tea towel while you cook the rest, oiling the pan lightly between batches. The batter makes about 18.",
+    "Serve stacked, with a spoonful of yoghurt and the fruit on top."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 20,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cooked pancakes freeze for a month; reheat them in a toaster or a dry pan.",
+  "kcalPerServing": 410,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

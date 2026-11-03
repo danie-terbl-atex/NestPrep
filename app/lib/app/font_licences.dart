@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// The two typefaces the app bundles are under the SIL Open Font Licence,
-/// which asks that the licence travel with the fonts. Flutter lists the
+/// The typeface the app bundles is under the SIL Open Font Licence,
+/// which asks that the licence travel with the font. Flutter lists the
 /// licences of Dart packages by itself; fonts copied into `assets/` it cannot
 /// know about, so they are added here and the Licences screen shows them with
 /// the rest.
@@ -18,7 +18,4 @@ void registerFontLicences({AssetBundle? bundle}) {
 }
 
 /// Each bundled family and its licence text, as declared in `pubspec.yaml`.
-const fontLicenceFiles = [
-  ('DM Sans', 'assets/fonts/DMSans-OFL.txt'),
-  ('Fraunces', 'assets/fonts/Fraunces-OFL.txt'),
-];
+const fontLicenceFiles = [('Mona Sans', 'assets/fonts/MonaSans-OFL.txt')];

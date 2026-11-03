@@ -1,0 +1,21 @@
+// ---- assistants: the authorization server's records (assistants ADR-0002) ----
+// Clients a metadata document or a registration described, authorizes
+// waiting for consent, one-minute codes, and access and refresh tokens —
+// each keyed by a hash and read only by `assistantAuth`. A readable one would
+// be somebody's standing access to their household.
+
+match /assistantClients/{clientHash} {
+  allow read, write: if false;
+}
+
+match /assistantAuthRequests/{requestId} {
+  allow read, write: if false;
+}
+
+match /assistantCodes/{codeHash} {
+  allow read, write: if false;
+}
+
+match /assistantTokens/{tokenHash} {
+  allow read, write: if false;
+}

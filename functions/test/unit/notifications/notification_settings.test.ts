@@ -14,7 +14,14 @@ describe('reading what a person chose', () => {
   it('a person who never chose gets the defaults: no digest, every reminder, quiet nights', () => {
     expect(readSettings(undefined)).toEqual(DEFAULT_SETTINGS);
     expect(DEFAULT_SETTINGS.digestEnabled).toBe(false);
-    expect(DEFAULT_SETTINGS.categories).toEqual({ documents: true, handover: true, chores: true });
+    expect(DEFAULT_SETTINGS.categories).toEqual({
+      documents: true,
+      handover: true,
+      chores: true,
+      photos: true,
+      coParenting: true,
+      places: true,
+    });
   });
 
   it('something that is not settings at all reads as the defaults, never as "everything"', () => {
@@ -24,7 +31,14 @@ describe('reading what a person chose', () => {
 
   it('a category a newer build added is ignored, and one missing is on', () => {
     const settings = readSettings({ categories: { handover: false, somethingNew: false } });
-    expect(settings.categories).toEqual({ documents: true, handover: false, chores: true });
+    expect(settings.categories).toEqual({
+      documents: true,
+      handover: false,
+      chores: true,
+      photos: true,
+      coParenting: true,
+      places: true,
+    });
   });
 });
 

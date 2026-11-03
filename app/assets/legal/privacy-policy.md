@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
-version: 1
-updated: 2026-09-29
+version: 2
+updated: 2026-11-02
 ---
 **DRAFT FOR LEGAL REVIEW.** This policy has not yet been reviewed by a lawyer and is not in force. Everything in square brackets is a placeholder that must be completed before it is published.
 
@@ -87,9 +87,27 @@ Households can keep documents such as a lease, insurance papers and school lette
 
 Identity documents are among the most sensitive things you can give us. The vault only opens after your phone's own screen lock (fingerprint, face or passcode), a helper or carer sees nothing in a vault unless they are granted it, and every open is logged.
 
-### Where people are (live location)
+### Where people are (location sharing)
 
-Location sharing is off unless you turn it on, and only you can turn it on for yourself. Nobody, not even a household admin, can start sharing your location. When you share, you choose a window of 15 minutes, one hour or four hours. For that time your phone sends its position, while the app is open, and the household sees it. When the window ends or you stop, the position is deleted. We do not track location in the background.
+Location sharing is off unless you turn it on, and only you can turn it on for yourself. Nobody, not even a household admin, can start, extend or resume sharing your location. A household admin can only remove a position, never create one.
+
+There are two ways to share:
+
+- **For a while.** You choose 15 minutes, one hour or four hours. For that time your phone sends its position while the app is open, and the window ends on its own.
+- **All the time** (Premium). Your phone keeps sending its position in the background, including when NestPrep is closed and after it restarts, until you pause it. Before your phone asks for permission, NestPrep shows you what this means; your phone then asks you to allow location "all the time". While it is on, an Android phone shows a notification saying so, and you can pause it in one tap. It also stops by itself if your household's Premium ends, you sign out, or you leave the household.
+
+When you share, we collect:
+
+- **Your current position**, how accurate it is, when it was sent, and when the share ends.
+- **Your phone's battery level** and whether it is charging, and **whether you seem to be still, on foot, cycling or driving**, worked out by your phone from its motion sensors, so it can switch location off while you are still and save battery.
+- **Where you have been** (Premium, while sharing all the time): the points your phone recorded during the day, kept for **30 days** and then deleted automatically. You can delete your own history at any time.
+- **Arrivals and departures** (Premium): when your phone reaches or leaves one of your household's places, such as home or school. The household chooses its places and whether it hears about arrivals, departures or both. A notification to a parent names who arrived and where, and can show on that parent's lock screen. Anybody else who can see the map is told on their lock screen only that somebody arrived; the name and the place are inside the app.
+
+**Children.** A child's phone signed in as their profile (a kid device) can share their location in the same way. A parent may set this up while holding the child's phone; the switch stays on the child's phone, and nobody can turn it on from another device. Children's location is personal information of a child under POPIA, and we process it with the consent of a parent or guardian (section 4).
+
+**Who sees it.** Family members (admins and parents) see the household map. Children in the household see it too, unless a parent turns it off for them. Helpers and carers see it only if a parent grants them the location area; a new helper or carer does not see it. A helper who joined before NestPrep let parents choose area by area keeps seeing everything, the map included, until a parent chooses for them. Anybody who can see the map can see everybody's history in the household.
+
+**What else is involved.** The map is drawn by Google Maps on your phone, which sends Google the area of the map being shown. Street names for a position are worked out by your phone's own system service (Apple on iPhone, Google on Android). We never use location for advertising, never sell it, and never share it outside your household except with the service providers named in section 6.
 
 ### The nanny hub and home care
 
@@ -159,7 +177,7 @@ NestPrep is used by adults to organise family life, and it holds information abo
 
 Our service providers are:
 
-- **Google** (Google Cloud and Firebase): our database, file storage, servers, sign-in, crash reports, app integrity checks and push notifications; and Vertex AI for the AI features.
+- **Google** (Google Cloud and Firebase): our database, file storage, servers, sign-in, crash reports, app integrity checks and push notifications; Vertex AI for the AI features; and Google Maps, which draws the family map.
 - **Apple and Google Play**: in-app purchases, subscription management, app integrity checks and push notification delivery.
 - **Google and Microsoft**, only if you connect your Google or Outlook calendar, to read your events.
 
@@ -190,7 +208,7 @@ No system is perfectly secure. If a breach affects your personal information, we
 ## 9. How long we keep it
 
 - **While your account exists**, we keep your account and the information in your households so the app can work.
-- **Things you delete** are removed from the live service straight away. Live location is deleted when the sharing window ends. Invite and kid pairing codes expire and are removed. Document share links stop working when they expire and are then cleared.
+- **Things you delete** are removed from the live service straight away. A shared position is deleted when you stop sharing or the window ends; a position from a phone that stopped sharing all the time without being paused is treated as not sharing after a day and deleted automatically. Location history and arrivals are deleted automatically after 30 days, or straight away when you delete them. When you leave a household or are removed from it, your position, your history and the arrival notifications that name you are deleted from that household. Invite and kid pairing codes expire and are removed. Document share links stop working when they expire and are then cleared.
 - **When you delete your account**, we delete your account, your sign-in, your private vault and its files, your personal details in each household, and your push tokens. If you were the last adult in a household, the whole household and everything in it is deleted, including its files and kid devices. If other adults remain, the household continues: shared records such as events and lists stay with the household, but your personal details and vault are removed and your profile is no longer linked to you. Deletion from the live service is immediate; copies in Google's backups are overwritten within [backup retention period, for example 30 days].
 - **A data export** you download is available through a link that expires one hour after it is made, and only your own signed-in account can open it; the file is deleted from our servers within two hours, or sooner if you make a new one.
 - **Purchase records** are kept for as long as the law requires for financial records, [purchase record retention period], even after the account is deleted, without the household's content.

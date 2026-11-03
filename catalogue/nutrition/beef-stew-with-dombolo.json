@@ -1,0 +1,174 @@
+{
+  "id": "beef-stew-with-dombolo",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "480 g",
+      "grams": 480,
+      "kcal": 1642,
+      "proteinG": 52.8,
+      "fatG": 7.2,
+      "netCarbsG": 340.8,
+      "reference": "SA cake wheat flour label (PnP Cake Wheat Flour, FatSecret ZA): 342 kcal, 11 g protein, 1.5 g fat (label rounds to 2), 71 g available carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Instant dry yeast",
+      "amount": "10 g sachet",
+      "grams": 10,
+      "kcal": 32,
+      "proteinG": 4.0,
+      "fatG": 0.8,
+      "netCarbsG": 1.4,
+      "reference": "Leavening agents, yeast, baker's, active dry — USDA FDC 175043: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tbsp",
+      "grams": 12.6,
+      "kcal": 49,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 12.6,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Lukewarm water",
+      "amount": "330 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Water — 0 kcal"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp, all used (browning and the bowl)",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Stewing beef",
+      "amount": "1.2 kg, taken as cubed boneless chuck",
+      "grams": 1200,
+      "kcal": 2352,
+      "proteinG": 230.4,
+      "fatG": 159.6,
+      "netCarbsG": 0.0,
+      "reference": "Beef, chuck, under blade pot roast or steak, boneless, separable lean and fat, trimmed to 0\" fat, raw — USDA FDC 170813: 196 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves, 5 g each",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "2 tsp",
+      "grams": 4.6,
+      "kcal": 13,
+      "proteinG": 0.6,
+      "fatG": 0.6,
+      "netCarbsG": 0.9,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp (16 g each)",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaves",
+      "amount": "3 leaves, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Bay leaves, removed before eating — 0 kcal"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "750 ml from 1.5 cubes (15 g dry)",
+      "grams": 15,
+      "kcal": 26,
+      "proteinG": 2.6,
+      "fatG": 0.6,
+      "netCarbsG": 2.4,
+      "reference": "Soup, beef broth, cubed, dry (stock cube weighed dry, ~10 g a cube) — USDA FDC 171561: 170 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "3 medium, 80 g each",
+      "grams": 240,
+      "kcal": 98,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 16.3,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "3 medium, 170 g each peeled",
+      "grams": 510,
+      "kcal": 393,
+      "proteinG": 10.5,
+      "fatG": 0.5,
+      "netCarbsG": 78.5,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 5131,
+  "kcalPerServing": 860,
+  "perServing": {
+    "proteinG": 51.5,
+    "fatG": 35.2,
+    "netCarbsG": 80.9
+  },
+  "notes": "Assumptions that move the number: the beef is taken as cubed boneless chuck with its fat (USDA under-blade, 13 % fat; the leaner USDA 'chuck for stew' at 4.5 % fat would lower each plate by ~135 kcal, and bone-in pieces at ~80 % edible would lower it by ~80 kcal); all 3 tbsp oil eaten; stock from 1.5 cubes. Each plate has 200 g raw beef and a dumpling made from 80 g flour (~275 kcal). Compared against: Olive magazine beef stew with herby dumplings 773 kcal (serves 4), BBC Good Food ME beef and bean stew with cornbread dumplings 642 kcal, delicious. magazine quick stew and dumplings 593 kcal. Ours is 11 % above the closest and ~35 % above the lighter two. The gap is portion size: those use 125-150 g beef and smaller dumplings a plate."
+}

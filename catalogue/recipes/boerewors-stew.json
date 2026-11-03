@@ -8,7 +8,7 @@
   "placement": { "dinner": "main" },
   "tags": ["budget", "onePot", "comfort", "kidFriendly"],
   "allergens": ["wheat"],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     { "name": "Sunflower oil", "quantity": 2, "unit": "tbsp", "note": null, "group": null },
     { "name": "Boerewors", "quantity": 1, "unit": "kg", "note": "cut into 5 cm pieces", "group": null },
@@ -41,5 +41,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Keeps 2 days in the fridge and reheats well; add a splash of water if the gravy has thickened.",
+  "kcalPerServing": 660,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

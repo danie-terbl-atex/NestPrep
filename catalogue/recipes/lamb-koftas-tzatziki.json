@@ -1,0 +1,203 @@
+{
+  "id": "lamb-koftas-tzatziki",
+  "name": "Lamb koftas with tzatziki and salad",
+  "summary": "Spiced lamb and mint koftas off the grill with cool garlic tzatziki and a chopped salad of tomato, cucumber, red onion and parsley.",
+  "about": "Kofta, spiced minced meat shaped into balls or fingers, is cooked from Turkey and the Middle East to Iran and India; tzatziki is the Greek sauce of yoghurt, cucumber and garlic. On skewers, they cook as well on a braai as under the oven grill.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "braai",
+    "healthy"
+  ],
+  "allergens": [
+    "milk"
+  ],
+  "dietTags": [
+    "glutenFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "English cucumber",
+      "quantity": 1,
+      "unit": null,
+      "note": "half grated for the tzatziki, half diced for the salad",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Plain Greek yoghurt",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Fresh mint",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Lemon",
+      "quantity": 1,
+      "unit": null,
+      "note": "juiced; 1 tbsp for the tzatziki, the rest for the salad",
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the tzatziki"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 4,
+      "unit": null,
+      "note": "diced",
+      "group": "For the salad"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Flat-leaf parsley",
+      "quantity": 0.5,
+      "unit": "cup",
+      "note": "chopped",
+      "group": "For the salad"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "2 tbsp for the salad, 1 tbsp for brushing the koftas",
+      "group": "For the salad"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the salad"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small",
+      "group": "For the koftas"
+    },
+    {
+      "name": "Lamb mince",
+      "quantity": 500,
+      "unit": "g",
+      "note": "the leanest you can find",
+      "group": "For the koftas"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 2,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the koftas"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the koftas"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the koftas"
+    },
+    {
+      "name": "Paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the koftas"
+    },
+    {
+      "name": "Ground cinnamon",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the koftas"
+    },
+    {
+      "name": "Fresh mint",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": "For the koftas"
+    },
+    {
+      "name": "Flat-leaf parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "finely chopped",
+      "group": "For the koftas"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the koftas"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the koftas"
+    }
+  ],
+  "steps": [
+    "If you are using wooden skewers, soak 8 of them in water for 30 minutes so they do not burn.",
+    "Grate half the cucumber onto a clean tea towel, gather it up and squeeze out as much water as you can.",
+    "Stir the squeezed cucumber into the yoghurt with the garlic, mint, 1 tbsp of the lemon juice and the salt. Cover and chill.",
+    "Toss the diced cucumber, tomatoes, red onion and parsley with the rest of the lemon juice, 2 tbsp of the oil and a pinch of salt.",
+    "Grate the onion, squeeze out its juice and put the pulp in a bowl with the lamb, garlic, spices, mint, parsley, salt and pepper. Mix with your hands for 1 minute, until evenly combined and slightly sticky.",
+    "With wet hands, divide the mixture into 8 and press each piece around a skewer into a sausage about 12 cm long. Chill for at least 15 minutes while the braai coals burn down to a steady heat, or while a griddle pan or the oven grill heats up.",
+    "Brush the koftas with the last 1 tbsp of oil. Cook over hot coals or on a griddle pan over medium-high heat for 8 to 10 minutes, turning every 2 minutes, until browned all over and firm, with no pink in the middle. Under the oven grill, cook them 10 cm from the element for 10 to 12 minutes, turning halfway.",
+    "Serve two koftas each with the salad and a generous spoonful of tzatziki."
+  ],
+  "servings": 4,
+  "prepMinutes": 40,
+  "cookMinutes": 10,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Shape the koftas and make the tzatziki up to a day ahead; keep both covered in the fridge.",
+  "kcalPerServing": 490,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

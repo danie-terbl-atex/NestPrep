@@ -1,0 +1,124 @@
+{
+  "id": "butternut-soup",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onions",
+      "amount": "2 medium, 150 g each",
+      "grams": 300,
+      "kcal": 120,
+      "proteinG": 3.3,
+      "fatG": 0.3,
+      "netCarbsG": 22.8,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tsp grated",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Mild curry powder",
+      "amount": "1 tsp",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.1,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butternut",
+      "amount": "1.5 kg as bought; ~85 % after peeling and seeding",
+      "grams": 1275,
+      "kcal": 574,
+      "proteinG": 12.8,
+      "fatG": 1.3,
+      "netCarbsG": 123.7,
+      "reference": "Squash, winter, butternut, raw — USDA FDC 169295: 45 kcal / 100 g"
+    },
+    {
+      "ingredient": "Potato",
+      "amount": "1 medium, 170 g peeled",
+      "grams": 170,
+      "kcal": 131,
+      "proteinG": 3.5,
+      "fatG": 0.2,
+      "netCarbsG": 26.2,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vegetable stock",
+      "amount": "1.2 l from 2.4 cubes (24 g dry); beef-cube values as proxy",
+      "grams": 24,
+      "kcal": 41,
+      "proteinG": 4.2,
+      "fatG": 1.0,
+      "netCarbsG": 3.9,
+      "reference": "Soup, beef broth, cubed, dry (stock cube weighed dry, ~10 g a cube) — USDA FDC 171561: 170 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground nutmeg",
+      "amount": "0.25 tsp",
+      "grams": 0.6,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, nutmeg, ground — USDA FDC 171326: 525 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Fresh cream",
+      "amount": "125 ml + ~30 ml to swirl (153 g)",
+      "grams": 153,
+      "kcal": 520,
+      "proteinG": 4.3,
+      "fatG": 55.2,
+      "netCarbsG": 4.3,
+      "reference": "Cream, fluid, heavy whipping (SA fresh cream ~36 %) — USDA FDC 170859: 340 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1651,
+  "kcalPerServing": 280,
+  "perServing": {
+    "proteinG": 4.8,
+    "fatG": 14.3,
+    "netCarbsG": 30.8
+  },
+  "notes": "One main-course bowl of 6, about 480 ml. Assumptions: the 1.5 kg is the squash as bought, ~85 % after peeling and seeding; the cream counted at 125 ml plus ~30 ml swirled on top; stock from 2.4 cubes, with beef-cube values standing in for vegetable. The soup is ~57 kcal / 100 g. Compared against: SparkPeople curried butternut soups with cream at 184 kcal (4 servings) and 136 kcal (8 servings), both cup-sized portions of ~250 ml. Scaled to our 480 ml bowl those are ~260-350 kcal, so 280 agrees."
+}

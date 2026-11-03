@@ -31,6 +31,11 @@ abstract interface class LocationReporter {
   /// Stops now, and removes what the household can see.
   Future<void> stop({required String householdId, required String memberId});
 
+  /// Stops whatever window is open on this phone. [removePin] also removes
+  /// what the household can see — on sign-out; not when always-on takes over
+  /// the same document.
+  Future<void> stopCurrent({required bool removePin});
+
   /// Anything that went wrong after [start] returned — location switched off
   /// mid-share, the write refused. A share that stopped silently is the one
   /// failure this feature must not have (`FE-08`).

@@ -1,0 +1,84 @@
+{
+  "id": "soetpampoen",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Pumpkin",
+      "amount": "1.5 kg peeled and seeded (pumpkin taken)",
+      "grams": 1500,
+      "kcal": 390,
+      "proteinG": 15.0,
+      "fatG": 1.5,
+      "netCarbsG": 90.0,
+      "reference": "Pumpkin, raw — USDA FDC 168448: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "3 tbsp = 42 g",
+      "grams": 42,
+      "kcal": 301,
+      "proteinG": 0.4,
+      "fatG": 34.1,
+      "netCarbsG": 0.0,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cinnamon sticks",
+      "amount": "2 sticks, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Whole cinnamon stick, lifted out before serving — none counted"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1/2 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "125 ml",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Brown sugar",
+      "amount": "1/2 cup ≈ 100 g",
+      "grams": 100,
+      "kcal": 380,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 98.1,
+      "reference": "Sugars, brown — USDA FDC 168833: 380 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground cinnamon",
+      "amount": "1 tsp ≈ 2.6 g",
+      "grams": 2.6,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.7,
+      "reference": "Spices, cinnamon, ground — USDA FDC 171320: 247 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1077,
+  "kcalPerServing": 180,
+  "perServing": {
+    "proteinG": 2.6,
+    "fatG": 5.9,
+    "netCarbsG": 31.5
+  },
+  "notes": "Assumptions that change the number: pumpkin taken, not butternut (butternut would add ~285 kcal to the pot, ~50 a serving); cinnamon sticks lifted out; all of the syrup eaten. Sanity check: the closest USDA dish is candied sweet potato, home-prepared (FDC 170088) at 164 kcal / 100 g; ours is ~75 kcal / 100 g (~1.44 kg), lower because pumpkin has a third of sweet potato's starch (USDA 26 against 86 kcal / 100 g raw). Per serving, two-thirds of the energy is the butter and sugar. The web search budget ran out before a published soetpampoen figure could be found."
+}

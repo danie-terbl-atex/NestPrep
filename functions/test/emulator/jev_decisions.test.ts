@@ -143,7 +143,11 @@ describe('building the week from what the store has', () => {
     const week = await build(sam, householdId, childId);
     expect(week.lunches).toHaveLength(5);
     expect(week.lunches.every((l) => l.productId === 'cups')).toBe(true);
-    expect(week.packs).toEqual([{ productId: 'cups', boxesPerPack: 4 }]);
+    // Every kept product's pack, placed or not, so a swap prices right (lunch-box ADR-0028).
+    expect(week.packs).toEqual([
+      { productId: 'cups', boxesPerPack: 4 },
+      { productId: 'juice', boxesPerPack: 1 },
+    ]);
     expect(week.callsLeft).toBe(99);
     expect(await callsCharged(householdId)).toBe(1);
   });

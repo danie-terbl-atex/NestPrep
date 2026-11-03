@@ -180,6 +180,11 @@ void main() {
         'calls Functions',
     'lib/features/product_analytics/data/callable_paywall_open_recorder.dart':
         'calls Functions',
+    // Connected assistants (assistants ADR-0001, ADR-0003).
+    'lib/app/assistants_providers.dart':
+        'builds the assistants repository over live Firestore',
+    'lib/features/assistants/data/firestore_assistant_repository.dart':
+        'writes Firestore',
 
     // Declarations only: an interface or a barrel has no executable line to
     // attribute coverage to, so it cannot appear whatever tests do.
@@ -233,6 +238,9 @@ void main() {
         'interface only',
     'lib/features/calendar_sync/data/calendar_sync_repository.dart':
         'interface only',
+    'lib/features/assistants/data/assistant_repository.dart':
+        'interface and constants only',
+    'lib/features/assistants/model/assistant_via.dart': 'one enum only',
     'lib/features/product_analytics/data/activity_recorder.dart':
         'interface only',
     'lib/features/product_analytics/data/beta_numbers_repository.dart':

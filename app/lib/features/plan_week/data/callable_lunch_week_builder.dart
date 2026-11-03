@@ -1,5 +1,6 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
+import '../../lunch_box/model/lunch_variety.dart';
 import '../../lunch_box/model/lunch_week.dart';
 import '../model/idea_search.dart';
 import '../model/lunch_week_reply.dart';
@@ -25,6 +26,7 @@ final class CallableLunchWeekBuilder implements LunchWeekBuilder {
     required Set<String> childIds,
     required List<IdeaSearch> searches,
     required PackingChoice packing,
+    required LunchVariety variety,
   }) async {
     try {
       final result = await _functions
@@ -39,6 +41,7 @@ final class CallableLunchWeekBuilder implements LunchWeekBuilder {
               childIds: childIds,
               searches: searches,
               packing: packing,
+              variety: variety,
             ),
           );
       return LunchWeekReply.fromWire(result.data);

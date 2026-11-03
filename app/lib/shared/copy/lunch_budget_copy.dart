@@ -20,7 +20,8 @@ abstract final class LunchBudgetCopy {
   static String nearly(String amount) => 'Nearly there — $amount left';
   static String over(String amount) =>
       '$amount over — a swap or two would do it';
-  static const noBudget = 'No weekly budget yet.';
+  static const noBudget =
+      'No weekly budget yet. One amount covers every child’s boxes.';
   static const setBudget = 'Set a weekly budget';
   static const changeBudget = 'Change the budget';
   static String meterLabel(String spent, String budget) =>
@@ -28,7 +29,15 @@ abstract final class LunchBudgetCopy {
 
   // The budget sheet.
   static const budgetSheetTitle = 'Weekly lunch budget';
-  static const budgetAmount = 'For every child’s boxes, each week';
+  static String budgetFor(List<String> children) => switch (children) {
+    [] => 'One amount for every child’s boxes together — not per child.',
+    [final child] => 'For $child’s boxes, each week.',
+    _ =>
+      'One amount for all ${children.length} children together — '
+          '${_and(children)}. Not per child.',
+  };
+  static const budgetAmount = 'Total for the week';
+  static String perChild(String amount) => 'About $amount per child';
   static const budgetHint = '250';
   static const budgetInvalid = 'Enter an amount between R1 and R100 000.';
   static const saveBudget = 'Save';
@@ -44,6 +53,8 @@ abstract final class LunchBudgetCopy {
       packs == 1 ? 'Buy 1 pack' : 'Buy $packs packs';
   static String basketCovers(int lunches) =>
       lunches == 1 ? 'Enough for 1 lunch' : 'Enough for $lunches lunches';
+  static String basketRoom(int covers, int planned) =>
+      'Covers $covers lunches · $planned planned';
   static String basketTotal(String amount) => 'Altogether $amount';
   static String unpriced(int count) => count == 1
       ? '1 thing this week has no price yet, so the total is at least this.'
@@ -83,4 +94,7 @@ abstract final class LunchBudgetCopy {
   static String worksOutAt(String amount) => 'Works out at $amount a box';
   static const savePrice = 'Save';
   static const removePrice = 'Remove the price';
+
+  static String _and(List<String> words) =>
+      '${words.sublist(0, words.length - 1).join(', ')} and ${words.last}';
 }

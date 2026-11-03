@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../shared/log/app_log.dart';
 import '../../groceries/model/product_match.dart';
 import 'lunch_shop_preference.dart';
+import 'match_as_you_type_preference.dart';
 import 'retailer_preference.dart';
 
 /// A chosen shop in `flutter_secure_storage`, the way the Checkers area is
@@ -11,7 +12,10 @@ import 'retailer_preference.dart';
 /// grocery screen's *Shop at* is kept under [groceryPrefix], *Plan my week*'s
 /// shop under [lunchShopPrefix] (lunch-box ADR-0026).
 final class SecureStorageRetailerPreference
-    implements RetailerPreference, LunchShopPreference {
+    implements
+        RetailerPreference,
+        LunchShopPreference,
+        MatchAsYouTypePreference {
   SecureStorageRetailerPreference({
     FlutterSecureStorage? storage,
     this._prefix = groceryPrefix,
@@ -19,6 +23,7 @@ final class SecureStorageRetailerPreference
 
   static const groceryPrefix = 'nestprep.retailer.';
   static const lunchShopPrefix = 'nestprep.lunchShop.';
+  static const matchAsYouTypePrefix = 'nestprep.matchAsYouType.';
 
   final FlutterSecureStorage _storage;
   final String _prefix;
@@ -43,6 +48,37 @@ final class SecureStorageRetailerPreference
     } on PlatformException catch (error) {
       // The choice still applies for this run — the controller holds it.
       AppLog.failure('retailer write', code: error.code, error: error);
+    }
+  }
+
+  @override
+  Future<bool?> readMatchAsYouType(String householdId) async {
+    try {
+      return switch (await _storage.read(
+        key: '$matchAsYouTypePrefix$householdId',
+      )) {
+        'on' => true,
+        'off' => false,
+        _ => null,
+      };
+    } on PlatformException catch (error) {
+      AppLog.failure('match as you type read', code: error.code, error: error);
+      return null;
+    }
+  }
+
+  @override
+  Future<void> writeMatchAsYouType(
+    String householdId, {
+    required bool isOn,
+  }) async {
+    try {
+      await _storage.write(
+        key: '$matchAsYouTypePrefix$householdId',
+        value: isOn ? 'on' : 'off',
+      );
+    } on PlatformException catch (error) {
+      AppLog.failure('match as you type write', code: error.code, error: error);
     }
   }
 }

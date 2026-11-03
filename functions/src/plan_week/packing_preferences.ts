@@ -38,12 +38,20 @@ export const PACKING_INSTRUCTIONS: Readonly<Record<PackingPreference, string>> =
  */
 export const DEFAULT_TREAT_DAYS: readonly SchoolDay[] = [5];
 
+/**
+ * The compartments kept the same all week when the parent does not say
+ * (lunch-box ADR-0028): every one but the main.
+ */
+export const DEFAULT_SAME_ALL_WEEK: readonly LunchSlot[] = ['fruit', 'veg', 'snack', 'treat'];
+
 /** The parent's step-one choices, as both callables receive them. */
 export interface PackingChoices {
   readonly slots: readonly LunchSlot[];
   readonly preferences: readonly PackingPreference[];
   /** ISO weekdays a treat may be planned on; empty plans none (lunch-box ADR-0025). */
   readonly treatDays: readonly SchoolDay[];
+  /** Compartments that keep one product all week; only the week is built with them. */
+  readonly sameAllWeek?: readonly LunchSlot[];
 }
 
 /** What a phone that sends no choices gets: every compartment, no preference, a Friday treat. */

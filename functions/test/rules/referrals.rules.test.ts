@@ -161,9 +161,9 @@ describe('appConfig — the V2 switches (foundation ADR-0014)', () => {
     await givenAReferral();
   });
 
-  it('anybody reads the switches, signed in or not', async () => {
+  it('anybody signed in reads the switches, and nobody signed out', async () => {
     await assertSucceeds(getDoc(doc(await asUser(STRANGER), FLAGS)));
-    await assertSucceeds(getDoc(doc(await asSignedOut(), FLAGS)));
+    await assertFails(getDoc(doc(await asSignedOut(), FLAGS)));
   });
 
   it('nobody lists the collection or reads another config document', async () => {

@@ -1,0 +1,186 @@
+{
+  "id": "chicken-burrito-bowls",
+  "name": "Chicken burrito bowls",
+  "summary": "Cumin-and-paprika chicken over brown rice with black beans, charred sweetcorn, fresh salsa and avocado, set out so everyone builds their own bowl.",
+  "about": "A burrito bowl is the filling of a Mexican-American burrito (rice, beans, grilled meat and salsa) served in a bowl instead of rolled up. Putting each part in its own dish lets children choose what goes into theirs.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Chicken breast fillets",
+      "quantity": 500,
+      "unit": "g",
+      "note": "skinless, cut into strips",
+      "group": "For the chicken"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Garlic powder",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chicken"
+    },
+    {
+      "name": "Frozen sweetcorn",
+      "quantity": 1.5,
+      "unit": "cup",
+      "note": "thawed and patted dry",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Black beans",
+      "quantity": 1,
+      "unit": "tin",
+      "note": "400 g, drained and rinsed",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Water",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the toppings"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 3,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "finely chopped",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Limes",
+      "quantity": 2,
+      "unit": null,
+      "note": "1 juiced for the salsa, 1 cut into wedges to serve",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Cos lettuce",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "half a head, shredded",
+      "group": "For the toppings"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, sliced",
+      "group": "For the toppings"
+    }
+  ],
+  "steps": [
+    "Put the rice, water and salt in a saucepan and bring to the boil over high heat. Cover, turn the heat to low and simmer for 40 minutes, until the grains are tender and the water has been absorbed. Take off the heat and leave covered for 10 minutes.",
+    "While the rice cooks, toss the chicken with the oil, cumin, paprika, oregano, garlic powder and salt in a bowl until evenly coated.",
+    "Heat a large frying pan over high heat for 2 minutes. Add the sweetcorn to the dry pan and cook for 5 to 6 minutes, stirring only now and then, until plenty of kernels are browned and charred. Tip into a bowl.",
+    "Turn the heat to medium-high and cook the chicken in one layer, in two batches if your pan is small, for 6 to 8 minutes, turning, until browned and white all the way through with no pink in the thickest strip.",
+    "Warm the beans with the water in a small saucepan over medium heat for 3 to 4 minutes, stirring, until hot through.",
+    "Mix the tomatoes, red onion, coriander and the juice of one lime in a bowl and season the salsa with salt.",
+    "Set out the rice, chicken, beans, corn, salsa, lettuce, avocado and lime wedges, and let everyone fill their own bowl, rice first."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Cook the rice up to 2 days ahead and chill it quickly; reheat until steaming hot.",
+  "kcalPerServing": 610,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

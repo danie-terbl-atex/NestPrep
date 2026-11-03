@@ -1,0 +1,134 @@
+{
+  "id": "hertzoggies",
+  "servings": 24,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "250 g (rolling flour not counted)",
+      "grams": 250,
+      "kcal": 910,
+      "proteinG": 25.8,
+      "fatG": 2.5,
+      "netCarbsG": 184.0,
+      "reference": "Wheat flour, white, all-purpose, enriched, bleached (SA cake flour label ~362 kcal agrees) — USDA FDC 168894: 364 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baking powder",
+      "amount": "2 tsp ≈ 9 g",
+      "grams": 9,
+      "kcal": 5,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 2.5,
+      "reference": "Leavening agents, baking powder, double-acting, sodium aluminum sulfate — USDA FDC 172803: 53 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tbsp × 13 g",
+      "grams": 26,
+      "kcal": 101,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 26.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "a pinch",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "125 g",
+      "grams": 125,
+      "kcal": 896,
+      "proteinG": 1.1,
+      "fatG": 101.4,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg yolks",
+      "amount": "3 × 17 g",
+      "grams": 51,
+      "kcal": 164,
+      "proteinG": 8.1,
+      "fatG": 13.5,
+      "netCarbsG": 1.8,
+      "reference": "Egg, yolk, raw, fresh — USDA FDC 172184: 322 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cold water",
+      "amount": "2 tbsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Smooth apricot jam",
+      "amount": "0.75 cup = 187 ml × 1.33 g/ml",
+      "grams": 250,
+      "kcal": 605,
+      "proteinG": 1.8,
+      "fatG": 0.5,
+      "netCarbsG": 160.3,
+      "reference": "Jams and preserves, apricot — USDA FDC 170645: 242 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg whites",
+      "amount": "3 × 36 g",
+      "grams": 108,
+      "kcal": 56,
+      "proteinG": 11.8,
+      "fatG": 0.2,
+      "netCarbsG": 0.8,
+      "reference": "Egg, white, raw, fresh — USDA FDC 172183: 52 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "200 g",
+      "grams": 200,
+      "kcal": 774,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 200.0,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Vanilla essence",
+      "amount": "0.5 tsp ≈ 2 g",
+      "grams": 2,
+      "kcal": 6,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Vanilla extract — USDA FDC 173471: 288 kcal / 100 g"
+    },
+    {
+      "ingredient": "Desiccated coconut",
+      "amount": "150 g",
+      "grams": 150,
+      "kcal": 990,
+      "proteinG": 10.3,
+      "fatG": 96.8,
+      "netCarbsG": 11.0,
+      "reference": "Nuts, coconut meat, dried (desiccated), not sweetened — USDA FDC 170170: 660 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 4507,
+  "kcalPerServing": 190,
+  "perServing": {
+    "proteinG": 2.5,
+    "fatG": 9.0,
+    "netCarbsG": 24.4
+  },
+  "notes": "24 tartlets. SA large egg: yolk 17 g, white 36 g. Jam 1.33 g/ml. Sanity check: Woolworths hertzoggies 66 kcal for a 14 g small tart (470 kcal / 100 g); The Cinnamon Jar 264 kcal (18 servings). Ours ~44 g baked ≈ 430 kcal / 100 g; consistent."
+}

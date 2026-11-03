@@ -1,0 +1,154 @@
+{
+  "id": "chakalaka",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium, 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.7,
+      "fatG": 0.2,
+      "netCarbsG": 11.4,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 24,
+      "proteinG": 1.1,
+      "fatG": 0.2,
+      "netCarbsG": 3.5,
+      "reference": "Peppers, sweet, green, raw — USDA FDC 170427: 20 kcal / 100 g"
+    },
+    {
+      "ingredient": "Red pepper",
+      "amount": "1 medium, 120 g edible",
+      "grams": 120,
+      "kcal": 31,
+      "proteinG": 1.2,
+      "fatG": 0.4,
+      "netCarbsG": 4.7,
+      "reference": "Peppers, sweet, red, raw — USDA FDC 170108: 26 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "3 cloves",
+      "grams": 15,
+      "kcal": 22,
+      "proteinG": 1.0,
+      "fatG": 0.1,
+      "netCarbsG": 4.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh ginger",
+      "amount": "1 tsp grated",
+      "grams": 2,
+      "kcal": 2,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Ginger root, raw — USDA FDC 169231: 80 kcal / 100 g"
+    },
+    {
+      "ingredient": "Green chillies",
+      "amount": "2, 5 g each",
+      "grams": 10,
+      "kcal": 4,
+      "proteinG": 0.2,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Peppers, hot chili, green, raw — USDA FDC 170497: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Curry powder",
+      "amount": "1 tbsp",
+      "grams": 6.3,
+      "kcal": 20,
+      "proteinG": 0.9,
+      "fatG": 0.9,
+      "netCarbsG": 0.2,
+      "reference": "Spices, curry powder — USDA FDC 170924: 325 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "1 tsp",
+      "grams": 2.3,
+      "kcal": 6,
+      "proteinG": 0.3,
+      "fatG": 0.3,
+      "netCarbsG": 0.4,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "3 medium, 80 g each",
+      "grams": 240,
+      "kcal": 98,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 16.3,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "400 g tin",
+      "grams": 400,
+      "kcal": 64,
+      "proteinG": 3.2,
+      "fatG": 1.0,
+      "netCarbsG": 6.4,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baked beans in tomato sauce",
+      "amount": "410 g tin, beans and sauce",
+      "grams": 410,
+      "kcal": 385,
+      "proteinG": 19.5,
+      "fatG": 1.6,
+      "netCarbsG": 69.7,
+      "reference": "Beans, baked, canned, plain or vegetarian — USDA FDC 175182: 94 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "1 tsp",
+      "grams": 4.2,
+      "kcal": 16,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 4.2,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    }
+  ],
+  "totalKcal": 1090,
+  "kcalPerServing": 180,
+  "perServing": {
+    "proteinG": 5.2,
+    "fatG": 7.6,
+    "netCarbsG": 20.4
+  },
+  "notes": "One side portion of 6. Assumptions: all 3 tbsp oil eaten; baked beans with their sauce (USDA vegetarian baked beans; SA tins are similar); peppers 120 g each. Compared against: Tesco chakalaka 179 kcal (4 servings), FatSecret ZA recipe 231 kcal (4 servings), Foreign Fork 243 kcal (6 servings). Ours is 180 at 6 servings, the same as Tesco and below the oilier versions."
+}

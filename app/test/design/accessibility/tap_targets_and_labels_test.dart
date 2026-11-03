@@ -26,6 +26,13 @@ import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
+import 'package:nestprep/features/photo_frames/data/photo_frame_directory.dart';
+import 'package:nestprep/features/photo_frames/model/frame_panels.dart';
+import 'package:nestprep/features/photo_frames/state/frame_photos_controller.dart';
+import 'package:nestprep/features/photo_frames/state/photo_frames_controller.dart';
+import 'package:nestprep/features/photo_frames/ui/frame_photos_screen.dart';
+import 'package:nestprep/features/photo_frames/ui/frame_scanner.dart';
+import 'package:nestprep/features/photo_frames/ui/photo_frames_screen.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -45,6 +52,7 @@ import '../../support/fake_kid_sign_in.dart';
 import '../../support/fake_link_opener.dart';
 import '../../support/fake_live_location.dart';
 import '../../support/fake_meal_repository.dart';
+import '../../support/fake_photo_frames.dart';
 import '../../support/fake_todo_repository.dart';
 import '../../support/fake_vault.dart';
 import '../../support/grocery_plan_harness.dart';
@@ -200,6 +208,7 @@ void main() {
     final controller = LiveLocationController(
       liveLocationRepository: repository,
       locationReporter: reporter,
+      placesRepository: FakePlacesRepository(),
       householdId: Fixtures.householdId,
       viewerMemberId: Fixtures.samMemberId,
       members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
@@ -317,7 +326,8 @@ void main() {
         view: MealsView.week,
         onSelectView: (_) {},
         onSelectTab: (_) {},
-        onOpenRecipe: (_) {},
+        onPickRecipe: (_, _) async => null,
+        onOpenRecipe: (_, {heroTag}) {},
       ),
       providers: [
         ChangeNotifierProvider<MealPlanController>.value(value: controller),
@@ -406,5 +416,76 @@ void main() {
     ]);
 
     await expectAccessible(tester, 'kids\u2019 sign-in');
+  });
+
+  Future<void> photoFrames(
+    WidgetTester tester, {
+    Future<void> Function()? act,
+  }) async {
+    phone(tester);
+    final repository = FakePhotoFrameRepository();
+    addTearDown(repository.close);
+    final controller = PhotoFramesController(
+      photoFrameRepository: repository,
+      householdId: Fixtures.householdId,
+      members: [Fixtures.sam, Fixtures.thandi, Fixtures.kid],
+    );
+    addTearDown(controller.dispose);
+    final album = FramePhotoFixtures.controller(
+      store: FakeFramePhotoStore(FramePhotoFixtures.album(2)),
+    );
+    addTearDown(album.dispose);
+
+    await pumpScreen(
+      tester,
+      const PhotoFramesScreen(),
+      providers: [
+        ChangeNotifierProvider<PhotoFramesController>.value(value: controller),
+        ChangeNotifierProvider<FramePhotosController>.value(value: album),
+        Provider<PhotoFrameDirectory>.value(value: FakePhotoFrameDirectory()),
+        Provider<FrameScanner>.value(value: FakeFrameScanner()),
+      ],
+    );
+    repository.emit([
+      FrameFixtures.frame(
+        panels: const FramePanels(helperMemberId: Fixtures.thandiMemberId),
+        lastSeenAt: FrameFixtures.now.subtract(const Duration(minutes: 3)),
+      ),
+    ]);
+    await tester.pumpAndSettle();
+    await act?.call();
+  }
+
+  testWidgets('photo frames', (tester) async {
+    await photoFrames(tester);
+    await expectAccessible(tester, 'photo frames');
+  });
+
+  testWidgets('linking a photo frame', (tester) async {
+    await photoFrames(
+      tester,
+      act: () async {
+        await tester.tap(find.text('Kitchen frame'));
+        await tester.pumpAndSettle();
+      },
+    );
+    await expectAccessible(tester, 'a photo frame’s settings');
+  });
+
+  testWidgets('screensaver photos', (tester) async {
+    phone(tester);
+    final album = FramePhotoFixtures.controller(
+      store: FakeFramePhotoStore(FramePhotoFixtures.album(4)),
+    );
+    addTearDown(album.dispose);
+    await pumpScreen(
+      tester,
+      const FramePhotosScreen(),
+      providers: [
+        ChangeNotifierProvider<FramePhotosController>.value(value: album),
+      ],
+    );
+    await tester.pumpAndSettle();
+    await expectAccessible(tester, 'screensaver photos');
   });
 }

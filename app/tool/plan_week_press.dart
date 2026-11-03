@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import '../test/support/checkers_fakes_for_plan_week.dart';
 import '../test/support/fake_checkers.dart';
 import '../test/support/fake_live_location.dart';
+import '../test/support/fake_lunch_variety.dart';
 import '../test/support/fake_plan_week.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
@@ -220,6 +221,7 @@ Future<void> capturePlanWeek(
       memberId: Fixtures.samMemberId,
     ),
     packingStore: FakePackingChoiceStore(),
+    variety: lunchVarietyChoice(Fixtures.householdId),
     householdId: Fixtures.householdId,
     week: LunchFixtures.week,
   );

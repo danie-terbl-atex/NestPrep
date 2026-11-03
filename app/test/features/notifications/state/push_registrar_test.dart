@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/notifications/model/notification_vocabulary.dart';
 import 'package:nestprep/features/notifications/model/push_arrival.dart';
 import 'package:nestprep/features/notifications/model/push_token.dart';
 import 'package:nestprep/features/notifications/state/push_registrar.dart';
@@ -36,16 +37,13 @@ void main() {
 
   Future<void> settle() => Future<void>.delayed(Duration.zero);
 
-  test('starting asks nobody anything, and makes the four channels', () async {
+  test('starting asks nobody anything, and makes every channel', () async {
     await registrar.start();
     expect(gateway.prompts, 0);
     expect(registrar.permission, PushPermission.notAsked);
     expect(tokens.registered, isEmpty);
     expect(gateway.channels.map((channel) => channel.id), [
-      'nestprep_digest',
-      'nestprep_documents',
-      'nestprep_handover',
-      'nestprep_chores',
+      for (final channel in AndroidChannel.values) channel.id,
     ]);
     expect(gateway.channels.first.name, 'Morning digest');
   });

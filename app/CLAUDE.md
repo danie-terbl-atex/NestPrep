@@ -1,12 +1,11 @@
 # app — NullState app `nestprep` (Flutter client)
 
-This is the Flutter client of the NullState app **nestprep**. Its memory lives in the vault:
+This is the Flutter client of the NullState app **nestprep**. Its memory lives in **Godfather**, on
+the `nestprep` software node (`c7690dc3-6c26-4101-b191-a0870b9c9404`) and its feature nodes, not in
+`../../nullstate-vault/`, which has been a frozen copy since 2026-10-23.
 
-    ../../nullstate-vault/   (also $NULLSTATE_VAULT)
-
-Before any task run the **nullstate-memory** skill; after any change update the vault in the same
-change and run `python3 ../../nullstate-vault/tools/vault-lint.py`. The root `CLAUDE.md` one level
-up has the full contract and the emulator command.
+Before any task call `route`. After any change, update Godfather in the same change and run `lint`
+on the node. The root `CLAUDE.md` one level up has the full contract and the emulator command.
 
 ## Running this app
 
@@ -32,6 +31,7 @@ Defines (`--dart-define`), all optional:
 | `NESTPREP_BACKEND` | `emulator`, `cloud` | `cloud` |
 | `NESTPREP_EMULATOR_HOST` | an IP the device can reach | `10.0.2.2` on the Android emulator, else `localhost` |
 | `NESTPREP_DEMO_LOGINS` (+ `NESTPREP_DEMO_PASSWORD`, `NESTPREP_DEMO_EMAIL_*`) | `true` | off |
+| `NESTPREP_MAPS` | `on` | off — the family map is the list. Needs the Maps keys in `android/maps.properties` and `ios/Flutter/Maps.xcconfig` (both gitignored, `MAPS_API_KEY=…`); a GoogleMap with no key crashes on iOS |
 
 **Demo builds** (foundation ADR-0019): `flutter build apk --debug --dart-define-from-file=demo_logins.json`
 (or `ios --release`) adds *Demo accounts — sign in as* Parent / Second parent / Helper / Nanny / Gran
@@ -91,7 +91,7 @@ bug; the seeded-user buttons are how you hit the first two:
 |---|---|---|
 | *"Signing in did not work. Please try again."* | the **suite is not running** — nothing is listening on 9099 | `firebase emulators:start --project nestprep-643b7` |
 | *"Those sign-in details are not right."* | the suite is up but **Auth is unseeded** — a suite started without `emulator-data/`, or emptied by an integration-test run | `npm --prefix functions run build && npm --prefix functions run seed`, or start it with `npm --prefix functions run emulators`, which seeds itself |
-| *"Sign in again to do that."* on a **physical iPhone**, on the first callable (e.g. creating a household), with nothing in the Functions emulator log | not the session: firebase-ios-sdk ≥ 12.19 **refuses on the phone** to send tokens over HTTP to a non-loopback host, as `unauthenticated`. Storage does the same. Auth and Firestore are unaffected | test callables and Storage on the Android emulator (or an iOS Simulator); a phone on the LAN emulator is for sign-in and Firestore screens only — vault lesson `an-iphone-cannot-call-functions-or-storage-on-the-emulator-over-the-lan` |
+| *"Sign in again to do that."* on a **physical iPhone**, on the first callable (e.g. creating a household), with nothing in the Functions emulator log | not the session: firebase-ios-sdk ≥ 12.19 **refuses on the phone** to send tokens over HTTP to a non-loopback host, as `unauthenticated`. Storage does the same. Auth and Firestore are unaffected | test callables and Storage on the Android emulator (or an iOS Simulator); a phone on the LAN emulator is for sign-in and Firestore screens only — Godfather lesson `an-iphone-cannot-call-functions-or-storage-on-the-emulator-over-the-lan` |
 
 Confirm the first from `adb logcat`, which is the only place the real reason appears — look for
 `RecaptchaCallWrapper: ... [ Failed to connect to /10.0.2.2:9099 ]`. The SDK reports that as
@@ -137,7 +137,7 @@ so the on-screen copy cannot tell you the backend was unreachable.
   it breaks sign-in only, with an unmapped error. Release builds never merge it.
 - **A Firebase failure on Android is only legible in `adb logcat`.** Neither the emulator UI nor
   `flutter run` shows the SDK's real message, and for Auth and Functions the request may never
-  reach the emulator at all. See the vault lesson on what Auth and Functions need that Firestore
+  reach the emulator at all. See the Godfather lesson on what Auth and Functions need that Firestore
   does not.
 - `app/firebase.json` is flutterfire's own record of what it generated — not the emulator config,
   which is the `firebase.json` at the repo root.
@@ -147,7 +147,7 @@ so the on-screen copy cannot tell you the backend was unreachable.
   refuses to start. Re-check both after any `flutterfire configure`. On Android nothing is passed
   to `GoogleSignIn.initialize`: the `google-services` Gradle plugin turns the type-3 client into
   `default_web_client_id`, which the plugin reads; a device with no Google account stops at *add
-  an account* — vault lesson on checking Google sign-in per platform.
+  an account* — Godfather lesson on checking Google sign-in per platform.
 - **`flutter run` on a physical iPhone from this Mac fails to find `build/ios/iphoneos/Runner.app`**,
   because Xcode writes the bundle to `build/ios/Release-iphoneos/`. Build, then install and launch
   by hand:
@@ -160,6 +160,16 @@ so the on-screen copy cannot tell you the backend was unreachable.
   **That phone cannot call a Function or use Storage on the emulator**: the iOS SDK (≥ 12.19)
   fails any token-bearing request over HTTP to a non-loopback host with `unauthenticated` before it
   is sent, which the app shows as *"Sign in again to do that."* — see the table above.
+- **The always-on location engine is native** (live-location ADR-0005): Kotlin in
+  `android/app/src/main/kotlin/io/nullstate/nestprep/location/`, running in its own `:location`
+  process with a memory-only Firestore cache, and Swift in `ios/Runner/Location/`, writing through a
+  secondary FirebaseApp `nestprep-location`. Neither touches the Firestore instance Dart configures.
+  Their payloads are held to `test/fixtures/location_payloads.json` by
+  `test/features/live_location/data/location_payloads_test.dart`, `PayloadFixtureTest.kt`
+  (`cd android && ./gradlew :app:testDebugUnitTest`) and the RunnerTests (`xcodebuild test` with
+  `-derivedDataPath ../build/ios SYMROOT=../build/ios`, or Crashlytics' upload phase cannot find
+  its script). Change a shape in all three and the rules partial together. An Android emulator has
+  no real movement: drive it with `adb emu geo fix <lng> <lat>`.
 - **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
   `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
   fetched from the real service on both targets (it is a way to reach the phone, not household
@@ -170,9 +180,10 @@ so the on-screen copy cannot tell you the backend was unreachable.
   exists but is not on the Runner target, because a free Apple team cannot sign
   `aps-environment` — add the Push Notifications capability in Xcode once the Apple Developer
   Program exists, and upload an APNs auth key to the Firebase project.
-- Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
-  headings, which keeps its `opsz` axis, so every Fraunces style sets `FontVariation('opsz', size)`;
-  both OFL, Latin and Latin Extended subsets). `flutter pub get` after changing the `fonts:` block
+- Fonts are bundled under `assets/fonts/` (Mona Sans for UI, four static cuts; Mona Sans Display
+  SemiExpanded 600 for headings and the wordmark; design-system ADR-0020). They are GitHub's release
+  files byte for byte: the OFL reserves the name "Mona", so a subset or edited cut may not ship
+  under it. `flutter pub get` after changing the `fonts:` block
   or the family is silently absent. The arch mark is drawn in code (`NestMarkPainter`) from
   `assets/brand/nest_mark.svg`, and the launcher icons and splash are rendered from the same SVG.
 - Every raster of the mark under `assets/brand/` is rendered from `nest_mark.svg` by
@@ -182,6 +193,6 @@ so the on-screen copy cannot tell you the backend was unreachable.
   the generator's default 16% shrank the mark to 40% of the icon (design-system ADR-0011). Bump the
   build number after an icon change: a phone keeps showing the icon it cached until a newer build
   is installed (an iPhone sometimes until it reboots). **The splash generator puts
-  Android 12's styles on non-AppCompat themes**, which stops `FlutterFragmentActivity` (the vault's
+  Android 12's styles on non-AppCompat themes**, which stops `FlutterFragmentActivity` (Godfather's
   lock) starting on Android 12+; put them back — `test/app/android_launch_themes_test.dart` fails
   until you do. Revert its Info.plist re-indent and the icon tool's pbxproj edit.

@@ -1,0 +1,74 @@
+{
+  "id": "roti",
+  "servings": 8,
+  "lines": [
+    {
+      "ingredient": "Cake flour",
+      "amount": "480 g (dusting flour not counted)",
+      "grams": 480,
+      "kcal": 1718,
+      "proteinG": 39.4,
+      "fatG": 4.3,
+      "netCarbsG": 364.8,
+      "reference": "SA cake wheat flour label (Golden Cloud, via FatSecret ZA): 1499 kJ, 8.2 g protein, 0.9 g fat, 76 g glycaemic carbohydrate / 100 g (used 358 kcal / 100 g)"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (salt)"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp = 27 g",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (less than 60%) — USDA FDC 171017: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lukewarm water",
+      "amount": "1.25 cups",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "No energy (water)"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "100 g",
+      "grams": 100,
+      "kcal": 717,
+      "proteinG": 0.8,
+      "fatG": 81.1,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Melted butter and oil",
+      "amount": "3 tbsp ≈ 21 g butter + 20 g oil",
+      "grams": 41,
+      "kcal": 328,
+      "proteinG": 0.2,
+      "fatG": 37.1,
+      "netCarbsG": 0.0,
+      "reference": "Half Butter, salted (USDA FDC 173410), half Oil, sunflower (USDA FDC 171017), by weight: 800 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3002,
+  "kcalPerServing": 380,
+  "perServing": {
+    "proteinG": 5.0,
+    "fatG": 18.7,
+    "netCarbsG": 45.6
+  },
+  "notes": "Assumptions that change the number: dusting flour not counted; all 100 g of layering butter and the 3 tbsp butter-and-oil brushing mix end up in the roti. Sanity check: Woolworths butter roti is 271 kcal per 75 g (361 kcal / 100 g, FatSecret ZA) and USDA paratha (FDC 174076) is 326 kcal / 100 g. Ours is ~353 kcal / 100 g (3002 kcal over ~850 g cooked), ~106 g and 375 kcal each."
+}

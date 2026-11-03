@@ -5,7 +5,7 @@ import '../tokens/nest_theme.dart';
 import 'nest_eyebrow.dart';
 
 /// The opening of a way-in screen (design-system ADR-0008): a short eyebrow,
-/// one warm Fraunces line read as the heading, and a sentence under it.
+/// one display line read as the heading, and a sentence under it.
 class NestIntro extends StatelessWidget {
   const NestIntro({
     required this.title,

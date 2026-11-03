@@ -1,0 +1,203 @@
+{
+  "id": "pilchard-curry",
+  "name": "Pilchard curry with brown rice",
+  "summary": "Tinned pilchards folded into a quick tomato and onion curry with peas and spinach, served over brown rice with a fresh tomato sambal.",
+  "about": "Pilchards in tomato sauce are a South African cupboard standby, and cooked into a quick curry with onion, tomato and masala they make a weeknight meal from the cupboard. Pilchards are an oily fish, so they bring omega-3 fats, and their soft bones add calcium, at a price that suits the end of the month.",
+  "cuisine": "southAfrican",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "budget",
+    "healthy"
+  ],
+  "allergens": [
+    "fish"
+  ],
+  "dietTags": [
+    "pescatarian",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 1,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2.5,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Sunflower oil",
+      "quantity": 1.5,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, finely chopped",
+      "group": "For the curry"
+    },
+    {
+      "name": "Curry leaves",
+      "quantity": 10,
+      "unit": null,
+      "note": "one sprig, optional",
+      "group": "For the curry"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the curry"
+    },
+    {
+      "name": "Fresh ginger",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": "grated",
+      "group": "For the curry"
+    },
+    {
+      "name": "Green chilli",
+      "quantity": 1,
+      "unit": null,
+      "note": "slit lengthways, optional",
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Durban masala",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "mild; or 1/2 tsp chilli powder",
+      "group": "For the curry"
+    },
+    {
+      "name": "Ground turmeric",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "grated",
+      "group": "For the curry"
+    },
+    {
+      "name": "Pilchards in tomato sauce",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400–425 g each",
+      "group": "For the curry"
+    },
+    {
+      "name": "Frozen peas",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Baby spinach",
+      "quantity": 100,
+      "unit": "g",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Garam masala",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the curry"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "For the curry"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "finely diced",
+      "group": "For the sambal"
+    },
+    {
+      "name": "Onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "small, finely chopped",
+      "group": "For the sambal"
+    },
+    {
+      "name": "Lemon juice",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the sambal"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the sambal"
+    }
+  ],
+  "steps": [
+    "Put the rice and water in a saucepan with a tight lid and bring to the boil over high heat. Turn the heat to low and cook, covered, for 40 minutes, until the water is absorbed and the grains are tender. Leave it covered off the heat for 10 minutes.",
+    "Meanwhile, heat the oil in a wide frying pan over medium heat. Fry the onion, stirring now and then, until soft and golden, about 8 minutes.",
+    "Add the curry leaves, garlic, ginger and green chilli and stir for 1 minute, until the leaves crackle. Add the cumin, coriander, masala and turmeric and stir for 30 seconds; if the pan looks dry and the spices catch, loosen them with 1 tbsp water.",
+    "Add the grated tomatoes and cook, stirring, for 6 to 8 minutes, until they have broken down to a thick paste and the oil glistens at the edges.",
+    "Open the tins and pour just the tomato sauce into the pan. Stir and simmer for 3 minutes, until glossy.",
+    "Lay the pilchards in the sauce in large pieces, lifting out the spines if your family prefers, and scatter over the peas. Cover and simmer on low for 5 minutes without stirring, so the fish stays whole, until hot right through.",
+    "Pile the spinach on top, cover again and cook for 2 minutes, until wilted, then fold it in gently. Sprinkle with the garam masala and coriander.",
+    "Make the sambal: mix the diced tomatoes, onion, lemon juice and a pinch of salt. Serve the curry over the rice with the sambal on the side."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 50,
+  "difficulty": "easy",
+  "prepAhead": false,
+  "prepNote": null,
+  "kcalPerServing": 530,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

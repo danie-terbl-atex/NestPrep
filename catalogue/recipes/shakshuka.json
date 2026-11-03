@@ -1,0 +1,158 @@
+{
+  "id": "shakshuka",
+  "name": "Shakshuka",
+  "summary": "Eggs poached in a thick, smoky sauce of tomatoes, peppers, onion and cumin, cooked and served in one pan.",
+  "about": "Shakshuka is eaten across North Africa, from Tunisia, Libya and Algeria to Morocco, and in Israel: eggs cooked in a spiced tomato and pepper sauce. It works as a weekend breakfast or a meat-free supper, and the only pan to wash is the one it is served in.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner",
+    "breakfast"
+  ],
+  "placement": {
+    "dinner": "main",
+    "breakfast": "main"
+  },
+  "tags": [
+    "healthy",
+    "onePot",
+    "vegetableForward",
+    "budget"
+  ],
+  "allergens": [
+    "egg"
+  ],
+  "dietTags": [
+    "vegetarian",
+    "glutenFree",
+    "dairyFree",
+    "banting"
+  ],
+  "ingredients": [
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and diced",
+      "group": null
+    },
+    {
+      "name": "Green pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and diced",
+      "group": null
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": null
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1.5,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Dried chilli flakes",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "leave out for small children",
+      "group": null
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": null
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.25,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": null
+    },
+    {
+      "name": "Eggs",
+      "quantity": 8,
+      "unit": null,
+      "note": null,
+      "group": null
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    },
+    {
+      "name": "Fresh parsley",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": null
+    }
+  ],
+  "steps": [
+    "Heat the oil in a large frying pan, about 30 cm across, with a lid, over medium heat. Add the onion and peppers and cook, stirring now and then, for 8 to 10 minutes, until soft and sweet but not browned.",
+    "Add the garlic, cumin, paprika and chilli flakes and stir for 1 minute, until fragrant.",
+    "Stir in the tomato paste, chopped tomatoes, salt and pepper. Simmer uncovered over medium-low heat for 10 to 12 minutes, stirring now and then, until thick enough that a spoon drawn across the pan leaves a clear trail.",
+    "Make 8 hollows in the sauce with the back of a spoon and crack an egg into each. Season the eggs with a pinch of salt.",
+    "Put the lid on and leave it over low heat for 6 to 8 minutes, until the whites have turned opaque and firm and the yolks are still soft. Give it 3 to 4 minutes more for firm yolks, which most small children prefer.",
+    "Scatter over the coriander and parsley and serve from the pan."
+  ],
+  "servings": 4,
+  "prepMinutes": 10,
+  "cookMinutes": 30,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Make the sauce up to 2 days ahead and chill it; reheat until bubbling before adding the eggs.",
+  "kcalPerServing": 290,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

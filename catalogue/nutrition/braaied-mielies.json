@@ -1,0 +1,64 @@
+{
+  "id": "braaied-mielies",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Fresh mielies",
+      "amount": "6 cobs, ~125 g kernels each",
+      "grams": 750,
+      "kcal": 645,
+      "proteinG": 24.8,
+      "fatG": 10.1,
+      "netCarbsG": 125.3,
+      "reference": "Corn, sweet, yellow, raw — USDA FDC 169998: 86 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "4 tbsp (14 g each)",
+      "grams": 56,
+      "kcal": 402,
+      "proteinG": 0.5,
+      "fatG": 45.4,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chicken spice",
+      "amount": "1 tsp (5 g), about half salt",
+      "grams": 2.5,
+      "kcal": 7,
+      "proteinG": 0.4,
+      "fatG": 0.3,
+      "netCarbsG": 0.5,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Paprika",
+      "amount": "0.5 tsp",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.2,
+      "fatG": 0.2,
+      "netCarbsG": 0.2,
+      "reference": "Spices, paprika — USDA FDC 171329: 282 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon wedges",
+      "amount": "2 wedges, ~6 g juice each",
+      "grams": 12,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.8,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1060,
+  "kcalPerServing": 180,
+  "perServing": {
+    "proteinG": 4.3,
+    "fatG": 9.3,
+    "netCarbsG": 21.2
+  },
+  "notes": "One cob of 6. Assumptions: ~125 g kernels a cob (SA mielies are larger than the USDA medium ear of 102 g); USDA sweet corn values stand in for green mielies; chicken spice is about half salt. Compared against: a medium ear with 1 tbsp butter at 178-192 kcal (USDA-based estimates) and Hy-Vee grilled corn with 1 tbsp butter an ear at 240 kcal. Ours uses two-thirds of a tablespoon of butter a cob, so 180 kcal fits."
+}

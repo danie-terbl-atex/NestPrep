@@ -7,6 +7,8 @@ import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
+import '../../recipes/model/family_size.dart';
+import '../../recipes/model/recipe.dart';
 import '../../recipes/ui/planned_recipe_thumb.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
@@ -14,6 +16,11 @@ import '../model/week_plan.dart';
 import '../state/meal_plan_controller.dart';
 import 'meal_ingredients_sheet.dart';
 import 'slot_picker_sheet.dart';
+
+typedef RecipePicker = Future<Recipe?> Function(
+  MealSlot slot,
+  CalendarDate day,
+);
 
 /// One day, with its three slots. An empty slot is a tap target that says it is
 /// empty rather than a gap, so the week always reads as a grid (`FE-08`). A
@@ -25,6 +32,7 @@ class PlannedDayCard extends StatelessWidget {
     required this.today,
     required this.library,
     required this.onOpenRecipe,
+    required this.onPickRecipe,
     super.key,
   });
 
@@ -32,6 +40,7 @@ class PlannedDayCard extends StatelessWidget {
   final CalendarDate today;
   final List<Meal> library;
   final ValueChanged<String> onOpenRecipe;
+  final RecipePicker onPickRecipe;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +65,7 @@ class PlannedDayCard extends StatelessWidget {
               meal: day.meals[slot],
               library: library,
               onOpenRecipe: onOpenRecipe,
+              onPickRecipe: onPickRecipe,
             ),
         ],
       ),
@@ -70,6 +80,7 @@ class _SlotRow extends StatelessWidget {
     required this.meal,
     required this.library,
     required this.onOpenRecipe,
+    required this.onPickRecipe,
   });
 
   final CalendarDate date;
@@ -77,6 +88,7 @@ class _SlotRow extends StatelessWidget {
   final Meal? meal;
   final List<Meal> library;
   final ValueChanged<String> onOpenRecipe;
+  final RecipePicker onPickRecipe;
 
   @override
   Widget build(BuildContext context) {
@@ -112,12 +124,18 @@ class _SlotRow extends StatelessWidget {
                 children: [
                   Text(
                     planned?.name ?? AppCopy.mealsNothingPlanned,
-                    style: nest.text.body.copyWith(
-                      color: planned == null
-                          ? nest.colors.inkTertiary
-                          : nest.colors.ink,
-                      fontStyle: planned == null ? FontStyle.italic : null,
-                    ),
+                    style:
+                        (recipeId != null
+                                ? nest.text.bodyStrong
+                                : nest.text.body)
+                            .copyWith(
+                              color: planned == null
+                                  ? nest.colors.inkTertiary
+                                  : nest.colors.ink,
+                              fontStyle: planned == null
+                                  ? FontStyle.italic
+                                  : null,
+                            ),
                   ),
                   if (recipeId != null)
                     NestButton(
@@ -170,6 +188,16 @@ class _SlotRow extends StatelessWidget {
         await controller.setSlot(slotKey, mealId);
       case SlotTyped(:final name):
         await controller.setSlotByName(slotKey, name);
+      case SlotRecipe():
+        if (!context.mounted) return;
+        final familySize = familySizeOf(context.read<HouseholdView>());
+        final recipe = await onPickRecipe(slot, date);
+        if (recipe == null) return;
+        await controller.setSlotFromRecipe(
+          slotKey,
+          recipe,
+          familySize: familySize,
+        );
     }
   }
 }

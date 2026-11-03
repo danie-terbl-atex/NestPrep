@@ -1,0 +1,189 @@
+{
+  "id": "sweet-potato-black-bean-chilli",
+  "name": "Sweet potato and black bean chilli",
+  "summary": "Sweet potato and black beans simmered in one pot with peppers, tomato, cumin and smoked paprika until thick, served over brown rice with avocado and lime.",
+  "about": "Bean chilli is the meat-free cousin of the Texan chilli con carne. Sweet potato cooks down into the sauce and makes it thick and gently sweet, which helps it go down with children, and a pot keeps for days in the fridge or months in the freezer.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "vegetableForward",
+    "budget",
+    "healthy"
+  ],
+  "allergens": [],
+  "dietTags": [
+    "vegetarian",
+    "vegan",
+    "glutenFree",
+    "dairyFree"
+  ],
+  "ingredients": [
+    {
+      "name": "Brown rice",
+      "quantity": 0.75,
+      "unit": "cup",
+      "note": "rinsed",
+      "group": "For the rice"
+    },
+    {
+      "name": "Water",
+      "quantity": 2,
+      "unit": "cup",
+      "note": null,
+      "group": "For the rice"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "large, chopped",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Red pepper",
+      "quantity": 1,
+      "unit": null,
+      "note": "deseeded and diced",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Garlic cloves",
+      "quantity": 3,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Ground cumin",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 2,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Ground coriander",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Dried oregano",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Chilli powder",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "more if your family likes heat",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Tomato paste",
+      "quantity": 2,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Sweet potatoes",
+      "quantity": 600,
+      "unit": "g",
+      "note": "peeled and cut into 2 cm cubes",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Chopped tomatoes",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Black beans",
+      "quantity": 2,
+      "unit": "tin",
+      "note": "400 g each, drained and rinsed",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Water",
+      "quantity": 1,
+      "unit": "cup",
+      "note": null,
+      "group": "For the chilli"
+    },
+    {
+      "name": "Salt",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "more to taste",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Limes",
+      "quantity": 2,
+      "unit": null,
+      "note": "juice of 1, the other cut into wedges; or lemon",
+      "group": "For the chilli"
+    },
+    {
+      "name": "Avocado",
+      "quantity": 1,
+      "unit": null,
+      "note": "medium, diced",
+      "group": "To serve"
+    },
+    {
+      "name": "Fresh coriander",
+      "quantity": 3,
+      "unit": "tbsp",
+      "note": "chopped",
+      "group": "To serve"
+    }
+  ],
+  "steps": [
+    "Put the rice and water in a saucepan with a tight lid and bring to the boil over high heat. Turn the heat to low and cook, covered, for 40 minutes, until the water is absorbed and the grains are tender. Leave it covered off the heat for 5 minutes.",
+    "Meanwhile, heat the oil in a large heavy-based pot over medium heat. Fry the onion and pepper, stirring now and then, until soft, about 7 minutes.",
+    "Add the garlic, cumin, paprika, coriander, oregano and chilli powder and stir for 1 minute, until fragrant. Stir in the tomato paste and cook for 1 minute more.",
+    "Add the sweet potatoes, chopped tomatoes, black beans, water and salt and stir well. Bring to the boil, then turn the heat to low.",
+    "Simmer, half covered, for 25 to 30 minutes, stirring now and then so it does not catch, until the sweet potato is soft enough to crush against the side of the pot and the chilli is thick. Add a splash of water if it gets too dry.",
+    "Crush a few pieces of sweet potato into the sauce to thicken it, stir in the juice of 1 lime and taste for salt.",
+    "Spoon over the rice and top with avocado, coriander and a wedge of the second lime."
+  ],
+  "servings": 4,
+  "prepMinutes": 15,
+  "cookMinutes": 45,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Keeps 4 days in the fridge and 3 months in the freezer; loosen with a little water when reheating.",
+  "kcalPerServing": 630,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

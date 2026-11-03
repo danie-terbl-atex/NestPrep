@@ -71,8 +71,31 @@ List<TaskOccurrence> mineToday({
       occurrence,
 ];
 
+List<TaskOccurrence> doneRecently({
+  required List<TaskOccurrence> occurrences,
+  required String memberId,
+  required DateTime since,
+}) => [
+  for (final occurrence in occurrences)
+    if (occurrence.completion case final done?
+        when occurrence.isFor(memberId) &&
+            !(done.completedAt?.isBefore(since) ?? false))
+      occurrence,
+]..sort(_newestDoneFirst);
+
 /// How far back an unfinished occurrence keeps asking (todos ADR-0001).
 const overdueWindowDays = 7;
+
+const justDoneWindow = Duration(hours: 24);
+
+int _newestDoneFirst(TaskOccurrence a, TaskOccurrence b) {
+  final aAt = a.completion?.completedAt;
+  final bAt = b.completion?.completedAt;
+  if (aAt == null || bAt == null) {
+    return (aAt == null ? 0 : 1) - (bAt == null ? 0 : 1);
+  }
+  return bAt.compareTo(aAt);
+}
 
 int _byDateThenTitle(TaskOccurrence a, TaskOccurrence b) {
   final byDate = a.date.compareTo(b.date);

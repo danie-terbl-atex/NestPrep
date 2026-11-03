@@ -1,0 +1,234 @@
+{
+  "id": "frikkadels",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "White bread slices",
+      "amount": "2 slices, crusts off ≈ 25 g each",
+      "grams": 50,
+      "kcal": 133,
+      "proteinG": 4.4,
+      "fatG": 1.7,
+      "netCarbsG": 23.4,
+      "reference": "Bread, white, commercially prepared (includes soft bread crumbs) — USDA FDC 174924: 266 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "0.5 cup = 125 ml × 1.03",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat, with added vitamin D — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "750 g",
+      "grams": 750,
+      "kcal": 1612,
+      "proteinG": 139.4,
+      "fatG": 112.5,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 85% lean / 15% fat, raw — USDA FDC 171796: 215 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 × 5 g",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Egg",
+      "amount": "1 large ≈ 55 g",
+      "grams": 55,
+      "kcal": 79,
+      "proteinG": 6.9,
+      "fatG": 5.2,
+      "netCarbsG": 0.4,
+      "reference": "Egg, whole, raw, fresh — USDA FDC 171287: 143 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped ≈ 11 g",
+      "grams": 11,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground coriander",
+      "amount": "1 tsp ≈ 1.8 g",
+      "grams": 1.8,
+      "kcal": 5,
+      "proteinG": 0.2,
+      "fatG": 0.3,
+      "netCarbsG": 0.2,
+      "reference": "Spices, coriander seed — USDA FDC 170922: 298 kcal / 100 g"
+    },
+    {
+      "ingredient": "Ground nutmeg",
+      "amount": "0.5 tsp ≈ 1.1 g",
+      "grams": 1.1,
+      "kcal": 6,
+      "proteinG": 0.1,
+      "fatG": 0.4,
+      "netCarbsG": 0.3,
+      "reference": "Spices, nutmeg, ground — USDA FDC 171326: 525 kcal / 100 g"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "1 tbsp ≈ 17 g",
+      "grams": 17,
+      "kcal": 13,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.3,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1.5 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "3 tbsp (40 g); all but 1 tbsp poured off → ~1.5 tbsp eaten",
+      "grams": 20,
+      "kcal": 177,
+      "proteinG": 0.0,
+      "fatG": 20.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic, (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g; 1 tbsp left in the pan plus what the balls take up"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium ≈ 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 11.5,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic clove",
+      "amount": "1 × 5 g",
+      "grams": 5,
+      "kcal": 7,
+      "proteinG": 0.3,
+      "fatG": 0.0,
+      "netCarbsG": 1.5,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chopped tomatoes",
+      "amount": "2 × 400 g tins",
+      "grams": 800,
+      "kcal": 128,
+      "proteinG": 6.3,
+      "fatG": 2.0,
+      "netCarbsG": 12.6,
+      "reference": "Tomatoes, red, ripe, canned, packed in tomato juice — USDA FDC 170051: 16 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp × 16 g",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste, without salt added (Includes foods for USDA's Food Distribution Program) — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Water",
+      "amount": "0.5 cup",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "water, 0 kcal"
+    },
+    {
+      "ingredient": "Sugar",
+      "amount": "2 tsp × 4.2 g",
+      "grams": 8.4,
+      "kcal": 33,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 8.4,
+      "reference": "Sugars, granulated — USDA FDC 169655: 387 kcal / 100 g"
+    },
+    {
+      "ingredient": "Brown vinegar",
+      "amount": "1 tbsp ≈ 15 g",
+      "grams": 15,
+      "kcal": 3,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Vinegar, distilled — USDA FDC 172237: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Bay leaf",
+      "amount": "1, removed",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "removed, 0 kcal"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "salt, 0 kcal"
+    }
+  ],
+  "totalKcal": 2443,
+  "kcalPerServing": 410,
+  "perServing": {
+    "proteinG": 27.9,
+    "fatG": 24.5,
+    "netCarbsG": 14.6
+  },
+  "notes": "SA regular beef mince taken as 15 % fat. The step pours off all but 1 tbsp of fat after browning; counted ~1.5 tbsp of the 3 tbsp oil (the poured-off fat is mostly oil plus some rendered mince fat, which is still counted in the mince line). Mash or rice not counted. Sanity check: Zwan frikadellen in tomato sauce 144 kcal / 100 g; SparkPeople frikadellen 132 kcal each. Ours is 3 frikkadels with sauce, ~320 g ≈ 128 kcal / 100 g; consistent."
+}

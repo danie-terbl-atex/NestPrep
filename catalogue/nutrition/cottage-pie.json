@@ -1,0 +1,174 @@
+{
+  "id": "cottage-pie",
+  "servings": 6,
+  "lines": [
+    {
+      "ingredient": "Sunflower oil",
+      "amount": "2 tbsp",
+      "grams": 27,
+      "kcal": 239,
+      "proteinG": 0.0,
+      "fatG": 27.0,
+      "netCarbsG": 0.0,
+      "reference": "Oil, sunflower, linoleic (approx. 65%) — USDA FDC 171025: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Onion",
+      "amount": "1 medium, 150 g",
+      "grams": 150,
+      "kcal": 60,
+      "proteinG": 1.7,
+      "fatG": 0.2,
+      "netCarbsG": 11.4,
+      "reference": "Onions, raw — USDA FDC 170000: 40 kcal / 100 g"
+    },
+    {
+      "ingredient": "Carrots",
+      "amount": "2 medium, 80 g each",
+      "grams": 160,
+      "kcal": 66,
+      "proteinG": 1.4,
+      "fatG": 0.3,
+      "netCarbsG": 10.9,
+      "reference": "Carrots, raw — USDA FDC 170393: 41 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "2 cloves",
+      "grams": 10,
+      "kcal": 15,
+      "proteinG": 0.6,
+      "fatG": 0.1,
+      "netCarbsG": 3.1,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Beef mince",
+      "amount": "750 g, lean taken as 10 % fat",
+      "grams": 750,
+      "kcal": 1320,
+      "proteinG": 150.0,
+      "fatG": 75.0,
+      "netCarbsG": 0.0,
+      "reference": "Beef, ground, 90% lean meat / 10% fat, raw — USDA FDC 174030: 176 kcal / 100 g"
+    },
+    {
+      "ingredient": "Tomato paste",
+      "amount": "2 tbsp",
+      "grams": 32,
+      "kcal": 26,
+      "proteinG": 1.4,
+      "fatG": 0.2,
+      "netCarbsG": 4.7,
+      "reference": "Tomato products, canned, paste — USDA FDC 170459: 82 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried mixed herbs",
+      "amount": "1 tsp",
+      "grams": 1,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.3,
+      "reference": "Spices, oregano, dried (for dried mixed herbs) — USDA FDC 171328: 265 kcal / 100 g"
+    },
+    {
+      "ingredient": "Worcestershire sauce",
+      "amount": "1 tbsp (17 g)",
+      "grams": 17,
+      "kcal": 13,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 3.3,
+      "reference": "Sauce, worcestershire — USDA FDC 171610: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Chutney",
+      "amount": "1 tbsp (19 g)",
+      "grams": 19,
+      "kcal": 34,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 8.2,
+      "reference": "SA fruit chutney label (Mrs H.S. Ball's Original): 753 kJ = 180 kcal, 43 g carbohydrate / 100 g"
+    },
+    {
+      "ingredient": "Beef stock",
+      "amount": "1 cup from 1 cube (10 g dry)",
+      "grams": 10,
+      "kcal": 17,
+      "proteinG": 1.7,
+      "fatG": 0.4,
+      "netCarbsG": 1.6,
+      "reference": "Soup, beef broth, cubed, dry (stock cube weighed dry, ~10 g a cube) — USDA FDC 171561: 170 kcal / 100 g"
+    },
+    {
+      "ingredient": "Frozen peas",
+      "amount": "1 cup (~140 g)",
+      "grams": 140,
+      "kcal": 108,
+      "proteinG": 7.3,
+      "fatG": 0.6,
+      "netCarbsG": 12.7,
+      "reference": "Peas, green, frozen, unprepared — USDA FDC 170016: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt and black pepper",
+      "amount": "to taste",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Potatoes",
+      "amount": "1.2 kg as bought; ~85 % after peeling",
+      "grams": 1020,
+      "kcal": 785,
+      "proteinG": 20.9,
+      "fatG": 1.0,
+      "netCarbsG": 157.1,
+      "reference": "Potatoes, flesh and skin, raw — USDA FDC 170026: 77 kcal / 100 g"
+    },
+    {
+      "ingredient": "Butter",
+      "amount": "3 tbsp + 1 tbsp for the top, 14 g each",
+      "grams": 56,
+      "kcal": 402,
+      "proteinG": 0.5,
+      "fatG": 45.4,
+      "netCarbsG": 0.1,
+      "reference": "Butter, salted — USDA FDC 173410: 717 kcal / 100 g"
+    },
+    {
+      "ingredient": "Milk",
+      "amount": "0.5 cup (129 g)",
+      "grams": 129,
+      "kcal": 79,
+      "proteinG": 4.1,
+      "fatG": 4.2,
+      "netCarbsG": 6.2,
+      "reference": "Milk, whole, 3.25% milkfat (SA full-cream) — USDA FDC 171265: 61 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cheddar cheese",
+      "amount": "0.5 cup grated (~60 g)",
+      "grams": 60,
+      "kcal": 242,
+      "proteinG": 13.7,
+      "fatG": 20.0,
+      "netCarbsG": 2.0,
+      "reference": "Cheese, cheddar — USDA FDC 173414: 403 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 3409,
+  "kcalPerServing": 570,
+  "perServing": {
+    "proteinG": 33.9,
+    "fatG": 29.1,
+    "netCarbsG": 36.9
+  },
+  "notes": "Assumptions: lean mince taken as 10 % fat; the 1.2 kg potatoes as bought, ~85 % after peeling; all 4 tbsp butter (mash and top) and the optional cheddar counted; full-cream milk. The pie weighs ~2.4 kg baked, ~140 kcal / 100 g, a ~400 g plate. Compared against: FatSecret ZA generic cottage pie at 117 kcal / 100 g (284 kcal for 243 g), which is ~470 kcal for a 400 g plate. Ours is ~20 % higher, from the butter and cheese on top."
+}

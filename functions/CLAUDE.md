@@ -1,9 +1,9 @@
 # functions — NullState app `nestprep` (Cloud Functions)
 
 Cloud Functions for the NullState app **nestprep**: TypeScript, 2nd generation, holding only what
-Firestore Security Rules cannot express (foundation ADR-0002 in the vault at
-`../../nullstate-vault/`). Before any task run the **nullstate-memory** skill; after any change
-update the vault in the same change. The root `CLAUDE.md` one level up has the full contract.
+Firestore Security Rules cannot express (foundation ADR-0002 in Godfather; this repo is the
+`nestprep` software node). Before any task call `route`; after any change update Godfather in the
+same change. The root `CLAUDE.md` one level up has the full contract.
 
 ## Running this part
 
@@ -62,15 +62,15 @@ cloud because the client redirects every service.
   schedule. They take their region and limits from the same global options, and a Firestore
   trigger must run in the database's region or it never fires.
 - Secrets are Functions parameters or secret bindings, never `.env` in git (`ENG-18`). Calendar sync
-  (`src/calendar_sync/`, calendar ADR-0003 in the vault) is the first to have any; the names are
-  below and the values live nowhere in the repo or the vault.
+  (`src/calendar_sync/`, calendar ADR-0003 in Godfather) is the first to have any; the names are
+  below and the values live nowhere in the repo or Godfather memory.
 - Calendar sync talks to Google, Microsoft Graph and pasted ICS links only through
   `shared/http_client.ts` — a timeout, a size cap, no silent redirects — and every provider
   is an adapter tested against canned responses (`BE-09`). A pasted link is checked against
   private and loopback addresses on every hop (`link_guard.ts`); loopback is allowed only when
   `FUNCTIONS_EMULATOR` is `true`, which is how the emulator tests serve a calendar from this machine.
 - `src/notifications/` is the one channel every reminder is delivered through (notifications
-  ADR-0001 to ADR-0003 in the vault): `composeMorningDigests` (every 15 min) and
+  ADR-0001 to ADR-0003 in Godfather): `composeMorningDigests` (every 15 min) and
   `deliverNotifications` (every 5 min) are schedules whose bodies — `runMorningDigest`,
   `runNotificationDelivery` — the emulator suite drives with a fixed clock and a recording
   `PushSender`; `notifyShiftHandover`, `notifyChoreCheck` and `notifyRewardRequest` are triggers;
@@ -102,16 +102,19 @@ cloud because the client redirects every service.
 | `SUBSCRIPTIONS_APPLE_PRIVATE_KEY`                                               | Secret Manager secret                          | `verifyPurchase`, `appStoreNotifications`, `reconcileSubscriptions`          | must exist to deploy; the value `unset` reads as not configured       |
 | `AI_MODEL`                                                                      | string param                                   | every AI call (`src/ai/`)                                                    | `gemini-2.5-flash`                                                    |
 | `AI_LOCATION`                                                                   | string param                                   | every AI call — the Vertex region the request is processed in                | `europe-west4` (Gemini is not offered in `africa-south1`)             |
-| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/imagen_model.ts`)                                      | `imagen-4.0-generate-001`                                             |
-| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `europe-west4`                                                        |
+| `AI_IMAGE_MODEL`                                                                | string param                                   | `lunchPhoto` (`src/ai/gemini_image_model.ts`)                                | `gemini-3.1-flash-image`                                              |
+| `AI_IMAGE_LOCATION`                                                             | string param                                   | `lunchPhoto` — the Vertex region the picture is made in                      | `global` (the image model is served nowhere else)                     |
 | `AI_DECISION_MODEL`                                                             | string param                                   | every decision (`src/ai/run_decision_call.ts`)                               | `jev-latest`                                                          |
 | `TYPESAFE_API_KEY`                                                              | Secret Manager secret                          | `buildLunchWeek`, `rankProductMatches` (Jev, foundation ADR-0022)            | must exist to deploy; missing refuses with `aiUnavailable`, logged    |
 | `CHECKERS_API_KEY`, `CHECKERS_PROFILE_TOKEN`                                    | string params, default empty                   | Add to Checkers (`src/checkers/`)                                            | every Checkers callable refuses with `checkers-down`, logged          |
 | `CHECKERS_APP_VERSION`, `CHECKERS_APP_VERSION_CODE`                             | string params, default empty                   | the same                                                                     | the same                                                              |
 | `CHECKERS_SESSION_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `checkersRequestOtp`, `checkersVerifyOtp`, `checkersPushToCart`              | must exist to deploy; missing or malformed refuses loudly             |
 | `PNP_SESSION_KEY`                                                               | Secret Manager secret (32 bytes, base64)       | `pnpStartLink`, `pnpCompleteLink`, `pnpPushToCart`                           | must exist to deploy; missing or malformed refuses `pnp-down`, logged |
+| `ASSISTANTS_ORIGIN`                                                             | string param                                   | `assistantAuth`, `assistantMcp` (issuer; resource is `<origin>/mcp`)         | `https://nestprep-643b7.web.app`                                      |
+| `ASSISTANTS_ALLOW_LOOPBACK`                                                     | string param, default `false`                  | `assistantAuth` — `http://localhost:*/callback` redirects (Claude Code)      | only Claude's and ChatGPT's own callbacks are accepted                |
+| `ASSISTANTS_TOKEN_KEY`                                                          | Secret Manager secret (32 bytes, base64)       | `assistantAuth` — seals a refresh's pair for its one-minute retry window     | must exist to deploy; missing or malformed fails refreshes, logged    |
 
-Subscriptions (subscriptions ADR-0001 in the vault) reach Google Play as **the Functions runtime
+Subscriptions (subscriptions ADR-0001 in Godfather) reach Google Play as **the Functions runtime
 service account**, through application-default credentials — there is no key file. It works once
 that account is invited into the Play Console with _View financial data_ and _Manage orders and
 subscriptions_; until then the Play API answers 401/403, `verifyPurchase` refuses with
@@ -123,18 +126,18 @@ sandbox alike. Apple's signed transactions are verified against Apple Root CA - 
 `src/subscriptions/apple/apple_root_certificate.ts`; the test chain in `test/fixtures/apple/` is
 made for the tests and trusted by nothing else.
 
-Home care's translation (home-care ADR-0006 in the vault) reaches Google Cloud Translation v3 as
+Home care's translation (home-care ADR-0006 in Godfather) reaches Google Cloud Translation v3 as
 **the Functions runtime service account** too — no key, no parameter. It works once the Cloud
 Translation API is enabled on the project and that account holds `roles/cloudtranslate.user`; until
 then Google answers 403, `translateHomeCareTexts` refunds the month's characters and refuses with
 `translationUnavailable`, and the helper reads English with the reason. Under the emulator the
 `EmulatorTranslator` answers `[zu] …` and nothing reaches Google.
 
-Add to Checkers (`src/checkers/`, the Checkers build contract in the vault) links a member's own
+Add to Checkers (`src/checkers/`, the Checkers build contract in Godfather) links a member's own
 Checkers Sixty60 account by SMS code and fills **their** cart — cart only, never a slot, checkout or
 payment. The four string params are the Sixty60 Android app's public client identity (the same in
 every install); their values live only in the git-ignored `.env.nestprep-643b7`, never here or in
-the vault. The session is an hour with no refresh; it and the three Checkers identifiers are sealed
+Godfather memory. The session is an hour with no refresh; it and the three Checkers identifiers are sealed
 with AES-256-GCM under `CHECKERS_SESSION_KEY` in `checkersLinks/{uid}`, which no client may read. Only
 `http_checkers_login.ts` and `http_checkers_shop.ts` talk to Checkers, through `shared/http_client.ts`;
 under the emulator `EmulatorCheckers` answers instead (code `123456`, no SMS, no real cart). Behind
@@ -142,7 +145,7 @@ the `addToCheckers` flag, except link status and unlink. Codes are limited to th
 three per number per fifteen minutes (`rateLimits`). Weighed (`KG`) products are skipped, not
 guessed at. Rotating the key signs every member out of Checkers (their links stop opening).
 
-Add to Pick n Pay (`src/pnp/`, add-to-pnp ADR-0001 to ADR-0005 in the vault) links a member's own
+Add to Pick n Pay (`src/pnp/`, add-to-pnp ADR-0001 to ADR-0005 in Godfather) links a member's own
 pnp.co.za account and fills **their** cart from the lunch box's _Plan my week_ — cart only, never a
 slot, fulfilment option, checkout or payment. The member signs in on PnP's own page in the app's web
 view; the app relays only the code and the `state`. `pnpStartLink` keeps the PKCE verifier, state and
@@ -163,6 +166,30 @@ token is adopted, never lost. Sealed values carry their purpose in the AAD (`pnp
 flag, except link status and unlink. Rotating the key signs every member out of PnP. Shared with
 Checkers: `shared/session_crypto.ts`, `shared/sealed_json.ts` and `src/cart_push/` (reading the list,
 the push's answer shape).
+
+Assistants (`src/assistants/`, assistants ADR-0001 to ADR-0005 in Godfather) are NestPrep in Claude
+and ChatGPT. `assistantAuth` is NestPrep's own OAuth 2.1 authorization server (europe-west1, behind
+Hosting's `/oauth/**` and `/.well-known/oauth-*` rewrites): client metadata documents fetched through
+an address check made at the socket (`auth/client_document_fetch.ts`), dynamic registration, PKCE S256
+only, codes and opaque `npa_`/`npr_` tokens stored only as SHA-256 in deny-all root collections. Consent
+writes only the code; **the grant is written when the code is redeemed**, so an abandoned sign-in leaves
+no connection, and a redeemed code presented again ends that grant. A rotation seals the pair it issued
+onto the spent refresh token under `ASSISTANTS_TOKEN_KEY` for 60 s: a retry in that minute gets the
+same pair back, never a second chain; later, or once that pair has been rotated, it ends the grant.
+Authorize and consent are counted per address — the hop left of the right-most `X-Forwarded-For`
+one, because Hosting sends `client, proxy` from a rotating pool of Google proxies (measured
+2026-10-29), and `req.ip` is the caller-written left-most hop under `trust proxy` — under overall
+ceilings; the token endpoint per client and grant. The grant is
+`households/{h}/assistantConnections/{grantId}`; deleting it disconnects. `assistantMcp`
+(`mcp/assistant_mcp.ts`, behind `/mcp`) is `mcpHandler(authenticateBearer)` on the official
+`@modelcontextprotocol/server` SDK: stateless Streamable HTTP, JSON answers only. `pruneAssistantConnections`
+disconnects a member who leaves or stops being family; erasure, `endHousehold` and the export know the
+collections. `test/emulator/assistants_end_to_end.test.ts` is the whole of Claude's flow — discovery,
+consent, tokens, tools, refresh, the app's disconnect — through `firebase.json`'s rewrites, with the
+official MCP client (`@modelcontextprotocol/client`, a devDependency).
+Under the emulator a client document may be served from this machine over plain http only while
+`assistantsEmulator/cimd.allowLoopback` is `true` (the emulator suite sets it) — a param cannot be set
+by a committed test, because the emulator reads params only from git-ignored `.env` files.
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or
@@ -249,7 +276,7 @@ A picture goes through `runImageCall` — the same switch, claim and refund, wit
   ADR-0018) — has one source: the lunch box's recipes and the starter boxes in `src/recipes/` and
   `src/lunch_starter_boxes/`, and the meal recipes as one JSON file each in the repo's
   `../catalogue/recipes/<id>.json` with their photos in `../catalogue/recipe-photos/<id>/{hero,card}.jpg`
-  (outside `functions/`, so a deploy carries neither; the authoring guide is in the vault). Published by
+  (outside `functions/`, so a deploy carries neither; the authoring guide is in Godfather). Published by
   `src/catalogue/publish_catalogue.ts`: photos first, to Storage at
   `recipes/<id>/<size>-<8 hex of SHA-256>.jpg`, skipped when already there; then fixed ids, `version`
   raised only when content changes, an entry removed from source retired, never deleted. A file
@@ -276,7 +303,7 @@ A picture goes through `runImageCall` — the same switch, claim and refund, wit
   emulator tests assert.
   To silence it, put `CALENDAR_GOOGLE_CLIENT_SECRET=unset`,
   `CALENDAR_MICROSOFT_CLIENT_SECRET=unset`, `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` and
-  `CHECKERS_SESSION_KEY=unset` and `PNP_SESSION_KEY=unset` (the emulator then seals with a fixed local key) in
+  `CHECKERS_SESSION_KEY=unset`, `PNP_SESSION_KEY=unset` and `ASSISTANTS_TOKEN_KEY=unset` (the emulator then seals with a fixed local key) in
   `functions/.secret.local` (git-ignored).
 - **Two emulator suites on one machine share project id `nestprep-643b7`.** The rules and emulator
   harnesses read `FIRESTORE_EMULATOR_HOST`, `FIREBASE_STORAGE_EMULATOR_HOST` and

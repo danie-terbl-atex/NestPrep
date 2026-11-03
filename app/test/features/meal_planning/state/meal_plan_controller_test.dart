@@ -3,6 +3,8 @@ import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meal_week.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
+import 'package:nestprep/features/recipes/model/recipe_meal_lines.dart';
+import 'package:nestprep/features/recipes/model/recipe_scale.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
@@ -11,6 +13,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../../../support/fake_meal_repository.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/recipe_fixtures.dart';
 
 /// Friday 18 September 2026 in Johannesburg; its week starts Monday the 14th.
 final _nowUtc = DateTime.utc(2026, 9, 18, 9);
@@ -118,6 +121,29 @@ void main() {
 
     expect(repository.addedMeals.single, 'Spaghetti');
     expect(repository.writtenSlots.single.slots.values.single, 'meal-0');
+  });
+
+  test('a picked recipe becomes its household meal, scaled to the family, '
+      'and fills the slot', () async {
+    await emit();
+    final bobotie = RecipeFixtures.bobotie;
+    await controller.setSlotFromRecipe('2_dinner', bobotie, familySize: 3);
+
+    final added = repository.recipeMeals.single;
+    expect(added.recipeId, bobotie.id);
+    expect(added.name, bobotie.name);
+    expect(added.addedBy, Fixtures.samMemberId);
+    expect(
+      added.ingredients,
+      recipeMealLines(
+        bobotie,
+        RecipeScale(people: 3, servings: bobotie.servings),
+      ),
+    );
+    expect(repository.writtenSlots.single.monday, '2026-09-14');
+    expect(repository.writtenSlots.single.slots, {
+      '2_dinner': Meal.idForRecipe(bobotie.id),
+    });
   });
 
   test(

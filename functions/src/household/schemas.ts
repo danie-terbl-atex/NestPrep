@@ -110,6 +110,7 @@ const grant = z
     medical: level,
     homeCare: level,
     nannyHub: level,
+    location: level,
   } satisfies Record<Area, typeof level>)
   .strict()
   .refine((value) => AREAS.every((area) => AREA_LEVELS[area].includes(value[area])));

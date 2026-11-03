@@ -5,6 +5,7 @@ import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/data/lunch_starter_box_repository.dart';
 import '../features/lunch_box/state/fill_week_controller.dart';
 import '../features/lunch_box/state/lunch_board_controller.dart';
+import '../features/lunch_box/state/lunch_variety_choice.dart';
 import '../features/lunch_box/ui/fill_week_screen.dart';
 import '../features/recipes/data/recipe_repository.dart';
 import 'household_route.dart';
@@ -23,6 +24,7 @@ GoRoute fillWeekRoute() => GoRoute(
           starterBoxes: context.read<LunchStarterBoxRepository>(),
           recipes: context.read<RecipeRepository>(),
           lunchRepository: context.read<LunchRepository>(),
+          variety: context.read<LunchVarietyChoice>(),
           householdId: HouseholdRoute.idFrom(state),
           memberId: viewerMemberIdOf(context),
           childId: state.uri.queryParameters[LunchRoute.childQuery] ?? '',

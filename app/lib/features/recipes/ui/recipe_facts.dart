@@ -5,8 +5,8 @@ import '../../../shared/copy/app_copy.dart';
 import '../model/recipe.dart';
 
 /// The numbers a cook plans by, under a recipe's name: prep, cook and total
-/// time, the effort it takes and what it serves as written — each a small
-/// label over its value, in columns.
+/// time, the effort it takes, what it serves as written and the estimated
+/// energy in a serving — each a small label over its value, in columns.
 class RecipeFacts extends StatelessWidget {
   const RecipeFacts({required this.recipe, super.key});
 
@@ -15,6 +15,7 @@ class RecipeFacts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final difficulty = recipe.difficulty;
+    final kcal = recipe.kcalPerServing;
     final facts = [
       _Fact(
         label: RecipeCopy.prepLabel,
@@ -36,6 +37,12 @@ class RecipeFacts extends StatelessWidget {
           value: RecipeCopy.difficulty(difficulty),
         ),
       _Fact(label: RecipeCopy.servesLabel, value: '${recipe.servings}'),
+      if (kcal != null)
+        _Fact(
+          label: RecipeCopy.energyLabel,
+          value: RecipeCopy.kcal(kcal),
+          spoken: RecipeCopy.kcalSpoken(kcal),
+        ),
     ];
     // Three to a row, in columns, so a second row lines up under the first;
     // two when the text is so large a third would break its words (`FE-14`).
@@ -57,17 +64,18 @@ class RecipeFacts extends StatelessWidget {
 }
 
 class _Fact extends StatelessWidget {
-  const _Fact({required this.label, required this.value});
+  const _Fact({required this.label, required this.value, this.spoken});
 
   final String label;
   final String value;
+  final String? spoken;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     return Semantics(
       container: true,
-      label: '$label: $value',
+      label: '$label: ${spoken ?? value}',
       excludeSemantics: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

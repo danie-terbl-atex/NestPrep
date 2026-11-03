@@ -138,10 +138,19 @@ void main() {
       );
     });
 
-    test('a profile nobody has claimed can never be anywhere', () {
-      // The rules make this document impossible to write (`isOwnMember` on an
-      // unclaimed profile is false for every caller). If one somehow existed,
-      // the screen still refuses to place a person who has no device.
+    test(
+      'an unclaimed profile has not joined until a device shares for it',
+      () {
+        expect(
+          rowFor(viewOf([]), Fixtures.kidMemberId).presence,
+          MemberPresence.hasNotJoined,
+        );
+      },
+    );
+
+    test('a kid phone sharing for an unclaimed profile is placed', () {
+      // A kid device is bound to its profile without claiming it, and may
+      // share as it (live-location ADR-0003).
       final view = viewOf([
         locationFor(
           Fixtures.kidMemberId,
@@ -150,8 +159,8 @@ void main() {
       ]);
       final row = rowFor(view, Fixtures.kidMemberId);
 
-      expect(row.presence, MemberPresence.hasNotJoined);
-      expect(row.at, isNull);
+      expect(row.presence, MemberPresence.hereNow);
+      expect(row.at, isNotNull);
     });
   });
 

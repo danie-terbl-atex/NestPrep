@@ -1,0 +1,186 @@
+{
+  "id": "beef-burgers-sweet-potato-wedges",
+  "name": "Beef burgers with sweet potato wedges",
+  "summary": "Lean beef patties in wholewheat rolls with lettuce, tomato and onion, served with paprika-roasted sweet potato wedges and a crunchy cabbage and carrot slaw.",
+  "about": "The hamburger, a seasoned beef patty in a soft bun, is American in origin. Made at home, the patty is simply seasoned lean mince, and sweet potato wedges roasted in a little olive oil take the place of deep-fried chips.",
+  "cuisine": "international",
+  "contexts": [
+    "dinner"
+  ],
+  "placement": {
+    "dinner": "main"
+  },
+  "tags": [
+    "healthy",
+    "kidFriendly"
+  ],
+  "allergens": [
+    "wheat",
+    "soy"
+  ],
+  "dietTags": [],
+  "ingredients": [
+    {
+      "name": "Sweet potatoes",
+      "quantity": 500,
+      "unit": "g",
+      "note": "scrubbed and cut into wedges, skin on",
+      "group": "For the wedges"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the wedges"
+    },
+    {
+      "name": "Smoked paprika",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the wedges"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the wedges"
+    },
+    {
+      "name": "Cabbage",
+      "quantity": 250,
+      "unit": "g",
+      "note": "about a quarter, finely shredded",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Carrots",
+      "quantity": 2,
+      "unit": null,
+      "note": "coarsely grated",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the slaw"
+    },
+    {
+      "name": "Apple cider vinegar",
+      "quantity": 1,
+      "unit": "tbsp",
+      "note": null,
+      "group": "For the slaw"
+    },
+    {
+      "name": "Wholegrain mustard",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the slaw"
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "note": "to taste",
+      "group": "For the slaw"
+    },
+    {
+      "name": "Lean beef mince",
+      "quantity": 500,
+      "unit": "g",
+      "note": null,
+      "group": "For the burgers"
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "note": "small, finely grated",
+      "group": "For the burgers"
+    },
+    {
+      "name": "Garlic clove",
+      "quantity": 1,
+      "unit": null,
+      "note": "crushed",
+      "group": "For the burgers"
+    },
+    {
+      "name": "Salt",
+      "quantity": 0.75,
+      "unit": "tsp",
+      "note": null,
+      "group": "For the burgers"
+    },
+    {
+      "name": "Black pepper",
+      "quantity": 0.5,
+      "unit": "tsp",
+      "note": "freshly ground",
+      "group": "For the burgers"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": 1,
+      "unit": "tsp",
+      "note": "for brushing",
+      "group": "For the burgers"
+    },
+    {
+      "name": "Wholewheat rolls",
+      "quantity": 4,
+      "unit": null,
+      "note": "halved",
+      "group": "To build"
+    },
+    {
+      "name": "Lettuce leaves",
+      "quantity": 4,
+      "unit": null,
+      "note": null,
+      "group": "To build"
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": 2,
+      "unit": null,
+      "note": "sliced",
+      "group": "To build"
+    },
+    {
+      "name": "Red onion",
+      "quantity": 0.5,
+      "unit": null,
+      "note": "sliced into thin rings",
+      "group": "To build"
+    }
+  ],
+  "steps": [
+    "Heat the oven to 220 °C (200 °C if your oven is a fan oven). Toss the sweet potato wedges with the olive oil, paprika and salt on a large baking tray and spread them out in a single layer.",
+    "Roast for 30–35 minutes, turning them halfway, until golden at the edges and soft when pierced with a knife.",
+    "While they roast, make the slaw: put the cabbage and carrots in a bowl, whisk the olive oil, vinegar, mustard and a pinch of salt together, pour it over and toss well.",
+    "Put the mince, grated onion, garlic, salt and pepper in a bowl and mix lightly with your hands until just combined; overworking makes the burgers tough. Shape into 4 patties about 2 cm thick and a little wider than the rolls, press a shallow dent into the middle of each and chill for 10 minutes.",
+    "When the wedges have about 15 minutes left, heat a griddle pan or large frying pan over medium-high heat for 2 minutes. Brush the patties with the oil and cook for 4–5 minutes a side without pressing them, until well browned and cooked right through with no pink in the middle.",
+    "Lift the burgers onto a plate, then toast the cut sides of the rolls in the same pan for about 1 minute, until lightly golden.",
+    "Fill each roll with lettuce, a burger, tomato and red onion, and serve with the wedges and slaw."
+  ],
+  "servings": 4,
+  "prepMinutes": 25,
+  "cookMinutes": 35,
+  "difficulty": "easy",
+  "prepAhead": true,
+  "prepNote": "Shape the patties up to a day ahead, or freeze them between sheets of baking paper for up to 3 months.",
+  "kcalPerServing": 650,
+  "photo": {
+    "credit": null,
+    "licence": null,
+    "sourceUrl": null,
+    "generated": true
+  }
+}

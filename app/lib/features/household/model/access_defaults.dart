@@ -22,6 +22,7 @@ abstract final class AccessDefaults {
     HouseholdArea.meals: AccessLevel.view,
     HouseholdArea.lunch: AccessLevel.own,
     HouseholdArea.familyProfiles: AccessLevel.own,
+    HouseholdArea.location: AccessLevel.view,
   });
 
   static final helper = AccessGrant({

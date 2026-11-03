@@ -6,9 +6,9 @@
   "cuisine": "southAfrican",
   "contexts": ["dinner"],
   "placement": { "dinner": "main" },
-  "tags": ["budget", "streetFood", "comfort"],
+  "tags": ["budget", "streetFood", "comfort", "healthy"],
   "allergens": ["wheat"],
-  "dietTags": [],
+  "dietTags": ["dairyFree"],
   "ingredients": [
     { "name": "Chicken gizzards", "quantity": 1, "unit": "kg", "note": "cleaned", "group": null },
     { "name": "Water", "quantity": 6, "unit": "cup", "note": null, "group": null },
@@ -41,5 +41,6 @@
   "difficulty": "easy",
   "prepAhead": true,
   "prepNote": "Boil the gizzards the day before and keep them in the fridge; the finished dish keeps 2 days.",
+  "kcalPerServing": 320,
   "photo": { "credit": null, "licence": null, "sourceUrl": null, "generated": true }
 }

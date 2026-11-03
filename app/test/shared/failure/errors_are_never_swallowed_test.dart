@@ -264,6 +264,11 @@ void main() {
     '_readAloud.stop())',
     '_listen())',
     'Future.microtask(() => _fetch(language wanted)))',
+    // Compare shops (basket-compare ADR-0001): one shop's searches for the
+    // list. Each search keeps its own AppFailure as that item's line there
+    // (*couldn't reach*, with a retry), and the first read keeps its failure
+    // as the comparison's failed state.
+    '_ask(shop queue generation))',
     // ---- documents V2 (documents ADR-0006, ADR-0007, foundation ADR-0014) ----
     // Reading the phone's offline copies when the vault unlocks. It catches
     // its own `AppFailure` and holds it as the shelf's failed state, which
@@ -339,6 +344,21 @@ void main() {
     'controller.start(',
     'controller.chooseShop(shop));',
     'preference.write(householdId shop));',
+    // Family location (live-location ADR-0005): cancelling a listener in
+    // dispose or on a household switch; the engine's status and cadence, the
+    // map's markers and camera and a lapse's stop all run through
+    // `bestEffort`, which logs and never throws.
+    '_placeSubscription?.cancel());',
+    '_places?.cancel());',
+    '_stopped?.cancel());',
+    'refresh());',
+    '_buildMarkers());',
+    '_frame());',
+    'appInForeground(foreground: state == AppLifecycleState.resumed)',
+    'always.stopForLapse(householdId: householdId memberId: memberId)',
+    // `bestEffort` itself logs and never throws: the place editor moving its
+    // map to where the person is.
+    'bestEffort(',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

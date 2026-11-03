@@ -4,10 +4,13 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/log/app_log.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../household/model/member.dart';
 import '../data/live_location_repository.dart';
 import '../data/location_reporter.dart';
+import '../data/places_repository.dart';
+import '../model/family_place.dart';
 import '../model/live_location_view.dart';
 import '../model/member_location.dart';
 import '../model/share_duration.dart';
@@ -26,12 +29,14 @@ final class LiveLocationController extends ChangeNotifier
   LiveLocationController({
     required LiveLocationRepository liveLocationRepository,
     required LocationReporter locationReporter,
+    required PlacesRepository placesRepository,
     required this.householdId,
     required this.viewerMemberId,
     required this.members,
     DateTime Function()? now,
   }) : _repository = liveLocationRepository,
        _reporter = locationReporter,
+       _places = placesRepository,
        _now = now ?? DateTime.now {
     _subscribe();
   }
@@ -43,6 +48,7 @@ final class LiveLocationController extends ChangeNotifier
 
   final LiveLocationRepository _repository;
   final LocationReporter _reporter;
+  final PlacesRepository _places;
   final DateTime Function() _now;
   final String householdId;
 
@@ -58,8 +64,12 @@ final class LiveLocationController extends ChangeNotifier
 
   StreamSubscription<List<MemberLocation>>? _subscription;
   StreamSubscription<AppFailure>? _problems;
+  StreamSubscription<List<FamilyPlace>>? _placeSubscription;
   Timer? _ticker;
   List<MemberLocation> _locations = const [];
+  List<FamilyPlace> _placeList = const [];
+
+  List<FamilyPlace> get places => _placeList;
   bool _hasResumed = false;
 
   AsyncState<LiveLocationView> _view = const AsyncLoading();
@@ -84,6 +94,9 @@ final class LiveLocationController extends ChangeNotifier
     ),
   );
 
+  /// Runs an always-sharing action and keeps its refusal for the screen.
+  Future<void> perform(Future<void> Function() action) => runAction(action);
+
   Future<void> stopSharing() => runAction(
     () => _reporter.stop(householdId: householdId, memberId: viewerMemberId),
   );
@@ -95,7 +108,19 @@ final class LiveLocationController extends ChangeNotifier
       _resumeOwnShareIfOpen();
     }, onError: _onError);
     _problems = _reporter.problems.listen(recordFailure, onError: _onError);
-    _ticker = Timer.periodic(recount, (_) => _publish());
+    // A household that has never had premium has no places; a place that
+    // fails to load is a map without circles, never a failed screen.
+    _placeSubscription = _places.watchPlaces(householdId).listen(
+      (places) {
+        _placeList = places;
+        if (_view is AsyncData) _publish();
+      },
+      onError: (Object error) =>
+          AppLog.failure('map places', code: 'map-places-failed', error: error),
+    );
+    _ticker = Timer.periodic(recount, (_) {
+      if (_view is AsyncData) _publish();
+    });
   }
 
   /// A window the person opened before the app was last closed is still theirs
@@ -107,7 +132,11 @@ final class LiveLocationController extends ChangeNotifier
     final own = _locations
         .where((location) => location.id == viewerMemberId)
         .firstOrNull;
-    if (own == null || !own.isSharingAt(_now())) return;
+    if (own == null ||
+        own.mode != ShareMode.window ||
+        !own.isSharingAt(_now())) {
+      return;
+    }
     _hasResumed = true;
     unawaited(_resumeReporting(own.sharingUntil));
   }
@@ -127,6 +156,7 @@ final class LiveLocationController extends ChangeNotifier
         locations: _locations,
         viewerMemberId: viewerMemberId,
         now: _now(),
+        places: _placeList,
       ),
     );
     notifyListeners();
@@ -142,8 +172,10 @@ final class LiveLocationController extends ChangeNotifier
     _ticker = null;
     await _subscription?.cancel();
     await _problems?.cancel();
+    await _placeSubscription?.cancel();
     _subscription = null;
     _problems = null;
+    _placeSubscription = null;
   }
 
   @override

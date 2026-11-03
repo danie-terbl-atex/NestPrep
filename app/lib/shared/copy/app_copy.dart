@@ -12,12 +12,16 @@ export 'account_data_copy.dart';
 // calendar V2 — AI, snap a school letter, the mental-load view: their words
 // live in their own files, reached through this one.
 export 'ai_copy.dart';
+// assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
+export 'assistants_copy.dart';
 // closing a household for good (household ADR-0007).
 export 'close_household_copy.dart';
 // family-profiles: its words live in their own file, reached through this one.
 export 'family_copy.dart';
+export 'feedback_copy.dart';
 // fill the week, step by step (lunch-box ADR-0020).
 export 'fill_week_copy.dart';
+export 'home_board_copy.dart';
 // home-care: its words live in their own file (home-care ADR-0001).
 export 'home_care_copy.dart';
 // legal and consent (accounts ADR-0005): their words live in their own file.
@@ -25,6 +29,7 @@ export 'legal_copy.dart';
 // lunch-box: its words live in their own file, reached through this one — and
 // its V2 tools' (pantry, budget, kid picks: lunch-box ADR-0006 to ADR-0008)
 // in theirs, beside it in name order.
+export 'location_copy.dart';
 export 'lunch_budget_copy.dart';
 export 'lunch_copy.dart';
 export 'lunch_kid_picks_copy.dart';
@@ -32,6 +37,8 @@ export 'lunch_pantry_copy.dart';
 export 'lunch_planning_copy.dart';
 // lunch-box phase 2: the shareable card and the printable planner (ADR-0005).
 export 'lunch_share_copy.dart';
+// every filler's variety choice (lunch-box ADR-0028).
+export 'lunch_variety_copy.dart';
 // the Meals tab: recipes and this week (design-system ADR-0015).
 export 'meals_copy.dart';
 // calendar V2: the mental-load view (calendar ADR-0006).
@@ -48,6 +55,8 @@ export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
+// photo frames on the wall (photo-frames ADR-0001).
+export 'photo_frame_copy.dart';
 // plan my week with AI: its words live in their own file (lunch-box ADR-0011).
 export 'plan_week_again_copy.dart';
 export 'plan_week_copy.dart';
@@ -153,7 +162,8 @@ abstract final class AppCopy {
 
   static const tabToday = 'Today';
   static const tabLists = 'Lists';
-  static const tabWeek = 'Week';
+  static const tabCalendar = 'Calendar';
+  static const tabFood = 'Food';
   static const tabTodos = 'To do';
   static const tabGroceries = 'Groceries';
   static const tabMeals = 'Meals';
@@ -171,7 +181,7 @@ abstract final class AppCopy {
   static const groceriesOften = 'Often bought';
 
   static const todosTitle = 'To do';
-  static const todosMine = 'Mine today';
+  static const todosMine = 'Mine';
   static const todosEveryone = 'Everyone';
   static const todosRoutines = 'Routines';
   static const todosAddTask = 'Add a task';
@@ -197,23 +207,25 @@ abstract final class AppCopy {
   static const todosRoutineDefaultFor = 'Usually for';
   static const todosDoneFor = 'Done for';
   static const todosCompleteFor = 'Mark done for…';
-
-  static const locationTitle = 'Where we are';
-  static const locationYours = 'Your location';
-  static const locationYoursBody =
-      'Only you can start or stop this, and every share ends on its own.';
-  static const locationShareFor = 'Share for';
-  static const locationStop = 'Stop sharing';
-  static const locationSharingUntil = 'Sharing until';
-  static const locationFifteenMinutes = '15 minutes';
-  static const locationOneHour = '1 hour';
-  static const locationFourHours = '4 hours';
-  static const locationHereNow = 'Here now';
-  static const locationLastSeen = 'Last seen';
-  static const locationNotSharing = 'Not sharing';
-  static const locationAloneTitle = 'Nobody else here yet';
-  static const locationAloneBody =
-      'Add the people who live here, and this is where you will see who is out.';
+  static const todosChores = 'Chores';
+  static String todosChoresChip(int open) =>
+      open == 0 ? todosChores : '$todosChores $open';
+  static String todosChoresChipSaid(int open) =>
+      open == 0 ? todosChores : '$todosChores, $open to do today';
+  static const todosJustDone = 'Just done';
+  static String todosDoneAgo(String ago) => 'Done ${ago.toLowerCase()}';
+  static const todosComplete = 'Complete';
+  static const todosNotDone = 'Not done';
+  static const todosEdit = 'Edit';
+  static String todosDoneToast(String title) => 'Done · $title';
+  static const todosUndo = 'Undo';
+  static const todosNothingLeftTitle = 'All done for now';
+  static const todosNothingLeftBody = 'What you finished is below, in case.';
+  static String todosChoresProgress(int done, int total) =>
+      '$done of $total done today';
+  static String todosStarsToday(int stars) => '$stars today';
+  static const todosNoChores = 'No chores today';
+  static const todosNoChoresBody = 'Nothing for them to do today.';
 
   /// How far away somebody is, in the units a person would use for it.
   static String distanceAway(double metres) => metres < 1000
@@ -277,7 +289,17 @@ abstract final class AppCopy {
     };
   }
 
-  static const calendarTitle = 'Week';
+  static const calendarTitle = 'Calendar';
+  static const calendarMonth = 'Month';
+  static const calendarWeek = 'Week';
+  static const calendarThisMonth = 'This month';
+  static const calendarPreviousMonth = 'Previous month';
+  static const calendarNextMonth = 'Next month';
+  static String calendarDayHas(int count) => switch (count) {
+    0 => 'nothing on',
+    1 => '1 thing on',
+    _ => '$count things on',
+  };
   static const calendarAddEvent = 'Add an event';
   static const calendarEditEvent = 'Edit event';
   static const calendarThisWeek = 'This week';

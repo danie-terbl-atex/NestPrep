@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/grocery_plan_copy.dart';
+import '../../assistants/ui/assistant_via_mark.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
@@ -84,6 +85,10 @@ class GroceryItemRow extends StatelessWidget {
                         color: nest.colors.inkTertiary,
                       ),
                     ),
+                  if (item.addedVia case final via?) ...[
+                    const SizedBox(height: NestSpace.xxs),
+                    AssistantViaMark(via: via),
+                  ],
                 ],
               ),
             ),

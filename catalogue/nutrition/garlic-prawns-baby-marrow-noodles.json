@@ -1,0 +1,114 @@
+{
+  "id": "garlic-prawns-baby-marrow-noodles",
+  "servings": 4,
+  "lines": [
+    {
+      "ingredient": "Raw prawns",
+      "amount": "600 g peeled and deveined",
+      "grams": 600,
+      "kcal": 510,
+      "proteinG": 120.6,
+      "fatG": 3.1,
+      "netCarbsG": 0.0,
+      "reference": "Crustaceans, shrimp, raw — USDA FDC 175179: 85 kcal / 100 g"
+    },
+    {
+      "ingredient": "Salt",
+      "amount": "1 tsp",
+      "grams": 0,
+      "kcal": 0,
+      "proteinG": 0.0,
+      "fatG": 0.0,
+      "netCarbsG": 0.0,
+      "reference": "Salt — 0 kcal"
+    },
+    {
+      "ingredient": "Black pepper",
+      "amount": "0.5 tsp ≈ 1.2 g",
+      "grams": 1.2,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.0,
+      "netCarbsG": 0.5,
+      "reference": "Spices, pepper, black — USDA FDC 170931: 251 kcal / 100 g"
+    },
+    {
+      "ingredient": "Olive oil",
+      "amount": "3 tbsp × 13.5 g, all in the pan",
+      "grams": 40.5,
+      "kcal": 358,
+      "proteinG": 0.0,
+      "fatG": 40.5,
+      "netCarbsG": 0.0,
+      "reference": "Oil, olive, salad or cooking — USDA FDC 171413: 884 kcal / 100 g"
+    },
+    {
+      "ingredient": "Garlic cloves",
+      "amount": "5 × 5 g",
+      "grams": 25,
+      "kcal": 37,
+      "proteinG": 1.6,
+      "fatG": 0.1,
+      "netCarbsG": 7.7,
+      "reference": "Garlic, raw — USDA FDC 169230: 149 kcal / 100 g"
+    },
+    {
+      "ingredient": "Dried chilli flakes",
+      "amount": "0.5 tsp ≈ 0.9 g",
+      "grams": 0.9,
+      "kcal": 3,
+      "proteinG": 0.1,
+      "fatG": 0.2,
+      "netCarbsG": 0.3,
+      "reference": "Spices, pepper, red or cayenne (dried chilli flakes) — USDA FDC 170932: 318 kcal / 100 g"
+    },
+    {
+      "ingredient": "Cherry tomatoes",
+      "amount": "250 g",
+      "grams": 250,
+      "kcal": 45,
+      "proteinG": 2.2,
+      "fatG": 0.5,
+      "netCarbsG": 6.7,
+      "reference": "Tomatoes, red, ripe, raw, year round average — USDA FDC 170457: 18 kcal / 100 g"
+    },
+    {
+      "ingredient": "Baby marrows",
+      "amount": "800 g",
+      "grams": 800,
+      "kcal": 136,
+      "proteinG": 9.7,
+      "fatG": 2.6,
+      "netCarbsG": 16.9,
+      "reference": "Squash, summer, zucchini, includes skin, raw (baby marrow) — USDA FDC 169291: 17 kcal / 100 g"
+    },
+    {
+      "ingredient": "Lemon",
+      "amount": "1: 48 g juice + 2 g zest",
+      "grams": 50,
+      "kcal": 12,
+      "proteinG": 0.2,
+      "fatG": 0.1,
+      "netCarbsG": 3.3,
+      "reference": "Lemon juice, raw — USDA FDC 167747: 22 kcal / 100 g; Lemon peel, raw (for lemon or lime zest) — USDA FDC 167749: 47 kcal / 100 g"
+    },
+    {
+      "ingredient": "Fresh parsley",
+      "amount": "3 tbsp chopped × 3.8 g",
+      "grams": 11.4,
+      "kcal": 4,
+      "proteinG": 0.3,
+      "fatG": 0.1,
+      "netCarbsG": 0.3,
+      "reference": "Parsley, fresh — USDA FDC 170416: 36 kcal / 100 g"
+    }
+  ],
+  "totalKcal": 1108,
+  "kcalPerServing": 280,
+  "perServing": {
+    "proteinG": 33.7,
+    "fatG": 11.8,
+    "netCarbsG": 8.9
+  },
+  "notes": "Assumptions that change the number: 600 g peeled raw prawns at USDA raw shrimp values (prawns sold glazed or with added solution weigh more water); all 3 tbsp oil eaten; 200 g baby marrow a person; no pasta. Published check: garlic prawns with courgette noodles are typically listed at ~250–320 kcal a serving; 280 agrees."
+}

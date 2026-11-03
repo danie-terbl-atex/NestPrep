@@ -18,7 +18,7 @@
     "milk",
     "egg"
   ],
-  "dietTags": [],
+  "dietTags": ["glutenFree"],
   "ingredients": [
     {
       "name": "Chicken pieces",
@@ -191,6 +191,7 @@
   "difficulty": "involved",
   "prepAhead": true,
   "prepNote": "Marinate the chicken the night before and boil the eggs ahead.",
+  "kcalPerServing": 980,
   "photo": {
     "credit": null,
     "licence": null,

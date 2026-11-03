@@ -1,0 +1,62 @@
+// ---- photo frames (photo-frames ADR-0001) ----
+// A wall frame the family linked. Only `claimFramePairing` creates one,
+// because a frame is linked by the code it shows, not by a client write.
+// Family renames it, chooses its panels, its screensaver (photo-frames
+// ADR-0006) and the shop it adds groceries from (ADR-0012), and deletes it — deleting is the unlink. A frame is the household's front door to its whole day, so it is
+// family's alone, whatever a helper's or a kid's grant says.
+match /frames/{frameId} {
+  allow read: if isFamily(householdId);
+
+  allow create: if false;
+
+  allow update: if isFamily(householdId)
+    && onlyChanged(['name', 'panels', 'screensaver', 'groceries'])
+    && photoFrameIsName(request.resource.data.name)
+    && photoFrameArePanels(householdId, request.resource.data.panels)
+    && (request.resource.data.get('screensaver', null) == null
+          || photoFrameIsScreensaver(request.resource.data.screensaver))
+    && (request.resource.data.get('groceries', null) == null
+          || photoFrameIsGroceries(request.resource.data.groceries));
+
+  allow delete: if isFamily(householdId);
+}
+
+function photoFrameIsName(name) {
+  return name is string && name.size() > 0 && name.size() <= 40;
+}
+
+// `lunch`, `addEvents` and `share` are optional: a frame linked by an older
+// app has none of them, and that is off (photo-frames ADR-0003, ADR-0008).
+function photoFrameArePanels(householdId, panels) {
+  return panels is map
+    && panels.keys().hasOnly(['calendar', 'todos', 'meals', 'lunch', 'addEvents', 'share', 'helperMemberId'])
+    && panels.keys().hasAll(['calendar', 'todos', 'meals', 'helperMemberId'])
+    && panels.calendar is bool
+    && panels.todos is bool
+    && panels.meals is bool
+    && panels.get('lunch', false) is bool
+    && panels.get('addEvents', false) is bool
+    && panels.get('share', false) is bool
+    && (panels.helperMemberId == null
+          || (isNonEmptyString(panels.helperMemberId)
+                && exists(/databases/$(database)/documents/households/$(householdId)/members/$(panels.helperMemberId))));
+}
+
+// Zero minutes is off, and so is no screensaver at all.
+function photoFrameIsScreensaver(screensaver) {
+  return screensaver is map
+    && screensaver.keys().hasOnly(['idleMinutes', 'secondsPerPhoto'])
+    && screensaver.keys().hasAll(['idleMinutes', 'secondsPerPhoto'])
+    && screensaver.idleMinutes in [0, 1, 2, 5, 10, 15, 30, 60]
+    && screensaver.secondsPerPhoto in [10, 20, 30, 60];
+}
+
+// No groceries at all is off; the area is one of the app's `CheckersArea` codes.
+function photoFrameIsGroceries(groceries) {
+  return groceries is map
+    && groceries.keys().hasOnly(['shop', 'area'])
+    && groceries.keys().hasAll(['shop', 'area'])
+    && groceries.shop in ['checkers', 'pickNPay']
+    && groceries.area in ['capeTown', 'johannesburg', 'pretoria', 'durban', 'gqeberha',
+                          'bloemfontein', 'eastLondon'];
+}
