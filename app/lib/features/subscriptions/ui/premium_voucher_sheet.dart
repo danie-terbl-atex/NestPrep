@@ -78,6 +78,7 @@ class _PremiumVoucherSheetBodyState extends State<PremiumVoucherSheetBody> {
     final confirmedWithPremium =
         email.step == VoucherEmailStep.confirmed &&
         !email.isLookingForPremium &&
+        email.lookupFailure == null &&
         claim.vouchers.isNotEmpty;
     final onEmail = _wantsEmail && !confirmedWithPremium;
     final anyAdded = claim.vouchers.any(

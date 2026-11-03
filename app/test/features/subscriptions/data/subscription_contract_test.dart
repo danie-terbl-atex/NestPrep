@@ -184,6 +184,69 @@ void main() {
     }
   });
 
+  Set<String> interfaceKeys(String text, String name) {
+    final start = text.indexOf('export interface $name {');
+    expect(start, isNonNegative, reason: name);
+    final block = text.substring(start, text.indexOf('}', start));
+    return RegExp(r'readonly (\w+):')
+        .allMatches(block)
+        .map((m) => m.group(1)!)
+        .toSet();
+  }
+
+  Set<String> answerKeys(String text, String function) {
+    final start = text.indexOf('export async function $function(');
+    expect(start, isNonNegative, reason: function);
+    final open = text.indexOf('Promise<{', start);
+    final block = text.substring(open, text.indexOf('}>', open));
+    return RegExp(r'(\w+):').allMatches(block).map((m) => m.group(1)!).toSet();
+  }
+
+  test('every key the app reads off a voucher, the server answers', () {
+    final keys = interfaceKeys(
+      source('premium_vouchers/vouchers_for_me.ts'),
+      'WaitingVoucher',
+    );
+    expect(keys, {'voucherId', 'kind', 'days', 'sku', 'emailMasked', 'isTest'});
+    final sample = <String, Object?>{
+      for (final key in keys)
+        key: switch (key) {
+          'kind' => 'frame',
+          'days' => 93,
+          'isTest' => true,
+          _ => 'x',
+        },
+    };
+    final voucher = CallablePremiumVoucherDirectory.voucherFrom(sample);
+    expect(voucher, isNotNull);
+    expect(voucher!.sku, 'x');
+    expect(voucher.isTest, isTrue);
+  });
+
+  test('every key the app reads off a claim, the server answers', () {
+    final keys = interfaceKeys(
+      source('premium_vouchers/claim_voucher.ts'),
+      'ClaimResult',
+    );
+    expect(keys, containsAll(['grantId', 'queued']));
+    final sample = <String, Object?>{
+      for (final key in keys)
+        key: switch (key) {
+          'queued' => true,
+          'days' => 93,
+          'startsAt' => null,
+          _ => 'x',
+        },
+    };
+    expect(CallablePremiumVoucherDirectory.claimFrom(sample)?.queued, isTrue);
+  });
+
+  test('the email answers say sent and verified, with the masked email', () {
+    final text = source('premium_vouchers/email_code.ts');
+    expect(answerKeys(text, 'sendEmailCode'), {'sent', 'emailMasked'});
+    expect(answerKeys(text, 'verifyEmailCode'), {'verified', 'emailMasked'});
+  });
+
   test('the grant sources are the server’s, and each has waiting days', () {
     expect(
       GrantSource.values.map((source) => source.name).toSet(),

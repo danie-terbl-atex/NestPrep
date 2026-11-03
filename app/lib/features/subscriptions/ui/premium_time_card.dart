@@ -26,8 +26,7 @@ class PremiumTimeCard extends StatelessWidget {
     final isPaid = entitlement.isPaidAt(now);
     final storeUntil = entitlement.storeUntil;
     final givenUntil = entitlement.givenUntil;
-    final isGivenNow =
-        !isPaid && givenUntil != null && entitlement.isPremiumAt(now);
+    final isGivenNow = givenUntil != null && entitlement.isGivenOnlyAt(now);
     return NestCard(
       padding: const EdgeInsets.symmetric(vertical: NestSpace.md),
       child: Column(
@@ -53,7 +52,9 @@ class PremiumTimeCard extends StatelessWidget {
             NestListRow(
               leading: const NestIconTile(icon: LucideIcons.sparkles),
               title: PremiumVoucherCopy.freePremium,
-              subtitle: PremiumVoucherCopy.until(dateLabel(givenUntil)),
+              subtitle: PremiumVoucherCopy.untilWithWaiting(
+                dateLabel(givenUntil),
+              ),
             ),
           for (final source in GrantSource.values)
             if (entitlement.daysWaiting.of(source) > 0)

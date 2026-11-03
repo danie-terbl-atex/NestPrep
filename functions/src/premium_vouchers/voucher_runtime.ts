@@ -1,8 +1,9 @@
 import { configured } from '../shared/configured_value';
 import { runsInEmulator } from '../shared/feature_flags';
 import { db } from '../shared/firestore';
-import { consumeRateLimit } from '../shared/rate_limit';
-import { liveUserDirectory } from './caller_emails';
+import { consumeRateLimit, isWithinRateLimit } from '../shared/rate_limit';
+import { callerEmailHashes, liveUserDirectory } from './caller_emails';
+import { firestoreChallenges } from './email_challenges';
 import { type EmailCodeDeps, randomEmailCode } from './email_code';
 import { resendEmailSender, silentEmailSender } from './email_sender';
 import { premiumEmailFrom, premiumPepper, premiumTesters, resendApiKey } from './premium_config';
@@ -23,11 +24,12 @@ export function liveVoucherDeps(): VoucherDeps {
 export function liveEmailCodeDeps(): EmailCodeDeps {
   const store = db();
   const now = new Date();
+  const pepper = premiumPepper();
   const emulated = runsInEmulator();
   return {
-    store,
-    users: liveUserDirectory,
-    pepper: premiumPepper(),
+    challenges: firestoreChallenges(store),
+    provenHashes: (uid) => callerEmailHashes({ store, users: liveUserDirectory, pepper }, uid),
+    pepper,
     sender: emulated
       ? silentEmailSender
       : resendEmailSender({
@@ -36,6 +38,22 @@ export function liveEmailCodeDeps(): EmailCodeDeps {
         }),
     newCode: emulated ? (): string => EMULATOR_EMAIL_CODE : randomEmailCode,
     consume: (rule, subject) => consumeRateLimit(store, rule, subject, now),
+    isWithin: (rule, subject) => isWithinRateLimit(store, rule, subject, now),
+    now,
+  };
+}
+
+export function liveVerifyDeps(): Pick<
+  EmailCodeDeps,
+  'challenges' | 'pepper' | 'consume' | 'isWithin' | 'now'
+> {
+  const store = db();
+  const now = new Date();
+  return {
+    challenges: firestoreChallenges(store),
+    pepper: premiumPepper(),
+    consume: (rule, subject) => consumeRateLimit(store, rule, subject, now),
+    isWithin: (rule, subject) => isWithinRateLimit(store, rule, subject, now),
     now,
   };
 }

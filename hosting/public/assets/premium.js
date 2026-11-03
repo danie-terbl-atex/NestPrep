@@ -11,6 +11,7 @@
     voucherClaimed: 'claimed',
     voucherVoid: 'void',
     badEmail: 'badEmail',
+    voucherReassignLimit: 'reassignLimit',
     tooManyTries: 'tooMany',
   };
 

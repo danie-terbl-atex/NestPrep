@@ -11,7 +11,7 @@ import {
   buildSite,
 } from '../../../hosting/tools/site-pages.mjs';
 import { ASSISTANT_SCOPES } from '../../src/assistants/assistant_scopes';
-import { WEB_ERROR_STATUS } from '../../src/premium_vouchers/premium_web_answer';
+import { WEB_ROUTE_REFUSALS } from '../../src/premium_vouchers/premium_web_answer';
 
 /**
  * The public site (`hosting/`) is generated into `hosting/public/` and
@@ -254,13 +254,31 @@ describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR
   const redeemPage = read('hosting/src/pages/redeem.html');
   const redeemScript = read('hosting/src/redeem.js');
 
-  const regionOf = (page: string, id: string): string => {
-    const start = page.indexOf(`id="${id}"`);
-    expect(start, id).toBeGreaterThan(0);
-    return page.slice(start);
+  const elementOf = (page: string, id: string): string => {
+    const opening = new RegExp(`<([a-z]+)\\b[^>]*\\sid="${id}"`).exec(page);
+    expect(opening, id).not.toBeNull();
+    const tag = opening?.[1] ?? '';
+    const start = opening?.index ?? 0;
+    const tags = new RegExp(`<(/?)${tag}\\b[^>]*>`, 'g');
+    tags.lastIndex = start;
+    let depth = 0;
+    for (const match of page.matchAll(tags)) {
+      if (match.index < start) continue;
+      depth += match[1] === '/' ? -1 : 1;
+      if (depth === 0) return page.slice(start, match.index + match[0].length);
+    }
+    throw new Error(`#${id} is never closed`);
   };
   const quotedIn = (source: string, pattern: RegExp): string[] =>
     [...source.matchAll(pattern)].flatMap((match) => (match[1] === undefined ? [] : [match[1]]));
+  const statesIn = (region: string): string[] => quotedIn(region, /data-state="([a-zA-Z]+)"/g);
+  const giftRefusalMap = Object.fromEntries(
+    quotedIn(/REFUSALS = \{([^}]*)\}/.exec(giftScript)?.[1] ?? '', /(\w+: '[a-zA-Z]+')/g).map(
+      (pair) => pair.split(': ').map((part) => part.replaceAll("'", '')),
+    ),
+  ) as Record<string, string>;
+  const listedIn = (script: string, name: string): string[] =>
+    quotedIn(new RegExp(`${name} = \\[([^\\]]*)\\]`).exec(script)?.[1] ?? '', /'([a-zA-Z]+)'/g);
 
   it('reaches premiumWeb through the rewrite, and serves every gift link from the one page', () => {
     expect(firebase.hosting.rewrites).toContainEqual({
@@ -302,27 +320,39 @@ describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR
     }
   });
 
-  it('the gift page posts to the two gift endpoints and never sends the token anywhere else', () => {
+  it('the gift page sends the token only in the body of its two posts', () => {
     expect(giftScript).toContain("'/api/premium/gift/lookup'");
     expect(giftScript).toContain("'/api/premium/gift/reassign'");
     expect(giftScript).toContain("method: 'POST'");
+    expect(giftScript).toContain("credentials: 'omit'");
     expect(giftScript).toContain("referrerPolicy: 'no-referrer'");
     expect(giftScript).toContain('[A-Za-z0-9_-]{43}');
+    expect([...giftScript.matchAll(/\bfetch\(/g)]).toHaveLength(1);
+    expect(giftScript).toMatch(/\bfetch\(path, \{/);
+    expect(new Set(quotedIn(giftScript, /await post\((\w+),/g))).toEqual(
+      new Set(['LOOKUP', 'REASSIGN']),
+    );
+    expect(giftScript).not.toMatch(/console\./);
+    expect(giftScript).not.toMatch(/[?&#]token=|\$\{token\}|\+ ?token\b/);
+    expect(giftScript).not.toMatch(
+      /sendBeacon|localStorage|sessionStorage|document\.cookie|window\.open|location\.(assign|replace|href\s*=)|history\.(push|replace)State/,
+    );
   });
 
-  it('the gift page has words for every state its script can show', () => {
-    const gift = regionOf(giftPage, 'gift-status');
+  it('the gift page has words, in the right place, for every state its script can show', () => {
+    const gift = statesIn(elementOf(giftPage, 'gift-status'));
+    const form = statesIn(elementOf(giftPage, 'gift-form-status'));
     const giftStates = [
       ...quotedIn(giftScript, /showGift\('([a-zA-Z]+)'/g),
-      ...quotedIn(/LOOKUP_STATES = \[([^\]]*)\]/.exec(giftScript)?.[1] ?? '', /'([a-zA-Z]+)'/g),
-      ...quotedIn(/REFUSALS = \{([^}]*)\}/.exec(giftScript)?.[1] ?? '', /: '([a-zA-Z]+)'/g),
+      ...listedIn(giftScript, 'LOOKUP_STATES'),
+      'notFound',
+      'tooMany',
       'unavailable',
       'offline',
-    ].filter((state) => state !== 'badEmail');
+    ];
     expect(giftStates).toEqual(expect.arrayContaining(['loading', 'waiting', 'claimed', 'void']));
-    for (const state of giftStates) expect(gift, state).toContain(`data-state="${state}"`);
-
-    const form = regionOf(giftPage, 'gift-form-status');
+    expect(gift).not.toContain('sent');
+    for (const state of giftStates) expect(gift, state).toContain(state);
     const formStates = [
       ...quotedIn(giftScript, /show\(formStatus, '([a-zA-Z]+)'/g),
       'badEmail',
@@ -331,48 +361,43 @@ describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR
       'offline',
     ];
     expect(formStates).toContain('sent');
-    for (const state of formStates) expect(form, state).toContain(`data-state="${state}"`);
+    for (const state of formStates) expect(form, state).toContain(state);
   });
 
-  it('the redeem page posts to the redeem endpoint and has words for every result and refusal', () => {
+  it('the gift page maps every refusal premiumWeb gives on its two paths to words on the page', () => {
+    const refusals = new Set([
+      ...WEB_ROUTE_REFUSALS['/gift/lookup'],
+      ...WEB_ROUTE_REFUSALS['/gift/reassign'],
+    ]);
+    refusals.delete('badRequest');
+    const shown = new Set([
+      ...statesIn(elementOf(giftPage, 'gift-status')),
+      ...statesIn(elementOf(giftPage, 'gift-form-status')),
+    ]);
+    for (const refusal of refusals) {
+      const state = giftRefusalMap[refusal];
+      expect(state, `premium.js maps ${refusal}`).toBeDefined();
+      expect(shown, `a data-state for ${refusal}`).toContain(state);
+    }
+    expect(giftScript).toContain('response.status === 429');
+  });
+
+  it('the redeem page has words for every result and every refusal premiumWeb gives', () => {
     expect(redeemScript).toContain("'/api/premium/redeem'");
     expect(redeemScript).toContain("method: 'POST'");
-    const listed = (name: string): string[] =>
-      quotedIn(
-        new RegExp(`${name} = \\[([^\\]]*)\\]`).exec(redeemScript)?.[1] ?? '',
-        /'([a-zA-Z]+)'/g,
-      );
-    const states = [
-      ...listed('RESULTS'),
-      ...listed('REFUSALS'),
-      'tooMany',
-      'unavailable',
-      'offline',
-    ];
-    expect(states).toEqual(expect.arrayContaining(['redeemed', 'alreadyRedeemed', 'codeUsedUp']));
-    const status = regionOf(redeemPage, 'redeem-status');
-    for (const state of states) expect(status, state).toContain(`data-state="${state}"`);
-  });
-
-  it('the scripts know every refusal premiumWeb gives on their paths', () => {
-    const gift = ['voucherNotFound', 'voucherClaimed', 'voucherVoid', 'badEmail', 'tooManyTries'];
-    const redeem = [
-      'codeUnknown',
-      'codeNotStarted',
-      'codeExpired',
-      'codePaused',
-      'codeUsedUp',
-      'badEmail',
-      'badCode',
-    ];
-    const giftRefusals = /REFUSALS = \{([^}]*)\}/.exec(giftScript)?.[1] ?? '';
-    const redeemRefusals = /REFUSALS = \[([^\]]*)\]/.exec(redeemScript)?.[1] ?? '';
-    for (const error of [...gift, ...redeem]) expect(WEB_ERROR_STATUS, error).toHaveProperty(error);
-    for (const error of gift) expect(giftRefusals, error).toContain(`${error}:`);
-    for (const error of redeem) expect(redeemRefusals, error).toContain(`'${error}'`);
-    expect(WEB_ERROR_STATUS.tooManyTries).toBe(429);
     expect(redeemScript).toContain('response.status === 429');
-    expect(giftScript).toContain('response.status === 429');
+    const results = listedIn(redeemScript, 'RESULTS');
+    const refusals = listedIn(redeemScript, 'REFUSALS');
+    expect(results).toContain('redeemed');
+    for (const refusal of WEB_ROUTE_REFUSALS['/redeem']) {
+      if (refusal === 'badRequest' || refusal === 'tooManyTries') continue;
+      expect(refusals, `redeem.js maps ${refusal}`).toContain(refusal);
+    }
+    const status = statesIn(elementOf(redeemPage, 'redeem-status'));
+    for (const state of [...results, ...refusals, 'tooMany', 'unavailable', 'offline']) {
+      expect(status, state).toContain(state);
+    }
+    expect(redeemScript).not.toMatch(/console\./);
   });
 
   it('keeps both forms hidden without JavaScript and says what to do instead', () => {
@@ -382,9 +407,16 @@ describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR
     }
   });
 
-  it('the redeem page links to no store, so it never reads as buying in the app', () => {
-    const built = String(site.get('redeem/index.html'));
-    expect(built).not.toMatch(/apps\.apple\.com|play\.google\.com|itunes\.apple\.com/);
+  it('neither page links to or names an app store, so nothing reads as buying in the app', () => {
+    for (const path of ['redeem/index.html', 'premium/index.html']) {
+      const built = String(site.get(path));
+      expect(built, path).not.toMatch(
+        /apps\.apple\.com|itunes\.apple\.com|itms-apps?s?:|play\.google\.com|market:|App Store|Google Play|Play Store/i,
+      );
+    }
+    for (const script of [giftScript, redeemScript]) {
+      expect(script).not.toMatch(/itms-apps?s?:|market:|apps\.apple\.com|play\.google\.com/i);
+    }
   });
 });
 

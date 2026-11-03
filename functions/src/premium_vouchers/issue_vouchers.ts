@@ -58,6 +58,7 @@ export async function issueVouchers(
         claimedAt: null,
         grantId: null,
         reassignedAt: null,
+        reassignCount: 0,
         voidedAt: null,
         voidReason: null,
         claimBy: null,

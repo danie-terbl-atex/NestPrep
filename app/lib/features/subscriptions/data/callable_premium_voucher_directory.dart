@@ -88,19 +88,9 @@ final class CallablePremiumVoucherDirectory implements PremiumVoucherDirectory {
   static VoucherClaim? claimFrom(Map<Object?, Object?> result) {
     if (result case {
       'grantId': final String grantId,
-      'days': final num days,
       'queued': final bool queued,
     }) {
-      final startsAt = switch (result['startsAt']) {
-        final String at => DateTime.tryParse(at)?.toUtc(),
-        _ => null,
-      };
-      return VoucherClaim(
-        grantId: grantId,
-        days: days.toInt(),
-        queued: queued,
-        startsAt: startsAt,
-      );
+      return VoucherClaim(grantId: grantId, queued: queued);
     }
     return null;
   }

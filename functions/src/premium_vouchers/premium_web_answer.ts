@@ -11,13 +11,21 @@ import {
   tokenHashOf,
 } from './premium_hashes';
 import {
+  GIFT_LOOKUP_OVERALL,
+  GIFT_LOOKUP_PER_ADDRESS,
   PREMIUM_WEB_OVERALL,
   PREMIUM_WEB_PER_ADDRESS,
   PREMIUM_WEB_PER_EMAIL,
 } from './premium_web_limits';
 import { giftLookupInput, giftReassignInput, redeemCodeInput } from './schemas';
-import { GIFT_TOKEN, lookUpGift, reassignGift } from './web_gifts';
-import { redeemCode } from './web_redemption';
+import {
+  GIFT_LOOKUP_REFUSALS,
+  GIFT_REASSIGN_REFUSALS,
+  GIFT_TOKEN,
+  lookUpGift,
+  reassignGift,
+} from './web_gifts';
+import { REDEEM_REFUSALS, redeemCode } from './web_redemption';
 
 export const WEB_ERROR_STATUS = {
   badRequest: 400,
@@ -29,6 +37,7 @@ export const WEB_ERROR_STATUS = {
   methodNotAllowed: 405,
   voucherClaimed: 409,
   voucherVoid: 409,
+  voucherReassignLimit: 409,
   codeNotStarted: 409,
   codeExpired: 409,
   codePaused: 409,
@@ -39,7 +48,13 @@ export const WEB_ERROR_STATUS = {
 export type WebError = keyof typeof WEB_ERROR_STATUS;
 
 export const WEB_ROUTES = ['/gift/lookup', '/gift/reassign', '/redeem'] as const;
-type WebRoute = (typeof WEB_ROUTES)[number];
+export type WebRoute = (typeof WEB_ROUTES)[number];
+
+export const WEB_ROUTE_REFUSALS = {
+  '/gift/lookup': ['badRequest', ...GIFT_LOOKUP_REFUSALS, 'tooManyTries'],
+  '/gift/reassign': ['badRequest', 'badEmail', ...GIFT_REASSIGN_REFUSALS, 'tooManyTries'],
+  '/redeem': ['badRequest', 'badCode', 'badEmail', ...REDEEM_REFUSALS, 'tooManyTries'],
+} as const satisfies Record<WebRoute, readonly WebError[]>;
 
 export interface WebRequest {
   readonly method: string;
@@ -58,9 +73,12 @@ export interface PremiumWebDeps {
   readonly address: string;
   readonly now: Date;
   readonly consume: (rule: RateLimitRule, subject: string) => Promise<boolean>;
+  readonly isWithin: (rule: RateLimitRule, subject: string) => Promise<boolean>;
 }
 
 type Answer = Readonly<Record<string, unknown>> & { readonly error?: WebError };
+
+const TOO_MANY: Answer = { error: 'tooManyTries' };
 
 export function routeOf(path: string): WebRoute | null {
   const route = path.replace(/^\/api\/premium(?=\/)/, '').replace(/\/+$/, '');
@@ -74,10 +92,8 @@ export async function answerPremiumWeb(
   if (request.method !== 'POST') return replyOf({ error: 'methodNotAllowed' });
   const route = routeOf(request.path);
   if (route === null) return replyOf({ error: 'notFound' });
-  const allowed =
-    (await deps.consume(PREMIUM_WEB_OVERALL, 'all')) &&
-    (await deps.consume(PREMIUM_WEB_PER_ADDRESS, deps.address));
-  if (!allowed) return replyOf({ error: 'tooManyTries' });
+  const perAddress = route === '/gift/lookup' ? GIFT_LOOKUP_PER_ADDRESS : PREMIUM_WEB_PER_ADDRESS;
+  if (!(await deps.consume(perAddress, deps.address))) return replyOf(TOO_MANY);
   return replyOf(await answerRoute(deps, route, request.body));
 }
 
@@ -87,6 +103,7 @@ async function answerRoute(deps: PremiumWebDeps, route: WebRoute, body: unknown)
       const input = parsed(giftLookupInput, body);
       if (input === null) return { error: 'badRequest' };
       if (!GIFT_TOKEN.test(input.token)) return { error: 'voucherNotFound' };
+      if (!(await deps.consume(GIFT_LOOKUP_OVERALL, 'all'))) return TOO_MANY;
       return lookUpGift(deps.store, tokenHashOf(input.token));
     }
     case '/gift/reassign': {
@@ -96,7 +113,8 @@ async function answerRoute(deps: PremiumWebDeps, route: WebRoute, body: unknown)
       const email = normEmail(input.email);
       if (email === null) return { error: 'badEmail' };
       const emailHash = await emailHashOf(deps.pepper(), email);
-      if (!(await deps.consume(PREMIUM_WEB_PER_EMAIL, emailHash))) return { error: 'tooManyTries' };
+      if (!(await deps.consume(PREMIUM_WEB_PER_EMAIL, emailHash))) return TOO_MANY;
+      if (!(await deps.consume(PREMIUM_WEB_OVERALL, 'all'))) return TOO_MANY;
       return reassignGift(
         deps.store,
         { claimTokenHash: tokenHashOf(input.token), emailHash, emailMasked: maskEmail(email) },
@@ -112,12 +130,15 @@ async function answerRoute(deps: PremiumWebDeps, route: WebRoute, body: unknown)
       if (email === null) return { error: 'badEmail' };
       const pepper = deps.pepper();
       const emailHash = await emailHashOf(pepper, email);
-      if (!(await deps.consume(PREMIUM_WEB_PER_EMAIL, emailHash))) return { error: 'tooManyTries' };
-      return redeemCode(
+      if (!(await deps.isWithin(PREMIUM_WEB_PER_EMAIL, emailHash))) return TOO_MANY;
+      if (!(await deps.consume(PREMIUM_WEB_OVERALL, 'all'))) return TOO_MANY;
+      const answer = await redeemCode(
         deps.store,
         { codeHash: await codeHashOf(pepper, code), emailHash, emailMasked: maskEmail(email) },
         deps.now,
       );
+      if ('error' in answer) await deps.consume(PREMIUM_WEB_PER_EMAIL, emailHash);
+      return answer;
     }
   }
 }

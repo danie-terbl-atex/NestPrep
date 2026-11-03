@@ -27,7 +27,6 @@ final class VoucherRefused extends VoucherClaimState {
 
   bool get endsVoucher => switch (failure) {
     final PremiumVoucherFailure refusal => refusal.endsVoucher,
-    HouseholdFailure(problem: HouseholdProblem.notSignedIn) => true,
     _ => false,
   };
 }

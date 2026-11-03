@@ -39,6 +39,7 @@ export const storedVoucher = z.object({
   isTest: z.boolean(),
   attribution: voucherAttribution.nullable().default(null),
   claimBy: timestamp.nullable().default(null),
+  reassignCount: z.number().int().nonnegative().default(0),
 });
 export type StoredVoucher = z.infer<typeof storedVoucher>;
 

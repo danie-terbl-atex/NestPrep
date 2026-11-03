@@ -80,3 +80,13 @@ export async function consumeRateLimit(
     return true;
   });
 }
+
+export async function isWithinRateLimit(
+  store: Firestore,
+  rule: RateLimitRule,
+  subject: string,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const snapshot = await store.collection(RATE_LIMITS).doc(rateLimitId(rule, subject)).get();
+  return nextWindow(readWindow(snapshot.data()), rule, now) !== null;
+}

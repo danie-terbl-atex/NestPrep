@@ -12,6 +12,8 @@ import {
 } from '../../src/premium_vouchers/premium_hashes';
 import type { StoredCode } from '../../src/premium_vouchers/voucher_documents';
 import { HOSTING_REGION } from '../../src/shared/region';
+import { WEB_ROUTE_REFUSALS, type WebRoute } from '../../src/premium_vouchers/premium_web_answer';
+import { expect } from 'vitest';
 import { DAY_MS } from './referrals_fixture';
 import { adminDb, callAs, httpFunctionUrl, type TestUser } from './emulator_harness';
 
@@ -91,15 +93,20 @@ export interface WebAnswer {
   readonly cacheControl: string | null;
 }
 
-export async function onTheWeb(route: string, body: unknown): Promise<WebAnswer> {
+export async function onTheWeb(route: WebRoute, body: unknown): Promise<WebAnswer> {
   const response = await fetch(`${httpFunctionUrl('premiumWeb', HOSTING_REGION)}${route}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
+  const answer = (await response.json()) as Record<string, unknown>;
+  const error = answer['error'];
+  if (error !== undefined) {
+    expect(WEB_ROUTE_REFUSALS[route] as readonly unknown[], `${route} refused`).toContain(error);
+  }
   return {
     status: response.status,
-    body: (await response.json()) as Record<string, unknown>,
+    body: answer,
     cacheControl: response.headers.get('cache-control'),
   };
 }

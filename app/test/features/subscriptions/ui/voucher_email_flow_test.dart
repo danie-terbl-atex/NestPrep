@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/subscriptions/model/premium_voucher.dart';
+import 'package:nestprep/features/subscriptions/state/voucher_email_controller.dart';
 import 'package:nestprep/features/subscriptions/ui/premium_voucher_sheet.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/premium_voucher_copy.dart';
@@ -164,6 +165,39 @@ void main() {
     expect(find.text(PremiumVoucherCopy.done), findsOneWidget);
   });
 
+  testWidgets('a lookup that fails after the email is proven says so, with '
+      'a retry, and never that nothing is waiting', (tester) async {
+    await openEmail(tester);
+    await sendTo(tester, 'sam@example.com');
+    premium.vouchers.failListWith = const UnavailableFailure();
+    await enterCode(tester, '654321');
+    await tester.pumpAndSettle();
+
+    final failed = find.byKey(const ValueKey('voucher-lookup-failed'));
+    expect(failed, findsOneWidget);
+    expect(tester.widget<NestBanner>(failed).tone, NestBannerTone.danger);
+    expect(
+      find.text(AppCopy.failure(const UnavailableFailure())),
+      findsOneWidget,
+    );
+    expect(
+      find.text(PremiumVoucherCopy.nothingWaitingFor(masked)),
+      findsNothing,
+    );
+
+    premium.vouchers
+      ..failListWith = null
+      ..waiting = [frame];
+    await tester.tap(find.text(AppCopy.retry));
+    await tester.pumpAndSettle();
+    expect(failed, findsNothing);
+    expect(find.text(PremiumVoucherCopy.confirmed(masked)), findsOneWidget);
+    expect(
+      find.text('3 months of Premium from your frame order'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('a wrong code is said on the field, and typing clears it', (
     tester,
   ) async {
@@ -245,6 +279,19 @@ void main() {
       find.text('3 months of Premium from your frame order'),
       findsOneWidget,
     );
+    expect(
+      find.text(PremiumVoucherCopy.confirmed('s***@example.com')),
+      findsOneWidget,
+    );
+    expect(find.textContaining('sam@example.com'), findsNothing);
+  });
+
+  test('masks an email the way the server does', () {
+    expect(
+      VoucherEmailController.masked('  Sam.Parent@Example.COM '),
+      's***@example.com',
+    );
+    expect(VoucherEmailController.masked('a@b.co'), 'a***@b.co');
   });
 
   testWidgets('a refusal it cannot place is still said', (tester) async {

@@ -168,8 +168,32 @@ void main() {
     );
     expect(find.textContaining('Free Premium until'), findsOneWidget);
     expect(find.text(PremiumVoucherCopy.freePremium), findsOneWidget);
+    expect(
+      find.textContaining('counting the time waiting below'),
+      findsOneWidget,
+    );
     expect(find.text('2 months waiting'), findsOneWidget);
     expect(find.textContaining('referral'), findsNothing);
+  });
+
+  testWidgets('a store grace period is not called free Premium', (
+    tester,
+  ) async {
+    await pumpPlan(
+      tester,
+      entitlement: Entitlement(
+        premiumUntil: inAMonth,
+        storeUntil: DateTime.now().toUtc().subtract(const Duration(days: 1)),
+        status: EntitlementStatus.inGracePeriod,
+        store: BillingStore.playStore,
+        willRenew: true,
+        grantUntil: inFourMonths,
+        grantDaysWaiting: const GrantDaysWaiting(frame: 93),
+      ),
+    );
+    expect(find.text(PremiumVoucherCopy.timeTitle), findsOneWidget);
+    expect(find.text(PremiumVoucherCopy.freePremium), findsNothing);
+    expect(find.text('3 months waiting'), findsOneWidget);
   });
 
   testWidgets('no free time waiting shows no time card', (tester) async {

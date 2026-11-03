@@ -14,6 +14,15 @@ import {
 } from './voucher_documents';
 
 export const GIFT_TOKEN = /^[A-Za-z0-9_-]{43}$/;
+export const REASSIGNS_PER_GIFT = 5;
+
+export const GIFT_LOOKUP_REFUSALS = ['voucherNotFound'] as const;
+export const GIFT_REASSIGN_REFUSALS = [
+  'voucherNotFound',
+  'voucherClaimed',
+  'voucherVoid',
+  'voucherReassignLimit',
+] as const;
 
 export type GiftLookup =
   | {
@@ -22,11 +31,11 @@ export type GiftLookup =
       readonly sku: string | null;
       readonly emailMasked: string;
     }
-  | { readonly error: 'voucherNotFound' };
+  | { readonly error: (typeof GIFT_LOOKUP_REFUSALS)[number] };
 
 export type GiftReassign =
   | { readonly ok: true; readonly emailMasked: string }
-  | { readonly error: 'voucherNotFound' | 'voucherClaimed' | 'voucherVoid' };
+  | { readonly error: (typeof GIFT_REASSIGN_REFUSALS)[number] };
 
 function byTokenHash(store: Firestore, claimTokenHash: string): Query {
   return store.collection(PREMIUM_VOUCHERS).where('claimTokenHash', '==', claimTokenHash).limit(1);
@@ -69,10 +78,14 @@ export async function reassignGift(
     if (found === null) return { error: 'voucherNotFound' };
     if (found.voucher.status === 'claimed') return { error: 'voucherClaimed' };
     if (found.voucher.status === 'void') return { error: 'voucherVoid' };
+    if (found.voucher.reassignCount >= REASSIGNS_PER_GIFT) {
+      return { error: 'voucherReassignLimit' };
+    }
     transaction.update(store.collection(PREMIUM_VOUCHERS).doc(found.id), {
       emailHash: change.emailHash,
       emailMasked: change.emailMasked,
       reassignedAt: Timestamp.fromDate(now),
+      reassignCount: found.voucher.reassignCount + 1,
     });
     return { ok: true, emailMasked: change.emailMasked };
   });

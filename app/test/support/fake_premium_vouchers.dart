@@ -60,17 +60,7 @@ final class FakePremiumVoucherDirectory implements PremiumVoucherDirectory {
     if (failure != null) throw failure;
     claimed.add((voucherId: voucherId, householdId: householdId));
     waiting.removeWhere((voucher) => voucher.voucherId == voucherId);
-    final days = [
-      ...provenByEmail,
-      frame,
-      gift,
-    ].firstWhere((voucher) => voucher.voucherId == voucherId).days;
-    return VoucherClaim(
-      grantId: 'grant-$voucherId',
-      days: days,
-      queued: queued,
-      startsAt: queued ? null : DateTime.utc(2026, 11, 3),
-    );
+    return VoucherClaim(grantId: 'grant-$voucherId', queued: queued);
   }
 
   @override

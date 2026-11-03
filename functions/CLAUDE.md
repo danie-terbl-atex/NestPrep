@@ -207,11 +207,29 @@ decides who reaches them, and the handler also checks the bearer ID token's `ema
 account needs `roles/run.invoker` on both services, granted by hand** — `firebase deploy` never touches
 the invoker of a private function. Under the emulator no Google ID token exists, so both refuse 403; the
 emulator tests drive their bodies directly. `premiumWeb` (europe-west1, behind Hosting's `/api/premium/**`)
-is the public gift and redeem pages' endpoint, limited per address (`callerAddress`), overall and per
-email hash. Under the emulator `sendVoucherEmailCode` sends nothing and the code is always `123456`.
+is the public gift and redeem pages' endpoint: per address (`callerAddress`) first, then per email hash,
+and only an accepted request counts against the overall budget; gift lookups have ceilings of their own.
+A redeem answers `redeemed` for a first and a repeat redemption alike, and counts the email only on a
+refusal. A gift link moves its voucher at most five times (`voucherReassignLimit`). A code-email
+challenge is stored only after Resend accepted the email, under a daily cap per account and five sends
+and ten tries an hour per address. Under the emulator `sendVoucherEmailCode` sends nothing and the code is always `123456`.
 `seed:premium-codes` writes codes straight to Firestore; a unique batch's plain codes go only to the
 CSV named by `--out` (mode 600, never overwritten); the real project needs the pepper in the
 environment as `PREMIUM_EMAIL_PEPPER`.
+
+**Deploy it in two steps**, because a Function built before `GRANT_SOURCES` gained `frame` and `code`
+cannot read those grants and drops them from any restatement it makes:
+
+1. `firebase deploy --only firestore:rules,firestore:indexes,functions --project nestprep-643b7` with
+   `STORE_INVOKER_SERVICE_ACCOUNT` still empty in `.env.nestprep-643b7`, no IAM grant and no codes
+   seeded. Every Function, the reconcile and the store notifications included, now reads every grant
+   source. The new endpoints are deployed but inert: the store is refused 403, so no frame voucher can
+   exist, and with no `premiumCodes` the redeem page creates none, so nothing can be claimed.
+2. Only once step 1 is serving everywhere (`gcloud run revisions list --region africa-south1` shows
+   no older revision taking traffic): set `STORE_INVOKER_SERVICE_ACCOUNT`, run
+   `firebase deploy --only functions:issuePremiumVouchers,functions:voidFrameVoucher`, grant the store
+   `roles/run.invoker` on `issuepremiumvouchers` and `voidframevoucher`, seed codes, deploy Hosting, then
+   switch on the store's push.
 
 The OAuth redirect URI to register with Google and Microsoft is
 `https://africa-south1-nestprep-643b7.cloudfunctions.net/calendarOAuthCallback` (or

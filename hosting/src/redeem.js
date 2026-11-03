@@ -16,7 +16,7 @@
     'November',
     'December',
   ];
-  const RESULTS = ['redeemed', 'alreadyRedeemed'];
+  const RESULTS = ['redeemed'];
   const REFUSALS = [
     'codeUnknown',
     'codeNotStarted',

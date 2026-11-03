@@ -26,7 +26,6 @@ abstract final class PremiumVoucherCopy {
   static String sentTo(String emailMasked) => 'Sent to $emailMasked';
   static const testOrder = 'Test';
 
-  // ---- the claim sheet ----
   static const sheetTitle = 'Premium waiting for you';
   static String intoOnly(String household) =>
       'Add it to $household and everyone there gets Premium.';
@@ -37,8 +36,8 @@ abstract final class PremiumVoucherCopy {
   static String addTo(String household) => 'Add to $household';
   static String added(String household) => 'Added. $household has Premium now.';
   static String addedQueued(String household) =>
-      'Added to $household. It starts when your current subscription period '
-      'ends, so none of it is wasted.';
+      'Added to $household. It starts when the Premium you have now ends, so '
+      'none of it is wasted.';
   static const noFamilyHousehold =
       'Premium is added by a parent. Ask a parent in your household to sign '
       'in with this email, or confirm it on their account.';
@@ -46,7 +45,6 @@ abstract final class PremiumVoucherCopy {
   static const done = 'Done';
   static const notNow = 'Not now';
 
-  // ---- ordered with a different email ----
   static const differentEmail = 'Ordered with a different email?';
   static const differentEmailBody =
       'Enter the email your Premium was sent to. We’ll email it a 6-digit '
@@ -71,11 +69,12 @@ abstract final class PremiumVoucherCopy {
       'when Premium is, it shows up here.';
   static const lookingForPremium = 'Looking for your Premium…';
 
-  // ---- plan & billing ----
   static const timeTitle = 'Your Premium time';
   static const paidPlan = 'Paid plan';
   static const freePremium = 'Free Premium';
   static String until(String date) => 'Until $date';
+  static String untilWithWaiting(String date) =>
+      'Until $date, counting the time waiting below';
   static String sourceTitle(GrantSource source) => switch (source) {
     GrantSource.referral => 'From referrals',
     GrantSource.frame => 'From your frame order',

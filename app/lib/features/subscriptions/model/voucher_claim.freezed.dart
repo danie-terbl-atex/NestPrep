@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VoucherClaim {
 
- String get grantId; int get days; bool get queued; DateTime? get startsAt;
+ String get grantId; bool get queued;
 /// Create a copy of VoucherClaim
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $VoucherClaimCopyWith<VoucherClaim> get copyWith => _$VoucherClaimCopyWithImpl<V
 @override
 bool operator ==(Object other) {
   final _this = this as VoucherClaim;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoucherClaim&&(identical(other.grantId, _this.grantId) || other.grantId == _this.grantId)&&(identical(other.days, _this.days) || other.days == _this.days)&&(identical(other.queued, _this.queued) || other.queued == _this.queued)&&(identical(other.startsAt, _this.startsAt) || other.startsAt == _this.startsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoucherClaim&&(identical(other.grantId, _this.grantId) || other.grantId == _this.grantId)&&(identical(other.queued, _this.queued) || other.queued == _this.queued));
 }
 
 
 @override
 int get hashCode {
   final _this = this as VoucherClaim;
-  return Object.hash(runtimeType,_this.grantId,_this.days,_this.queued,_this.startsAt);
+  return Object.hash(runtimeType,_this.grantId,_this.queued);
 }
 
 @override
 String toString() {
   final _this = this as VoucherClaim;
-  return 'VoucherClaim(grantId: ${_this.grantId}, days: ${_this.days}, queued: ${_this.queued}, startsAt: ${_this.startsAt})';
+  return 'VoucherClaim(grantId: ${_this.grantId}, queued: ${_this.queued})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $VoucherClaimCopyWith<$Res>  {
   factory $VoucherClaimCopyWith(VoucherClaim value, $Res Function(VoucherClaim) _then) = _$VoucherClaimCopyWithImpl;
 @useResult
 $Res call({
- String grantId, int days, bool queued, DateTime? startsAt
+ String grantId, bool queued
 });
 
 
@@ -68,13 +68,11 @@ class _$VoucherClaimCopyWithImpl<$Res>
 
 /// Create a copy of VoucherClaim
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? grantId = null,Object? days = null,Object? queued = null,Object? startsAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? grantId = null,Object? queued = null,}) {
   return _then(VoucherClaim(
 grantId: null == grantId ? _self.grantId : grantId // ignore: cast_nullable_to_non_nullable
-as String,days: null == days ? _self.days : days // ignore: cast_nullable_to_non_nullable
-as int,queued: null == queued ? _self.queued : queued // ignore: cast_nullable_to_non_nullable
-as bool,startsAt: freezed == startsAt ? _self.startsAt : startsAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as String,queued: null == queued ? _self.queued : queued // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -159,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String grantId,  int days,  bool queued,  DateTime? startsAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String grantId,  bool queued)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VoucherClaim() when $default != null:
-return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
+return $default(_that.grantId,_that.queued);case _:
   return orElse();
 
 }
@@ -180,10 +178,10 @@ return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String grantId,  int days,  bool queued,  DateTime? startsAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String grantId,  bool queued)  $default,) {final _that = this;
 switch (_that) {
 case _VoucherClaim():
-return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
+return $default(_that.grantId,_that.queued);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +198,10 @@ return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String grantId,  int days,  bool queued,  DateTime? startsAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String grantId,  bool queued)?  $default,) {final _that = this;
 switch (_that) {
 case _VoucherClaim() when $default != null:
-return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
+return $default(_that.grantId,_that.queued);case _:
   return null;
 
 }
@@ -215,13 +213,11 @@ return $default(_that.grantId,_that.days,_that.queued,_that.startsAt);case _:
 
 
 class _VoucherClaim implements VoucherClaim {
-  const _VoucherClaim({required this.grantId, required this.days, required this.queued, this.startsAt});
+  const _VoucherClaim({required this.grantId, required this.queued});
   
 
 @override final  String grantId;
-@override final  int days;
 @override final  bool queued;
-@override final  DateTime? startsAt;
 
 /// Create a copy of VoucherClaim
 /// with the given fields replaced by the non-null parameter values.
@@ -233,18 +229,18 @@ _$VoucherClaimCopyWith<_VoucherClaim> get copyWith => __$VoucherClaimCopyWithImp
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoucherClaim&&(identical(other.grantId, grantId) || other.grantId == grantId)&&(identical(other.days, days) || other.days == days)&&(identical(other.queued, queued) || other.queued == queued)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoucherClaim&&(identical(other.grantId, grantId) || other.grantId == grantId)&&(identical(other.queued, queued) || other.queued == queued));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,grantId,days,queued,startsAt);
+    return Object.hash(runtimeType,grantId,queued);
 }
 
 @override
 String toString() {
-    return 'VoucherClaim(grantId: $grantId, days: $days, queued: $queued, startsAt: $startsAt)';
+    return 'VoucherClaim(grantId: $grantId, queued: $queued)';
 }
 
 
@@ -255,7 +251,7 @@ abstract mixin class _$VoucherClaimCopyWith<$Res> implements $VoucherClaimCopyWi
   factory _$VoucherClaimCopyWith(_VoucherClaim value, $Res Function(_VoucherClaim) _then) = __$VoucherClaimCopyWithImpl;
 @override @useResult
 $Res call({
- String grantId, int days, bool queued, DateTime? startsAt
+ String grantId, bool queued
 });
 
 
@@ -272,13 +268,11 @@ class __$VoucherClaimCopyWithImpl<$Res>
 
 /// Create a copy of VoucherClaim
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? grantId = null,Object? days = null,Object? queued = null,Object? startsAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? grantId = null,Object? queued = null,}) {
   return _then(_VoucherClaim(
 grantId: null == grantId ? _self.grantId : grantId // ignore: cast_nullable_to_non_nullable
-as String,days: null == days ? _self.days : days // ignore: cast_nullable_to_non_nullable
-as int,queued: null == queued ? _self.queued : queued // ignore: cast_nullable_to_non_nullable
-as bool,startsAt: freezed == startsAt ? _self.startsAt : startsAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as String,queued: null == queued ? _self.queued : queued // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -68,12 +68,7 @@ void main() {
           'startsAt': '2026-11-03T08:00:00.000Z',
           'queued': false,
         }),
-        VoucherClaim(
-          grantId: 'g1',
-          days: 93,
-          queued: false,
-          startsAt: DateTime.utc(2026, 11, 3, 8),
-        ),
+        const VoucherClaim(grantId: 'g1', queued: false),
       );
     });
 
@@ -85,7 +80,7 @@ void main() {
           'startsAt': null,
           'queued': true,
         }),
-        const VoucherClaim(grantId: 'g2', days: 30, queued: true),
+        const VoucherClaim(grantId: 'g2', queued: true),
       );
     });
 

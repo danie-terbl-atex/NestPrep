@@ -219,7 +219,6 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // subscriptions — the store, premium and the free tier's one child
   // (subscriptions ADR-0001)
   ...subscriptionProviders(),
-  // frame orders and gifts (subscriptions ADR-0003, ADR-0004)
   ...premiumVoucherProviders(),
   // lunch-box V2 — pantry, budget, kid picks (lunch-box ADR-0005 to ADR-0007)
   ...lunchPlanningProviders(),

@@ -18,12 +18,16 @@ export interface Redeemer {
   readonly emailMasked: string;
 }
 
+export const REDEEM_REFUSALS = [
+  'codeUnknown',
+  'codePaused',
+  'codeNotStarted',
+  'codeExpired',
+  'codeUsedUp',
+] as const;
+
 export type RedeemAnswer =
-  | {
-      readonly result: 'redeemed' | 'alreadyRedeemed';
-      readonly days: number;
-      readonly label: string;
-    }
+  | { readonly result: 'redeemed'; readonly days: number; readonly label: string }
   | { readonly error: 'codeUnknown' }
   | RedeemRefusal;
 
@@ -35,6 +39,8 @@ export async function redeemCode(
   return store.runTransaction(async (transaction): Promise<RedeemAnswer> => {
     const code = await readCode(transaction, store, redeemer.codeHash);
     if (code === null || code.status === 'archived') return { error: 'codeUnknown' };
+    const refusal = redeemRefusalOf(code, now);
+    if (refusal !== null) return refusal;
 
     const redemption = await transaction.get(
       codeRedemptionRef(store, redeemer.codeHash, redeemer.emailHash),
@@ -46,14 +52,11 @@ export async function redeemCode(
           ? storedVoucher.safeParse((await transaction.get(voucherRef(store, voucherId))).data())
           : null;
       return {
-        result: 'alreadyRedeemed',
+        result: 'redeemed',
         days: earlier?.success === true ? earlier.data.days : code.days,
         label: code.label,
       };
     }
-
-    const refusal = redeemRefusalOf(code, now);
-    if (refusal !== null) return refusal;
 
     const voucher = store.collection(PREMIUM_VOUCHERS).doc();
     const at = Timestamp.fromDate(now);
@@ -78,6 +81,7 @@ export async function redeemCode(
       claimedAt: null,
       grantId: null,
       reassignedAt: null,
+      reassignCount: 0,
       voidedAt: null,
       voidReason: null,
       claimBy: claimBy === null ? null : Timestamp.fromDate(claimBy),

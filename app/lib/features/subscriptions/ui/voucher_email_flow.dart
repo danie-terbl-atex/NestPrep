@@ -154,7 +154,15 @@ class _VoucherEmailFlowState extends State<VoucherEmailFlow> {
             Text(PremiumVoucherCopy.lookingForPremium, style: nest.text.body),
             const SizedBox(height: NestSpace.md),
             const NestLoadingView(rows: 1),
-          ] else
+          ] else if (controller.lookupFailure case final lookup?)
+            NestBanner(
+              key: const ValueKey('voucher-lookup-failed'),
+              message: AppCopy.failure(lookup),
+              tone: NestBannerTone.danger,
+              actionLabel: AppCopy.retry,
+              onAction: controller.retryLookup,
+            )
+          else
             NestBanner(
               message: failure == null
                   ? PremiumVoucherCopy.nothingWaitingFor(masked)

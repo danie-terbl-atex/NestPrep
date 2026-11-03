@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../data/premium_voucher_directory.dart';
 import 'premium_voucher_inbox.dart';
@@ -29,6 +30,7 @@ final class VoucherEmailController extends ChangeNotifier {
   bool _isBusy = false;
   bool _isLookingForPremium = false;
   AppFailure? _failure;
+  AppFailure? _lookupFailure;
   bool _emailInvalid = false;
   bool _codeIncomplete = false;
   bool _sendsUsedUp = false;
@@ -41,6 +43,7 @@ final class VoucherEmailController extends ChangeNotifier {
   bool get isBusy => _isBusy;
   bool get isLookingForPremium => _isLookingForPremium;
   AppFailure? get failure => _failure;
+  AppFailure? get lookupFailure => _lookupFailure;
   bool get emailInvalid => _emailInvalid;
   bool get codeIncomplete => _codeIncomplete;
   int get resendIn => _resendIn;
@@ -48,6 +51,13 @@ final class VoucherEmailController extends ChangeNotifier {
 
   static bool looksLikeEmail(String email) =>
       _emailPattern.hasMatch(email.trim());
+
+  static String masked(String email) {
+    final normal = email.trim().toLowerCase();
+    final at = normal.lastIndexOf('@');
+    return '${normal.isEmpty ? '' : normal.substring(0, 1)}***@'
+        '${normal.substring(at + 1)}';
+  }
 
   Future<void> send(String email) async {
     if (_isBusy) return;
@@ -94,6 +104,11 @@ final class VoucherEmailController extends ChangeNotifier {
     }
   }
 
+  Future<void> retryLookup() async {
+    if (_step != VoucherEmailStep.confirmed || _isLookingForPremium) return;
+    await _lookUp();
+  }
+
   void useAnotherEmail() {
     _ticker?.cancel();
     _resendIn = 0;
@@ -126,7 +141,7 @@ final class VoucherEmailController extends ChangeNotifier {
       if (failure.problem == PremiumVoucherProblem.emailAlreadyVerified) {
         _isBusy = false;
         _failure = failure;
-        _emailMasked = _email;
+        _emailMasked = masked(_email);
         await _confirm();
         return;
       }
@@ -145,9 +160,17 @@ final class VoucherEmailController extends ChangeNotifier {
     _ticker?.cancel();
     _resendIn = 0;
     _step = VoucherEmailStep.confirmed;
+    await _lookUp();
+  }
+
+  Future<void> _lookUp() async {
     _isLookingForPremium = true;
+    _lookupFailure = null;
     _notify();
     await _inbox.refresh();
+    if (_inbox.vouchers case AsyncFailure(:final failure)) {
+      _lookupFailure = failure;
+    }
     _isLookingForPremium = false;
     _notify();
   }

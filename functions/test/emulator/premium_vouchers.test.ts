@@ -6,6 +6,14 @@ import { EMULATOR_PEPPER } from '../../src/premium_vouchers/premium_config';
 import { voidVoucher } from '../../src/premium_vouchers/void_voucher';
 import { issueVouchers } from '../../src/premium_vouchers/issue_vouchers';
 import { tokenHashOf } from '../../src/premium_vouchers/premium_hashes';
+import { firestoreChallenges } from '../../src/premium_vouchers/email_challenges';
+import { sendEmailCode, verifyEmailCode } from '../../src/premium_vouchers/email_code';
+import { EmailNotSent } from '../../src/premium_vouchers/email_sender';
+import {
+  type RateLimitRule,
+  consumeRateLimit,
+  isWithinRateLimit,
+} from '../../src/shared/rate_limit';
 import { EMULATOR_EMAIL_CODE } from '../../src/premium_vouchers/voucher_runtime';
 import {
   CallFailed,
@@ -221,7 +229,7 @@ describe('a Premium code, redeemed on the web and claimed in the app', () => {
     });
     expect(first.cacheControl).toBe('no-store');
     const again = await redeemOnTheWeb(' THANDI30 ', family.admin.email.toUpperCase());
-    expect(again.body).toEqual({ result: 'alreadyRedeemed', days: 30, label: 'Launch readers' });
+    expect(again.body).toEqual(first.body);
     expect((await read(`premiumCodes/${codeHash}`))['claimCount']).toBe(0);
 
     const voucherId = await codeVoucherOf(codeHash, family.admin.email);
@@ -485,13 +493,14 @@ describe('the web page’s answers', () => {
     });
   });
 
-  it('stop answering one address after thirty tries in a quarter hour', async () => {
+  it('stop answering one address’s gift lookups after sixty in a quarter hour', async () => {
     const answers: number[] = [];
-    for (let attempt = 0; attempt < 31; attempt += 1) {
+    for (let attempt = 0; attempt < 61; attempt += 1) {
       answers.push((await onTheWeb('/gift/lookup', { token: 'C'.repeat(43) })).status);
     }
-    expect(answers.slice(0, 30).every((status) => status === 404)).toBe(true);
-    expect(answers[30]).toBe(429);
+    expect(answers.slice(0, 60).every((status) => status === 404)).toBe(true);
+    expect(answers[60]).toBe(429);
+    expect((await redeemOnTheWeb('NOPE-NOPE', 'x@nestprep.test')).status).toBe(404);
   });
 });
 
@@ -659,5 +668,200 @@ describe('the store’s two endpoints', () => {
       expect(response.status, name).toBe(403);
       expect(await response.json()).toEqual({ error: 'forbidden' });
     }
+  });
+});
+
+describe('nobody can guess at a code that was never sent (R-01)', () => {
+  beforeEach(clearFirestore);
+
+  it('leaves no live challenge after tooManyCodes', async () => {
+    const target = 'guarded@nestprep.test';
+    for (let sender = 0; sender < 5; sender += 1) {
+      await callAs(await signUp(), 'sendVoucherEmailCode', { email: target });
+    }
+    const attacker = await signUp();
+    await expectRefusal(
+      callAs(attacker, 'sendVoucherEmailCode', { email: target }),
+      'tooManyCodes',
+    );
+    expect((await adminDb().doc(`premiumEmailChallenges/${attacker.uid}`).get()).exists).toBe(
+      false,
+    );
+    await expectRefusal(
+      callAs(attacker, 'verifyVoucherEmailCode', { email: target, code: '000000' }),
+      'emailCodeExpired',
+    );
+    await expectRefusal(
+      callAs(attacker, 'verifyVoucherEmailCode', { email: target, code: EMULATOR_EMAIL_CODE }),
+      'emailCodeExpired',
+    );
+  });
+
+  it('leaves no live challenge when the email is not accepted', async () => {
+    const user = await signUp();
+    const store = adminDb();
+    const now = new Date();
+    const deps = {
+      challenges: firestoreChallenges(store),
+      provenHashes: async (): Promise<string[]> => Promise.resolve([]),
+      pepper: EMULATOR_PEPPER,
+      sender: {
+        send: async (): Promise<void> => {
+          await Promise.resolve();
+          throw new EmailNotSent('status 500');
+        },
+      },
+      newCode: (): string => '424242',
+      consume: (rule: RateLimitRule, subject: string): Promise<boolean> =>
+        consumeRateLimit(store, rule, subject, now),
+      isWithin: (rule: RateLimitRule, subject: string): Promise<boolean> =>
+        isWithinRateLimit(store, rule, subject, now),
+      now,
+    };
+    await expect(sendEmailCode(deps, user.uid, 'bounce@nestprep.test')).rejects.toMatchObject({
+      code: 'unavailable',
+    });
+    expect((await store.doc(`premiumEmailChallenges/${user.uid}`).get()).exists).toBe(false);
+    await expect(
+      verifyEmailCode(deps, user.uid, { email: 'bounce@nestprep.test', code: '424242' }),
+    ).rejects.toMatchObject({ details: { reason: 'emailCodeExpired' } });
+  });
+
+  it('holds one address to ten tries an hour across every account', async () => {
+    const target = 'many-tries@nestprep.test';
+    for (let round = 0; round < 2; round += 1) {
+      const guesser = await signUp();
+      await callAs(guesser, 'sendVoucherEmailCode', { email: target });
+      for (let tried = 0; tried < 5; tried += 1) {
+        await expectRefusal(
+          callAs(guesser, 'verifyVoucherEmailCode', { email: target, code: '999999' }),
+          'emailCodeWrong',
+        );
+      }
+    }
+    const owner = await signUp();
+    await callAs(owner, 'sendVoucherEmailCode', { email: target });
+    await expectRefusal(
+      callAs(owner, 'verifyVoucherEmailCode', { email: target, code: EMULATOR_EMAIL_CODE }),
+      'emailCodeTooManyTries',
+    );
+    expect((await adminDb().doc(`users/${owner.uid}/private/verifiedEmails`).get()).exists).toBe(
+      false,
+    );
+  });
+
+  it('lets nobody without a challenge spend an address’s tries', async () => {
+    const target = 'owner-only@nestprep.test';
+    const stranger = await signUp();
+    for (let call = 0; call < 20; call += 1) {
+      await expectRefusal(
+        callAs(stranger, 'verifyVoucherEmailCode', { email: target, code: '000000' }),
+        'emailCodeExpired',
+      );
+    }
+    const owner = await signUp();
+    await callAs(owner, 'sendVoucherEmailCode', { email: target });
+    expect(
+      await callAs(owner, 'verifyVoucherEmailCode', { email: target, code: EMULATOR_EMAIL_CODE }),
+    ).toEqual({ verified: true, emailMasked: 'o***@nestprep.test' });
+  });
+
+  it('caps one account at ten codes a day, whatever the hour', async () => {
+    const user = await signUp();
+    for (let sent = 0; sent < 10; sent += 1) {
+      await adminDb().doc(`premiumEmailChallenges/${user.uid}`).delete();
+      await callAs(user, 'sendVoucherEmailCode', { email: `day${String(sent)}@nestprep.test` });
+    }
+    await adminDb().doc(`premiumEmailChallenges/${user.uid}`).delete();
+    await expectRefusal(
+      callAs(user, 'sendVoucherEmailCode', { email: 'day10@nestprep.test' }),
+      'tooManyCodes',
+    );
+  });
+});
+
+describe('the redeem page answers the same for a first and a repeat redemption (R-11)', () => {
+  beforeEach(clearFirestore);
+
+  it('spends an email’s limit only on refusals', async () => {
+    await aCode('REPEAT-ME');
+    const email = 'repeat@nestprep.test';
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      expect((await redeemOnTheWeb('REPEAT-ME', email)).body['result']).toBe('redeemed');
+    }
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      expect((await redeemOnTheWeb('WRONG-CODE', email)).body).toEqual({ error: 'codeUnknown' });
+    }
+    expect((await redeemOnTheWeb('REPEAT-ME', email)).body).toEqual({ error: 'tooManyTries' });
+    expect((await redeemOnTheWeb('REPEAT-ME', 'other@nestprep.test')).body['result']).toBe(
+      'redeemed',
+    );
+  });
+
+  it('refuses a paused code to an email that redeemed it, as to anybody', async () => {
+    const codeHash = await aCode('THEN-PAUSED');
+    await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test');
+    await adminDb().doc(`premiumCodes/${codeHash}`).update({ status: 'paused' });
+    expect((await redeemOnTheWeb('THEN-PAUSED', 'early@nestprep.test')).body).toEqual({
+      error: 'codePaused',
+    });
+    expect((await redeemOnTheWeb('THEN-PAUSED', 'never@nestprep.test')).body).toEqual({
+      error: 'codePaused',
+    });
+  });
+});
+
+describe('a gift link moves its Premium at most five times (R-10)', () => {
+  beforeEach(clearFirestore);
+
+  it('then refuses voucherReassignLimit and keeps the last email', async () => {
+    const { voucherId, token } = await aFrameVoucher('first@nestprep.test');
+    for (let move = 1; move <= 5; move += 1) {
+      expect(
+        (await onTheWeb('/gift/reassign', { token, email: `move${String(move)}@nestprep.test` }))
+          .status,
+      ).toBe(200);
+    }
+    expect(await onTheWeb('/gift/reassign', { token, email: 'sixth@nestprep.test' })).toMatchObject(
+      { status: 409, body: { error: 'voucherReassignLimit' } },
+    );
+    const stored = await read(`premiumVouchers/${voucherId}`);
+    expect(stored['reassignCount']).toBe(5);
+    expect(stored['emailMasked']).toBe('m***@nestprep.test');
+    expect(stored['reassignedAt']).toBeInstanceOf(Timestamp);
+  });
+});
+
+describe('a household with hundreds of grants (R-13)', () => {
+  beforeEach(clearFirestore);
+
+  it('composes every one of them, the oldest included', async () => {
+    const family = await aFamily();
+    const grants = adminDb().collection(`households/${family.householdId}/premiumGrants`);
+    const long = Timestamp.fromMillis(Date.now() - 400 * DAY_MS);
+    await grants
+      .doc('oldest')
+      .set({ source: 'frame', days: 3650, grantedAt: long, startsAt: long });
+    for (let start = 0; start < 220; start += 110) {
+      const batch = adminDb().batch();
+      for (let index = start; index < start + 110; index += 1) {
+        const at = Timestamp.fromMillis(Date.now() - (300 - index) * DAY_MS);
+        batch.set(grants.doc(`tiny-${String(index)}`), {
+          source: 'referral',
+          days: 1,
+          grantedAt: at,
+          startsAt: at,
+        });
+      }
+      await batch.commit();
+    }
+    const { voucherId } = await aFrameVoucher(family.admin.email);
+
+    const answer = await claim(family.admin, voucherId, family.householdId);
+
+    expect(answer.queued).toBe(true);
+    const entitlement = await read(`households/${family.householdId}/entitlement/current`);
+    expect(isAbout(entitlement['grantUntil'], 3650 - 400 + 93)).toBe(true);
+    expect(entitlement['grantDaysWaiting']).toEqual({ referral: 0, frame: 93, code: 0 });
   });
 });

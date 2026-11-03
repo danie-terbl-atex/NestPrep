@@ -1,6 +1,7 @@
 import {
   type DocumentReference,
   type Firestore,
+  type QueryDocumentSnapshot,
   Timestamp,
   type Transaction,
 } from 'firebase-admin/firestore';
@@ -30,8 +31,8 @@ import {
  */
 export const PREMIUM_GRANTS = 'premiumGrants';
 
-/** How many grants one restatement reads, newest first — eight years at the yearly cap. */
-export const GRANTS_PER_HOUSEHOLD = 50;
+export const GRANTS_PER_PAGE = 200;
+export const GRANTS_WORTH_A_LOOK = 500;
 
 export const GRANT_SOURCES = ['referral', 'frame', 'code'] as const;
 export type GrantSource = (typeof GRANT_SOURCES)[number];
@@ -172,16 +173,26 @@ async function readGrants(
   store: Firestore,
   householdId: string,
 ): Promise<StoredPremiumGrant[]> {
-  const snapshot = await transaction.get(
-    householdRef(store, householdId)
-      .collection(PREMIUM_GRANTS)
-      .orderBy('grantedAt', 'desc')
-      .limit(GRANTS_PER_HOUSEHOLD),
-  );
-  if (snapshot.size === GRANTS_PER_HOUSEHOLD) {
-    logger.error('premium grants truncated', { householdId, limit: GRANTS_PER_HOUSEHOLD });
+  const grants = householdRef(store, householdId)
+    .collection(PREMIUM_GRANTS)
+    .orderBy('grantedAt', 'desc')
+    .limit(GRANTS_PER_PAGE);
+  const docs: QueryDocumentSnapshot[] = [];
+  let page = await transaction.get(grants);
+  docs.push(...page.docs);
+  while (page.size === GRANTS_PER_PAGE) {
+    const last = page.docs[page.docs.length - 1];
+    if (last === undefined) break;
+    page = await transaction.get(grants.startAfter(last));
+    docs.push(...page.docs);
   }
-  return snapshot.docs.flatMap((doc) => {
+  if (docs.length > GRANTS_WORTH_A_LOOK) {
+    logger.error('household holds an unusual number of premium grants', {
+      householdId,
+      grants: docs.length,
+    });
+  }
+  return docs.flatMap((doc) => {
     const parsed = storedGrant.safeParse(doc.data());
     if (!parsed.success) {
       // A grant this build cannot read gives nothing rather than guessing.

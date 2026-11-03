@@ -5,6 +5,9 @@ import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/model/household.dart';
+import 'package:nestprep/features/subscriptions/model/billing_store.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
 import 'package:nestprep/features/subscriptions/model/premium_voucher.dart';
 import 'package:nestprep/features/subscriptions/ui/premium_voucher_sheet.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
@@ -80,10 +83,11 @@ void main() {
     List<PremiumVoucher> waiting = const [frame],
     List<String>? householdIds,
     AppFailure? householdsFail,
+    Entitlement entitlement = Entitlement.free,
     Brightness brightness = Brightness.light,
     double textScale = 1,
   }) async {
-    premium = SubscriptionHarness();
+    premium = SubscriptionHarness(entitlement: entitlement);
     premium.vouchers.waiting = [...waiting];
     households = FakeHouseholdRepository()
       ..storedHouseholds.addAll({gran.id: gran, helping.id: helping})
@@ -165,18 +169,34 @@ void main() {
     expect(find.text('30 days of Premium waiting for you'), findsOneWidget);
   });
 
-  testWidgets('a paying household hears that it starts when paid time ends', (
-    tester,
-  ) async {
-    await openSheet(tester);
-    premium.vouchers.queued = true;
-    await claim(tester, frame);
-    expect(
-      find.text(PremiumVoucherCopy.addedQueued('The Parkers')),
-      findsOneWidget,
-    );
-    expect(find.text(PremiumVoucherCopy.added('The Parkers')), findsNothing);
-  });
+  final paying = Entitlement(
+    premiumUntil: DateTime.now().toUtc().add(const Duration(days: 30)),
+    storeUntil: DateTime.now().toUtc().add(const Duration(days: 30)),
+    status: EntitlementStatus.active,
+    store: BillingStore.playStore,
+    willRenew: true,
+  );
+  final givenOnly = Entitlement(
+    premiumUntil: DateTime.now().toUtc().add(const Duration(days: 93)),
+    grantUntil: DateTime.now().toUtc().add(const Duration(days: 93)),
+  );
+
+  for (final (label, entitlement) in [
+    ('a paying household', paying),
+    ('a free household already on frame Premium', givenOnly),
+  ]) {
+    testWidgets('$label hears it starts when its Premium now ends, and no '
+        'subscription is mentioned', (tester) async {
+      await openSheet(tester, entitlement: entitlement);
+      premium.vouchers.queued = true;
+      await claim(tester, frame);
+      final queued = PremiumVoucherCopy.addedQueued('The Parkers');
+      expect(find.text(queued), findsOneWidget);
+      expect(queued, contains('the Premium you have now ends'));
+      expect(queued.toLowerCase(), isNot(contains('subscription')));
+      expect(find.text(PremiumVoucherCopy.added('The Parkers')), findsNothing);
+    });
+  }
 
   testWidgets('several households: only family ones, and the one chosen', (
     tester,
@@ -239,6 +259,10 @@ void main() {
       ),
       const HouseholdFailure(HouseholdProblem.notAMember),
       const HouseholdFailure(HouseholdProblem.householdNotFound),
+      const HouseholdFailure(HouseholdProblem.notSignedIn),
+      const SessionExpiredFailure(),
+      const PermissionDeniedFailure(),
+      UnknownFailure(StateError('a newer server')),
       const UnavailableFailure(),
     ];
 

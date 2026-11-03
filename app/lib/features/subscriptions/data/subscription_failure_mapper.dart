@@ -7,8 +7,8 @@ import '../model/premium_feature.dart';
 /// Translates a subscriptions callable's refusal — `getSubscriptionOffer`,
 /// `verifyPurchase`, `setChildProfile` and the Premium voucher callables —
 /// into an `AppFailure`, by the `reason` the Function put in its details
-/// (`BE-04`, subscriptions ADR-0001, ADR-0003). The free tier's limit carries the feature it was reached on,
-/// so the paywall can open on it.
+/// (`BE-04`, subscriptions ADR-0001, ADR-0003). The free tier's limit
+/// carries the feature it was reached on, so the paywall can open on it.
 AppFailure failureFromSubscriptionCallable(FirebaseFunctionsException error) {
   AppLog.failure('subscriptions callable', code: error.code, error: error);
   final details = error.details;

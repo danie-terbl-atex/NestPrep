@@ -317,9 +317,11 @@ void main() {
     '_makeCode()',
     '_recordOpening()',
     // Premium from a frame order or a gift (subscriptions ADR-0003): the sheet
-    // shows every refusal on the voucher or the field it belongs to, and
-    // reading the account's households catches its own AppFailure into the
-    // choice's failed state.
+    // shows every refusal on the voucher or the field it belongs to. Reading
+    // the account's other households catches its own AppFailure and falls
+    // back to the current household when the viewer is family there;
+    // otherwise the choice holds the failure and the sheet says only a
+    // parent can add Premium.
     'showPremiumVoucherSheet(context',
     '_loadHouseholds(current',
     // Plan my week finding where the shop is (lunch-box ADR-0012): it
