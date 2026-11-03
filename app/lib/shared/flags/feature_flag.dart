@@ -46,6 +46,10 @@ enum FeatureFlag {
   /// Give a month, get a month (subscriptions ADR-0002).
   referralRewards('referralRewards'),
 
+  /// Claiming Premium from a frame order or a gift, and proving an email for
+  /// it (subscriptions ADR-0003, ADR-0004).
+  premiumVouchers('premiumVouchers'),
+
   // ---- lunch-box V2 (lunch-box ADR-0005 to ADR-0007) ----
 
   /// What is in the house, and planning the week from it (lunch-box

@@ -4,6 +4,7 @@ import 'package:nestprep/features/referrals/model/referral_line.dart';
 import 'package:nestprep/features/referrals/model/referral_reward.dart';
 import 'package:nestprep/features/referrals/model/referral_side.dart';
 import 'package:nestprep/features/referrals/model/referral_status.dart';
+import 'package:nestprep/features/subscriptions/model/grant_source.dart';
 
 import 'model_fixtures.dart';
 
@@ -30,6 +31,7 @@ List<ModelFixture> referralModelFixtures(DateTime at) {
   final grant = PremiumGrant(
     id: 'referral-entry-1',
     days: 30,
+    source: GrantSource.referral,
     grantedAt: at,
     startsAt: at,
   );
@@ -68,7 +70,7 @@ List<ModelFixture> referralModelFixtures(DateTime at) {
       value: grant,
       toJson: grant.toJson,
       fromJson: PremiumGrant.fromJson,
-      keys: const {'days', 'grantedAt', 'startsAt'},
+      keys: const {'days', 'grantedAt', 'startsAt', 'source'},
       note: writtenBy,
     ),
   ];

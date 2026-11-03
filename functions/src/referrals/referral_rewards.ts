@@ -14,7 +14,7 @@ import {
   historyEntryId,
   referralGrantId,
 } from './referral_documents';
-import { REFERRAL_REWARD_DAYS, isUnderYearlyCap } from './referral_policy';
+import { REFERRAL_REWARD_DAYS, isUnderYearlyCap, referralGrantDates } from './referral_policy';
 
 /**
  * Paying out a referral that qualified: a thirty-day grant to each side that
@@ -85,13 +85,11 @@ function stageReward(
   side: RewardSide,
   now: Date,
 ): ReferralReward {
-  // Every grant is a referral's today (`GRANT_SOURCES`); a second source
-  // decides in its own ADR whether it counts against this cap.
-  const given = side.premium.grants.map((grant) => grant.grantedAt);
-  if (!isUnderYearlyCap(given, now)) return 'capped';
+  if (!isUnderYearlyCap(referralGrantDates(side.premium.grants), now)) return 'capped';
 
   const grant: PremiumGrant = {
     id: referralGrantId(historyEntryId(side.referredId, side.side)),
+    source: 'referral',
     days: REFERRAL_REWARD_DAYS,
     grantedAt: now,
     startsAt: null,

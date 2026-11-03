@@ -21,8 +21,8 @@ import {
 import {
   REGISTER_OVERALL,
   REGISTER_PER_ADDRESS,
-  callerAddress,
 } from '../../../src/assistants/auth/auth_rate_limits';
+import { callerAddress } from '../../../src/shared/client_address';
 import { checkFreshSignIn } from '../../../src/assistants/auth/fresh_sign_in';
 import {
   isAllowedRedirect,

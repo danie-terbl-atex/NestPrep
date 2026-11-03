@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
-import '../../../shared/copy/referral_copy.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../model/entitlement.dart';
 import '../model/entitlement_status.dart';
@@ -65,13 +64,6 @@ class PlanStatusCard extends StatelessWidget {
           ),
           const SizedBox(height: NestSpace.md),
           Text(detail, style: nest.text.body),
-          if (entitlement.referralMonthsWaiting > 0 && isPremium) ...[
-            const SizedBox(height: NestSpace.sm),
-            Text(
-              ReferralCopy.waiting(entitlement.referralMonthsWaiting),
-              style: nest.text.caption,
-            ),
-          ],
           if (buyer != null &&
               entitlement.status != EntitlementStatus.none) ...[
             const SizedBox(height: NestSpace.sm),

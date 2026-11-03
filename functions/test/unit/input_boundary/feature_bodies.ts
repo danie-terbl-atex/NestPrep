@@ -21,6 +21,12 @@ import { lunchPhotoInput } from '../../../src/lunch_photos/schemas';
 import { recordPaywallOpenedInput } from '../../../src/product_analytics/record_paywall_opened';
 import { ensureReferralCodeInput, redeemReferralCodeInput } from '../../../src/referrals/schemas';
 import {
+  claimPremiumVoucherInput,
+  premiumVouchersForMeInput,
+  sendVoucherEmailCodeInput,
+  verifyVoucherEmailCodeInput,
+} from '../../../src/premium_vouchers/schemas';
+import {
   setChildProfileInput,
   subscriptionOfferInput,
   verifyPurchaseInput,
@@ -201,6 +207,16 @@ export const featureBodies = {
   redeemReferralCode: {
     schema: redeemReferralCodeInput,
     body: { householdId: 'h1', code: 'ABCD2345' },
+  },
+  premiumVouchersForMe: { schema: premiumVouchersForMeInput, body: {} },
+  claimPremiumVoucher: {
+    schema: claimPremiumVoucherInput,
+    body: { voucherId: 'order-1_1', householdId: 'h1' },
+  },
+  sendVoucherEmailCode: { schema: sendVoucherEmailCodeInput, body: { email: 'sam@example.com' } },
+  verifyVoucherEmailCode: {
+    schema: verifyVoucherEmailCodeInput,
+    body: { email: 'sam@example.com', code: '123456' },
   },
   recordPaywallOpened: {
     schema: recordPaywallOpenedInput,

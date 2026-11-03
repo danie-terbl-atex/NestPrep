@@ -602,6 +602,29 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ==== rules/firestore/root/premium_vouchers.rules ====
+    // ---- Premium vouchers and Premium codes (subscriptions ADR-0003, ADR-0004) ----
+
+    match /premiumVouchers/{voucherId} {
+      allow read, write: if false;
+    }
+
+    match /premiumCodes/{codeHash} {
+      allow read, write: if false;
+    }
+
+    match /premiumCodes/{codeHash}/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /premiumEmailChallenges/{uid} {
+      allow read, write: if false;
+    }
+
+    match /users/{userId}/private/{document=**} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/product_analytics.rules ====
     // ---- product analytics (product-analytics ADR-0001) ----
     // The per-household ledgers are written by Functions alone and read by the
@@ -3565,6 +3588,13 @@ service cloud.firestore {
             && data.alerts.leave is bool
             && isServerTime('updatedAt');
         }
+      }
+
+      // ==== rules/firestore/household/premium_vouchers.rules ====
+      // ---- Premium vouchers: how a household came to NestPrep (subscriptions ADR-0003) ----
+
+      match /private/{document=**} {
+        allow read, write: if false;
       }
 
       // ==== rules/firestore/household/referrals.rules ====

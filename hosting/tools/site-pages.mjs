@@ -31,6 +31,8 @@ export const COPIED_ASSETS = [
   ['hosting/src/delete-account.js', 'assets/delete-account.js'],
   ['hosting/src/invite.js', 'assets/invite.js'],
   ['hosting/src/connect.js', 'assets/connect.js'],
+  ['hosting/src/premium.js', 'assets/premium.js'],
+  ['hosting/src/redeem.js', 'assets/redeem.js'],
   ['hosting/src/connect-config.json', 'assets/connect-config.json'],
   ['hosting/src/well-known/assetlinks.json', 'well-known/assetlinks.json'],
 ];
@@ -97,6 +99,26 @@ const PAGES = [
       `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-auth-compat.js" defer></script>`,
       '    <script src="/assets/connect.js" defer></script>',
     ].join('\n'),
+  },
+  {
+    source: 'hosting/src/pages/premium.html',
+    output: 'premium/index.html',
+    title: 'Your Premium — NestPrep',
+    description: 'NestPrep Premium waiting for you.',
+    nav: '',
+    robots: 'noindex',
+    head: [
+      '    <meta name="referrer" content="no-referrer" />',
+      '    <script src="/assets/premium.js" defer></script>',
+    ].join('\n'),
+  },
+  {
+    source: 'hosting/src/pages/redeem.html',
+    output: 'redeem/index.html',
+    title: 'Redeem a Premium code — NestPrep',
+    description: 'Redeem a NestPrep Premium code, then add the Premium to your household in the app.',
+    nav: '',
+    head: '    <script src="/assets/redeem.js" defer></script>',
   },
   {
     source: 'hosting/src/pages/404.html',

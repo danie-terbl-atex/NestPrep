@@ -29,6 +29,7 @@ export const FEATURE_FLAGS = [
   'nannyOffline',
   // ---- referrals: give a month, get a month (subscriptions ADR-0002) ----
   'referralRewards',
+  'premiumVouchers',
   // lunch-box V2 (lunch-box ADR-0005 to ADR-0007) — client-side switches; the
   // rules hold a kid to approved options and budget writes to premium
   // whatever they say.

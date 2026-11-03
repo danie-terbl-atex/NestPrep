@@ -198,6 +198,7 @@ export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
           storeUntil: null,
           referralUntil: until,
           referralDaysWaiting: 0,
+          grantDaysWaiting: { referral: 0, frame: 0, code: 0 },
           referralFrom: new Date(),
         },
       ),

@@ -1,0 +1,21 @@
+// ---- Premium vouchers and Premium codes (subscriptions ADR-0003, ADR-0004) ----
+
+match /premiumVouchers/{voucherId} {
+  allow read, write: if false;
+}
+
+match /premiumCodes/{codeHash} {
+  allow read, write: if false;
+}
+
+match /premiumCodes/{codeHash}/{document=**} {
+  allow read, write: if false;
+}
+
+match /premiumEmailChallenges/{uid} {
+  allow read, write: if false;
+}
+
+match /users/{userId}/private/{document=**} {
+  allow read, write: if false;
+}

@@ -1,3 +1,5 @@
+import type { GrantSource } from './household_premium';
+
 /**
  * How a household's premium is composed from what a store sold it and what
  * it was given (subscriptions ADR-0002). Pure: the transaction that restates
@@ -13,11 +15,14 @@
  */
 export interface PremiumGrant {
   readonly id: string;
+  readonly source: GrantSource;
   readonly days: number;
   readonly grantedAt: Date;
   /** When it began running, or null while it waits. Written once, never moved. */
   readonly startsAt: Date | null;
 }
+
+export type DaysBySource = Readonly<Record<GrantSource, number>>;
 
 export interface PremiumSources {
   /** Premium from the stores alone (subscriptions ADR-0001), or null. */
@@ -38,6 +43,7 @@ export interface ComposedPremium {
   readonly referralUntil: Date | null;
   /** Days granted that have not begun, queued after everything else. */
   readonly referralDaysWaiting: number;
+  readonly grantDaysWaiting: DaysBySource;
   /** The instant those waiting days begin: now, or when current cover ends. */
   readonly referralFrom: Date;
   /** Grants that have begun since the last restatement, and when. */
@@ -59,6 +65,7 @@ export function composePremium(sources: PremiumSources, now: Date): ComposedPrem
   const covered = latest([sources.storeUntil, grantsEnd]);
   const referralFrom = latest([covered, now]) ?? now;
   const referralDaysWaiting = waiting.reduce((total, grant) => total + grant.days, 0);
+  const grantDaysWaiting = daysBySource(waiting);
 
   if (referralDaysWaiting > 0) {
     const until = endOf(referralFrom, referralDaysWaiting);
@@ -67,6 +74,7 @@ export function composePremium(sources: PremiumSources, now: Date): ComposedPrem
       storeUntil: sources.storeUntil,
       referralUntil: until,
       referralDaysWaiting,
+      grantDaysWaiting,
       referralFrom,
       started,
     };
@@ -76,9 +84,16 @@ export function composePremium(sources: PremiumSources, now: Date): ComposedPrem
     storeUntil: sources.storeUntil,
     referralUntil: isAfter(grantsEnd, now) ? grantsEnd : null,
     referralDaysWaiting: 0,
+    grantDaysWaiting,
     referralFrom,
     started,
   };
+}
+
+function daysBySource(grants: readonly PremiumGrant[]): DaysBySource {
+  const days: Record<GrantSource, number> = { referral: 0, frame: 0, code: 0 };
+  for (const grant of grants) days[grant.source] += grant.days;
+  return days;
 }
 
 /**

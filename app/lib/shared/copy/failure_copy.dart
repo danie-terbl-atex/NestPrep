@@ -5,6 +5,7 @@ import 'checkers_copy.dart';
 import 'kid_copy.dart';
 import 'pnp_copy.dart';
 import 'points_copy.dart';
+import 'premium_voucher_copy.dart';
 import 'subscription_copy.dart';
 
 /// The words for every `AppFailure` (`FE-09`): a screen never shows an
@@ -39,6 +40,7 @@ abstract final class FailureCopy {
     PremiumRequiredFailure(:final feature) => SubscriptionCopy.premiumRequired(
       feature,
     ),
+    final PremiumVoucherFailure failure => PremiumVoucherCopy.problem(failure),
     // AI and snap a school letter (foundation ADR-0015, calendar ADR-0005).
     AiFailure(:final problem) => AiCopy.problem(problem),
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),

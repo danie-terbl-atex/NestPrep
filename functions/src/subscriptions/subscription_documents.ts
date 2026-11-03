@@ -91,6 +91,8 @@ export function entitlementFields(
     referralUntil: timestampOrNull(composed.referralUntil),
     referralDaysWaiting: composed.referralDaysWaiting,
     referralFrom: Timestamp.fromDate(composed.referralFrom),
+    grantUntil: timestampOrNull(composed.referralUntil),
+    grantDaysWaiting: { ...composed.grantDaysWaiting },
     status: entitlement.status,
     plan: entitlement.plan,
     store: entitlement.store,

@@ -1,0 +1,100 @@
+      <div class="wrap wrap--prose">
+        <h1>Your NestPrep Premium</h1>
+
+        <noscript>
+          <div class="notice notice--info">
+            <p>
+              This page needs JavaScript to show your Premium. You can also sign in to the NestPrep
+              app with the email you ordered with, and add the Premium to your household there.
+            </p>
+          </div>
+        </noscript>
+
+        <div id="gift-status" role="status" aria-live="polite" tabindex="-1">
+          <p data-state="loading" hidden>Looking up your Premium…</p>
+          <section class="panel panel--accent premium-panel" data-state="waiting" hidden>
+            <h2 id="gift-amount"></h2>
+            <p>
+              From your <span id="gift-frame">frame</span> order, waiting for
+              <strong id="gift-email"></strong>.
+            </p>
+            <p>Sign in to the NestPrep app with this email and add it to your household.</p>
+          </section>
+          <div class="notice notice--success" data-state="claimed" hidden>
+            <h2>This Premium is already in a household</h2>
+            <p>
+              Somebody has added it to their household in the NestPrep app. If that was you, you
+              can see it under <strong>Plan &amp; billing</strong>.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="void" hidden>
+            <h2>This Premium was cancelled</h2>
+            <p>
+              This usually means the order was refunded or cancelled. If that does not sound right,
+              reply to your order email and we will look into it.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="notFound" hidden>
+            <p>
+              We cannot find any Premium for this link. Open the link from your order email again,
+              and check that all of it was copied.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="tooMany" hidden>
+            <p>We have had a lot of tries from here just now. Please wait a few minutes and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="unavailable" hidden>
+            <p>We could not look up your Premium just now. Please try again in a few minutes.</p>
+            <p><button class="button button--quiet" type="button" data-retry>Try again</button></p>
+          </div>
+          <div class="notice notice--error" data-state="offline" hidden>
+            <p>You seem to be offline. Connect to the internet and try again.</p>
+            <p><button class="button button--quiet" type="button" data-retry>Try again</button></p>
+          </div>
+        </div>
+
+        <form id="gift-form" class="panel premium-panel" aria-labelledby="gift-form-title" novalidate hidden>
+          <h2 id="gift-form-title">Send it to a different email</h2>
+          <p>
+            Use this if the email above is wrong, or if somebody else should have it. Whoever signs
+            in to NestPrep with the new email can add it to their household. You can change it again
+            from this link until somebody does.
+          </p>
+          <div id="gift-form-status" role="status" aria-live="polite" tabindex="-1">
+            <div class="notice notice--success" data-state="sent" hidden>
+              <p>
+                Done. It is now waiting for <strong id="gift-sent-email"></strong>. Sign in to the
+                NestPrep app with that email and add it to your household.
+              </p>
+            </div>
+            <div class="notice notice--error" data-state="badEmail" hidden>
+              <p>That email address does not look right. Check it and try again.</p>
+            </div>
+            <div class="notice notice--error" data-state="tooMany" hidden>
+              <p>We have had a lot of tries from here just now. Please wait a few minutes and try again.</p>
+            </div>
+            <div class="notice notice--error" data-state="unavailable" hidden>
+              <p>We could not change the email just now. Please try again in a few minutes.</p>
+            </div>
+            <div class="notice notice--error" data-state="offline" hidden>
+              <p>You seem to be offline. Connect to the internet and try again.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="gift-new-email">The new email address</label>
+            <input
+              id="gift-new-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              maxlength="254"
+              required
+              aria-describedby="gift-new-email-hint"
+            />
+            <span class="hint" id="gift-new-email-hint">
+              The email they sign in to NestPrep with, or will.
+            </span>
+          </div>
+          <button class="button button--accent" type="submit" data-sending-label="Sending…">Send it to this email</button>
+        </form>
+      </div>

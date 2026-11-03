@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$PremiumGrant {
 
 @JsonKey(includeToJson: false) String get id; int get days;@InstantConverter() DateTime get grantedAt;/// When it began running, or null while it waits behind paid time.
-@NullableTimestampConverter() DateTime? get startsAt;
+@NullableTimestampConverter() DateTime? get startsAt;@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) GrantSource? get source;
 /// Create a copy of PremiumGrant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,20 +31,20 @@ $PremiumGrantCopyWith<PremiumGrant> get copyWith => _$PremiumGrantCopyWithImpl<P
 @override
 bool operator ==(Object other) {
   final _this = this as PremiumGrant;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumGrant&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.days, _this.days) || other.days == _this.days)&&(identical(other.grantedAt, _this.grantedAt) || other.grantedAt == _this.grantedAt)&&(identical(other.startsAt, _this.startsAt) || other.startsAt == _this.startsAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumGrant&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.days, _this.days) || other.days == _this.days)&&(identical(other.grantedAt, _this.grantedAt) || other.grantedAt == _this.grantedAt)&&(identical(other.startsAt, _this.startsAt) || other.startsAt == _this.startsAt)&&(identical(other.source, _this.source) || other.source == _this.source));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as PremiumGrant;
-  return Object.hash(runtimeType,_this.id,_this.days,_this.grantedAt,_this.startsAt);
+  return Object.hash(runtimeType,_this.id,_this.days,_this.grantedAt,_this.startsAt,_this.source);
 }
 
 @override
 String toString() {
   final _this = this as PremiumGrant;
-  return 'PremiumGrant(id: ${_this.id}, days: ${_this.days}, grantedAt: ${_this.grantedAt}, startsAt: ${_this.startsAt})';
+  return 'PremiumGrant(id: ${_this.id}, days: ${_this.days}, grantedAt: ${_this.grantedAt}, startsAt: ${_this.startsAt}, source: ${_this.source})';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $PremiumGrantCopyWith<$Res>  {
   factory $PremiumGrantCopyWith(PremiumGrant value, $Res Function(PremiumGrant) _then) = _$PremiumGrantCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, int days,@InstantConverter() DateTime grantedAt,@NullableTimestampConverter() DateTime? startsAt
+@JsonKey(includeToJson: false) String id, int days,@InstantConverter() DateTime grantedAt,@NullableTimestampConverter() DateTime? startsAt,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) GrantSource? source
 });
 
 
@@ -72,13 +72,14 @@ class _$PremiumGrantCopyWithImpl<$Res>
 
 /// Create a copy of PremiumGrant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? days = null,Object? grantedAt = null,Object? startsAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? days = null,Object? grantedAt = null,Object? startsAt = freezed,Object? source = freezed,}) {
   return _then(PremiumGrant(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,days: null == days ? _self.days : days // ignore: cast_nullable_to_non_nullable
 as int,grantedAt: null == grantedAt ? _self.grantedAt : grantedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,startsAt: freezed == startsAt ? _self.startsAt : startsAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as GrantSource?,
   ));
 }
 
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  GrantSource? source)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PremiumGrant() when $default != null:
-return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
+return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt,_that.source);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  GrantSource? source)  $default,) {final _that = this;
 switch (_that) {
 case _PremiumGrant():
-return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
+return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt,_that.source);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  int days, @InstantConverter()  DateTime grantedAt, @NullableTimestampConverter()  DateTime? startsAt, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  GrantSource? source)?  $default,) {final _that = this;
 switch (_that) {
 case _PremiumGrant() when $default != null:
-return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
+return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt,_that.source);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.id,_that.days,_that.grantedAt,_that.startsAt);case _:
 @JsonSerializable()
 
 class _PremiumGrant extends PremiumGrant {
-  const _PremiumGrant({@JsonKey(includeToJson: false) required this.id, required this.days, @InstantConverter() required this.grantedAt, @NullableTimestampConverter() this.startsAt}): super._();
+  const _PremiumGrant({@JsonKey(includeToJson: false) required this.id, required this.days, @InstantConverter() required this.grantedAt, @NullableTimestampConverter() this.startsAt, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.source}): super._();
   factory _PremiumGrant.fromJson(Map<String, dynamic> json) => _$PremiumGrantFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -227,6 +228,7 @@ class _PremiumGrant extends PremiumGrant {
 @override@InstantConverter() final  DateTime grantedAt;
 /// When it began running, or null while it waits behind paid time.
 @override@NullableTimestampConverter() final  DateTime? startsAt;
+@override@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) final  GrantSource? source;
 
 /// Create a copy of PremiumGrant
 /// with the given fields replaced by the non-null parameter values.
@@ -241,18 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PremiumGrant&&(identical(other.id, id) || other.id == id)&&(identical(other.days, days) || other.days == days)&&(identical(other.grantedAt, grantedAt) || other.grantedAt == grantedAt)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PremiumGrant&&(identical(other.id, id) || other.id == id)&&(identical(other.days, days) || other.days == days)&&(identical(other.grantedAt, grantedAt) || other.grantedAt == grantedAt)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.source, source) || other.source == source));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,days,grantedAt,startsAt);
+    return Object.hash(runtimeType,id,days,grantedAt,startsAt,source);
 }
 
 @override
 String toString() {
-    return 'PremiumGrant(id: $id, days: $days, grantedAt: $grantedAt, startsAt: $startsAt)';
+    return 'PremiumGrant(id: $id, days: $days, grantedAt: $grantedAt, startsAt: $startsAt, source: $source)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$PremiumGrantCopyWith<$Res> implements $PremiumGrantCopyWi
   factory _$PremiumGrantCopyWith(_PremiumGrant value, $Res Function(_PremiumGrant) _then) = __$PremiumGrantCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, int days,@InstantConverter() DateTime grantedAt,@NullableTimestampConverter() DateTime? startsAt
+@JsonKey(includeToJson: false) String id, int days,@InstantConverter() DateTime grantedAt,@NullableTimestampConverter() DateTime? startsAt,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) GrantSource? source
 });
 
 
@@ -280,13 +282,14 @@ class __$PremiumGrantCopyWithImpl<$Res>
 
 /// Create a copy of PremiumGrant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? days = null,Object? grantedAt = null,Object? startsAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? days = null,Object? grantedAt = null,Object? startsAt = freezed,Object? source = freezed,}) {
   return _then(_PremiumGrant(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,days: null == days ? _self.days : days // ignore: cast_nullable_to_non_nullable
 as int,grantedAt: null == grantedAt ? _self.grantedAt : grantedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,startsAt: freezed == startsAt ? _self.startsAt : startsAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as GrantSource?,
   ));
 }
 

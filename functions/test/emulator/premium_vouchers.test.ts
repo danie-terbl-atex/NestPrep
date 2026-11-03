@@ -1,0 +1,663 @@
+import { Timestamp } from 'firebase-admin/firestore';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+
+import { claimVoucher } from '../../src/premium_vouchers/claim_voucher';
+import { EMULATOR_PEPPER } from '../../src/premium_vouchers/premium_config';
+import { voidVoucher } from '../../src/premium_vouchers/void_voucher';
+import { issueVouchers } from '../../src/premium_vouchers/issue_vouchers';
+import { tokenHashOf } from '../../src/premium_vouchers/premium_hashes';
+import { EMULATOR_EMAIL_CODE } from '../../src/premium_vouchers/voucher_runtime';
+import {
+  CallFailed,
+  adminDb,
+  callAs,
+  clearFirestore,
+  closeAdmin,
+  httpFunctionUrl,
+  signUp,
+} from './emulator_harness';
+import { createHousehold, expectRefusal } from './product_analytics_fixture';
+import {
+  aCode,
+  aFrameVoucher,
+  aGrantIn,
+  aPaidSubscription,
+  claim,
+  codeVoucherOf,
+  onTheWeb,
+  redeemOnTheWeb,
+  vouchersFor,
+} from './premium_vouchers_fixture';
+import { DAY_MS, aFamily, grantsOf, instant, isAbout, joins, read } from './referrals_fixture';
+
+afterAll(closeAdmin);
+
+describe('a frame voucher claimed into a household', () => {
+  beforeEach(clearFirestore);
+
+  it('starts at once for a free household, as a frame grant', async () => {
+    const family = await aFamily();
+    const { voucherId } = await aFrameVoucher(family.admin.email.toUpperCase(), { partner: true });
+
+    const answer = await claim(family.admin, voucherId, family.householdId);
+
+    expect(answer.queued).toBe(false);
+    expect(answer.days).toBe(93);
+    expect(answer.startsAt).not.toBeNull();
+    const [grant] = await grantsOf(family.householdId);
+    expect(grant).toMatchObject({ source: 'frame', days: 93, voucherId });
+    const entitlement = await read(`households/${family.householdId}/entitlement/current`);
+    expect(isAbout(entitlement['premiumUntil'], 93)).toBe(true);
+    expect(instant(entitlement['grantUntil'])).toEqual(instant(entitlement['referralUntil']));
+    expect(entitlement['grantDaysWaiting']).toEqual({ referral: 0, frame: 0, code: 0 });
+    expect(entitlement['referralDaysWaiting']).toBe(0);
+    const voucher = await read(`premiumVouchers/${voucherId}`);
+    expect(voucher).toMatchObject({
+      status: 'claimed',
+      householdId: family.householdId,
+      claimedByUid: family.admin.uid,
+      grantId: answer.grantId,
+    });
+    expect(await read(`households/${family.householdId}/private/acquisition`)).toMatchObject({
+      code: 'THANDI10',
+      partnerId: 'p-thandi',
+      via: 'frame-order',
+    });
+  });
+
+  it('queues behind paid time, and says so', async () => {
+    const family = await aFamily();
+    const paidUntil = new Date(Date.now() + 20 * DAY_MS);
+    await aPaidSubscription(family.admin, family.householdId, paidUntil);
+    const { voucherId } = await aFrameVoucher(family.admin.email);
+
+    const answer = await claim(family.admin, voucherId, family.householdId);
+
+    expect(answer).toMatchObject({ queued: true, startsAt: null, days: 93 });
+    const entitlement = await read(`households/${family.householdId}/entitlement/current`);
+    expect(entitlement['grantDaysWaiting']).toEqual({ referral: 0, frame: 93, code: 0 });
+    expect(entitlement['referralDaysWaiting']).toBe(93);
+    expect(instant(entitlement['premiumUntil'])).toEqual(
+      new Date(paidUntil.getTime() + 93 * DAY_MS),
+    );
+    expect(entitlement['status']).toBe('cancelled');
+  });
+
+  it('adds up when one household claims two', async () => {
+    const family = await aFamily();
+    const first = await aFrameVoucher(family.admin.email, { days: 62 });
+    const second = await aFrameVoucher(family.admin.email);
+    await claim(family.admin, first.voucherId, family.householdId);
+    const answer = await claim(family.admin, second.voucherId, family.householdId);
+    expect(answer.queued).toBe(true);
+    const entitlement = await read(`households/${family.householdId}/entitlement/current`);
+    expect(isAbout(entitlement['premiumUntil'], 155)).toBe(true);
+    expect(entitlement['grantDaysWaiting']).toEqual({ referral: 0, frame: 93, code: 0 });
+  });
+
+  it('is refused to an account whose emails are not the voucher’s', async () => {
+    const family = await aFamily();
+    const { voucherId } = await aFrameVoucher('somebody-else@nestprep.test');
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'notYourVoucher');
+    expect(await grantsOf(family.householdId)).toEqual([]);
+  });
+
+  it('is refused for a test order to anybody who is not a tester', async () => {
+    const family = await aFamily();
+    const { voucherId } = await aFrameVoucher(family.admin.email, { isTest: true });
+    expect(await vouchersFor(family.admin)).toEqual([]);
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'testVoucher');
+    expect((await read(`premiumVouchers/${voucherId}`))['status']).toBe('waiting');
+  });
+
+  it('is claimed once: again, or into another household, it is already claimed', async () => {
+    const family = await aFamily();
+    const { voucherId } = await aFrameVoucher(family.admin.email);
+    await claim(family.admin, voucherId, family.householdId);
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'voucherClaimed');
+    const second = await createHousehold(family.admin);
+    await expectRefusal(claim(family.admin, voucherId, second.householdId), 'voucherClaimed');
+    expect(await grantsOf(family.householdId)).toHaveLength(1);
+  });
+
+  it('is refused once the store voided it, and the store cannot void it once claimed', async () => {
+    const family = await aFamily();
+    const voided = await aFrameVoucher(family.admin.email);
+    expect(
+      await voidVoucher(adminDb(), { voucherId: voided.voucherId, reason: 'refund' }, new Date()),
+    ).toBe('voided');
+    await expectRefusal(claim(family.admin, voided.voucherId, family.householdId), 'voucherVoid');
+
+    const claimed = await aFrameVoucher(family.admin.email);
+    await claim(family.admin, claimed.voucherId, family.householdId);
+    expect(
+      await voidVoucher(adminDb(), { voucherId: claimed.voucherId, reason: 'refund' }, new Date()),
+    ).toBe('alreadyClaimed');
+    expect((await read(`premiumVouchers/${claimed.voucherId}`))['status']).toBe('claimed');
+  });
+
+  it('is refused to a helper, into a household that does not exist, and for a voucher that does not', async () => {
+    const family = await aFamily();
+    const helper = await joins(family, 'helper');
+    const { voucherId } = await aFrameVoucher(helper.email);
+    await expectRefusal(claim(helper, voucherId, family.householdId), 'notAMember');
+    const other = await aFamily();
+    await expectRefusal(claim(helper, voucherId, other.householdId), 'notAMember');
+    await expectRefusal(claim(helper, voucherId, 'no-such-household'), 'householdNotFound');
+    await expectRefusal(claim(helper, 'ord_none_1', family.householdId), 'voucherNotFound');
+    expect((await read(`premiumVouchers/${voucherId}`))['status']).toBe('waiting');
+  });
+
+  it('may be claimed by a tester when it came from a test order', async () => {
+    const family = await aFamily();
+    const { voucherId } = await aFrameVoucher(family.admin.email, { isTest: true });
+    const answer = await claimVoucher(
+      {
+        store: adminDb(),
+        users: { provenEmails: async () => Promise.resolve([family.admin.email]) },
+        pepper: EMULATOR_PEPPER,
+        testers: [family.admin.uid],
+        now: new Date(),
+      },
+      family.admin.uid,
+      { voucherId, householdId: family.householdId },
+    );
+    expect(answer.queued).toBe(false);
+  });
+});
+
+describe('the vouchers waiting for me', () => {
+  beforeEach(clearFirestore);
+
+  it('are the waiting ones sent to any email I have proved, with no code or partner in them', async () => {
+    const family = await aFamily();
+    const waiting = await aFrameVoucher(family.admin.email, { partner: true });
+    const claimed = await aFrameVoucher(family.admin.email);
+    await aFrameVoucher('other@nestprep.test');
+    await claim(family.admin, claimed.voucherId, family.householdId);
+
+    expect(await vouchersFor(family.admin)).toEqual([
+      {
+        voucherId: waiting.voucherId,
+        kind: 'frame',
+        days: 93,
+        sku: 'frame-15',
+        emailMasked: `t***@nestprep.test`,
+        isTest: false,
+      },
+    ]);
+  });
+
+  it('leave out a code voucher past the day it had to be claimed by', async () => {
+    const family = await aFamily();
+    const codeHash = await aCode('LATE-CODE');
+    await redeemOnTheWeb('late-code', family.admin.email);
+    const voucherId = await codeVoucherOf(codeHash, family.admin.email);
+    expect((await vouchersFor(family.admin)).map((voucher) => voucher.voucherId)).toEqual([
+      voucherId,
+    ]);
+    await adminDb()
+      .doc(`premiumVouchers/${voucherId}`)
+      .update({ claimBy: Timestamp.fromMillis(Date.now() - DAY_MS) });
+    expect(await vouchersFor(family.admin)).toEqual([]);
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'codeExpired');
+  });
+});
+
+describe('a Premium code, redeemed on the web and claimed in the app', () => {
+  beforeEach(clearFirestore);
+
+  it('becomes a code voucher, then a code grant using one of its places', async () => {
+    const family = await aFamily();
+    const codeHash = await aCode('THANDI30', {
+      maxClaims: 5,
+      attribution: { partnerId: 'p-thandi' },
+    });
+
+    const first = await redeemOnTheWeb('thandi-30', family.admin.email);
+    expect(first).toMatchObject({
+      status: 200,
+      body: { result: 'redeemed', days: 30, label: 'Launch readers' },
+    });
+    expect(first.cacheControl).toBe('no-store');
+    const again = await redeemOnTheWeb(' THANDI30 ', family.admin.email.toUpperCase());
+    expect(again.body).toEqual({ result: 'alreadyRedeemed', days: 30, label: 'Launch readers' });
+    expect((await read(`premiumCodes/${codeHash}`))['claimCount']).toBe(0);
+
+    const voucherId = await codeVoucherOf(codeHash, family.admin.email);
+    const answer = await claim(family.admin, voucherId, family.householdId);
+
+    expect(answer).toMatchObject({ days: 30, queued: false });
+    expect((await read(`premiumCodes/${codeHash}`))['claimCount']).toBe(1);
+    expect(await read(`premiumCodes/${codeHash}/claims/${family.householdId}`)).toMatchObject({
+      uid: family.admin.uid,
+      voucherId,
+    });
+    const [grant] = await grantsOf(family.householdId);
+    expect(grant).toMatchObject({ source: 'code', days: 30, voucherId });
+    expect(await read(`households/${family.householdId}/private/acquisition`)).toMatchObject({
+      code: 'THANDI30',
+      partnerId: 'p-thandi',
+      via: 'premium-code',
+    });
+  });
+
+  it('gives exactly two of three racing households a two-place code', async () => {
+    const codeHash = await aCode('RACE-TWO', { maxClaims: 2 });
+    const families = await Promise.all([aFamily(), aFamily(), aFamily()]);
+    const vouchers: string[] = [];
+    for (const family of families) {
+      await redeemOnTheWeb('RACE-TWO', family.admin.email);
+      vouchers.push(await codeVoucherOf(codeHash, family.admin.email));
+    }
+
+    const outcomes = await Promise.allSettled(
+      families.map((family, index) =>
+        claim(family.admin, vouchers[index] ?? '', family.householdId),
+      ),
+    );
+
+    expect(outcomes.filter((outcome) => outcome.status === 'fulfilled')).toHaveLength(2);
+    const refused = outcomes.flatMap((outcome): unknown[] =>
+      outcome.status === 'rejected' ? [outcome.reason] : [],
+    );
+    expect(refused).toHaveLength(1);
+    expect(refused[0]).toBeInstanceOf(CallFailed);
+    expect((refused[0] as CallFailed).reason).toBe('codeUsedUp');
+    expect((await read(`premiumCodes/${codeHash}`))['claimCount']).toBe(2);
+    const claims = await adminDb().collection(`premiumCodes/${codeHash}/claims`).get();
+    expect(claims.size).toBe(2);
+    expect((await redeemOnTheWeb('RACE-TWO', 'late@nestprep.test')).body).toEqual({
+      error: 'codeUsedUp',
+    });
+  });
+
+  it('is for households new to Premium unless the code says any', async () => {
+    const strict = await aCode('NEW-ONLY', { eligibility: 'newToPremium' });
+    const open = await aCode('ANYONE', { eligibility: 'any' });
+
+    const framed = await aFamily();
+    await aGrantIn(framed.householdId, 'old-frame', {
+      source: 'frame',
+      days: 93,
+      grantedDaysAgo: 200,
+      started: true,
+    });
+    await redeemOnTheWeb('NEW-ONLY', framed.admin.email);
+    await expectRefusal(
+      claim(framed.admin, await codeVoucherOf(strict, framed.admin.email), framed.householdId),
+      'codeNotEligible',
+    );
+
+    const paying = await aFamily();
+    await aPaidSubscription(paying.admin, paying.householdId, new Date(Date.now() - 5 * DAY_MS));
+    await redeemOnTheWeb('NEW-ONLY', paying.admin.email);
+    await expectRefusal(
+      claim(paying.admin, await codeVoucherOf(strict, paying.admin.email), paying.householdId),
+      'codeNotEligible',
+    );
+
+    await redeemOnTheWeb('ANYONE', framed.admin.email);
+    const answer = await claim(
+      framed.admin,
+      await codeVoucherOf(open, framed.admin.email),
+      framed.householdId,
+    );
+    expect(answer.days).toBe(30);
+
+    const fresh = await aFamily();
+    await redeemOnTheWeb('NEW-ONLY', fresh.admin.email);
+    await claim(fresh.admin, await codeVoucherOf(strict, fresh.admin.email), fresh.householdId);
+    expect((await read(`premiumCodes/${strict}`))['claimCount']).toBe(1);
+  });
+
+  it('is one per household in any 365 days, and frame or referral grants do not count (D16)', async () => {
+    const codeHash = await aCode('YEARLY');
+    const recent = await aFamily();
+    await aGrantIn(recent.householdId, 'old-code', {
+      source: 'code',
+      days: 30,
+      grantedDaysAgo: 100,
+      started: true,
+    });
+    await redeemOnTheWeb('YEARLY', recent.admin.email);
+    await expectRefusal(
+      claim(recent.admin, await codeVoucherOf(codeHash, recent.admin.email), recent.householdId),
+      'codeYearlyLimit',
+    );
+
+    const longAgo = await aFamily();
+    await aGrantIn(longAgo.householdId, 'old-code', {
+      source: 'code',
+      days: 30,
+      grantedDaysAgo: 366,
+      started: true,
+    });
+    await aGrantIn(longAgo.householdId, 'frame', {
+      source: 'frame',
+      days: 93,
+      grantedDaysAgo: 10,
+      started: true,
+    });
+    await aGrantIn(longAgo.householdId, 'referral', {
+      source: 'referral',
+      days: 30,
+      grantedDaysAgo: 10,
+      started: false,
+    });
+    await redeemOnTheWeb('YEARLY', longAgo.admin.email);
+    const answer = await claim(
+      longAgo.admin,
+      await codeVoucherOf(codeHash, longAgo.admin.email),
+      longAgo.householdId,
+    );
+    expect(answer.queued).toBe(true);
+  });
+
+  it('is used once per household and once per person', async () => {
+    const codeHash = await aCode('ONCE-EACH');
+    const family = await aFamily();
+    const partner = await joins(family, 'parent');
+    await redeemOnTheWeb('ONCE-EACH', family.admin.email);
+    await redeemOnTheWeb('ONCE-EACH', partner.email);
+    await claim(
+      family.admin,
+      await codeVoucherOf(codeHash, family.admin.email),
+      family.householdId,
+    );
+    await expect(
+      claim(partner, await codeVoucherOf(codeHash, partner.email), family.householdId),
+    ).rejects.toMatchObject({
+      reason: 'codeAlreadyUsed',
+    });
+
+    const secondHome = await createHousehold(family.admin);
+    const otherEmail = `other-${family.admin.uid}@nestprep.test`.toLowerCase();
+    await redeemOnTheWeb('ONCE-EACH', otherEmail);
+    await callAs(family.admin, 'sendVoucherEmailCode', { email: otherEmail });
+    await callAs(family.admin, 'verifyVoucherEmailCode', {
+      email: otherEmail,
+      code: EMULATOR_EMAIL_CODE,
+    });
+    await expectRefusal(
+      claim(family.admin, await codeVoucherOf(codeHash, otherEmail), secondHome.householdId),
+      'codeAlreadyUsed',
+    );
+    expect((await read(`premiumCodes/${codeHash}`))['claimCount']).toBe(1);
+  });
+
+  it('is refused while paused, once archived, and long after it ended', async () => {
+    const family = await aFamily();
+    const codeHash = await aCode('STATES');
+    await redeemOnTheWeb('STATES', family.admin.email);
+    const voucherId = await codeVoucherOf(codeHash, family.admin.email);
+    const code = adminDb().doc(`premiumCodes/${codeHash}`);
+
+    await code.update({ status: 'paused' });
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'codePaused');
+    await code.update({ status: 'archived' });
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'codeExpired');
+    await code.update({
+      status: 'active',
+      validFrom: Timestamp.fromMillis(Date.now() - 90 * DAY_MS),
+      validUntil: Timestamp.fromMillis(Date.now() - 31 * DAY_MS),
+    });
+    await expectRefusal(claim(family.admin, voucherId, family.householdId), 'codeExpired');
+    expect(await grantsOf(family.householdId)).toEqual([]);
+  });
+});
+
+describe('the web page’s answers', () => {
+  beforeEach(clearFirestore);
+
+  it('refuse a code that is unknown, paused, not started, ended or used up', async () => {
+    await aCode('PAUSED', { status: 'paused' });
+    await aCode('LATER', { validFrom: new Date('2099-03-01T00:00:00+02:00') });
+    await aCode('ENDED', {
+      validFrom: new Date('2020-01-01T00:00:00Z'),
+      validUntil: new Date('2026-01-31T23:59:59+02:00'),
+    });
+    await aCode('FULL', { maxClaims: 1, claimCount: 1 });
+    await aCode('GONE', { status: 'archived' });
+    const email = 'web@nestprep.test';
+    expect(await redeemOnTheWeb('NOPE-NOPE', email)).toMatchObject({
+      status: 404,
+      body: { error: 'codeUnknown' },
+    });
+    expect((await redeemOnTheWeb('GONE', email)).body).toEqual({ error: 'codeUnknown' });
+    expect((await redeemOnTheWeb('PAUSED', email)).body).toEqual({ error: 'codePaused' });
+    expect((await redeemOnTheWeb('LATER', email)).body).toEqual({
+      error: 'codeNotStarted',
+      startsOn: '2099-03-01',
+    });
+    expect((await redeemOnTheWeb('ENDED', email)).body).toEqual({
+      error: 'codeExpired',
+      endedOn: '2026-01-31',
+    });
+    expect((await redeemOnTheWeb('FULL', email)).body).toEqual({ error: 'codeUsedUp' });
+    expect((await redeemOnTheWeb('ab', email)).body).toEqual({ error: 'badCode' });
+    expect((await redeemOnTheWeb('PAUSED', 'nope')).body).toEqual({ error: 'badEmail' });
+    expect((await adminDb().collection('premiumVouchers').get()).size).toBe(0);
+  });
+
+  it('show a gift by its link, move it to another email while it waits, and never say more', async () => {
+    const family = await aFamily();
+    const { voucherId, token } = await aFrameVoucher('typo@nestprep.test');
+
+    const lookup = await onTheWeb('/gift/lookup', { token });
+    expect(lookup).toMatchObject({
+      status: 200,
+      body: { status: 'waiting', days: 93, sku: 'frame-15', emailMasked: 't***@nestprep.test' },
+      cacheControl: 'no-store',
+    });
+    expect(Object.keys(lookup.body).sort()).toEqual(['days', 'emailMasked', 'sku', 'status']);
+
+    const moved = await onTheWeb('/gift/reassign', { token, email: family.admin.email });
+    expect(moved.body).toEqual({ ok: true, emailMasked: 't***@nestprep.test' });
+    expect((await vouchersFor(family.admin)).map((voucher) => voucher.voucherId)).toEqual([
+      voucherId,
+    ]);
+    expect((await read(`premiumVouchers/${voucherId}`))['reassignedAt']).toBeInstanceOf(Timestamp);
+
+    await claim(family.admin, voucherId, family.householdId);
+    expect((await onTheWeb('/gift/lookup', { token })).body['status']).toBe('claimed');
+    expect(await onTheWeb('/gift/reassign', { token, email: 'x@nestprep.test' })).toMatchObject({
+      status: 409,
+      body: { error: 'voucherClaimed' },
+    });
+
+    const voided = await aFrameVoucher('void@nestprep.test');
+    await voidVoucher(adminDb(), { voucherId: voided.voucherId, reason: 'cancelled' }, new Date());
+    expect(
+      (await onTheWeb('/gift/reassign', { token: voided.token, email: 'x@nestprep.test' })).body,
+    ).toEqual({
+      error: 'voucherVoid',
+    });
+    const unknown = 'B'.repeat(43);
+    expect(await onTheWeb('/gift/lookup', { token: unknown })).toMatchObject({
+      status: 404,
+      body: { error: 'voucherNotFound' },
+    });
+    expect(
+      (await onTheWeb('/gift/reassign', { token: unknown, email: 'x@nestprep.test' })).body,
+    ).toEqual({
+      error: 'voucherNotFound',
+    });
+  });
+
+  it('stop answering one address after thirty tries in a quarter hour', async () => {
+    const answers: number[] = [];
+    for (let attempt = 0; attempt < 31; attempt += 1) {
+      answers.push((await onTheWeb('/gift/lookup', { token: 'C'.repeat(43) })).status);
+    }
+    expect(answers.slice(0, 30).every((status) => status === 404)).toBe(true);
+    expect(answers[30]).toBe(429);
+  });
+});
+
+describe('proving another email with a code (Hide My Email)', () => {
+  beforeEach(clearFirestore);
+
+  it('adds the email to the account, after which its vouchers are mine', async () => {
+    const user = await signUp();
+    const storeEmail = `shop-${user.uid}@nestprep.test`.toLowerCase();
+    await aFrameVoucher(storeEmail);
+    expect(await vouchersFor(user)).toEqual([]);
+
+    expect(await callAs(user, 'sendVoucherEmailCode', { email: storeEmail })).toEqual({
+      sent: true,
+      emailMasked: 's***@nestprep.test',
+    });
+    const challenge = await read(`premiumEmailChallenges/${user.uid}`);
+    expect(challenge['codeHash']).not.toBe(EMULATOR_EMAIL_CODE);
+    expect(JSON.stringify(challenge)).not.toContain(storeEmail);
+    await expectRefusal(
+      callAs(user, 'verifyVoucherEmailCode', { email: storeEmail, code: '000000' }),
+      'emailCodeWrong',
+    );
+    expect(
+      await callAs(user, 'verifyVoucherEmailCode', {
+        email: storeEmail,
+        code: EMULATOR_EMAIL_CODE,
+      }),
+    ).toEqual({
+      verified: true,
+      emailMasked: 's***@nestprep.test',
+    });
+
+    expect(await vouchersFor(user)).toHaveLength(1);
+    expect((await adminDb().doc(`premiumEmailChallenges/${user.uid}`).get()).exists).toBe(false);
+    const verified = await read(`users/${user.uid}/private/verifiedEmails`);
+    expect(JSON.stringify(verified)).not.toContain(storeEmail);
+    await expectRefusal(
+      callAs(user, 'sendVoucherEmailCode', { email: storeEmail.toUpperCase() }),
+      'emailAlreadyVerified',
+    );
+    await expectRefusal(
+      callAs(user, 'sendVoucherEmailCode', { email: user.email }),
+      'emailAlreadyVerified',
+    );
+  });
+
+  it('sends at most three codes an hour to one account', async () => {
+    const user = await signUp();
+    for (let sent = 0; sent < 3; sent += 1) {
+      await callAs(user, 'sendVoucherEmailCode', { email: `a${String(sent)}@nestprep.test` });
+    }
+    await expectRefusal(
+      callAs(user, 'sendVoucherEmailCode', { email: 'a9@nestprep.test' }),
+      'tooManyCodes',
+    );
+  });
+
+  it('allows five tries at a code, and refuses an expired one', async () => {
+    const user = await signUp();
+    const email = 'tries@nestprep.test';
+    await callAs(user, 'sendVoucherEmailCode', { email });
+    for (let tried = 0; tried < 5; tried += 1) {
+      await expectRefusal(
+        callAs(user, 'verifyVoucherEmailCode', { email, code: '999999' }),
+        'emailCodeWrong',
+      );
+    }
+    await expectRefusal(
+      callAs(user, 'verifyVoucherEmailCode', { email, code: EMULATOR_EMAIL_CODE }),
+      'emailCodeTooManyTries',
+    );
+
+    await callAs(user, 'sendVoucherEmailCode', { email });
+    await adminDb()
+      .doc(`premiumEmailChallenges/${user.uid}`)
+      .update({ expiresAt: Timestamp.fromMillis(Date.now() - 1000) });
+    await expectRefusal(
+      callAs(user, 'verifyVoucherEmailCode', { email, code: EMULATOR_EMAIL_CODE }),
+      'emailCodeExpired',
+    );
+    const stranger = await signUp();
+    await expectRefusal(
+      callAs(stranger, 'verifyVoucherEmailCode', { email, code: EMULATOR_EMAIL_CODE }),
+      'emailCodeExpired',
+    );
+  });
+
+  it('counts a try for the right code sent to a different email', async () => {
+    const user = await signUp();
+    await callAs(user, 'sendVoucherEmailCode', { email: 'one@nestprep.test' });
+    await expectRefusal(
+      callAs(user, 'verifyVoucherEmailCode', {
+        email: 'two@nestprep.test',
+        code: EMULATOR_EMAIL_CODE,
+      }),
+      'emailCodeWrong',
+    );
+    expect((await read(`premiumEmailChallenges/${user.uid}`))['tries']).toBe(1);
+  });
+});
+
+describe('the store’s two endpoints', () => {
+  beforeEach(clearFirestore);
+
+  it('issue idempotently, never overwriting a voucher, and keep no email', async () => {
+    const voucher = {
+      voucherId: 'ord_idem_1',
+      orderId: 'ord_idem',
+      sku: 'frame-10',
+      days: 62,
+      email: 'Buyer@Example.com',
+      claimTokenHash: tokenHashOf('t'.repeat(43)),
+      isTest: false,
+      attribution: null,
+    };
+    expect(
+      await issueVouchers(adminDb(), EMULATOR_PEPPER, { vouchers: [voucher] }, new Date()),
+    ).toEqual([{ voucherId: 'ord_idem_1', outcome: 'issued' }]);
+    await adminDb().doc('premiumVouchers/ord_idem_1').update({ status: 'claimed' });
+    const again = await issueVouchers(
+      adminDb(),
+      EMULATOR_PEPPER,
+      {
+        vouchers: [
+          { ...voucher, days: 3650 },
+          { ...voucher, voucherId: 'ord_idem_2' },
+        ],
+      },
+      new Date(),
+    );
+    expect(again).toEqual([
+      { voucherId: 'ord_idem_1', outcome: 'exists' },
+      { voucherId: 'ord_idem_2', outcome: 'issued' },
+    ]);
+    const stored = await read('premiumVouchers/ord_idem_1');
+    expect(stored).toMatchObject({ status: 'claimed', days: 62, emailMasked: 'b***@example.com' });
+    expect(JSON.stringify(stored).toLowerCase()).not.toContain('buyer@example.com');
+  });
+
+  it('void a waiting voucher once and say what it found otherwise', async () => {
+    const { voucherId } = await aFrameVoucher('void@nestprep.test');
+    const now = new Date();
+    expect(await voidVoucher(adminDb(), { voucherId, reason: 'refund' }, now)).toBe('voided');
+    expect(await voidVoucher(adminDb(), { voucherId, reason: 'refund' }, now)).toBe('alreadyVoid');
+    expect(await voidVoucher(adminDb(), { voucherId: 'ord_none_1', reason: 'refund' }, now)).toBe(
+      'notFound',
+    );
+    expect(await read(`premiumVouchers/${voucherId}`)).toMatchObject({
+      status: 'void',
+      voidReason: 'refund',
+    });
+  });
+
+  it('refuse anybody without the store’s ID token', async () => {
+    for (const name of ['issuePremiumVouchers', 'voidFrameVoucher']) {
+      const response = await fetch(httpFunctionUrl(name), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer not-a-google-id-token-at-all',
+        },
+        body: JSON.stringify({ voucherId: 'ord_x_1', reason: 'refund' }),
+      });
+      expect(response.status, name).toBe(403);
+      expect(await response.json()).toEqual({ error: 'forbidden' });
+    }
+  });
+});

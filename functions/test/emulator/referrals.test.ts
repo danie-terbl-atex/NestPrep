@@ -273,6 +273,29 @@ describe('the month and the rest of premium', () => {
     expect(await grantsOf(joiner.householdId)).toHaveLength(1);
   });
 
+  it('still pays a household whose other grants are frame and code Premium, not referrals', async () => {
+    const sharer = await aFamily();
+    const grants = adminDb().collection(`households/${sharer.householdId}/premiumGrants`);
+    for (let index = 0; index < 6; index += 1) {
+      await grants.doc(`frame-${String(index)}`).set({
+        source: index < 5 ? 'frame' : 'code',
+        days: 93,
+        grantedAt: Timestamp.fromMillis(Date.now() - (index + 1) * 20 * DAY_MS),
+        startsAt: Timestamp.fromMillis(Date.now() - (index + 1) * 20 * DAY_MS),
+        voucherId: `ord_${String(index)}_1`,
+      });
+    }
+    const joiner = await aFamily();
+    await redeem(joiner, await codeOf(sharer));
+    await opens(await joins(joiner, 'parent'), joiner);
+
+    expect((await read(`referrals/${joiner.householdId}`))['referrerReward']).toBe('month');
+    const sources = (await grantsOf(sharer.householdId)).map((grant) => grant['source']);
+    expect(sources.filter((source) => source === 'referral')).toHaveLength(1);
+    const entitlement = await read(`households/${sharer.householdId}/entitlement/current`);
+    expect(entitlement['grantDaysWaiting']).toMatchObject({ frame: 0, code: 0 });
+  });
+
   it('waits behind a paying household"s subscription, so premium runs thirty days past it', async () => {
     const sharer = await aFamily();
     const paidUntil = new Date(Date.now() + 20 * DAY_MS);

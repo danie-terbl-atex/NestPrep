@@ -11,6 +11,7 @@ import {
   buildSite,
 } from '../../../hosting/tools/site-pages.mjs';
 import { ASSISTANT_SCOPES } from '../../src/assistants/assistant_scopes';
+import { WEB_ERROR_STATUS } from '../../src/premium_vouchers/premium_web_answer';
 
 /**
  * The public site (`hosting/`) is generated into `hosting/public/` and
@@ -37,14 +38,16 @@ describe('the public site is generated', () => {
     ).not.toThrow();
   });
 
-  it('with the landing page, both legal documents, the deletion, invite and connect pages and a 404', () => {
+  it('with the landing page, both legal documents, the deletion, invite, connect, Premium and redeem pages and a 404', () => {
     expect(pages.map((page) => page.path).sort()).toEqual([
       '404.html',
       'connect/index.html',
       'delete-account/index.html',
       'index.html',
       'invite/index.html',
+      'premium/index.html',
       'privacy/index.html',
+      'redeem/index.html',
       'terms/index.html',
     ]);
   });
@@ -236,6 +239,152 @@ describe('an invite link opens the app or says how to join (household ADR-0005)'
     )?.[1];
     expect(links[0]?.target.package_name).toBe(applicationId);
     expect(links[0]?.target.sha256_cert_fingerprints.length).toBeGreaterThan(0);
+  });
+});
+
+describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR-0004)', () => {
+  const firebase = JSON.parse(read('firebase.json')) as {
+    hosting: {
+      rewrites: object[];
+      headers: { source: string; headers: { key: string; value: string }[] }[];
+    };
+  };
+  const giftPage = read('hosting/src/pages/premium.html');
+  const giftScript = read('hosting/src/premium.js');
+  const redeemPage = read('hosting/src/pages/redeem.html');
+  const redeemScript = read('hosting/src/redeem.js');
+
+  const regionOf = (page: string, id: string): string => {
+    const start = page.indexOf(`id="${id}"`);
+    expect(start, id).toBeGreaterThan(0);
+    return page.slice(start);
+  };
+  const quotedIn = (source: string, pattern: RegExp): string[] =>
+    [...source.matchAll(pattern)].flatMap((match) => (match[1] === undefined ? [] : [match[1]]));
+
+  it('reaches premiumWeb through the rewrite, and serves every gift link from the one page', () => {
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/api/premium/**',
+      function: { functionId: 'premiumWeb', region: 'europe-west1' },
+    });
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/premium/**',
+      destination: '/premium/index.html',
+    });
+    const rewriteSources = firebase.hosting.rewrites.map(
+      (rewrite) => (rewrite as { source: string }).source,
+    );
+    expect(rewriteSources.indexOf('/api/premium/**')).toBeLessThan(
+      rewriteSources.indexOf('/premium/**'),
+    );
+  });
+
+  it('answers the API with no-store, and the gift page with no-store and no referrer', () => {
+    const headersFor = (path: string): { key: string; value: string }[] =>
+      firebase.hosting.headers
+        .filter((block) =>
+          block.source
+            .replace(/^\{|\}$/g, '')
+            .split(',')
+            .includes(path),
+        )
+        .flatMap((block) => block.headers);
+    expect(headersFor('/api/premium/**')).toContainEqual({
+      key: 'Cache-Control',
+      value: 'no-store',
+    });
+    for (const path of ['/premium', '/premium/**']) {
+      expect(headersFor(path), path).toContainEqual({ key: 'Cache-Control', value: 'no-store' });
+      expect(headersFor(path), path).toContainEqual({
+        key: 'Referrer-Policy',
+        value: 'no-referrer',
+      });
+    }
+  });
+
+  it('the gift page posts to the two gift endpoints and never sends the token anywhere else', () => {
+    expect(giftScript).toContain("'/api/premium/gift/lookup'");
+    expect(giftScript).toContain("'/api/premium/gift/reassign'");
+    expect(giftScript).toContain("method: 'POST'");
+    expect(giftScript).toContain("referrerPolicy: 'no-referrer'");
+    expect(giftScript).toContain('[A-Za-z0-9_-]{43}');
+  });
+
+  it('the gift page has words for every state its script can show', () => {
+    const gift = regionOf(giftPage, 'gift-status');
+    const giftStates = [
+      ...quotedIn(giftScript, /showGift\('([a-zA-Z]+)'/g),
+      ...quotedIn(/LOOKUP_STATES = \[([^\]]*)\]/.exec(giftScript)?.[1] ?? '', /'([a-zA-Z]+)'/g),
+      ...quotedIn(/REFUSALS = \{([^}]*)\}/.exec(giftScript)?.[1] ?? '', /: '([a-zA-Z]+)'/g),
+      'unavailable',
+      'offline',
+    ].filter((state) => state !== 'badEmail');
+    expect(giftStates).toEqual(expect.arrayContaining(['loading', 'waiting', 'claimed', 'void']));
+    for (const state of giftStates) expect(gift, state).toContain(`data-state="${state}"`);
+
+    const form = regionOf(giftPage, 'gift-form-status');
+    const formStates = [
+      ...quotedIn(giftScript, /show\(formStatus, '([a-zA-Z]+)'/g),
+      'badEmail',
+      'tooMany',
+      'unavailable',
+      'offline',
+    ];
+    expect(formStates).toContain('sent');
+    for (const state of formStates) expect(form, state).toContain(`data-state="${state}"`);
+  });
+
+  it('the redeem page posts to the redeem endpoint and has words for every result and refusal', () => {
+    expect(redeemScript).toContain("'/api/premium/redeem'");
+    expect(redeemScript).toContain("method: 'POST'");
+    const listed = (name: string): string[] =>
+      quotedIn(
+        new RegExp(`${name} = \\[([^\\]]*)\\]`).exec(redeemScript)?.[1] ?? '',
+        /'([a-zA-Z]+)'/g,
+      );
+    const states = [
+      ...listed('RESULTS'),
+      ...listed('REFUSALS'),
+      'tooMany',
+      'unavailable',
+      'offline',
+    ];
+    expect(states).toEqual(expect.arrayContaining(['redeemed', 'alreadyRedeemed', 'codeUsedUp']));
+    const status = regionOf(redeemPage, 'redeem-status');
+    for (const state of states) expect(status, state).toContain(`data-state="${state}"`);
+  });
+
+  it('the scripts know every refusal premiumWeb gives on their paths', () => {
+    const gift = ['voucherNotFound', 'voucherClaimed', 'voucherVoid', 'badEmail', 'tooManyTries'];
+    const redeem = [
+      'codeUnknown',
+      'codeNotStarted',
+      'codeExpired',
+      'codePaused',
+      'codeUsedUp',
+      'badEmail',
+      'badCode',
+    ];
+    const giftRefusals = /REFUSALS = \{([^}]*)\}/.exec(giftScript)?.[1] ?? '';
+    const redeemRefusals = /REFUSALS = \[([^\]]*)\]/.exec(redeemScript)?.[1] ?? '';
+    for (const error of [...gift, ...redeem]) expect(WEB_ERROR_STATUS, error).toHaveProperty(error);
+    for (const error of gift) expect(giftRefusals, error).toContain(`${error}:`);
+    for (const error of redeem) expect(redeemRefusals, error).toContain(`'${error}'`);
+    expect(WEB_ERROR_STATUS.tooManyTries).toBe(429);
+    expect(redeemScript).toContain('response.status === 429');
+    expect(giftScript).toContain('response.status === 429');
+  });
+
+  it('keeps both forms hidden without JavaScript and says what to do instead', () => {
+    for (const page of [giftPage, redeemPage]) {
+      expect(page).toMatch(/<form[^>]*\shidden[\s>]/);
+      expect(page).toContain('<noscript>');
+    }
+  });
+
+  it('the redeem page links to no store, so it never reads as buying in the app', () => {
+    const built = String(site.get('redeem/index.html'));
+    expect(built).not.toMatch(/apps\.apple\.com|play\.google\.com|itunes\.apple\.com/);
   });
 });
 

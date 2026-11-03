@@ -120,9 +120,26 @@
         { "fieldPath": "push.state", "order": "ASCENDING" },
         { "fieldPath": "push.sendAfter", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "premiumVouchers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "emailHash", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [
+    {
+      "collectionGroup": "claims",
+      "fieldPath": "uid",
+      "indexes": [
+        { "order": "ASCENDING", "queryScope": "COLLECTION" },
+        { "order": "DESCENDING", "queryScope": "COLLECTION" },
+        { "order": "ASCENDING", "queryScope": "COLLECTION_GROUP" }
+      ]
+    },
     {
       "collectionGroup": "memberLocations",
       "fieldPath": "sharingUntil",

@@ -54,6 +54,11 @@ void main() {
     return found;
   }
 
+  /// Collections the rules close to every client, so only a Function queries
+  /// them and its index is the Functions' to justify (subscriptions
+  /// ADR-0003: `premiumVouchersForMe` by email hash and status).
+  const functionsOnly = {'premiumVouchers'};
+
   /// The composite indexes `firestore.indexes.json` declares, as field sets.
   List<Set<String>> declaredComposites() {
     final json =
@@ -65,7 +70,8 @@ void main() {
       // collection-group query (`BE-08`), so nothing here could ask for one
       // (notifications ADR-0001's delivery job is the first to need one).
       for (final index in indexes)
-        if (index['queryScope'] != 'COLLECTION_GROUP')
+        if (index['queryScope'] != 'COLLECTION_GROUP' &&
+            !functionsOnly.contains(index['collectionGroup']))
           {
             for (final entry
                 in (index['fields'] as List<Object?>? ?? const [])

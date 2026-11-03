@@ -129,14 +129,21 @@ describe('every function — callable, trigger or schedule', () => {
     // endpoint Hosting rewrites to, and the trigger that disconnects a member
     // who leaves (assistants ADR-0001 to ADR-0003). Family location: the
     // trigger that tells the household about an arrival (live-location
-    // ADR-0006). A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(112);
+    // ADR-0006). Premium vouchers and codes: two store-to-app endpoints, the
+    // public web endpoint and four callables (subscriptions ADR-0003, ADR-0004).
+    // A feature adds its count and its line.
+    expect(endpoints()).toHaveLength(119);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
     // Cloud Scheduler and Hosting rewrites have no africa-south1 location
     // (foundation ADR-0017).
-    const rewriteTargets = ['requestAccountDeletion', 'assistantAuth', 'assistantMcp'];
+    const rewriteTargets = [
+      'requestAccountDeletion',
+      'assistantAuth',
+      'assistantMcp',
+      'premiumWeb',
+    ];
     for (const [name, endpoint] of endpoints()) {
       const region =
         'scheduleTrigger' in endpoint

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redeem a Premium code — NestPrep</title>
+    <meta name="description" content="Redeem a NestPrep Premium code, then add the Premium to your household in the app." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/png" href="/assets/nest_mark.png" />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/redeem.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <img class="brand__mark" src="/assets/nest_mark.png" width="720" height="720" alt="" />
+          <span class="wordmark">nestprep</span>
+        </a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+            <li><a href="/delete-account">Delete your account</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="wrap wrap--prose">
+        <h1>Redeem a Premium code</h1>
+        <p class="lead">
+          Type your NestPrep Premium code and the email you use for NestPrep. Then add the Premium to
+          your household in the app.
+        </p>
+
+        <noscript>
+          <div class="notice notice--info">
+            <p>This page needs JavaScript to redeem a code. Switch it on and open the page again.</p>
+          </div>
+        </noscript>
+
+        <div id="redeem-status" class="premium-status" role="status" aria-live="polite" tabindex="-1">
+          <div class="notice notice--success" data-state="redeemed" hidden>
+            <h2>Your Premium is waiting</h2>
+            <p>
+              <span data-fill="amount"></span> waiting for <strong data-fill="email"></strong>. Sign
+              in to the NestPrep app with this email and add it to your household.
+            </p>
+          </div>
+          <div class="notice notice--success" data-state="alreadyRedeemed" hidden>
+            <h2>You have already redeemed this code</h2>
+            <p>
+              <span data-fill="amount"></span> is still waiting for <strong data-fill="email"></strong>.
+              Sign in to the NestPrep app with this email and add it to your household.
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="codeUnknown" hidden>
+            <p>We do not recognise that code. Check it and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="badCode" hidden>
+            <p>That does not look like a Premium code. Codes are 4 to 20 letters and numbers.</p>
+          </div>
+          <div class="notice notice--error" data-state="codeNotStarted" hidden>
+            <p>
+              That code has not started yet.<span data-when> You can redeem it from
+              <strong data-fill="startsOn"></strong>.</span>
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="codeExpired" hidden>
+            <p>
+              That code has ended.<span data-when> It could be redeemed until
+              <strong data-fill="endedOn"></strong>.</span>
+            </p>
+          </div>
+          <div class="notice notice--error" data-state="codePaused" hidden>
+            <p>That code is not available right now. Please try again later.</p>
+          </div>
+          <div class="notice notice--error" data-state="codeUsedUp" hidden>
+            <p>That code has been fully used.</p>
+          </div>
+          <div class="notice notice--error" data-state="badEmail" hidden>
+            <p>That email address does not look right. Check it and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="tooMany" hidden>
+            <p>We have had a lot of tries from here just now. Please wait a few minutes and try again.</p>
+          </div>
+          <div class="notice notice--error" data-state="unavailable" hidden>
+            <p>We could not redeem your code just now. Please try again in a few minutes.</p>
+          </div>
+          <div class="notice notice--error" data-state="offline" hidden>
+            <p>You seem to be offline. Connect to the internet and try again.</p>
+          </div>
+        </div>
+
+        <form id="redeem-form" class="panel" aria-label="Redeem a Premium code" novalidate hidden>
+          <div class="field">
+            <label for="redeem-code">Premium code</label>
+            <input
+              id="redeem-code"
+              class="code-input"
+              name="code"
+              type="text"
+              autocomplete="off"
+              autocapitalize="characters"
+              autocorrect="off"
+              spellcheck="false"
+              maxlength="40"
+              required
+            />
+          </div>
+          <div class="field">
+            <label for="redeem-email">Your email address</label>
+            <input
+              id="redeem-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              maxlength="254"
+              required
+              aria-describedby="redeem-email-hint"
+            />
+            <span class="hint" id="redeem-email-hint">
+              The email you sign in to NestPrep with, or will.
+            </span>
+          </div>
+          <button class="button button--accent" type="submit" data-sending-label="Redeeming…">Redeem</button>
+        </form>
+
+        <h2>How it works</h2>
+        <ul>
+          <li>Redeem your code here with your email.</li>
+          <li>Sign in to the NestPrep app with that same email.</li>
+          <li>The app shows the Premium waiting for you. Choose the household to add it to.</li>
+        </ul>
+        <p>
+          A code has a set number of places, and a place is yours once you add the Premium to your
+          household. Each household can use one code a year.
+        </p>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <nav class="site-nav" aria-label="Legal">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/delete-account">Delete your account</a></li>
+          </ul>
+        </nav>
+        <p>
+          NestPrep is provided by <mark class="placeholder">[legal entity name]</mark>. Questions
+          about your information: <mark class="placeholder">[Information Officer email address]</mark>.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

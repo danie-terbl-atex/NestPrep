@@ -35,6 +35,12 @@ _Entitlement _$EntitlementFromJson(Map<String, dynamic> json) => _Entitlement(
     json['referralUntil'],
   ),
   referralDaysWaiting: (json['referralDaysWaiting'] as num?)?.toInt() ?? 0,
+  grantUntil: const NullableTimestampConverter().fromJson(json['grantUntil']),
+  grantDaysWaiting: json['grantDaysWaiting'] == null
+      ? null
+      : GrantDaysWaiting.fromJson(
+          json['grantDaysWaiting'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$EntitlementToJson(
@@ -54,6 +60,8 @@ Map<String, dynamic> _$EntitlementToJson(
     instance.referralUntil,
   ),
   'referralDaysWaiting': instance.referralDaysWaiting,
+  'grantUntil': const NullableTimestampConverter().toJson(instance.grantUntil),
+  'grantDaysWaiting': instance.grantDaysWaiting?.toJson(),
 };
 
 const _$EntitlementStatusEnumMap = {

@@ -74,6 +74,7 @@ import 'nanny_hub_providers.dart';
 import 'notifications_providers.dart';
 import 'photo_frame_providers.dart';
 import 'plan_week_providers.dart';
+import 'premium_voucher_providers.dart';
 import 'recipe_providers.dart';
 import 'referral_providers.dart';
 import 'subscription_providers.dart';
@@ -218,6 +219,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // subscriptions — the store, premium and the free tier's one child
   // (subscriptions ADR-0001)
   ...subscriptionProviders(),
+  // frame orders and gifts (subscriptions ADR-0003, ADR-0004)
+  ...premiumVoucherProviders(),
   // lunch-box V2 — pantry, budget, kid picks (lunch-box ADR-0005 to ADR-0007)
   ...lunchPlanningProviders(),
   // account data: delete my account, download my data (accounts ADR-0006)

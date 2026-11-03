@@ -1,0 +1,5 @@
+// ---- Premium vouchers: how a household came to NestPrep (subscriptions ADR-0003) ----
+
+match /private/{document=**} {
+  allow read, write: if false;
+}

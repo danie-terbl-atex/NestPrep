@@ -38,6 +38,7 @@ import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/subscriptions/model/billing_store.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/model/grant_days_waiting.dart';
 import 'package:nestprep/features/subscriptions/model/subscription_plan.dart';
 import 'package:nestprep/features/todos/model/routine.dart';
 import 'package:nestprep/features/todos/model/task.dart';
@@ -312,7 +313,9 @@ List<ModelFixture> modelFixtures() {
     isTest: true,
     storeUntil: at,
     referralUntil: at,
-    referralDaysWaiting: 30,
+    referralDaysWaiting: 153,
+    grantUntil: at,
+    grantDaysWaiting: const GrantDaysWaiting(referral: 30, frame: 93, code: 30),
   );
   final synced = SyncedEvent(
     id: 'c1_abc',
@@ -709,6 +712,9 @@ List<ModelFixture> modelFixtures() {
         'storeUntil',
         'referralUntil',
         'referralDaysWaiting',
+        // Grant time by source (subscriptions ADR-0003).
+        'grantUntil',
+        'grantDaysWaiting',
       },
       note:
           'written only by the subscriptions Functions; the rules refuse '

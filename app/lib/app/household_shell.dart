@@ -15,6 +15,7 @@ import '../features/observability/crash_reporting.dart';
 import '../features/photo_frames/ui/share_to_frame_host.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../features/subscriptions/ui/entitlement_scope.dart';
+import '../features/subscriptions/ui/premium_voucher_host.dart';
 import '../features/today/model/home_layout.dart';
 import '../features/today/state/home_layout_controller.dart';
 import '../features/welcome_tour/model/tour_target.dart';
@@ -148,7 +149,9 @@ class _HouseholdShellState extends State<HouseholdShell> {
                   location: widget.location,
                   child: CarerScope(
                     child: AlwaysSharingGuard(
-                      child: ShareToFrameHost(child: widget.child),
+                      child: ShareToFrameHost(
+                        child: PremiumVoucherHost(child: widget.child),
+                      ),
                     ),
                   ),
                 ),

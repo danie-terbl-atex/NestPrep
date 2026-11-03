@@ -20,6 +20,9 @@ import 'paywall_sheet.dart';
 import 'plan_actions.dart';
 import 'plan_status_card.dart';
 import 'premium_benefits.dart';
+import 'premium_time_card.dart';
+import 'premium_voucher_entry.dart';
+import 'premium_vouchers_offered.dart';
 
 /// The plan screen once the entitlement has loaded: the plan and what is
 /// worth knowing about it, what premium adds or the way to it, the
@@ -50,20 +53,28 @@ class PlanBody extends StatelessWidget {
         ? null
         : buyer?.displayName ?? SubscriptionCopy.someoneElse;
     final canManage = controller.canManage(entitlement);
+    String dateLabel(DateTime at) =>
+        NestDates.full(clock.dateOf(at), clock.today);
     return ListView(
       children: [
         NestRiseIn(
           child: PlanStatusCard(
             entitlement: entitlement,
             isPremium: isPremium,
-            untilLabel: until == null
-                ? null
-                : NestDates.full(clock.dateOf(until), clock.today),
+            untilLabel: until == null ? null : dateLabel(until),
             buyerName: buyerName,
             now: now,
           ),
         ),
         const SizedBox(height: NestSpace.lg),
+        if (PremiumTimeCard.hasTimeWaiting(entitlement)) ...[
+          PremiumTimeCard(
+            entitlement: entitlement,
+            now: now,
+            dateLabel: dateLabel,
+          ),
+          const SizedBox(height: NestSpace.lg),
+        ],
         if (entitlement.hasLapsedAt(now)) ...[
           const NestBanner(
             message: SubscriptionCopy.keptSafe,
@@ -87,6 +98,10 @@ class PlanBody extends StatelessWidget {
           ReferralMention(
             onTap: () => context.push(ReferralRoute.pathFor(view.household.id)),
           ),
+        ],
+        if (premiumVouchersOffered(context)) ...[
+          const SizedBox(height: NestSpace.lg),
+          const PremiumVoucherEntry(),
         ],
         const SizedBox(height: NestSpace.xl),
         if (view.permissions.isFamily)

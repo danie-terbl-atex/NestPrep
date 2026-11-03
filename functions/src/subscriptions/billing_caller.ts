@@ -1,4 +1,4 @@
-import type { Firestore } from 'firebase-admin/firestore';
+import type { Firestore, Transaction } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
 import { FAMILY_ROLES } from '../household/access';
@@ -29,20 +29,22 @@ export async function billingCallerIn(
   store: Firestore,
   householdId: string,
   uid: string,
+  transaction?: Transaction,
 ): Promise<BillingCaller> {
-  const snapshot = await householdRef(store, householdId).get();
+  const ref = householdRef(store, householdId);
+  const snapshot = await (transaction === undefined ? ref.get() : transaction.get(ref));
   if (!snapshot.exists) throw refuseSubscription('householdNotFound');
   const household = householdShape.safeParse(snapshot.data());
   const role = household.success ? household.data.members[uid] : undefined;
   if (role === undefined) throw refuseSubscription('notAMember');
 
-  const claimed = await store
+  const claimedBy = store
     .collection(HOUSEHOLDS)
     .doc(householdId)
     .collection(MEMBERS)
     .where('claimedBy', '==', uid)
-    .limit(1)
-    .get();
+    .limit(1);
+  const claimed = await (transaction === undefined ? claimedBy.get() : transaction.get(claimedBy));
   const member = claimed.docs[0];
   if (member === undefined) throw refuseSubscription('notAMember');
   return {

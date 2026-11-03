@@ -31,14 +31,36 @@ export const SUBSCRIPTION_REFUSALS = {
   // A child marked with no parent's consent on record and none given now
   // (accounts ADR-0005).
   guardianConsentRequired: ['failed-precondition', 'A parent has to consent first.'],
+  voucherNotFound: ['not-found', 'That Premium is no longer waiting.'],
+  notYourVoucher: ['permission-denied', 'That Premium was sent to a different email.'],
+  voucherClaimed: ['already-exists', 'That Premium has already been added to a household.'],
+  voucherVoid: ['failed-precondition', 'That Premium was cancelled.'],
+  testVoucher: ['permission-denied', 'That Premium is from a test order.'],
+  codeUsedUp: ['resource-exhausted', 'That code has been fully used.'],
+  codeAlreadyUsed: ['already-exists', 'That code has already been used.'],
+  codeNotEligible: ['failed-precondition', 'That code is for households new to Premium.'],
+  codeYearlyLimit: [
+    'failed-precondition',
+    'This household has used a Premium code in the last year.',
+  ],
+  codeExpired: ['failed-precondition', 'That code has ended.'],
+  codePaused: ['failed-precondition', "That code isn't available right now."],
+  emailCodeWrong: ['invalid-argument', "That code doesn't match."],
+  emailCodeExpired: ['deadline-exceeded', 'That code has expired.'],
+  emailCodeTooManyTries: ['resource-exhausted', 'Too many tries. Ask for a new code.'],
+  emailAlreadyVerified: ['already-exists', 'That email is already on your account.'],
+  tooManyCodes: ['resource-exhausted', 'Too many codes sent. Try again later.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type SubscriptionRefusal = keyof typeof SUBSCRIPTION_REFUSALS;
 
 /** The one place a subscriptions refusal becomes the error the client receives. */
-export function refuseSubscription(reason: SubscriptionRefusal): HttpsError {
+export function refuseSubscription(
+  reason: SubscriptionRefusal,
+  details: Readonly<Record<string, string>> = {},
+): HttpsError {
   const [code, message] = SUBSCRIPTION_REFUSALS[reason];
-  return new HttpsError(code, message, { reason });
+  return new HttpsError(code, message, { ...details, reason });
 }
 
 /**

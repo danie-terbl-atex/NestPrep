@@ -29,6 +29,10 @@
         "function": { "functionId": "requestAccountDeletion", "region": "europe-west1" }
       },
       {
+        "source": "/api/premium/**",
+        "function": { "functionId": "premiumWeb", "region": "europe-west1" }
+      },
+      {
         "source": "/mcp",
         "function": { "functionId": "assistantMcp", "region": "europe-west1" }
       },
@@ -53,6 +57,7 @@
         "function": { "functionId": "assistantAuth", "region": "europe-west1" }
       },
       { "source": "/invite/**", "destination": "/invite/index.html" },
+      { "source": "/premium/**", "destination": "/premium/index.html" },
       { "source": "/.well-known/assetlinks.json", "destination": "/well-known/assetlinks.json" }
     ],
     "headers": [
@@ -98,8 +103,15 @@
         ]
       },
       {
-        "source": "{/mcp,/oauth/**,/.well-known/oauth-*,/.well-known/oauth-*/**}",
+        "source": "{/mcp,/oauth/**,/.well-known/oauth-*,/.well-known/oauth-*/**,/api/premium/**}",
         "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      },
+      {
+        "source": "{/premium,/premium/**}",
+        "headers": [
+          { "key": "Referrer-Policy", "value": "no-referrer" },
+          { "key": "Cache-Control", "value": "no-store" }
+        ]
       }
     ]
   },

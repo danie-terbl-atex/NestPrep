@@ -178,6 +178,9 @@ void main() {
         'reads Firestore',
     'lib/features/referrals/data/callable_referral_directory.dart':
         'calls Functions',
+    // Premium from a frame order or a gift (subscriptions ADR-0003).
+    'lib/app/premium_voucher_providers.dart':
+        'builds the Premium voucher providers over live Functions',
     'lib/features/product_analytics/data/callable_paywall_open_recorder.dart':
         'calls Functions',
     // Connected assistants (assistants ADR-0001, ADR-0003).
@@ -254,6 +257,9 @@ void main() {
     'lib/features/subscriptions/data/subscription_directory.dart':
         'interface only',
     'lib/features/subscriptions/model/billing_store.dart': 'one enum only',
+    'lib/features/subscriptions/model/grant_source.dart': 'one enum only',
+    'lib/features/subscriptions/data/premium_voucher_directory.dart':
+        'interface only',
     'lib/features/subscriptions/model/entitlement_status.dart': 'one enum only',
     'lib/features/subscriptions/model/premium_feature.dart': 'one enum only',
     'lib/features/subscriptions/model/subscription_plan.dart': 'one enum only',

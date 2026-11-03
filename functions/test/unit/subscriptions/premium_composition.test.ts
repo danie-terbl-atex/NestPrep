@@ -6,6 +6,7 @@ import {
   type PremiumGrant,
   type PremiumSources,
 } from '../../../src/subscriptions/premium_composition';
+import type { GrantSource } from '../../../src/subscriptions/household_premium';
 
 /**
  * How a household's premium is made of what a store sold it and the months it
@@ -19,10 +20,17 @@ function day(offset: number): Date {
   return new Date(T0.getTime() + offset * DAY_MS);
 }
 
-function grant(id: string, grantedDay: number, startsDay: number | null = null): PremiumGrant {
+function grant(
+  id: string,
+  grantedDay: number,
+  startsDay: number | null = null,
+  source: GrantSource = 'referral',
+  days = 30,
+): PremiumGrant {
   return {
     id,
-    days: 30,
+    source,
+    days,
     grantedAt: day(grantedDay),
     startsAt: startsDay === null ? null : day(startsDay),
   };
@@ -212,5 +220,45 @@ describe('a household composed for the first time since grants existed', () => {
     );
     expect(composed.started).toEqual({ g1: T0 });
     expect(composed.premiumUntil).toEqual(day(30));
+  });
+});
+
+describe('waiting days by where they came from', () => {
+  it('are all zero, every source present, when nothing waits', () => {
+    expect(composePremium(sources(), T0).grantDaysWaiting).toEqual({
+      referral: 0,
+      frame: 0,
+      code: 0,
+    });
+    const running = composePremium(sources({ grants: [grant('g1', 0)] }), T0);
+    expect(running.grantDaysWaiting).toEqual({ referral: 0, frame: 0, code: 0 });
+  });
+
+  it('split the waiting days by source and add up to referralDaysWaiting', () => {
+    const composed = composePremium(
+      sources({
+        storeUntil: day(20),
+        grants: [
+          grant('r1', 1),
+          grant('f1', 2, null, 'frame', 93),
+          grant('f2', 2, null, 'frame', 62),
+          grant('c1', 3, null, 'code', 30),
+        ],
+        previous: { referralFrom: null, premiumUntil: day(20) },
+      }),
+      day(3),
+    );
+    expect(composed.grantDaysWaiting).toEqual({ referral: 30, frame: 155, code: 30 });
+    const { referral, frame, code } = composed.grantDaysWaiting;
+    expect(referral + frame + code).toBe(composed.referralDaysWaiting);
+    expect(composed.premiumUntil).toEqual(day(20 + 215));
+  });
+
+  it('counts a frame grant that has started as running, not waiting', () => {
+    const composed = composePremium(sources({ grants: [grant('f1', 0, null, 'frame', 93)] }), T0);
+    expect(composed.started).toEqual({ f1: T0 });
+    expect(composed.grantDaysWaiting.frame).toBe(0);
+    expect(composed.premiumUntil).toEqual(day(93));
+    expect(composed.referralUntil).toEqual(day(93));
   });
 });

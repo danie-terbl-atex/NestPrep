@@ -33,7 +33,7 @@ export const PREMIUM_GRANTS = 'premiumGrants';
 /** How many grants one restatement reads, newest first — eight years at the yearly cap. */
 export const GRANTS_PER_HOUSEHOLD = 50;
 
-export const GRANT_SOURCES = ['referral'] as const;
+export const GRANT_SOURCES = ['referral', 'frame', 'code'] as const;
 export type GrantSource = (typeof GRANT_SOURCES)[number];
 
 const timestamp = z.instanceof(Timestamp).transform((value) => value.toDate());
@@ -44,6 +44,7 @@ export const storedGrant = z.object({
   days: z.number().int().positive(),
   grantedAt: timestamp,
   startsAt: timestamp.nullable().default(null),
+  voucherId: z.string().min(1).optional(),
 });
 
 export function premiumGrantRef(
@@ -54,10 +55,7 @@ export function premiumGrantRef(
   return householdRef(store, householdId).collection(PREMIUM_GRANTS).doc(grantId);
 }
 
-/** A grant as stored: what the composition needs, and where it came from. */
-export interface StoredPremiumGrant extends PremiumGrant {
-  readonly source: GrantSource;
-}
+export type StoredPremiumGrant = PremiumGrant;
 
 export interface HouseholdPremium {
   /** The store subscriptions giving the household premium, keyed by document id. */
@@ -190,7 +188,8 @@ async function readGrants(
       logger.error('premium grant unreadable', { householdId, grantId: doc.id });
       return [];
     }
-    return [{ id: doc.id, ...parsed.data }];
+    const { source, days, grantedAt, startsAt } = parsed.data;
+    return [{ id: doc.id, source, days, grantedAt, startsAt }];
   });
 }
 

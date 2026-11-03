@@ -5,9 +5,9 @@ import '../../../shared/log/app_log.dart';
 import '../model/premium_feature.dart';
 
 /// Translates a subscriptions callable's refusal — `getSubscriptionOffer`,
-/// `verifyPurchase`, `setChildProfile` — into an `AppFailure`, by the
-/// `reason` the Function put in its details (`BE-04`, subscriptions
-/// ADR-0001). The free tier's limit carries the feature it was reached on,
+/// `verifyPurchase`, `setChildProfile` and the Premium voucher callables —
+/// into an `AppFailure`, by the `reason` the Function put in its details
+/// (`BE-04`, subscriptions ADR-0001, ADR-0003). The free tier's limit carries the feature it was reached on,
 /// so the paywall can open on it.
 AppFailure failureFromSubscriptionCallable(FirebaseFunctionsException error) {
   AppLog.failure('subscriptions callable', code: error.code, error: error);
@@ -25,6 +25,18 @@ AppFailure failureFromSubscriptionCallable(FirebaseFunctionsException error) {
         .where((value) => value.name == reason)
         .firstOrNull;
     if (problem != null) return SubscriptionFailure(problem);
+    final voucherProblem = PremiumVoucherProblem.values
+        .where((value) => value.name == reason)
+        .firstOrNull;
+    if (voucherProblem != null) {
+      final scope = details is Map ? details['scope'] : null;
+      return PremiumVoucherFailure(
+        voucherProblem,
+        scope: VoucherRefusalScope.values
+            .where((value) => value.name == scope)
+            .firstOrNull,
+      );
+    }
     final householdProblem = HouseholdProblem.values
         .where((value) => value.name == reason)
         .firstOrNull;

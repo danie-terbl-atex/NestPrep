@@ -18,13 +18,16 @@ final class ReferralOverview {
   /// Newest first.
   final List<ReferralLine> lines;
 
-  /// Newest first.
+  /// Newest first, every source. Only the referral ones are this screen's.
   final List<PremiumGrant> grants;
+
+  Iterable<PremiumGrant> get _referralGrants =>
+      grants.where((grant) => grant.isReferral);
 
   static const _year = Duration(days: 365);
 
   /// Months given in the last year — what the server's yearly limit counts.
-  int monthsThisYear(DateTime now) => grants
+  int monthsThisYear(DateTime now) => _referralGrants
       .where((grant) => grant.grantedAt.isAfter(now.subtract(_year)))
       .length;
 
@@ -34,10 +37,11 @@ final class ReferralOverview {
 
   /// The month running now, if one is.
   PremiumGrant? runningAt(DateTime now) =>
-      grants.where((grant) => grant.isRunningAt(now)).firstOrNull;
+      _referralGrants.where((grant) => grant.isRunningAt(now)).firstOrNull;
 
   /// Months waiting behind paid time.
-  int get monthsWaiting => grants.where((grant) => grant.isWaiting).length;
+  int get monthsWaiting =>
+      _referralGrants.where((grant) => grant.isWaiting).length;
 
   /// The line for the code this household entered, if it entered one.
   ReferralLine? get joinedWith =>

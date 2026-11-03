@@ -13,10 +13,9 @@ import 'legal_copy.dart';
 abstract final class SubscriptionCopy {
   static const premium = 'Premium';
 
-  /// Premium no store sold: a month from give a month, get a month
-  /// (subscriptions ADR-0002).
-  static String givenUntil(String date) =>
-      'A free month from a referral, until $date.';
+  /// Premium no store sold: a referral, a frame order or a gift
+  /// (subscriptions ADR-0002, ADR-0003, ADR-0004).
+  static String givenUntil(String date) => 'Free Premium until $date.';
   static const free = 'Free';
 
   // ---- the paywall ----

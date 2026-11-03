@@ -7,6 +7,7 @@ import {
   YEARLY_REWARD_CAP,
   countsAsNewAdult,
   isUnderYearlyCap,
+  referralGrantDates,
   mayStillRedeem,
   newAdultsSeen,
   qualifyByOf,
@@ -14,6 +15,8 @@ import {
   redeemedWithinADay,
   sharesAMember,
 } from '../../../src/referrals/referral_policy';
+import type { GrantSource } from '../../../src/subscriptions/household_premium';
+import type { PremiumGrant } from '../../../src/subscriptions/premium_composition';
 
 /**
  * What earns a referral month, and what stops one being farmed
@@ -106,5 +109,33 @@ describe('the limits', () => {
     expect(redeemedWithinADay(times, now)).toEqual([after(-0.5, now), after(-0.1, now)]);
     const many = Array.from({ length: 9 }, (_, index) => after(-index / 100, now));
     expect(redeemedWithinADay(many, now)).toHaveLength(REDEMPTIONS_PER_DAY);
+  });
+});
+
+describe('the referral cap counts only referral grants (subscriptions ADR-0003)', () => {
+  const now = new Date('2026-10-20T08:00:00Z');
+  const grantOf = (id: string, source: GrantSource, daysAgo: number): PremiumGrant => ({
+    id,
+    source,
+    days: source === 'referral' ? 30 : 93,
+    grantedAt: after(-daysAgo, now),
+    startsAt: null,
+  });
+
+  it('leaves frame and code grants out of the referral places', () => {
+    const grants = [
+      ...[1, 30, 60, 90, 120].map((days) => grantOf(`r${String(days)}`, 'referral', days)),
+      grantOf('f1', 'frame', 2),
+      grantOf('f2', 'frame', 3),
+      grantOf('c1', 'code', 4),
+    ];
+    expect(referralGrantDates(grants)).toHaveLength(5);
+    expect(isUnderYearlyCap(referralGrantDates(grants), now)).toBe(true);
+    expect(
+      isUnderYearlyCap(
+        grants.map((grant) => grant.grantedAt),
+        now,
+      ),
+    ).toBe(false);
   });
 });

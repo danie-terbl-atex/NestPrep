@@ -1,4 +1,5 @@
 import { isChildRole } from '../product_analytics/metric_definitions';
+import type { PremiumGrant } from '../subscriptions/premium_composition';
 
 /**
  * What a referral is worth and what earns it — every number and rule of
@@ -85,4 +86,8 @@ export function sharesAMember(referred: Roles, referrer: Roles): boolean {
 export function isUnderYearlyCap(grantedAt: readonly Date[], now: Date): boolean {
   const since = now.getTime() - REWARD_YEAR_MS;
   return grantedAt.filter((at) => at.getTime() > since).length < YEARLY_REWARD_CAP;
+}
+
+export function referralGrantDates(grants: readonly PremiumGrant[]): Date[] {
+  return grants.filter((grant) => grant.source === 'referral').map((grant) => grant.grantedAt);
 }

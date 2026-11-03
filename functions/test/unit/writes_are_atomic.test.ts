@@ -322,6 +322,17 @@ describe('every callable declares what it may cost', () => {
         'assistantAuth',
         'assistantMcp',
         'pruneAssistantConnections',
+        // Premium vouchers and codes: an HMAC no rule can compute, a claim
+        // checked against a code, a household and a person at once, and an
+        // email proved by a code a server sends (subscriptions ADR-0003,
+        // ADR-0004).
+        'claimPremiumVoucher',
+        'issuePremiumVouchers',
+        'premiumVouchersForMe',
+        'premiumWeb',
+        'sendVoucherEmailCode',
+        'verifyVoucherEmailCode',
+        'voidFrameVoucher',
       ].sort(),
     );
   });

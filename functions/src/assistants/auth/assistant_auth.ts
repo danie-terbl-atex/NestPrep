@@ -2,6 +2,7 @@ import type { Response } from 'express';
 import { logger } from 'firebase-functions/v2';
 import { onRequest, type Request } from 'firebase-functions/v2/https';
 
+import { callerAddress } from '../../shared/client_address';
 import { db } from '../../shared/firestore';
 import { HOSTING_REGION } from '../../shared/region';
 import {
@@ -11,7 +12,6 @@ import {
   clientDocumentsMayBeLocal,
 } from './assistants_config';
 import { AUTH_REQUEST_LIFETIME_MS } from './auth_documents';
-import { callerAddress } from './auth_rate_limits';
 import { type AuthReply, authorizeErrorPage, json, sessionCookie, sessionFrom } from './auth_reply';
 import { authorize } from './authorize';
 import { clientDocumentFetch } from './client_document_fetch';

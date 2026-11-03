@@ -22,6 +22,7 @@
     "test:all": "npm run test && npm run test:rules && npm run test:emulator",
     "seed": "node tools/seed-emulator.mjs",
     "seed:catalogue": "node tools/seed-catalogue.mjs",
+    "seed:premium-codes": "node tools/seed-premium-codes.mjs",
     "seed:cloud-demo": "node tools/seed-cloud-demo.mjs",
     "teardown:cloud-demo": "node tools/teardown-cloud-demo.mjs",
     "emulators": "node tools/emulators.mjs",

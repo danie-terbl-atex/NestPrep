@@ -3,16 +3,20 @@ import 'dart:io';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/data/callable_child_profile_directory.dart';
+import 'package:nestprep/features/subscriptions/data/callable_premium_voucher_directory.dart';
 import 'package:nestprep/features/subscriptions/data/callable_subscription_directory.dart';
 import 'package:nestprep/features/subscriptions/data/firestore_entitlement_repository.dart';
 import 'package:nestprep/features/subscriptions/data/subscription_failure_mapper.dart';
 import 'package:nestprep/features/subscriptions/model/billing_store.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/model/grant_days_waiting.dart';
+import 'package:nestprep/features/subscriptions/model/grant_source.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/features/subscriptions/model/subscription_plan.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/flags/feature_flag.dart';
 
 /// Subscriptions' lists written down in both languages (subscriptions
 /// ADR-0001): the refusals, the triggers analytics counts, the stores, the
@@ -41,12 +45,12 @@ void main() {
     ).allMatches(block).map((m) => m.group(1)!).toSet();
   }
 
-  AppFailure mapped(String reason, {Object? feature}) =>
+  AppFailure mapped(String reason, {Object? feature, Object? scope}) =>
       failureFromSubscriptionCallable(
         FirebaseFunctionsException(
           code: 'failed-precondition',
           message: 'for the log, not for a person',
-          details: {'reason': reason, 'feature': ?feature},
+          details: {'reason': reason, 'feature': ?feature, 'scope': ?scope},
         ),
       );
 
@@ -101,6 +105,10 @@ void main() {
       CallableSubscriptionDirectory.offerCallable,
       CallableSubscriptionDirectory.verifyCallable,
       CallableChildProfileDirectory.callableName,
+      CallablePremiumVoucherDirectory.vouchersCallable,
+      CallablePremiumVoucherDirectory.claimCallable,
+      CallablePremiumVoucherDirectory.sendCodeCallable,
+      CallablePremiumVoucherDirectory.verifyCodeCallable,
     ]) {
       expect(index, contains('export { $name }'), reason: name);
     }
@@ -110,9 +118,88 @@ void main() {
     final known = {
       for (final problem in SubscriptionProblem.values) problem.name,
       for (final problem in HouseholdProblem.values) problem.name,
+      for (final problem in PremiumVoucherProblem.values) problem.name,
       'premiumRequired',
     };
     expect(refusals().difference(known), isEmpty);
+  });
+
+  test('every Premium voucher refusal the app has words for, the server '
+      'sends', () {
+    expect(
+      PremiumVoucherProblem.values
+          .map((problem) => problem.name)
+          .toSet()
+          .difference(refusals()),
+      isEmpty,
+    );
+  });
+
+  test('a voucher refusal maps to its own case, with its scope', () {
+    for (final problem in PremiumVoucherProblem.values) {
+      expect(mapped(problem.name), PremiumVoucherFailure(problem));
+    }
+    expect(
+      mapped('codeAlreadyUsed', scope: 'person'),
+      const PremiumVoucherFailure(
+        PremiumVoucherProblem.codeAlreadyUsed,
+        scope: VoucherRefusalScope.person,
+      ),
+    );
+    expect(
+      mapped('codeAlreadyUsed', scope: 'household'),
+      const PremiumVoucherFailure(
+        PremiumVoucherProblem.codeAlreadyUsed,
+        scope: VoucherRefusalScope.household,
+      ),
+    );
+    expect(
+      AppCopy.failure(mapped('codeAlreadyUsed', scope: 'person')),
+      isNot(AppCopy.failure(mapped('codeAlreadyUsed', scope: 'household'))),
+    );
+    expect(
+      mapped('notAMember'),
+      isA<HouseholdFailure>().having(
+        (failure) => failure.problem,
+        'problem',
+        HouseholdProblem.notAMember,
+      ),
+    );
+  });
+
+  test('no voucher refusal shows a code, a label or a partner', () {
+    for (final problem in PremiumVoucherProblem.values) {
+      for (final scope in [null, ...VoucherRefusalScope.values]) {
+        final copy = AppCopy.failure(
+          PremiumVoucherFailure(problem, scope: scope),
+        ).toLowerCase();
+        expect(copy, isNot(contains('redeem')), reason: problem.name);
+        expect(copy, isNot(contains('partner')), reason: problem.name);
+        expect(copy, isNot(contains('label')), reason: problem.name);
+        if (!problem.name.startsWith('email') &&
+            problem.name != 'tooManyCodes') {
+          expect(copy, isNot(contains('code')), reason: problem.name);
+        }
+      }
+    }
+  });
+
+  test('the grant sources are the server’s, and each has waiting days', () {
+    expect(
+      GrantSource.values.map((source) => source.name).toSet(),
+      stringsOf(source('subscriptions/household_premium.ts'), 'GRANT_SOURCES'),
+    );
+    expect(
+      const GrantDaysWaiting().toJson().keys.toSet(),
+      GrantSource.values.map((source) => source.name).toSet(),
+    );
+  });
+
+  test('the switch is the one the server reads', () {
+    expect(
+      stringsOf(source('shared/feature_flags.ts'), 'FEATURE_FLAGS'),
+      contains(FeatureFlag.premiumVouchers.field),
+    );
   });
 
   test('and each becomes a sentence, never the reason itself', () {

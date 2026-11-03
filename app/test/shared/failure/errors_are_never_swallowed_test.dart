@@ -316,6 +316,12 @@ void main() {
     'controller.redeem(code)',
     '_makeCode()',
     '_recordOpening()',
+    // Premium from a frame order or a gift (subscriptions ADR-0003): the sheet
+    // shows every refusal on the voucher or the field it belongs to, and
+    // reading the account's households catches its own AppFailure into the
+    // choice's failed state.
+    'showPremiumVoucherSheet(context',
+    '_loadHouseholds(current',
     // Plan my week finding where the shop is (lunch-box ADR-0012): it
     // catches its own AppFailure and falls back to the resolver's own city,
     // which the brief names; unawaited because it starts in the constructor.

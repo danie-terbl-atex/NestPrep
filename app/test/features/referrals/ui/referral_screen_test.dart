@@ -8,6 +8,7 @@ import 'package:nestprep/features/referrals/model/referral_side.dart';
 import 'package:nestprep/features/referrals/model/referral_status.dart';
 import 'package:nestprep/features/referrals/state/referral_controller.dart';
 import 'package:nestprep/features/referrals/ui/referral_screen.dart';
+import 'package:nestprep/features/subscriptions/model/grant_source.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
@@ -251,6 +252,7 @@ void main() {
         PremiumGrant(
           id: 'g1',
           days: 30,
+          source: GrantSource.referral,
           grantedAt: now.subtract(const Duration(days: 2)),
           startsAt: now.subtract(const Duration(days: 2)),
         ),
@@ -272,6 +274,7 @@ void main() {
         PremiumGrant(
           id: 'g1',
           days: 30,
+          source: GrantSource.referral,
           grantedAt: now.subtract(const Duration(days: 40)),
           startsAt: now.subtract(const Duration(days: 40)),
         ),

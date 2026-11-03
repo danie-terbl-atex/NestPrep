@@ -1,15 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/product_analytics/data/paywall_open_recorder.dart';
 import 'package:nestprep/features/subscriptions/data/entitlement_repository.dart';
+import 'package:nestprep/features/subscriptions/data/premium_voucher_directory.dart';
 import 'package:nestprep/features/subscriptions/data/store_billing.dart';
 import 'package:nestprep/features/subscriptions/data/subscription_directory.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
+import 'package:nestprep/features/subscriptions/state/premium_voucher_inbox.dart';
 import 'package:nestprep/features/subscriptions/state/purchase_coordinator.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'fake_paywall_open_recorder.dart';
+import 'fake_premium_vouchers.dart';
 import 'fake_subscriptions.dart';
 import 'household_fixtures.dart';
 
@@ -25,7 +28,9 @@ final class SubscriptionHarness {
       subscriptionDirectory: server,
       restoreSettle: const Duration(milliseconds: 20),
     )..attach(householdId: Fixtures.householdId, canBuy: true);
+    inbox = PremiumVoucherInbox(directory: vouchers);
     addTearDown(() async {
+      inbox.dispose();
       coordinator.dispose();
       await store.close();
       await entitlements.close();
@@ -37,6 +42,11 @@ final class SubscriptionHarness {
   final FakeEntitlementRepository entitlements;
   late final PurchaseCoordinator coordinator;
 
+  /// Frame orders and gifts waiting for the signed-in account (subscriptions
+  /// ADR-0003, ADR-0004): nothing unless a test puts some there.
+  final vouchers = FakePremiumVoucherDirectory();
+  late final PremiumVoucherInbox inbox;
+
   /// Every paywall opening the app tells the server about
   /// (product-analytics ADR-0002).
   final paywallOpens = FakePaywallOpenRecorder();
@@ -47,6 +57,8 @@ final class SubscriptionHarness {
     Provider<SubscriptionDirectory>.value(value: server),
     Provider<EntitlementRepository>.value(value: entitlements),
     ChangeNotifierProvider<PurchaseCoordinator>.value(value: coordinator),
+    Provider<PremiumVoucherDirectory>.value(value: vouchers),
+    ChangeNotifierProvider<PremiumVoucherInbox>.value(value: inbox),
     ChangeNotifierProvider<HouseholdEntitlement>(
       create: (_) => HouseholdEntitlement(
         entitlementRepository: entitlements,

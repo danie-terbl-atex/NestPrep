@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/referrals/model/household_referral.dart';
 import 'package:nestprep/features/referrals/model/premium_grant.dart';
@@ -7,6 +8,9 @@ import 'package:nestprep/features/referrals/model/referral_side.dart';
 import 'package:nestprep/features/referrals/model/referral_status.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/model/grant_days_waiting.dart';
+import 'package:nestprep/features/subscriptions/model/grant_source.dart';
+import 'package:nestprep/features/subscriptions/model/premium_length.dart';
 
 /// What the referral screen reads out of what the server wrote
 /// (subscriptions ADR-0002).
@@ -67,6 +71,7 @@ void main() {
     final started = PremiumGrant(
       id: 'g1',
       days: 30,
+      source: GrantSource.referral,
       grantedAt: now.subtract(const Duration(days: 5)),
       startsAt: now.subtract(const Duration(days: 5)),
     );
@@ -78,7 +83,12 @@ void main() {
     });
 
     test('waits while it has no start', () {
-      final waiting = PremiumGrant(id: 'g2', days: 30, grantedAt: now);
+      final waiting = PremiumGrant(
+        id: 'g2',
+        days: 30,
+        grantedAt: now,
+        source: GrantSource.referral,
+      );
       expect(waiting.isWaiting, isTrue);
       expect(waiting.isRunningAt(now), isFalse);
     });
@@ -89,10 +99,16 @@ void main() {
         lines: const [],
         grants: [
           started,
-          PremiumGrant(id: 'g2', days: 30, grantedAt: now),
+          PremiumGrant(
+            id: 'g2',
+            days: 30,
+            grantedAt: now,
+            source: GrantSource.referral,
+          ),
           PremiumGrant(
             id: 'g0',
             days: 30,
+            source: GrantSource.referral,
             grantedAt: now.subtract(const Duration(days: 400)),
             startsAt: now.subtract(const Duration(days: 400)),
           ),
@@ -115,16 +131,48 @@ void main() {
       );
     });
 
-    test('says waiting days as whole months, a part rounded up', () {
-      expect(
-        const Entitlement(referralDaysWaiting: 30).referralMonthsWaiting,
-        1,
+    test('says referral days waiting as whole months, a part rounded up', () {
+      PremiumLength waiting(int days) =>
+          Entitlement(grantDaysWaiting: GrantDaysWaiting(referral: days))
+              .lengthWaiting(GrantSource.referral);
+      expect(waiting(30), const PremiumMonths(1));
+      expect(waiting(31), const PremiumMonths(2));
+      expect(waiting(0), const PremiumMonths(0));
+    });
+  });
+
+  group('a household with frame and gifted Premium as well', () {
+    final frame = PremiumGrant(
+      id: 'f1',
+      days: 93,
+      grantedAt: now,
+      source: GrantSource.frame,
+    );
+    final gift = PremiumGrant(
+      id: 'c1',
+      days: 30,
+      grantedAt: now.subtract(const Duration(days: 3)),
+      startsAt: now.subtract(const Duration(days: 3)),
+      source: GrantSource.code,
+    );
+    final unknown = PremiumGrant.fromJson({
+      'id': 'x1',
+      'days': 30,
+      'grantedAt': Timestamp.fromDate(now),
+      'source': 'somethingNew',
+    });
+
+    test('counts none of it as referral months', () {
+      final overview = ReferralOverview(
+        referral: const HouseholdReferral(yearlyRewardCap: 1),
+        lines: const [],
+        grants: [frame, gift, unknown],
       );
-      expect(
-        const Entitlement(referralDaysWaiting: 31).referralMonthsWaiting,
-        2,
-      );
-      expect(const Entitlement().referralMonthsWaiting, 0);
+      expect(unknown.source, isNull);
+      expect(overview.monthsThisYear(now), 0);
+      expect(overview.hasReachedCapAt(now), isFalse);
+      expect(overview.runningAt(now), isNull);
+      expect(overview.monthsWaiting, 0);
     });
   });
 }

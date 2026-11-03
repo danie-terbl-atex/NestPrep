@@ -3,6 +3,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../shared/firestore/nullable_timestamp_converter.dart';
 import 'billing_store.dart';
 import 'entitlement_status.dart';
+import 'grant_days_waiting.dart';
+import 'grant_source.dart';
+import 'premium_length.dart';
 import 'subscription_plan.dart';
 
 part 'entitlement.freezed.dart';
@@ -47,6 +50,8 @@ abstract class Entitlement with _$Entitlement {
 
     /// Given days that wait behind paid time and start when it ends.
     @Default(0) int referralDaysWaiting,
+    @NullableTimestampConverter() DateTime? grantUntil,
+    GrantDaysWaiting? grantDaysWaiting,
   }) = _Entitlement;
 
   const Entitlement._();
@@ -70,11 +75,21 @@ abstract class Entitlement with _$Entitlement {
   /// date is when what was paid for ends.
   bool get isRenewing => willRenew == true;
 
-  /// Premium now that no store sold — a month from a referral
-  /// (subscriptions ADR-0002).
+  /// Premium now that no store sold: a referral, a frame order or a gift
+  /// (subscriptions ADR-0002, ADR-0003, ADR-0004).
   bool isGivenOnlyAt(DateTime now) =>
       status == EntitlementStatus.none && isPremiumAt(now);
 
-  /// Whole months waiting behind paid time, rounded up so a part is said.
-  int get referralMonthsWaiting => (referralDaysWaiting + 29) ~/ 30;
+  DateTime? get givenUntil => grantUntil ?? referralUntil;
+
+  GrantDaysWaiting get daysWaiting =>
+      grantDaysWaiting ?? GrantDaysWaiting(referral: referralDaysWaiting);
+
+  PremiumLength lengthWaiting(GrantSource source) =>
+      PremiumLength.of(source, daysWaiting.of(source));
+
+  bool isPaidAt(DateTime now) {
+    final until = storeUntil;
+    return until != null && until.isAfter(now);
+  }
 }

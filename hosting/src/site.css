@@ -540,6 +540,7 @@ main {
 
 input[type='email'],
 input[type='password'],
+input[type='text'],
 select,
 textarea {
   width: 100%;
@@ -665,6 +666,23 @@ textarea {
 .notice h2 {
   font-size: var(--text-title);
   margin-top: 0;
+}
+
+.premium-status {
+  margin-top: var(--space-xxl);
+}
+
+.premium-panel {
+  margin-bottom: var(--space-xl);
+}
+
+.premium-panel > h2:first-child {
+  margin-top: 0;
+}
+
+.code-input {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 @media (min-width: 720px) {

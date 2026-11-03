@@ -27,7 +27,7 @@ mixin _$Entitlement {
 /// given (subscriptions ADR-0002).
 @NullableTimestampConverter() DateTime? get storeUntil;/// Until when given months cover the household, or null.
 @NullableTimestampConverter() DateTime? get referralUntil;/// Given days that wait behind paid time and start when it ends.
- int get referralDaysWaiting;
+ int get referralDaysWaiting;@NullableTimestampConverter() DateTime? get grantUntil; GrantDaysWaiting? get grantDaysWaiting;
 /// Create a copy of Entitlement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,20 +41,20 @@ $EntitlementCopyWith<Entitlement> get copyWith => _$EntitlementCopyWithImpl<Enti
 @override
 bool operator ==(Object other) {
   final _this = this as Entitlement;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Entitlement&&(identical(other.premiumUntil, _this.premiumUntil) || other.premiumUntil == _this.premiumUntil)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.plan, _this.plan) || other.plan == _this.plan)&&(identical(other.store, _this.store) || other.store == _this.store)&&(identical(other.willRenew, _this.willRenew) || other.willRenew == _this.willRenew)&&(identical(other.managedByMemberId, _this.managedByMemberId) || other.managedByMemberId == _this.managedByMemberId)&&(identical(other.isTest, _this.isTest) || other.isTest == _this.isTest)&&(identical(other.storeUntil, _this.storeUntil) || other.storeUntil == _this.storeUntil)&&(identical(other.referralUntil, _this.referralUntil) || other.referralUntil == _this.referralUntil)&&(identical(other.referralDaysWaiting, _this.referralDaysWaiting) || other.referralDaysWaiting == _this.referralDaysWaiting));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Entitlement&&(identical(other.premiumUntil, _this.premiumUntil) || other.premiumUntil == _this.premiumUntil)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.plan, _this.plan) || other.plan == _this.plan)&&(identical(other.store, _this.store) || other.store == _this.store)&&(identical(other.willRenew, _this.willRenew) || other.willRenew == _this.willRenew)&&(identical(other.managedByMemberId, _this.managedByMemberId) || other.managedByMemberId == _this.managedByMemberId)&&(identical(other.isTest, _this.isTest) || other.isTest == _this.isTest)&&(identical(other.storeUntil, _this.storeUntil) || other.storeUntil == _this.storeUntil)&&(identical(other.referralUntil, _this.referralUntil) || other.referralUntil == _this.referralUntil)&&(identical(other.referralDaysWaiting, _this.referralDaysWaiting) || other.referralDaysWaiting == _this.referralDaysWaiting)&&(identical(other.grantUntil, _this.grantUntil) || other.grantUntil == _this.grantUntil)&&(identical(other.grantDaysWaiting, _this.grantDaysWaiting) || other.grantDaysWaiting == _this.grantDaysWaiting));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Entitlement;
-  return Object.hash(runtimeType,_this.premiumUntil,_this.status,_this.plan,_this.store,_this.willRenew,_this.managedByMemberId,_this.isTest,_this.storeUntil,_this.referralUntil,_this.referralDaysWaiting);
+  return Object.hash(runtimeType,_this.premiumUntil,_this.status,_this.plan,_this.store,_this.willRenew,_this.managedByMemberId,_this.isTest,_this.storeUntil,_this.referralUntil,_this.referralDaysWaiting,_this.grantUntil,_this.grantDaysWaiting);
 }
 
 @override
 String toString() {
   final _this = this as Entitlement;
-  return 'Entitlement(premiumUntil: ${_this.premiumUntil}, status: ${_this.status}, plan: ${_this.plan}, store: ${_this.store}, willRenew: ${_this.willRenew}, managedByMemberId: ${_this.managedByMemberId}, isTest: ${_this.isTest}, storeUntil: ${_this.storeUntil}, referralUntil: ${_this.referralUntil}, referralDaysWaiting: ${_this.referralDaysWaiting})';
+  return 'Entitlement(premiumUntil: ${_this.premiumUntil}, status: ${_this.status}, plan: ${_this.plan}, store: ${_this.store}, willRenew: ${_this.willRenew}, managedByMemberId: ${_this.managedByMemberId}, isTest: ${_this.isTest}, storeUntil: ${_this.storeUntil}, referralUntil: ${_this.referralUntil}, referralDaysWaiting: ${_this.referralDaysWaiting}, grantUntil: ${_this.grantUntil}, grantDaysWaiting: ${_this.grantDaysWaiting})';
 }
 
 
@@ -65,11 +65,11 @@ abstract mixin class $EntitlementCopyWith<$Res>  {
   factory $EntitlementCopyWith(Entitlement value, $Res Function(Entitlement) _then) = _$EntitlementCopyWithImpl;
 @useResult
 $Res call({
-@NullableTimestampConverter() DateTime? premiumUntil,@JsonKey(unknownEnumValue: EntitlementStatus.none) EntitlementStatus status,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) SubscriptionPlan? plan,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) BillingStore? store, bool? willRenew, String? managedByMemberId, bool isTest,@NullableTimestampConverter() DateTime? storeUntil,@NullableTimestampConverter() DateTime? referralUntil, int referralDaysWaiting
+@NullableTimestampConverter() DateTime? premiumUntil,@JsonKey(unknownEnumValue: EntitlementStatus.none) EntitlementStatus status,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) SubscriptionPlan? plan,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) BillingStore? store, bool? willRenew, String? managedByMemberId, bool isTest,@NullableTimestampConverter() DateTime? storeUntil,@NullableTimestampConverter() DateTime? referralUntil, int referralDaysWaiting,@NullableTimestampConverter() DateTime? grantUntil, GrantDaysWaiting? grantDaysWaiting
 });
 
 
-
+$GrantDaysWaitingCopyWith<$Res>? get grantDaysWaiting;
 
 }
 /// @nodoc
@@ -82,7 +82,7 @@ class _$EntitlementCopyWithImpl<$Res>
 
 /// Create a copy of Entitlement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? premiumUntil = freezed,Object? status = null,Object? plan = freezed,Object? store = freezed,Object? willRenew = freezed,Object? managedByMemberId = freezed,Object? isTest = null,Object? storeUntil = freezed,Object? referralUntil = freezed,Object? referralDaysWaiting = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? premiumUntil = freezed,Object? status = null,Object? plan = freezed,Object? store = freezed,Object? willRenew = freezed,Object? managedByMemberId = freezed,Object? isTest = null,Object? storeUntil = freezed,Object? referralUntil = freezed,Object? referralDaysWaiting = null,Object? grantUntil = freezed,Object? grantDaysWaiting = freezed,}) {
   return _then(Entitlement(
 premiumUntil: freezed == premiumUntil ? _self.premiumUntil : premiumUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -94,10 +94,24 @@ as String?,isTest: null == isTest ? _self.isTest : isTest // ignore: cast_nullab
 as bool,storeUntil: freezed == storeUntil ? _self.storeUntil : storeUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,referralUntil: freezed == referralUntil ? _self.referralUntil : referralUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,referralDaysWaiting: null == referralDaysWaiting ? _self.referralDaysWaiting : referralDaysWaiting // ignore: cast_nullable_to_non_nullable
-as int,
+as int,grantUntil: freezed == grantUntil ? _self.grantUntil : grantUntil // ignore: cast_nullable_to_non_nullable
+as DateTime?,grantDaysWaiting: freezed == grantDaysWaiting ? _self.grantDaysWaiting : grantDaysWaiting // ignore: cast_nullable_to_non_nullable
+as GrantDaysWaiting?,
   ));
 }
+/// Create a copy of Entitlement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GrantDaysWaitingCopyWith<$Res>? get grantDaysWaiting {
+    if (_self.grantDaysWaiting == null) {
+    return null;
+  }
 
+  return $GrantDaysWaitingCopyWith<$Res>(_self.grantDaysWaiting!, (value) {
+    return _then(_self.copyWith(grantDaysWaiting: value));
+  });
+}
 }
 
 
@@ -179,10 +193,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting, @NullableTimestampConverter()  DateTime? grantUntil,  GrantDaysWaiting? grantDaysWaiting)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Entitlement() when $default != null:
-return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting);case _:
+return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting,_that.grantUntil,_that.grantDaysWaiting);case _:
   return orElse();
 
 }
@@ -200,10 +214,10 @@ return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.wil
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting, @NullableTimestampConverter()  DateTime? grantUntil,  GrantDaysWaiting? grantDaysWaiting)  $default,) {final _that = this;
 switch (_that) {
 case _Entitlement():
-return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting);case _:
+return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting,_that.grantUntil,_that.grantDaysWaiting);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,10 +234,10 @@ return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.wil
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@NullableTimestampConverter()  DateTime? premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none)  EntitlementStatus status, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  SubscriptionPlan? plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  BillingStore? store,  bool? willRenew,  String? managedByMemberId,  bool isTest, @NullableTimestampConverter()  DateTime? storeUntil, @NullableTimestampConverter()  DateTime? referralUntil,  int referralDaysWaiting, @NullableTimestampConverter()  DateTime? grantUntil,  GrantDaysWaiting? grantDaysWaiting)?  $default,) {final _that = this;
 switch (_that) {
 case _Entitlement() when $default != null:
-return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting);case _:
+return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.willRenew,_that.managedByMemberId,_that.isTest,_that.storeUntil,_that.referralUntil,_that.referralDaysWaiting,_that.grantUntil,_that.grantDaysWaiting);case _:
   return null;
 
 }
@@ -235,7 +249,7 @@ return $default(_that.premiumUntil,_that.status,_that.plan,_that.store,_that.wil
 @JsonSerializable()
 
 class _Entitlement extends Entitlement {
-  const _Entitlement({@NullableTimestampConverter() this.premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none) this.status = EntitlementStatus.none, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.store, this.willRenew, this.managedByMemberId, this.isTest = false, @NullableTimestampConverter() this.storeUntil, @NullableTimestampConverter() this.referralUntil, this.referralDaysWaiting = 0}): super._();
+  const _Entitlement({@NullableTimestampConverter() this.premiumUntil, @JsonKey(unknownEnumValue: EntitlementStatus.none) this.status = EntitlementStatus.none, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.plan, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.store, this.willRenew, this.managedByMemberId, this.isTest = false, @NullableTimestampConverter() this.storeUntil, @NullableTimestampConverter() this.referralUntil, this.referralDaysWaiting = 0, @NullableTimestampConverter() this.grantUntil, this.grantDaysWaiting}): super._();
   factory _Entitlement.fromJson(Map<String, dynamic> json) => _$EntitlementFromJson(json);
 
 /// Premium until this instant, or none. The rules compare it with the
@@ -259,6 +273,8 @@ class _Entitlement extends Entitlement {
 @override@NullableTimestampConverter() final  DateTime? referralUntil;
 /// Given days that wait behind paid time and start when it ends.
 @override@JsonKey() final  int referralDaysWaiting;
+@override@NullableTimestampConverter() final  DateTime? grantUntil;
+@override final  GrantDaysWaiting? grantDaysWaiting;
 
 /// Create a copy of Entitlement
 /// with the given fields replaced by the non-null parameter values.
@@ -273,18 +289,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Entitlement&&(identical(other.premiumUntil, premiumUntil) || other.premiumUntil == premiumUntil)&&(identical(other.status, status) || other.status == status)&&(identical(other.plan, plan) || other.plan == plan)&&(identical(other.store, store) || other.store == store)&&(identical(other.willRenew, willRenew) || other.willRenew == willRenew)&&(identical(other.managedByMemberId, managedByMemberId) || other.managedByMemberId == managedByMemberId)&&(identical(other.isTest, isTest) || other.isTest == isTest)&&(identical(other.storeUntil, storeUntil) || other.storeUntil == storeUntil)&&(identical(other.referralUntil, referralUntil) || other.referralUntil == referralUntil)&&(identical(other.referralDaysWaiting, referralDaysWaiting) || other.referralDaysWaiting == referralDaysWaiting));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Entitlement&&(identical(other.premiumUntil, premiumUntil) || other.premiumUntil == premiumUntil)&&(identical(other.status, status) || other.status == status)&&(identical(other.plan, plan) || other.plan == plan)&&(identical(other.store, store) || other.store == store)&&(identical(other.willRenew, willRenew) || other.willRenew == willRenew)&&(identical(other.managedByMemberId, managedByMemberId) || other.managedByMemberId == managedByMemberId)&&(identical(other.isTest, isTest) || other.isTest == isTest)&&(identical(other.storeUntil, storeUntil) || other.storeUntil == storeUntil)&&(identical(other.referralUntil, referralUntil) || other.referralUntil == referralUntil)&&(identical(other.referralDaysWaiting, referralDaysWaiting) || other.referralDaysWaiting == referralDaysWaiting)&&(identical(other.grantUntil, grantUntil) || other.grantUntil == grantUntil)&&(identical(other.grantDaysWaiting, grantDaysWaiting) || other.grantDaysWaiting == grantDaysWaiting));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,premiumUntil,status,plan,store,willRenew,managedByMemberId,isTest,storeUntil,referralUntil,referralDaysWaiting);
+    return Object.hash(runtimeType,premiumUntil,status,plan,store,willRenew,managedByMemberId,isTest,storeUntil,referralUntil,referralDaysWaiting,grantUntil,grantDaysWaiting);
 }
 
 @override
 String toString() {
-    return 'Entitlement(premiumUntil: $premiumUntil, status: $status, plan: $plan, store: $store, willRenew: $willRenew, managedByMemberId: $managedByMemberId, isTest: $isTest, storeUntil: $storeUntil, referralUntil: $referralUntil, referralDaysWaiting: $referralDaysWaiting)';
+    return 'Entitlement(premiumUntil: $premiumUntil, status: $status, plan: $plan, store: $store, willRenew: $willRenew, managedByMemberId: $managedByMemberId, isTest: $isTest, storeUntil: $storeUntil, referralUntil: $referralUntil, referralDaysWaiting: $referralDaysWaiting, grantUntil: $grantUntil, grantDaysWaiting: $grantDaysWaiting)';
 }
 
 
@@ -295,11 +311,11 @@ abstract mixin class _$EntitlementCopyWith<$Res> implements $EntitlementCopyWith
   factory _$EntitlementCopyWith(_Entitlement value, $Res Function(_Entitlement) _then) = __$EntitlementCopyWithImpl;
 @override @useResult
 $Res call({
-@NullableTimestampConverter() DateTime? premiumUntil,@JsonKey(unknownEnumValue: EntitlementStatus.none) EntitlementStatus status,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) SubscriptionPlan? plan,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) BillingStore? store, bool? willRenew, String? managedByMemberId, bool isTest,@NullableTimestampConverter() DateTime? storeUntil,@NullableTimestampConverter() DateTime? referralUntil, int referralDaysWaiting
+@NullableTimestampConverter() DateTime? premiumUntil,@JsonKey(unknownEnumValue: EntitlementStatus.none) EntitlementStatus status,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) SubscriptionPlan? plan,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) BillingStore? store, bool? willRenew, String? managedByMemberId, bool isTest,@NullableTimestampConverter() DateTime? storeUntil,@NullableTimestampConverter() DateTime? referralUntil, int referralDaysWaiting,@NullableTimestampConverter() DateTime? grantUntil, GrantDaysWaiting? grantDaysWaiting
 });
 
 
-
+@override $GrantDaysWaitingCopyWith<$Res>? get grantDaysWaiting;
 
 }
 /// @nodoc
@@ -312,7 +328,7 @@ class __$EntitlementCopyWithImpl<$Res>
 
 /// Create a copy of Entitlement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? premiumUntil = freezed,Object? status = null,Object? plan = freezed,Object? store = freezed,Object? willRenew = freezed,Object? managedByMemberId = freezed,Object? isTest = null,Object? storeUntil = freezed,Object? referralUntil = freezed,Object? referralDaysWaiting = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? premiumUntil = freezed,Object? status = null,Object? plan = freezed,Object? store = freezed,Object? willRenew = freezed,Object? managedByMemberId = freezed,Object? isTest = null,Object? storeUntil = freezed,Object? referralUntil = freezed,Object? referralDaysWaiting = null,Object? grantUntil = freezed,Object? grantDaysWaiting = freezed,}) {
   return _then(_Entitlement(
 premiumUntil: freezed == premiumUntil ? _self.premiumUntil : premiumUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -324,11 +340,25 @@ as String?,isTest: null == isTest ? _self.isTest : isTest // ignore: cast_nullab
 as bool,storeUntil: freezed == storeUntil ? _self.storeUntil : storeUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,referralUntil: freezed == referralUntil ? _self.referralUntil : referralUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,referralDaysWaiting: null == referralDaysWaiting ? _self.referralDaysWaiting : referralDaysWaiting // ignore: cast_nullable_to_non_nullable
-as int,
+as int,grantUntil: freezed == grantUntil ? _self.grantUntil : grantUntil // ignore: cast_nullable_to_non_nullable
+as DateTime?,grantDaysWaiting: freezed == grantDaysWaiting ? _self.grantDaysWaiting : grantDaysWaiting // ignore: cast_nullable_to_non_nullable
+as GrantDaysWaiting?,
   ));
 }
 
+/// Create a copy of Entitlement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GrantDaysWaitingCopyWith<$Res>? get grantDaysWaiting {
+    if (_self.grantDaysWaiting == null) {
+    return null;
+  }
 
+  return $GrantDaysWaitingCopyWith<$Res>(_self.grantDaysWaiting!, (value) {
+    return _then(_self.copyWith(grantDaysWaiting: value));
+  });
+}
 }
 
 // dart format on
