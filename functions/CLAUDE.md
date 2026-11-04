@@ -230,7 +230,8 @@ cannot read those grants and drops them from any restatement it makes:
 
 1. `firebase deploy --only firestore:rules,firestore:indexes,functions --project nestprep-643b7` with
    `STORE_INVOKER_SERVICE_ACCOUNT` still empty in `.env.nestprep-643b7`, no IAM grant and no codes
-   seeded. Every Function, the reconcile and the store notifications included, now reads every grant
+   seeded. The empty value has to be written out (`STORE_INVOKER_SERVICE_ACCOUNT=`): a
+   `--non-interactive` deploy treats the empty default as missing and refuses. Every Function, the reconcile and the store notifications included, now reads every grant
    source. The new endpoints are deployed but inert: the store is refused 403, so no frame voucher can
    exist, and with no `premiumCodes` the redeem page creates none, so nothing can be claimed.
 2. Only once step 1 is serving everywhere (`gcloud run revisions list --region africa-south1` shows
