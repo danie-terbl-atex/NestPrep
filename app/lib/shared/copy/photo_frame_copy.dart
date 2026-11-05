@@ -95,19 +95,22 @@ abstract final class PhotoFrameCopy {
   // ---- the screensaver ----
   static const screensaverTitle = 'Screensaver';
   static const screensaverBody =
-      'When nobody has touched the frame for a while, it shows your photos.';
+      'When nobody has touched the frame for a while, it shows your photos. '
+      'Until you choose a time and add photos, it shows a few NestPrep '
+      'pictures after 10 minutes, so the screen never sits still.';
   static const screensaverOff = 'Off';
   static String idleMinutes(int minutes) => '$minutes min';
   static String idleMinutesLabel(int minutes) => minutes == 1
       ? 'Screensaver after 1 minute'
       : 'Screensaver after $minutes minutes';
-  static const screensaverOffLabel = 'Screensaver off';
+  static const screensaverOffLabel =
+      'Screensaver off, NestPrep pictures after 10 minutes';
   static const eachPhoto = 'Each photo';
   static String seconds(int seconds) => '$seconds s';
   static String secondsLabel(int seconds) => 'Each photo for $seconds seconds';
   static const screensaverNeedsPhotos =
-      'The album is empty, so the frame keeps showing the day. Add a few '
-      'photos to start it.';
+      'The album is empty, so the frame shows a few NestPrep pictures for '
+      'now. Add your own photos to show them instead.';
 
   // ---- the album ----
   static const photosTitle = 'Screensaver photos';
