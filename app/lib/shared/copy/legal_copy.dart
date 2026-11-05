@@ -27,7 +27,7 @@ abstract final class LegalCopy {
   static String appVersion(String name, int build) =>
       'Version $name (build $build)';
   static const aboutSupport = 'Questions or problems';
-  static const aboutSupportAddress = '[support email address]';
+  static const aboutSupportAddress = 'admin@nestprep.io';
   static const aboutMadeIn = 'Made in South Africa';
 
   static const licencesEmptyTitle = 'No licences found';
