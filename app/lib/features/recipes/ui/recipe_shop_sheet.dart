@@ -32,8 +32,10 @@ import 'recipe_shop_row.dart';
 /// needs — looked for at the shop the grocery list's *Shop at* last chose,
 /// among [shops], in a sheet that lives as long as it is open. Everything it
 /// needs is read from [context] first: a sheet is not under the page's
-/// providers.
-Future<void> showRecipeShopSheet(
+/// providers. Answers how many lines went on the list, or null when none did.
+///
+/// Snap a list opens it too, with a photo's lines (list-scan ADR-0001).
+Future<int?> showRecipeShopSheet(
   BuildContext context, {
   required String householdId,
   required String memberId,
@@ -81,7 +83,7 @@ Future<void> showRecipeShopSheet(
   if (!context.mounted) {
     controller.dispose();
     carts.dispose();
-    return;
+    return null;
   }
   await showNestSheet<void>(
     context: context,
@@ -101,8 +103,10 @@ Future<void> showRecipeShopSheet(
       ),
     ),
   );
+  final added = controller.addedCount;
   controller.dispose();
   carts.dispose();
+  return added;
 }
 
 /// The sheet's body: the shop and where it looks, how far the search has

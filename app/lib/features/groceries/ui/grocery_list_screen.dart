@@ -7,6 +7,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/grocery_plan_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../add_to_checkers/model/product_match_from.dart';
 import '../../add_to_checkers/model/retailer_product.dart';
@@ -22,6 +24,7 @@ import '../../add_to_checkers/ui/shops_on_list.dart';
 import '../../basket_compare/ui/compare_shops_entry.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
+import '../../list_scan/ui/snap_list_button.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
@@ -113,6 +116,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
     final canPlan = canEdit && plans.hasSources;
     final checkersOn = shopsOnList(context).isNotEmpty;
+    final canSnap =
+        canEdit &&
+        (context.watch<FeatureFlagsController?>()?.isOn(
+              FeatureFlag.snapShoppingList,
+            ) ??
+            false);
     final prompt = switch (plans.view) {
       AsyncData(value: final view)
           when canPlan && GroceryPlanPrompt.hasSomethingToSay(view) =>
@@ -190,6 +199,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               controller: _name,
               focusNode: _focus,
               leading: checkersOn ? const MatchAsYouTypeButton() : null,
+              trailing: canSnap
+                  ? SnapListButton(householdId: controller.householdId)
+                  : null,
               onSubmit: (name, {quantity}) async {
                 final added = await controller.add(name, quantity: quantity);
                 if (context.mounted) _matchAfterAdding(context, added);

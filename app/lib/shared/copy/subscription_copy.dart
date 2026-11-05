@@ -27,6 +27,7 @@ abstract final class SubscriptionCopy {
     PremiumFeature.lunchPhoto => 'Every lunch, photographed',
     PremiumFeature.recipeShopping => 'From recipe to trolley',
     PremiumFeature.familyLocation => 'Always know everyone got there',
+    PremiumFeature.listScan => 'Snap the list, skip the typing',
     PremiumFeature.aiPlanning || PremiumFeature.direct => 'NestPrep Premium',
   };
 
@@ -49,6 +50,9 @@ abstract final class SubscriptionCopy {
     PremiumFeature.recipeShopping =>
       'Find what a recipe still needs at your shop in one tap, then send '
           'it to your grocery list or straight to your cart.',
+    PremiumFeature.listScan =>
+      'Take a photo of any shopping list and every item lands on your grocery '
+          'list — or straight onto your cart at your shop.',
     PremiumFeature.familyLocation =>
       'Share all day without opening the app, see where everybody has been '
           'for 30 days, and hear when they reach school or home.',

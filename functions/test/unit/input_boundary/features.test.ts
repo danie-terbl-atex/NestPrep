@@ -113,6 +113,24 @@ describe('a school letter', () => {
   });
 });
 
+describe('a shopping list photo', () => {
+  const { schema, body } = validBodies.readShoppingList;
+
+  it('is a JPEG or a PNG, and nothing else', () => {
+    for (const mimeType of ['image/jpeg', 'image/png']) {
+      expect(() => parseInput(schema, { ...body, mimeType })).not.toThrow();
+    }
+    for (const mimeType of ['application/pdf', 'image/gif', 'text/html', '']) {
+      expect(() => parseInput(schema, { ...body, mimeType }), mimeType).toThrow(HttpsError);
+    }
+  });
+
+  it('is not empty, and not larger than a callable should carry', () => {
+    expect(() => parseInput(schema, { ...body, data: '' })).toThrow(HttpsError);
+    expect(() => parseInput(schema, { ...body, data: 'A'.repeat(12_000_000) })).toThrow(HttpsError);
+  });
+});
+
 describe('a lunch box’s picture', () => {
   const { schema, body } = validBodies.lunchPhoto;
 

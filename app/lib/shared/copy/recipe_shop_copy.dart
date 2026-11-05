@@ -47,6 +47,6 @@ abstract final class RecipeShopCopy {
     1 => '1 item added to your grocery list.',
     _ => '$count items added to your grocery list.',
   };
-  static const nothingIncluded = 'Tick at least one ingredient to add.';
+  static const nothingIncluded = 'Tick at least one item to add.';
   static const done = 'Done';
 }

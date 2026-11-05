@@ -4,6 +4,7 @@ import {
   createDocumentShareInput,
   revokeDocumentShareInput,
 } from '../../../src/documents/share/share_schemas';
+import { readShoppingListInput } from '../../../src/list_scan/schemas';
 import { readSchoolLetterInput } from '../../../src/school_letter/schemas';
 import {
   acceptCoParentInviteInput,
@@ -147,6 +148,12 @@ export const featureBodies = {
   readSchoolLetter: {
     schema: readSchoolLetterInput,
     body: { householdId: 'h1', mimeType: 'application/pdf', data: 'JVBERi0xLjc=' },
+  },
+  // Snap a shopping list: the photo travels in the call and is never stored
+  // (list-scan ADR-0001).
+  readShoppingList: {
+    schema: readShoppingListInput,
+    body: { householdId: 'h1', mimeType: 'image/jpeg', data: '/9j/4AAQ' },
   },
   // Co-parenting (household ADR-0004): every optional text is
   // required-and-nullable, so the app always says whether there is one.

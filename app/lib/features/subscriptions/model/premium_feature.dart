@@ -29,6 +29,10 @@ enum PremiumFeature {
   /// (live-location ADR-0003).
   familyLocation,
 
+  /// A photo of a shopping list read onto the grocery list, or found at the
+  /// shop (list-scan ADR-0001).
+  listScan,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

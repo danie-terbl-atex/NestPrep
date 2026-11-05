@@ -68,6 +68,7 @@ import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'home_layout_providers.dart';
+import 'list_scan_route.dart';
 import 'live_location_providers.dart';
 import 'lunch_planning_providers.dart';
 import 'nanny_hub_providers.dart';
@@ -227,6 +228,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // calendar V2: the school-letter reader and the card sharer (calendar
   // ADR-0005, ADR-0006). The switches are provided above.
   ...calendarV2Providers(),
+  // snap a shopping list: the reader and the photo picker (list-scan ADR-0001).
+  ...listScanProviders(),
   // co-parenting: two homes (household ADR-0004).
   ...twoHomesProviders(),
   // referrals and conversion by trigger (subscriptions ADR-0002,

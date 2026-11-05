@@ -1,3 +1,20 @@
+# Snap a shopping list, premium (list-scan)
+
+Daniel 2026-11-05: photo of a shopping list → items on the grocery list, or looked up at the chosen grocer and added so they are one tap from the cart. Plan approved: reuse the school-letter AI path and *Add to grocer*'s shop sheet; branch `feature/list-scan` in its own worktree.
+
+- [x] ADR: list-scan ADR-0001 (proposed); feature node, overview, work-index row 58
+- [x] Functions: `readShoppingList` (flag `snapShoppingList`, groceries edit, premium, photo check, `runAiCall` feature `listScan`); trigger `listScan`; emulator canned reply
+- [x] App: scan button beside the grocery add field → `ensurePremium` → `…/groceries/scan`; review, edit, add by name, *Find at my shop* via `showRecipeShopSheet`
+- [x] Tests: Functions unit 2267/2267, emulator list-scan 10/10 + school letter 13/13; app list-scan 31/31; full suite 5051 pass / 19 fail (same 19 on master)
+- [x] Pictures `app/design-review/list-scan-*.png` looked at; 200% wrap and labels fixed
+- [x] Committed `6b5645f`
+- [ ] Merge, deploy `readShoppingList` + `recordPaywallOpened`/`verifyPurchase`/`rollupBetaNumbers`, set `snapShoppingList` — Daniel's call
+- [ ] First real Gemini read; device run (needs the default emulator ports free, or the cloud)
+
+## Review
+
+Mostly glue over two proven seams, so little new surface: one callable, one screen. Mistake: a separate-port emulator suite that included Storage deleted the running LAN suite's blobs folder on exit; folder recreated, lesson updated.
+
 # Life360-style family location, premium (live-location phase 2)
 
 Daniel 2026-11-02: full location tracking like Life360, premium only, cheap to store and fast to read. Plan approved: windows stay free; our own native engine (not Transistor); kid phones share; a `location` area grant.

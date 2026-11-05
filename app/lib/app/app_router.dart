@@ -48,6 +48,7 @@ import 'household_route.dart';
 import 'household_shell.dart';
 import 'household_tab_navigation.dart';
 import 'kid_routes.dart';
+import 'list_scan_route.dart';
 import 'live_location_routes.dart';
 import 'lunch_routes.dart';
 import 'meals_routes.dart';
@@ -220,6 +221,8 @@ GoRouter createAppRouter(
         // groceries phase 2: the list and the week's plans against it
         // (groceries ADR-0002).
         groceryRoute(),
+        // snap a shopping list, over the grocery list (list-scan ADR-0001).
+        listScanRoute(),
         todayRoute(),
         for (final group in const [HouseholdTab.lists, HouseholdTab.food])
           GoRoute(

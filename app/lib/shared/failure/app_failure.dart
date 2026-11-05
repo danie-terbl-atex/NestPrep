@@ -13,6 +13,7 @@ part 'document_failure.dart';
 part 'pnp_failure.dart';
 part 'photo_frame_failure.dart';
 part 'premium_voucher_failure.dart';
+part 'list_scan_failure.dart';
 
 /// Every failure that reaches a controller or a screen is one of these. Copy is
 /// chosen from the case in `AppCopy`, never from the underlying error's message

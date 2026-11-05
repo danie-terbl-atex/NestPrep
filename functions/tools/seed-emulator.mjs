@@ -94,7 +94,19 @@ async function seedCannedReplies(store) {
   // Plan my week's two steps (lunch-box ADR-0012), in the Functions' placeholders.
   await replies.doc('lunchIdeas').set({ reply: JSON.stringify(cannedLunchIdeasReply) });
   await replies.doc('lunchWeek').set({ reply: JSON.stringify(cannedLunchWeekReply) });
-  return 'canned school-letter and plan-my-week replies for the emulator model';
+  // Snap a shopping list (list-scan ADR-0001): what any photo reads as locally.
+  const shoppingList = {
+    items: [
+      { name: 'Full cream milk', quantity: '2 l' },
+      { name: 'Brown bread', quantity: null },
+      { name: 'Free range eggs', quantity: '1 dozen' },
+      { name: 'Bananas', quantity: '1 kg' },
+      { name: 'Cheddar cheese', quantity: null },
+      { name: 'Rooibos tea', quantity: null },
+    ],
+  };
+  await replies.doc('listScan').set({ reply: JSON.stringify(shoppingList) });
+  return 'canned school-letter, plan-my-week and shopping-list replies for the emulator model';
 }
 
 const lines = [];

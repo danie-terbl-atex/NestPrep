@@ -8,13 +8,15 @@ import '../../../shared/copy/app_copy.dart';
 ///
 /// The screen owns [controller] and [focusNode] when something else — the
 /// shop's products as you type — also reads or clears what is typed.
-/// [leading] sits before the field: the shop it matches at.
+/// [leading] sits before the field: the shop it matches at. [trailing] sits
+/// after the add button: snapping a whole list (list-scan ADR-0001).
 class GroceryAddField extends StatefulWidget {
   const GroceryAddField({
     required this.onSubmit,
     this.controller,
     this.focusNode,
     this.leading,
+    this.trailing,
     super.key,
   });
 
@@ -22,6 +24,7 @@ class GroceryAddField extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final Widget? leading;
+  final Widget? trailing;
 
   @override
   State<GroceryAddField> createState() => _GroceryAddFieldState();
@@ -45,6 +48,7 @@ class _GroceryAddFieldState extends State<GroceryAddField> {
   @override
   Widget build(BuildContext context) {
     final leading = widget.leading;
+    final trailing = widget.trailing;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -78,6 +82,13 @@ class _GroceryAddFieldState extends State<GroceryAddField> {
             ),
           ),
         ),
+        if (trailing != null) ...[
+          const SizedBox(width: NestSpace.sm),
+          Padding(
+            padding: const EdgeInsets.only(bottom: NestSpace.xxs),
+            child: trailing,
+          ),
+        ],
       ],
     );
   }

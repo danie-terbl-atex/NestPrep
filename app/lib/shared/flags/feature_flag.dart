@@ -22,6 +22,10 @@ enum FeatureFlag {
   /// The shared week: who is handling what (calendar ADR-0006).
   mentalLoadView('mentalLoadView'),
 
+  /// Snap a shopping list onto the grocery list — premium (list-scan
+  /// ADR-0001).
+  snapShoppingList('snapShoppingList'),
+
   /// A child in two homes: shared schedules and handovers (household
   /// ADR-0004).
   coParenting('coParenting'),

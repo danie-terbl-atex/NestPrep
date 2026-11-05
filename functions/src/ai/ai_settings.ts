@@ -8,9 +8,16 @@ import { z } from 'zod';
  * its steps, the ideas and the week, are counted and switched under it
  * (lunch-box ADR-0012). `lunchPhoto` is the picture of a box (lunch-box
  * ADR-0015). `productMatch` is the grocery list's ranking, switched here
- * but never counted (foundation ADR-0021).
+ * but never counted (foundation ADR-0021). `listScan` reads a photo of a
+ * shopping list (list-scan ADR-0001).
  */
-export const AI_FEATURES = ['schoolLetter', 'planMyWeek', 'lunchPhoto', 'productMatch'] as const;
+export const AI_FEATURES = [
+  'schoolLetter',
+  'planMyWeek',
+  'lunchPhoto',
+  'productMatch',
+  'listScan',
+] as const;
 export type AiFeature = (typeof AI_FEATURES)[number];
 
 /** The document an operator edits in the console to stop or loosen AI. */
@@ -39,7 +46,13 @@ export interface AiSettings {
  */
 export const DEFAULT_AI_SETTINGS: AiSettings = {
   enabled: true,
-  features: { schoolLetter: true, planMyWeek: true, lunchPhoto: true, productMatch: true },
+  features: {
+    schoolLetter: true,
+    planMyWeek: true,
+    lunchPhoto: true,
+    productMatch: true,
+    listScan: true,
+  },
   monthlyCalls: { free: 10, premium: 100 },
 };
 

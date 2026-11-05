@@ -82,6 +82,9 @@ export { endSharesWithShift } from './documents/share/end_shares_with_shift';
 // ---- calendar V2: snap a school letter, the first AI call (calendar ADR-0005, foundation ADR-0015) ----
 export { readSchoolLetter } from './school_letter/read_school_letter';
 
+// ---- snap a shopping list onto the grocery list, premium (list-scan ADR-0001) ----
+export { readShoppingList } from './list_scan/read_shopping_list';
+
 // ---- co-parenting: a child in two homes (household ADR-0004) ----
 export { createCoParentInvite } from './coparent/create_coparent_invite';
 export { previewCoParentInvite } from './coparent/preview_coparent_invite';

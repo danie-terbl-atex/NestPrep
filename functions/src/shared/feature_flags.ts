@@ -20,6 +20,8 @@ export const FEATURE_FLAGS = [
   // ---- calendar V2 (calendar ADR-0005, ADR-0006) ----
   'snapSchoolLetter',
   'mentalLoadView',
+  // ---- snap a shopping list onto the grocery list (list-scan ADR-0001) ----
+  'snapShoppingList',
   // ---- two homes (household ADR-0004) ----
   'coParenting',
   // ---- nanny hub V2 (nanny-hub ADR-0004 to ADR-0007) ----

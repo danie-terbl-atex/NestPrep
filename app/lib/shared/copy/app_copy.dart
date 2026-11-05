@@ -26,6 +26,7 @@ export 'home_board_copy.dart';
 export 'home_care_copy.dart';
 // legal and consent (accounts ADR-0005): their words live in their own file.
 export 'legal_copy.dart';
+export 'list_scan_copy.dart';
 // lunch-box: its words live in their own file, reached through this one — and
 // its V2 tools' (pantry, budget, kid picks: lunch-box ADR-0006 to ADR-0008)
 // in theirs, beside it in name order.

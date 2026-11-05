@@ -44,6 +44,8 @@ abstract final class FailureCopy {
     // AI and snap a school letter (foundation ADR-0015, calendar ADR-0005).
     AiFailure(:final problem) => AiCopy.problem(problem),
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
+    // snap a shopping list (list-scan ADR-0001).
+    ListScanFailure(:final problem) => ListScanCopy.problem(problem),
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
     // plan my week with AI (lunch-box ADR-0011).
     PlanWeekFailure(:final problem) => PlanWeekCopy.problem(problem),

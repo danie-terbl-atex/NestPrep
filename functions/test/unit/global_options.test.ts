@@ -68,6 +68,8 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   closeHousehold: { timeoutSeconds: 300, memoryMb: 512 },
   // Reading a letter waits on Vertex (foundation ADR-0015).
   readSchoolLetter: { memoryMb: 512, timeoutSeconds: 60 },
+  // Reading a shopping list waits on Vertex the same way (list-scan ADR-0001).
+  readShoppingList: { memoryMb: 512, timeoutSeconds: 60 },
   // Planning a week waits on Vertex the same way, twice (lunch-box ADR-0012).
   draftLunchIdeas: { memoryMb: 512, timeoutSeconds: 60 },
   buildLunchWeek: { memoryMb: 512, timeoutSeconds: 60 },
@@ -131,8 +133,9 @@ describe('every function — callable, trigger or schedule', () => {
     // trigger that tells the household about an arrival (live-location
     // ADR-0006). Premium vouchers and codes: two store-to-app endpoints, the
     // public web endpoint and four callables (subscriptions ADR-0003, ADR-0004).
+    // Snap a shopping list: readShoppingList (list-scan ADR-0001).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(119);
+    expect(endpoints()).toHaveLength(120);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
