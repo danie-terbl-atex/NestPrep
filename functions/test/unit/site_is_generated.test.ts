@@ -114,8 +114,10 @@ describe('the legal documents', () => {
       expect(document.updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
 
-    it(`${legal.source} says it is a draft until legal review has happened`, () => {
-      expect(read(legal.source)).toContain('DRAFT FOR LEGAL REVIEW');
+    it(`${legal.source} is final: no draft notice and no placeholder left`, () => {
+      const source = read(legal.source);
+      expect(source).not.toContain('DRAFT');
+      expect(source).not.toMatch(/\[[^\]\n]+\](?!\()/);
     });
 
     it(`${legal.source} renders with no markdown left over`, () => {

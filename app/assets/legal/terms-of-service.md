@@ -1,21 +1,19 @@
 ---
 title: Terms of Service
-version: 1
-updated: 2026-09-29
+version: 2
+updated: 2026-11-05
 ---
-**DRAFT FOR LEGAL REVIEW.** These terms have not yet been reviewed by a lawyer and are not in force. Everything in square brackets is a placeholder that must be completed before they are published.
-
 These terms are the agreement between you and us when you use NestPrep. Please read them with our Privacy Policy, which explains what we do with your information. By creating an account and ticking that you agree, you accept these terms.
 
 ## 1. Who we are
 
-NestPrep is provided by [legal entity name], a company registered in South Africa with registration number [company registration number], whose registered address is [registered address]. In these terms "we" and "us" mean that company. You can reach us at [support email address].
+NestPrep is provided by Nullstate (Pty) Ltd, a private company registered in South Africa with registration number 2026/122269/07, whose registered address is Domica Road, Western Cape, South Africa. In these terms "we" and "us" mean that company. You can reach us at [admin@nestprep.io](mailto:admin@nestprep.io) or on +27 82 065 0070.
 
 ## 2. Who can use NestPrep
 
 - You must be **18 or older** to create an account, and able to enter into a binding agreement.
 - **Children** use NestPrep only through a kid device that a parent or guardian signs in, or as a profile an adult manages. The adult who sets up a kid device or a child's profile is responsible for that child's use of it.
-- You must give us accurate sign-in details and keep your account secure. You are responsible for what happens on your account, and should tell us straight away at [support email address] if you think somebody else has used it.
+- You must give us accurate sign-in details and keep your account secure. You are responsible for what happens on your account, and should tell us straight away at [admin@nestprep.io](mailto:admin@nestprep.io) if you think somebody else has used it.
 
 ## 3. How a household works
 
@@ -79,19 +77,19 @@ We work hard to keep NestPrep running and your information safe, but we cannot p
 
 ## 12. Ending your account
 
-- You can stop using NestPrep at any time, and delete your account in the app under Account, then Privacy and your data, then Delete my account, or through [website domain]/delete-account. What deletion removes is explained in our Privacy Policy.
+- You can stop using NestPrep at any time, and delete your account in the app under Account, then Privacy and your data, then Delete my account, or through [app.nestprep.io/delete-account](https://app.nestprep.io/delete-account). What deletion removes is explained in our Privacy Policy.
 - We may suspend or end your access if you seriously or repeatedly break these terms, if the law requires it, or if we stop providing NestPrep. Where we can, we will tell you first and give you the chance to download your data.
 
 ## 13. Our responsibility to you
 
-The Consumer Protection Act, 2008 applies to your use of NestPrep where you are a consumer under that Act, and nothing in these terms limits any right you have under it or any other law that cannot be limited. [Legal review: confirm the Consumer Protection Act's application and the wording of this section, including section 49 notice requirements for the limitations below.]
+The Consumer Protection Act, 2008 applies to your use of NestPrep where you are a consumer under that Act, and nothing in these terms limits any right you have under it or any other law that cannot be limited.
 
 Subject to that:
 
 - NestPrep is provided **as it is** and as available.
 - We are not responsible for loss caused by information that you or your household entered being wrong or incomplete, by a decision made on an AI suggestion you confirmed, or by things outside our reasonable control.
 - We are not responsible for indirect or consequential loss.
-- Where the law allows us to limit our responsibility, our total responsibility to you is limited to the amount you paid for NestPrep in the twelve months before the claim arose, or [minimum liability amount] if that is greater.
+- Where the law allows us to limit our responsibility, our total responsibility to you is limited to the amount you paid for NestPrep in the twelve months before the claim arose, or R1,000 if that is greater.
 
 We do not limit responsibility for death or personal injury caused by our negligence, or for fraud, or for anything else the law does not allow us to limit.
 
@@ -101,10 +99,10 @@ When we change these terms we change their version number and the date at the to
 
 ## 15. The law that applies
 
-These terms are governed by the law of the Republic of South Africa. Any dispute will be heard by [the competent court, for example the High Court of South Africa, Gauteng Division, Johannesburg], unless the law gives you the right to bring it elsewhere, including to the National Consumer Commission or a consumer court.
+These terms are governed by the law of the Republic of South Africa. Any dispute will be heard by the High Court of South Africa, Western Cape Division, Cape Town, unless the law gives you the right to bring it elsewhere, including to the National Consumer Commission or a consumer court.
 
 ## 16. Contact us
 
-Write to us at [support email address] or [legal entity name], [postal address].
+Write to us at [admin@nestprep.io](mailto:admin@nestprep.io) or Nullstate (Pty) Ltd, Domica Road, Western Cape, South Africa.
 
-These terms take effect on [effective date].
+These terms take effect on 5 November 2026.

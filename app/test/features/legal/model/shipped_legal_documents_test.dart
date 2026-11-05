@@ -37,10 +37,10 @@ void main() {
         );
       });
 
-      test('says it is a draft while it still has gaps in it', () {
+      test('is final: no draft notice and no placeholder left', () {
         final source = File(kind.assetPath).readAsStringSync();
-        final hasPlaceholders = RegExp(r'\[[^\]]+\](?!\()').hasMatch(source);
-        if (hasPlaceholders) expect(source, contains('DRAFT'));
+        expect(source, isNot(contains('DRAFT')));
+        expect(RegExp(r'\[[^\]]+\](?!\()').hasMatch(source), isFalse);
       });
     });
   }

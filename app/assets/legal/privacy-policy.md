@@ -1,21 +1,19 @@
 ---
 title: Privacy Policy
-version: 2
-updated: 2026-11-02
+version: 3
+updated: 2026-11-05
 ---
-**DRAFT FOR LEGAL REVIEW.** This policy has not yet been reviewed by a lawyer and is not in force. Everything in square brackets is a placeholder that must be completed before it is published.
-
 NestPrep helps one household run its week: school lunches planned per child, the family calendar, the grocery list, to-dos and chores, the papers you keep needing, and what a nanny or helper needs for a shift. To do that it has to hold information about you and the people you live with, including your children. This policy says what we hold, why, where it is kept, who else touches it, how long we keep it, and what you can do about it.
 
 We wrote it to be read. Where the law needs a precise word we use it, and where a plain sentence does the job we use that instead.
 
 ## 1. Who we are
 
-NestPrep is provided by [legal entity name], a company registered in South Africa with registration number [company registration number], whose registered address is [registered address]. In this policy "we", "us" and "NestPrep" mean that company.
+NestPrep is provided by Nullstate (Pty) Ltd, a private company registered in South Africa with registration number 2026/122269/07, whose registered address is Domica Road, Western Cape, South Africa. In this policy "we", "us" and "NestPrep" mean that company.
 
 For the purposes of the Protection of Personal Information Act, 2013 (POPIA), we are the **responsible party** for the personal information described here.
 
-Our **Information Officer** is [Information Officer name], who can be reached at [Information Officer email address]. Our Deputy Information Officer is [Deputy Information Officer name], at [Deputy Information Officer email address]. Our Information Officer is registered with the Information Regulator under registration number [Information Regulator registration number].
+Our **Information Officer** is Daniel Terblanche, who can be reached at [admin@nestprep.io](mailto:admin@nestprep.io).
 
 ## 2. Who this policy is about
 
@@ -192,7 +190,7 @@ Some processing happens outside South Africa:
 - AI features run in the **European Union** (Vertex AI in the Netherlands).
 - Sign-in, crash reports, app integrity checks and push notifications are run by Google, Apple and Microsoft on their global infrastructure, which may include the United States and Europe.
 
-POPIA (section 72) allows these transfers because the recipients are bound by law or by binding agreements that give protection substantially similar to POPIA's, including the European Union's General Data Protection Regulation and Google Cloud's data processing terms, and because they are necessary to provide the service you asked for. [Legal review: confirm the section 72 basis for each processor and reference the relevant agreements.]
+POPIA (section 72) allows these transfers because the recipients are bound by law or by binding agreements that give protection substantially similar to POPIA's, including the European Union's General Data Protection Regulation and Google Cloud's data processing terms, and because they are necessary to provide the service you asked for.
 
 ## 8. How we keep it safe
 
@@ -209,11 +207,11 @@ No system is perfectly secure. If a breach affects your personal information, we
 
 - **While your account exists**, we keep your account and the information in your households so the app can work.
 - **Things you delete** are removed from the live service straight away. A shared position is deleted when you stop sharing or the window ends; a position from a phone that stopped sharing all the time without being paused is treated as not sharing after a day and deleted automatically. Location history and arrivals are deleted automatically after 30 days, or straight away when you delete them. When you leave a household or are removed from it, your position, your history and the arrival notifications that name you are deleted from that household. Invite and kid pairing codes expire and are removed. Document share links stop working when they expire and are then cleared.
-- **When you delete your account**, we delete your account, your sign-in, your private vault and its files, your personal details in each household, and your push tokens. If you were the last adult in a household, the whole household and everything in it is deleted, including its files and kid devices. If other adults remain, the household continues: shared records such as events and lists stay with the household, but your personal details and vault are removed and your profile is no longer linked to you. Deletion from the live service is immediate; copies in Google's backups are overwritten within [backup retention period, for example 30 days].
+- **When you delete your account**, we delete your account, your sign-in, your private vault and its files, your personal details in each household, and your push tokens. If you were the last adult in a household, the whole household and everything in it is deleted, including its files and kid devices. If other adults remain, the household continues: shared records such as events and lists stay with the household, but your personal details and vault are removed and your profile is no longer linked to you. Deletion from the live service is immediate; copies in Google's backups are overwritten within 30 days.
 - **A data export** you download is available through a link that expires one hour after it is made, and only your own signed-in account can open it; the file is deleted from our servers within two hours, or sooner if you make a new one.
-- **Purchase records** are kept for as long as the law requires for financial records, [purchase record retention period], even after the account is deleted, without the household's content.
+- **Purchase records** are kept for as long as the law requires for financial records, five years, even after the account is deleted, without the household's content.
 - **Weekly product numbers** are totals with no identifiers and are kept.
-- **Crash reports** are kept by Crashlytics for [Crashlytics retention period, for example 90 days].
+- **Crash reports** are kept by Crashlytics for 90 days.
 
 ## 10. Your rights
 
@@ -221,14 +219,14 @@ Under POPIA you have the right to:
 
 - **Know what we hold about you and get a copy.** In the app, go to Account, then Privacy and your data, then **Download my data**. We prepare a file of everything held about you and give you a link to download it.
 - **Correct it.** Almost everything can be edited in the app. For anything you cannot edit, contact us.
-- **Delete it.** In the app, go to Account, then Privacy and your data, then **Delete my account**. If you no longer have the app, use the form at [website domain]/delete-account.
+- **Delete it.** In the app, go to Account, then Privacy and your data, then **Delete my account**. If you no longer have the app, use the form at [app.nestprep.io/delete-account](https://app.nestprep.io/delete-account).
 - **Object** to processing based on our legitimate interests, and **withdraw consent** at any time.
 - **Not be subject to decisions made only by automated means.** NestPrep makes none: AI suggestions are only proposals until you confirm them.
 - **Complain to the Information Regulator** if you think we have handled your information wrongly. We would like the chance to put it right first, so please contact us too.
 
-The Information Regulator (South Africa) can be reached at [inforegulator.org.za](https://inforegulator.org.za), by email at POPIAComplaints@inforegulator.org.za, or at JD House, 27 Stiemens Street, Braamfontein, Johannesburg, 2001. [Legal review: confirm the Regulator's current contact details.]
+The Information Regulator (South Africa) can be reached at [inforegulator.org.za](https://inforegulator.org.za), by email at [POPIAComplaints@inforegulator.org.za](mailto:POPIAComplaints@inforegulator.org.za), by phone on 010 023 5200, or at Woodmead North Office Park, 54 Maxwell Drive, Woodmead, Johannesburg, 2191.
 
-We answer requests within [response period, for example 30 days]. We may need to confirm who you are first, so that we never give your information to somebody else.
+We answer requests within 30 days. We may need to confirm who you are first, so that we never give your information to somebody else.
 
 ## 11. Changes to this policy
 
@@ -236,6 +234,6 @@ When we change this policy we change its version number and the date at the top.
 
 ## 12. Contact us
 
-For anything about your privacy, write to our Information Officer at [Information Officer email address], or to [legal entity name], [postal address]. For help using the app, write to [support email address].
+For anything about your privacy, write to our Information Officer at [admin@nestprep.io](mailto:admin@nestprep.io), or to Nullstate (Pty) Ltd, Domica Road, Western Cape, South Africa. For help using the app, write to [admin@nestprep.io](mailto:admin@nestprep.io), or call +27 82 065 0070.
 
-This policy takes effect on [effective date].
+This policy takes effect on 5 November 2026.
