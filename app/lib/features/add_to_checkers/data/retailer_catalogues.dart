@@ -5,16 +5,11 @@ import 'retailer_catalogue.dart';
 /// one memory of stores and searches per shop for the run, read by *Plan my
 /// week* and by the grocery list's matches alike.
 final class RetailerCatalogues {
-  const RetailerCatalogues({required this.checkers, required this.pickNPay});
+  RetailerCatalogues(Map<ProductRetailer, RetailerCatalogue> byShop)
+    : _byShop = Map.unmodifiable(byShop);
 
-  final RetailerCatalogue checkers;
-  final RetailerCatalogue pickNPay;
+  final Map<ProductRetailer, RetailerCatalogue> _byShop;
 
-  /// [shop]'s catalogue. A shop that is not connected has none, and is
-  /// never offered (`ProductRetailer.isConnected`).
-  RetailerCatalogue of(ProductRetailer shop) => switch (shop) {
-    ProductRetailer.checkers => checkers,
-    ProductRetailer.pickNPay => pickNPay,
-    ProductRetailer.woolworths => throw StateError('no catalogue for $shop'),
-  };
+  RetailerCatalogue of(ProductRetailer shop) =>
+      _byShop[shop] ?? (throw StateError('no catalogue for $shop'));
 }

@@ -180,6 +180,82 @@ void main() {
     expect(directory.accessSet, isEmpty);
   });
 
+  group('a child without their own account', () {
+    Finder card(HouseholdArea area) => find.ancestor(
+      of: find.text(AccessCopy.areaName(area)),
+      matching: find.byType(NestCard),
+    );
+
+    testWidgets('is told that kid mode shows only My day', (tester) async {
+      await pump(tester, memberId: Fixtures.kidMemberId);
+
+      expect(
+        find.text(AccessCopy.accessKidMode(Fixtures.kid.displayName)),
+        findsOneWidget,
+      );
+      final groceries = card(HouseholdArea.groceries);
+      await tester.scrollUntilVisible(groceries, 200);
+      expect(
+        find.descendant(
+          of: groceries,
+          matching: find.text(AccessCopy.accessNotInKidMode),
+        ),
+        findsOneWidget,
+      );
+      final todos = card(HouseholdArea.todos);
+      await tester.scrollUntilVisible(todos, -200);
+      expect(
+        find.descendant(
+          of: todos,
+          matching: find.text(AccessCopy.accessNotInKidMode),
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets('but a child with their own account is not', (tester) async {
+      final claimed = Fixtures.kid.copyWith(claimedBy: 'u-kid');
+      await pump(
+        tester,
+        memberId: Fixtures.kidMemberId,
+        view: HouseholdView(
+          household: Fixtures.household(),
+          members: [Fixtures.sam, Fixtures.thandi, claimed],
+          viewerUid: Fixtures.samUid,
+        ),
+      );
+
+      expect(
+        find.text(AccessCopy.accessKidMode(claimed.displayName)),
+        findsNothing,
+      );
+      expect(find.text(AccessCopy.accessNotInKidMode), findsNothing);
+    });
+
+    testWidgets('a helper is not', (tester) async {
+      await pump(tester);
+      expect(find.text(AccessCopy.accessNotInKidMode), findsNothing);
+    });
+
+    testWidgets('holds at phone width in dark at 200% text', (tester) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(
+        tester,
+        memberId: Fixtures.kidMemberId,
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await tester.scrollUntilVisible(
+        find.text(AccessCopy.areaName(HouseholdArea.nannyHub)),
+        300,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  });
+
   testWidgets('it holds at phone width in dark at 200% text', (tester) async {
     tester.view.physicalSize = const Size(360 * 3, 800 * 3);
     tester.view.devicePixelRatio = 3;

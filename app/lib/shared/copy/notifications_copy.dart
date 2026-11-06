@@ -47,6 +47,10 @@ abstract final class NotificationsCopy {
       'everything.';
   static const onMessage = 'Notifications are on for this phone.';
 
+  // ---- today's digest, offered on the first open ----
+  static const digestPromptEyebrow = 'Your morning digest';
+  static const digestPromptDismiss = 'Not now';
+
   // ---- a digest, opened ----
   static const digestGone = 'This notification has been cleared.';
   static String sectionTitle(DigestSectionKind? kind) => switch (kind) {

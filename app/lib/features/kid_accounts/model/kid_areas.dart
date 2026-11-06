@@ -24,6 +24,12 @@ final class KidAreas {
     lunch: permissions.canUse(HouseholdArea.lunch),
   );
 
+  static const shownAreas = {
+    HouseholdArea.todos,
+    HouseholdArea.meals,
+    HouseholdArea.lunch,
+  };
+
   /// Nothing at all — a profile with no grant, or one that is no longer a kid.
   static const nothing = KidAreas(chores: false, canTick: false, food: false);
 

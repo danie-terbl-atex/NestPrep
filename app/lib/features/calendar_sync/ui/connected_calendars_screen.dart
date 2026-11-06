@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -5,10 +7,12 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
+import '../../../shared/failure/app_failure.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/calendar_connection.dart';
 import '../model/calendar_provider.dart';
 import '../state/connected_calendars_controller.dart';
+import 'apple_calendar_picker_sheet.dart';
 import 'calendar_connections_section.dart';
 import 'calendar_feed_card.dart';
 import 'calendar_link_sheet.dart';
@@ -47,8 +51,25 @@ class ConnectedCalendarsScreen extends StatelessWidget {
               child: NestBanner(
                 message: AppCopy.failure(failure),
                 tone: NestBannerTone.danger,
-                actionLabel: AppCopy.back,
-                onAction: controller.dismissActionFailure,
+                actionLabel: _needsSettings(failure)
+                    ? CalendarSyncCopy.openSettings
+                    : AppCopy.back,
+                onAction: _needsSettings(failure)
+                    ? () {
+                        controller.dismissActionFailure();
+                        unawaited(controller.openAppleSettings());
+                      }
+                    : controller.dismissActionFailure,
+              ),
+            )
+          else if (controller.appleAccessLost)
+            Padding(
+              padding: const EdgeInsets.only(bottom: NestSpace.md),
+              child: NestBanner(
+                message: CalendarSyncCopy.appleAccessLost,
+                tone: NestBannerTone.warning,
+                actionLabel: CalendarSyncCopy.openSettings,
+                onAction: controller.openAppleSettings,
               ),
             ),
           if (controller.isAwaitingBrowser)
@@ -66,7 +87,7 @@ class ConnectedCalendarsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: NestSpace.xs),
                 child: Column(
                   children: [
-                    for (final provider in CalendarProvider.values)
+                    for (final provider in controller.providersToConnect)
                       ProviderConnectRow(
                         key: ValueKey(provider),
                         provider: provider,
@@ -93,6 +114,8 @@ class ConnectedCalendarsScreen extends StatelessWidget {
             child: CalendarConnectionsSection(
               onDisconnect: (connection) =>
                   _disconnect(context, controller, connection),
+              onChooseCalendars: () =>
+                  _chooseAppleCalendars(context, controller),
             ),
           ),
           const SizedBox(height: NestSpace.xxl),
@@ -120,10 +143,32 @@ class ConnectedCalendarsScreen extends StatelessWidget {
     CalendarProvider provider,
   ) async {
     if (provider.usesOAuth) return controller.connect(provider);
+    if (provider.readsFromPhone) {
+      return _chooseAppleCalendars(context, controller);
+    }
     final link = await showCalendarLinkSheet(context);
     if (link == null) return;
     await controller.connectLink(link);
   }
+
+  Future<void> _chooseAppleCalendars(
+    BuildContext context,
+    ConnectedCalendarsController controller,
+  ) async {
+    final calendars = await controller.appleCalendars();
+    if (calendars == null || !context.mounted) return;
+    final chosen = await showAppleCalendarPicker(
+      context,
+      calendars: calendars,
+      chosen: controller.appleCalendarIds,
+    );
+    if (chosen == null) return;
+    await controller.linkApple(chosen);
+  }
+
+  static bool _needsSettings(AppFailure failure) =>
+      failure is CalendarSyncFailure &&
+      failure.problem == CalendarSyncProblem.appleCalendarDenied;
 
   Future<void> _disconnect(
     BuildContext context,

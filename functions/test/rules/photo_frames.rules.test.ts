@@ -261,12 +261,15 @@ describe('family chooses a frame’s screensaver', () => {
 });
 
 describe('family chooses where a frame adds groceries from', () => {
-  it('either connected shop, any of the app’s areas, alone or with the rest', async () => {
+  it('any connected shop, any of the app’s areas, alone or with the rest', async () => {
     const db = await asUser(PEOPLE.parent.uid);
     for (const groceries of [
       { shop: 'checkers', area: 'capeTown' },
       { shop: 'pickNPay', area: 'eastLondon' },
       { shop: 'checkers', area: 'bloemfontein' },
+      { shop: 'woolworths', area: 'capeTown', store: '2008', priceZone: 'p30' },
+      { shop: 'woolworths', area: 'durban', store: '1234567890', priceZone: 'p10' },
+      { shop: 'woolworths', area: 'pretoria', store: '7', priceZone: 'p60' },
     ]) {
       await assertSucceeds(updateDoc(doc(db, FRAME), { groceries }));
     }
@@ -285,7 +288,7 @@ describe('family chooses where a frame adds groceries from', () => {
   it('and nothing off the list or out of shape', async () => {
     const db = await asUser(PEOPLE.admin.uid);
     for (const groceries of [
-      { shop: 'woolworths', area: 'capeTown' },
+      { shop: 'spar', area: 'capeTown' },
       { shop: 'checkers', area: 'london' },
       { shop: 'Checkers', area: 'capeTown' },
       { shop: 'checkers' },
@@ -293,6 +296,29 @@ describe('family chooses where a frame adds groceries from', () => {
       { shop: 'checkers', area: 'capeTown', cart: true },
       'checkers',
       true,
+    ]) {
+      await assertFails(updateDoc(doc(db, FRAME), { groceries }));
+    }
+  });
+
+  it('Woolworths only with the store and price list, and no other shop with them', async () => {
+    const db = await asUser(PEOPLE.admin.uid);
+    const woolworths = { shop: 'woolworths', area: 'capeTown', store: '2008', priceZone: 'p30' };
+    for (const groceries of [
+      { shop: 'woolworths', area: 'capeTown' },
+      { shop: 'woolworths', area: 'capeTown', store: '2008' },
+      { shop: 'woolworths', area: 'capeTown', priceZone: 'p30' },
+      { ...woolworths, store: '' },
+      { ...woolworths, store: '12345678901' },
+      { ...woolworths, store: '20a8' },
+      { ...woolworths, store: 2008 },
+      { ...woolworths, priceZone: 'p20' },
+      { ...woolworths, priceZone: 'plist3620008' },
+      { ...woolworths, area: 'london' },
+      { ...woolworths, cart: true },
+      { shop: 'checkers', area: 'capeTown', store: '2008', priceZone: 'p30' },
+      { shop: 'pickNPay', area: 'capeTown', store: '2008' },
+      { shop: 'checkers', area: 'capeTown', priceZone: 'p30' },
     ]) {
       await assertFails(updateDoc(doc(db, FRAME), { groceries }));
     }
@@ -309,6 +335,14 @@ describe('family chooses where a frame adds groceries from', () => {
     await assertFails(
       updateDoc(doc(db, FRAME), { groceries: { shop: 'checkers', area: 'capeTown' } }),
     );
+    for (const person of NOT_FAMILY) {
+      const other = await asUser(PEOPLE[person].uid);
+      await assertFails(
+        updateDoc(doc(other, FRAME), {
+          groceries: { shop: 'woolworths', area: 'capeTown', store: '2008', priceZone: 'p30' },
+        }),
+      );
+    }
   });
 });
 

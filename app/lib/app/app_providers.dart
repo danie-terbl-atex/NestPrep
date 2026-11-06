@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -17,6 +18,9 @@ import '../features/calendar_sync/data/calendar_sync_directory.dart';
 import '../features/calendar_sync/data/calendar_sync_repository.dart';
 import '../features/calendar_sync/data/callable_calendar_sync_directory.dart';
 import '../features/calendar_sync/data/firestore_calendar_sync_repository.dart';
+import '../features/calendar_sync/data/method_channel_apple_calendar_reader.dart';
+import '../features/calendar_sync/data/secure_storage_apple_calendar_link_store.dart';
+import '../features/calendar_sync/state/apple_calendar_sync.dart';
 import '../features/documents/data/callable_document_directory.dart';
 import '../features/documents/data/document_directory.dart';
 import '../features/documents/data/document_picker.dart';
@@ -59,6 +63,7 @@ import '../shared/links/launcher_external_link_opener.dart';
 import 'account_routes.dart';
 import 'add_to_checkers_providers.dart';
 import 'add_to_pnp_providers.dart';
+import 'add_to_woolworths_providers.dart';
 import 'assistants_providers.dart';
 import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
@@ -96,7 +101,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // The V2 switches (foundation ADR-0014).
   ...featureFlagProviders(),
   Provider<AuthGateway>(
-    create: (context) => FirebaseAuthGateway(context.read<FirebaseAuth>()),
+    create: (context) => FirebaseAuthGateway(
+      context.read<FirebaseAuth>(),
+      context.read<FirebaseFunctions>(),
+    ),
   ),
   Provider<AccountRepository>(
     create: (context) =>
@@ -125,6 +133,9 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...addToCheckersProviders(),
   // Pick n Pay in *Plan my week*, and its cart (add-to-pnp ADR-0001).
   ...addToPnpProviders(),
+  // Woolworths matches, and its Woolies Dash cart (add-to-woolworths
+  // ADR-0001).
+  ...addToWoolworthsProviders(),
   Provider<CalendarRepository>(
     create: (context) =>
         FirestoreCalendarRepository(context.read<FirebaseFirestore>()),
@@ -137,6 +148,15 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<CalendarSyncDirectory>(
     create: (context) =>
         CallableCalendarSyncDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<AppleCalendarSync>(
+    create: (context) => AppleCalendarSync(
+      reader: MethodChannelAppleCalendarReader(
+        isAvailable: defaultTargetPlatform == TargetPlatform.iOS,
+      ),
+      store: SecureStorageAppleCalendarLinkStore(),
+      directory: context.read<CalendarSyncDirectory>(),
+    ),
   ),
   Provider<ExternalLinkOpener>(
     create: (context) => const LauncherExternalLinkOpener(),

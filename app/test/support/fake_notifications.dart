@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
 import 'package:nestprep/features/notifications/data/notification_directory.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/notifications/data/push_gateway.dart';
@@ -9,6 +10,7 @@ import 'package:nestprep/features/notifications/model/notification_settings.dart
 import 'package:nestprep/features/notifications/model/push_arrival.dart';
 import 'package:nestprep/features/notifications/model/push_token.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/time/calendar_date.dart';
 
 /// A person's inbox and settings held in memory, the way Firestore would hand
 /// them back: every listener gets what is there now, then every change —
@@ -226,4 +228,22 @@ final class FakeNotificationDirectory implements NotificationDirectory {
     sentFor.add(householdId);
     return outcome;
   }
+}
+
+/// The days this device offered a digest on, in memory.
+final class FakeDigestPromptStore implements DigestPromptStore {
+  final offered = <String, CalendarDate>{};
+
+  @override
+  Future<CalendarDate?> lastOffered(
+    String householdId,
+    String memberId,
+  ) async => offered['$householdId/$memberId'];
+
+  @override
+  Future<void> markOffered(
+    String householdId,
+    String memberId,
+    CalendarDate day,
+  ) async => offered['$householdId/$memberId'] = day;
 }

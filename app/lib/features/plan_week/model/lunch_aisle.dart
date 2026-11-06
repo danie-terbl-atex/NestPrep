@@ -6,9 +6,9 @@ import 'aisle_shelf.dart';
 
 /// The shelves *Plan my week* reads before the model drafts anything, per
 /// shop: Checkers' own Kids Lunchbox carousels, each with the compartment it
-/// fills and a display category to fall back to (lunch-box ADR-0013), and
-/// Pick n Pay's own lunch box, snack, fruit and vegetable categories
-/// (lunch-box ADR-0026).
+/// fills and a display category to fall back to (lunch-box ADR-0013), Pick n
+/// Pay's own lunch box, snack, fruit and vegetable categories (lunch-box
+/// ADR-0026), and Woolworths' browse groups.
 abstract final class LunchAisle {
   /// At most this many shelves are read — and sent to the model.
   static const shelfLimit = 12;
@@ -161,27 +161,98 @@ abstract final class LunchAisle {
     ),
   ];
 
+  /// Woolworths' browse groups as of 2026-11-05, each read live at a store:
+  /// sandwich fillers and bread for mains, the kids' fruit, the snacking
+  /// vegetables, the lunchbox yoghurt, cheese, crackers and dried fruit, and
+  /// biscuits and crisps for treats. Its fresh produce carries no contents.
+  /// `appConfig/lunchAisle.woolworthsShelves` replaces it without a release.
+  static const woolworthsLunchBox = [
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsSandwichFillers,
+      slot: LunchSlot.main,
+      category: RetailerShelf.woolworthsGroup('cat782853'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsBreadAndRolls,
+      slot: LunchSlot.main,
+      category: RetailerShelf.woolworthsGroup('cat735414'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsFruitForLittleHands,
+      slot: LunchSlot.fruit,
+      category: RetailerShelf.woolworthsGroup('cat870106'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsCrunchyVegSticks,
+      slot: LunchSlot.veg,
+      category: RetailerShelf.woolworthsGroup('cat869839', within: 'cat848672'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsYoghurtTime,
+      slot: LunchSlot.snack,
+      category: RetailerShelf.woolworthsGroup('cat848682'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsCheesePlease,
+      slot: LunchSlot.snack,
+      category: RetailerShelf.woolworthsGroup('cat848673'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsCrackersAndRiceCakes,
+      slot: LunchSlot.snack,
+      category: RetailerShelf.woolworthsGroup('cat848679'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsDriedFruitNibbles,
+      slot: LunchSlot.snack,
+      category: RetailerShelf.woolworthsGroup('ncat0010351'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsBiscuitTin,
+      slot: LunchSlot.treat,
+      category: RetailerShelf.woolworthsGroup('cat845128'),
+    ),
+    AisleShelf(
+      title: LunchAisleCopy.woolworthsCrispsAndCrunch,
+      slot: LunchSlot.treat,
+      category: RetailerShelf.woolworthsGroup('cat848678'),
+    ),
+  ];
+
   /// [shop]'s shelves when nothing replaces them.
   static List<AisleShelf> defaultsFor(ProductRetailer shop) => switch (shop) {
+    ProductRetailer.checkers => checkersKidsLunchbox,
     ProductRetailer.pickNPay => pnpLunchBox,
-    _ => checkersKidsLunchbox,
+    ProductRetailer.woolworths => woolworthsLunchBox,
+  };
+
+  /// The best sellers one shelf brings home at [shop]. Woolworths reads each
+  /// new product's contents one call at a time, so its shelves bring fewer.
+  static int productsPerShelf(ProductRetailer shop) => switch (shop) {
+    ProductRetailer.checkers || ProductRetailer.pickNPay => 24,
+    ProductRetailer.woolworths => 12,
   };
 
   /// `appConfig/lunchAisle`'s fields as [shop]'s shelves — `shelves` for
-  /// Checkers, `pnpShelves` for Pick n Pay: the ones this build can read, at
-  /// most [shelfLimit]. Null when the document holds none for that shop, so
-  /// the caller keeps [defaultsFor].
+  /// Checkers, `pnpShelves` for Pick n Pay, `woolworthsShelves` for
+  /// Woolworths: the ones this build can read, at most [shelfLimit]. Null
+  /// when the document holds none for that shop, so the caller keeps
+  /// [defaultsFor].
   static List<AisleShelf>? fromFields(
     Map<String, Object?> fields, {
-    ProductRetailer shop = ProductRetailer.checkers,
+    required ProductRetailer shop,
   }) {
-    final isPnp = shop == ProductRetailer.pickNPay;
-    final shelves = switch (fields[isPnp ? 'pnpShelves' : 'shelves']) {
+    final (field, parse) = switch (shop) {
+      ProductRetailer.checkers => ('shelves', AisleShelf.fromFields),
+      ProductRetailer.pickNPay => ('pnpShelves', AisleShelf.fromPnpFields),
+      ProductRetailer.woolworths => (
+        'woolworthsShelves',
+        AisleShelf.fromWoolworthsFields,
+      ),
+    };
+    final shelves = switch (fields[field]) {
       final List<Object?> entries => [
-        for (final entry in entries)
-          ?(isPnp
-              ? AisleShelf.fromPnpFields(entry)
-              : AisleShelf.fromFields(entry)),
+        for (final entry in entries) ?parse(entry),
       ],
       _ => const <AisleShelf>[],
     };

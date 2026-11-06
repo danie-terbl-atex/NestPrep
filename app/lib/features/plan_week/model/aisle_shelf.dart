@@ -6,7 +6,8 @@ import '../../lunch_box/model/lunch_slot.dart';
 /// One shelf of a shop's lunchbox aisle as NestPrep keeps it: what to call
 /// it, the compartment it fills, and where it is read from — at Checkers its
 /// own product list, then a display category when the list has nothing
-/// (lunch-box ADR-0013); at Pick n Pay one category (lunch-box ADR-0026).
+/// (lunch-box ADR-0013); at Pick n Pay one category (lunch-box ADR-0026); at
+/// Woolworths one browse group.
 @immutable
 final class AisleShelf {
   const AisleShelf({
@@ -74,6 +75,35 @@ final class AisleShelf {
         title: title,
         slot: slot,
         category: RetailerShelf.pnpCategory(code),
+      );
+    }
+    return null;
+  }
+
+  /// One entry of `appConfig/lunchAisle`'s `woolworthsShelves` —
+  /// `{title, slot, groupId}`, with `withinGroupId` for only the part of
+  /// `groupId` inside another group — or null when this build cannot read it.
+  static AisleShelf? fromWoolworthsFields(Object? data) {
+    if (data case {
+      'title': final String rawTitle,
+      'slot': final String slotName,
+      'groupId': final String group,
+    }) {
+      final title = rawTitle.trim();
+      final slot = LunchSlot.fromName(slotName);
+      final within = data['withinGroupId'];
+      if (title.isEmpty || title.length > titleLimit || slot == null) {
+        return null;
+      }
+      if (!RetailerShelf.isWoolworthsGroup(group)) return null;
+      if (within is! String?) return null;
+      if (within != null && !RetailerShelf.isWoolworthsGroup(within)) {
+        return null;
+      }
+      return AisleShelf(
+        title: title,
+        slot: slot,
+        category: RetailerShelf.woolworthsGroup(group, within: within),
       );
     }
     return null;

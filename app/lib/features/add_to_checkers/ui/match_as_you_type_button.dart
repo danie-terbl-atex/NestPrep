@@ -60,11 +60,10 @@ class MatchAsYouTypeButton extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
-                for (final shop in ProductRetailer.values)
+                for (final shop in available)
                   _ShopRow(
                     key: ValueKey(shop),
                     shop: shop,
-                    isAvailable: available.contains(shop),
                     isSelected: isOn && shop == choice.chosen,
                     onTap: () => close(() => choice.matchAsYouTypeAt(shop)),
                   ),
@@ -89,28 +88,21 @@ class MatchAsYouTypeButton extends StatelessWidget {
 class _ShopRow extends StatelessWidget {
   const _ShopRow({
     required this.shop,
-    required this.isAvailable,
     required this.isSelected,
     required this.onTap,
     super.key,
   });
 
   final ProductRetailer shop;
-  final bool isAvailable;
   final bool isSelected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => NestListRow(
-    title: isAvailable
-        ? CheckersCopy.matchAt(shop)
-        : CheckersCopy.retailerSoon(shop),
-    leading: RetailerLogo.decorative(
-      retailer: shop,
-      tone: isAvailable ? NestLogoTileTone.idle : NestLogoTileTone.muted,
-    ),
+    title: CheckersCopy.matchAt(shop),
+    leading: RetailerLogo.decorative(retailer: shop),
     isSelected: isSelected,
     trailing: isSelected ? const Icon(LucideIcons.check) : null,
-    onTap: isAvailable ? onTap : null,
+    onTap: onTap,
   );
 }

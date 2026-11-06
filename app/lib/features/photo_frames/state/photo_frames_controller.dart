@@ -73,14 +73,15 @@ final class PhotoFramesController extends ChangeNotifier
     required FramePanels panels,
     required FrameScreensaver screensaver,
     required FrameGroceries? groceries,
+    required WoolworthsStoreLookup woolworthsStoreFor,
   }) => _write(
-    () => _repository.updateFrame(
+    () async => _repository.updateFrame(
       householdId: householdId,
       frameId: frame.id,
       name: name.trim(),
       panels: panels,
       screensaver: screensaver,
-      groceries: groceries,
+      groceries: await groceries?.located(woolworthsStoreFor),
     ),
   );
 

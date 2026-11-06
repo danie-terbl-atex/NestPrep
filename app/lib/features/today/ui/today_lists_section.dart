@@ -7,6 +7,7 @@ import '../../groceries/model/grocery_list_view.dart';
 import '../../groceries/state/grocery_list_controller.dart';
 import '../../todos/model/todo_board.dart';
 import '../../todos/state/todo_controller.dart';
+import '../../todos/ui/chore_picture_view.dart';
 import 'today_async.dart';
 import 'today_section.dart';
 
@@ -50,6 +51,9 @@ class TodayTodoSection extends StatelessWidget {
                           ? nest.colors.warning
                           : nest.colors.inkSecondary,
                     ),
+                    trailing: occurrence.task.chorePicture == null
+                        ? null
+                        : ChorePictureView(id: occurrence.task.picture),
                     onTap: onOpen,
                   ),
                 if (left.length > _shown)

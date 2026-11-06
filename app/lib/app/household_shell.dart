@@ -5,12 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
+import '../features/calendar_sync/ui/apple_calendar_scope.dart';
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_permissions.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/live_location/ui/always_sharing_guard.dart';
 import '../features/nanny_hub/ui/carer_scope.dart';
+import '../features/notifications/ui/digest_prompt_host.dart';
 import '../features/observability/crash_reporting.dart';
 import '../features/photo_frames/ui/share_to_frame_host.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
@@ -136,21 +138,31 @@ class _HouseholdShellState extends State<HouseholdShell> {
           // ADR-0001) — here, where it is known the account is really in it.
           child: HouseholdActivityScope(
             householdId: view.household.id,
-            // The household's entitlement, read once for every screen under
-            // it (subscriptions ADR-0001), then the booked-shift window and
-            // offline saving (nanny-hub ADR-0006, ADR-0007) — and, once all
-            // of that has answered, the welcome tour (welcome-tour ADR-0001).
-            child: EntitlementScope(
+            child: AppleCalendarScope(
               householdId: view.household.id,
-              canBuy: view.permissions.isFamily,
-              child: WelcomeTourGate(
-                location: widget.location,
-                child: WelcomeTourLayer(
+              // The household's entitlement, read once for every screen under
+              // it (subscriptions ADR-0001), then the booked-shift window and
+              // offline saving (nanny-hub ADR-0006, ADR-0007) — and, once all
+              // of that has answered, the welcome tour (welcome-tour ADR-0001).
+              child: EntitlementScope(
+                householdId: view.household.id,
+                canBuy: view.permissions.isFamily,
+                child: WelcomeTourGate(
                   location: widget.location,
-                  child: CarerScope(
-                    child: AlwaysSharingGuard(
-                      child: ShareToFrameHost(
-                        child: PremiumVoucherHost(child: widget.child),
+                  child: WelcomeTourLayer(
+                    location: widget.location,
+                    child: CarerScope(
+                      child: AlwaysSharingGuard(
+                        child: ShareToFrameHost(
+                          child: PremiumVoucherHost(
+                            child: DigestPromptHost(
+                              householdId: view.household.id,
+                              memberId: view.viewerMember?.id ?? '',
+                              location: widget.location,
+                              child: widget.child,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

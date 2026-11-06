@@ -94,7 +94,8 @@ describe('groceryItems productMatch at Pick n Pay', () => {
     ['a code without its unit', { productId: '000000000000838685' }],
     ['an article code with letters', { articleCode: '838685EA' }],
     ['an image path longer than any PnP path', { imageId: 'x'.repeat(301) }],
-    ['a shop NestPrep does not know', { retailer: 'woolworths' }],
+    ['a shop NestPrep does not know', { retailer: 'spar' }],
+    ['a PnP code under the Woolworths name', { retailer: 'woolworths' }],
     ['a price in rand', { priceCents: 21.99 }],
   ])('denies a pick with %s', async (_, overrides) => {
     const db = await asUser(THANDI);

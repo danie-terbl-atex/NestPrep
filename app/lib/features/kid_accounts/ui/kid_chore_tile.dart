@@ -6,6 +6,7 @@ import '../../../shared/copy/points_copy.dart';
 import '../../chore_points/model/kid_chore_note.dart';
 import '../../chore_points/ui/kid_chore_stars.dart';
 import '../../todos/model/task_occurrence.dart';
+import '../../todos/ui/chore_picture_view.dart';
 
 /// One of a kid's jobs, as a big tile the whole of which is the button
 /// (accounts ADR-0003). Tapping it ticks the job off, and tapping again un-ticks
@@ -18,6 +19,10 @@ import '../../todos/model/task_occurrence.dart';
 ///
 /// With [onToggle] null — a grant of `view` on to-dos, which looks and does not
 /// tick (accounts ADR-0004) — the tile is not a button and says no "tap".
+///
+/// The tick sits at the end of every tile, so the ticks form one column down
+/// the list. A job with a picture leads with it, big, for a child who cannot
+/// read yet (todos ADR-0005); done fades it a little.
 ///
 /// A starred job also says what it is worth and where its stars are — earned,
 /// waiting for a grown-up, or sent back for another go (todos ADR-0003).
@@ -68,8 +73,14 @@ class KidChoreTile extends StatelessWidget {
               padding: const EdgeInsets.all(NestSpace.md),
               child: Row(
                 children: [
-                  _Tick(isDone: isDone),
-                  const SizedBox(width: NestSpace.lg),
+                  if (chore.task.chorePicture != null) ...[
+                    ChorePictureView(
+                      id: chore.task.picture,
+                      size: NestSize.stickerLarge,
+                      isFaded: isDone,
+                    ),
+                    const SizedBox(width: NestSpace.lg),
+                  ],
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,6 +104,8 @@ class KidChoreTile extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: NestSpace.md),
+                  _Tick(isDone: isDone),
                 ],
               ),
             ),

@@ -52,11 +52,23 @@ function photoFrameIsScreensaver(screensaver) {
 }
 
 // No groceries at all is off; the area is one of the app's `CheckersArea` codes.
+// Woolworths also carries the store and price list the phone found for the
+// area, because the frame's search cannot look them up; no other shop has them.
 function photoFrameIsGroceries(groceries) {
   return groceries is map
-    && groceries.keys().hasOnly(['shop', 'area'])
     && groceries.keys().hasAll(['shop', 'area'])
-    && groceries.shop in ['checkers', 'pickNPay']
+    && groceries.shop in ['checkers', 'pickNPay', 'woolworths']
     && groceries.area in ['capeTown', 'johannesburg', 'pretoria', 'durban', 'gqeberha',
-                          'bloemfontein', 'eastLondon'];
+                          'bloemfontein', 'eastLondon']
+    && (groceries.shop == 'woolworths'
+          ? photoFrameIsWoolworthsStore(groceries)
+          : groceries.keys().hasOnly(['shop', 'area']));
+}
+
+function photoFrameIsWoolworthsStore(groceries) {
+  return groceries.keys().hasOnly(['shop', 'area', 'store', 'priceZone'])
+    && groceries.keys().hasAll(['store', 'priceZone'])
+    && groceries.store is string
+    && groceries.store.matches('^[0-9]{1,10}$')
+    && groceries.priceZone in ['p10', 'p30', 'p60'];
 }

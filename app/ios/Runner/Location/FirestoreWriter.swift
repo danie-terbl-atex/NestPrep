@@ -102,7 +102,7 @@ final class FirestoreWriter {
   }
 
   func retireLive(of config: EngineConfig, then done: @escaping () -> Void = {}) {
-    guard let firestore = link.connect(config) else { return done() }
+    guard let firestore = link.current(config) else { return done() }
     let once = Once(done)
     firestore.document(DocumentPaths(config).live).delete { _ in once.run() }
     DispatchQueue.main.asyncAfter(deadline: .now() + Self.retireTimeout) { once.run() }

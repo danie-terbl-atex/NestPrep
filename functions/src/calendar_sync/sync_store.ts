@@ -36,4 +36,7 @@ export interface SyncStore {
     connectionId: string,
     outcome: { readonly status: ConnectionStatus; readonly eventCount: number | null },
   ): Promise<void>;
+
+  /** Puts the connection at the back of the scheduler's queue. */
+  markAttempted(connectionId: string): Promise<void>;
 }

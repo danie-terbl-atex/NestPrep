@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/household/ui/member_picker.dart';
 import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/model/task_completion.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
@@ -120,6 +121,59 @@ void main() {
     expect(find.text('Make your bed'), findsOneWidget);
     expect(find.text(AppCopy.todosChoresProgress(0, 1)), findsOneWidget);
     expect(find.text('Bins'), findsNothing);
+  });
+
+  testWidgets('a task for a grown-up and a kid is in Everyone and in Chores', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(
+      tester,
+      tasks: [
+        bed().copyWith(
+          id: 'shop',
+          title: 'Shop for school shoes',
+          assigneeIds: const [Fixtures.samMemberId, Fixtures.kidMemberId],
+          points: 0,
+        ),
+      ],
+    );
+
+    await tester.tap(find.text(AppCopy.todosEveryone));
+    await tester.pumpAndSettle();
+    expect(find.text('Shop for school shoes'), findsOneWidget);
+
+    await openChores(tester);
+    expect(find.text('Shop for school shoes'), findsOneWidget);
+  });
+
+  testWidgets('the sheet says where a task with a kid in it will show', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(tester);
+    await tester.tap(find.text(AppCopy.todosAddTask));
+    await tester.pumpAndSettle();
+
+    Future<void> pick(String name) async {
+      final chip = find.descendant(
+        of: find.byType(MemberPicker),
+        matching: find.text(name),
+      );
+      await tester.ensureVisible(chip);
+      await tester.tap(chip);
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.text(AppCopy.todosShowsOnChores), findsNothing);
+    expect(find.text(AppCopy.todosShowsOnTodoAndChores), findsNothing);
+
+    await pick(Fixtures.kid.displayName);
+    expect(find.text(AppCopy.todosShowsOnChores), findsOneWidget);
+
+    await pick('Sam Parent');
+    expect(find.text(AppCopy.todosShowsOnChores), findsNothing);
+    expect(find.text(AppCopy.todosShowsOnTodoAndChores), findsOneWidget);
   });
 
   testWidgets('a kid with nothing today still has a section that says so', (

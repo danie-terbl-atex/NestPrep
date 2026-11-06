@@ -57,13 +57,14 @@ describe('ranking a grocery line’s Checkers matches', () => {
     await expectRefusal(rank(await signUp(), householdId), 'not-a-member');
   });
 
-  it('ranks for either shop: refused only when both shops are switched off', async () => {
+  it('ranks for any shop: refused only when every shop is switched off', async () => {
     const { sam, householdId } = await householdOfTwo();
     const flags = adminDb().doc('appConfig/flags');
-    await flags.set({ addToCheckers: false, addToPnp: true });
-    const ranked = await rank(sam, householdId);
-    expect(Array.isArray(ranked.ranked)).toBe(true);
-    await flags.set({ addToCheckers: false, addToPnp: false });
+    await flags.set({ addToCheckers: false, addToPnp: true, addToWoolworths: false });
+    expect(Array.isArray((await rank(sam, householdId)).ranked)).toBe(true);
+    await flags.set({ addToCheckers: false, addToPnp: false, addToWoolworths: true });
+    expect(Array.isArray((await rank(sam, householdId)).ranked)).toBe(true);
+    await flags.set({ addToCheckers: false, addToPnp: false, addToWoolworths: false });
     await expectRefusal(rank(sam, householdId), 'checkers-switched-off');
     await flags.delete();
   });

@@ -65,7 +65,8 @@ final class HttpPnpCatalogue implements RetailerCatalogue {
     ),
     // Another shop's shelf has no meaning here.
     RetailerShelfKind.productList ||
-    RetailerShelfKind.displayCategory => throw ArgumentError.value(shelf.id),
+    RetailerShelfKind.displayCategory ||
+    RetailerShelfKind.woolworthsGroup => throw ArgumentError.value(shelf.id),
   };
 
   Future<List<RetailerProduct>> _products({

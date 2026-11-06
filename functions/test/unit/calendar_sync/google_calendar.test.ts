@@ -39,7 +39,7 @@ describe('connecting', () => {
         redirectUri: 'https://example.test/cb',
       }),
     );
-    expect(url.searchParams.get('scope')).toContain('calendar.readonly');
+    expect(url.searchParams.get('scope')).toContain('calendar.events.readonly');
     expect(url.searchParams.get('scope')).not.toMatch(/calendar(\s|$)/);
     expect(url.searchParams.get('access_type')).toBe('offline');
     expect(url.searchParams.get('code_challenge_method')).toBe('S256');

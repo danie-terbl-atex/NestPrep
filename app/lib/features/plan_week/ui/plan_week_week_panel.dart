@@ -59,11 +59,20 @@ class _Week extends StatelessWidget {
         PlanWeekWeekHeader(plan: plan, weekName: weekName),
         if (plan.isEmpty) ...[
           const SizedBox(height: NestSpace.lg),
-          NestEmptyView(
-            icon: LucideIcons.sandwich,
-            title: PlanWeekCopy.nothingNew(weekName.inSentence),
-            message: PlanWeekAgainCopy.nothingNewBody(controller.retailer.shop),
-          ),
+          if (plan.daysLeft.isEmpty)
+            const NestEmptyView(
+              icon: LucideIcons.calendarX,
+              title: PlanWeekCopy.noDaysLeftTitle,
+              message: PlanWeekCopy.noDaysLeft,
+            )
+          else
+            NestEmptyView(
+              icon: LucideIcons.sandwich,
+              title: PlanWeekCopy.nothingNew(weekName.inSentence),
+              message: PlanWeekAgainCopy.nothingNewBody(
+                controller.retailer.shop,
+              ),
+            ),
         ] else ...[
           for (final child in plan.children) ...[
             const SizedBox(height: NestSpace.md),

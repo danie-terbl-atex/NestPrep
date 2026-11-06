@@ -93,6 +93,7 @@ export interface TaskRecord {
   readonly id: string;
   readonly task: StoredTask;
   readonly note?: string | null;
+  readonly picture?: string | null;
 }
 
 /** A day's chore with what a reader that shows the whole chore needs. */
@@ -101,6 +102,7 @@ export interface ChoreOccurrence extends ChoreToday {
   readonly note: string | null;
   readonly points: number;
   readonly needsApproval: boolean;
+  readonly picture: string | null;
 }
 
 /**
@@ -113,7 +115,7 @@ export function choreOccurrencesOn(
   tasks: readonly TaskRecord[],
   routines: Readonly<Record<string, StoredRoutine | undefined>>,
 ): ChoreOccurrence[] {
-  return tasks.flatMap(({ id, task, note }) => {
+  return tasks.flatMap(({ id, task, note, picture }) => {
     const routine = task.routineId === null ? undefined : routines[task.routineId];
     const schedule =
       routine === undefined
@@ -132,6 +134,7 @@ export function choreOccurrencesOn(
         note: note ?? null,
         points: task.points,
         needsApproval: task.needsApproval,
+        picture: picture ?? null,
       },
     ];
   });

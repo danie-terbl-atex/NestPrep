@@ -112,9 +112,18 @@ export class FirestoreSyncStore implements SyncStore {
         ? { lastSyncedAt: now, eventCount: outcome.eventCount ?? 0 }
         : {}),
     });
+    await batch.commit();
+  }
+
+  async markAttempted(connectionId: string): Promise<void> {
     // The scheduler picks the connections tried longest ago from here, because
     // this collection is top-level and needs no collection-group query (BE-08).
-    batch.set(secretRef(this.store, connectionId), { lastAttemptAt: now }, { merge: true });
+    const batch = this.store.batch();
+    batch.set(
+      secretRef(this.store, connectionId),
+      { lastAttemptAt: FieldValue.serverTimestamp() },
+      { merge: true },
+    );
     await batch.commit();
   }
 }

@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../../../support/fake_assistants.dart';
 import '../../../support/fake_auth.dart';
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
@@ -52,6 +53,7 @@ void main() {
     final controller = HouseholdController(
       householdRepository: households,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: viewerUid,
     );

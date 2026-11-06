@@ -38,7 +38,7 @@ describe('the public site is generated', () => {
     ).not.toThrow();
   });
 
-  it('with the landing page, both legal documents, the deletion, invite, connect, Premium and redeem pages and a 404', () => {
+  it('with the landing page, both legal documents, the deletion, invite, connect, Premium, redeem and reset-password pages and a 404', () => {
     expect(pages.map((page) => page.path).sort()).toEqual([
       '404.html',
       'connect/index.html',
@@ -48,6 +48,7 @@ describe('the public site is generated', () => {
       'premium/index.html',
       'privacy/index.html',
       'redeem/index.html',
+      'reset-password/index.html',
       'terms/index.html',
     ]);
   });
@@ -66,6 +67,28 @@ describe('the public site is generated', () => {
       source: '/api/account-deletion-request',
       function: { functionId: 'requestAccountDeletion', region: 'europe-west1' },
     });
+  });
+
+  it('fronts calendar sync’s OAuth callback and feed, so the redirect Google verifies is on our domain', () => {
+    const firebase = JSON.parse(read('firebase.json')) as {
+      hosting: {
+        rewrites: object[];
+        headers: { source: string; headers: { key: string; value: string }[] }[];
+      };
+    };
+    for (const functionId of ['calendarOAuthCallback', 'calendarFeed']) {
+      expect(firebase.hosting.rewrites).toContainEqual({
+        source: `/${functionId}`,
+        function: { functionId, region: 'europe-west1' },
+      });
+    }
+    const callback = firebase.hosting.headers
+      .filter((block) => block.source === '/calendarOAuthCallback')
+      .flatMap((block) => block.headers);
+    expect(callback).toContainEqual({ key: 'Cache-Control', value: 'no-store' });
+    expect(callback.find((header) => header.key === 'Content-Security-Policy')?.value).toContain(
+      "style-src 'unsafe-inline'",
+    );
   });
 });
 
@@ -193,6 +216,40 @@ describe('the deletion page and its script agree with the request contract', () 
   it('keeps the form hidden without JavaScript and says what to do instead', () => {
     expect(page).toMatch(/<form[^>]*\shidden[\s>]/);
     expect(page).toContain('<noscript>');
+  });
+});
+
+describe('a password reset email opens a page that sets the password', () => {
+  const page = read('hosting/src/pages/reset-password.html');
+  const script = read('hosting/src/reset-password.js');
+  const firebase = JSON.parse(read('firebase.json')) as {
+    hosting: { headers: { source: string; headers: { key: string; value: string }[] }[] };
+  };
+
+  it('has words in the page for every state the script can show', () => {
+    const states = [...script.matchAll(/return '([a-zA-Z]+)';|show\('([a-zA-Z]+)'\)/g)].map(
+      (match) => match[1] ?? match[2],
+    );
+    expect(states.length).toBeGreaterThan(4);
+    for (const state of states) expect(page, state).toContain(`data-state="${String(state)}"`);
+  });
+
+  it('is the page the email links to', () => {
+    expect(read('functions/src/accounts/password_reset_email.ts')).toContain(
+      '/reset-password?oobCode=',
+    );
+    expect(script).toContain("get('oobCode')");
+  });
+
+  it('may reach Identity Toolkit, keeps the code out of the referrer and is never cached', () => {
+    const headers = firebase.hosting.headers
+      .filter((block) => block.source === '{/reset-password,/reset-password/**}')
+      .flatMap((block) => block.headers);
+    expect(headers.find((header) => header.key === 'Content-Security-Policy')?.value).toContain(
+      "connect-src 'self' https://identitytoolkit.googleapis.com;",
+    );
+    expect(headers).toContainEqual({ key: 'Referrer-Policy', value: 'no-referrer' });
+    expect(headers).toContainEqual({ key: 'Cache-Control', value: 'no-store' });
   });
 });
 

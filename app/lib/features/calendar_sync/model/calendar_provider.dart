@@ -2,13 +2,17 @@
 /// the stored ones, and the server's `PROVIDERS` list is the other half of
 /// that contract.
 ///
-/// `ics` is a calendar link — Apple's way in, and any school's or club's
-/// published calendar.
+/// `apple` is read from the calendars on this iPhone and pushed by the phone;
+/// `ics` is a calendar link — any school's, club's or shared iCloud calendar.
 enum CalendarProvider {
+  apple,
   google,
   microsoft,
   ics;
 
   /// Connected through the provider's own sign-in, rather than by a link.
-  bool get usesOAuth => this != ics;
+  bool get usesOAuth => this == google || this == microsoft;
+
+  /// Read on the phone that linked it; no server can fetch it.
+  bool get readsFromPhone => this == apple;
 }

@@ -61,15 +61,22 @@ final class CartPushController extends ChangeNotifier {
       );
       _set(CartPushed(result));
     } on AppFailure catch (failure) {
-      _set(switch (failure) {
-        CheckersFailure(problem: CheckersProblem.linkExpired) ||
-        PnpFailure(
-          problem: PnpProblem.linkExpired,
-        ) => const CartPushNeedsLink(),
-        _ => CartPushFailed(failure),
-      });
+      _set(
+        _needsLink(failure)
+            ? const CartPushNeedsLink()
+            : CartPushFailed(failure),
+      );
     }
   }
+
+  static bool _needsLink(AppFailure failure) => switch (failure) {
+    CheckersFailure(problem: CheckersProblem.linkExpired) ||
+    PnpFailure(problem: PnpProblem.linkExpired) ||
+    WoolworthsFailure(
+      problem: WoolworthsProblem.linkExpired || WoolworthsProblem.notLinked,
+    ) => true,
+    _ => false,
+  };
 
   void _set(CartPushState state) {
     if (_isDisposed) return;

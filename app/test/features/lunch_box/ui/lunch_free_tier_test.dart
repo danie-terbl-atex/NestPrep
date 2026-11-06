@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../../../support/bring_into_view.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
+import '../../../support/plan_the_week.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/test_flags.dart';
 
@@ -82,9 +83,7 @@ void main() {
     await open(tester);
     await tester.tap(find.text('Ayanda'));
     await tester.pumpAndSettle();
-    await bringIntoView(tester, find.text(LunchCopy.fillWeek));
-    await tester.tap(find.text(LunchCopy.fillWeek));
-    await tester.pumpAndSettle();
+    await tapPlanTheWeek(tester);
     expect(paywallOn(PremiumFeature.additionalChild), findsOneWidget);
     expect(harness.repository.writtenPicks, isEmpty);
   });

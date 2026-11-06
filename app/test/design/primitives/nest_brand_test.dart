@@ -7,8 +7,8 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 
 import '../../support/pump_kit.dart';
 
-/// The brand in the kit (design-system ADR-0008, ADR-0020): the arch mark, the
-/// Mona Sans Display wordmark, and the empty state that can show the mark.
+/// The brand in the kit (design-system ADR-0008): the arch mark, the Fraunces
+/// wordmark, and the empty state that can show the mark.
 void main() {
   for (final brightness in bothThemes) {
     group(brightness.name, () {
@@ -28,9 +28,7 @@ void main() {
         semantics.dispose();
       });
 
-      testWidgets('the wordmark is the display face in the theme ink', (
-        tester,
-      ) async {
+      testWidgets('the wordmark is Fraunces in the theme ink', (tester) async {
         await pumpKit(
           tester,
           const NestWordmark(semanticsLabel: AppCopy.appName),

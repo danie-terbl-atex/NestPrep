@@ -12,6 +12,7 @@ import '../features/accounts/ui/forgot_password_screen.dart';
 import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
+import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household.dart';
@@ -58,10 +59,12 @@ import 'photo_frame_routes.dart';
 import 'pnp_link_routes.dart';
 import 'referral_routes.dart';
 import 'session_redirect.dart';
+import 'shops_routes.dart';
 import 'subscription_routes.dart';
 import 'today_route.dart';
 import 'two_homes_routes.dart';
 import 'viewer_member.dart';
+import 'woolworths_link_routes.dart';
 
 /// A route creates the controller its screen reads, so the controller's
 /// lifetime is the screen's (foundation ADR-0006). The household shell is the
@@ -134,6 +137,7 @@ GoRouter createAppRouter(
         create: (context) => HouseholdController(
           householdRepository: context.read<HouseholdRepository>(),
           householdDirectory: context.read<HouseholdDirectory>(),
+          childProfileDirectory: context.read<ChildProfileDirectory>(),
           householdId: HouseholdRoute.idFrom(state),
           viewerUid: session.uidOrEmpty,
         ),
@@ -181,6 +185,10 @@ GoRouter createAppRouter(
         basketCompareRoute(),
         // Linking a Pick n Pay account, for its cart (add-to-pnp ADR-0003).
         pnpLinkRoute(),
+        // Linking a Woolworths account, for its cart (add-to-woolworths
+        // ADR-0001).
+        woolworthsLinkRoute(),
+        shopsRoute(),
         // notifications: the inbox, its settings and one notification opened
         // (notifications ADR-0001 to ADR-0003).
         ...notificationsRoutes(),

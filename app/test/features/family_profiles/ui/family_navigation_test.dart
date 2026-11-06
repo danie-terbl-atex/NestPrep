@@ -49,6 +49,7 @@ void main() {
     householdController = HouseholdController(
       householdRepository: households,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: Fixtures.samUid,
     );

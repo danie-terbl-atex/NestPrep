@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../add_to_checkers/ui/product_suggestion_row.dart';
+import '../../add_to_checkers/ui/retailer_product_image.dart';
 import '../model/checked_product.dart';
 import '../model/idea_search.dart';
 import '../model/shop_week.dart';
@@ -29,14 +31,16 @@ final class SwapToEmpty extends SwapChoice {
   const SwapToEmpty({required super.everyDay});
 }
 
-/// Every product kept for this child in this compartment's ideas, with its
-/// idea, its pack price, about how many lunches a pack does and what a lunch
-/// costs, and *Leave it empty* — nothing else is offered, so a swap can never
+/// Every product kept for the child [childId] in this compartment's ideas,
+/// with the shop's picture of it, its idea, its pack price, about how many lunches a pack does and what
+/// a lunch costs — and a caution on one nothing is known to be in, offered to
+/// a child with an allergy — and *Leave it empty* — nothing else is offered, so a swap can never
 /// reach for something NestPrep left out (lunch-box ADR-0012 §2). *Every day
 /// this week* starts at [everyDay].
 Future<SwapChoice?> showPlanWeekSwapSheet({
   required BuildContext context,
   required String title,
+  required String childId,
   required List<(IdeaSearch, CheckedProduct)> options,
   required ShopPick? current,
   required int Function(String productId) boxesPerPackOf,
@@ -65,12 +69,26 @@ Future<SwapChoice?> showPlanWeekSwapSheet({
                 for (final (search, product) in options)
                   NestListRow(
                     key: ValueKey('swap-${search.ideaId}-${product.productId}'),
+                    leading: RetailerProductImage(
+                      retailer: product.product.retailer,
+                      imageId: product.product.imageId,
+                      size: ProductSuggestionRow.imageSize,
+                    ),
                     title: product.product.name,
                     subtitle: PlanWeekCopy.swapOption(
                       idea: search.idea.idea,
                       price: product.product.price,
                       boxesPerPack: boxesPerPackOf(product.productId),
                     ),
+                    footer: product.needsLabelCheckFor(childId)
+                        ? NestToneRow(
+                            icon: LucideIcons.triangleAlert,
+                            tone: NestTagTone.warning,
+                            title: PlanWeekCopy.labelCheck(
+                              product.product.retailer,
+                            ),
+                          )
+                        : null,
                     isSelected:
                         current?.productId == product.productId &&
                         current?.ideaId == search.ideaId,

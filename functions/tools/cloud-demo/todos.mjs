@@ -20,7 +20,8 @@ const ROUTINES = [
 
 /**
  * [id, title, dueOffset, assignees, createdBy, options]. `options` carries a
- * recurrence, a routine, stars (`points`) and whether a parent checks it.
+ * recurrence, a routine, stars (`points`), whether a parent checks it, and a
+ * kid's chore picture (todos ADR-0005).
  */
 const TASKS = [
   // The grown-ups' week.
@@ -30,7 +31,7 @@ const TASKS = [
   ['party-cake', "Order Sipho's dinosaur cake", 5, [mom], mom, { note: 'Nut-free bakery!' }],
   ['party-packs', 'Make up party packs', 10, [gran], mom],
   ['indemnity', "Sign Lerato's tour indemnity form", 3, [mom, dad], mom],
-  ['library', 'Return library books', 2, [lerato], mom],
+  ['library', 'Return library books', 2, [lerato], mom, { picture: 'library-book' }],
   ['pool-pump', 'Service the pool pump', 8, [dad], dad],
   ['medical-aid', "Call the medical aid about Zoë's claim", 2, [mom], mom],
   [
@@ -65,26 +66,75 @@ const TASKS = [
   ],
   ['uniform-labels', 'Sew name labels on new jerseys', 1, [gran], mom],
   // Routine steps: the schedule comes from the routine.
-  ['bed-lerato', 'Make your bed', -7, [lerato], mom, { routineId: 'morning', points: 2 }],
-  ['bed-sipho', 'Make your bed', -7, [sipho], mom, { routineId: 'morning', points: 2 }],
-  ['teeth', 'Brush teeth', -7, [lerato, sipho], mom, { routineId: 'morning' }],
-  ['school-bag', 'Pack your school bag', -7, [lerato, sipho], mom, { routineId: 'morning' }],
-  ['bath', 'Bath time', -7, [zoe, sipho], mom, { routineId: 'bedtime' }],
-  ['story', 'Read a story', -7, [], mom, { routineId: 'bedtime' }],
-  ['clothes', "Lay out tomorrow's clothes", -7, [lerato], mom, { routineId: 'bedtime', points: 1 }],
+  [
+    'bed-lerato',
+    'Make your bed',
+    -7,
+    [lerato],
+    mom,
+    { routineId: 'morning', points: 2, picture: 'make-bed' },
+  ],
+  [
+    'bed-sipho',
+    'Make your bed',
+    -7,
+    [sipho],
+    mom,
+    { routineId: 'morning', points: 2, picture: 'make-bed' },
+  ],
+  [
+    'teeth',
+    'Brush teeth',
+    -7,
+    [lerato, sipho],
+    mom,
+    { routineId: 'morning', picture: 'brush-teeth' },
+  ],
+  [
+    'school-bag',
+    'Pack your school bag',
+    -7,
+    [lerato, sipho],
+    mom,
+    { routineId: 'morning', picture: 'pack-school-bag' },
+  ],
+  ['bath', 'Bath time', -7, [zoe, sipho], mom, { routineId: 'bedtime', picture: 'take-bath' }],
+  ['story', 'Read a story', -7, [], mom, { routineId: 'bedtime', picture: 'bedtime-story' }],
+  [
+    'clothes',
+    "Lay out tomorrow's clothes",
+    -7,
+    [lerato],
+    mom,
+    { routineId: 'bedtime', points: 1, picture: 'lay-out-clothes' },
+  ],
   ['uniforms', 'Wash school uniforms', -7, [helper], mom, { routineId: 'laundry' }],
   ['ironing', 'Iron shirts', -7, [helper], mom, { routineId: 'laundry' }],
   ['linen', 'Change the bed linen', -7, [helper], mom, { routineId: 'laundry' }],
   // Chores with stars.
-  ['fish', 'Feed the fish', -2, [sipho], mom, { recurrence: daily, points: 2 }],
-  ['table', 'Set the table', -1, [lerato], mom, { recurrence: daily, points: 3 }],
+  [
+    'fish',
+    'Feed the fish',
+    -2,
+    [sipho],
+    mom,
+    { recurrence: daily, points: 2, picture: 'feed-fish' },
+  ],
+  [
+    'table',
+    'Set the table',
+    -1,
+    [lerato],
+    mom,
+    { recurrence: daily, points: 3, picture: 'set-table' },
+  ],
   [
     'tidy-room',
     'Tidy your room',
     -9,
     [lerato],
     mom,
-    { recurrence: weekly([6]), points: 5, needsApproval: true },
+    { recurrence: weekly([6]), points: 5, needsApproval: true, picture: 'tidy-bedroom' },
   ],
   [
     'toys',
@@ -92,16 +142,23 @@ const TASKS = [
     2,
     [sipho],
     mom,
-    { recurrence: daily, points: 2, needsApproval: true },
+    { recurrence: daily, points: 2, needsApproval: true, picture: 'tidy-toys' },
   ],
-  ['unpack', 'Help unpack the groceries', 2, [lerato, sipho], dad, { points: 3 }],
+  [
+    'unpack',
+    'Help unpack the groceries',
+    2,
+    [lerato, sipho],
+    dad,
+    { points: 3, picture: 'unpack-shopping' },
+  ],
   [
     'dishwasher',
     'Empty the dishwasher',
     1,
     [lerato],
     dad,
-    { recurrence: weekly([2, 4, 6]), points: 4, needsApproval: true },
+    { recurrence: weekly([2, 4, 6]), points: 4, needsApproval: true, picture: 'unload-dishwasher' },
   ],
 ];
 
@@ -172,6 +229,7 @@ export async function seedTodos(ctx) {
         createdAt: at(day(Math.min(due, 0) - 3), '20:30'),
         points: options.points ?? 0,
         needsApproval: options.needsApproval ?? false,
+        picture: options.picture ?? null,
       },
     ]);
   }

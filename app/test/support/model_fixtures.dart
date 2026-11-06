@@ -187,6 +187,7 @@ List<ModelFixture> modelFixtures() {
     createdAt: at,
     points: 5,
     needsApproval: true,
+    picture: 'brush-teeth',
   );
   final routine = Routine(
     id: 'r1',
@@ -458,6 +459,7 @@ List<ModelFixture> modelFixtures() {
         'createdAt',
         'points',
         'needsApproval',
+        'picture',
       },
     ),
     ModelFixture(

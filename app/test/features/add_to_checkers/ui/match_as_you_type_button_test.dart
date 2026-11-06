@@ -54,9 +54,7 @@ void main() {
     );
   });
 
-  testWidgets('the sheet offers both shops, Woolworths soon, and off', (
-    tester,
-  ) async {
+  testWidgets('the sheet offers every shop, and off', (tester) async {
     await open(tester);
     await openSheet(tester, ProductRetailer.checkers);
 
@@ -69,7 +67,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text(CheckersCopy.retailerSoon(ProductRetailer.woolworths)),
+      find.text(CheckersCopy.matchAt(ProductRetailer.woolworths)),
       findsOneWidget,
     );
     expect(find.text(CheckersCopy.dontMatchAsYouType), findsOneWidget);
@@ -98,18 +96,20 @@ void main() {
     expect(h.catalogue.searches, isEmpty);
   });
 
-  testWidgets('with Pick n Pay switched off it shows as coming, and cannot be '
-      'chosen', (tester) async {
+  testWidgets('a shop switched off is not offered at all', (tester) async {
     final h = await open(tester, off: {FeatureFlag.addToPnp});
     await openSheet(tester, ProductRetailer.checkers);
 
-    await tester.tap(
-      find.text(CheckersCopy.retailerSoon(ProductRetailer.pickNPay)),
+    expect(find.byKey(const ValueKey(ProductRetailer.pickNPay)), findsNothing);
+    expect(
+      find.text(CheckersCopy.matchAt(ProductRetailer.pickNPay)),
+      findsNothing,
     );
-    await tester.pumpAndSettle();
-
+    expect(
+      find.text(CheckersCopy.matchAt(ProductRetailer.checkers)),
+      findsOneWidget,
+    );
     expect(h.retailers.chosen, ProductRetailer.checkers);
-    expect(h.retailerPreference.chosen, isEmpty);
   });
 
   testWidgets('turning it off is kept, and the logo says so', (tester) async {

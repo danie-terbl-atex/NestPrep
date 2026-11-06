@@ -12,6 +12,7 @@ import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
+import '../../support/fake_family_profiles.dart';
 import '../../support/fake_household.dart';
 import '../../support/fake_invite_sharer.dart';
 import '../../support/household_fixtures.dart';
@@ -157,6 +158,7 @@ void main() {
       final controller = HouseholdController(
         householdRepository: repository,
         householdDirectory: FakeHouseholdDirectory(),
+        childProfileDirectory: FakeFamilyProfileRepository(),
         householdId: Fixtures.householdId,
         viewerUid: Fixtures.samUid,
       );
@@ -205,6 +207,7 @@ void main() {
       final controller = InviteStepController(
         householdRepository: repository,
         householdDirectory: FakeHouseholdDirectory(),
+        childProfileDirectory: FakeFamilyProfileRepository(),
         inviteSharer: FakeInviteSharer(appLink: Uri.parse('https://x.test')),
         householdId: 'h1',
         householdName: 'The Parkers',

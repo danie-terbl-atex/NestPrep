@@ -12,6 +12,7 @@ import '../../household/model/member.dart';
 import '../../household/ui/member_choice_sheet.dart';
 import '../model/task_occurrence.dart';
 import '../state/todo_controller.dart';
+import 'chore_picture_view.dart';
 import 'task_sheet.dart';
 
 /// One task on one day. A tap opens it on its actions, so a stray tap never
@@ -143,6 +144,13 @@ class _TaskOccurrenceRowState extends State<TaskOccurrenceRow>
                     ),
                   ),
                   const SizedBox(width: NestSpace.md),
+                  if (_occurrence.task.chorePicture != null) ...[
+                    ChorePictureView(
+                      id: _occurrence.task.picture,
+                      isFaded: _looksDone,
+                    ),
+                    const SizedBox(width: NestSpace.md),
+                  ],
                   Expanded(
                     child: _Details(
                       occurrence: _occurrence,
@@ -320,6 +328,7 @@ class _TaskOccurrenceRowState extends State<TaskOccurrenceRow>
           routineId: draft.routineId,
           points: draft.points,
           needsApproval: draft.needsApproval,
+          picture: draft.picture,
         );
     }
   }

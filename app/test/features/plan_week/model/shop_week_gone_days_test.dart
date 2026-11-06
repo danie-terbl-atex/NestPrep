@@ -109,4 +109,30 @@ void main() {
       LunchPlan.slotKey(4, LunchSlot.fruit),
     ]);
   });
+
+  test('the week knows which days are left, and fills none that has gone, '
+      'so the review shows only those', () {
+    final week = ShopWeekAssembly.fallback(
+      board: boardOn(wednesday),
+      childIds: {lwazi},
+      searches: [apples],
+      budget: null,
+      packing: packingFor({LunchSlot.fruit}),
+      reason: PlanFallbackReason.offline,
+    );
+    expect(week.daysLeft, {4, 5});
+    expect(week.fills(3, LunchSlot.fruit), isFalse);
+    expect(week.fills(4, LunchSlot.fruit), isTrue);
+    expect(
+      week
+          .withPick(lwazi, LunchPlan.slotKey(4, LunchSlot.fruit), null)
+          .daysLeft,
+      {4, 5},
+    );
+  });
+
+  test('a Friday leaves no day, and the Saturday before leaves all five', () {
+    expect(LunchFixtures.week.daysLeftAfter(monday.addDays(4)), isEmpty);
+    expect(LunchFixtures.week.daysLeftAfter(saturdayBefore), {1, 2, 3, 4, 5});
+  });
 }

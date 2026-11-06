@@ -18,8 +18,9 @@ abstract final class PlanWeekCopy {
   // ---- the way in, on the lunch board ----
   /// Twig is named as the one who plans, in words only: the row's picture is
   /// the chosen shop's logo (lunch-box ADR-0024, ADR-0026, design-system
-  /// ADR-0014), so the body names the shop the title no longer does.
-  static String entryTitle(String week) => 'Let Twig plan $week';
+  /// ADR-0014), so the body names the shop the title does not. The chooser's
+  /// title names the week (ADR-0033).
+  static const entryTitle = 'Let Twig plan it';
   static String entryBody(ProductRetailer shop) =>
       'Lunches for every child from what ${_name(shop)} sells, within your '
       'budget — you check each step.';
@@ -212,12 +213,41 @@ abstract final class PlanWeekCopy {
         'day on the lunch board.';
   }
 
+  // ---- school days that have gone this week (lunch-box ADR-0019) ----
+  static String daysLeft({
+    required List<String> left,
+    required List<String> gone,
+  }) => switch (left.length) {
+    0 => noDaysLeft,
+    1 =>
+      'Only ${left.single} is left this week, so that’s the day planned. '
+          '${_gone(gone)}',
+    _ =>
+      '${_run(left)} are left this week, so those are the days planned. '
+          '${_gone(gone)}',
+  };
+  static const noDaysLeftTitle = 'This week’s school days have gone';
+  static const noDaysLeft =
+      'Every school day this week has gone. Move the lunch board to next '
+      'week to plan that one.';
+  static String _gone(List<String> days) =>
+      '${_run(days)} ${days.length == 1 ? 'has' : 'have'} gone.';
+  static String _run(List<String> days) =>
+      days.length < 3 ? _and(days) : '${days.first} to ${days.last}';
+
   static String newForChild(int count) =>
       count == 0 ? 'Nothing new' : '$count new';
   static const originSuggested = 'Suggested';
   static const originFilled = 'Built on the phone';
   static const originSwapped = 'Your pick';
   static String swapTitle(String slot, String day) => '$slot on $day';
+
+  // ---- a product its shop publishes nothing of what is in ----
+  static String labelCheck(ProductRetailer shop) =>
+      '${_name(shop)} doesn’t publish what’s in this. Check the label.';
+  static String labelCheckOf(ProductRetailer shop, List<String> products) =>
+      '${_name(shop)} doesn’t publish what’s in ${_and(products)}. Check the '
+      'label.';
   static const leaveEmpty = 'Leave it empty';
   static const swapEveryDay = 'Every day this week';
   static String swapOption({

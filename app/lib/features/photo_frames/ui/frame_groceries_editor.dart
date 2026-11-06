@@ -9,11 +9,13 @@ import '../model/frame_groceries.dart';
 
 /// *Add groceries from the frame*, and the shop and area it picks products
 /// at. Offered while a shop is switched on; a frame already adding keeps its
-/// shop, offered or not, until somebody switches it off.
+/// shop, offered or not, until somebody switches it off. Switched on, it
+/// starts at [defaultShop] when that is offered.
 class FrameGroceriesEditor extends StatelessWidget {
   const FrameGroceriesEditor({
     required this.groceries,
     required this.shopsOn,
+    required this.defaultShop,
     required this.defaultArea,
     required this.onChanged,
     super.key,
@@ -21,21 +23,26 @@ class FrameGroceriesEditor extends StatelessWidget {
 
   final FrameGroceries? groceries;
   final List<ProductRetailer> shopsOn;
+  final ProductRetailer? defaultShop;
   final CheckersArea defaultArea;
   final ValueChanged<FrameGroceries?>? onChanged;
 
   @override
   Widget build(BuildContext context) {
     final current = groceries;
-    if (current == null && shopsOn.isEmpty) return const SizedBox.shrink();
-    final nest = NestTheme.of(context);
-    final change = onChanged;
     final shops = [
       for (final shop in ProductRetailer.values)
         if (shopsOn.contains(shop) || shop == current?.shop) shop,
     ];
+    if (shops.isEmpty) return const SizedBox.shrink();
+    final nest = NestTheme.of(context);
+    final change = onChanged;
+    final startShop = switch (defaultShop) {
+      final shop? when shops.contains(shop) => shop,
+      _ => shops.first,
+    };
     void toggle(bool on) => change?.call(
-      on ? FrameGroceries(shop: shops.first, area: defaultArea) : null,
+      on ? FrameGroceries(shop: startShop, area: defaultArea) : null,
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

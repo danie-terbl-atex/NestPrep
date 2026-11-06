@@ -19,11 +19,13 @@ import {
   resetKidSignInInput,
   revokeKidDeviceInput,
 } from '../../../src/accounts/kid_schemas';
+import { sendPasswordResetInput } from '../../../src/accounts/password_reset';
 import { reviewChoreInput, settleRewardInput } from '../../../src/chore_points/schemas';
 import {
   connectCalendarLinkInput,
   connectionInput,
   householdInput,
+  pushAppleCalendarInput,
   startCalendarConnectionInput,
 } from '../../../src/calendar_sync/schemas';
 
@@ -70,6 +72,7 @@ export const coreBodies = {
   },
   cancelKidPairing: { schema: cancelKidPairingInput, body: { householdId: 'h1', code: 'ABC234' } },
   redeemKidPairing: { schema: redeemKidPairingInput, body: { code: 'ABC234' } },
+  sendPasswordReset: { schema: sendPasswordResetInput, body: { email: 'sam@example.com' } },
   revokeKidDevice: {
     schema: revokeKidDeviceInput,
     body: { householdId: 'h1', deviceUid: 'kid_abc' },
@@ -89,6 +92,22 @@ export const coreBodies = {
   syncCalendarConnection: {
     schema: connectionInput,
     body: { householdId: 'h1', connectionId: 'c1' },
+  },
+  pushAppleCalendar: {
+    schema: pushAppleCalendarInput,
+    body: {
+      householdId: 'h1',
+      link: true,
+      occurrences: [
+        {
+          id: 'e1',
+          title: 'Swimming',
+          allDay: false,
+          start: 1_790_000_000_000,
+          end: 1_790_003_600_000,
+        },
+      ],
+    },
   },
   // Documents phase 2: the one door to a vault document's bytes (documents
   // ADR-0003).

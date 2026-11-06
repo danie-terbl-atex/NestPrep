@@ -9,6 +9,7 @@ import '../data/lunch_idea_drafter.dart';
 import '../model/aisle_shelf.dart';
 import '../model/checked_product.dart';
 import '../model/idea_search.dart';
+import '../model/lunch_aisle.dart';
 import '../model/lunch_idea.dart';
 
 /// The start of step 2 (lunch-box ADR-0013, ADR-0026): the chosen shop's own
@@ -19,9 +20,6 @@ import '../model/lunch_idea.dart';
 /// that cannot be read is counted, said, and left out.
 final class PlanWeekAisle {
   PlanWeekAisle({required this._source, required this.onChange});
-
-  /// What one shelf brings home to choose from: its best sellers.
-  static const perShelf = 24;
 
   /// Product names per shelf the model hears of — the ones offered first.
   static const namesPerShelf = 6;
@@ -81,6 +79,7 @@ final class PlanWeekAisle {
     _unread = 0;
     _isReading = true;
     onChange();
+    final limit = LunchAisle.productsPerShelf(shop);
     final shelves = [
       for (final shelf in await _source.shelves(shop))
         if (slots.contains(shelf.slot)) shelf,
@@ -89,7 +88,13 @@ final class PlanWeekAisle {
     _total = shelves.length;
     onChange();
     for (final (index, shelf) in shelves.indexed) {
-      final answered = await _readShelf(index, shelf, near, rulesByChild);
+      final answered = await _readShelf(
+        index,
+        shelf,
+        limit,
+        near,
+        rulesByChild,
+      );
       if (generation != _generation) return;
       _read++;
       if (answered == null) {
@@ -118,6 +123,7 @@ final class PlanWeekAisle {
   Future<IdeaSearch?> _readShelf(
     int index,
     AisleShelf shelf,
+    int limit,
     Coordinates near,
     Map<String, FoodRules> rulesByChild,
   ) async {
@@ -127,7 +133,7 @@ final class PlanWeekAisle {
         final products = await _catalogue.shelf(
           shelf: source,
           near: near,
-          limit: perShelf,
+          limit: limit,
         );
         anyRead = true;
         if (products.isEmpty) continue;

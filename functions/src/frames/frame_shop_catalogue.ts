@@ -1,4 +1,4 @@
-import { hash, randomBytes } from 'node:crypto';
+import { hash, randomBytes, randomUUID } from 'node:crypto';
 
 import { z } from 'zod';
 
@@ -12,16 +12,20 @@ import {
 import { PnpUnavailable } from '../pnp/pnp_api';
 import { OCC_LOCALE, PNP_OCC, askPnp, readPnpReply } from '../pnp/pnp_request';
 import { runsInEmulator } from '../shared/feature_flags';
-import { fetchHttpClient, type HttpClient } from '../shared/http_client';
-import type { FrameArea } from './frame_areas';
+import { HttpUnreachable, fetchHttpClient, jsonOf, type HttpClient } from '../shared/http_client';
+import { FRAME_AREAS, type FrameArea } from './frame_areas';
+import type { FrameGroceries } from './frame_documents';
 import type { FrameGroceryShop } from './frame_policy';
 
 /**
  * The family's shop searched for a frame, from the server (photo-frames
  * ADR-0012): the unauthenticated catalogue calls the app makes on the phone
- * (add-to-checkers ADR-0003, add-to-pnp ADR-0002), ported so a frame, which
- * never updates, depends on nothing a shop can change under it. Under the
- * emulator a script answers and nothing reaches a shop.
+ * (add-to-checkers ADR-0003, add-to-pnp ADR-0002, add-to-woolworths
+ * ADR-0002), ported so a frame, which never updates, depends on nothing a
+ * shop can change under it. Woolworths' store lookup sits behind Cloudflare,
+ * so the phone finds the store when the frame is saved and only the
+ * Constructor search runs here. Under the emulator a script answers and
+ * nothing reaches a shop.
  */
 
 export interface FrameShopProduct {
@@ -37,13 +41,8 @@ export interface FrameShopProduct {
 }
 
 export interface FrameCatalogue {
-  /** Throws [FrameShopUnavailable] when the shop fails or has no store near [area]. */
-  search(
-    shop: FrameGroceryShop,
-    area: FrameArea,
-    query: string,
-    limit: number,
-  ): Promise<FrameShopProduct[]>;
+  /** Throws [FrameShopUnavailable] when the shop fails or has no store near the frame's area. */
+  search(groceries: FrameGroceries, query: string, limit: number): Promise<FrameShopProduct[]>;
 }
 
 export class FrameShopUnavailable extends Error {
@@ -55,6 +54,9 @@ export class FrameShopUnavailable extends Error {
 
 const CHECKERS_IMAGE_HOST = 'catalog.sixty60.co.za';
 export const PNP_IMAGE_HOST = 'cdn-prd-02.pnp.co.za';
+export const WOOLWORTHS_IMAGE_HOST = 'assets.woolworthsstatic.co.za';
+const WOOLWORTHS_IMAGE_PREFIX = `https://${WOOLWORTHS_IMAGE_HOST}/`;
+const WOOLWORTHS_IMAGE_ID = /^[^/\s]{1,600}$/;
 
 /** Where a shop serves a product's picture: the app's `retailerImageUrl`, and nowhere else. */
 export function productImageUrl(retailer: string, imageId: string | null): string | null {
@@ -66,7 +68,19 @@ export function productImageUrl(retailer: string, imageId: string | null): strin
     const url = `https://${PNP_IMAGE_HOST}/${encodeURI(imageId.replace(/^\/+/, ''))}`;
     return URL.canParse(url) && new URL(url).host === PNP_IMAGE_HOST ? url : null;
   }
+  if (retailer === 'woolworths') return woolworthsImageUrl(imageId);
   return null;
+}
+
+/** The file name and query stored after Woolworths' host, joined back to it and asked for 200 wide. */
+function woolworthsImageUrl(imageId: string): string | null {
+  if (!WOOLWORTHS_IMAGE_ID.test(imageId)) return null;
+  const separator =
+    imageId.endsWith('&') || imageId.endsWith('?') ? '' : imageId.includes('?') ? '&' : '?';
+  const url = `${WOOLWORTHS_IMAGE_PREFIX}${imageId}${separator}w=200&q=85`;
+  if (!URL.canParse(url)) return null;
+  const parsed = new URL(url);
+  return parsed.host === WOOLWORTHS_IMAGE_HOST && parsed.hash === '' ? parsed.href : null;
 }
 
 /** About a kilometre, as the app keys a place: the same stores serve all of it. */
@@ -189,24 +203,98 @@ function pnpImagePath(images: readonly unknown[]): string | null {
   return path === null || path.length > 300 ? null : path;
 }
 
+const WOOLWORTHS_SEARCH_HOST = 'https://wpkmgeuco-zone.cnstrc.com';
+const WOOLWORTHS_SEARCH_KEY = 'key_tw9hKe0fkfgEf36D';
+const WOOLWORTHS_SKU = /^[0-9]{6,14}$/;
+const WOOLWORTHS_VARIABLE_WEIGHT_SKU = /^2[0-9]{12}$/;
+const WOOLWORTHS_AVERAGE_WEIGHT = /\bavg\b/i;
+
+const woolworthsResult = z.object({
+  value: z.string().nullish(),
+  data: z.record(z.string(), z.unknown()),
+});
+const woolworthsReply = z.object({ response: z.object({ results: z.array(z.unknown()) }) });
+
+type WoolworthsPriceZone = Extract<FrameGroceries, { shop: 'woolworths' }>['priceZone'];
+
+function woolworthsText(value: unknown): string | null {
+  return typeof value === 'string' ? nonEmpty(value) : null;
+}
+
+/** Cents from Woolworths' rand: exact to the cent or nothing (`ENG-20`), except a weighed product's. */
+function woolworthsCents(rand: unknown, isSoldByWeight: boolean): number | null {
+  if (typeof rand !== 'number' || !Number.isFinite(rand) || rand <= 0) return null;
+  const cents = rand * 100;
+  const whole = Math.round(cents);
+  return isSoldByWeight || Math.abs(cents - whole) < 0.0001 ? whole : null;
+}
+
+/** The file name and query after Woolworths' image host, or null when it is elsewhere or unsafe to store. */
+function woolworthsImageId(imageUrl: unknown): string | null {
+  if (typeof imageUrl !== 'string' || !imageUrl.startsWith(WOOLWORTHS_IMAGE_PREFIX)) return null;
+  const id = imageUrl.slice(WOOLWORTHS_IMAGE_PREFIX.length);
+  return WOOLWORTHS_IMAGE_ID.test(id) ? id : null;
+}
+
+/** A Woolworths product at [priceZone]'s price, the app's `WoolworthsCatalogueParser` ported. */
+export function woolworthsProductOf(
+  raw: unknown,
+  priceZone: WoolworthsPriceZone,
+): FrameShopProduct | null {
+  const parsed = woolworthsResult.safeParse(raw);
+  if (!parsed.success) return null;
+  const { data } = parsed.data;
+  const sku = data.id;
+  const name = woolworthsText(parsed.data.value ?? data.description);
+  if (typeof sku !== 'string' || !WOOLWORTHS_SKU.test(sku) || name === null) return null;
+  const isSoldByWeight =
+    WOOLWORTHS_VARIABLE_WEIGHT_SKU.test(sku) || WOOLWORTHS_AVERAGE_WEIGHT.test(name);
+  const price = woolworthsCents(
+    isSoldByWeight ? (data[`${priceZone}_kg`] ?? data[priceZone]) : data[priceZone],
+    isSoldByWeight,
+  );
+  if (price === null) return null;
+  return {
+    retailer: 'woolworths',
+    productId: sku,
+    articleCode: sku,
+    unitOfMeasure: isSoldByWeight ? 'KG' : 'EA',
+    name: Array.from(name).slice(0, 200).join(''),
+    brand: woolworthsText(data.brand)?.slice(0, 100) ?? null,
+    priceCents: price,
+    imageId: woolworthsImageId(data.image_url),
+    isSoldByWeight,
+  };
+}
+
 /** The catalogues over HTTPS, with no credential of any kind. */
 export class HttpFrameCatalogue implements FrameCatalogue {
   private readonly deviceId = randomBytes(16).toString('hex');
+  private readonly visitorId = randomUUID();
 
   constructor(private readonly http: HttpClient) {}
 
   async search(
-    shop: FrameGroceryShop,
-    area: FrameArea,
+    groceries: FrameGroceries,
     query: string,
     limit: number,
   ): Promise<FrameShopProduct[]> {
+    const area = FRAME_AREAS[groceries.area];
     try {
-      return shop === 'checkers'
-        ? await this.searchCheckers(area, query, limit)
-        : await this.searchPnp(area, query, limit);
+      switch (groceries.shop) {
+        case 'checkers':
+          return await this.searchCheckers(area, query, limit);
+        case 'pickNPay':
+          return await this.searchPnp(area, query, limit);
+        case 'woolworths':
+          return await this.searchWoolworths(groceries.store, groceries.priceZone, query, limit);
+      }
     } catch (error) {
-      if (error instanceof CheckersUnavailable || error instanceof PnpUnavailable) {
+      if (
+        error instanceof CheckersUnavailable ||
+        error instanceof PnpUnavailable ||
+        error instanceof HttpUnreachable
+      ) {
         throw new FrameShopUnavailable(error.reason);
       }
       throw error;
@@ -332,6 +420,40 @@ export class HttpFrameCatalogue implements FrameCatalogue {
       return product === null ? [] : [product];
     });
   }
+
+  /** Constructor's search stocked at the store the phone found; never Woolworths' own `/server/*`. */
+  private async searchWoolworths(
+    store: string,
+    priceZone: WoolworthsPriceZone,
+    query: string,
+    limit: number,
+  ): Promise<FrameShopProduct[]> {
+    const search = new URLSearchParams([
+      ['key', WOOLWORTHS_SEARCH_KEY],
+      ['i', this.visitorId],
+      ['s', '1'],
+      ['num_results_per_page', String(limit)],
+      ['page', '1'],
+      ['filters[visibility]', 'all'],
+      ['filters[visibility]', 'web and app'],
+      ['filters[stocked_at]', store],
+      ['us', 'default'],
+      ['us', `jda_${store}`],
+    ]);
+    const response = await this.http.send(
+      `${WOOLWORTHS_SEARCH_HOST}/v1/search/${encodeURIComponent(query)}?${search.toString()}`,
+      { method: 'GET', headers: { accept: 'application/json' } },
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new FrameShopUnavailable(`woolworths status ${String(response.status)}`);
+    }
+    const reply = woolworthsReply.safeParse(jsonOf(response.body));
+    if (!reply.success) throw new FrameShopUnavailable('woolworths unreadable');
+    return reply.data.response.results.flatMap((raw) => {
+      const product = woolworthsProductOf(raw, priceZone);
+      return product === null ? [] : [product];
+    });
+  }
 }
 
 /**
@@ -340,12 +462,7 @@ export class HttpFrameCatalogue implements FrameCatalogue {
  * by weight, at R19.99 upwards. Ids are stable per query.
  */
 export class EmulatorFrameCatalogue implements FrameCatalogue {
-  search(
-    shop: FrameGroceryShop,
-    _area: FrameArea,
-    query: string,
-    limit: number,
-  ): Promise<FrameShopProduct[]> {
+  search({ shop }: FrameGroceries, query: string, limit: number): Promise<FrameShopProduct[]> {
     if (query.toLowerCase().startsWith('down')) {
       return Promise.reject(new FrameShopUnavailable('emulator outage'));
     }
@@ -353,14 +470,14 @@ export class EmulatorFrameCatalogue implements FrameCatalogue {
     const products = [0, 1, 2].map((index): FrameShopProduct => {
       const digest = hash('sha256', `${shop}:${query.toLowerCase()}:${String(index)}`, 'hex');
       const weighed = index === 1;
-      const unit = weighed ? (shop === 'checkers' ? 'KG' : 'KGM') : 'EA';
       const digits = String(BigInt(`0x${digest.slice(0, 12)}`))
         .padStart(18, '0')
         .slice(0, 18);
+      const unit = weighed ? (shop === 'pickNPay' ? 'KGM' : 'KG') : 'EA';
+      const ids = emulatorIds(shop, digest, digits, unit, weighed);
       return {
         retailer: shop,
-        productId: shop === 'checkers' ? digest.slice(0, 24) : `${digits}_${unit}`,
-        articleCode: shop === 'checkers' ? `${digits.slice(-8)}${unit}` : digits,
+        ...ids,
         unitOfMeasure: unit,
         name: `${title} ${['500 g', 'per kg', 'family pack'][index] ?? ''}`.trim(),
         brand: index === 2 ? null : 'Emulator',
@@ -370,6 +487,25 @@ export class EmulatorFrameCatalogue implements FrameCatalogue {
       };
     });
     return Promise.resolve(products.slice(0, limit));
+  }
+}
+
+function emulatorIds(
+  shop: FrameGroceryShop,
+  digest: string,
+  digits: string,
+  unit: string,
+  weighed: boolean,
+): { productId: string; articleCode: string } {
+  switch (shop) {
+    case 'checkers':
+      return { productId: digest.slice(0, 24), articleCode: `${digits.slice(-8)}${unit}` };
+    case 'pickNPay':
+      return { productId: `${digits}_${unit}`, articleCode: digits };
+    case 'woolworths': {
+      const sku = weighed ? `2${digits.slice(-12)}` : `6009${digits.slice(-9)}`;
+      return { productId: sku, articleCode: sku };
+    }
   }
 }
 

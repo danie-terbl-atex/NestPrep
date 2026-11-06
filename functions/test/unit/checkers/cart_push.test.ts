@@ -1,8 +1,16 @@
 import { HttpsError } from 'firebase-functions/v2/https';
 import { describe, expect, it } from 'vitest';
 
-import { pushToCheckersCart, type CartPushDeps } from '../../../src/checkers/cart_push';
-import { CheckersSessionExpired, CheckersUnavailable } from '../../../src/checkers/checkers_api';
+import {
+  pushToCheckersCart,
+  type CartPushDeps,
+  type CheckersPushCall,
+} from '../../../src/checkers/cart_push';
+import {
+  CheckersSessionExpired,
+  CheckersUnavailable,
+  type Cart,
+} from '../../../src/checkers/checkers_api';
 import { requireGroceryReader } from '../../../src/checkers/checkers_caller';
 import { groceryLineOf } from '../../../src/cart_push/grocery_lines';
 import { sealSession } from '../../../src/checkers/sealed_values';
@@ -64,11 +72,16 @@ async function refusal(promise: Promise<unknown>): Promise<unknown> {
   throw new Error('expected a refusal');
 }
 
-const call = (itemIds: string[]): { uid: string; householdId: string; itemIds: string[] } => ({
+const call = (itemIds: string[], quantities: Record<string, number> = {}): CheckersPushCall => ({
   uid: UID,
   householdId: 'h1',
   itemIds,
+  quantities,
 });
+
+function cartHolding(lines: { lineId: string; productId: string; quantity: number }[]): Cart {
+  return { cartId: 'cart-1', deliveryAddressId: 'addr-1', lines, totalCents: 0 };
+}
 
 describe('filling the cart', () => {
   it('adds each matched item once, at today’s price, and answers the cart after', async () => {
@@ -92,8 +105,8 @@ describe('filling the cart', () => {
     expect(result.cartTotalCents).toBe(3799 + 1899);
     expect(deps.shop.sent).toEqual([
       [
-        { productId: MILK, storeId: STORE.storeId, priceCents: 3799, quantity: 1 },
-        { productId: BREAD, storeId: STORE.storeId, priceCents: 1899, quantity: 1 },
+        { lineId: null, productId: MILK, storeId: STORE.storeId, priceCents: 3799, quantity: 1 },
+        { lineId: null, productId: BREAD, storeId: STORE.storeId, priceCents: 1899, quantity: 1 },
       ],
     ]);
   });
@@ -106,19 +119,62 @@ describe('filling the cart', () => {
     expect(deps.shop.sent[0]).toEqual([expect.objectContaining({ productId: MILK, quantity: 2 })]);
   });
 
-  it('never doubles the cart: a product already in it is left alone and counted as added', async () => {
+  it('asks for each item’s packs, and two items of one product add up', async () => {
+    const groceries = new MemoryGroceries({
+      a: picked('a', MILK),
+      b: picked('b', MILK),
+      bread: picked('bread', BREAD),
+    });
+    const deps = run(await linked(), groceries);
+    const result = await pushToCheckersCart(deps, call(['a', 'b', 'bread'], { a: 3, bread: 2 }));
+    expect(result.added.map((line) => line.itemId)).toEqual(['a', 'b', 'bread']);
+    expect(deps.shop.sent[0]).toEqual([
+      expect.objectContaining({ lineId: null, productId: MILK, quantity: 4 }),
+      expect.objectContaining({ lineId: null, productId: BREAD, quantity: 2 }),
+    ]);
+    expect(result.cartItemCount).toBe(6);
+  });
+
+  it('never doubles the cart: a product already held is counted as added and not sent', async () => {
     const shop = new ScriptedShop();
-    shop.cart = {
-      cartId: 'cart-1',
-      deliveryAddressId: 'addr-1',
-      lines: [{ lineId: 'l1', productId: MILK, quantity: 1 }],
-      totalCents: 3799,
-    };
+    shop.cart = cartHolding([{ lineId: 'l1', productId: MILK, quantity: 3 }]);
     const deps = run(await linked(), new MemoryGroceries({ milk: picked('milk', MILK) }), shop);
-    const result = await pushToCheckersCart(deps, call(['milk']));
+    const result = await pushToCheckersCart(deps, call(['milk'], { milk: 2 }));
     expect(result.added.map((line) => line.itemId)).toEqual(['milk']);
     expect(deps.shop.sent).toEqual([]);
-    expect(result.cartItemCount).toBe(1);
+    expect(result.cartItemCount).toBe(3);
+  });
+
+  it('adds only what the cart is short of, on the line it already has', async () => {
+    const shop = new ScriptedShop();
+    shop.cart = cartHolding([{ lineId: 'l1', productId: MILK, quantity: 1 }]);
+    const deps = run(await linked(), new MemoryGroceries({ milk: picked('milk', MILK) }), shop);
+    const result = await pushToCheckersCart(deps, call(['milk'], { milk: 3 }));
+    expect(deps.shop.sent).toEqual([
+      [expect.objectContaining({ lineId: 'l1', productId: MILK, quantity: 3 })],
+    ]);
+    expect(result.added.map((line) => line.itemId)).toEqual(['milk']);
+    expect(result.cartItemCount).toBe(3);
+    const again = await pushToCheckersCart(deps, call(['milk'], { milk: 3 }));
+    expect(again.cartItemCount).toBe(3);
+    expect(deps.shop.sent).toHaveLength(1);
+  });
+
+  it('says low stock when Checkers takes fewer packs, and out of stock when it takes none', async () => {
+    const groceries = new MemoryGroceries({
+      milk: picked('milk', MILK),
+      bread: picked('bread', BREAD),
+    });
+    const deps = run(await linked(), groceries);
+    deps.shop.stockOf[MILK] = 2;
+    deps.shop.stockOf[BREAD] = 0;
+    const result = await pushToCheckersCart(deps, call(['milk', 'bread'], { milk: 5, bread: 1 }));
+    expect(result.added).toEqual([]);
+    expect(result.skipped).toEqual([
+      { itemId: 'milk', reason: 'low-stock' },
+      { itemId: 'bread', reason: 'out-of-stock' },
+    ]);
+    expect(result.cartItemCount).toBe(2);
   });
 
   it('gives every skip its reason', async () => {

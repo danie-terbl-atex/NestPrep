@@ -5,9 +5,10 @@ import '../../../shared/copy/app_copy.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/ui/lunch_week_name.dart';
 import '../model/shop_week.dart';
+import 'plan_week_days_left_note.dart';
 
 /// The top of the week step: which week it is — "Lunches for next week"
-/// (lunch-box ADR-0019) — which days get a treat when the plan packs them
+/// (lunch-box ADR-0019) — which of its days have gone, which days get a treat when the plan packs them
 /// (Friday by ADR-0003, or the brief's treat days by ADR-0025), why it was
 /// built on the phone when it was, and what the server left out.
 class PlanWeekWeekHeader extends StatelessWidget {
@@ -33,6 +34,10 @@ class PlanWeekWeekHeader extends StatelessWidget {
         ),
         const SizedBox(height: NestSpace.xs),
         Text(PlanWeekCopy.tapToSwap, style: nest.text.bodySecondary),
+        if (plan.daysLeft.length < plan.week.schoolDays.length) ...[
+          const SizedBox(height: NestSpace.md),
+          PlanWeekDaysLeftNote(week: plan.week, daysLeft: plan.daysLeft),
+        ],
         if (plan.slots.contains(LunchSlot.treat) &&
             plan.treatDays.isNotEmpty) ...[
           const SizedBox(height: NestSpace.xs),

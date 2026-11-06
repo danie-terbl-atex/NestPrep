@@ -15,7 +15,7 @@ void main() {
     registerFontLicences(bundle: _DiskBundle());
     final entries = await LicenseRegistry.licenses.toList();
     final families = entries.expand((entry) => entry.packages).toSet();
-    expect(families, contains('Mona Sans'));
+    expect(families, containsAll(['DM Sans', 'Fraunces']));
     final text = entries
         .expand((entry) => entry.paragraphs)
         .map((paragraph) => paragraph.text)

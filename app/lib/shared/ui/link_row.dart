@@ -14,6 +14,7 @@ class LinkRow extends StatelessWidget {
     required this.path,
     this.subtitle,
     this.tint = NestTileTint.accent,
+    this.replace = false,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class LinkRow extends StatelessWidget {
   final String? subtitle;
   final String path;
   final NestTileTint tint;
+  final bool replace;
 
   @override
   Widget build(BuildContext context) => NestListRow(
@@ -34,6 +36,6 @@ class LinkRow extends StatelessWidget {
     title: title,
     subtitle: subtitle,
     trailing: const Icon(LucideIcons.chevronRight),
-    onTap: () => context.push(path),
+    onTap: () => replace ? context.pushReplacement(path) : context.push(path),
   );
 }

@@ -4,6 +4,7 @@ import '../../../shared/firestore/server_timestamp_converter.dart';
 import '../../../shared/recurrence/calendar_date_converter.dart';
 import '../../../shared/recurrence/recurrence_rule.dart';
 import '../../../shared/time/calendar_date.dart';
+import 'chore_picture.dart';
 
 part 'task.freezed.dart';
 part 'task.g.dart';
@@ -40,6 +41,11 @@ abstract class Task with _$Task {
 
     /// Whether a parent checks it before the stars land (todos ADR-0003).
     @Default(false) bool needsApproval,
+
+    /// A sticker from the bundled library, by id, for a child who cannot read
+    /// yet (todos ADR-0005). None is left out of the document, never written
+    /// as null, so a task without one still passes rules that predate it.
+    @JsonKey(includeIfNull: false) String? picture,
   }) = _Task;
 
   const Task._();
@@ -48,4 +54,8 @@ abstract class Task with _$Task {
 
   /// Whether ticking it earns a child anything.
   bool get carriesStars => points > 0;
+
+  /// What [picture] draws in this build — null for none and for an id it does
+  /// not ship.
+  ChorePicture? get chorePicture => ChorePicture.byId(picture);
 }

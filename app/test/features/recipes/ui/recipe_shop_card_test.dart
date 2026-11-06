@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
 import 'package:nestprep/features/add_to_pnp/data/pnp_directory.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_directory.dart';
 import 'package:nestprep/features/groceries/data/grocery_repository.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/recipes/state/recipe_catalogue_controller.dart';
 import 'package:nestprep/features/recipes/state/recipe_page_controller.dart';
@@ -17,6 +19,7 @@ import '../../../support/fake_checkers.dart';
 import '../../../support/fake_grocery_repository.dart';
 import '../../../support/fake_pnp.dart';
 import '../../../support/fake_subscriptions.dart';
+import '../../../support/fake_woolworths.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/recipe_fixtures.dart';
@@ -80,9 +83,13 @@ void main() {
         ...harness.providers,
         ...fakeCheckersProviders(catalogue: catalogue),
         Provider<RetailerCatalogues>.value(
-          value: RetailerCatalogues(checkers: catalogue, pickNPay: catalogue),
+          value: RetailerCatalogues({
+            ProductRetailer.checkers: catalogue,
+            ProductRetailer.pickNPay: catalogue,
+          }),
         ),
         Provider<PnpDirectory>.value(value: pnp),
+        Provider<WoolworthsDirectory>.value(value: FakeWoolworthsDirectory()),
         Provider<GroceryRepository>.value(value: groceries),
         if (isPremium)
           ChangeNotifierProvider<HouseholdEntitlement>(

@@ -127,6 +127,11 @@ void main() {
   // forget nobody has thought about yet, and a name that has gone is an excuse
   // waiting to be handed to something else.
   const accountedFor = {
+    // Your shops: reading a shop's link status keeps an AppFailure on that
+    // shop's row, and coming back from a link screen only reads it again.
+    '_load(shop)',
+    'controller.refresh(shop)',
+    '_openLink(context controller)',
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
     // Decoding Twig's poses ahead of time (design-system ADR-0012).
@@ -158,6 +163,8 @@ void main() {
     // `signOut` catches its own AppFailure.
     '_failSession(error is AppFailure ? error : UnknownFailure(error))',
     // Controllers that keep a refusal instead of throwing it.
+    '_loadAppleLink()',
+    'controller.openAppleSettings()',
     'controller.joinWithCode(_code.text.trim())',
     'controller.createHousehold(',
     // The same shape for the two ways in that are not Google: both keep their
@@ -367,6 +374,12 @@ void main() {
     // `bestEffort` itself logs and never throws: the place editor moving its
     // map to where the person is.
     'bestEffort(',
+    // Offering today's digest on the first open (notifications ADR-0005): the
+    // store logs a storage failure and answers "never offered", and the
+    // inbox listen sends its errors to onError, which logs and drops the
+    // banner. Opening the digest from it is a push whose future is the pop.
+    '_controller.opened());',
+    'context.push<void>(digestPath));',
   };
 
   /// Every `unawaited(...)` argument in the app, as written.

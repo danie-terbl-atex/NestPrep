@@ -11,7 +11,7 @@ import { refuseCheckers } from './errors';
 import type { GroceryLineReader } from '../cart_push/grocery_lines';
 import type { CheckersLinkStore } from './link_store';
 import { liveSession } from './link_status';
-import { itemCountOf, planLines, sortItems, type Wanted } from './push_plan';
+import { itemCountOf, planLines, sortItems, withShortfalls, type Wanted } from './push_plan';
 import { openSession } from './sealed_values';
 import type { PushResult } from '../cart_push/push_outcome';
 
@@ -26,6 +26,13 @@ export interface CartPushDeps {
   readonly now: Date;
 }
 
+export interface CheckersPushCall {
+  readonly uid: string;
+  readonly householdId: string;
+  readonly itemIds: readonly string[];
+  readonly quantities: Readonly<Record<string, number>>;
+}
+
 /** What `checkersPushToCart` answers (the Checkers build contract). */
 export type { PushResult } from '../cart_push/push_outcome';
 
@@ -37,28 +44,30 @@ export type { PushResult } from '../cart_push/push_outcome';
  */
 export async function pushToCheckersCart(
   deps: CartPushDeps,
-  call: { uid: string; householdId: string; itemIds: readonly string[] },
+  call: CheckersPushCall,
 ): Promise<PushResult> {
   const context = await shopContextFor(deps, call.uid);
   const lines = await deps.groceries.read(call.householdId, call.itemIds);
   const sorted = sortItems(call.itemIds, lines);
+  const packsOf = (itemId: string): number => call.quantities[itemId] ?? 1;
   try {
     const products = await productsFor(deps.shop, context, sorted.wanted);
     const cart = await deps.shop.readCart(context);
-    const plan = planLines(sorted.wanted, products, cart);
+    const plan = planLines(sorted.wanted, packsOf, products, cart);
     const after =
       plan.lines.length > 0 ? await deps.shop.addLines(context, cart, plan.lines) : cart;
-    const skipped = [...sorted.skipped, ...plan.skipped];
+    const taken = withShortfalls(plan, cart, after);
+    const skipped = [...sorted.skipped, ...plan.skipped, ...taken.skipped];
     logger.info('checkers cart filled', {
       uid: call.uid,
       householdId: call.householdId,
       asked: call.itemIds.length,
-      added: plan.added.length,
-      newLines: plan.lines.length,
+      added: taken.added.length,
+      writtenLines: plan.lines.length,
       skipped: skipped.length,
     });
     return {
-      added: plan.added,
+      added: taken.added,
       skipped,
       cartItemCount: itemCountOf(after),
       cartTotalCents: after.totalCents,

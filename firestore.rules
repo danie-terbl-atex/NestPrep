@@ -520,6 +520,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ==== rules/firestore/root/frame_devices.rules ====
+    // ---- frame update devices ----
+    // Each frame's update agent, keyed by the hash of its own secret. Written by
+    // `checkFrameUpdate`, `reportFrameUpdate` and Internal Tools.
+    match /frameDevices/{deviceId} {
+      allow read, write: if false;
+    }
+
     // ==== rules/firestore/root/frame_pairings.rules ====
     // ---- photo frame pairing codes (photo-frames ADR-0001) ----
     // Closed for the same reason kid pairings are: a readable collection of
@@ -527,6 +535,14 @@ service cloud.firestore {
     // `startFramePairing`, `pollFramePairing` and `claimFramePairing` are the
     // only way in.
     match /framePairings/{code} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/frame_releases.rules ====
+    // ---- frame update releases ----
+    // What a frame's update agent may be offered. Written by the release script,
+    // Internal Tools and `reportFrameUpdate`; read only by the update Functions.
+    match /frameReleases/{releaseId} {
       allow read, write: if false;
     }
 
@@ -689,6 +705,16 @@ service cloud.firestore {
     // household, and the link is what stops one store account unlocking many.
 
     match /storePurchases/{purchaseKey} {
+      allow read, write: if false;
+    }
+
+    // ==== rules/firestore/root/woolworths_links.rules ====
+    // ---- add to Woolworths: a member's own Dash link ----
+    // Written and read by the Woolworths Functions alone: it holds the member's
+    // sealed Cognito tokens, which no client may read, not even its owner; the
+    // app asks `woolworthsLinkStatus` instead.
+
+    match /woolworthsLinks/{uid} {
       allow read, write: if false;
     }
 
@@ -1469,7 +1495,7 @@ service cloud.firestore {
                                   'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
           && pick.keys().hasOnly(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                                    'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
-          && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick))
+          && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick) || groceriesIsWoolworthsPick(pick))
           && pick.unitOfMeasure is string
           && pick.unitOfMeasure.matches('^[A-Z0-9]{1,8}$')
           && isNonEmptyString(pick.name)
@@ -1503,6 +1529,18 @@ service cloud.firestore {
           && pick.articleCode is string
           && pick.articleCode.matches('^[0-9]{1,20}$')
           && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 300));
+      }
+
+      // Woolworths Dash: the SKU as both ids, `EA` or a weighed `KG`, and the image's
+      // file name and query on Woolworths' asset host, which the app joins to the host.
+      function groceriesIsWoolworthsPick(pick) {
+        return pick.retailer == 'woolworths'
+          && pick.productId is string
+          && pick.productId.matches('^[0-9]{6,14}$')
+          && pick.articleCode == pick.productId
+          && pick.unitOfMeasure in ['EA', 'KG']
+          && (pick.imageId == null
+                || (pick.imageId is string && pick.imageId.matches('^[^/\\s]{1,600}$')));
       }
 
       // ==== rules/firestore/household/grocery_plans.rules ====
@@ -3551,13 +3589,25 @@ service cloud.firestore {
       }
 
       // No groceries at all is off; the area is one of the app's `CheckersArea` codes.
+      // Woolworths also carries the store and price list the phone found for the
+      // area, because the frame's search cannot look them up; no other shop has them.
       function photoFrameIsGroceries(groceries) {
         return groceries is map
-          && groceries.keys().hasOnly(['shop', 'area'])
           && groceries.keys().hasAll(['shop', 'area'])
-          && groceries.shop in ['checkers', 'pickNPay']
+          && groceries.shop in ['checkers', 'pickNPay', 'woolworths']
           && groceries.area in ['capeTown', 'johannesburg', 'pretoria', 'durban', 'gqeberha',
-                                'bloemfontein', 'eastLondon'];
+                                'bloemfontein', 'eastLondon']
+          && (groceries.shop == 'woolworths'
+                ? photoFrameIsWoolworthsStore(groceries)
+                : groceries.keys().hasOnly(['shop', 'area']));
+      }
+
+      function photoFrameIsWoolworthsStore(groceries) {
+        return groceries.keys().hasOnly(['shop', 'area', 'store', 'priceZone'])
+          && groceries.keys().hasAll(['store', 'priceZone'])
+          && groceries.store is string
+          && groceries.store.matches('^[0-9]{1,10}$')
+          && groceries.priceZone in ['p10', 'p30', 'p60'];
       }
 
       // ==== rules/firestore/household/places.rules ====
@@ -3650,10 +3700,11 @@ service cloud.firestore {
         allow create: if canEdit(householdId, 'todos')
           && request.resource.data.keys().hasOnly(
                ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
-                'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval'])
+                'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval', 'picture'])
           && isNonEmptyString(request.resource.data.title)
           && isNonEmptyString(request.resource.data.dueDate)
           && request.resource.data.assigneeIds is list
+          && isTaskPicture(request.resource.data.get('picture', null))
           && choreStarsAreValid(request.resource.data)
           && (isFamily(householdId) || !choreCarriesStars(request.resource.data))
           && isOwnMember(householdId, request.resource.data.createdBy)
@@ -3666,9 +3717,10 @@ service cloud.firestore {
         allow update: if canEdit(householdId, 'todos')
           && onlyChanged(
                ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId',
-                'points', 'needsApproval'])
+                'points', 'needsApproval', 'picture'])
           && isNonEmptyString(request.resource.data.title)
           && isNonEmptyString(request.resource.data.dueDate)
+          && isTaskPicture(request.resource.data.get('picture', null))
           && choreStarsAreValid(request.resource.data)
           && (isFamily(householdId) || choreStarsUnchanged())
           && (isAdmin(householdId)
@@ -3677,6 +3729,12 @@ service cloud.firestore {
         allow delete: if isAdmin(householdId)
           || (canEdit(householdId, 'todos')
                 && isOwnMember(householdId, resource.data.createdBy));
+      }
+
+      // A sticker from the app's bundled library, by id; the rules check the shape,
+      // never that the library has it (todos ADR-0005).
+      function isTaskPicture(value) {
+        return value == null || (value is string && value.matches('^[a-z0-9-]{1,48}$'));
       }
 
       // A routine's schedule moves every task in it, which is why only an admin

@@ -142,6 +142,22 @@ describe('filling the cart', () => {
     expect(pushed.cartItemCount).toBeGreaterThanOrEqual(1);
   });
 
+  it('puts the asked packs in, and a second push changes nothing', async () => {
+    const { sam, householdId } = await householdOfTwo();
+    await link(sam, '082 555 4321');
+    await anItem(householdId, 'milk', MILK);
+    await anItem(householdId, 'more', MILK);
+    const body = { householdId, itemIds: ['milk', 'more'], quantities: { milk: 3 } };
+    const first = await callAs<Pushed>(sam, 'checkersPushToCart', body);
+    expect(first.added.map((line) => line.itemId)).toEqual(['milk', 'more']);
+    expect(first.skipped).toEqual([]);
+    expect(first.cartItemCount).toBeGreaterThanOrEqual(4);
+    const second = await callAs<Pushed>(sam, 'checkersPushToCart', body);
+    expect(second.added.map((line) => line.itemId)).toEqual(['milk', 'more']);
+    expect(second.cartItemCount).toBe(first.cartItemCount);
+    expect(second.cartTotalCents).toBe(first.cartTotalCents);
+  });
+
   it('refuses a member with no link, and a stranger to the household', async () => {
     const { sam, householdId } = await householdOfTwo();
     await anItem(householdId, 'milk', MILK);

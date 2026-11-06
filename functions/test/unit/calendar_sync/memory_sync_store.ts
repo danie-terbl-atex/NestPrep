@@ -32,6 +32,7 @@ export class MemorySyncStore implements SyncStore {
   credential: string | null = 'refresh-1';
   readonly events: Record<string, SyncedEventDocument | undefined> = {};
   outcomes: { status: ConnectionStatus; eventCount: number | null }[] = [];
+  attempts = 0;
   writes = 0;
   deletes = 0;
 
@@ -80,6 +81,11 @@ export class MemorySyncStore implements SyncStore {
     outcome: { status: ConnectionStatus; eventCount: number | null },
   ): Promise<void> {
     this.outcomes.push(outcome);
+    return Promise.resolve();
+  }
+
+  markAttempted(): Promise<void> {
+    this.attempts++;
     return Promise.resolve();
   }
 

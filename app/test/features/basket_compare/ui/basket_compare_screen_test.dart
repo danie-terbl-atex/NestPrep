@@ -9,6 +9,7 @@ import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart'
 import 'package:nestprep/features/basket_compare/state/basket_compare_controller.dart';
 import 'package:nestprep/features/basket_compare/ui/basket_compare_screen.dart';
 import 'package:nestprep/features/groceries/model/grocery_item.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
@@ -49,7 +50,10 @@ void main() {
       ];
     groceries = FakeGroceryRepository();
     controller = BasketCompareController(
-      catalogues: RetailerCatalogues(checkers: checkersShop, pickNPay: pnpShop),
+      catalogues: RetailerCatalogues({
+        ProductRetailer.checkers: checkersShop,
+        ProductRetailer.pickNPay: pnpShop,
+      }),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),

@@ -3,12 +3,15 @@ import 'package:flutter/foundation.dart';
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
+import '../../family_profiles/data/child_profile_directory.dart';
+import '../../subscriptions/model/premium_feature.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../data/invite_sharer.dart';
 import '../model/access_defaults.dart';
 import '../model/guardian_consent.dart';
 import '../model/member_role.dart';
+import 'new_child_marking.dart';
 
 /// Somebody invited from this screen: who, as what, and the code they join
 /// with. Kept for as long as the screen is open, so a parent can share it
@@ -35,11 +38,13 @@ class SentInvite {
 /// own; a profile made without a code is still a profile the household can
 /// invite from the people screen, so nothing is left unreachable.
 final class InviteStepController extends ChangeNotifier
-    with ActionFailureHolder {
+    with ActionFailureHolder
+    implements MakesChildren {
   InviteStepController({
     required HouseholdRepository householdRepository,
     required HouseholdDirectory householdDirectory,
     required InviteSharer inviteSharer,
+    required ChildProfileDirectory childProfileDirectory,
     required this.householdId,
     required this.householdName,
     required Iterable<MemberColor> coloursInUse,
@@ -47,11 +52,16 @@ final class InviteStepController extends ChangeNotifier
   }) : _repository = householdRepository,
        _directory = householdDirectory,
        _sharer = inviteSharer,
+       _newChild = NewChildMarking(
+         childProfileDirectory: childProfileDirectory,
+         householdId: householdId,
+       ),
        _coloursInUse = {...coloursInUse};
 
   final HouseholdRepository _repository;
   final HouseholdDirectory _directory;
   final InviteSharer _sharer;
+  final NewChildMarking _newChild;
   final String householdId;
   final String householdName;
 
@@ -69,11 +79,22 @@ final class InviteStepController extends ChangeNotifier
   /// The last share sheet would not open; the screen says to copy instead.
   bool get shareUnavailable => _shareUnavailable;
 
+  @override
+  PremiumFeature? get childAwaitingPremium => _newChild.awaitingPremium;
+
+  @override
+  Future<void> markChildAfterUpgrade() => _run(_newChild.markAfterUpgrade);
+
+  @override
+  void forgetChildAwaitingPremium() => _newChild.forget();
+
   /// Makes the profile and its code, then opens the share sheet. Answers
   /// whether the invite exists — a dismissed sheet is still an invite.
   ///
   /// Inviting a kid records the consent the inviting adult gave (accounts
-  /// ADR-0005); the rules refuse a kid profile without it.
+  /// ADR-0005); the rules refuse a kid profile without it. The kid is a
+  /// child — in lunches and the free tier's count — before they join
+  /// (household ADR-0009).
   Future<bool> invite({
     required String displayName,
     required MemberRole role,
@@ -106,6 +127,7 @@ final class InviteStepController extends ChangeNotifier
     _sent.add(sent);
     notifyListeners();
     await _share(sent);
+    await _newChild.markIfKid(memberId, role);
   });
 
   Future<void> shareAgain(SentInvite sent) => _share(sent);

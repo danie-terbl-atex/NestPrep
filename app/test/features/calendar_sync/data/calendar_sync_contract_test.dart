@@ -77,10 +77,16 @@ void main() {
   });
 
   test('a refusal only the client raises is not one the server lost', () {
-    // `couldNotOpenBrowser` is the phone saying no, not a Function.
+    // These are the phone saying no, not a Function.
+    const phoneOnly = {
+      CalendarSyncProblem.couldNotOpenBrowser,
+      CalendarSyncProblem.appleCalendarDenied,
+      CalendarSyncProblem.appleCalendarRestricted,
+      CalendarSyncProblem.noAppleCalendarChosen,
+    };
     final serverOnly = {
       for (final problem in CalendarSyncProblem.values)
-        if (problem != CalendarSyncProblem.couldNotOpenBrowser) problem.name,
+        if (!phoneOnly.contains(problem)) problem.name,
     };
     expect(serverOnly.difference(refusals()), isEmpty);
   });

@@ -38,10 +38,28 @@ class SignInProviders extends StatelessWidget {
   }
 
   void _appleComingSoon(BuildContext context) {
-    ScaffoldMessenger.maybeOf(context)
-      ?..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(content: Text(AppCopy.signInAppleComingSoon)),
-      );
+    showNestSheet<void>(
+      context: context,
+      title: AppCopy.signInAppleComingSoonTitle,
+      builder: (sheetContext) {
+        final nest = NestTheme.of(sheetContext);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              AppCopy.signInAppleComingSoon,
+              style: nest.text.body.copyWith(color: nest.colors.inkSecondary),
+            ),
+            const SizedBox(height: NestSpace.xl),
+            NestButton(
+              key: const ValueKey('apple-coming-soon-ok'),
+              label: AppCopy.signInAppleComingSoonOk,
+              onPressed: () => Navigator.of(sheetContext).pop(),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { db } from '../shared/firestore';
 import { householdRef } from '../household/documents';
+import { HOSTING_REGION } from '../shared/region';
 import { hashFeedToken } from './feed_link';
 import { type FeedEvent, storedEvent, writeFeed } from './feed_writer';
 import { feedTokenRef } from './sync_documents';
@@ -23,7 +24,7 @@ const tokenShape = z.object({ householdId: z.string() });
 const householdShape = z.object({ name: z.string(), timeZone: z.string() });
 const exceptionShape = z.object({ eventId: z.string(), occurrenceDate: z.string() });
 
-export const calendarFeed = onRequest(async (req, res) => {
+export const calendarFeed = onRequest({ region: HOSTING_REGION }, async (req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.status(405).send('Method not allowed');
     return;

@@ -10,6 +10,7 @@ final class ProviderAvailability {
   final bool microsoft;
 
   bool isAvailable(CalendarProvider provider) => switch (provider) {
+    CalendarProvider.apple => true,
     CalendarProvider.google => google,
     CalendarProvider.microsoft => microsoft,
     CalendarProvider.ics => true,

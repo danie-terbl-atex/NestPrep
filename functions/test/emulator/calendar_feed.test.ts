@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { PROJECT_ID, REGION, adminDb, callAs, clearFirestore, signUp } from './emulator_harness';
+import { HOSTING_REGION } from '../../src/shared/region';
+import { PROJECT_ID, adminDb, callAs, clearFirestore, signUp } from './emulator_harness';
 import { type HouseholdOfTwo, expectRefusal, householdOfTwo } from './calendar_sync_fixture';
 
 /**
@@ -8,7 +9,7 @@ import { type HouseholdOfTwo, expectRefusal, householdOfTwo } from './calendar_s
  * Functions reached by a URL rather than a call (calendar ADR-0003).
  */
 const FUNCTIONS_HOST = process.env['FUNCTIONS_EMULATOR_HOST'] ?? '127.0.0.1:5001';
-const base = `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${REGION}`;
+const base = `http://${FUNCTIONS_HOST}/${PROJECT_ID}/${HOSTING_REGION}`;
 
 let home: HouseholdOfTwo;
 

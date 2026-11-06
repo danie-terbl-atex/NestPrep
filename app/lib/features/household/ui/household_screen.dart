@@ -10,6 +10,7 @@ import '../model/household_view.dart';
 import '../state/household_controller.dart';
 import 'household_body.dart';
 import 'member_sheet.dart';
+import 'new_child_paywall.dart';
 
 /// The household: who is in it, who has joined, and the admin actions. All four
 /// async states come from the kit (`FE-08`).
@@ -80,5 +81,6 @@ class HouseholdScreen extends StatelessWidget {
       birthday: result.birthday,
       guardianConsent: result.guardianConsent,
     );
+    if (context.mounted) await offerPremiumForNewChild(context, controller);
   }
 }

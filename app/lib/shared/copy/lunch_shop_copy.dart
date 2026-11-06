@@ -11,7 +11,8 @@ abstract final class LunchShopCopy {
       '${_storeName(shop)} near you';
   static String shopFinding(ProductRetailer shop) =>
       'Finding your nearest ${CheckersCopy.retailerName(shop)}…';
-  static const shopOnly = 'Checkers is the only shop for now.';
+  static String shopOnly(ProductRetailer shop) =>
+      '${CheckersCopy.retailerName(shop)} is the only shop for now.';
   static const changeArea = 'Change area';
 
   // ---- choosing the shop ----
@@ -22,6 +23,7 @@ abstract final class LunchShopCopy {
 
   static String _storeName(ProductRetailer shop) => switch (shop) {
     ProductRetailer.checkers => 'Checkers Sixty60',
-    _ => CheckersCopy.retailerName(shop),
+    ProductRetailer.pickNPay => CheckersCopy.retailerName(shop),
+    ProductRetailer.woolworths => 'Woolies Dash',
   };
 }

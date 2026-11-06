@@ -1,4 +1,5 @@
 import '../failure/app_failure.dart';
+import 'app_copy.dart';
 
 /// Every user-facing string of kid sign-in (accounts ADR-0003), beside
 /// `AppCopy` rather than inside it so the copy file stays one screen's worth
@@ -55,11 +56,15 @@ abstract final class KidCopy {
   static const manageTitle = 'Kids’ sign-in';
   static const manageEntry = 'Kids’ sign-in';
   static const manageEntryBody =
-      'Let a child sign in on their own tablet with a code — no email needed.';
+      'Let a child sign in on their own tablet with a code — no email needed. '
+      'The tablet opens in kid mode: one simple screen.';
   static const manageIntro =
-      'A child signs in with a code you make here. Their device shows what you '
-      'chose for them under Household — to begin with, their own jobs and '
-      'today’s food.';
+      'A code you make here signs a child’s device in to kid mode. It has one '
+      'screen, My day: their jobs, their lunch box and today’s food. There '
+      'are no tabs, so no calendar, groceries or anything else.';
+  static const manageFullAppHint =
+      'For the full app, invite them as “${AccessCopy.setupChild}” instead. '
+      'They make their own account and see what you choose for them.';
   static const manageEmptyTitle = 'No children to sign in yet';
   static const manageEmptyBody =
       'Add a person with the Kid role who has not joined. They can then sign '
@@ -86,9 +91,12 @@ abstract final class KidCopy {
   static const pairLabel = 'What is the device called?';
   static const pairLabelHint = 'Tablet, phone… (optional)';
   static const pairMakeCode = 'Make a code';
+  static const pairKidMode =
+      'This device opens in kid mode: only My day, with their jobs, their '
+      'lunch box and today’s food. No tabs, no groceries, no calendar.';
   static const pairBody =
-      'On the child’s device, open NestPrep, tap “I have a code from a '
-      'grown-up”, and type this.';
+      'On the child’s device, open NestPrep, tap “${AppCopy.codeWayIn}”, and '
+      'type this.';
   static const pairWaiting = 'Waiting for the device…';
   static const pairExpired = 'That code has run out.';
   static const pairMakeAnother = 'Make a new code';

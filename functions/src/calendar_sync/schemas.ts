@@ -29,3 +29,36 @@ export const connectionInput = z.object({
   connectionId: z.string().trim().min(1).max(64),
 });
 export type ConnectionInput = z.infer<typeof connectionInput>;
+
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const epochMs = z.number().int().nonnegative();
+const occurrenceId = z.string().min(1).max(512);
+const occurrenceTitle = z.string().max(1000);
+
+/** One occurrence the iPhone read from EventKit; the phone never sends whose it is. */
+export const deviceOccurrence = z.discriminatedUnion('allDay', [
+  z.object({
+    id: occurrenceId,
+    title: occurrenceTitle,
+    allDay: z.literal(false),
+    start: epochMs,
+    end: epochMs,
+  }),
+  z.object({
+    id: occurrenceId,
+    title: occurrenceTitle,
+    allDay: z.literal(true),
+    startDate: isoDate,
+    endDateExclusive: isoDate,
+  }),
+]);
+export type DeviceOccurrence = z.infer<typeof deviceOccurrence>;
+
+export const MAX_PUSHED_OCCURRENCES = 1_000;
+
+export const pushAppleCalendarInput = z.object({
+  householdId,
+  link: z.boolean(),
+  occurrences: z.array(deviceOccurrence).max(MAX_PUSHED_OCCURRENCES),
+});
+export type PushAppleCalendarInput = z.infer<typeof pushAppleCalendarInput>;

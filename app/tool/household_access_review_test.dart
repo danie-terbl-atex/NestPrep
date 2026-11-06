@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nestprep/design/tokens/nest_member_palette.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
@@ -15,11 +17,14 @@ import 'package:nestprep/features/household/state/member_access_controller.dart'
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/household/ui/invite_step_screen.dart';
 import 'package:nestprep/features/household/ui/member_access_screen.dart';
+import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
+import '../test/support/fake_family_profiles.dart';
 import '../test/support/fake_household.dart';
 import '../test/support/fake_invite_sharer.dart';
 import '../test/support/household_fixtures.dart';
+import '../test/support/pump_screen.dart';
 import 'review_press.dart';
 
 /// Household phase 2's screens as pictures (household ADR-0003): the invite
@@ -72,6 +77,7 @@ void main() {
       final controller = InviteStepController(
         householdRepository: repository,
         householdDirectory: FakeHouseholdDirectory(),
+        childProfileDirectory: FakeFamilyProfileRepository(),
         inviteSharer: FakeInviteSharer(),
         householdId: Fixtures.householdId,
         householdName: 'The Parkers',
@@ -127,6 +133,7 @@ void main() {
       final controller = HouseholdController(
         householdRepository: repository,
         householdDirectory: FakeHouseholdDirectory(),
+        childProfileDirectory: FakeFamilyProfileRepository(),
         householdId: Fixtures.householdId,
         viewerUid: Fixtures.samUid,
       );
@@ -147,6 +154,68 @@ void main() {
           repository.emitMembers(view.members);
         },
       );
+    });
+
+    testWidgets('removing somebody — ${brightness.name}', (tester) async {
+      final repository = FakeHouseholdRepository();
+      final directory = FakeHouseholdDirectory()..gate = Completer<void>();
+      addTearDown(repository.close);
+      final controller = HouseholdController(
+        householdRepository: repository,
+        householdDirectory: directory,
+        childProfileDirectory: FakeFamilyProfileRepository(),
+        householdId: Fixtures.householdId,
+        viewerUid: Fixtures.samUid,
+      );
+      addTearDown(controller.dispose);
+      final view = household();
+      tester.view.devicePixelRatio = 2;
+      tester.view.physicalSize = reviewPhone * 2;
+      addTearDown(tester.view.reset);
+      debugDisableShadows = false;
+
+      await pumpScreen(
+        tester,
+        const HouseholdScreen(),
+        providers: [
+          ChangeNotifierProvider<HouseholdController>.value(value: controller),
+        ],
+        view: view,
+        brightness: brightness,
+      );
+      repository.emitHousehold(view.household);
+      repository.emitMembers(view.members);
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdRemove).first);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(NestButton, AppCopy.householdRemove),
+      );
+      for (var frame = 0; frame < 12; frame++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await decodeEveryImage(tester);
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile(
+          '../design-review/people-removing-${brightness.name}.png',
+        ),
+      );
+
+      directory.release();
+      repository.emitMembers([
+        for (final member in view.members)
+          if (member.id != 'm-lindiwe') member,
+      ]);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 800));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile(
+          '../design-review/people-removed-${brightness.name}.png',
+        ),
+      );
+      debugDisableShadows = true;
     });
   }
 }

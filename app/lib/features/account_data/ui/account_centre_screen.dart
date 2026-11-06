@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/shops_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/shops_copy.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../../shared/ui/back_leading.dart';
 import '../../../shared/ui/link_row.dart';
 import '../../accounts/model/session.dart';
 import '../../accounts/state/session_controller.dart';
+import '../../add_to_checkers/model/retailer_switch.dart';
 import '../../feedback/ui/feedback_screen.dart';
 import '../../legal/ui/about_screen.dart';
 import '../../legal/ui/legal_document_screen.dart';
@@ -35,6 +40,10 @@ class AccountCentreScreen extends StatelessWidget {
       AsyncData(value: final SignedIn value) => value,
       _ => null,
     };
+    final shopsHousehold =
+        shopsOn(context.watch<FeatureFlagsController>().isOn).isEmpty
+        ? null
+        : signedIn?.account.householdToShow;
     return NestScaffold(
       title: AccountDataCopy.centreTitle,
       subtitle: AccountDataCopy.centreSubtitle,
@@ -83,6 +92,28 @@ class AccountCentreScreen extends StatelessWidget {
               ),
             ),
           ),
+          if (shopsHousehold != null) ...[
+            const SizedBox(height: NestSpace.xl),
+            const NestSectionHeader(title: ShopsCopy.centreSection),
+            const SizedBox(height: NestSpace.sm),
+            NestRiseIn(
+              index: 2,
+              child: NestCard(
+                padding: const EdgeInsets.all(NestSpace.xs),
+                child: LinkRow(
+                  icon: LucideIcons.shoppingBasket,
+                  title: ShopsCopy.entry,
+                  subtitle: ShopsCopy.entryHint,
+                  tint: NestTileTint.basil,
+                  path: ShopsRoute.pathFor(shopsHousehold),
+                  // Your shops lives in the household shell, which is usually
+                  // beneath this screen; pushing it would stack a second copy
+                  // of that shell, which go_router cannot build.
+                  replace: context.canPop(),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: NestSpace.xl),
           const NestSectionHeader(title: AccountDataCopy.aboutSection),
           const SizedBox(height: NestSpace.sm),

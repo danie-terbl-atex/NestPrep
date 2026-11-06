@@ -48,6 +48,8 @@ export const FEATURE_FLAGS = [
   'addToCheckers',
   // ---- lunch box at Pick n Pay: catalogue, a member's own link and cart (add-to-pnp ADR-0001) ----
   'addToPnp',
+  // ---- add to Woolworths Dash: a member's own link and cart ----
+  'addToWoolworths',
   // ---- photo frames: a wall frame showing the household's day (photo-frames ADR-0001) ----
   'photoFrames',
   // ---- NestPrep in Claude and ChatGPT (assistants ADR-0001) ----

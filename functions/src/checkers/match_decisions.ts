@@ -4,8 +4,15 @@ import { noulOf, type Answers } from '../ai/decision_call';
 import type { DecisionRequest } from '../ai/decision_model';
 import type { RankProductMatchesInput } from './schemas';
 
-export const MATCH_STATE =
-  'A household member is buying the items on their grocery list from the Checkers Sixty60 grocery catalogue.';
+const SHOP_NAMES: Readonly<Record<RankProductMatchesInput['retailer'], string>> = {
+  checkers: 'Checkers Sixty60',
+  pickNPay: 'Pick n Pay',
+  woolworths: 'Woolworths Dash',
+};
+
+export function matchStateFor(retailer: RankProductMatchesInput['retailer']): string {
+  return `A household member is buying the items on their grocery list from the ${SHOP_NAMES[retailer]} grocery catalogue.`;
+}
 
 export const BUYING_RULES: readonly string[] = [
   'Pick the plain, everyday form of the item unless the item asks for something more specific.',
@@ -30,7 +37,7 @@ export function matchId(index: number): string {
 export function matchRequest(input: RankProductMatchesInput): DecisionRequest {
   return {
     label: 'productMatch',
-    state: MATCH_STATE,
+    state: matchStateFor(input.retailer),
     questions: Object.fromEntries(
       input.products.map((product, index): [string, NoulQuestion] => [
         matchId(index),

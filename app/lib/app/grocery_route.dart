@@ -3,20 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
-import '../features/add_to_checkers/data/checkers_directory.dart';
 import '../features/add_to_checkers/data/checkers_place_resolver.dart';
 import '../features/add_to_checkers/data/match_as_you_type_preference.dart';
 import '../features/add_to_checkers/data/product_match_ranker.dart';
 import '../features/add_to_checkers/data/retailer_catalogues.dart';
 import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/add_to_checkers/model/retailer_switch.dart';
-import '../features/add_to_checkers/state/cart_push_controller.dart';
 import '../features/add_to_checkers/state/product_finder.dart';
 import '../features/add_to_checkers/state/product_match_controller.dart';
 import '../features/add_to_checkers/state/product_type_ahead_controller.dart';
 import '../features/add_to_checkers/state/retailer_choice_controller.dart';
 import '../features/add_to_checkers/state/shop_carts.dart';
-import '../features/add_to_pnp/data/pnp_directory.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/groceries/data/grocery_suggestion_source.dart';
 import '../features/groceries/data/lunch_plan_grocery_source.dart';
@@ -42,6 +39,7 @@ import 'household_route.dart';
 import 'household_shell.dart';
 import 'household_tab_navigation.dart';
 import 'meals_route.dart';
+import 'shop_carts_for.dart';
 import 'viewer_member.dart';
 
 /// Everything that may put things on the grocery list (groceries ADR-0004).
@@ -80,7 +78,7 @@ GoRoute groceryRoute() => GoRoute(
           create: (context) => _planController(context, householdId),
         ),
         // Product matches, as somebody types and under an item, and the
-        // carts, at Checkers and Pick n Pay (the Checkers build contract,
+        // carts, at every connected shop (the Checkers build contract,
         // add-to-pnp ADR-0007, add-to-checkers ADR-0007). Created whatever
         // the switches say — none does anything until the screen, which
         // reads them, asks.
@@ -119,17 +117,8 @@ GoRoute groceryRoute() => GoRoute(
             );
           },
         ),
-        Provider(
-          create: (context) => ShopCarts(
-            checkers: CartPushController(
-              directory: context.read<CheckersDirectory>(),
-              householdId: householdId,
-            ),
-            pickNPay: CartPushController(
-              directory: context.read<PnpDirectory>(),
-              householdId: householdId,
-            ),
-          ),
+        Provider<ShopCarts>(
+          create: (context) => shopCartsFor(context, householdId),
           dispose: (context, carts) => carts.dispose(),
         ),
       ],

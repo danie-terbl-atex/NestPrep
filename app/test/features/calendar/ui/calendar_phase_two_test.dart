@@ -230,7 +230,10 @@ void main() {
       await tester.tap(find.text('Standup'));
       await tester.pumpAndSettle();
 
-      expect(find.text(CalendarSyncCopy.syncedReadOnlyBody), findsOneWidget);
+      expect(
+        find.text(CalendarSyncCopy.syncedReadOnlyBody(_standup().provider)),
+        findsOneWidget,
+      );
       await tapInSheet(tester, CalendarSyncCopy.openFromWeek);
       expect(find.text(CalendarSyncCopy.title), findsOneWidget);
     });

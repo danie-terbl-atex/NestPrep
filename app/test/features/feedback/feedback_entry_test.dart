@@ -13,6 +13,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
 import '../../support/fake_auth.dart';
+import '../../support/fake_feature_flag_source.dart';
 import '../../support/fake_product_analytics.dart';
 import '../../support/household_fixtures.dart';
 
@@ -62,14 +63,15 @@ void main() {
     );
     addTearDown(router.dispose);
     await tester.pumpWidget(
-      Provider<BetaNumbersRepository>.value(
-        value: betaNumbers,
-        child: ChangeNotifierProvider<SessionController>.value(
-          value: session,
-          child: MaterialApp.router(
-            theme: nestThemeData(NestTheme.light()),
-            routerConfig: router,
-          ),
+      MultiProvider(
+        providers: [
+          Provider<BetaNumbersRepository>.value(value: betaNumbers),
+          ChangeNotifierProvider<SessionController>.value(value: session),
+          featureFlagsProvider(defaultOn: false),
+        ],
+        child: MaterialApp.router(
+          theme: nestThemeData(NestTheme.light()),
+          routerConfig: router,
         ),
       ),
     );

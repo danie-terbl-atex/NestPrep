@@ -2,12 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/plan_week/model/aisle_shelf.dart';
 import 'package:nestprep/features/plan_week/model/lunch_aisle.dart';
 
-/// The shelves of Checkers' lunchbox aisle NestPrep reads (lunch-box
-/// ADR-0013): the list compiled in, and `appConfig/lunchAisle` replacing it
-/// with only what this build can read.
+/// The shelves of each shop's lunchbox aisle NestPrep reads (lunch-box
+/// ADR-0013, ADR-0026): the lists compiled in, and `appConfig/lunchAisle`
+/// replacing one with only what this build can read for that shop.
 void main() {
+  List<AisleShelf>? checkers(Map<String, Object?> fields) =>
+      LunchAisle.fromFields(fields, shop: ProductRetailer.checkers);
+
   test('the compiled list fills every compartment and stays in bounds', () {
     const shelves = LunchAisle.checkersKidsLunchbox;
     expect(shelves.length, lessThanOrEqualTo(LunchAisle.shelfLimit));
@@ -21,7 +25,7 @@ void main() {
   });
 
   test('a shelf reads its list first, then its category', () {
-    final shelves = LunchAisle.fromFields({
+    final shelves = checkers({
       'shelves': [
         {
           'title': 'Yoghurt snack time',
@@ -47,7 +51,7 @@ void main() {
   });
 
   test('an entry this build cannot read is left out', () {
-    final shelves = LunchAisle.fromFields({
+    final shelves = checkers({
       'shelves': [
         {'title': 'No source', 'slot': 'snack'},
         {
@@ -69,10 +73,10 @@ void main() {
   });
 
   test('a document with nothing readable keeps the compiled list', () {
-    expect(LunchAisle.fromFields(const {}), isNull);
-    expect(LunchAisle.fromFields(const {'shelves': []}), isNull);
+    expect(checkers(const {}), isNull);
+    expect(checkers(const {'shelves': []}), isNull);
     expect(
-      LunchAisle.fromFields(const {
+      checkers(const {
         'shelves': [
           {'title': 'No source', 'slot': 'snack'},
         ],
@@ -82,7 +86,7 @@ void main() {
   });
 
   test('at most twelve shelves are read', () {
-    final shelves = LunchAisle.fromFields({
+    final shelves = checkers({
       'shelves': [
         for (var i = 0; i < 20; i++)
           {
@@ -145,7 +149,119 @@ void main() {
         }, shop: ProductRetailer.pickNPay),
         isNull,
       );
-      expect(LunchAisle.fromFields(fields)!.single.title, 'Checkers');
+      expect(checkers(fields)!.single.title, 'Checkers');
+    });
+  });
+
+  group('Woolworths', () {
+    test('its own browse groups fill every compartment, within bounds', () {
+      final shelves = LunchAisle.defaultsFor(ProductRetailer.woolworths);
+      expect(shelves, LunchAisle.woolworthsLunchBox);
+      expect(shelves.length, lessThanOrEqualTo(LunchAisle.shelfLimit));
+      expect({
+        for (final shelf in shelves) shelf.slot,
+      }, LunchSlot.values.toSet());
+      for (final shelf in shelves) {
+        final source = shelf.sources.single;
+        expect(source.kind, RetailerShelfKind.woolworthsGroup);
+        expect(RetailerShelf.isWoolworthsGroup(source.id), isTrue);
+        if (source.within case final within?) {
+          expect(RetailerShelf.isWoolworthsGroup(within), isTrue);
+        }
+      }
+      expect(
+        shelves.firstWhere((shelf) => shelf.slot == LunchSlot.veg).sources,
+        const [RetailerShelf.woolworthsGroup('cat869839', within: 'cat848672')],
+      );
+    });
+
+    test('woolworthsShelves replaces them, with only groups it can read', () {
+      const fields = {
+        'shelves': [
+          {
+            'title': 'Checkers',
+            'slot': 'snack',
+            'listId': '69d4ebed9cccb04862bcb67f',
+          },
+        ],
+        'pnpShelves': [
+          {
+            'title': 'Lunch box',
+            'slot': 'snack',
+            'categoryCode': 'lunch-box-snacks-1664414929',
+          },
+        ],
+        'woolworthsShelves': [
+          {'title': 'Yoghurt', 'slot': 'snack', 'groupId': 'cat848682'},
+          {'title': 'Dried fruit', 'slot': 'snack', 'groupId': 'ncat0010351'},
+          {
+            'title': 'Veg sticks',
+            'slot': 'veg',
+            'groupId': 'cat869839',
+            'withinGroupId': 'cat848672',
+          },
+          {
+            'title': 'Checkers id',
+            'slot': 'snack',
+            'groupId': '69d4ebed9cccb04862bcb67f',
+          },
+          {'title': 'PnP code', 'slot': 'snack', 'groupId': 'yoghurt44805192'},
+          {
+            'title': 'Bad within',
+            'slot': 'veg',
+            'groupId': 'cat869839',
+            'withinGroupId': 'veg',
+          },
+          {'title': 'No group', 'slot': 'snack'},
+        ],
+      };
+      final shelves = LunchAisle.fromFields(
+        fields,
+        shop: ProductRetailer.woolworths,
+      )!;
+      expect(
+        [for (final shelf in shelves) shelf.title],
+        ['Yoghurt', 'Dried fruit', 'Veg sticks'],
+      );
+      expect(shelves.last.sources.single.within, 'cat848672');
+      expect(checkers(fields)!.single.title, 'Checkers');
+      expect(
+        LunchAisle.fromFields(
+          fields,
+          shop: ProductRetailer.pickNPay,
+        )!.single.title,
+        'Lunch box',
+      );
+      expect(
+        LunchAisle.fromFields(const {
+          'shelves': [],
+        }, shop: ProductRetailer.woolworths),
+        isNull,
+      );
+    });
+
+    test('each shop is only ever given its own kind of shelf', () {
+      const kinds = {
+        ProductRetailer.checkers: {
+          RetailerShelfKind.productList,
+          RetailerShelfKind.displayCategory,
+        },
+        ProductRetailer.pickNPay: {RetailerShelfKind.pnpCategory},
+        ProductRetailer.woolworths: {RetailerShelfKind.woolworthsGroup},
+      };
+      for (final shop in ProductRetailer.values) {
+        for (final shelf in LunchAisle.defaultsFor(shop)) {
+          for (final source in shelf.sources) {
+            expect(kinds[shop], contains(source.kind), reason: shelf.title);
+          }
+        }
+      }
+    });
+
+    test('its shelves bring home half as many best sellers', () {
+      expect(LunchAisle.productsPerShelf(ProductRetailer.woolworths), 12);
+      expect(LunchAisle.productsPerShelf(ProductRetailer.checkers), 24);
+      expect(LunchAisle.productsPerShelf(ProductRetailer.pickNPay), 24);
     });
   });
 }

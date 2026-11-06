@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../add_to_checkers/model/retailer_product.dart';
+import '../../add_to_checkers/ui/product_match_line.dart';
+import '../../add_to_checkers/ui/retailer_product_image.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../../lunch_box/ui/art/lunch_glyph.dart';
 import '../model/shop_week.dart';
@@ -18,16 +21,19 @@ enum PillLook {
   empty,
 }
 
-/// One compartment on the review: the slot's little drawing and what is in
-/// it — the money is the basket's, in whole packs. The glyph is decoration; the words
-/// carry the meaning, and the slot and where the pick came from are read
-/// out with them (`FE-13`).
+/// One compartment on the review: the shop's picture of the [product] it
+/// holds — else the slot's little drawing — and what is in it; the money is
+/// the basket's, in whole packs. The picture is decoration; the words carry
+/// the meaning, and the slot and where the pick came from are read out with
+/// them (`FE-13`).
 class PlanWeekItemPill extends StatelessWidget {
   const PlanWeekItemPill({
     required this.slot,
     required this.look,
     this.name,
     this.origin,
+    this.product,
+    this.caution,
     this.onTap,
     super.key,
   });
@@ -36,6 +42,10 @@ class PlanWeekItemPill extends StatelessWidget {
   final PillLook look;
   final String? name;
   final PickOrigin? origin;
+  final RetailerProduct? product;
+
+  /// What to check before packing it, marked with a warning sign.
+  final String? caution;
   final VoidCallback? onTap;
 
   @override
@@ -63,6 +73,7 @@ class PlanWeekItemPill extends StatelessWidget {
           PillLook.added => _originWords(origin),
           PillLook.empty => '',
         },
+        ?caution,
       ].where((part) => part.isNotEmpty).join(', '),
       excludeSemantics: true,
       child: Material(
@@ -86,10 +97,20 @@ class PlanWeekItemPill extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Opacity(
-                    opacity: look == PillLook.added ? 1 : 0.55,
-                    child: LunchGlyph(slot: slot, size: NestSize.iconMedium),
-                  ),
+                  if (product case RetailerProduct(
+                    :final retailer,
+                    :final imageId?,
+                  ))
+                    RetailerProductImage(
+                      retailer: retailer,
+                      imageId: imageId,
+                      size: ProductMatchLine.imageSize,
+                    )
+                  else
+                    Opacity(
+                      opacity: look == PillLook.added ? 1 : 0.55,
+                      child: LunchGlyph(slot: slot, size: NestSize.iconMedium),
+                    ),
                   const SizedBox(width: NestSpace.sm),
                   Flexible(
                     child: Text(
@@ -99,6 +120,14 @@ class PlanWeekItemPill extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  if (caution != null) ...[
+                    const SizedBox(width: NestSpace.xs),
+                    Icon(
+                      LucideIcons.triangleAlert,
+                      size: NestSize.iconBadge,
+                      color: colors.warning,
+                    ),
+                  ],
                   if (look == PillLook.added &&
                       origin == PickOrigin.swapped) ...[
                     const SizedBox(width: NestSpace.xs),

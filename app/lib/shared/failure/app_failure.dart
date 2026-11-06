@@ -11,6 +11,7 @@ part 'plan_week_failure.dart';
 part 'checkers_failure.dart';
 part 'document_failure.dart';
 part 'pnp_failure.dart';
+part 'woolworths_failure.dart';
 part 'photo_frame_failure.dart';
 part 'premium_voucher_failure.dart';
 part 'list_scan_failure.dart';
@@ -91,6 +92,12 @@ enum SignInProblem {
   /// a missing client id, the provider not enabled on the project. The person
   /// cannot fix it; it is on us (accounts ADR-0001).
   notConfigured,
+
+  /// What was typed for a password reset is not an email address.
+  invalidEmail,
+
+  /// The reset email could not be sent; nothing the person typed is wrong.
+  resetUnavailable,
 
   unknown,
 }
@@ -247,6 +254,16 @@ enum CalendarSyncProblem {
 
   /// Nothing on the phone would open the provider's sign-in page.
   couldNotOpenBrowser,
+
+  /// This iPhone has not let NestPrep read its calendars; only Settings can
+  /// change that now.
+  appleCalendarDenied,
+
+  /// Screen Time or a profile on this iPhone blocks calendar access.
+  appleCalendarRestricted,
+
+  /// Linking was asked for with no calendar chosen.
+  noAppleCalendarChosen,
 }
 
 final class CalendarSyncFailure extends AppFailure {

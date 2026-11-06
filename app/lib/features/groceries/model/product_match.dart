@@ -4,15 +4,13 @@ import '../../../shared/money/money.dart';
 
 part 'product_match.freezed.dart';
 
-/// The shops a product match can be at. Checkers Sixty60 and Pick n Pay are
-/// connected — on the grocery screen and in *Plan my week* alike, each behind
-/// its own switch (add-to-pnp ADR-0007). Woolworths is named so the shop
-/// picker can show it as coming, and the field is stored so connecting it
-/// is additive (`BE-10`).
+/// The shops a product match can be at, each behind its own switch
+/// (add-to-pnp ADR-0007, add-to-woolworths ADR-0001). *Plan my week* and the
+/// photo frames plan at Checkers and Pick n Pay only.
 enum ProductRetailer {
   checkers('checkers', isConnected: true),
   pickNPay('pickNPay', isConnected: true),
-  woolworths('woolworths', isConnected: false);
+  woolworths('woolworths', isConnected: true);
 
   const ProductRetailer(this.code, {required this.isConnected});
 
@@ -41,15 +39,16 @@ abstract class ProductMatch with _$ProductMatch {
     required ProductRetailer retailer,
 
     /// The shop's national product id, the same id a cart line carries:
-    /// Sixty60's 24-hex id, or Pick n Pay's code (`000000000000838685_EA`).
+    /// Sixty60's 24-hex id, Pick n Pay's code (`000000000000838685_EA`), or
+    /// Woolworths' SKU (`20011697`).
     required String productId,
 
     /// Article number and unit of measure together, e.g. `10136729EA` — the
     /// backup key when a product id is ever re-issued.
     required String articleCode,
 
-    /// `EA`, `KG`, `PK1`… as the shop sends it. `KG` (Checkers) and `KGM`
-    /// (Pick n Pay) are sold by weight.
+    /// `EA`, `KG`, `PK1`… as the shop sends it. `KG` (Checkers, Woolworths)
+    /// and `KGM` (Pick n Pay) are sold by weight.
     required String unitOfMeasure,
     required String name,
     String? brand,

@@ -40,7 +40,7 @@ class TodoBoard {
       ),
       everyone: [
         for (final occurrence in occurrences)
-          if (!isChore(occurrence, kids)) occurrence,
+          if (!isKidsOnly(occurrence, kids)) occurrence,
       ],
       routines: routines,
       kidIds: kids,
@@ -58,7 +58,7 @@ class TodoBoard {
 
   final List<TaskOccurrence> justDone;
 
-  /// Everything in the window that is not a chore, done or not.
+  /// Everything in the window, done or not, except chores only kids are for.
   final List<TaskOccurrence> everyone;
 
   final List<Routine> routines;

@@ -33,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o</string>
+				<string>com.googleusercontent.apps.388847987716-2dgmbc767ost374hff0g3a6437r279gt</string>
 			</array>
 		</dict>
 		<dict>
@@ -52,7 +52,7 @@
 	<key>GMSApiKey</key>
 	<string>$(MAPS_API_KEY)</string>
 	<key>GIDClientID</key>
-	<string>388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o.apps.googleusercontent.com</string>
+	<string>388847987716-2dgmbc767ost374hff0g3a6437r279gt.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -60,6 +60,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>So the events in the calendars you choose on this iPhone appear in your family's week in NestPrep. NestPrep only reads them and never changes your calendars.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>So the events in the calendars you choose on this iPhone appear in your family's week in NestPrep. NestPrep only reads them and never changes your calendars.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To scan a document into your family's vault, to scan the code on a photo frame to link it to your household, to take photos for the nanny hub — where things are in the house, and moments from a shift — and to photograph a spot that needs cleaning or show that it is clean.</string>
 	<key>NSFaceIDUsageDescription</key>

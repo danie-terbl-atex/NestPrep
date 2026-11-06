@@ -8,6 +8,7 @@ import 'package:nestprep/features/lunch_box/state/lunch_budget_controller.dart';
 import 'package:nestprep/features/lunch_box/state/lunch_choices_controller.dart';
 import 'package:nestprep/features/lunch_box/state/lunch_pantry_controller.dart';
 import 'package:nestprep/features/lunch_box/state/lunch_pantry_groceries.dart';
+import 'package:nestprep/features/lunch_box/state/lunch_variety_choice.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import 'package:provider/single_child_widget.dart';
 
 import 'fake_grocery_repository.dart';
 import 'fake_lunch_planning.dart';
+import 'fake_lunch_variety.dart';
 import 'household_fixtures.dart';
 import 'lunch_harness.dart';
 import 'test_flags.dart';
@@ -60,6 +62,7 @@ final class LunchPlanningHarness {
   late final LunchPantryController pantry;
   late final LunchBudgetController budget;
   late final LunchChoicesController choices;
+  final variety = lunchVarietyChoice(Fixtures.householdId);
 
   LunchBoardController get board => lunch.controller;
 
@@ -76,6 +79,7 @@ final class LunchPlanningHarness {
     ChangeNotifierProvider<LunchPantryController>.value(value: pantry),
     ChangeNotifierProvider<LunchBudgetController>.value(value: budget),
     ChangeNotifierProvider<LunchChoicesController>.value(value: choices),
+    ChangeNotifierProvider<LunchVarietyChoice>.value(value: variety),
   ];
 
   /// The V2 reads, answering at once (after `LunchHarness.emit`).
@@ -100,6 +104,7 @@ final class LunchPlanningHarness {
     pantry.dispose();
     budget.dispose();
     choices.dispose();
+    variety.dispose();
     flags.dispose();
     await pantryRepository.close();
     await budgetRepository.close();

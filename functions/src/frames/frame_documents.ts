@@ -12,9 +12,9 @@ import { householdRef } from '../household/documents';
 import { FRAME_AREA_CODES } from './frame_areas';
 import { frameRecipe } from './frame_recipe';
 import {
-  FRAME_GROCERY_SHOPS,
   SCREENSAVER_IDLE_MINUTES,
   SCREENSAVER_SECONDS_PER_PHOTO,
+  WOOLWORTHS_PRICE_ZONES,
 } from './frame_policy';
 
 /**
@@ -108,6 +108,8 @@ export function shareKind(share: FrameShareDocument): FrameShareKind {
   return share.kind ?? 'page';
 }
 
+const frameArea = z.enum(FRAME_AREA_CODES);
+
 /**
  * A frame as stored, read so that a field somebody broke switches its panel
  * off rather than unlinking the frame.
@@ -145,9 +147,17 @@ export const frameDocument = z.object({
     .catch(null),
   share: frameShareDocument.nullable().catch(null),
   accepts: z.array(z.enum(FRAME_SHARE_KINDS)).catch([...FRAME_PAGE_ONLY]),
-  /** Null is off: never set, or broken (ADR-0012). */
+  /** Null is off: never set, or broken (ADR-0012). Woolworths carries the store the phone found. */
   groceries: z
-    .object({ shop: z.enum(FRAME_GROCERY_SHOPS), area: z.enum(FRAME_AREA_CODES) })
+    .discriminatedUnion('shop', [
+      z.object({ shop: z.literal(['checkers', 'pickNPay']), area: frameArea }),
+      z.object({
+        shop: z.literal('woolworths'),
+        area: frameArea,
+        store: z.string().regex(/^[0-9]{1,10}$/),
+        priceZone: z.enum(WOOLWORTHS_PRICE_ZONES),
+      }),
+    ])
     .nullable()
     .catch(null),
 });

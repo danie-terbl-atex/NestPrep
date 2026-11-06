@@ -43,5 +43,6 @@ bool isLastOpenOf(List<TaskOccurrence> chores, TaskOccurrence chore) =>
     !chore.isDone &&
     chores.every((other) => other.isDone || other.key == chore.key);
 
-bool isChore(TaskOccurrence occurrence, Set<String> kidIds) =>
-    occurrence.assigneeIds.any(kidIds.contains);
+bool isKidsOnly(TaskOccurrence occurrence, Set<String> kidIds) =>
+    occurrence.assigneeIds.isNotEmpty &&
+    occurrence.assigneeIds.every(kidIds.contains);

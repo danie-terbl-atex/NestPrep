@@ -101,6 +101,12 @@ enum FeatureFlag {
   /// account, and pushing the week's basket into their own cart.
   addToPnp('addToPnp'),
 
+  // ---- groceries: Woolworths (add-to-woolworths ADR-0001) ----
+
+  /// Matches at Woolworths, linking a member's own Woolworths account, and
+  /// pushing the list into their Woolies Dash cart.
+  addToWoolworths('addToWoolworths'),
+
   // ---- photo frames (photo-frames ADR-0001) ----
 
   /// Linking a wall photo frame running NestPrep Home to the household.

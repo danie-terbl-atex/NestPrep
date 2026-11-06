@@ -120,6 +120,12 @@ abstract final class AccessCopy {
   static const accessMedicalCaution =
       'Medical detail is sensitive. Share it with whoever cares for the '
       'children.';
+  static String accessKidMode(String name) =>
+      'If $name signs in with a code from Kids’ sign-in, their device is in '
+      'kid mode: one screen, My day. Only To-dos and chores, Meal plan and '
+      'Lunch boxes show there. The other areas apply only if $name joins with '
+      'their own account.';
+  static const accessNotInKidMode = 'Not shown in kid mode';
   static const accessFamilyTitle = 'Family sees everything';
   static const accessFamilyBody =
       'Parents and admins see and do everything in the household. Make them a '

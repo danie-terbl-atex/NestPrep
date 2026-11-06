@@ -123,7 +123,7 @@ void main() {
       weekBuilder: builder,
       catalogues: planWeekCatalogues(shop),
       shopChoice: planWeekShopChoice(Fixtures.householdId),
-      isPnpOn: () => false,
+      shopsOn: planWeekShopsOn(),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),
@@ -171,6 +171,7 @@ void main() {
         ...harness.lunch.providers,
         ...harness.providers,
         ChangeNotifierProvider<PlanWeekController>.value(value: controller),
+        planWeekCartsProvider(),
       ],
       brightness: brightness,
       textScale: scale,

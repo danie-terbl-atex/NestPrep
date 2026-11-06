@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -213,5 +214,47 @@ void main() {
       failureFromFirebaseAuth(FirebaseAuthException(code: 'user-disabled')),
       isA<SignInFailure>(),
     );
+  });
+
+  group('the password reset callable', () {
+    SignInProblem fromReset(String code, [Object? details]) {
+      final failure = failureFromPasswordReset(
+        FirebaseFunctionsException(
+          code: code,
+          message: 'refused',
+          details: details,
+        ),
+      );
+      return (failure as SignInFailure).problem;
+    }
+
+    test('too many asks says wait', () {
+      expect(
+        fromReset('resource-exhausted', {'reason': 'tooManyAttempts'}),
+        SignInProblem.tooManyAttempts,
+      );
+    });
+
+    test('a body the server refused is an address that is not one', () {
+      expect(
+        fromReset('invalid-argument', {'reason': 'badRequest'}),
+        SignInProblem.invalidEmail,
+      );
+    });
+
+    test('the email not going out is ours, not the network', () {
+      expect(
+        fromReset('unavailable', {'reason': 'unavailable'}),
+        SignInProblem.resetUnavailable,
+      );
+    });
+
+    test('unavailable with no reason never reached the server', () {
+      expect(fromReset('unavailable'), SignInProblem.networkUnavailable);
+    });
+
+    test('anything else is the reset failing', () {
+      expect(fromReset('internal'), SignInProblem.resetUnavailable);
+    });
   });
 }

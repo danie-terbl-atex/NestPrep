@@ -8,12 +8,16 @@ import { FUNCTIONS_REGION } from './region';
  * links (`ENG-02`): each feature keeps its own base-URL parameter, because a
  * custom domain for one is not a custom domain for the other.
  */
-export function functionUrlFrom(base: string | null, name: string): string {
+export function functionUrlFrom(
+  base: string | null,
+  name: string,
+  region: string = FUNCTIONS_REGION,
+): string {
   if (base !== null) return `${base.replace(/\/+$/, '')}/${name}`;
   const project = process.env['GCLOUD_PROJECT'] ?? '';
   if (process.env['FUNCTIONS_EMULATOR'] === 'true') {
     const host = process.env['FUNCTIONS_EMULATOR_HOST'] ?? '127.0.0.1:5001';
-    return `http://${host}/${project}/${FUNCTIONS_REGION}/${name}`;
+    return `http://${host}/${project}/${region}/${name}`;
   }
-  return `https://${FUNCTIONS_REGION}-${project}.cloudfunctions.net/${name}`;
+  return `https://${region}-${project}.cloudfunctions.net/${name}`;
 }

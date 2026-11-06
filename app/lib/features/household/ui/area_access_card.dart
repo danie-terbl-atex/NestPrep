@@ -16,6 +16,7 @@ class AreaAccessCard extends StatelessWidget {
     required this.level,
     required this.personName,
     required this.onChanged,
+    this.isHiddenInKidMode = false,
     super.key,
   });
 
@@ -23,6 +24,7 @@ class AreaAccessCard extends StatelessWidget {
   final AccessLevel level;
   final String personName;
   final ValueChanged<AccessLevel> onChanged;
+  final bool isHiddenInKidMode;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,13 @@ class AreaAccessCard extends StatelessWidget {
                         color: nest.colors.inkSecondary,
                       ),
                     ),
+                    if (isHiddenInKidMode)
+                      Text(
+                        AccessCopy.accessNotInKidMode,
+                        style: nest.text.caption.copyWith(
+                          color: nest.colors.warning,
+                        ),
+                      ),
                   ],
                 ),
               ),

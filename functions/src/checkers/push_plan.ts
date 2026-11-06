@@ -27,19 +27,28 @@ export function sortItems(
   });
 }
 
+export interface CheckersPushPlan {
+  readonly lines: NewCartLine[];
+  readonly wantedInCart: Readonly<Record<string, number>>;
+  readonly added: Added[];
+  readonly skipped: Skipped[];
+}
+
 /**
- * The cart lines to add. Each item is one of its product; two items of one
- * product are one line of two. A product already in the cart is left exactly
- * as it is and counted as added — so pushing the same list twice never
- * doubles the cart (BE-06). The price is today's, at the member's store.
+ * The cart lines to write. Per product the wanted quantity is the sum of its
+ * items' packs, and only what the cart is short of it is added — never
+ * lowered, so a second push of the same list changes nothing and a member's
+ * own extra packs stay (BE-06). A product already in the cart grows on its own
+ * line; a product not in it is a new line. Every item of a product Checkers
+ * sells is counted as added. The price is today's, at the member's store.
  */
 export function planLines(
   wanted: readonly Wanted[],
+  packsOf: (itemId: string) => number,
   productsByPick: Readonly<Record<string, CatalogProduct>>,
   cart: Cart,
-): { lines: NewCartLine[]; added: Added[]; skipped: Skipped[] } {
-  const inCart = new Set(cart.lines.map((line) => line.productId));
-  const quantities: Record<string, { product: CatalogProduct; quantity: number }> = {};
+): CheckersPushPlan {
+  const asked: Record<string, { product: CatalogProduct; quantity: number }> = {};
   const added: Added[] = [];
   const skipped: Skipped[] = [];
   for (const { itemId, pick } of wanted) {
@@ -51,17 +60,54 @@ export function planLines(
     }
     const { productId, name, priceCents } = product;
     added.push({ itemId, productId, name, priceCents });
-    if (inCart.has(productId)) continue;
-    const entry = quantities[productId] ?? { product, quantity: 0 };
-    quantities[productId] = { product, quantity: entry.quantity + 1 };
+    asked[productId] = { product, quantity: (asked[productId]?.quantity ?? 0) + packsOf(itemId) };
   }
-  const lines = Object.values(quantities).map(({ product, quantity }) => ({
-    productId: product.productId,
-    storeId: product.storeId,
-    priceCents: product.priceCents,
-    quantity,
-  }));
-  return { lines, added, skipped };
+  const inCart = quantitiesOf(cart);
+  const lines: NewCartLine[] = [];
+  const wantedInCart: Record<string, number> = {};
+  for (const { product, quantity } of Object.values(asked)) {
+    const short = quantity - (inCart[product.productId] ?? 0);
+    if (short <= 0) continue;
+    const existing = cart.lines.find((line) => line.productId === product.productId);
+    lines.push({
+      lineId: existing?.lineId ?? null,
+      productId: product.productId,
+      storeId: product.storeId,
+      priceCents: product.priceCents,
+      quantity: (existing?.quantity ?? 0) + short,
+    });
+    wantedInCart[product.productId] = quantity;
+  }
+  return { lines, wantedInCart, added, skipped };
+}
+
+export function withShortfalls(
+  plan: CheckersPushPlan,
+  before: Cart,
+  after: Cart,
+): { added: Added[]; skipped: Skipped[] } {
+  const was = quantitiesOf(before);
+  const now = quantitiesOf(after);
+  const added: Added[] = [];
+  const skipped: Skipped[] = [];
+  for (const line of plan.added) {
+    const wanted = plan.wantedInCart[line.productId];
+    const has = now[line.productId] ?? 0;
+    if (wanted === undefined || has >= wanted) added.push(line);
+    else {
+      const reason = has > (was[line.productId] ?? 0) ? 'low-stock' : 'out-of-stock';
+      skipped.push({ itemId: line.itemId, reason });
+    }
+  }
+  return { added, skipped };
+}
+
+function quantitiesOf(cart: Cart): Record<string, number> {
+  const byProduct: Record<string, number> = {};
+  for (const line of cart.lines) {
+    byProduct[line.productId] = (byProduct[line.productId] ?? 0) + line.quantity;
+  }
+  return byProduct;
 }
 
 function skipReasonFor(product: CatalogProduct | undefined): Skipped['reason'] | null {

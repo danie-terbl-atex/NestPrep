@@ -117,6 +117,7 @@ describe('deleteAccount — a household that goes on', () => {
     await adminDb().doc(grantToSam).set({ memberId: h.samMemberId, grantedBy: alexMember });
     await adminDb().doc('feedback/sams').set({ uid: h.sam.uid, message: 'Mia’s nut allergy…' });
     await adminDb().doc('feedback/alexs').set({ uid: alex.uid, message: 'Love the lists.' });
+    await adminDb().doc(`woolworthsLinks/${h.sam.uid}`).set({ session: null });
 
     const summary = await callAs<Record<string, number>>(h.sam, 'deleteAccount', DELETE());
     expect(summary).toEqual({ householdsLeft: 0, householdsHandedOver: 1, householdsEnded: 0 });
@@ -147,6 +148,7 @@ describe('deleteAccount — a household that goes on', () => {
     expect(await exists(grantToSam)).toBe(false);
     expect(await exists('feedback/sams')).toBe(false);
     expect(await exists('feedback/alexs')).toBe(true);
+    expect(await exists(`woolworthsLinks/${h.sam.uid}`)).toBe(false);
     // The household's own record of what Sam added stays.
     expect(await exists(`${base}/groceryItems/milk`)).toBe(true);
 

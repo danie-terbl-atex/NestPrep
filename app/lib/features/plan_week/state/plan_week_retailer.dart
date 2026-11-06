@@ -4,37 +4,37 @@ import '../../groceries/model/product_match.dart';
 import 'lunch_shop_choice.dart';
 
 /// Which shop *Plan my week* plans at (lunch-box ADR-0026): the brief's
-/// choice — shared with the lunch board's row — while it is still the
-/// brief, and from the moment the ideas are drafted the shop that run began
-/// at, so every shelf, search, price and match in one run is one shop's.
+/// choice among the shops switched on — shared with the lunch board's row —
+/// while it is still the brief, and from the moment the ideas are drafted
+/// the shop that run began at, so every shelf, search, price and match in
+/// one run is one shop's.
 final class PlanWeekRetailer {
   PlanWeekRetailer({
     required this._catalogues,
     required this._choice,
-    required this._isPnpOn,
+    required this._shopsOn,
   });
 
   final RetailerCatalogues _catalogues;
   final LunchShopChoice _choice;
-  final bool Function() _isPnpOn;
+  final List<ProductRetailer> Function() _shopsOn;
   ProductRetailer? _running;
 
   /// The shop: the run's once it has begun, else the brief's choice.
   ProductRetailer get shop => _running ?? chosen;
 
-  /// The brief's choice as it may be used now — Checkers while Pick n Pay is
-  /// switched off.
-  ProductRetailer get chosen => _choice.shopFor(isPnpOn: _isPnpOn());
+  /// The brief's choice as it may be used now: the chosen shop while it is
+  /// switched on, else the first that is.
+  ProductRetailer get chosen =>
+      // Reached by link with every shop switched off: the first shop, as
+      // before shops had switches here.
+      _choice.shopFor(choices) ?? ProductRetailer.values.first;
 
-  /// Whether the brief offers a choice at all (only with `addToPnp` on).
-  bool get canChoose => _isPnpOn();
+  /// Whether the brief offers a choice at all.
+  bool get canChoose => choices.length > 1;
 
   /// The shops the brief offers, in their order.
-  List<ProductRetailer> get choices => [
-    for (final shop in ProductRetailer.values)
-      if (shop.isConnected && (shop != ProductRetailer.pickNPay || canChoose))
-        shop,
-  ];
+  List<ProductRetailer> get choices => _shopsOn();
 
   /// The catalogue of [shop].
   RetailerCatalogue get catalogue => _catalogues.of(shop);

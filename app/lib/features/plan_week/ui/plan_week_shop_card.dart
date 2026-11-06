@@ -7,8 +7,8 @@ import '../../add_to_checkers/ui/checkers_area_sheet.dart';
 import '../state/plan_week_controller.dart';
 import 'plan_week_shop_picker.dart';
 
-/// The shop in the brief: which shop — Checkers, or Pick n Pay while its
-/// switch is on (lunch-box ADR-0026) — where the search will look, and a way
+/// The shop in the brief: which shop, among those switched on (lunch-box
+/// ADR-0026) — where the search will look, and a way
 /// to choose the area, the same area the grocery list's matches use, kept on
 /// this phone (add-to-checkers ADR-0003).
 class PlanWeekShopCard extends StatelessWidget {
@@ -44,7 +44,7 @@ class PlanWeekShopCard extends StatelessWidget {
           ],
           Text(where, style: nest.text.title),
           if (!retailer.canChoose)
-            Text(LunchShopCopy.shopOnly, style: nest.text.bodySecondary),
+            Text(LunchShopCopy.shopOnly(shop), style: nest.text.bodySecondary),
           const SizedBox(height: NestSpace.sm),
           Align(
             alignment: AlignmentDirectional.centerStart,

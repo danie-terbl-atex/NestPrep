@@ -5,10 +5,10 @@ import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_day_card.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 
-import '../../../support/bring_into_view.dart';
 import '../../../support/lunch_board_rig.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_planning_harness.dart';
+import '../../../support/plan_the_week.dart';
 
 /// The lunch board reads by scope, narrowest first (lunch-box ADR-0022):
 /// the child's rules, the day on show, the whole week with its planner and
@@ -47,28 +47,24 @@ void main() {
     final rules = top(find.textContaining('school rule'));
     final day = top(find.text(LunchCopy.planThisLunch));
     final goTo = top(find.text(LunchCopy.packFavourite));
-    final planner = top(find.text(LunchCopy.planWholeWeek));
-    final fillWeek = top(find.text(LunchCopy.fillWeek));
+    final planWeek = top(find.text(LunchCopy.planWeek));
     final firstDay = top(find.byType(LunchDayCard));
     final tools = top(find.text(LunchCopy.toolsTitle));
 
     expect(rules, lessThan(day));
     expect(day, lessThan(goTo));
-    expect(goTo, lessThan(planner));
-    expect(planner, lessThan(fillWeek));
-    expect(fillWeek, lessThan(firstDay));
+    expect(goTo, lessThan(planWeek));
+    expect(planWeek, lessThan(firstDay));
     expect(firstDay, lessThan(tools));
-    // Filling the week is offered once, in the week's planner.
-    expect(find.text(LunchCopy.fillWeek), findsOneWidget);
+    // Planning the week is offered once, in the week's planner.
+    expect(find.text(LunchCopy.planWeek), findsOneWidget);
   });
 
-  testWidgets('fill the week, from the planner, opens the week’s fill and '
-      'writes nothing from the board', (tester) async {
+  testWidgets('picking the boxes yourself, from the planner, opens the week’s '
+      'fill and writes nothing from the board', (tester) async {
     harness = await LunchBoardRig.pump(tester);
     await arrive(tester);
-    await bringIntoView(tester, find.text(LunchCopy.fillWeek));
-    await tester.tap(find.text(LunchCopy.fillWeek));
-    await tester.pumpAndSettle();
+    await planTheWeekWith(tester, find.text(LunchCopy.planWithBoxes));
     expect(find.text('opened fill-week'), findsOneWidget);
     expect(harness.lunch.repository.writtenPicks, isEmpty);
   });
@@ -81,8 +77,7 @@ void main() {
       find.text(LunchCopy.dayFor('Today', 'Lwazi').toUpperCase()),
       findsOneWidget,
     );
-    expect(find.text(LunchCopy.planWholeWeek), findsNothing);
-    expect(find.text(LunchCopy.fillWeek), findsNothing);
+    expect(find.text(LunchCopy.planWeek), findsNothing);
     expect(find.text(LunchCopy.packFavourite), findsNothing);
     expect(find.text(LunchCopy.ateIt), findsNothing);
     expect(find.byType(LunchDayCard), findsWidgets);

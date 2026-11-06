@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../features/add_to_checkers/data/lunch_shop_preference.dart';
+import '../features/add_to_checkers/data/retailer_preference.dart';
 import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/family_profiles/data/family_profile_repository.dart';
 import '../features/family_profiles/state/family_controller.dart';
@@ -66,10 +67,12 @@ ShellRoute lunchRoutes() => ShellRoute(
       // lunch-box V2 — pantry, budget, kid picks (ADR-0006 to ADR-0008).
       ...lunchPlanningShellProviders(state),
       // The shop *Plan my week* plans at, which the board's row shows too
-      // (lunch-box ADR-0026).
+      // (lunch-box ADR-0026), led by the family's own shop until one is
+      // chosen there.
       ChangeNotifierProvider(
         create: (context) => LunchShopChoice(
           preference: context.read<LunchShopPreference>(),
+          familyPreference: context.read<RetailerPreference>(),
           householdId: HouseholdRoute.idFrom(state),
         ),
       ),

@@ -1267,7 +1267,7 @@ describe('a page shared from a phone opens on the frame', () => {
 
     expect(await waitShare(secret)).toEqual({
       status: 'linked',
-      share: { id: stored['id'], url: RECIPE, title: 'Chicken curry', by: 'Sam' },
+      share: { id: stored['id'], kind: 'page', url: RECIPE, title: 'Chicken curry', by: 'Sam' },
     });
   });
 
@@ -1694,6 +1694,37 @@ describe('a frame adds groceries (photo-frames ADR-0012)', () => {
       productId: pick.productId,
       pickedBy: h.samMemberId,
     });
+  });
+
+  it('at Woolworths, searches the store the phone saved and shows its pictures on the list', async () => {
+    const h = await samsHousehold();
+    const { secret, frameId } = await given(h);
+    await household(h.householdId)
+      .collection('frames')
+      .doc(frameId)
+      .update({
+        groceries: { shop: 'woolworths', area: 'durban', store: '2008', priceZone: 'p30' },
+      });
+    expect((await dayOf(secret)).groceries?.shop).toBe('woolworths');
+
+    const { products = [] } = await search(secret, 'milk');
+    expect(products.map((product) => product.retailer)).toEqual(['woolworths', 'woolworths']);
+    const pick = pickOf(products[0]);
+    expect(pick['articleCode']).toBe(pick['productId']);
+    expect(await add(secret, { product: { ...pick, imageId: 'milk.jpg?v=3' } })).toEqual({
+      status: 'linked',
+      added: true,
+    });
+
+    expect((await dayOf(secret)).groceries?.toBuy[0]?.product).toEqual({
+      name: 'Milk 500 g',
+      brand: 'Emulator',
+      imageUrl: 'https://assets.woolworthsstatic.co.za/milk.jpg?v=3&w=200&q=85',
+    });
+    await expectRefusal(
+      add(secret, { product: { ...pick, articleCode: '6009000000000' } }),
+      'badRequest',
+    );
   });
 
   it('refuses who may not add, a shop that is down, and a pick of the wrong shape', async () => {

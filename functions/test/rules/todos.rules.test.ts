@@ -164,6 +164,48 @@ describe('tasks/{taskId}', () => {
     );
   });
 
+  it('lets a task carry a sticker picture, or none', async () => {
+    const db = await asUser(THANDI);
+    await assertSucceeds(setDoc(doc(db, `${TASKS}/a`), { ...newTask, picture: 'water-plants' }));
+    await assertSucceeds(setDoc(doc(db, `${TASKS}/b`), { ...newTask, picture: null }));
+    await assertSucceeds(setDoc(doc(db, `${TASKS}/c`), newTask));
+  });
+
+  it('lets whoever may edit the title set and clear the picture', async () => {
+    const db = await asUser(THANDI);
+    await assertSucceeds(updateDoc(doc(db, `${TASKS}/laundry`), { picture: 'fold-laundry' }));
+    await assertSucceeds(updateDoc(doc(db, `${TASKS}/laundry`), { picture: null }));
+    await assertSucceeds(
+      updateDoc(doc(await asUser(SAM), `${TASKS}/homework`), { picture: 'do-homework' }),
+    );
+  });
+
+  it('denies a picture that is not a sticker id', async () => {
+    const db = await asUser(THANDI);
+    for (const picture of [7, 'Make-Bed', 'make bed', 'x'.repeat(49), '', ['make-bed']]) {
+      await assertFails(setDoc(doc(db, `${TASKS}/a`), { ...newTask, picture }));
+      await assertFails(updateDoc(doc(db, `${TASKS}/laundry`), { picture }));
+    }
+  });
+
+  it('denies a picture on somebody else"s task to a non-admin', async () => {
+    await assertFails(
+      updateDoc(doc(await asUser(THANDI), `${TASKS}/bins`), { picture: 'take-out-bin' }),
+    );
+  });
+
+  it('denies a picture to somebody who holds only their own to-dos', async () => {
+    await givenData(async (db) => {
+      await updateDoc(doc(db, `households/${HOUSEHOLD}`), {
+        access: { [THANDI]: { todos: 'own' } },
+        profiles: { [THANDI]: THANDI_MEMBER },
+      });
+    });
+    const db = await asUser(THANDI);
+    await assertFails(updateDoc(doc(db, `${TASKS}/laundry`), { picture: 'fold-laundry' }));
+    await assertFails(setDoc(doc(db, `${TASKS}/plants`), { ...newTask, picture: 'water-plants' }));
+  });
+
   it('lets the creator or an admin delete, and denies anybody else', async () => {
     await assertFails(deleteDoc(doc(await asUser(THANDI), `${TASKS}/bins`)));
     await assertSucceeds(deleteDoc(doc(await asUser(SAM), `${TASKS}/bins`)));

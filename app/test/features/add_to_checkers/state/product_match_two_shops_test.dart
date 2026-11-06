@@ -39,7 +39,10 @@ void main() {
     ranker = FakeProductMatchRanker();
     controller = ProductMatchController(
       finder: ProductFinder(
-        catalogues: RetailerCatalogues(checkers: checkers, pickNPay: pnp),
+        catalogues: RetailerCatalogues({
+          ProductRetailer.checkers: checkers,
+          ProductRetailer.pickNPay: pnp,
+        }),
         placeResolver: CheckersPlaceResolver(
           locationSource: FakeLocationSource(),
           areaPreference: FakeCheckersAreaPreference(),

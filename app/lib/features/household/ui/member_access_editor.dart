@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../kid_accounts/model/kid_areas.dart';
 import '../model/access_defaults.dart';
 import '../model/access_grant.dart';
 import '../model/access_level.dart';
@@ -33,6 +34,7 @@ class MemberAccessEditor extends StatelessWidget {
     final draft = controller.draft;
     final suggested = AccessDefaults.forRole(member.role);
     final message = failureMessage;
+    final kidMode = member.role.canHaveKidSignIn && !member.isClaimed;
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
@@ -72,6 +74,10 @@ class MemberAccessEditor extends StatelessWidget {
             ),
           ),
         ),
+        if (kidMode) ...[
+          const SizedBox(height: NestSpace.md),
+          NestBanner(message: AccessCopy.accessKidMode(member.displayName)),
+        ],
         if (message != null) ...[
           const SizedBox(height: NestSpace.md),
           NestBanner(
@@ -117,6 +123,8 @@ class MemberAccessEditor extends StatelessWidget {
                 area: area,
                 level: draft.levelIn(area),
                 personName: member.displayName,
+                isHiddenInKidMode:
+                    kidMode && !KidAreas.shownAreas.contains(area),
                 onChanged: (level) => controller.setLevel(area, level),
               ),
             ),

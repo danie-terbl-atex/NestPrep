@@ -126,7 +126,7 @@ function groceriesIsProductMatch(householdId, pick) {
                             'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
     && pick.keys().hasOnly(['retailer', 'productId', 'articleCode', 'unitOfMeasure', 'name',
                              'brand', 'priceCents', 'currency', 'imageId', 'pickedBy', 'pickedAt'])
-    && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick))
+    && (groceriesIsCheckersPick(pick) || groceriesIsPnpPick(pick) || groceriesIsWoolworthsPick(pick))
     && pick.unitOfMeasure is string
     && pick.unitOfMeasure.matches('^[A-Z0-9]{1,8}$')
     && isNonEmptyString(pick.name)
@@ -160,4 +160,16 @@ function groceriesIsPnpPick(pick) {
     && pick.articleCode is string
     && pick.articleCode.matches('^[0-9]{1,20}$')
     && (pick.imageId == null || (pick.imageId is string && pick.imageId.size() <= 300));
+}
+
+// Woolworths Dash: the SKU as both ids, `EA` or a weighed `KG`, and the image's
+// file name and query on Woolworths' asset host, which the app joins to the host.
+function groceriesIsWoolworthsPick(pick) {
+  return pick.retailer == 'woolworths'
+    && pick.productId is string
+    && pick.productId.matches('^[0-9]{6,14}$')
+    && pick.articleCode == pick.productId
+    && pick.unitOfMeasure in ['EA', 'KG']
+    && (pick.imageId == null
+          || (pick.imageId is string && pick.imageId.matches('^[^/\\s]{1,600}$')));
 }

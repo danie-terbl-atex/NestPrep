@@ -6,6 +6,7 @@ import { OAUTH_STATES } from '../calendar_sync/sync_documents';
 import { checkersLinkRef } from '../checkers/firestore_link_store';
 import { deleteFeedbackOf } from '../feedback/feedback_documents';
 import { pnpLinkRef } from '../pnp/firestore_pnp_link_store';
+import { woolworthsLinkRef } from '../woolworths/firestore_woolworths_link_store';
 import { emailChallengeRef } from '../premium_vouchers/voucher_documents';
 import { userRef } from '../household/documents';
 import { STORE_PURCHASES } from '../subscriptions/subscription_documents';
@@ -112,6 +113,7 @@ export async function eraseAccount(
   await store.recursiveDelete(checkersLinkRef(store, uid));
   // The member's Pick n Pay link: sealed tokens (add-to-pnp ADR-0003).
   await store.recursiveDelete(pnpLinkRef(store, uid));
+  await store.recursiveDelete(woolworthsLinkRef(store, uid));
   await store.recursiveDelete(emailChallengeRef(store, uid));
   await objects.deletePrefix(exportObjectPrefix(uid));
   await store.recursiveDelete(userRef(store, uid));

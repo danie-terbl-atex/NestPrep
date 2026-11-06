@@ -32,8 +32,6 @@ abstract final class CheckersCopy {
     ProductRetailer.pickNPay => 'Pick n Pay',
     ProductRetailer.woolworths => 'Woolworths',
   };
-  static String retailerSoon(ProductRetailer retailer) =>
-      '${retailerName(retailer)}, coming soon';
   static String matchesTitle(ProductRetailer shop, String itemName) =>
       'At ${retailerName(shop)}: $itemName';
   static String matchesLoading(ProductRetailer shop) =>

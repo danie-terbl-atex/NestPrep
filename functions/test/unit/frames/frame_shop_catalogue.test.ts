@@ -1,15 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
-import { FRAME_AREAS } from '../../../src/frames/frame_areas';
+import type { FrameGroceries } from '../../../src/frames/frame_documents';
 import {
   EmulatorFrameCatalogue,
   FrameShopUnavailable,
   HttpFrameCatalogue,
+  type FrameShopProduct,
   checkersProductOf,
   pnpProductOf,
   productImageUrl,
+  woolworthsProductOf,
 } from '../../../src/frames/frame_shop_catalogue';
-import type { HttpClient, HttpRequest, HttpResponse } from '../../../src/shared/http_client';
+import {
+  HttpUnreachable,
+  type HttpClient,
+  type HttpRequest,
+  type HttpResponse,
+} from '../../../src/shared/http_client';
 
 /** The family's shop searched from the server for a frame (photo-frames ADR-0012). */
 
@@ -36,6 +43,13 @@ function scripted(answer: (url: string, request: HttpRequest) => [number, unknow
     },
   };
 }
+
+const WOOLWORTHS: FrameGroceries = {
+  shop: 'woolworths',
+  area: 'capeTown',
+  store: '2008',
+  priceZone: 'p10',
+};
 
 const CHECKERS_PRODUCT = {
   id: '5f1b2c3d4e5f60718293a4b5',
@@ -127,7 +141,26 @@ describe('a product’s picture', () => {
       'https://cdn-prd-02.pnp.co.za/@evil.example.com/x.jpg',
     );
     expect(productImageUrl('checkers', null)).toBeNull();
-    expect(productImageUrl('woolworths', 'x')).toBeNull();
+    expect(productImageUrl('spar', 'x')).toBeNull();
+  });
+
+  it('at Woolworths, its file name and query on the asset host, asked for 200 wide', () => {
+    expect(productImageUrl('woolworths', 'images/milk.jpg')).toBeNull();
+    expect(productImageUrl('woolworths', 'milk.jpg')).toBe(
+      'https://assets.woolworthsstatic.co.za/milk.jpg?w=200&q=85',
+    );
+    expect(productImageUrl('woolworths', 'milk.jpg?v=3')).toBe(
+      'https://assets.woolworthsstatic.co.za/milk.jpg?v=3&w=200&q=85',
+    );
+    expect(productImageUrl('woolworths', 'milk.jpg?v=3&')).toBe(
+      'https://assets.woolworthsstatic.co.za/milk.jpg?v=3&w=200&q=85',
+    );
+    expect(productImageUrl('woolworths', '@evil.example.com')).toBe(
+      'https://assets.woolworthsstatic.co.za/@evil.example.com?w=200&q=85',
+    );
+    for (const unsafe of ['milk.jpg#x', 'milk 2l.jpg', 'x'.repeat(601), '']) {
+      expect(productImageUrl('woolworths', unsafe)).toBeNull();
+    }
   });
 });
 
@@ -139,8 +172,7 @@ describe('searching Checkers', () => {
         : [200, { products: [CHECKERS_PRODUCT, { id: 'broken' }] }],
     );
     const found = await new HttpFrameCatalogue(http).search(
-      'checkers',
-      FRAME_AREAS.pretoria,
+      { shop: 'checkers', area: 'pretoria' },
       'milk',
       8,
     );
@@ -169,8 +201,8 @@ describe('searching Checkers', () => {
         : [200, { products: [] }],
     );
     const catalogue = new HttpFrameCatalogue(http);
-    await catalogue.search('checkers', FRAME_AREAS.bloemfontein, 'milk', 8);
-    await catalogue.search('checkers', FRAME_AREAS.bloemfontein, 'bread', 8);
+    await catalogue.search({ shop: 'checkers', area: 'bloemfontein' }, 'milk', 8);
+    await catalogue.search({ shop: 'checkers', area: 'bloemfontein' }, 'bread', 8);
     expect(sent.filter((each) => each.url.endsWith('/store-contexts'))).toHaveLength(1);
   });
 
@@ -183,7 +215,7 @@ describe('searching Checkers', () => {
   ] as const)('is unavailable when the shop is %s', async (_, reply) => {
     const { http } = scripted(() => [reply[0], reply[1]]);
     await expect(
-      new HttpFrameCatalogue(http).search('checkers', FRAME_AREAS.eastLondon, 'milk', 8),
+      new HttpFrameCatalogue(http).search({ shop: 'checkers', area: 'eastLondon' }, 'milk', 8),
     ).rejects.toBeInstanceOf(FrameShopUnavailable);
   });
 });
@@ -202,8 +234,7 @@ describe('searching Pick n Pay', () => {
   it('finds the store the area is priced at from a throw-away cart, then searches there', async () => {
     const { http, sent } = pnpShop();
     const found = await new HttpFrameCatalogue(http).search(
-      'pickNPay',
-      FRAME_AREAS.gqeberha,
+      { shop: 'pickNPay', area: 'gqeberha' },
       'full: cream',
       8,
     );
@@ -232,27 +263,181 @@ describe('searching Pick n Pay', () => {
   it('is unavailable where PnP delivers nowhere, and still deletes its cart', async () => {
     const { http, sent } = pnpShop(400);
     await expect(
-      new HttpFrameCatalogue(http).search('pickNPay', FRAME_AREAS.johannesburg, 'milk', 8),
+      new HttpFrameCatalogue(http).search({ shop: 'pickNPay', area: 'johannesburg' }, 'milk', 8),
     ).rejects.toBeInstanceOf(FrameShopUnavailable);
     expect(sent.at(-1)?.request.method).toBe('DELETE');
+  });
+});
+
+const WOOLWORTHS_PRODUCT = {
+  value: ' Woolworths Full Cream Milk 2L ',
+  data: {
+    id: '6009178001234',
+    brand: ' Woolworths ',
+    p10: 36.99,
+    p30: 38.99,
+    p60: 39.99,
+    image_url: 'https://assets.woolworthsstatic.co.za/milk.jpg?v=3',
+  },
+};
+
+describe('reading a Woolworths product', () => {
+  it('at the price list the frame’s store reads, with its SKU as both ids', () => {
+    expect(woolworthsProductOf(WOOLWORTHS_PRODUCT, 'p10')).toEqual({
+      retailer: 'woolworths',
+      productId: '6009178001234',
+      articleCode: '6009178001234',
+      unitOfMeasure: 'EA',
+      name: 'Woolworths Full Cream Milk 2L',
+      brand: 'Woolworths',
+      priceCents: 3699,
+      imageId: 'milk.jpg?v=3',
+      isSoldByWeight: false,
+    });
+    expect(woolworthsProductOf(WOOLWORTHS_PRODUCT, 'p60')?.priceCents).toBe(3999);
+  });
+
+  it('weighed when its SKU is a variable-weight barcode or it is an average pack', () => {
+    const weighed = (
+      data: Record<string, unknown>,
+      value = WOOLWORTHS_PRODUCT.value,
+    ): FrameShopProduct | null =>
+      woolworthsProductOf({ value, data: { ...WOOLWORTHS_PRODUCT.data, ...data } }, 'p30');
+    expect(weighed({ id: '2001234567890', p30_kg: 129.995 })).toMatchObject({
+      unitOfMeasure: 'KG',
+      isSoldByWeight: true,
+      priceCents: 13000,
+    });
+    expect(weighed({}, 'Beef Mince Avg 500 g')?.isSoldByWeight).toBe(true);
+    expect(weighed({}, 'Gravy Granules')?.isSoldByWeight).toBe(false);
+  });
+
+  it('a name from the description when there is no value, and no picture from elsewhere', () => {
+    const product = woolworthsProductOf(
+      {
+        data: {
+          ...WOOLWORTHS_PRODUCT.data,
+          description: 'Rooibos 80s',
+          brand: ' ',
+          image_url: 'https://evil.example.com/milk.jpg',
+        },
+      },
+      'p30',
+    );
+    expect(product).toMatchObject({ name: 'Rooibos 80s', brand: null, imageId: null });
+  });
+
+  it.each([
+    ['no SKU', { id: undefined }],
+    ['a SKU too short', { id: '12345' }],
+    ['a SKU with letters', { id: '60091780A' }],
+    ['no price at the store’s zone', { p30: undefined }],
+    ['a price it cannot read exactly', { p30: 38.995 }],
+    ['a free product', { p30: 0 }],
+  ])('never one with %s', (_, data) => {
+    expect(
+      woolworthsProductOf(
+        { ...WOOLWORTHS_PRODUCT, data: { ...WOOLWORTHS_PRODUCT.data, ...data } },
+        'p30',
+      ),
+    ).toBeNull();
+  });
+
+  it('never one without a name, or not the shape at all', () => {
+    expect(woolworthsProductOf({ ...WOOLWORTHS_PRODUCT, value: '  ' }, 'p30')).toBeNull();
+    expect(woolworthsProductOf({ value: 'Milk' }, 'p30')).toBeNull();
+    expect(woolworthsProductOf('milk', 'p30')).toBeNull();
+  });
+});
+
+describe('searching Woolworths', () => {
+  it('asks Constructor alone, stocked at the frame’s store, with no credential', async () => {
+    const { http, sent } = scripted(() => [
+      200,
+      { response: { results: [WOOLWORTHS_PRODUCT, { data: { id: 'broken' } }] } },
+    ]);
+    const catalogue = new HttpFrameCatalogue(http);
+    const found = await catalogue.search(WOOLWORTHS, 'full cream/milk', 8);
+    await catalogue.search(WOOLWORTHS, 'bread', 8);
+
+    expect(found.map((each) => [each.productId, each.priceCents])).toEqual([
+      ['6009178001234', 3699],
+    ]);
+    expect(sent).toHaveLength(2);
+    const url = new URL(sent[0]?.url ?? '');
+    expect(url.origin).toBe('https://wpkmgeuco-zone.cnstrc.com');
+    expect(url.pathname).toBe('/v1/search/full%20cream%2Fmilk');
+    expect(url.searchParams.get('key')).toBe('key_tw9hKe0fkfgEf36D');
+    expect(url.searchParams.get('i')).toMatch(/^[0-9a-f-]{36}$/);
+    expect(new URL(sent[1]?.url ?? '').searchParams.get('i')).toBe(url.searchParams.get('i'));
+    expect(url.searchParams.get('s')).toBe('1');
+    expect(url.searchParams.get('num_results_per_page')).toBe('8');
+    expect(url.searchParams.get('page')).toBe('1');
+    expect(url.searchParams.getAll('filters[visibility]')).toEqual(['all', 'web and app']);
+    expect(url.searchParams.get('filters[stocked_at]')).toBe('2008');
+    expect(url.searchParams.getAll('us')).toEqual(['default', 'jda_2008']);
+    for (const { url: each, request } of sent) {
+      expect(each).not.toContain('woolworths.co.za');
+      expect(request.method).toBe('GET');
+      expect(Object.keys(request.headers ?? {})).not.toContain('authorization');
+    }
+  });
+
+  it.each([
+    ['busy', [429, {}]],
+    ['failing', [503, {}]],
+    ['refusing', [403, {}]],
+    ['redirecting', [302, {}]],
+    ['unreadable', [200, { nothing: true }]],
+  ] as const)('is unavailable when Woolworths is %s', async (_, reply) => {
+    const { http } = scripted(() => [reply[0], reply[1]]);
+    await expect(new HttpFrameCatalogue(http).search(WOOLWORTHS, 'milk', 8)).rejects.toBeInstanceOf(
+      FrameShopUnavailable,
+    );
+  });
+
+  it('and when it cannot be reached at all', async () => {
+    const http: HttpClient = {
+      send: () => Promise.reject(new HttpUnreachable('timeout')),
+    };
+    await expect(new HttpFrameCatalogue(http).search(WOOLWORTHS, 'milk', 8)).rejects.toBeInstanceOf(
+      FrameShopUnavailable,
+    );
   });
 });
 
 describe('the shops under the emulator', () => {
   it('answer three products named after the search, one weighed, the same each time', async () => {
     const catalogue = new EmulatorFrameCatalogue();
-    const first = await catalogue.search('pickNPay', FRAME_AREAS.capeTown, 'milk', 8);
+    const first = await catalogue.search({ shop: 'pickNPay', area: 'capeTown' }, 'milk', 8);
     expect(first.map((each) => each.isSoldByWeight)).toEqual([false, true, false]);
     expect(first[0]?.name).toBe('Milk 500 g');
     expect(first[0]?.productId).toMatch(/^[0-9]{6,20}_EA$/);
-    expect(await catalogue.search('pickNPay', FRAME_AREAS.capeTown, 'milk', 8)).toEqual(first);
-    const checkers = await catalogue.search('checkers', FRAME_AREAS.capeTown, 'milk', 8);
+    expect(await catalogue.search({ shop: 'pickNPay', area: 'capeTown' }, 'milk', 8)).toEqual(
+      first,
+    );
+    const checkers = await catalogue.search({ shop: 'checkers', area: 'capeTown' }, 'milk', 8);
     expect(checkers[0]?.productId).toMatch(/^[0-9a-f]{24}$/);
+  });
+
+  it('and at Woolworths, SKUs a pick accepts, the weighed one a variable-weight barcode', async () => {
+    const products = await new EmulatorFrameCatalogue().search(WOOLWORTHS, 'milk', 8);
+    expect(products.map((each) => each.retailer)).toEqual([
+      'woolworths',
+      'woolworths',
+      'woolworths',
+    ]);
+    for (const product of products) {
+      expect(product.productId).toMatch(/^[0-9]{6,14}$/);
+      expect(product.articleCode).toBe(product.productId);
+    }
+    expect(products[1]?.productId).toMatch(/^2[0-9]{12}$/);
+    expect(products.map((each) => each.unitOfMeasure)).toEqual(['EA', 'KG', 'EA']);
   });
 
   it('and fail like an outage for a search starting “down”', async () => {
     await expect(
-      new EmulatorFrameCatalogue().search('checkers', FRAME_AREAS.capeTown, 'down milk', 8),
+      new EmulatorFrameCatalogue().search({ shop: 'checkers', area: 'capeTown' }, 'down milk', 8),
     ).rejects.toBeInstanceOf(FrameShopUnavailable);
   });
 });

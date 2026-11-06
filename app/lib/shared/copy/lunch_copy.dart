@@ -48,10 +48,15 @@ abstract final class LunchCopy {
   static const toolsTitle = 'Lunch tools';
   static const prepBody = 'What to make ahead for the week';
   static const shareBody = 'A card to share or a planner to print';
-  static const fillWeek = 'Fill the week';
-  static const fillWeekHint =
-      'Pick go-to or ready-made boxes first, then NestPrep fills the rest. '
-      'Never replaces what you packed.';
+  static const planWeek = 'Plan the week';
+  static const planWeekHint = 'Never replaces what you packed.';
+  static String planWeekSheetTitle(String week) => 'How should we plan $week?';
+  static const planWeekSheetBody =
+      'Only the empty days are filled. You can change any box afterwards.';
+  static const planWithBoxes = 'Pick the boxes yourself';
+  static const planWithBoxesBody =
+      'Choose go-to or ready-made boxes, and NestPrep fills the rest from '
+      'what they eat.';
   static String boxArtLabel(String items) =>
       items.isEmpty ? 'An empty lunch box' : 'A lunch box with $items';
   static const weekIsFull = 'Every day is packed.';

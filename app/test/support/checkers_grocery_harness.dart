@@ -27,6 +27,7 @@ import 'fake_feature_flag_source.dart';
 import 'fake_live_location.dart';
 import 'fake_plan_week.dart';
 import 'fake_pnp.dart';
+import 'fake_woolworths.dart';
 import 'grocery_list_harness.dart';
 import 'household_fixtures.dart';
 import 'pump_screen.dart';
@@ -49,10 +50,11 @@ const pickedMilk = ProductMatch(
 final class CheckersGroceryHarness {
   CheckersGroceryHarness() {
     finder = ProductFinder(
-      catalogues: RetailerCatalogues(
-        checkers: catalogue,
-        pickNPay: pnpCatalogue,
-      ),
+      catalogues: RetailerCatalogues({
+        ProductRetailer.checkers: catalogue,
+        ProductRetailer.pickNPay: pnpCatalogue,
+        ProductRetailer.woolworths: woolworthsCatalogue,
+      }),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),
@@ -79,6 +81,10 @@ final class CheckersGroceryHarness {
       directory: pnpDirectory,
       householdId: Fixtures.householdId,
     );
+    woolworthsPush = CartPushController(
+      directory: woolworthsDirectory,
+      householdId: Fixtures.householdId,
+    );
     retailers = RetailerChoiceController(
       preference: retailerPreference,
       matchAsYouType: retailerPreference,
@@ -89,7 +95,7 @@ final class CheckersGroceryHarness {
       matches.dispose();
       typeAhead.dispose();
       retailers.dispose();
-      ShopCarts(checkers: push, pickNPay: pnpPush).dispose();
+      carts.dispose();
     });
   }
 
@@ -109,6 +115,8 @@ final class CheckersGroceryHarness {
   final directory = FakeCheckersDirectory();
   final pnpCatalogue = FakeShopCatalogue();
   final pnpDirectory = FakePnpDirectory();
+  final woolworthsCatalogue = FakeShopCatalogue();
+  final woolworthsDirectory = FakeWoolworthsDirectory();
   late final ProductFinder finder;
   late final ProductMatchController matches;
   late final ProductTypeAheadController typeAhead;
@@ -119,6 +127,13 @@ final class CheckersGroceryHarness {
   /// The Checkers cart push.
   late final CartPushController push;
   late final CartPushController pnpPush;
+  late final CartPushController woolworthsPush;
+
+  late final carts = ShopCarts({
+    ProductRetailer.checkers: push,
+    ProductRetailer.pickNPay: pnpPush,
+    ProductRetailer.woolworths: woolworthsPush,
+  });
 
   /// The switches the pumped screen sees; set by [pump].
   FeatureFlags flags = TestFlags.on;
@@ -170,9 +185,7 @@ final class CheckersGroceryHarness {
       ChangeNotifierProvider<ProductTypeAheadController>.value(
         value: typeAhead,
       ),
-      Provider<ShopCarts>.value(
-        value: ShopCarts(checkers: push, pickNPay: pnpPush),
-      ),
+      Provider<ShopCarts>.value(value: carts),
       ChangeNotifierProvider<RetailerChoiceController>.value(value: retailers),
       ChangeNotifierProvider<FeatureFlagsController>(
         create: (_) => testFlagsController(flags),

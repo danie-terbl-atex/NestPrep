@@ -11,8 +11,8 @@ import '../state/plan_week_controller.dart';
 import 'plan_week_item_pill.dart';
 import 'plan_week_swap_sheet.dart';
 
-/// One child's week on the review: whose it is, how much is new, and five
-/// school days of compartments — what was packed already, quiet; each new
+/// One child's week on the review: whose it is, how much is new, and the
+/// school days still to come — what was packed already, quiet; each new
 /// shop product in the slot's colour, a tap from being swapped
 /// to another product kept for this child, or cleared.
 class PlanWeekChildCard extends StatelessWidget {
@@ -31,6 +31,7 @@ class PlanWeekChildCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final member = child.child.member;
+    final labelChecks = plan.labelChecksFor(child);
     return NestCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,29 +57,41 @@ class PlanWeekChildCard extends StatelessWidget {
               ),
             ],
           ),
-          for (final day in plan.week.schoolDays) ...[
-            const SizedBox(height: NestSpace.lg),
-            Text(
-              NestDates.weekdayName(day),
-              style: nest.text.caption.copyWith(
-                color: nest.colors.inkSecondary,
+          if (labelChecks.isNotEmpty) ...[
+            const SizedBox(height: NestSpace.md),
+            NestBanner(
+              key: ValueKey('plan-label-check-${child.childId}'),
+              message: PlanWeekCopy.labelCheckOf(
+                labelChecks.first.product.retailer,
+                [for (final product in labelChecks) product.product.name],
               ),
-            ),
-            const SizedBox(height: NestSpace.xs),
-            Wrap(
-              spacing: NestSpace.xs,
-              runSpacing: NestSpace.xs,
-              children: [
-                for (final slot in LunchSlot.values)
-                  ?_pillFor(
-                    context,
-                    day.weekday,
-                    slot,
-                    NestDates.weekdayName(day),
-                  ),
-              ],
+              tone: NestBannerTone.warning,
             ),
           ],
+          for (final day in plan.week.schoolDays)
+            if (plan.daysLeft.contains(day.weekday)) ...[
+              const SizedBox(height: NestSpace.lg),
+              Text(
+                NestDates.weekdayName(day),
+                style: nest.text.caption.copyWith(
+                  color: nest.colors.inkSecondary,
+                ),
+              ),
+              const SizedBox(height: NestSpace.xs),
+              Wrap(
+                spacing: NestSpace.xs,
+                runSpacing: NestSpace.xs,
+                children: [
+                  for (final slot in LunchSlot.values)
+                    ?_pillFor(
+                      context,
+                      day.weekday,
+                      slot,
+                      NestDates.weekdayName(day),
+                    ),
+                ],
+              ),
+            ],
         ],
       ),
     );
@@ -96,6 +109,12 @@ class PlanWeekChildCard extends StatelessWidget {
     final added = child.addedAt(day, slot);
     if (added == null && !plan.fills(day, slot)) return null;
     final product = added == null ? null : plan.productOf(added);
+    final caution = [
+      if (added != null)
+        for (final bought in plan.boughtFor(added))
+          if (bought.needsLabelCheckFor(child.childId))
+            PlanWeekCopy.labelCheck(bought.product.retailer),
+    ].firstOrNull;
     return PlanWeekItemPill(
       key: ValueKey('plan-pill-${child.childId}-$day-${slot.name}'),
       slot: slot,
@@ -104,6 +123,8 @@ class PlanWeekChildCard extends StatelessWidget {
           product?.product.name ??
           (added == null ? null : plan.dishOf(added)?.draft.name),
       origin: added?.origin,
+      product: product?.product,
+      caution: caution,
       onTap: isEditable
           ? () => _swap(context, day: day, slot: slot, dayName: name)
           : null,
@@ -121,6 +142,7 @@ class PlanWeekChildCard extends StatelessWidget {
     final choice = await showPlanWeekSwapSheet(
       context: context,
       title: PlanWeekCopy.swapTitle(LunchCopy.slotName(slot), dayName),
+      childId: child.childId,
       options: plan.optionsFor(child.childId, slot),
       current: child.addedAt(day, slot),
       boxesPerPackOf: plan.boxesPerPackOf,

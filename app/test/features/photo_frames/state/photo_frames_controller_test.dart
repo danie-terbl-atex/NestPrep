@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/tokens/nest_member_palette.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
+import 'package:nestprep/features/add_to_woolworths/model/woolworths_store.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/photo_frames/model/frame_groceries.dart';
 import 'package:nestprep/features/photo_frames/model/frame_panels.dart';
 import 'package:nestprep/features/photo_frames/model/frame_screensaver.dart';
@@ -16,6 +18,12 @@ import '../../../support/household_fixtures.dart';
 void main() {
   late FakePhotoFrameRepository repository;
   late PhotoFramesController controller;
+  late List<Coordinates> lookedUp;
+
+  Future<WoolworthsStore> woolworthsStore(Coordinates near) async {
+    lookedUp.add(near);
+    return const WoolworthsStore(id: '2008', priceZone: 'p60');
+  }
 
   const nanny = Member(
     id: 'm-nanny',
@@ -25,6 +33,7 @@ void main() {
   );
 
   setUp(() {
+    lookedUp = [];
     repository = FakePhotoFrameRepository();
     controller = PhotoFramesController(
       photoFrameRepository: repository,
@@ -88,6 +97,7 @@ void main() {
         panels: panels,
         screensaver: screensaver,
         groceries: groceries,
+        woolworthsStoreFor: woolworthsStore,
       );
 
       expect(saved, isTrue);
@@ -96,8 +106,67 @@ void main() {
       expect(repository.updated.single.panels, panels);
       expect(repository.updated.single.screensaver, screensaver);
       expect(repository.updated.single.groceries, groceries);
+      expect(lookedUp, isEmpty);
     },
   );
+
+  test('saving at Woolworths looks the store up for the area, every time, '
+      'and no other shop keeps one', () async {
+    Future<bool> save(FrameGroceries groceries) => controller.save(
+      FrameFixtures.frame(),
+      name: 'Hall frame',
+      panels: const FramePanels(),
+      screensaver: FrameScreensaver.off,
+      groceries: groceries,
+      woolworthsStoreFor: woolworthsStore,
+    );
+    const stale = FrameGroceries(
+      shop: ProductRetailer.woolworths,
+      area: CheckersArea.durban,
+      store: WoolworthsStore(id: '1', priceZone: 'p10'),
+    );
+
+    expect(await save(stale), isTrue);
+    expect(await save(stale.copyWith(shop: ProductRetailer.checkers)), isTrue);
+
+    expect(lookedUp, [CheckersArea.durban.centre]);
+    expect(repository.updated.map((update) => update.groceries).toList(), [
+      stale.copyWith(
+        store: const WoolworthsStore(id: '2008', priceZone: 'p60'),
+      ),
+      const FrameGroceries(
+        shop: ProductRetailer.checkers,
+        area: CheckersArea.durban,
+      ),
+    ]);
+  });
+
+  test('a Woolworths area with no store does not save, and says why', () async {
+    final saved = await controller.save(
+      FrameFixtures.frame(),
+      name: 'Hall frame',
+      panels: const FramePanels(),
+      screensaver: FrameScreensaver.off,
+      groceries: const FrameGroceries(
+        shop: ProductRetailer.woolworths,
+        area: CheckersArea.eastLondon,
+      ),
+      woolworthsStoreFor: (_) async =>
+          throw const WoolworthsFailure(WoolworthsProblem.noStoreNearby),
+    );
+
+    expect(saved, isFalse);
+    expect(repository.updated, isEmpty);
+    expect(
+      controller.actionFailure,
+      isA<WoolworthsFailure>().having(
+        (failure) => failure.problem,
+        'problem',
+        WoolworthsProblem.noStoreNearby,
+      ),
+    );
+    expect(controller.isSaving, isFalse);
+  });
 
   test('a refused save is kept, and says it did not save', () async {
     repository.failWrites = const PermissionDeniedFailure();
@@ -107,6 +176,7 @@ void main() {
       panels: const FramePanels(),
       screensaver: FrameScreensaver.off,
       groceries: null,
+      woolworthsStoreFor: woolworthsStore,
     );
 
     expect(saved, isFalse);

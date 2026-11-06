@@ -49,6 +49,7 @@ final class CallableCheckersDirectory implements CheckersDirectory {
     final result = await _call(pushCallable, {
       'householdId': householdId,
       'itemIds': itemIds,
+      if (quantities.isNotEmpty) 'quantities': quantities,
     });
     return CartPushResultParser.parse(result) ??
         (throw _malformed(pushCallable));

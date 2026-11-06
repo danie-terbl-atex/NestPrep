@@ -1,3 +1,92 @@
+# Password reset — branded email through Resend (accounts ADR-0012)
+
+Daniel 2026-11-06: the reset flow is either not working or not hooked up; any email that goes out should be properly formatted, ideally Resend HTML.
+
+Finding: it was hooked up, to Firebase's stock sender (`method: DEFAULT`, from `noreply@nestprep-643b7.firebaseapp.com`, raw-link template, bare handler on firebaseapp.com), which lands in spam or never arrives.
+
+## Checklist
+- [x] Resend sender moved to `functions/src/shared/email_sender.ts`, gains `html`; premium vouchers re-pointed
+- [x] `sendPasswordReset` callable: zod body, limits per caller / email / overall, Admin SDK link, `sent` for unknown addresses, branded HTML + text email
+- [x] `app.nestprep.io/reset-password` page + script + CSP header block; site rebuilt
+- [x] App gateway calls the callable; `invalidEmail` / `resetUnavailable` problems + copy; success copy names admin@nestprep.io
+- [x] `ACCOUNT_EMAIL_FROM` in `.env.nestprep-643b7` / `.env.local` and the functions CLAUDE.md table
+- [x] Tests: unit 2510 green; emulator `password_reset.test.ts` 4/4 (isolated ports, no Storage); app accounts + failure copy 215 green; analyze clean on changed files
+- [x] Godfather: ADR-0012 (proposed), accounts overview rev 8, lint 0 errors
+- [ ] Deploy `functions:sendPasswordReset` + Hosting (Daniel's go) and one real reset seen in Gmail
+- [ ] Drive it in the emulator app end to end
+
+## Review
+- Not verified: a real email in an inbox (needs deploy); the emulator app by hand.
+- `premium_vouchers` emulator test: 23 failures on my isolated-port suite (`notYourVoucher`, premium web 404). The only change there is an import path, so this looks like the isolated setup or other in-flight work. Re-run `npm run test:emulator` once Daniel's suite is stopped.
+- `test/app` and `errors_are_never_swallowed_test` failures come from other sessions' in-flight files (HomeCare provider, recipes, notification host), not from this change.
+
+# Lunch board — one "Plan the week" button (lunch-box ADR-0022/ADR-0024 amended)
+
+Daniel 2026-11-05: two ways to plan the week stacked in one card is confusing. One button, *Plan the week*, opens a chooser: *Let Twig plan it* at the shop (first when Premium, second when free, Premium-tagged), *Pick the boxes yourself* (Fill the week), and *Fill from the pantry* while the pantry switch is on.
+
+## Checklist
+- [x] `LunchPlanWay` model: which ways, in which order (premium Twig first; free Twig second; full week offers only Twig)
+- [x] `PlanWeekEntry.shopFor/open` + `PlanWeekEntryCard` becomes the sheet's Twig option (logo, Premium tag)
+- [x] `showLunchPlanWeekSheet`: titled with the week's name; one way skips the sheet
+- [x] `LunchWeekPlanner`: title, one button, one caption, pantry switch (its fill button moves to the sheet), budget strip
+- [x] Copy + tour (lunchPlanMyWeek anchors the button)
+- [x] Tests: planner, entry card, fill-week way in, free tier, board-by-scope, tour; analyze; format changed files only
+- [x] Godfather: ADR (proposed), overview, session log, lint
+
+## Review
+- Built: one *Plan the week* button; sheet *How should we plan this week?* with Twig (tinted, shop logo; first for Premium, second + Premium tag for free), *Pick the boxes yourself*, *Fill from the pantry* (switch on). One way skips the sheet. Card title dropped (section header names the week).
+- Verified: analyze clean; lunch_box/plan_week/welcome_tour 670 pass, 1 fail (`lunch_pantry_screen_test` grocery add — not this change). Pictures: `app/design-review/plan-week-entry-*`, `plan-week-chooser-*`.
+- Not done: device run; commit (shared tree, Daniel's call).
+
+# Woolworths everywhere — every shop equal, like-for-like (add-to-woolworths phase 2)
+
+Daniel 2026-11-05: Woolworths in the lunch builder and everywhere else Checkers and Pick n Pay are; people choose which shop they use. Discovery: three agents (lunch builder map, every shop surface, Woolworths lunchbox shelves — scratchpad `woolies-lunch/`).
+
+## Decisions taken (mine, from the discovery)
+- Plan my week is N-shop: no `isPnpOn`; the shops on offer are `planWeekShops` ∩ the switched-on shops, Checkers included (it follows `addToCheckers` like the others).
+- Every shop gets the done-step and brief cart (`ShopCarts`, one shop-generic push shared with recipes). Checkers' push learns pack quantities (it was 1 per item, which is why ADR-0026 §6 left it out): add only what each product is short of, never lower — the same rule as PnP and Woolworths.
+- Woolworths' default lunchbox shelves: 10 verified groups from its Kids School Lunches / Kids Snacks sections (no weighed top sellers), overridable as `appConfig/lunchAisle.woolworthsShelves`.
+- Photo frames take Woolworths: the phone resolves the store and price zone (Cloudflare keeps `/server/*` off Functions) and saves them with the frame; the Function searches Constructor with them. Frame client (NestPrep-Home) learns the shop's name and logo.
+- A shop whose switch is off is hidden, never "coming soon".
+- *Your shops* in the account centre: each shop, linked or not, link/unlink, and the shop the family shops at by default.
+- Download my data includes each shop link's non-secret fields (never the sealed session).
+
+## Checklist
+- [x] Daniel: Woolworths products with unknown contents are offered to allergic children with a caution ("Woolworths doesn't publish what's in this. Check the label."), the name still checked; Checkers/PnP unchanged — amends lunch-box ADR-0012 for Woolworths. Privacy policy v3: not now (outside ask)
+- [x] App: lunch builder N-shop + Woolworths shelves + carts for every shop (agent)
+- [x] Functions + app: Checkers pack quantities; data export shop links; hide switched-off shops; copy fixes (agent)
+- [x] Frames: app, rules, Functions, NestPrep-Home (agent) — NestPrep-Home not built
+- [x] App: *Your shops* in the account centre (agent)
+- [x] Verify: analyze clean; Functions unit 2365/2365; app — every failure left (18) is another session's; agents' rules + emulator runs green. Not done: emulator drive, design-review pictures, account-export emulator test (needs Storage)
+- [x] Deployed rules from the main tree (live == firestore.rules) + checkersPushToCart, exportAccountData, searchFrameProducts, addFrameGroceryItem, getFrameDay; iPhone build ready — [ ] install (phone was unavailable)
+- [ ] Godfather: new ADRs amending add-to-woolworths ADR-0004 §3, lunch-box ADR-0026/0027, photo-frames ADR-0012, C-0023 revision; overviews; lint; session log
+
+# People who have not joined yet are whole members; removing someone shows it happening (household)
+
+Daniel 2026-11-05: a child invited through *Invite someone* is not in lunches until they join, and is not tagged a child; removing an invited person gives no sign it is happening, the row just vanishes.
+
+## Root causes (from the code)
+
+- **Lunches, Plan my week, the free-tier count, school letters and the assistants' household read go by `familyProfiles/{id}.isChild`**, not by the member's role. Inviting (or adding) a kid writes `role: kid` and the parent's consent, and never calls `setChildProfile`, so the child exists but is nobody's lunch. Nothing in the app or Functions sets `isChild` on joining either — the only way it gets set is the *Child* toggle on the family profile. Nanny hub and the to-dos already read `role == kid`, which is why the two disagree.
+- **Removing** is one callable (`removeMember`, africa-south1, cold start seconds); the controller's `_isBusy` is set but the row shows nothing, and on success the listener just drops the row — no confirmation.
+
+## Plan
+
+- [x] Making a kid profile marks it a child in the same action (`NewChildMarking`, used by `InviteStepController.invite`, `HouseholdController.addMember`, a role change to kid in `updateMember`)
+- [x] Free tier: a second child keeps the profile and invite; the paywall opens (`offerPremiumForNewChild`), marks them on upgrade
+- [x] Removing: `removingMemberId`, *Removing…* row with spinner, other actions disabled, snackbar on success, banner on refusal
+- [x] `removeMember` revokes the profile's unredeemed invites in its transaction
+- [x] Tests: household controller +9, invite step controller +4, invite step screen +2, household screen +2, emulator membership +2
+- [x] Verify: analyze clean (one info in another session's `notifications_providers.dart`); app 5199 pass / 19 fail (none household, same 19 on the tree before); functions unit 2330/2330; emulator 43/43; iOS Simulator against the emulator through the real callables; pictures `people-removing-*`, `people-removed-*` looked at, spinner and disabled buttons fixed after
+- [x] Godfather: household ADR-0009 (accepted), overview (constraints, ledger, delivery, restamped e5e4ccd), phase 2 next action + session log, lint 0 errors
+- [ ] Deploy `removeMember` — Daniel's call
+- [ ] Seen on a phone (none attached; Android AVD offline)
+- [ ] Commit — not asked for yet
+
+## Review
+
+Root cause was a second "who is a child" signal (`familyProfiles.isChild`) that only the family profile's toggle set; inviting wrote the role and never the flag. Fixed at creation rather than by reading the role, so the free-tier count stays honest. Mistakes: ran `dart format` over all of `lib test tool` in a tree shared with other sessions (whitespace only, but touched their files); first remove test asserted the wrong row; paywall test tapped the referral link under the fold. Lesson added.
+
 # Snap a shopping list, premium (list-scan)
 
 Daniel 2026-11-05: photo of a shopping list → items on the grocery list, or looked up at the chosen grocer and added so they are one tap from the cart. Plan approved: reuse the school-letter AI path and *Add to grocer*'s shop sheet; branch `feature/list-scan` in its own worktree.
@@ -14,6 +103,63 @@ Daniel 2026-11-05: photo of a shopping list → items on the grocery list, or lo
 ## Review
 
 Mostly glue over two proven seams, so little new surface: one callable, one screen. Mistake: a separate-port emulator suite that included Storage deleted the running LAN suite's blobs folder on exit; folder recreated, lesson updated.
+
+# Add to Woolworths Dash — third shop, like-for-like with Checkers and Pick n Pay
+
+Daniel 2026-11-05: Woolies Dash product search and add-to-cart, the same as Checkers. Discovery done (three agents); evidence in the session scratchpad `woolies-search/` (`verify.sh` replays every working call) and `woolies-auth/`. Nothing built yet.
+
+## What discovery proved
+
+- **Search, on the phone, no login (VERIFIED):** Constructor.io, the same index the site and the Dash app use — `wpkmgeuco-zone.cnstrc.com/v1/search/<q>?key=<public site key>&filters[stocked_at]=<store>`; shelves are `/browse/group_id/<cat>?sort_by=salerank` (best sellers). No headers, CORS `*`, ~200-call bucket refilling ~1 per 3 s per IP. The old `/server/searchCategory` (Endeca) is dead.
+- **Place → store + price zone (VERIFIED):** `www.woolworths.co.za/server/validatePlace?latitude&longitude` → `<store>-<plist>`; plist picks the price field (`p10`/`p30`/`p60`, `_wp` = was-price). `/server/*` needs only a woolworths.co.za `Referer`; it sits behind Cloudflare + F5, so it stays on the phone.
+- **Product id:** for food `data.id` = SKU = the cart's `catalogRefId`. Contents for the lunch-box allergen gate from `/server/getProductInfo` (ingredients, allergens, nutrition). Pack size only in the name; variable-weight ids start `25…`.
+- **Account (REPORTED — a MITM-verified open-source Dash v10.11 client):** AWS Cognito `eu-west-1`, public app client, `USER_PASSWORD_AUTH` (email + password) → IdToken (24 h) + RefreshToken (months), refreshed with `REFRESH_TOKEN_AUTH`. No hosted login page, so the PnP web-view pattern does not apply.
+- **Cart (REPORTED):** Dash app server `wfs-appserver.wigroup.co/wfs/app/v4` (AWS ALB, no WAF seen): `GET /cartV2`, `POST /cart/OnDemand/itemV2` `[{catalogRefId, productId, quantity, substitutionSelection}]` — additive. Needs the IdToken as `Sessiontoken` plus app headers (`Apiid`, an APK-wide `Sha1password`, …) — the same class as Checkers' app keys, so Function config only, never the repo or the app.
+- **Checkers' cart is not on the phone today.** Only search is; link, session and cart run in Functions (add-to-checkers ADR-0001/0003/0005). PnP is the same.
+
+## Proposed shape (pending Daniel's two calls below)
+
+1. Search + shelves + contents on the phone: `HttpWoolworthsCatalogue` (Constructor + `validatePlace` + `getProductInfo`) behind `RetailerCatalogue`; `ProductRetailer.woolworths` becomes connected.
+2. Link: the phone signs in to Cognito itself, so the password goes phone → AWS and never to NestPrep; it relays only the refresh token to `woolworthsCompleteLink`, sealed under `WOOLWORTHS_SESSION_KEY` in deny-all `woolworthsLinks/{uid}`. A Cognito challenge (SMS/email code) is relayed like Checkers' OTP.
+3. Cart push in Functions: `woolworthsPushToCart` re-reads the items, re-prices server-side, reads `/cartV2`, adds only what is missing (add or raise, never lower), cart only — never `confirmLocation`, slots, checkout or payment.
+4. Make the two-shop code N-shop: `RetailerCatalogues`/`ShopCarts` as maps; the PnP-else-Checkers switches in `list_cart_push`/`recipe_cart_push`; `isSoldByWeight` per shop; failure types; `rankProductMatches` flags and the Jev prompt that names Checkers for every shop; frame `FRAME_GROCERY_SHOPS`/`SHOP_FLAGS`/`frameProductPick`; rules `groceriesIsProductMatch` + frame shop list; `erase_account`. Plan my week stays Checkers/PnP in v1.
+
+## Checklist
+
+- [x] Daniel: the phone signs in to Cognito; the cart push runs in Functions (2026-11-05)
+- [ ] Daniel (outside ask): capture one sign-in and one add-to-cart from his own Dash app (HTTP Toolkit) to confirm current `Apiid`/app version, the `Sha1password`, whether sign-in raises a code challenge, and the cart reply shape
+- [ ] Godfather: `add-to-woolworths` feature node, ADR-0001 (cart-only bridge, Cognito link, refresh held server-side), ADR-0002 (catalogue on the phone via Constructor), contract C-0xx, integration-map row, work-index row
+- [x] Generalise two-shop code (list above) with the existing tests kept green
+- [x] App: catalogue client + parser + fakes; link screen (email, password, code) talking to Cognito directly; providers, routes, copy, `WoolworthsFailure`
+- [x] Functions: link status/complete/unlink, push, session with refresh + compare-and-swap, emulator stand-in, `addToWoolworths` flag (app + server parity), erasure, callable allow-list and timeouts
+- [x] Rules: `root/woolworths_links.rules` deny-all, `groceriesIsWoolworthsPick`, frame shop list; denied-case tests; `rules:build`
+- [ ] Verify: analyze, app + Functions + rules suites, emulator drive light + dark, one real push to Daniel's own Dash cart
+- [ ] Godfather: overviews (add-to-checkers, add-to-pnp, groceries, photo-frames), next action, lint, session log
+
+## Review
+
+Built in both halves against one fixed contract (scratchpad `woolies_contract.md`); not committed, not on a phone. Functions: build clean, unit 2,330 green, rules 1,227 green (isolated ports), `woolworths.test.ts` emulator 9 green; 82 emulator failures in six unrelated files on isolated ports (calendar feed port, Hosting-routed tests, in-flight frames work). App: 1,018 shop tests green, 83 new; analyze clean of this change (the remaining infos are another session's child-profile edits). Reconciled after the agents: the emulator Cognito client id now passes the app's check, and the app sends `retailer` to `rankProductMatches`. Guessed and unverified until a real capture: where `/cartV2` keeps the delivery store (`deliveryStoreOf`), the cart line and session-expiry shapes.
+
+
+# Chore pictures for children who can't read (todos ADR-0005)
+
+Daniel 2026-11-05: a picture beside each chore, picked from ~200 generated, on-brand clipart stickers; app and frame.
+
+- [x] Style test on Vertex `gemini-3.1-flash-image`; three anchors chosen; cut-out pipeline (`tools/chore-pictures/`)
+- [x] ADR-0005 on todos (proposed)
+- [x] Catalogue of 200 chores (agent)
+- [x] Generate 200 + review + regenerate the weak ones (agent; 211 generations, 15 redone incl. rugby; 32 enclosed-white fixes in `holes.json`)
+- [x] Rules: `picture` on tasks + denied cases; Functions: pass `picture` to the frame day (C-0023 rev 13); cloud demo seed pictures (agent)
+- [x] App: picker sheet (suggestions + search + categories), task sheet field, picture on rows, kid tile (ticks now one trailing column), celebration, Today (agent)
+- [x] Frame: assets, chore card, task card, celebration, To do rows (agent)
+- [x] Verify (partial): app analyze 0, chore tests green vs the full library; Functions unit 2254; rules picture cases as a standalone check; frame 93 unit tests, release + debug build
+- [ ] Full `test:rules` (Daniel's dev suite was up), emulator drive in light + dark, frame on a real device
+- [ ] Deploy in order (Daniel's call): Firestore rules → `getFrameDay` → app build → frame APK sideload
+- [x] Godfather: todos overview, photo-frames overview, C-0023 rev 13, NestPrep-Home overview, work-index row + lesson, lint 0 errors
+
+## Review
+
+Built end to end and green wherever it could be tested here; nothing has been on a device. Full-suite app failures are the pre-existing ones (copy ratchet `HomeCareRoutineCopy.itemForReader`, declared_packages, errors_are_never_swallowed, feature_flags, router, …) plus `nothing_identifies_anybody` from another session's Woolworths work. Not committed.
 
 # Life360-style family location, premium (live-location phase 2)
 
@@ -207,3 +353,18 @@ write text or read pictures. So Jev takes every *decision* in NestPrep, and Gemi
   - Nothing is committed (Daniel did not ask). The plan_week files also hold lunch-box ADR-0017's uncommitted work, which was deployed with this at Daniel's OK.
   - *Plan my week* has not been driven on a device with Jev.
   - A *Brown bread* line was added to the demo household's list during the device run.
+
+# Today's digest on the first open of the day (notifications ADR-0005)
+
+Daniel 2026-11-05: on the first open of the day, a morning digest button on top that opens what the notification opens; only the first open; apps live in memory for days; per device, not across devices.
+
+- [x] ADR-0005 (proposed): an open is the shell's first frame or `onShow`; offered only while today's digest exists and is unread; the day is marked in secure storage per household and member; a day with nothing to offer is not used up
+- [x] `DigestIds.of` spelled in Dart, checked against `morning_digest.ts` by the contract test
+- [x] `DigestPromptStore` + secure-storage implementation, `DigestPromptController`, `DigestPromptBanner`, `DigestPromptHost` in the household shell
+- [x] Tests: controller (8), host widget incl. dark 200% 360-wide (4), contract (1); shell tests given the new providers
+- [x] On a device: iPhone 17 Simulator against the emulator, light and dark — first open, tap-through, same-day return, empty day not used up, onShow
+- [x] Godfather: ADR, overview, phase, lint, session log
+
+## Review
+
+Pre-existing failures in the working tree (not this change, confirmed by running without the host): app_router groceries/meals/recipe pick, and 16 others from in-flight work.

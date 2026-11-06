@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_directory.dart';
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_repository.dart';
+import 'package:nestprep/features/calendar_sync/model/apple_calendar.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_connection.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_feed_link.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_provider.dart';
@@ -70,6 +71,8 @@ final class FakeCalendarSyncDirectory implements CalendarSyncDirectory {
   final linked = <String>[];
   final synced = <String>[];
   final disconnected = <String>[];
+  final applePushes = <({bool link, List<AppleOccurrence> occurrences})>[];
+  String appleConnectionId = 'apple_m-thandi';
   int feedsShared = 0;
   int feedsReset = 0;
 
@@ -100,6 +103,17 @@ final class FakeCalendarSyncDirectory implements CalendarSyncDirectory {
   Future<void> syncNow(String householdId, String connectionId) async {
     _refuseIfAsked();
     synced.add(connectionId);
+  }
+
+  @override
+  Future<String> pushAppleCalendar(
+    String householdId, {
+    required bool link,
+    required List<AppleOccurrence> occurrences,
+  }) async {
+    _refuseIfAsked();
+    applePushes.add((link: link, occurrences: occurrences));
+    return appleConnectionId;
   }
 
   @override

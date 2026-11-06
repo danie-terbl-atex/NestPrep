@@ -17,6 +17,8 @@ class MemberRow extends StatelessWidget {
     required this.onRemove,
     this.accessSummary,
     this.onAccess,
+    this.isRemoving = false,
+    this.actionsEnabled = true,
     super.key,
   });
 
@@ -39,16 +41,48 @@ class MemberRow extends StatelessWidget {
   /// Opens the access editor. Null for family, and for anybody but an admin.
   final VoidCallback? onAccess;
 
+  /// This profile's removal is on its way: the row says so and offers
+  /// nothing until it is gone or refused.
+  final bool isRemoving;
+
+  /// False while another change is running, so a second removal cannot be
+  /// asked for and silently dropped.
+  final bool actionsEnabled;
+
   @override
   Widget build(BuildContext context) {
     final invite = onInvite;
     final remove = onRemove;
     final access = onAccess;
+    if (isRemoving) {
+      final nest = NestTheme.of(context);
+      return Semantics(
+        liveRegion: true,
+        child: NestListRow(
+          leading: Opacity(
+            opacity: 0.5,
+            child: NestAvatar(name: member.displayName, color: member.color),
+          ),
+          title: member.displayName,
+          titleStyle: nest.text.bodyStrong.copyWith(
+            color: nest.colors.inkTertiary,
+          ),
+          subtitle: AppCopy.householdRemoving,
+          trailing: SizedBox.square(
+            dimension: NestSize.iconSmall,
+            child: CircularProgressIndicator(
+              strokeWidth: NestStroke.focus,
+              color: nest.colors.accent,
+            ),
+          ),
+        ),
+      );
+    }
     return NestListRow(
       leading: NestAvatar(name: member.displayName, color: member.color),
       title: member.displayName,
       subtitle: _subtitle,
-      onTap: canManage ? onEdit : null,
+      onTap: canManage && actionsEnabled ? onEdit : null,
       trailing: !canManage
           ? null
           : Row(
@@ -66,14 +100,14 @@ class MemberRow extends StatelessWidget {
                     icon: LucideIcons.share,
                     label: AppCopy.householdInvite,
                     variant: NestIconButtonVariant.plain,
-                    onPressed: invite,
+                    onPressed: actionsEnabled ? invite : null,
                   ),
                 if (remove != null)
                   NestIconButton(
                     icon: LucideIcons.userMinus,
                     label: AppCopy.householdRemove,
                     variant: NestIconButtonVariant.plain,
-                    onPressed: remove,
+                    onPressed: actionsEnabled ? remove : null,
                   ),
               ],
             ),

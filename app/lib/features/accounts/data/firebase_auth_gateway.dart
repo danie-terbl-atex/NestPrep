@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -14,13 +15,15 @@ import 'credential_linking.dart';
 
 final class FirebaseAuthGateway implements AuthGateway {
   FirebaseAuthGateway(
-    this._auth, {
+    this._auth,
+    this._functions, {
     GoogleSignIn? googleSignIn,
     CredentialLinking? linking,
   }) : _google = googleSignIn ?? GoogleSignIn.instance,
        _linking = linking ?? CredentialLinking();
 
   final FirebaseAuth _auth;
+  final FirebaseFunctions _functions;
   final GoogleSignIn _google;
   final CredentialLinking _linking;
   bool _googleIsInitialised = false;
@@ -120,8 +123,15 @@ final class FirebaseAuthGateway implements AuthGateway {
   }
 
   @override
-  Future<void> sendPasswordReset(String email) =>
-      _guard(() => _auth.sendPasswordResetEmail(email: email.trim()));
+  Future<void> sendPasswordReset(String email) async {
+    try {
+      await _functions.httpsCallable('sendPasswordReset').call<Object?>({
+        'email': email.trim(),
+      });
+    } on FirebaseFunctionsException catch (error) {
+      throw failureFromPasswordReset(error);
+    }
+  }
 
   @override
   Future<AuthUser> signInWithSeededUser({
@@ -187,14 +197,6 @@ final class FirebaseAuthGateway implements AuthGateway {
       // it is named in accounts ADR-0002 rather than papered over by stashing a
       // password in memory until they come back.
       _linking.remember(error);
-      throw failureFromFirebaseAuth(error);
-    }
-  }
-
-  Future<void> _guard(Future<void> Function() action) async {
-    try {
-      await action();
-    } on FirebaseAuthException catch (error) {
       throw failureFromFirebaseAuth(error);
     }
   }

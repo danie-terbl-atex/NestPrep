@@ -23,11 +23,9 @@ final class LunchPlannerKit {
     Future<pw.Font> font(String path) async =>
         pw.Font.ttf(await bundle.load(path));
     return LunchPlannerKit._(
-      headingFont: await font(
-        'assets/fonts/MonaSansDisplaySemiExpanded-SemiBold.ttf',
-      ),
-      bodyFont: await font('assets/fonts/MonaSans-Regular.ttf'),
-      strongFont: await font('assets/fonts/MonaSans-SemiBold.ttf'),
+      headingFont: await font('assets/fonts/Fraunces-SemiBold.ttf'),
+      bodyFont: await font('assets/fonts/DMSans-Regular.ttf'),
+      strongFont: await font('assets/fonts/DMSans-SemiBold.ttf'),
       markSvg: await bundle.loadString(markAsset),
     );
   }

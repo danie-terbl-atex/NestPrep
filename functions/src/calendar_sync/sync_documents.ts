@@ -19,8 +19,12 @@ export const CONNECTION_SECRETS = 'calendarConnectionSecrets';
 export const OAUTH_STATES = 'calendarOAuthStates';
 export const FEED_TOKENS = 'calendarFeeds';
 
-/** Where an imported calendar comes from. `ics` is a pasted calendar link. */
-export const PROVIDERS = ['google', 'microsoft', 'ics'] as const;
+/**
+ * Where an imported calendar comes from. `ics` is a pasted calendar link;
+ * `apple` is pushed from the member's iPhone, which reads EventKit, so it has
+ * no credential and the scheduler never syncs it.
+ */
+export const PROVIDERS = ['google', 'microsoft', 'ics', 'apple'] as const;
 export type Provider = (typeof PROVIDERS)[number];
 
 export const OAUTH_PROVIDERS = ['google', 'microsoft'] as const;

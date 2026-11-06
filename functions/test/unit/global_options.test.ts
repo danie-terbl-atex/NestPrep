@@ -45,6 +45,10 @@ const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
   // ADR-0003, ADR-0004).
   pnpCompleteLink: 60,
   pnpPushToCart: 120,
+  // Linking Woolworths proves the refresh token at Cognito; a push reads the
+  // cart, re-prices each product, adds once and reads the cart again.
+  woolworthsCompleteLink: 60,
+  woolworthsPushToCart: 120,
   // A screensaver photo streams to a frame on whatever Wi-Fi it has
   // (photo-frames ADR-0006), and so does a lunch box's picture (ADR-0009).
   getFramePhoto: 60,
@@ -56,6 +60,8 @@ const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
   // searches there, each call with its own eight-second limit (photo-frames
   // ADR-0012).
   searchFrameProducts: 60,
+  // A frame's update APK streams megabytes to a frame on whatever Wi-Fi it has.
+  getFrameUpdateApk: 300,
 };
 
 /** The functions allowed more than the global limits, and exactly how much. */
@@ -133,9 +139,14 @@ describe('every function — callable, trigger or schedule', () => {
     // trigger that tells the household about an arrival (live-location
     // ADR-0006). Premium vouchers and codes: two store-to-app endpoints, the
     // public web endpoint and four callables (subscriptions ADR-0003, ADR-0004).
-    // Snap a shopping list: readShoppingList (list-scan ADR-0001).
+    // Snap a shopping list: readShoppingList (list-scan ADR-0001). Add to
+    // Woolworths: five callables — link status, start and complete a link,
+    // fill the cart, unlink. Apple Calendar: the push from the member's
+    // iPhone. Frame updates: the agent's check and report, and the APK it
+    // downloads. Password reset: the one callable that emails the link
+    // through Resend (accounts ADR-0012).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(120);
+    expect(endpoints()).toHaveLength(130);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
@@ -146,6 +157,8 @@ describe('every function — callable, trigger or schedule', () => {
       'assistantAuth',
       'assistantMcp',
       'premiumWeb',
+      'calendarOAuthCallback',
+      'calendarFeed',
     ];
     for (const [name, endpoint] of endpoints()) {
       const region =

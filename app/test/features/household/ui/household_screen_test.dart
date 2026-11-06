@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
@@ -10,6 +12,7 @@ import 'package:nestprep/shared/copy/kid_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
@@ -40,6 +43,7 @@ void main() {
     controller = HouseholdController(
       householdRepository: repository,
       householdDirectory: directory,
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: viewerUid,
     );
@@ -199,6 +203,62 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(directory.removed, hasLength(1));
+    });
+
+    testWidgets('says it is removing while the server works, then that it is '
+        'done', (tester) async {
+      await pump(tester);
+      await emit(tester);
+      directory.gate = Completer<void>();
+
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdRemove).first);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(NestButton, AppCopy.householdRemove),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text(AppCopy.householdRemoving), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      final others = tester.widgetList<NestIconButton>(
+        find.byType(NestIconButton),
+      );
+      expect(
+        others
+            .where((button) => button.label == AppCopy.householdRemove)
+            .every((button) => button.onPressed == null),
+        isTrue,
+        reason: 'a second removal would be refused without a word',
+      );
+
+      directory.release();
+      repository.emitMembers([Fixtures.sam, Fixtures.thandi]);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text(AppCopy.householdRemoving), findsNothing);
+      expect(
+        find.text(AppCopy.householdRemoved(Fixtures.kid.displayName)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a refused removal keeps the row and says why', (tester) async {
+      await pump(tester);
+      await emit(tester);
+      directory.failWith = const PermissionDeniedFailure();
+
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdRemove).first);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(NestButton, AppCopy.householdRemove),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(Fixtures.kid.displayName), findsOneWidget);
+      expect(find.text(AppCopy.householdRemoving), findsNothing);
+      expect(find.byType(NestBanner), findsOneWidget);
+      expect(find.byType(SnackBar), findsNothing);
     });
 
     testWidgets('the last admin cannot leave while another parent is in', (

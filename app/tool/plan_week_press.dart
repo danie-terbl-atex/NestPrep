@@ -203,7 +203,7 @@ Future<void> capturePlanWeek(
     weekBuilder: builder,
     catalogues: planWeekCatalogues(shop),
     shopChoice: planWeekShopChoice(Fixtures.householdId),
-    isPnpOn: () => false,
+    shopsOn: planWeekShopsOn(),
     placeResolver: CheckersPlaceResolver(
       locationSource: FakeLocationSource(),
       areaPreference: FakeCheckersAreaPreference(),
@@ -240,6 +240,7 @@ Future<void> capturePlanWeek(
       ...harness.lunch.providers,
       ...harness.providers,
       ChangeNotifierProvider<PlanWeekController>.value(value: controller),
+      planWeekCartsProvider(),
     ],
     emit: () async {
       harness.lunch.emit(items: library, plans: [lwaziWeek]);

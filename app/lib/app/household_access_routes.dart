@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../features/family_profiles/data/child_profile_directory.dart';
 import '../features/household/data/household_directory.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/data/invite_sharer.dart';
@@ -32,6 +33,7 @@ List<GoRoute> householdAccessRoutes() => [
           householdRepository: context.read<HouseholdRepository>(),
           householdDirectory: context.read<HouseholdDirectory>(),
           inviteSharer: context.read<InviteSharer>(),
+          childProfileDirectory: context.read<ChildProfileDirectory>(),
           householdId: HouseholdRoute.idFrom(state),
           householdName: view.household.name,
           coloursInUse: view.members.map((member) => member.color),

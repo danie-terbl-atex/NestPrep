@@ -1,16 +1,11 @@
-import { pipeline } from 'node:stream/promises';
-
-import { logger } from 'firebase-functions/v2';
 import { HttpsError, onRequest } from 'firebase-functions/v2/https';
-import type { Response } from 'express';
 
 import type { RateLimitRule } from '../shared/rate_limit';
 import { db } from '../shared/firestore';
 import { documentsBucket } from '../shared/storage';
 import { type LinkedFrame, readLinkedFrame } from './frame_access';
+import { answer, isPost, securityHeaders, sendFile, storedAs } from './frame_http';
 import { getFramePhotoInput } from './frame_schemas';
-
-type Answer = 'invalid' | 'unlinked' | 'tooManyAttempts' | 'missing';
 
 /**
  * A JPEG's bytes for a linked frame, streamed through here after its secret is
@@ -24,11 +19,7 @@ export function frameJpegEndpoint(
 ): ReturnType<typeof onRequest> {
   return onRequest({ timeoutSeconds: 60 }, async (req, res) => {
     securityHeaders(res);
-    if (req.method !== 'POST') {
-      res.setHeader('Allow', 'POST');
-      res.status(405).send('Method not allowed');
-      return;
-    }
+    if (!isPost(req, res)) return;
     const body = getFramePhotoInput.safeParse(req.body);
     if (!body.success) {
       answer(res, 400, 'invalid');
@@ -45,20 +36,12 @@ export function frameJpegEndpoint(
     }
     const path = await locate(linked, body.data.id);
     const file = path === null ? null : documentsBucket().file(path);
-    const photo = file === null ? null : await jpegAt(file);
+    const photo = file === null ? null : await storedAs(file, 'image/jpeg');
     if (file === null || photo === null) {
       answer(res, 404, 'missing');
       return;
     }
-    res.setHeader('Content-Type', 'image/jpeg');
-    if (photo.size !== undefined) res.setHeader('Content-Length', String(photo.size));
-    res.status(200);
-    try {
-      await pipeline(file.createReadStream(), res);
-    } catch (error) {
-      logger.error('frame photo stream failed', { error: String(error) });
-      res.destroy();
-    }
+    await sendFile(res, file, { contentType: 'image/jpeg', size: photo.size });
   });
 }
 
@@ -74,26 +57,4 @@ async function linkedOrRefused(
     }
     throw error;
   }
-}
-
-type BucketFile = ReturnType<ReturnType<typeof documentsBucket>['file']>;
-
-async function jpegAt(
-  file: BucketFile,
-): Promise<{ readonly size: string | number | undefined } | null> {
-  const [found] = await file.exists();
-  if (!found) return null;
-  const [metadata] = await file.getMetadata();
-  return metadata.contentType === 'image/jpeg' ? { size: metadata.size } : null;
-}
-
-function answer(res: Response, status: number, said: Answer): void {
-  res.status(status).json({ status: said });
-}
-
-function securityHeaders(res: Response): void {
-  res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
-  res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
 }

@@ -37,7 +37,10 @@ void main() {
     final h = CheckersGroceryHarness();
     await h.pump(tester, off: off, brightness: brightness, scale: scale);
     h.list.repository.emitItems([
-      groceryItem('milk', id: 'm').copyWith(productMatch: pickedMilk),
+      groceryItem(
+        'milk',
+        id: 'm',
+      ).copyWith(productMatch: pickedMilk, quantity: PlanWeekCopy.packs(2)),
       groceryItem('more milk', id: 'm2').copyWith(productMatch: pickedMilk),
       groceryItem(
         'yoghurt',
@@ -83,10 +86,14 @@ void main() {
     expect(h.directory.pushes, isEmpty);
   });
 
-  testWidgets('Checkers gets only its own items', (tester) async {
+  testWidgets('Checkers gets only its own items, with their packs', (
+    tester,
+  ) async {
     final h = await mixedList(tester);
     await tapKey(tester, 'add-to-cart-checkers');
-    expect(h.directory.pushes.single.itemIds, ['m', 'm2']);
+    final pushed = h.directory.pushes.single;
+    expect(pushed.itemIds, ['m', 'm2']);
+    expect(pushed.quantities, {'m': 2, 'm2': 1});
     expect(h.pnpDirectory.pushes, isEmpty);
   });
 
@@ -130,7 +137,10 @@ void main() {
     });
 
     testWidgets('is not offered with one shop on', (tester) async {
-      await mixedList(tester, off: {FeatureFlag.addToPnp});
+      await mixedList(
+        tester,
+        off: {FeatureFlag.addToPnp, FeatureFlag.addToWoolworths},
+      );
       expect(find.byKey(entry), findsNothing);
     });
 

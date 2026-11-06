@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
 import 'package:nestprep/features/plan_week/model/idea_search.dart';
@@ -20,6 +21,15 @@ void main() {
   final rules = <String, FoodRules>{
     LunchFixtures.ayandaId: LunchFixtures.ayandaEntry.foodRules,
   };
+  const lwazi = LunchFixtures.lwaziId;
+  final grapes = CheckedProduct.of(
+    planWeekProduct(
+      'Seedless white grapes 500 g',
+      id: 'grapes',
+      retailer: ProductRetailer.woolworths,
+    ),
+    {lwazi: LunchFixtures.lwaziEntry.foodRules},
+  );
   final bananas = CheckedProduct.of(
     planWeekProduct(
       'Bananas 1kg',
@@ -48,6 +58,8 @@ void main() {
     required bool everyDay,
     Brightness brightness = Brightness.light,
     double scale = 1,
+    String childId = LunchFixtures.ayandaId,
+    List<(IdeaSearch, CheckedProduct)>? options,
   }) async {
     chosen = null;
     await pumpScreen(
@@ -58,7 +70,8 @@ void main() {
             onPressed: () async => chosen = await showPlanWeekSwapSheet(
               context: context,
               title: 'Fruit on Tuesday',
-              options: [(search, bananas)],
+              childId: childId,
+              options: options ?? [(search, bananas)],
               current: null,
               boxesPerPackOf: (_) => 6,
               everyDay: everyDay,
@@ -115,5 +128,50 @@ void main() {
     await open(tester, everyDay: false, brightness: Brightness.dark, scale: 2);
     expect(tester.takeException(), isNull);
     expect(find.text(PlanWeekCopy.swapEveryDay), findsOneWidget);
+  });
+
+  testWidgets('a Woolworths product nothing is known to be in, offered to an '
+      'allergic child, says to check the label', (tester) async {
+    await open(
+      tester,
+      everyDay: false,
+      childId: lwazi,
+      options: [(search, grapes)],
+    );
+    expect(
+      find.text(PlanWeekCopy.labelCheck(ProductRetailer.woolworths)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('a product whose contents are known says nothing more', (
+    tester,
+  ) async {
+    await open(tester, everyDay: false);
+    expect(
+      find.text(PlanWeekCopy.labelCheck(ProductRetailer.woolworths)),
+      findsNothing,
+    );
+  });
+
+  testWidgets('the caution holds dark at 200% text on a small phone', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 800) * 3;
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await open(
+      tester,
+      everyDay: false,
+      brightness: Brightness.dark,
+      scale: 2,
+      childId: lwazi,
+      options: [(search, grapes)],
+    );
+    expect(tester.takeException(), isNull);
+    expect(
+      find.text(PlanWeekCopy.labelCheck(ProductRetailer.woolworths)),
+      findsOneWidget,
+    );
   });
 }

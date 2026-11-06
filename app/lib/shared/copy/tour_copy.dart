@@ -79,12 +79,12 @@ abstract final class TourCopy {
       'Add your children and their allergies once, in Family profiles. Every '
           'lunch follows them.',
     TourTarget.lunchPlanner =>
-      'Fill the week packs every empty part in one go, from go-to or '
+      'Plan the week packs every empty part in one go, from go-to or '
           'ready-made boxes. It never replaces what you packed.',
     TourTarget.lunchPlanMyWeek => _premium(
       premium,
-      'Twig, NestPrep’s AI helper, plans the week from what your shop sells '
-      'and fills your cart.',
+      'Or let Twig, NestPrep’s AI helper, plan the week from what your shop '
+      'sells and fill your cart.',
     ),
     TourTarget.lunchTools =>
       'The library, sharing the week, the pantry and kid picks all live here.',

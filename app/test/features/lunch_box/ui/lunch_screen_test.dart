@@ -77,7 +77,7 @@ void main() {
     await pump(tester);
     await tester.pump();
     expect(find.text(LunchCopy.title), findsOneWidget);
-    expect(find.text(LunchCopy.fillWeek), findsNothing);
+    expect(find.text(LunchCopy.planWeek), findsNothing);
   });
 
   testWidgets('with no children, says where they are added and links there', (

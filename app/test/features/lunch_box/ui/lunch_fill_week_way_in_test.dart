@@ -10,9 +10,9 @@ import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
 
-import '../../../support/bring_into_view.dart';
 import '../../../support/lunch_fixtures.dart';
 import '../../../support/lunch_harness.dart';
+import '../../../support/plan_the_week.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/test_flags.dart';
 
@@ -65,16 +65,12 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Future<void> tapFillWeek(WidgetTester tester) async {
-    await bringIntoView(tester, find.text(LunchCopy.fillWeek));
-    await tester.tap(find.text(LunchCopy.fillWeek));
-    await tester.pumpAndSettle();
-  }
-
-  testWidgets('the free child\'s *Fill the week* opens the flow, and writes '
-      'nothing until it is used', (tester) async {
+  testWidgets('with Twig and the pantry switched off, *Plan the week* skips '
+      'the chooser and opens the free child\'s flow, writing nothing until it '
+      'is used', (tester) async {
     await open(tester);
-    await tapFillWeek(tester);
+    await tapPlanTheWeek(tester);
+    expect(find.text(LunchCopy.planWithBoxes), findsNothing);
     expect(find.text('flow for ${LunchFixtures.lwaziId}'), findsOneWidget);
     expect(
       find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
@@ -88,7 +84,7 @@ void main() {
     await open(tester);
     await tester.tap(find.text('Ayanda'));
     await tester.pumpAndSettle();
-    await tapFillWeek(tester);
+    await tapPlanTheWeek(tester);
     expect(
       find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
       findsOneWidget,

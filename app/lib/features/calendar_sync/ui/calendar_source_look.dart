@@ -17,6 +17,10 @@ final class CalendarSourceLook {
     CalendarProvider provider, {
     String label = '',
   }) => switch (provider) {
+    CalendarProvider.apple => const CalendarSourceLook._(
+      LucideIcons.smartphone,
+      NestTileTint.basil,
+    ),
     CalendarProvider.google => const CalendarSourceLook._(
       LucideIcons.calendarDays,
       NestTileTint.lilac,

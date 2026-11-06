@@ -30,7 +30,7 @@ class NestIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final c = nest.colors;
-    final (background, foreground, border) = switch (variant) {
+    final (background, enabledForeground, border) = switch (variant) {
       NestIconButtonVariant.glass => (c.surfaceGlass, c.ink, c.outline),
       NestIconButtonVariant.accent => (c.accent, c.onAccent, c.accent),
       NestIconButtonVariant.plain => (
@@ -39,6 +39,7 @@ class NestIconButton extends StatelessWidget {
         Colors.transparent,
       ),
     };
+    final foreground = onPressed == null ? c.inkTertiary : enabledForeground;
     // Its own node, so it never merges into the heading beside it — a section
     // header read as one button, "Allergies, Add an allergy, No allergies", is
     // what it did before (`FE-13`).

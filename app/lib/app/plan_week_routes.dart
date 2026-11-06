@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../features/add_to_checkers/data/checkers_area_preference.dart';
 import '../features/add_to_checkers/data/checkers_place_resolver.dart';
 import '../features/add_to_checkers/data/retailer_catalogues.dart';
-import '../features/add_to_checkers/state/cart_push_controller.dart';
-import '../features/add_to_pnp/data/pnp_directory.dart';
+import '../features/add_to_checkers/model/retailer_switch.dart';
+import '../features/add_to_checkers/state/shop_carts.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/live_location/data/location_source.dart';
 import '../features/lunch_box/data/lunch_budget_repository.dart';
@@ -22,10 +22,10 @@ import '../features/plan_week/state/lunch_shop_choice.dart';
 import '../features/plan_week/state/plan_week_controller.dart';
 import '../features/plan_week/state/shop_week_saver.dart';
 import '../features/plan_week/ui/plan_week_screen.dart';
-import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import 'household_route.dart';
 import 'plan_week_route.dart';
+import 'shop_carts_for.dart';
 import 'viewer_member.dart';
 
 /// *Plan my week* under the lunch shell (lunch-box ADR-0012, ADR-0026). Made
@@ -33,8 +33,9 @@ import 'viewer_member.dart';
 /// so every check is against the children and rules the phone holds now.
 /// The shop is the one chosen on this phone — the shell's `LunchShopChoice`,
 /// which the board's row reads too — searched near the same area the grocery
-/// list's matches use. A Pick n Pay week can go straight into the member's
-/// own cart, through the one cart-push flow (add-to-pnp ADR-0004).
+/// list's matches use, among the shops switched on. The week can go straight
+/// into the member's own cart at that shop, through the one cart-push flow
+/// (add-to-pnp ADR-0004, ADR-0007).
 GoRoute planWeekRoute() => GoRoute(
   path: PlanWeekRoute.path,
   builder: (context, state) {
@@ -43,11 +44,9 @@ GoRoute planWeekRoute() => GoRoute(
     final flags = context.read<FeatureFlagsController?>();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => CartPushController(
-            directory: context.read<PnpDirectory>(),
-            householdId: householdId,
-          ),
+        Provider<ShopCarts>(
+          create: (context) => shopCartsFor(context, householdId),
+          dispose: (context, carts) => carts.dispose(),
         ),
         ChangeNotifierProxyProvider<LunchBoardController, PlanWeekController>(
           create: (context) => PlanWeekController(
@@ -56,7 +55,7 @@ GoRoute planWeekRoute() => GoRoute(
             weekBuilder: context.read<LunchWeekBuilder>(),
             catalogues: context.read<RetailerCatalogues>(),
             shopChoice: context.read<LunchShopChoice>(),
-            isPnpOn: () => flags?.isOn(FeatureFlag.addToPnp) ?? false,
+            shopsOn: () => flags == null ? const [] : shopsOn(flags.isOn),
             placeResolver: CheckersPlaceResolver(
               locationSource: context.read<LocationSource>(),
               areaPreference: context.read<CheckersAreaPreference>(),

@@ -8,7 +8,7 @@ import { issueVouchers } from '../../src/premium_vouchers/issue_vouchers';
 import { tokenHashOf } from '../../src/premium_vouchers/premium_hashes';
 import { firestoreChallenges } from '../../src/premium_vouchers/email_challenges';
 import { sendEmailCode, verifyEmailCode } from '../../src/premium_vouchers/email_code';
-import { EmailNotSent } from '../../src/premium_vouchers/email_sender';
+import { EmailNotSent } from '../../src/shared/email_sender';
 import { type RateLimitRule, consumeRateLimit, rateLimitId } from '../../src/shared/rate_limit';
 import { REDEEM_MISSES_OVERALL } from '../../src/premium_vouchers/premium_web_limits';
 import { EMULATOR_EMAIL_CODE } from '../../src/premium_vouchers/voucher_runtime';

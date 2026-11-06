@@ -24,6 +24,7 @@ final class CallableProductMatchRanker implements ProductMatchRanker {
       data = (await _functions.httpsCallable(callable).call<Object?>({
         'householdId': householdId,
         'item': item,
+        if (products.isNotEmpty) 'retailer': products.first.retailer.code,
         'products': [
           for (final product in products.take(maxProducts))
             {

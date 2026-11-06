@@ -4,9 +4,6 @@ import '../failure/app_failure.dart';
 /// (`FE-19`, add-to-pnp ADR-0001, ADR-0003). `AppCopy.failure` reaches
 /// [problem] through one line.
 abstract final class PnpCopy {
-  // ---- the done step of Plan my week ----
-  static const addToMyCart = 'Add to my Pick n Pay cart';
-
   // ---- linking ----
   static const linkTitle = 'Link Pick n Pay';
   static const linkIntro =
@@ -39,8 +36,7 @@ abstract final class PnpCopy {
 
   static String problem(PnpProblem problem) => switch (problem) {
     PnpProblem.noStoreNearby =>
-      'Pick n Pay does not deliver there. Try another area, or plan at '
-          'Checkers.',
+      'Pick n Pay does not deliver there. Try another area, or another shop.',
     PnpProblem.catalogueBusy =>
       'Pick n Pay is busy. Give it a minute, then try again.',
     PnpProblem.catalogueUnreachable =>

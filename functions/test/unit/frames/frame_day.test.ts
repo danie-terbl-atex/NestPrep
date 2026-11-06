@@ -28,6 +28,7 @@ import {
   unlinkFrameInput,
 } from '../../../src/frames/frame_schemas';
 import { parseInput } from '../../../src/household/parse_input';
+import { taskRecordOf } from '../../../src/notifications/digest_reads';
 import { HttpsError } from 'firebase-functions/v2/https';
 import { Timestamp } from 'firebase-admin/firestore';
 import { everyDay, weeklyOn } from '../../recurrence_shape';
@@ -404,6 +405,53 @@ describe('the to-dos panel and the helper panel', () => {
       sources({ panels: { ...NONE, helperMemberId: 'm-gone' }, chores, homeCare }),
     );
     expect(gone.helper).toBeUndefined();
+  });
+});
+
+describe('a chore’s picture', () => {
+  const stored = (title: string, picture: unknown): Record<string, unknown> => ({
+    title,
+    dueDate: TUESDAY,
+    recurrence: null,
+    assigneeIds: ['m-thandi'],
+    routineId: null,
+    picture,
+  });
+  const records = [
+    taskRecordOf('bins', stored('Bins', 'take-out-bin')),
+    taskRecordOf('beds', { ...stored('Beds', null), picture: undefined }),
+    taskRecordOf('dog', stored('Dog', 'Feed Dog')),
+    taskRecordOf('cat', stored('Cat', 7)),
+    taskRecordOf('long', stored('Long', 'x'.repeat(49))),
+  ].flatMap((record) => record ?? []);
+  const day = assembleFrameDay(
+    sources({
+      panels: { ...NONE, todos: true, helperMemberId: 'm-thandi' },
+      chores: { tasks: records, routines: {}, doneTaskIds: new Set(), completed: new Set() },
+    }),
+  );
+  const pictures = (
+    items: readonly { id: string; picture?: string }[] | undefined,
+  ): Record<string, string | undefined> =>
+    Object.fromEntries(
+      (items ?? []).map((item) => [item.id, 'picture' in item ? item.picture : 'none']),
+    );
+
+  it('passes a sticker id through on the to-dos and the helper’s chores', () => {
+    expect(day.todos?.items.find((item) => item.id === 'bins')?.picture).toBe('take-out-bin');
+    expect(day.helper?.items.find((item) => item.id === 'bins')?.picture).toBe('take-out-bin');
+  });
+
+  it('leaves the key off for none, and reads a malformed one as none, still showing the chore', () => {
+    const expected = {
+      bins: 'take-out-bin',
+      beds: 'none',
+      dog: 'none',
+      cat: 'none',
+      long: 'none',
+    };
+    expect(pictures(day.todos?.items)).toEqual(expected);
+    expect(pictures(day.helper?.items)).toEqual(expected);
   });
 });
 

@@ -20,6 +20,7 @@ import 'household_settings_sheet.dart';
 import 'invite_sheet.dart';
 import 'member_row.dart';
 import 'member_sheet.dart';
+import 'new_child_paywall.dart';
 import 'your_access_card.dart';
 
 /// Everything the household screen shows once the household has loaded: the
@@ -82,6 +83,8 @@ class HouseholdBody extends StatelessWidget {
                   isViewer: member.isClaimedBy(view.viewerUid),
                   canManage: view.viewerIsAdmin,
                   accessSummary: _accessSummaryOf(member),
+                  isRemoving: controller.removingMemberId == member.id,
+                  actionsEnabled: !controller.isBusy,
                   onAccess: view.viewerIsAdmin && member.role.isRestricted
                       ? () => context.push(
                           HouseholdRoute.accessPathFor(
@@ -217,6 +220,7 @@ class HouseholdBody extends StatelessWidget {
       birthday: result.birthday,
       guardianConsent: result.guardianConsent,
     );
+    if (context.mounted) await offerPremiumForNewChild(context, controller);
   }
 
   Future<void> _invite(BuildContext context, Member member) async {
@@ -246,8 +250,13 @@ class HouseholdBody extends StatelessWidget {
       cancelLabel: AppCopy.householdCancel,
       isDangerous: true,
     );
-    if (confirmed != true) return;
-    await controller.removeMember(member.id);
+    if (confirmed != true || !context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    final removed = await controller.removeMember(member.id);
+    if (!removed) return;
+    messenger.showSnackBar(
+      SnackBar(content: Text(AppCopy.householdRemoved(member.displayName))),
+    );
   }
 
   Future<void> _leave(BuildContext context) async {

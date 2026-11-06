@@ -63,17 +63,40 @@ abstract final class CalendarSyncCopy {
 
   /// Whose calendar it was, once their profile has left the household.
   static const formerMember = 'Somebody';
-  static const syncedReadOnlyBody =
-      'It is changed in the calendar it comes from, and the week catches up '
-      'within half an hour.';
+  static String syncedReadOnlyBody(CalendarProvider provider) =>
+      provider.readsFromPhone
+      ? 'It is changed in Apple Calendar, and the week catches up the next '
+            'time its owner opens NestPrep.'
+      : 'It is changed in the calendar it comes from, and the week catches up '
+            'within half an hour.';
+
+  static const chooseCalendars = 'Choose calendars';
+  static const applePickerTitle = 'Bring in Apple Calendar';
+  static const applePickerBody =
+      'Pick the calendars on this iPhone that belong in the family week. '
+      'Google or Outlook accounts added to the iPhone in Settings show here '
+      'too.';
+  static const applePickerSave = 'Bring them in';
+  static const applePickerEmpty =
+      'This iPhone has no calendars NestPrep can read.';
+  static const openSettings = 'Open Settings';
+  static const appleAccessLost =
+      'NestPrep can no longer read this iPhone’s calendars, so the family week '
+      'has stopped catching up. Turn on Calendars for NestPrep in Settings.';
+
+  static String appleCalendarLabel(String title, String account) =>
+      account.isEmpty || account == title ? title : '$title · $account';
 
   static String providerName(CalendarProvider provider) => switch (provider) {
+    CalendarProvider.apple => 'Apple Calendar',
     CalendarProvider.google => 'Google Calendar',
     CalendarProvider.microsoft => 'Outlook',
-    CalendarProvider.ics => 'Apple or a calendar link',
+    CalendarProvider.ics => 'A calendar link',
   };
 
   static String providerBlurb(CalendarProvider provider) => switch (provider) {
+    CalendarProvider.apple =>
+      'The calendars on this iPhone, iCloud and any accounts added to it.',
     CalendarProvider.google => 'Your Google account’s main calendar.',
     CalendarProvider.microsoft => 'Work, school or Outlook.com.',
     CalendarProvider.ics =>
@@ -84,6 +107,7 @@ abstract final class CalendarSyncCopy {
   /// and says so.
   static String sourceName(CalendarProvider provider, {String label = ''}) =>
       switch (provider) {
+        CalendarProvider.apple => 'Apple',
         CalendarProvider.google => 'Google',
         CalendarProvider.microsoft => 'Outlook',
         CalendarProvider.ics => label.contains('icloud.com') ? 'Apple' : 'Link',
@@ -95,6 +119,7 @@ abstract final class CalendarSyncCopy {
     CalendarProvider provider, {
     String label = '',
   }) => switch (provider) {
+    CalendarProvider.apple => '$ownerName’s Apple Calendar',
     CalendarProvider.google => '$ownerName’s Google Calendar',
     CalendarProvider.microsoft => '$ownerName’s Outlook calendar',
     CalendarProvider.ics =>
@@ -146,5 +171,13 @@ abstract final class CalendarSyncCopy {
       'That calendar could not be reached just now. Try again in a moment.',
     CalendarSyncProblem.couldNotOpenBrowser =>
       'Nothing on this phone would open the sign-in page.',
+    CalendarSyncProblem.appleCalendarDenied =>
+      'NestPrep is not allowed to read this iPhone’s calendars. Turn on '
+          'Calendars for NestPrep in Settings, then try again.',
+    CalendarSyncProblem.appleCalendarRestricted =>
+      'Calendar access is blocked on this iPhone, by Screen Time or a work '
+          'profile.',
+    CalendarSyncProblem.noAppleCalendarChosen =>
+      'Choose at least one calendar to bring in.',
   };
 }

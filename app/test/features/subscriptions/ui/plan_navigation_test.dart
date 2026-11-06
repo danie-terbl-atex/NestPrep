@@ -13,6 +13,7 @@ import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/household_fixtures.dart';
@@ -33,6 +34,7 @@ void main() {
     final controller = HouseholdController(
       householdRepository: households,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: viewerUid,
     );

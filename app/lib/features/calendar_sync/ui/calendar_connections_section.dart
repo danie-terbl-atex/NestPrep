@@ -14,10 +14,17 @@ import 'calendar_connection_row.dart';
 /// (`FE-08`). Only this part swaps: the ways to connect sit above it, outside,
 /// so a household with nothing connected still has every way in.
 class CalendarConnectionsSection extends StatelessWidget {
-  const CalendarConnectionsSection({required this.onDisconnect, super.key});
+  const CalendarConnectionsSection({
+    required this.onDisconnect,
+    required this.onChooseCalendars,
+    super.key,
+  });
 
   /// Asks before disconnecting; the screen owns the confirmation.
   final ValueChanged<CalendarConnection> onDisconnect;
+
+  /// Opens the picker for the Apple Calendar this phone linked.
+  final VoidCallback onChooseCalendars;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +88,10 @@ class CalendarConnectionsSection extends StatelessWidget {
                 owner: view.memberById(connection.memberId),
                 sinceLastSync: controller.sinceLastSync(connection),
                 canManage: controller.canManage(connection),
+                canSync: controller.canSync(connection),
+                onChooseCalendars: controller.isLinkedHere(connection)
+                    ? onChooseCalendars
+                    : null,
                 isBusy: controller.isBusy(connection),
                 onSyncNow: () => controller.syncNow(connection),
                 onDisconnect: () => onDisconnect(connection),

@@ -71,6 +71,7 @@ final class KidHomeFixture {
     List<String> assigneeIds = const [Fixtures.kidMemberId],
     int points = 0,
     bool needsApproval = false,
+    String? picture,
   }) => Task(
     id: id,
     title: title,
@@ -79,6 +80,7 @@ final class KidHomeFixture {
     createdBy: Fixtures.samMemberId,
     points: points,
     needsApproval: needsApproval,
+    picture: picture,
   );
 
   static TaskCompletion done(String taskId, {CalendarDate? on}) =>

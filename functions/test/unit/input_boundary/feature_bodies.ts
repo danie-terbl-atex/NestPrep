@@ -35,10 +35,13 @@ import {
 import { translateHomeCareTextsInput } from '../../../src/home_care/schemas';
 import {
   addFrameEventInput,
+  checkFrameUpdateInput,
   claimFramePairingInput,
   getFrameDayInput,
   getFramePhotosInput,
+  getFrameUpdateApkInput,
   pollFramePairingInput,
+  reportFrameUpdateInput,
   startFramePairingInput,
   tickFrameItemInput,
   unlinkFrameInput,
@@ -50,6 +53,10 @@ import {
   checkersVerifyOtpInput,
 } from '../../../src/checkers/schemas';
 import { pnpCompleteLinkInput, pnpPushToCartInput } from '../../../src/pnp/pnp_schemas';
+import {
+  woolworthsCompleteLinkInput,
+  woolworthsPushToCartInput,
+} from '../../../src/woolworths/woolworths_schemas';
 
 /** Subscriptions, home care, co-parenting, nanny hub and the shops. */
 const FRAME_SECRET = 'q'.repeat(43);
@@ -243,6 +250,15 @@ export const featureBodies = {
     schema: pnpPushToCartInput,
     body: { householdId: 'h1', itemIds: ['milk'] },
   },
+  // Add to Woolworths. Status, start and unlink take no body.
+  woolworthsCompleteLink: {
+    schema: woolworthsCompleteLinkInput,
+    body: { refreshToken: 'a-refresh-token' },
+  },
+  woolworthsPushToCart: {
+    schema: woolworthsPushToCartInput,
+    body: { householdId: 'h1', itemIds: ['milk'] },
+  },
   // Photo frames (photo-frames ADR-0001). `model` is optional, so it is not
   // in the body; its own cases are in `frames/frame_day.test.ts`.
   startFramePairing: { schema: startFramePairingInput, body: { secret: FRAME_SECRET } },
@@ -270,5 +286,46 @@ export const featureBodies = {
   addFrameEvent: {
     schema: addFrameEventInput,
     body: { secret: FRAME_SECRET, title: 'Dentist', date: '2026-11-03', who: [], by: 'Sam' },
+  },
+  // Frame updates. The frame secret is optional; its cases are in `frames/frame_updates.test.ts`.
+  checkFrameUpdate: {
+    schema: checkFrameUpdateInput,
+    body: {
+      device: FRAME_SECRET,
+      model: 'WF-1009',
+      sdk: 23,
+      apps: {
+        home: { versionCode: 3, versionName: '1.0.3' },
+        agent: { versionCode: 1, versionName: '1.0' },
+      },
+      bad: { home: [], agent: [] },
+      state: 'idle',
+    },
+  },
+  getFrameUpdateApk: {
+    schema: getFrameUpdateApkInput,
+    body: { device: FRAME_SECRET, app: 'home', versionCode: 4 },
+  },
+  reportFrameUpdate: {
+    schema: reportFrameUpdateInput,
+    body: {
+      device: FRAME_SECRET,
+      apps: {
+        home: { versionCode: 4, versionName: '1.0.4' },
+        agent: { versionCode: 1, versionName: '1.0' },
+      },
+      state: 'probation',
+      events: [
+        {
+          id: 'event-0001',
+          kind: 'installed',
+          app: 'home',
+          versionCode: 4,
+          fromVersionCode: 3,
+          detail: null,
+          at: 1_793_000_000_000,
+        },
+      ],
+    },
   },
 } as const;

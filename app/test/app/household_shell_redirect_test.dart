@@ -7,11 +7,15 @@ import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
+import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:provider/provider.dart';
 
+import '../support/fake_family_profiles.dart';
 import '../support/fake_feature_flag_source.dart';
 import '../support/fake_household.dart';
+import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/household_fixtures.dart';
 import '../support/pump_screen.dart';
@@ -35,6 +39,7 @@ void main() {
     controller = HouseholdController(
       householdRepository: repository,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: viewer,
     );
@@ -65,6 +70,10 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => testFlagsController(TestFlags.on),
         ),
+        Provider<NotificationRepository>.value(
+          value: FakeNotificationRepository(),
+        ),
+        Provider<DigestPromptStore>.value(value: FakeDigestPromptStore()),
         Provider<ActivityHeartbeat>(
           create: (_) =>
               ActivityHeartbeat(activityRecorder: FakeActivityRecorder()),

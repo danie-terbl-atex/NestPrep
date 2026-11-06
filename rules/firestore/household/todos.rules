@@ -11,10 +11,11 @@ match /tasks/{taskId} {
   allow create: if canEdit(householdId, 'todos')
     && request.resource.data.keys().hasOnly(
          ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds',
-          'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval'])
+          'createdBy', 'routineId', 'createdAt', 'points', 'needsApproval', 'picture'])
     && isNonEmptyString(request.resource.data.title)
     && isNonEmptyString(request.resource.data.dueDate)
     && request.resource.data.assigneeIds is list
+    && isTaskPicture(request.resource.data.get('picture', null))
     && choreStarsAreValid(request.resource.data)
     && (isFamily(householdId) || !choreCarriesStars(request.resource.data))
     && isOwnMember(householdId, request.resource.data.createdBy)
@@ -27,9 +28,10 @@ match /tasks/{taskId} {
   allow update: if canEdit(householdId, 'todos')
     && onlyChanged(
          ['title', 'note', 'dueDate', 'recurrence', 'assigneeIds', 'routineId',
-          'points', 'needsApproval'])
+          'points', 'needsApproval', 'picture'])
     && isNonEmptyString(request.resource.data.title)
     && isNonEmptyString(request.resource.data.dueDate)
+    && isTaskPicture(request.resource.data.get('picture', null))
     && choreStarsAreValid(request.resource.data)
     && (isFamily(householdId) || choreStarsUnchanged())
     && (isAdmin(householdId)
@@ -38,6 +40,12 @@ match /tasks/{taskId} {
   allow delete: if isAdmin(householdId)
     || (canEdit(householdId, 'todos')
           && isOwnMember(householdId, resource.data.createdBy));
+}
+
+// A sticker from the app's bundled library, by id; the rules check the shape,
+// never that the library has it (todos ADR-0005).
+function isTaskPicture(value) {
+  return value == null || (value is string && value.matches('^[a-z0-9-]{1,48}$'));
 }
 
 // A routine's schedule moves every task in it, which is why only an admin

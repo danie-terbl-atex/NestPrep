@@ -54,7 +54,7 @@ void main() {
     kidIds: const [mia, leo],
   );
 
-  test('a task with a kid among its assignees is a chore, not a to-do', () {
+  test('a task with a kid among its assignees is a chore', () {
     final result = board([
       occurrence('bins'),
       occurrence('car', assignees: [parent]),
@@ -62,7 +62,6 @@ void main() {
       occurrence('walk', assignees: [parent, leo]),
     ]);
 
-    expect(result.everyone.map((o) => o.task.id), ['bins', 'car']);
     expect(result.chores.map((kid) => kid.kidId), [mia, leo]);
     expect(result.chores.first.chores.map((o) => o.task.id), ['bed']);
     expect(result.chores.last.chores.map((o) => o.task.id), ['walk']);
@@ -71,6 +70,23 @@ void main() {
       containsAll(['bins', 'car', 'walk']),
       reason: 'Mine is still everything for me',
     );
+  });
+
+  test('Everyone leaves out only the chores that are for kids alone', () {
+    final result = board([
+      occurrence('bins'),
+      occurrence('car', assignees: [parent]),
+      occurrence('bed', assignees: [mia]),
+      occurrence('bath', assignees: [mia, leo]),
+      occurrence('walk', assignees: [parent, leo]),
+    ]);
+
+    expect(result.everyone.map((o) => o.task.id), ['bins', 'car', 'walk']);
+    expect(result.everyoneFor(parent).map((o) => o.task.id), [
+      'bins',
+      'car',
+      'walk',
+    ]);
   });
 
   test('a kid section is overdue, then open today, then done today', () {

@@ -8,6 +8,8 @@ import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
+import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/subscriptions/data/entitlement_repository.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
@@ -18,8 +20,10 @@ import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
 
 import '../support/fake_auth.dart';
+import '../support/fake_family_profiles.dart';
 import '../support/fake_feature_flag_source.dart';
 import '../support/fake_household.dart';
+import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_subscriptions.dart';
 import '../support/household_fixtures.dart';
@@ -52,6 +56,7 @@ void main() {
     controller = HouseholdController(
       householdRepository: households,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: Fixtures.samUid,
     );
@@ -109,6 +114,10 @@ void main() {
             return controller;
           },
         ),
+        Provider<NotificationRepository>.value(
+          value: FakeNotificationRepository(),
+        ),
+        Provider<DigestPromptStore>.value(value: FakeDigestPromptStore()),
         Provider<ActivityHeartbeat>(
           create: (_) =>
               ActivityHeartbeat(activityRecorder: FakeActivityRecorder()),

@@ -39,7 +39,7 @@ export const androidPackage = defineString('SUBSCRIPTIONS_ANDROID_PACKAGE', {
   default: 'io.nullstate.nestprep',
 });
 export const iosBundleId = defineString('SUBSCRIPTIONS_IOS_BUNDLE_ID', {
-  default: 'io.nullstate.nestprep',
+  default: 'io.nullstate.nestprep.app',
 });
 export const appleAppId = defineString('SUBSCRIPTIONS_APPLE_APP_ID', { default: '' });
 export const appleIssuerId = defineString('SUBSCRIPTIONS_APPLE_ISSUER_ID', { default: '' });

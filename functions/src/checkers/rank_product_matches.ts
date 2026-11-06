@@ -8,14 +8,16 @@ import { parseInput, requireUid } from '../household/parse_input';
 import { isOffShift } from '../household/shift_window';
 import { db } from '../shared/firestore';
 import { requireGroceryReader } from './checkers_caller';
-import { readFlag } from '../shared/feature_flags';
+import { readFlag, type FeatureFlag } from '../shared/feature_flags';
 import { refuseCheckers } from './errors';
 import { matchRequest, rankedFrom, type RankedMatch } from './match_decisions';
 import { rankProductMatchesInput } from './schemas';
 
+const SHOP_SWITCHES: readonly FeatureFlag[] = ['addToCheckers', 'addToPnp', 'addToWoolworths'];
+
 /**
- * Jev's view of which shop products — Checkers' or Pick n Pay's — a grocery
- * line means (foundation ADR-0021, add-to-pnp ADR-0007). Only names and prices go out; the member still picks.
+ * Jev's view of which shop products — Checkers', Pick n Pay's or Woolworths' —
+ * a grocery line means (foundation ADR-0021, add-to-pnp ADR-0007). Only names and prices go out; the member still picks.
  */
 export const rankProductMatches = onCall(
   { secrets: DECISION_SECRETS },
@@ -29,12 +31,8 @@ export const rankProductMatches = onCall(
     if (await isOffShift(store, input.householdId, household.data(), uid, new Date())) {
       throw refuseCheckers('not-a-member');
     }
-    // Either shop's matches may be ranked (add-to-pnp ADR-0007).
-    const [checkers, pnp] = await Promise.all([
-      readFlag(store, 'addToCheckers'),
-      readFlag(store, 'addToPnp'),
-    ]);
-    if (!checkers && !pnp) throw refuseCheckers('checkers-switched-off');
+    const switches = await Promise.all(SHOP_SWITCHES.map((flag) => readFlag(store, flag)));
+    if (!switches.some(Boolean)) throw refuseCheckers('checkers-switched-off');
     const answers = await askDecisions(
       await decisionRuntime(store),
       'productMatch',

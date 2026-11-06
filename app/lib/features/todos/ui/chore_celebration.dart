@@ -4,6 +4,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/kid_copy.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../model/task_occurrence.dart';
+import 'chore_picture_view.dart';
 
 void celebrateChore(
   BuildContext context, {
@@ -21,6 +22,9 @@ void celebrateChore(
         ? KidCopy.grownUpWillCheck
         : task.carriesStars
         ? PointsCopy.plusStars(task.points)
+        : null,
+    picture: !finishesTheDay && task.chorePicture != null
+        ? ChorePictureView(id: task.picture, size: NestSize.stickerHero)
         : null,
   );
 }

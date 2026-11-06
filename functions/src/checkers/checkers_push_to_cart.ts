@@ -15,9 +15,10 @@ import { checkersPushToCartInput } from './schemas';
 
 /**
  * "Add to Checkers": the list's matched, unbought items into the caller's own
- * Sixty60 cart (the Checkers build contract). Cart only — never a slot, a
- * checkout or a payment. The caller must be able to see the list; the items
- * and every product are read by the server, never taken from the request.
+ * Sixty60 cart, as many packs as asked (the Checkers build contract). Cart
+ * only — never a slot, a checkout or a payment. The caller must be able to
+ * see the list; the items and every product are read by the server, never
+ * taken from the request.
  */
 export const checkersPushToCart = onCall(
   { secrets: CHECKERS_SECRETS, timeoutSeconds: 60 },
@@ -41,7 +42,12 @@ export const checkersPushToCart = onCall(
         key: sessionKeyHere(),
         now: new Date(),
       },
-      { uid, householdId: input.householdId, itemIds: input.itemIds },
+      {
+        uid,
+        householdId: input.householdId,
+        itemIds: input.itemIds,
+        quantities: input.quantities ?? {},
+      },
     );
   },
 );

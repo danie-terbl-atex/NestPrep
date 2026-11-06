@@ -131,6 +131,23 @@ void main() {
     });
   });
 
+  group('kid mode', () {
+    testWidgets('the screen says a code gives one screen, and where the full '
+        'app is', (tester) async {
+      await pump(tester);
+      await emit(tester, const []);
+      expect(find.text(KidCopy.manageIntro), findsOneWidget);
+      expect(find.text(KidCopy.manageFullAppHint), findsOneWidget);
+    });
+
+    testWidgets('the sheet says it before a code is made', (tester) async {
+      await pump(tester);
+      await emit(tester, const []);
+      await openSheet(tester);
+      expect(find.text(KidCopy.pairKidMode), findsOneWidget);
+    });
+  });
+
   group('adding a device', () {
     testWidgets('shows the code with how long it has left', (tester) async {
       await pump(tester);

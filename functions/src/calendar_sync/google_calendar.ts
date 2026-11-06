@@ -28,7 +28,8 @@ export const GOOGLE_AUTHORIZE_URL = 'https://accounts.google.com/o/oauth2/v2/aut
 export const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 export const GOOGLE_REVOKE_URL = 'https://oauth2.googleapis.com/revoke';
 export const GOOGLE_EVENTS_URL = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
-export const GOOGLE_SCOPES = 'openid email https://www.googleapis.com/auth/calendar.readonly';
+export const GOOGLE_SCOPES =
+  'openid email https://www.googleapis.com/auth/calendar.events.readonly';
 
 /** How far one sync will page: 4 pages of 250 is the 1,000 cap (ADR-0003). */
 const PAGE_SIZE = 250;

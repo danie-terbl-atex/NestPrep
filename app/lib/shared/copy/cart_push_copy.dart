@@ -2,11 +2,13 @@ import '../../features/groceries/model/product_match.dart';
 import '../money/money.dart';
 import 'checkers_copy.dart';
 
-/// Every word a cart push says, for either shop (`FE-19`): *Add to Checkers*
+/// Every word a cart push says, for any shop (`FE-19`): *Add to Checkers*
 /// from the grocery list, *Add to my Pick n Pay cart* from *Plan my week*
 /// (add-to-pnp ADR-0004). The shop is named in words.
 abstract final class CartPushCopy {
   static String title(ProductRetailer shop) => 'Add to ${_name(shop)}';
+  static String addToMyCart(ProductRetailer shop) =>
+      'Add to my ${_name(shop)} cart';
   static String pushing(ProductRetailer shop) =>
       'Adding to your ${_name(shop)} cart…';
   static const emptyTitle = 'Nothing was added';
@@ -23,6 +25,9 @@ abstract final class CartPushCopy {
     ProductRetailer.checkers =>
       'Finish and pay in the Checkers Sixty60 app. NestPrep never checks out '
           'for you.',
+    ProductRetailer.woolworths =>
+      'Finish and pay in the Woolies Dash app. NestPrep never checks out for '
+          'you.',
     _ =>
       'Finish and pay in the ${_name(shop)} app or website. NestPrep never '
           'checks out for you.',

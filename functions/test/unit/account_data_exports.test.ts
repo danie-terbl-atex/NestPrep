@@ -10,6 +10,7 @@ import {
   exportPath,
   sweepExpiredExports,
 } from '../../src/account_data/export_files';
+import { shopLinksOf } from '../../src/account_data/export_shop_links';
 import { plainDocument, plainValue } from '../../src/account_data/plain_value';
 import { MEMBER_LOCATIONS, NANNY_CHILD_CARDS } from '../../src/account_data/personal_refs';
 import { accountDeletionRequestInput, deleteAccountInput } from '../../src/account_data/schemas';
@@ -95,6 +96,95 @@ describe('the export link lives an hour, and no longer', () => {
     const removed = await sweepExpiredExports(objects, new Date(Date.UTC(2026, 8, 29, 8, 0)));
     expect(removed).toBe(1);
     expect(deleted).toEqual(['accountExports/a/old.json']);
+  });
+});
+
+describe('the shop links an export lists', () => {
+  const at = (iso: string): Timestamp => Timestamp.fromDate(new Date(iso));
+  function snapshot(data: Record<string, unknown>): {
+    exists: true;
+    get: (path: string) => unknown;
+  } {
+    return {
+      exists: true,
+      get: (path) =>
+        path
+          .split('.')
+          .reduce<unknown>(
+            (value, key) => (value as Record<string, unknown> | undefined)?.[key],
+            data,
+          ),
+    };
+  }
+
+  it('says when each shop was linked and till when, and never a sealed value or a pending code', () => {
+    const links = shopLinksOf({
+      checkers: snapshot({
+        deviceId: 'device-1',
+        pending: { sealed: 'SEALED-PENDING', mobileMasked: '+27 ** *** 4567', attempts: 1 },
+        session: {
+          sealed: 'SEALED-CHECKERS',
+          expiresAt: at('2026-11-05T09:00:00Z'),
+          mobileMasked: '+27 ** *** 4567',
+          storeContexts: [],
+        },
+        updatedAt: at('2026-11-05T08:00:00Z'),
+      }),
+      pickNPay: snapshot({
+        pending: { sealed: 'SEALED-PNP-PENDING', expiresAt: at('2026-11-05T08:15:00Z') },
+        session: {
+          sealed: 'SEALED-PNP',
+          accessExpiresAt: at('2026-11-05T10:00:00Z'),
+          linkedAt: at('2026-11-01T07:00:00Z'),
+        },
+        updatedAt: at('2026-11-05T08:00:00Z'),
+      }),
+      woolworths: snapshot({
+        session: {
+          sealed: 'SEALED-WOOLWORTHS',
+          idExpiresAt: at('2026-11-05T09:30:00Z'),
+          linkedAt: at('2026-11-02T07:00:00Z'),
+          emailMasked: 's***@example.com',
+        },
+        updatedAt: at('2026-11-05T08:30:00Z'),
+      }),
+    });
+    expect(links).toEqual({
+      checkers: {
+        mobileMasked: '+27 ** *** 4567',
+        expiresAt: '2026-11-05T09:00:00.000Z',
+        updatedAt: '2026-11-05T08:00:00.000Z',
+      },
+      pickNPay: {
+        linkedAt: '2026-11-01T07:00:00.000Z',
+        accessExpiresAt: '2026-11-05T10:00:00.000Z',
+      },
+      woolworths: {
+        emailMasked: 's***@example.com',
+        linkedAt: '2026-11-02T07:00:00.000Z',
+        idExpiresAt: '2026-11-05T09:30:00.000Z',
+        updatedAt: '2026-11-05T08:30:00.000Z',
+      },
+    });
+    expect(JSON.stringify(links)).not.toMatch(/SEALED|device-1|attempts/);
+  });
+
+  it('says null for a shop never linked, and nulls for a link with no session', () => {
+    const links = shopLinksOf({
+      checkers: { exists: false, get: () => undefined },
+      pickNPay: undefined,
+      woolworths: snapshot({ session: null, updatedAt: at('2026-11-05T08:30:00Z') }),
+    });
+    expect(links).toEqual({
+      checkers: null,
+      pickNPay: null,
+      woolworths: {
+        emailMasked: null,
+        linkedAt: null,
+        idExpiresAt: null,
+        updatedAt: '2026-11-05T08:30:00.000Z',
+      },
+    });
   });
 });
 

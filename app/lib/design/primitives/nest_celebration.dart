@@ -17,12 +17,16 @@ class NestCelebration extends StatefulWidget {
     required this.onDone,
     this.message,
     this.note,
+    this.picture,
     super.key,
   });
 
   final String title;
   final String? message;
   final String? note;
+
+  /// Shown in place of the star — a chore's own picture (todos ADR-0005).
+  final Widget? picture;
   final VoidCallback onDone;
 
   static const confettiKey = ValueKey('nest-celebration-confetti');
@@ -35,6 +39,7 @@ class NestCelebration extends StatefulWidget {
     required String title,
     String? message,
     String? note,
+    Widget? picture,
   }) {
     final overlay = Overlay.of(context, rootOverlay: true);
     _showing[overlay]?.remove();
@@ -44,6 +49,7 @@ class NestCelebration extends StatefulWidget {
         title: title,
         message: message,
         note: note,
+        picture: picture,
         onDone: () {
           if (_showing[overlay] == entry) _showing[overlay] = null;
           entry.remove();
@@ -139,6 +145,7 @@ class _NestCelebrationState extends State<NestCelebration>
                   title: widget.title,
                   message: widget.message,
                   note: widget.note,
+                  picture: widget.picture,
                 ),
               ),
             ),
@@ -150,11 +157,12 @@ class _NestCelebrationState extends State<NestCelebration>
 }
 
 class _Card extends StatelessWidget {
-  const _Card({required this.title, this.message, this.note});
+  const _Card({required this.title, this.message, this.note, this.picture});
 
   final String title;
   final String? message;
   final String? note;
+  final Widget? picture;
 
   static const _maxWidth = 320.0;
   static const _starDisc = 72.0;
@@ -189,20 +197,22 @@ class _Card extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: NestColors.butter,
-                      shape: BoxShape.circle,
-                    ),
-                    child: SizedBox.square(
-                      dimension: _starDisc,
-                      child: Icon(
-                        LucideIcons.star,
-                        size: NestSize.iconTile * 0.7,
-                        color: NestColors.inkBrand,
+                  ?picture,
+                  if (picture == null)
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: NestColors.butter,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SizedBox.square(
+                        dimension: _starDisc,
+                        child: Icon(
+                          LucideIcons.star,
+                          size: NestSize.iconTile * 0.7,
+                          color: NestColors.inkBrand,
+                        ),
                       ),
                     ),
-                  ),
                   const SizedBox(height: NestSpace.lg),
                   Text(
                     title,

@@ -5,6 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../features/add_to_woolworths/data/woolworths_store_finder.dart';
+import '../features/add_to_woolworths/data/woolworths_web_client.dart';
 import '../features/photo_frames/data/callable_photo_frame_directory.dart';
 import '../features/photo_frames/data/firestore_photo_frame_repository.dart';
 import '../features/photo_frames/data/frame_photo_picker.dart';
@@ -32,6 +34,9 @@ List<SingleChildWidget> photoFrameProviders() => [
         StorageFramePhotoStore(context.read<FirebaseStorage>()),
   ),
   Provider<FramePhotoPicker>(create: (_) => ImagePickerFramePhotoPicker()),
+  Provider<WoolworthsStoreFinder>(
+    create: (_) => WoolworthsStoreFinder(WoolworthsWebClient()),
+  ),
   // Not lazy: the link stream is broadcast and never replays a cold-start link.
   ChangeNotifierProvider<PendingShare>(
     lazy: false,

@@ -4,6 +4,7 @@ import 'package:nestprep/features/add_to_checkers/state/product_match_controller
 import 'package:nestprep/features/add_to_checkers/state/product_type_ahead_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/retailer_choice_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/shop_carts.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
@@ -63,7 +64,10 @@ void main() {
             value: h.typeAhead,
           ),
           Provider<ShopCarts>.value(
-            value: ShopCarts(checkers: h.push, pickNPay: h.pnpPush),
+            value: ShopCarts({
+              ProductRetailer.checkers: h.push,
+              ProductRetailer.pickNPay: h.pnpPush,
+            }),
           ),
           ChangeNotifierProvider<RetailerChoiceController>.value(
             value: h.retailers,

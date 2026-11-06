@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/calendar_sync/model/apple_calendar.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_connection.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_feed_link.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_provider.dart';
 import 'package:nestprep/features/calendar_sync/model/connection_status.dart';
+import 'package:nestprep/features/calendar_sync/state/apple_calendar_sync.dart';
 import 'package:nestprep/features/calendar_sync/state/connected_calendars_controller.dart';
 import 'package:nestprep/features/calendar_sync/ui/connected_calendars_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
@@ -12,6 +14,7 @@ import 'package:nestprep/shared/copy/calendar_sync_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_apple_calendar.dart';
 import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/household_fixtures.dart';
@@ -56,6 +59,7 @@ void main() {
     bool canConnect = true,
     Brightness brightness = Brightness.light,
     double textScale = 1,
+    AppleCalendarSync? apple,
   }) async {
     final controller = ConnectedCalendarsController(
       calendarSyncRepository: repository,
@@ -65,6 +69,7 @@ void main() {
       viewerUid: viewerUid,
       isAdmin: isAdmin,
       canConnect: canConnect,
+      appleCalendar: apple,
       now: () => _now,
     );
     await pumpScreen(
@@ -194,6 +199,73 @@ void main() {
   });
 
   group('connecting', () {
+    testWidgets(
+      'on an iPhone, Apple Calendar brings in the calendars ticked in its sheet',
+      (tester) async {
+        final reader = FakeAppleCalendarReader()
+          ..calendarList = const [
+            AppleCalendar(
+              id: 'family',
+              title: 'Family',
+              account: 'iCloud',
+              suggested: true,
+            ),
+            AppleCalendar(
+              id: 'birthdays',
+              title: 'Birthdays',
+              account: 'Other',
+              suggested: false,
+            ),
+          ];
+        await pump(
+          tester,
+          apple: AppleCalendarSync(
+            reader: reader,
+            store: MemoryAppleCalendarLinkStore(),
+            directory: directory,
+            now: () => _now,
+          ),
+        );
+        repository.emitConnections([]);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text(CalendarSyncCopy.providerName(CalendarProvider.apple)),
+          findsOneWidget,
+        );
+        await tapText(tester, CalendarSyncCopy.connect, index: 0);
+        expect(find.text(CalendarSyncCopy.applePickerTitle), findsOneWidget);
+        expect(find.text('Birthdays · Other'), findsOneWidget);
+
+        await tester.tap(find.text(CalendarSyncCopy.applePickerSave));
+        await tester.pumpAndSettle();
+
+        expect(directory.applePushes.single.link, isTrue);
+        expect(reader.reads.single.calendarIds, ['family']);
+      },
+    );
+
+    testWidgets('a refused permission offers Settings', (tester) async {
+      final reader = FakeAppleCalendarReader()
+        ..current = AppleCalendarAccess.denied;
+      await pump(
+        tester,
+        apple: AppleCalendarSync(
+          reader: reader,
+          store: MemoryAppleCalendarLinkStore(),
+          directory: directory,
+        ),
+      );
+      repository.emitConnections([]);
+      await tester.pumpAndSettle();
+
+      await tapText(tester, CalendarSyncCopy.connect, index: 0);
+      await tapText(tester, CalendarSyncCopy.openSettings);
+
+      expect(reader.settingsOpened, 1);
+      expect(directory.applePushes, isEmpty);
+    });
+
     testWidgets(
       'a provider that is not set up says so where its button would be',
       (tester) async {

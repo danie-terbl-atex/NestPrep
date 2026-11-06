@@ -1,8 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_store_finder.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_web_client.dart';
+import 'package:nestprep/features/add_to_woolworths/model/woolworths_store.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/photo_frames/data/photo_frame_directory.dart';
@@ -16,6 +24,7 @@ import 'package:nestprep/features/photo_frames/ui/frame_scanner.dart';
 import 'package:nestprep/features/photo_frames/ui/photo_frames_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
+import 'package:nestprep/shared/copy/woolworths_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
@@ -35,6 +44,21 @@ void main() {
   late FakeFramePhotoStore album;
   late FramePhotosController photos;
   late FakeCheckersAreaPreference areas;
+  late FakeRetailerPreference shopsChosen;
+  late Map<String, Object?> place;
+  late List<Map<String, String>> placesAsked;
+
+  WoolworthsStoreFinder woolworthsStores() => WoolworthsStoreFinder(
+    WoolworthsWebClient(
+      client: MockClient((request) async {
+        if (request.url.path != '/server/validatePlace') {
+          return http.Response('', 404);
+        }
+        placesAsked.add(request.url.queryParameters);
+        return http.Response(jsonEncode(place), 200);
+      }),
+    ),
+  );
 
   void build({List<Member>? members}) {
     controller = PhotoFramesController(
@@ -50,6 +74,9 @@ void main() {
     build();
     photos = FramePhotoFixtures.controller(store: album);
     areas = FakeCheckersAreaPreference();
+    shopsChosen = FakeRetailerPreference();
+    place = {'deliveryDetails': '2008-plist3620009-9000', 'deliverable': true};
+    placesAsked = [];
   });
 
   tearDown(() async {
@@ -72,6 +99,8 @@ void main() {
       Provider<PhotoFrameDirectory>.value(value: FakePhotoFrameDirectory()),
       Provider<FrameScanner>.value(value: FakeFrameScanner()),
       Provider<CheckersAreaPreference>.value(value: areas),
+      Provider<RetailerPreference>.value(value: shopsChosen),
+      Provider<WoolworthsStoreFinder>(create: (_) => woolworthsStores()),
       ...extra,
     ],
     brightness: brightness,
@@ -485,6 +514,7 @@ void main() {
           flags({
             FeatureFlag.addToCheckers: false,
             FeatureFlag.addToPnp: false,
+            FeatureFlag.addToWoolworths: false,
           }),
         ],
       );
@@ -522,12 +552,11 @@ void main() {
         expect(find.text(PhotoFrameCopy.groceriesArea), findsOneWidget);
         expect(chipSelected(tester, ProductRetailer.checkers), isTrue);
         expect(chipSelected(tester, ProductRetailer.pickNPay), isFalse);
-        expect(
-          find.byKey(const ValueKey(ProductRetailer.woolworths)),
-          findsNothing,
-        );
+        expect(chipSelected(tester, ProductRetailer.woolworths), isFalse);
         expect(chipSelected(tester, CheckersArea.durban), isTrue);
         await save(tester);
+
+        expect(placesAsked, isEmpty);
 
         expect(
           repository.updated.single.groceries,
@@ -538,6 +567,87 @@ void main() {
         );
       },
     );
+
+    testWidgets('switched on, it starts at the shop this phone last chose', (
+      tester,
+    ) async {
+      shopsChosen.chosen[Fixtures.householdId] = ProductRetailer.pickNPay;
+      await pump(tester);
+      await emit(tester, [FrameFixtures.frame()]);
+      await openFrame(tester, 'Kitchen frame');
+
+      await switchOn(tester);
+      expect(chipSelected(tester, ProductRetailer.pickNPay), isTrue);
+      expect(chipSelected(tester, ProductRetailer.checkers), isFalse);
+    });
+
+    testWidgets('is offered with only Woolworths on, and saving there finds '
+        'the store for the area', (tester) async {
+      shopsChosen.chosen[Fixtures.householdId] = ProductRetailer.checkers;
+      await pump(
+        tester,
+        extra: [
+          flags({
+            FeatureFlag.addToCheckers: false,
+            FeatureFlag.addToPnp: false,
+          }),
+        ],
+      );
+      await emit(tester, [FrameFixtures.frame()]);
+      await openFrame(tester, 'Kitchen frame');
+
+      await switchOn(tester);
+      expect(
+        find.byKey(const ValueKey(ProductRetailer.checkers)),
+        findsNothing,
+      );
+      expect(chipSelected(tester, ProductRetailer.woolworths), isTrue);
+      await tester.ensureVisible(
+        find.byKey(const ValueKey(CheckersArea.durban)),
+      );
+      await tester.tap(find.byKey(const ValueKey(CheckersArea.durban)));
+      await tester.pumpAndSettle();
+      await save(tester);
+
+      expect(placesAsked, [
+        {'latitude': '-29.86', 'longitude': '31.02'},
+      ]);
+      expect(
+        repository.updated.single.groceries,
+        const FrameGroceries(
+          shop: ProductRetailer.woolworths,
+          area: CheckersArea.durban,
+          store: WoolworthsStore(id: '2008', priceZone: 'p60'),
+        ),
+      );
+      expect(find.text(PhotoFrameCopy.editTitle), findsNothing);
+    });
+
+    testWidgets('a Woolworths area with no store does not save, and says so', (
+      tester,
+    ) async {
+      place = {'deliveryDetails': '-plist3620008', 'deliverable': false};
+      await pump(tester);
+      await emit(tester, [
+        FrameFixtures.frame(
+          groceries: const FrameGroceries(
+            shop: ProductRetailer.woolworths,
+            area: CheckersArea.eastLondon,
+            store: WoolworthsStore(id: '2008', priceZone: 'p30'),
+          ),
+        ),
+      ]);
+      await openFrame(tester, 'Kitchen frame');
+
+      await save(tester);
+
+      expect(repository.updated, isEmpty);
+      expect(find.text(PhotoFrameCopy.editTitle), findsOneWidget);
+      expect(
+        find.text(WoolworthsCopy.problem(WoolworthsProblem.noStoreNearby)),
+        findsOneWidget,
+      );
+    });
 
     testWidgets('with no area chosen on this phone it starts at the fallback', (
       tester,
@@ -668,15 +778,26 @@ void main() {
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    await pump(tester, brightness: Brightness.dark, scale: 2);
+    await pump(
+      tester,
+      brightness: Brightness.dark,
+      scale: 2,
+      extra: [
+        ChangeNotifierProvider<FeatureFlagsController>(
+          create: (_) =>
+              testFlagsController(const FeatureFlags(defaultOn: true)),
+        ),
+      ],
+    );
     await emit(tester, [
       FrameFixtures.frame(
         name: 'The big frame on the kitchen wall',
         panels: const FramePanels(helperMemberId: Fixtures.thandiMemberId),
         screensaver: const FrameScreensaver(idleMinutes: 15),
         groceries: const FrameGroceries(
-          shop: ProductRetailer.pickNPay,
+          shop: ProductRetailer.woolworths,
           area: CheckersArea.bloemfontein,
+          store: WoolworthsStore(id: '2008', priceZone: 'p30'),
         ),
         lastSeenAt: FrameFixtures.now.subtract(const Duration(days: 2)),
       ),

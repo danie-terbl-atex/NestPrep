@@ -6,25 +6,29 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
+import '../../groceries/model/product_match.dart';
 import '../../plan_week/ui/plan_week_entry_card.dart';
 import '../../subscriptions/state/household_entitlement.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/lunch_board.dart';
+import '../model/lunch_plan_way.dart';
 import '../model/lunch_tool.dart';
 import '../state/lunch_board_controller.dart';
+import '../state/lunch_pantry_controller.dart';
+import '../state/lunch_variety_choice.dart';
 import 'lunch_budget_strip.dart';
 import 'lunch_flows.dart';
 import 'lunch_pantry_plan.dart';
+import 'lunch_plan_week_sheet.dart';
+import 'lunch_week_name.dart';
 
-/// Every way to plan the whole week, in one place under the week's name
-/// (lunch-box ADR-0022): *Fill the week* first, because it is free and the
-/// core (ADR-0003, ADR-0004); then planning from the pantry (ADR-0006,
-/// `lunchPantry`); then *Plan my week from Checkers* as a quieter option
-/// (ADR-0012, `planMyWeek`, premium); then the week's spend (ADR-0007,
-/// `lunchBudget`, premium). Each keeps the switch and the premium line it
-/// always had. Only for somebody who may change lunches — the board does
-/// not build it otherwise.
+/// The whole week's planner under the week's name (lunch-box ADR-0022,
+/// ADR-0033): one *Plan the week* button that asks how — Twig at the shop
+/// (ADR-0012, premium), the boxes yourself (ADR-0020), or the pantry
+/// (ADR-0006) — then the pantry switch and the week's spend (ADR-0007).
+/// Only for somebody who may change lunches; the board does not build it
+/// otherwise.
 class LunchWeekPlanner extends StatelessWidget {
   const LunchWeekPlanner({
     required this.board,
@@ -45,41 +49,76 @@ class LunchWeekPlanner extends StatelessWidget {
       canEdit: true,
       flags: flags?.flags ?? const FeatureFlags.defaults(defaultOn: false),
     );
+    final isPremium = context.watch<HouseholdEntitlement>().isPremium;
     final hasBudget =
-        (flags?.isOn(FeatureFlag.lunchBudget) ?? false) &&
-        context.watch<HouseholdEntitlement>().isPremium;
+        (flags?.isOn(FeatureFlag.lunchBudget) ?? false) && isPremium;
+    final shop = PlanWeekEntry.shopFor(context, board);
     final isFull = childWeek.filledDays == childWeek.days.length;
+    final ways = LunchPlanWay.offered(
+      hasTwig: shop != null,
+      hasPantry:
+          hasPantry && context.watch<LunchPantryController>().bias != null,
+      isPremium: isPremium,
+      isFull: isFull,
+    );
     return NestCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(LunchCopy.planWholeWeek, style: nest.text.title),
-          const SizedBox(height: NestSpace.md),
-          NestButton(
-            label: LunchCopy.fillWeek,
-            icon: LucideIcons.sparkles,
-            isLoading: controller.edit.isFilling,
-            onPressed: isFull
-                ? null
-                : () => LunchFlows.fillWeek(context, childWeek: childWeek),
+          TourAnchor(
+            target: TourTarget.lunchPlanMyWeek,
+            child: NestButton(
+              key: const ValueKey('plan-week-choose'),
+              label: LunchCopy.planWeek,
+              icon: LucideIcons.sparkles,
+              isLoading: controller.edit.isFilling,
+              onPressed: ways.isEmpty
+                  ? null
+                  : () => _plan(context, ways: ways, shop: shop),
+            ),
           ),
           const SizedBox(height: NestSpace.sm),
           Text(
-            isFull ? LunchCopy.weekIsFull : LunchCopy.fillWeekHint,
+            isFull ? LunchCopy.weekIsFull : LunchCopy.planWeekHint,
             textAlign: TextAlign.center,
             style: nest.text.caption,
           ),
           if (hasPantry) ...[
             const Divider(height: NestSpace.xxl),
-            LunchPantryPlan(childWeek: childWeek),
+            const LunchPantryPlan(),
           ],
-          TourAnchor(
-            target: TourTarget.lunchPlanMyWeek,
-            child: PlanWeekEntryCard(board: board, canEdit: true),
-          ),
           if (hasBudget) const LunchBudgetStrip(),
         ],
       ),
     );
+  }
+
+  Future<void> _plan(
+    BuildContext context, {
+    required List<LunchPlanWay> ways,
+    required ProductRetailer? shop,
+  }) async {
+    final way = ways.length == 1
+        ? ways.single
+        : await showLunchPlanWeekSheet(
+            context: context,
+            week: LunchWeekName.ofBoard(board).inSentence,
+            ways: ways,
+            shop: shop,
+            isPremium: context.read<HouseholdEntitlement>().isPremium,
+          );
+    if (way == null || !context.mounted) return;
+    switch (way) {
+      case LunchPlanWay.twig:
+        await PlanWeekEntry.open(context);
+      case LunchPlanWay.boxes:
+        await LunchFlows.fillWeek(context, childWeek: childWeek);
+      case LunchPlanWay.pantry:
+        await context.read<LunchBoardController>().edit.autoFill(
+          childWeek.childId,
+          bias: context.read<LunchPantryController>().bias,
+          variety: context.read<LunchVarietyChoice>().variety,
+        );
+    }
   }
 }

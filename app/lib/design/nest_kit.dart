@@ -46,6 +46,7 @@ export 'primitives/nest_skeleton.dart';
 export 'primitives/nest_star_burst.dart';
 export 'primitives/nest_step_actions.dart';
 export 'primitives/nest_steps_bar.dart';
+export 'primitives/nest_sticker.dart';
 export 'primitives/nest_tag.dart';
 export 'primitives/nest_text_field.dart';
 export 'primitives/nest_tone_row.dart';

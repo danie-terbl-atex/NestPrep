@@ -16,6 +16,7 @@ import '../model/member_role.dart';
 import '../state/invite_step_controller.dart';
 import 'invite_option_list.dart';
 import 'invite_person_sheet.dart';
+import 'new_child_paywall.dart';
 import 'sent_invite_row.dart';
 
 /// "Who else keeps this house running?" — the step a new household opens
@@ -127,6 +128,7 @@ class InviteStepScreen extends StatelessWidget {
       role: draft.role,
       guardianConsent: draft.guardianConsent,
     );
+    if (context.mounted) await offerPremiumForNewChild(context, controller);
   }
 
   /// Done and skip are the same act: the step is closed, and the household

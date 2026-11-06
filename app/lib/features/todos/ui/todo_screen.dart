@@ -225,6 +225,7 @@ class _TodoScreenState extends State<TodoScreen> {
       routineId: draft.routineId,
       points: draft.points,
       needsApproval: draft.needsApproval,
+      picture: draft.picture,
     );
   }
 }

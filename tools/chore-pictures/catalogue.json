@@ -1,0 +1,2731 @@
+[
+  {
+    "id": "wake-up-alarm",
+    "label": "Wake up on time",
+    "category": "morning",
+    "keywords": [
+      "wake up",
+      "alarm",
+      "get up",
+      "rise and shine",
+      "out of bed",
+      "wake-up"
+    ],
+    "subject": "a cheerful round twin-bell alarm clock with a blank face and no numbers, ringing with little motion lines, beside a smiling rising sun"
+  },
+  {
+    "id": "get-dressed",
+    "label": "Get dressed",
+    "category": "morning",
+    "keywords": [
+      "get dressed",
+      "dressed",
+      "put on clothes",
+      "clothes on",
+      "outfit",
+      "getting dressed"
+    ],
+    "subject": "a t-shirt, a pair of shorts and a pair of socks laid out flat in the shape of an outfit, with a small sparkle and a morning sun"
+  },
+  {
+    "id": "put-on-socks",
+    "label": "Put on socks",
+    "category": "morning",
+    "keywords": [
+      "socks",
+      "put on socks",
+      "socks on",
+      "sock"
+    ],
+    "subject": "a pair of colourful striped socks standing upright side by side"
+  },
+  {
+    "id": "put-on-shoes",
+    "label": "Put on shoes",
+    "category": "morning",
+    "keywords": [
+      "shoes",
+      "put on shoes",
+      "shoes on",
+      "takkies",
+      "sneakers",
+      "trainers"
+    ],
+    "subject": "a pair of bright sneakers with velcro straps fastened, standing side by side ready to go"
+  },
+  {
+    "id": "tie-shoelaces",
+    "label": "Tie shoelaces",
+    "category": "morning",
+    "keywords": [
+      "shoelaces",
+      "laces",
+      "tie laces",
+      "tie shoes",
+      "shoelace",
+      "tie a bow"
+    ],
+    "subject": "one big sneaker seen from the side with its laces tied in a large neat bow"
+  },
+  {
+    "id": "brush-hair",
+    "label": "Brush hair",
+    "category": "morning",
+    "keywords": [
+      "brush hair",
+      "hairbrush",
+      "comb",
+      "comb hair",
+      "hair",
+      "tangles"
+    ],
+    "subject": "a paddle hairbrush and a wide-tooth comb lying crossed, with a few tiny sparkles"
+  },
+  {
+    "id": "tie-up-hair",
+    "label": "Tie up hair",
+    "category": "morning",
+    "keywords": [
+      "tie hair",
+      "ponytail",
+      "plait",
+      "hair tie",
+      "hair band",
+      "braids",
+      "scrunchie"
+    ],
+    "subject": "a colourful scrunchie, two hair elastics and a bow hair clip arranged in a small group"
+  },
+  {
+    "id": "put-on-glasses",
+    "label": "Put on glasses",
+    "category": "morning",
+    "keywords": [
+      "glasses",
+      "spectacles",
+      "specs",
+      "wear glasses",
+      "glasses case"
+    ],
+    "subject": "a pair of round children's glasses resting on an open glasses case"
+  },
+  {
+    "id": "take-jersey",
+    "label": "Take a jersey",
+    "category": "morning",
+    "keywords": [
+      "jersey",
+      "jumper",
+      "sweater",
+      "hoodie",
+      "jacket",
+      "warm top"
+    ],
+    "subject": "a folded knitted jersey with a matching woolly beanie on top"
+  },
+  {
+    "id": "raincoat-and-boots",
+    "label": "Raincoat and boots",
+    "category": "morning",
+    "keywords": [
+      "raincoat",
+      "gumboots",
+      "wellies",
+      "rain",
+      "umbrella",
+      "rainy day"
+    ],
+    "subject": "a yellow raincoat on a hook above a pair of shiny gumboots, with a few raindrops"
+  },
+  {
+    "id": "wear-sun-hat",
+    "label": "Wear a sun hat",
+    "category": "morning",
+    "keywords": [
+      "sun hat",
+      "hat",
+      "cap",
+      "school hat",
+      "no hat no play",
+      "wear a hat"
+    ],
+    "subject": "a wide-brimmed sun hat with a ribbon band, under a bright smiling sun"
+  },
+  {
+    "id": "ready-by-door",
+    "label": "Ready at the door",
+    "category": "morning",
+    "keywords": [
+      "ready to leave",
+      "by the door",
+      "ready for school",
+      "leave on time",
+      "out the door",
+      "get ready"
+    ],
+    "subject": "a backpack and a pair of shoes waiting neatly beside an open front door with sunlight outside"
+  },
+  {
+    "id": "brush-teeth",
+    "label": "Brush teeth",
+    "category": "hygiene",
+    "keywords": [
+      "teeth",
+      "toothbrush",
+      "toothpaste",
+      "brush teeth",
+      "dentist"
+    ],
+    "subject": "a toothbrush with a swirl of toothpaste on its bristles, beside a small cup, with a few sparkle stars"
+  },
+  {
+    "id": "floss-teeth",
+    "label": "Floss teeth",
+    "category": "hygiene",
+    "keywords": [
+      "floss",
+      "flossing",
+      "dental floss",
+      "floss teeth",
+      "between teeth"
+    ],
+    "subject": "a small round dental floss container with a strand of floss looping out, beside a happy cartoon tooth"
+  },
+  {
+    "id": "wash-hands",
+    "label": "Wash hands",
+    "category": "hygiene",
+    "keywords": [
+      "wash hands",
+      "hand washing",
+      "soap",
+      "handwash",
+      "clean hands",
+      "sanitiser"
+    ],
+    "subject": "a bar of soap covered in foamy bubbles beside a running tap over a basin"
+  },
+  {
+    "id": "wash-face",
+    "label": "Wash face",
+    "category": "hygiene",
+    "keywords": [
+      "wash face",
+      "face cloth",
+      "facecloth",
+      "face wash",
+      "splash face",
+      "flannel"
+    ],
+    "subject": "a folded face cloth with water droplets splashing above a basin"
+  },
+  {
+    "id": "take-bath",
+    "label": "Have a bath",
+    "category": "hygiene",
+    "keywords": [
+      "bath",
+      "bath time",
+      "bathtime",
+      "bubble bath",
+      "have a bath",
+      "tub"
+    ],
+    "subject": "a bathtub full of foamy bubbles with a yellow rubber duck floating on top"
+  },
+  {
+    "id": "take-shower",
+    "label": "Have a shower",
+    "category": "hygiene",
+    "keywords": [
+      "shower",
+      "have a shower",
+      "shower time",
+      "wash body",
+      "body wash"
+    ],
+    "subject": "a shower head spraying water droplets onto a bar of soap on a little shelf"
+  },
+  {
+    "id": "wash-hair",
+    "label": "Wash hair",
+    "category": "hygiene",
+    "keywords": [
+      "wash hair",
+      "shampoo",
+      "conditioner",
+      "hair wash",
+      "rinse hair"
+    ],
+    "subject": "a plain shampoo bottle topped with a big pile of foamy bubbles"
+  },
+  {
+    "id": "put-on-sunscreen",
+    "label": "Put on sunscreen",
+    "category": "hygiene",
+    "keywords": [
+      "sunscreen",
+      "sunblock",
+      "suncream",
+      "sun cream",
+      "spf",
+      "sun protection"
+    ],
+    "subject": "a plain squeezy sunscreen tube with a dollop of white cream beside a smiling sun"
+  },
+  {
+    "id": "potty-time",
+    "label": "Use the potty",
+    "category": "hygiene",
+    "keywords": [
+      "potty",
+      "potty training",
+      "wee",
+      "toilet training",
+      "potty time"
+    ],
+    "subject": "a small friendly potty chair with a shiny gold star sticker on its side"
+  },
+  {
+    "id": "flush-toilet",
+    "label": "Flush the toilet",
+    "category": "hygiene",
+    "keywords": [
+      "flush",
+      "toilet",
+      "loo",
+      "go to the toilet",
+      "flush toilet",
+      "toilet paper"
+    ],
+    "subject": "a clean toilet with its lid closed and a roll of toilet paper on a holder beside it"
+  },
+  {
+    "id": "blow-nose",
+    "label": "Blow nose",
+    "category": "hygiene",
+    "keywords": [
+      "blow nose",
+      "tissue",
+      "tissues",
+      "runny nose",
+      "hanky",
+      "snotty nose"
+    ],
+    "subject": "a tissue box with a soft white tissue popping out of the top"
+  },
+  {
+    "id": "scrub-nails",
+    "label": "Scrub nails",
+    "category": "hygiene",
+    "keywords": [
+      "nails",
+      "nail brush",
+      "clean nails",
+      "dirty nails",
+      "fingernails",
+      "scrub nails"
+    ],
+    "subject": "a small wooden nail brush beside a bar of soap with bubbles"
+  },
+  {
+    "id": "put-on-lotion",
+    "label": "Put on lotion",
+    "category": "hygiene",
+    "keywords": [
+      "lotion",
+      "cream",
+      "moisturiser",
+      "body lotion",
+      "dry skin",
+      "aqueous cream"
+    ],
+    "subject": "a plain pump bottle of lotion with a small white swirl of cream beside it"
+  },
+  {
+    "id": "use-deodorant",
+    "label": "Put on deodorant",
+    "category": "hygiene",
+    "keywords": [
+      "deodorant",
+      "roll-on",
+      "roll on",
+      "antiperspirant",
+      "deo"
+    ],
+    "subject": "a plain roll-on deodorant bottle with its cap beside it and a few fresh breeze swirls"
+  },
+  {
+    "id": "hang-up-towel",
+    "label": "Hang up towel",
+    "category": "hygiene",
+    "keywords": [
+      "hang towel",
+      "hang up towel",
+      "towel",
+      "wet towel",
+      "towel rail"
+    ],
+    "subject": "a fluffy striped towel hanging neatly over a towel rail"
+  },
+  {
+    "id": "vitamins-with-grown-up",
+    "label": "Vitamins with a grown-up",
+    "category": "hygiene",
+    "keywords": [
+      "vitamins",
+      "vitamin",
+      "multivitamin",
+      "supplement",
+      "medicine",
+      "fish oil",
+      "immune booster"
+    ],
+    "subject": "a closed vitamin bottle with a child-safety cap and no writing, beside a small glass of water and an orange slice"
+  },
+  {
+    "id": "make-bed",
+    "label": "Make bed",
+    "category": "bedroom",
+    "keywords": [
+      "make bed",
+      "make the bed",
+      "make your bed",
+      "duvet",
+      "pull up duvet",
+      "straighten bed"
+    ],
+    "subject": "a neatly made single bed with a smooth patterned duvet and a plump pillow, in daylight"
+  },
+  {
+    "id": "tidy-bedroom",
+    "label": "Tidy bedroom",
+    "category": "bedroom",
+    "keywords": [
+      "tidy room",
+      "tidy bedroom",
+      "clean room",
+      "clean bedroom",
+      "messy room",
+      "room"
+    ],
+    "subject": "a tidy child's bedroom seen from the front: a small closed toy chest with a teddy sitting on its lid, a round striped rug in front and a little potted plant, with sparkles, no walls and no floor background"
+  },
+  {
+    "id": "tidy-toys",
+    "label": "Pack away toys",
+    "category": "bedroom",
+    "keywords": [
+      "toys",
+      "pack away toys",
+      "tidy toys",
+      "toy box",
+      "pick up toys",
+      "put toys away"
+    ],
+    "subject": "an open wooden toy box filled neatly with a teddy, a ball and a toy car"
+  },
+  {
+    "id": "pack-away-blocks",
+    "label": "Pack away blocks",
+    "category": "bedroom",
+    "keywords": [
+      "lego",
+      "blocks",
+      "building blocks",
+      "bricks",
+      "duplo",
+      "building toys"
+    ],
+    "subject": "colourful building bricks stacked inside a clear storage tub with its lid resting beside it"
+  },
+  {
+    "id": "tidy-soft-toys",
+    "label": "Tidy soft toys",
+    "category": "bedroom",
+    "keywords": [
+      "soft toys",
+      "teddies",
+      "stuffed animals",
+      "plushies",
+      "cuddly toys",
+      "toy basket"
+    ],
+    "subject": "three soft toy animals, a bunny, a bear and an elephant, sitting together in a woven basket"
+  },
+  {
+    "id": "pack-away-clothes",
+    "label": "Pack away clothes",
+    "category": "bedroom",
+    "keywords": [
+      "pack away clothes",
+      "put away clothes",
+      "clothes away",
+      "drawers",
+      "chest of drawers",
+      "clothes on floor"
+    ],
+    "subject": "a small chest of drawers with its top drawer open, showing neatly folded clothes"
+  },
+  {
+    "id": "hang-up-clothes",
+    "label": "Hang up clothes",
+    "category": "bedroom",
+    "keywords": [
+      "hang up clothes",
+      "hangers",
+      "wardrobe",
+      "cupboard",
+      "coat hook",
+      "hang clothes"
+    ],
+    "subject": "an open wardrobe with a dress, a shirt and a jacket hanging neatly on hangers"
+  },
+  {
+    "id": "put-away-shoes",
+    "label": "Put shoes away",
+    "category": "bedroom",
+    "keywords": [
+      "put shoes away",
+      "shoe rack",
+      "shoes away",
+      "tidy shoes",
+      "pack away shoes"
+    ],
+    "subject": "a small shoe rack with three pairs of children's shoes lined up neatly"
+  },
+  {
+    "id": "tidy-bookshelf",
+    "label": "Tidy bookshelf",
+    "category": "bedroom",
+    "keywords": [
+      "bookshelf",
+      "books away",
+      "tidy books",
+      "bookcase",
+      "shelf"
+    ],
+    "subject": "a small wooden bookshelf with two shelves holding chunky colourful books standing upright and one leaning, plain spines, the shelf seen from the front with open sides and no bars"
+  },
+  {
+    "id": "tidy-desk",
+    "label": "Tidy desk",
+    "category": "bedroom",
+    "keywords": [
+      "desk",
+      "tidy desk",
+      "study desk",
+      "workspace",
+      "clear desk"
+    ],
+    "subject": "a small tidy desk with a pencil cup, a closed notebook and a desk lamp"
+  },
+  {
+    "id": "open-curtains",
+    "label": "Open curtains",
+    "category": "bedroom",
+    "keywords": [
+      "open curtains",
+      "curtains",
+      "blinds",
+      "open blinds",
+      "let the light in"
+    ],
+    "subject": "a window with curtains pulled open to each side and a bright sun shining through"
+  },
+  {
+    "id": "open-window",
+    "label": "Open window",
+    "category": "bedroom",
+    "keywords": [
+      "open window",
+      "fresh air",
+      "air the room",
+      "window open",
+      "air out"
+    ],
+    "subject": "an open window with a gentle breeze of curly wind swirls and a leaf floating in"
+  },
+  {
+    "id": "change-sheets",
+    "label": "Change sheets",
+    "category": "bedroom",
+    "keywords": [
+      "change sheets",
+      "sheets",
+      "pillowcase",
+      "strip bed",
+      "linen",
+      "clean sheets"
+    ],
+    "subject": "a single bed mattress with a fresh patterned sheet billowing as it settles over it and a pillow in a clean pillowcase at the head, with a little fresh-scent swirl"
+  },
+  {
+    "id": "set-table",
+    "label": "Set the table",
+    "category": "kitchen",
+    "keywords": [
+      "set the table",
+      "lay the table",
+      "set table",
+      "placemat",
+      "place setting",
+      "cutlery out"
+    ],
+    "subject": "a placemat with a plate, a fork and a spoon on either side and a folded napkin"
+  },
+  {
+    "id": "clear-table",
+    "label": "Clear the table",
+    "category": "kitchen",
+    "keywords": [
+      "clear the table",
+      "clear table",
+      "clear plates",
+      "clear up",
+      "after dinner",
+      "take plates"
+    ],
+    "subject": "a small serving tray carrying a stack of two used plates with a spoon and a fork on top and a few crumbs, floating on its own with no table underneath"
+  },
+  {
+    "id": "wash-dishes",
+    "label": "Wash the dishes",
+    "category": "kitchen",
+    "keywords": [
+      "wash dishes",
+      "washing up",
+      "wash up",
+      "dishes",
+      "dishwashing liquid",
+      "dishwashing"
+    ],
+    "subject": "a kitchen sink full of soap bubbles with a plate and a sponge peeking out"
+  },
+  {
+    "id": "dry-dishes",
+    "label": "Dry the dishes",
+    "category": "kitchen",
+    "keywords": [
+      "dry dishes",
+      "drying up",
+      "dry up",
+      "tea towel",
+      "dish towel",
+      "dish rack"
+    ],
+    "subject": "a striped tea towel draped over a wet plate on a dish drying rack with droplets"
+  },
+  {
+    "id": "put-away-dishes",
+    "label": "Put away dishes",
+    "category": "kitchen",
+    "keywords": [
+      "put away dishes",
+      "pack away dishes",
+      "crockery",
+      "cups away",
+      "kitchen cupboard"
+    ],
+    "subject": "an open kitchen cupboard with neat stacks of plates, bowls and cups"
+  },
+  {
+    "id": "sort-cutlery",
+    "label": "Sort cutlery",
+    "category": "kitchen",
+    "keywords": [
+      "cutlery",
+      "sort cutlery",
+      "spoons",
+      "forks",
+      "cutlery drawer",
+      "silverware"
+    ],
+    "subject": "a cutlery tray with spoons and forks sorted neatly into their sections"
+  },
+  {
+    "id": "load-dishwasher",
+    "label": "Load dishwasher",
+    "category": "kitchen",
+    "keywords": [
+      "load dishwasher",
+      "dishwasher",
+      "stack dishwasher",
+      "fill dishwasher",
+      "dirty dishes"
+    ],
+    "subject": "an open dishwasher with a few plates with food smudges standing in the lower rack"
+  },
+  {
+    "id": "unload-dishwasher",
+    "label": "Unload dishwasher",
+    "category": "kitchen",
+    "keywords": [
+      "unload dishwasher",
+      "empty dishwasher",
+      "unpack dishwasher",
+      "clean dishes",
+      "dishwasher out"
+    ],
+    "subject": "an open dishwasher beside a neat stack of sparkling clean plates with shine stars"
+  },
+  {
+    "id": "wipe-table",
+    "label": "Wipe the table",
+    "category": "kitchen",
+    "keywords": [
+      "wipe table",
+      "wipe the table",
+      "wipe down table",
+      "crumbs",
+      "dishcloth",
+      "sticky table"
+    ],
+    "subject": "a round dining table with a damp cloth on it and a shiny sparkle trail"
+  },
+  {
+    "id": "wipe-counter",
+    "label": "Wipe counter",
+    "category": "kitchen",
+    "keywords": [
+      "wipe counter",
+      "kitchen counter",
+      "countertop",
+      "wipe counters",
+      "worktop",
+      "wipe surfaces"
+    ],
+    "subject": "a short stretch of kitchen counter seen from the front with a yellow sponge with a green scrubby top wiping a shiny wet streak across it, a few soap bubbles and sparkles"
+  },
+  {
+    "id": "pack-lunchbox",
+    "label": "Pack lunchbox",
+    "category": "kitchen",
+    "keywords": [
+      "lunchbox",
+      "lunch box",
+      "pack lunch",
+      "school lunch",
+      "sandwich box",
+      "pack lunchbox"
+    ],
+    "subject": "an open lunchbox with a sandwich, an apple and carrot sticks in its compartments"
+  },
+  {
+    "id": "empty-lunchbox",
+    "label": "Empty lunchbox",
+    "category": "kitchen",
+    "keywords": [
+      "empty lunchbox",
+      "unpack lunchbox",
+      "lunchbox to sink",
+      "wash lunchbox",
+      "after school"
+    ],
+    "subject": "an empty open lunchbox and a water bottle resting beside a kitchen sink with a few bubbles"
+  },
+  {
+    "id": "take-out-bin",
+    "label": "Take out the bin",
+    "category": "kitchen",
+    "keywords": [
+      "bin",
+      "bins",
+      "rubbish",
+      "trash",
+      "bin day",
+      "wheelie bin",
+      "garbage"
+    ],
+    "subject": "a green wheelie bin with its lid closed standing on the pavement"
+  },
+  {
+    "id": "recycling",
+    "label": "Sort recycling",
+    "category": "kitchen",
+    "keywords": [
+      "recycling",
+      "recycle",
+      "bottles",
+      "cans",
+      "plastic",
+      "cardboard"
+    ],
+    "subject": "a blue recycling box filled with a plastic bottle, a tin can and folded cardboard, with green recycle arrows on its side"
+  },
+  {
+    "id": "compost-scraps",
+    "label": "Compost scraps",
+    "category": "kitchen",
+    "keywords": [
+      "compost",
+      "scraps",
+      "peels",
+      "food scraps",
+      "worm farm",
+      "veggie peels"
+    ],
+    "subject": "a small compost caddy with a banana peel, an apple core and eggshells peeking out"
+  },
+  {
+    "id": "fill-water-jug",
+    "label": "Fill water jug",
+    "category": "kitchen",
+    "keywords": [
+      "water jug",
+      "fill jug",
+      "jug",
+      "fridge water",
+      "refill jug"
+    ],
+    "subject": "a clear glass jug filled with cool water and a lemon slice, with condensation droplets"
+  },
+  {
+    "id": "eat-breakfast",
+    "label": "Eat breakfast",
+    "category": "meals",
+    "keywords": [
+      "breakfast",
+      "cereal",
+      "porridge",
+      "oats",
+      "eat breakfast",
+      "breakfast time"
+    ],
+    "subject": "a bowl of cereal with milk and a spoon, beside a banana"
+  },
+  {
+    "id": "eat-lunch",
+    "label": "Lunch time",
+    "category": "meals",
+    "keywords": [
+      "lunch",
+      "lunch time",
+      "lunchtime",
+      "eat lunch",
+      "midday meal"
+    ],
+    "subject": "a bowl of warm soup with a bread roll beside it and a little steam swirl"
+  },
+  {
+    "id": "eat-dinner",
+    "label": "Dinner time",
+    "category": "meals",
+    "keywords": [
+      "dinner",
+      "supper",
+      "dinner time",
+      "eat dinner",
+      "evening meal",
+      "family meal"
+    ],
+    "subject": "a plate with chicken, rice and green beans, beside a fork and a spoon"
+  },
+  {
+    "id": "eat-fruit",
+    "label": "Eat fruit",
+    "category": "meals",
+    "keywords": [
+      "fruit",
+      "eat fruit",
+      "apple",
+      "banana",
+      "naartjie",
+      "orange"
+    ],
+    "subject": "a red apple, a banana and a small mandarin grouped together"
+  },
+  {
+    "id": "eat-vegetables",
+    "label": "Eat vegetables",
+    "category": "meals",
+    "keywords": [
+      "vegetables",
+      "veggies",
+      "veg",
+      "greens",
+      "eat veggies",
+      "broccoli"
+    ],
+    "subject": "a small plate with broccoli florets, carrot slices and peas"
+  },
+  {
+    "id": "drink-water",
+    "label": "Drink water",
+    "category": "meals",
+    "keywords": [
+      "drink water",
+      "water",
+      "glass of water",
+      "stay hydrated",
+      "hydrate"
+    ],
+    "subject": "a tall glass of water with an ice cube and a big friendly water droplet beside it"
+  },
+  {
+    "id": "drink-milk",
+    "label": "Drink milk",
+    "category": "meals",
+    "keywords": [
+      "milk",
+      "drink milk",
+      "glass of milk",
+      "milky",
+      "dairy"
+    ],
+    "subject": "a glass of milk with a little white splash at the top"
+  },
+  {
+    "id": "healthy-snack",
+    "label": "Healthy snack",
+    "category": "meals",
+    "keywords": [
+      "snack",
+      "healthy snack",
+      "yoghurt",
+      "snack time",
+      "nuts",
+      "raisins"
+    ],
+    "subject": "a small yoghurt cup topped with berries beside a little pile of raisins"
+  },
+  {
+    "id": "try-new-food",
+    "label": "Try a new food",
+    "category": "meals",
+    "keywords": [
+      "try new food",
+      "try something new",
+      "taste",
+      "new food",
+      "one bite",
+      "picky eating"
+    ],
+    "subject": "a small plate with a single avocado half beside a shiny gold star"
+  },
+  {
+    "id": "make-sandwich",
+    "label": "Make a sandwich",
+    "category": "meals",
+    "keywords": [
+      "sandwich",
+      "make sandwich",
+      "make lunch",
+      "toastie",
+      "sarmie",
+      "bread"
+    ],
+    "subject": "a stacked sandwich with lettuce, tomato and cheese on a wooden board"
+  },
+  {
+    "id": "clothes-in-hamper",
+    "label": "Clothes in the hamper",
+    "category": "laundry",
+    "keywords": [
+      "hamper",
+      "washing basket",
+      "dirty clothes",
+      "laundry basket",
+      "dirty washing",
+      "wash basket"
+    ],
+    "subject": "a woven laundry hamper with its lid slightly open and a sock peeking out"
+  },
+  {
+    "id": "sort-laundry",
+    "label": "Sort the washing",
+    "category": "laundry",
+    "keywords": [
+      "sort laundry",
+      "sort washing",
+      "whites",
+      "darks",
+      "colours",
+      "separate laundry"
+    ],
+    "subject": "three big round laundry baskets side by side in different colours, the first piled high with white clothes, the second with bright colourful clothes, the third with dark navy clothes, the clothes clearly visible"
+  },
+  {
+    "id": "load-washing-machine",
+    "label": "Load washing machine",
+    "category": "laundry",
+    "keywords": [
+      "washing machine",
+      "load washing",
+      "put washing on",
+      "washer",
+      "wash clothes",
+      "laundry load"
+    ],
+    "subject": "a front-loading washing machine with its round door open and clothes inside"
+  },
+  {
+    "id": "hang-washing",
+    "label": "Hang up washing",
+    "category": "laundry",
+    "keywords": [
+      "hang washing",
+      "washing line",
+      "pegs",
+      "peg washing",
+      "line dry",
+      "hang out laundry"
+    ],
+    "subject": "colourful clothes pegged on a washing line under a sunny sky"
+  },
+  {
+    "id": "take-in-washing",
+    "label": "Bring in washing",
+    "category": "laundry",
+    "keywords": [
+      "bring in washing",
+      "take in washing",
+      "take washing off",
+      "dry washing",
+      "off the line"
+    ],
+    "subject": "a laundry basket full of dry clothes sitting under an empty washing line with a few loose pegs"
+  },
+  {
+    "id": "collect-pegs",
+    "label": "Collect pegs",
+    "category": "laundry",
+    "keywords": [
+      "collect pegs",
+      "peg bag",
+      "peg basket",
+      "clothes pegs",
+      "pick up pegs"
+    ],
+    "subject": "a little basket full of colourful wooden and plastic clothes pegs"
+  },
+  {
+    "id": "drying-rack",
+    "label": "Use the clothes airer",
+    "category": "laundry",
+    "keywords": [
+      "clothes airer",
+      "clothes horse",
+      "drying rack",
+      "drying stand",
+      "indoor drying"
+    ],
+    "subject": "a folding indoor clothes airer with a few t-shirts and socks draped over it"
+  },
+  {
+    "id": "fold-laundry",
+    "label": "Fold laundry",
+    "category": "laundry",
+    "keywords": [
+      "fold laundry",
+      "fold washing",
+      "fold clothes",
+      "folding",
+      "folded clothes"
+    ],
+    "subject": "two colourful t-shirts: one lying flat with its sleeves folded in towards the middle and one already folded neatly into a square on top of a small stack, the t-shirt shape with sleeves and round neckline clearly visible"
+  },
+  {
+    "id": "fold-towels",
+    "label": "Fold towels",
+    "category": "laundry",
+    "keywords": [
+      "fold towels",
+      "towels",
+      "bath towels",
+      "folded towels",
+      "linen cupboard"
+    ],
+    "subject": "a neat stack of three folded fluffy towels with a little fresh-scent swirl"
+  },
+  {
+    "id": "match-socks",
+    "label": "Match socks",
+    "category": "laundry",
+    "keywords": [
+      "match socks",
+      "pair socks",
+      "pairing socks",
+      "sock pairs",
+      "odd socks",
+      "sort socks"
+    ],
+    "subject": "three pairs of matching patterned socks laid flat in their pairs"
+  },
+  {
+    "id": "put-away-laundry",
+    "label": "Put away laundry",
+    "category": "laundry",
+    "keywords": [
+      "put away laundry",
+      "put away washing",
+      "clean clothes away",
+      "pack away washing",
+      "clean laundry"
+    ],
+    "subject": "a laundry basket full of neatly folded clean clothes with a sparkle on top"
+  },
+  {
+    "id": "empty-pockets",
+    "label": "Check pockets",
+    "category": "laundry",
+    "keywords": [
+      "check pockets",
+      "empty pockets",
+      "pockets",
+      "jeans pockets",
+      "before washing"
+    ],
+    "subject": "a pair of jeans with a turned-out pocket and a pebble and a tissue beside it"
+  },
+  {
+    "id": "sweep-floor",
+    "label": "Sweep the floor",
+    "category": "cleaning",
+    "keywords": [
+      "sweep",
+      "sweep floor",
+      "broom",
+      "dustpan",
+      "sweeping",
+      "dust pan and brush"
+    ],
+    "subject": "a broom and a dustpan beside a small pile of dust on a wooden floor"
+  },
+  {
+    "id": "mop-floor",
+    "label": "Mop the floor",
+    "category": "cleaning",
+    "keywords": [
+      "mop",
+      "mop floor",
+      "mopping",
+      "bucket",
+      "wash floor",
+      "tiles"
+    ],
+    "subject": "a mop resting in a bucket of soapy water beside a shiny wet tiled floor"
+  },
+  {
+    "id": "vacuum-floor",
+    "label": "Vacuum",
+    "category": "cleaning",
+    "keywords": [
+      "vacuum",
+      "hoover",
+      "vacuum cleaner",
+      "vacuum carpet",
+      "vacuuming",
+      "carpet"
+    ],
+    "subject": "an upright vacuum cleaner on a rug with a clean stripe behind it"
+  },
+  {
+    "id": "dust-shelves",
+    "label": "Dust",
+    "category": "cleaning",
+    "keywords": [
+      "dust",
+      "dusting",
+      "duster",
+      "feather duster",
+      "dust shelves",
+      "dusty"
+    ],
+    "subject": "a fluffy rainbow feather duster sweeping along a short empty wooden shelf, with a small grey puff of dust and a few sparkles, no faces"
+  },
+  {
+    "id": "sweep-cobwebs",
+    "label": "Clear cobwebs",
+    "category": "cleaning",
+    "keywords": [
+      "cobwebs",
+      "spider webs",
+      "cobweb brush",
+      "spiderweb",
+      "ceiling corners"
+    ],
+    "subject": "a round fluffy cobweb duster on a long handle reaching towards a small cobweb drawn with thick chunky lilac lines in a wall corner, with a tiny friendly round spider"
+  },
+  {
+    "id": "clean-windows",
+    "label": "Clean windows",
+    "category": "cleaning",
+    "keywords": [
+      "windows",
+      "clean windows",
+      "window cleaning",
+      "glass door",
+      "squeegee",
+      "fingerprints"
+    ],
+    "subject": "a sparkling window pane with a squeegee and a cloth, and shine stars"
+  },
+  {
+    "id": "wipe-mirror",
+    "label": "Wipe the mirror",
+    "category": "cleaning",
+    "keywords": [
+      "mirror",
+      "wipe mirror",
+      "clean mirror",
+      "bathroom mirror",
+      "smudges"
+    ],
+    "subject": "a round bathroom mirror gleaming with sparkles and a soft cloth hanging below it"
+  },
+  {
+    "id": "clean-basin",
+    "label": "Clean the basin",
+    "category": "cleaning",
+    "keywords": [
+      "basin",
+      "clean basin",
+      "sink",
+      "bathroom sink",
+      "wash basin",
+      "toothpaste marks"
+    ],
+    "subject": "a sparkling white bathroom basin with a tap and a sponge resting on its edge"
+  },
+  {
+    "id": "clean-toilet",
+    "label": "Clean the toilet",
+    "category": "cleaning",
+    "keywords": [
+      "clean toilet",
+      "toilet brush",
+      "scrub toilet",
+      "toilet bowl",
+      "bathroom clean"
+    ],
+    "subject": "a toilet brush standing in its holder beside a sparkling clean toilet"
+  },
+  {
+    "id": "clean-bath",
+    "label": "Clean the bath",
+    "category": "cleaning",
+    "keywords": [
+      "clean bath",
+      "scrub bath",
+      "bathtub",
+      "bath ring",
+      "rinse bath"
+    ],
+    "subject": "an empty sparkling bathtub with a scrubbing sponge on its rim and shine stars"
+  },
+  {
+    "id": "wipe-up-spills",
+    "label": "Wipe up spills",
+    "category": "cleaning",
+    "keywords": [
+      "spill",
+      "spills",
+      "wipe up",
+      "mess",
+      "clean up spill",
+      "accident"
+    ],
+    "subject": "a tipped-over cup with a small puddle of juice and a folded cloth beside it"
+  },
+  {
+    "id": "pick-up-rubbish",
+    "label": "Pick up rubbish",
+    "category": "cleaning",
+    "keywords": [
+      "pick up rubbish",
+      "litter",
+      "wrappers",
+      "papers",
+      "throw away",
+      "dustbin"
+    ],
+    "subject": "a small pedal bin with a crumpled paper ball and a sweet wrapper about to drop in"
+  },
+  {
+    "id": "tidy-lounge",
+    "label": "Tidy the lounge",
+    "category": "cleaning",
+    "keywords": [
+      "lounge",
+      "living room",
+      "cushions",
+      "couch",
+      "sofa",
+      "tidy lounge"
+    ],
+    "subject": "a sofa with plumped cushions in a row and a folded blanket on the armrest"
+  },
+  {
+    "id": "shake-out-doormat",
+    "label": "Shake the doormat",
+    "category": "cleaning",
+    "keywords": [
+      "doormat",
+      "mat",
+      "shake mat",
+      "rugs",
+      "shake out"
+    ],
+    "subject": "a plain fluffy doormat with a puff of dust shaking off it and little motion lines"
+  },
+  {
+    "id": "water-garden",
+    "label": "Water the garden",
+    "category": "outdoor",
+    "keywords": [
+      "water garden",
+      "water the garden",
+      "hosepipe",
+      "hose",
+      "sprinkler",
+      "garden"
+    ],
+    "subject": "a green garden hosepipe sprinkling an arc of water over a bed of flowers"
+  },
+  {
+    "id": "water-plants",
+    "label": "Water the plants",
+    "category": "outdoor",
+    "keywords": [
+      "water plants",
+      "watering can",
+      "pot plants",
+      "indoor plants",
+      "houseplants",
+      "plants"
+    ],
+    "subject": "a watering can sprinkling water onto a potted plant with fresh green leaves"
+  },
+  {
+    "id": "rake-leaves",
+    "label": "Rake leaves",
+    "category": "outdoor",
+    "keywords": [
+      "rake",
+      "rake leaves",
+      "leaves",
+      "autumn leaves",
+      "raking"
+    ],
+    "subject": "a garden rake leaning against a neat pile of orange and yellow leaves"
+  },
+  {
+    "id": "pull-weeds",
+    "label": "Pull out weeds",
+    "category": "outdoor",
+    "keywords": [
+      "weeds",
+      "weeding",
+      "pull weeds",
+      "garden beds",
+      "trowel"
+    ],
+    "subject": "a small garden trowel beside a little pile of pulled-up weeds on soil"
+  },
+  {
+    "id": "plant-seeds",
+    "label": "Plant seeds",
+    "category": "outdoor",
+    "keywords": [
+      "plant seeds",
+      "seeds",
+      "seedlings",
+      "planting",
+      "sprout",
+      "grow"
+    ],
+    "subject": "a small terracotta pot with a tiny green sprout and a few seeds scattered beside it"
+  },
+  {
+    "id": "pick-vegetables",
+    "label": "Pick veggies",
+    "category": "outdoor",
+    "keywords": [
+      "veggie garden",
+      "vegetable garden",
+      "harvest",
+      "pick vegetables",
+      "pick tomatoes",
+      "pick veggies"
+    ],
+    "subject": "a small basket with freshly picked carrots with green tops, tomatoes and spinach leaves"
+  },
+  {
+    "id": "stack-firewood",
+    "label": "Stack firewood",
+    "category": "outdoor",
+    "keywords": [
+      "firewood",
+      "braai wood",
+      "wood",
+      "stack wood",
+      "logs",
+      "kindling"
+    ],
+    "subject": "a neat stack of short logs in a wooden crate"
+  },
+  {
+    "id": "sweep-stoep",
+    "label": "Sweep the stoep",
+    "category": "outdoor",
+    "keywords": [
+      "stoep",
+      "sweep stoep",
+      "patio",
+      "porch",
+      "veranda",
+      "front step"
+    ],
+    "subject": "a broom leaning against the front steps of a house porch beside a pot plant"
+  },
+  {
+    "id": "pick-up-dog-poop",
+    "label": "Pick up dog poo",
+    "category": "outdoor",
+    "keywords": [
+      "dog poo",
+      "dog poop",
+      "poop scoop",
+      "pooper scooper",
+      "doggy bags",
+      "clean the yard"
+    ],
+    "subject": "a pooper-scooper and a tied green doggy bag resting on a lawn with a few paw prints"
+  },
+  {
+    "id": "pick-up-garden-toys",
+    "label": "Pack away garden toys",
+    "category": "outdoor",
+    "keywords": [
+      "garden toys",
+      "outside toys",
+      "toys outside",
+      "sandpit toys",
+      "pack away outside",
+      "balls"
+    ],
+    "subject": "a big basket on the lawn holding a beach ball, a bucket and a spade"
+  },
+  {
+    "id": "put-bike-away",
+    "label": "Put bike away",
+    "category": "outdoor",
+    "keywords": [
+      "bike away",
+      "put bike away",
+      "bicycle",
+      "scooter away",
+      "garage",
+      "pack away bike"
+    ],
+    "subject": "a small bicycle parked neatly in a bike stand against a garage wall"
+  },
+  {
+    "id": "wash-car",
+    "label": "Wash the car",
+    "category": "outdoor",
+    "keywords": [
+      "wash car",
+      "wash the car",
+      "car wash",
+      "clean car",
+      "carwash"
+    ],
+    "subject": "a small car covered in soap bubbles beside a bucket and a big sponge"
+  },
+  {
+    "id": "collect-post",
+    "label": "Collect the post",
+    "category": "outdoor",
+    "keywords": [
+      "post",
+      "mail",
+      "letterbox",
+      "postbox",
+      "collect mail",
+      "letters"
+    ],
+    "subject": "a red letterbox on a pole with plain envelopes peeking out"
+  },
+  {
+    "id": "close-gate",
+    "label": "Close the gate",
+    "category": "outdoor",
+    "keywords": [
+      "close gate",
+      "gate",
+      "shut the gate",
+      "lock gate",
+      "close the gate"
+    ],
+    "subject": "a garden gate closed with its latch fastened, set in a little picket fence"
+  },
+  {
+    "id": "feed-wild-birds",
+    "label": "Feed the birds",
+    "category": "outdoor",
+    "keywords": [
+      "bird feeder",
+      "feed birds",
+      "birdseed",
+      "wild birds",
+      "garden birds"
+    ],
+    "subject": "a hanging bird feeder full of seeds with two little sparrows perched on it"
+  },
+  {
+    "id": "fill-bird-bath",
+    "label": "Fill bird bath",
+    "category": "outdoor",
+    "keywords": [
+      "bird bath",
+      "birdbath",
+      "fill bird bath",
+      "water for birds"
+    ],
+    "subject": "a stone bird bath filled with fresh water with a little bird splashing in it"
+  },
+  {
+    "id": "feed-dog",
+    "label": "Feed the dog",
+    "category": "pets",
+    "keywords": [
+      "feed dog",
+      "dog food",
+      "dog bowl",
+      "feed the dog",
+      "dog",
+      "puppy"
+    ],
+    "subject": "a happy dog eating from a full food bowl, tail wagging"
+  },
+  {
+    "id": "feed-cat",
+    "label": "Feed the cat",
+    "category": "pets",
+    "keywords": [
+      "feed cat",
+      "cat food",
+      "feed the cat",
+      "cat",
+      "kitten",
+      "cat bowl"
+    ],
+    "subject": "a fluffy ginger cat seen from the side eating from a small food dish with a fish shape on its side, its ears, face and tail clearly visible"
+  },
+  {
+    "id": "feed-fish",
+    "label": "Feed the fish",
+    "category": "pets",
+    "keywords": [
+      "feed fish",
+      "fish food",
+      "goldfish",
+      "fish",
+      "fish flakes"
+    ],
+    "subject": "a round fishbowl with an orange goldfish swimming up to a few food flakes floating on top"
+  },
+  {
+    "id": "feed-bird",
+    "label": "Feed the budgie",
+    "category": "pets",
+    "keywords": [
+      "budgie",
+      "feed budgie",
+      "parrot",
+      "birdcage",
+      "pet bird",
+      "canary"
+    ],
+    "subject": "a cheerful blue budgie in a cage beside a small cup full of seeds"
+  },
+  {
+    "id": "feed-rabbit",
+    "label": "Feed the rabbit",
+    "category": "pets",
+    "keywords": [
+      "rabbit",
+      "bunny",
+      "feed rabbit",
+      "hay",
+      "rabbit hutch",
+      "rabbit food"
+    ],
+    "subject": "a fluffy rabbit nibbling a carrot beside a little pile of hay"
+  },
+  {
+    "id": "feed-guinea-pig",
+    "label": "Feed the guinea pig",
+    "category": "pets",
+    "keywords": [
+      "guinea pig",
+      "hamster",
+      "feed guinea pig",
+      "feed hamster",
+      "pellets"
+    ],
+    "subject": "a round guinea pig eating pellets from a small ceramic dish"
+  },
+  {
+    "id": "feed-tortoise",
+    "label": "Feed the tortoise",
+    "category": "pets",
+    "keywords": [
+      "tortoise",
+      "feed tortoise",
+      "turtle",
+      "leopard tortoise",
+      "tortoise food"
+    ],
+    "subject": "a friendly tortoise munching on a lettuce leaf beside a small flower"
+  },
+  {
+    "id": "feed-chickens",
+    "label": "Feed the chickens",
+    "category": "pets",
+    "keywords": [
+      "chickens",
+      "feed chickens",
+      "hens",
+      "chicken feed",
+      "coop",
+      "mielies"
+    ],
+    "subject": "a hen pecking at scattered grain on the ground beside a small feed scoop"
+  },
+  {
+    "id": "collect-eggs",
+    "label": "Collect eggs",
+    "category": "pets",
+    "keywords": [
+      "eggs",
+      "collect eggs",
+      "egg basket",
+      "nesting box",
+      "fresh eggs"
+    ],
+    "subject": "a woven basket of brown and white eggs nestled in straw"
+  },
+  {
+    "id": "pet-water-bowl",
+    "label": "Fresh water for pets",
+    "category": "pets",
+    "keywords": [
+      "water bowl",
+      "fresh water",
+      "pet water",
+      "dog water",
+      "cat water",
+      "refill water bowl"
+    ],
+    "subject": "a pet bowl filled to the brim with fresh sparkling water, with a paw print on its side"
+  },
+  {
+    "id": "walk-dog",
+    "label": "Walk the dog",
+    "category": "pets",
+    "keywords": [
+      "walk dog",
+      "walk the dog",
+      "dog walk",
+      "lead",
+      "leash",
+      "take dog out"
+    ],
+    "subject": "a happy dog trotting along a grassy path with a lead clipped to its collar trailing out of the picture"
+  },
+  {
+    "id": "brush-pet",
+    "label": "Brush the pet",
+    "category": "pets",
+    "keywords": [
+      "brush dog",
+      "groom",
+      "grooming",
+      "brush cat",
+      "pet brush",
+      "fur"
+    ],
+    "subject": "a fluffy dog sitting happily next to a pet brush with a small tuft of fur"
+  },
+  {
+    "id": "wash-dog",
+    "label": "Wash the dog",
+    "category": "pets",
+    "keywords": [
+      "wash dog",
+      "dog bath",
+      "bath the dog",
+      "dog shampoo",
+      "bathe dog"
+    ],
+    "subject": "a happy dog sitting in a round metal tub with soap bubbles on its head"
+  },
+  {
+    "id": "clean-litter-tray",
+    "label": "Clean litter tray",
+    "category": "pets",
+    "keywords": [
+      "litter tray",
+      "litter box",
+      "cat litter",
+      "scoop litter",
+      "kitty litter"
+    ],
+    "subject": "a clean cat litter tray with a scoop resting on its rim and a cat sitting beside it"
+  },
+  {
+    "id": "clean-fish-tank",
+    "label": "Clean fish tank",
+    "category": "pets",
+    "keywords": [
+      "fish tank",
+      "aquarium",
+      "clean tank",
+      "tank water",
+      "fish net"
+    ],
+    "subject": "a sparkling rectangular fish tank with a small fish net resting on top and two happy fish"
+  },
+  {
+    "id": "clean-pet-cage",
+    "label": "Clean the cage",
+    "category": "pets",
+    "keywords": [
+      "clean cage",
+      "cage",
+      "hutch",
+      "fresh bedding",
+      "sawdust",
+      "clean hutch"
+    ],
+    "subject": "a small pet cage with fresh wood-shaving bedding and a little water bottle clipped to its side"
+  },
+  {
+    "id": "play-with-pet",
+    "label": "Play with the pet",
+    "category": "pets",
+    "keywords": [
+      "play with cat",
+      "play with dog",
+      "play with pet",
+      "cat toy",
+      "fetch",
+      "pet time"
+    ],
+    "subject": "a playful kitten batting at a ball of yarn"
+  },
+  {
+    "id": "do-homework",
+    "label": "Do homework",
+    "category": "school",
+    "keywords": [
+      "homework",
+      "do homework",
+      "worksheet",
+      "exercise book",
+      "assignment",
+      "schoolwork"
+    ],
+    "subject": "an open exercise book with neat squiggle lines, a pencil and an eraser beside it"
+  },
+  {
+    "id": "reading-time",
+    "label": "Reading time",
+    "category": "school",
+    "keywords": [
+      "read",
+      "reading",
+      "read a book",
+      "reader",
+      "reading time",
+      "read aloud"
+    ],
+    "subject": "an open picture book with a few colourful sparkle stars rising from its pages"
+  },
+  {
+    "id": "library-book",
+    "label": "Library book",
+    "category": "school",
+    "keywords": [
+      "library book",
+      "library",
+      "return library book",
+      "library bag",
+      "library day"
+    ],
+    "subject": "a hardback book with a ribbon bookmark tucked into a small drawstring library bag"
+  },
+  {
+    "id": "spelling-practice",
+    "label": "Spelling practice",
+    "category": "school",
+    "keywords": [
+      "spelling",
+      "spelling words",
+      "spelling test",
+      "practise spelling",
+      "handwriting",
+      "phonics"
+    ],
+    "subject": "a small wooden-framed chalkboard slate with three short wavy horizontal chalk lines on it, a stick of chalk and a little felt eraser beside it"
+  },
+  {
+    "id": "maths-practice",
+    "label": "Maths practice",
+    "category": "school",
+    "keywords": [
+      "maths",
+      "math",
+      "times tables",
+      "sums",
+      "counting",
+      "mental maths"
+    ],
+    "subject": "a colourful wooden abacus with rows of round beads"
+  },
+  {
+    "id": "language-practice",
+    "label": "Language practice",
+    "category": "school",
+    "keywords": [
+      "afrikaans",
+      "isizulu",
+      "isixhosa",
+      "second language",
+      "language",
+      "vocabulary",
+      "english"
+    ],
+    "subject": "two overlapping speech bubbles in different colours with a small star between them, with nothing written inside"
+  },
+  {
+    "id": "study-for-test",
+    "label": "Study for a test",
+    "category": "school",
+    "keywords": [
+      "study",
+      "test",
+      "exam",
+      "revision",
+      "revise",
+      "learn for test"
+    ],
+    "subject": "a small stack of books with a glowing lightbulb above them"
+  },
+  {
+    "id": "check-homework-diary",
+    "label": "Check homework diary",
+    "category": "school",
+    "keywords": [
+      "homework diary",
+      "diary",
+      "school diary",
+      "communication book",
+      "notes from teacher"
+    ],
+    "subject": "a small closed diary notebook with a ribbon bookmark and a green tick mark beside it"
+  },
+  {
+    "id": "sign-school-forms",
+    "label": "Get forms signed",
+    "category": "school",
+    "keywords": [
+      "sign form",
+      "permission slip",
+      "school form",
+      "indemnity form",
+      "notice",
+      "sign notes"
+    ],
+    "subject": "a clipboard holding a plain paper form with three plain straight grey lines and a small square box with a big green tick in it, a pen lying beside the clipboard"
+  },
+  {
+    "id": "pack-school-bag",
+    "label": "Pack school bag",
+    "category": "school",
+    "keywords": [
+      "school bag",
+      "pack bag",
+      "backpack",
+      "pack school bag",
+      "schoolbag",
+      "satchel"
+    ],
+    "subject": "an open school backpack with books and a pencil case peeking out"
+  },
+  {
+    "id": "pack-pencil-case",
+    "label": "Pack pencil case",
+    "category": "school",
+    "keywords": [
+      "pencil case",
+      "stationery",
+      "pens",
+      "pack pencil case",
+      "kokis",
+      "pencil bag"
+    ],
+    "subject": "an open zip-up pencil case with colourful pencils, felt-tip pens and an eraser"
+  },
+  {
+    "id": "sharpen-pencils",
+    "label": "Sharpen pencils",
+    "category": "school",
+    "keywords": [
+      "sharpen",
+      "sharpen pencils",
+      "pencil sharpener",
+      "pencils",
+      "blunt pencils"
+    ],
+    "subject": "two freshly sharpened pencils beside a little pencil sharpener and curly shavings"
+  },
+  {
+    "id": "cover-school-books",
+    "label": "Cover school books",
+    "category": "school",
+    "keywords": [
+      "cover books",
+      "book covering",
+      "plastic cover",
+      "contact paper",
+      "cover school books",
+      "label books"
+    ],
+    "subject": "three exercise books wrapped in shiny clear plastic covers with blank name stickers"
+  },
+  {
+    "id": "school-uniform-ready",
+    "label": "Uniform ready",
+    "category": "school",
+    "keywords": [
+      "uniform",
+      "school uniform",
+      "school clothes",
+      "blazer",
+      "school tie",
+      "tracksuit"
+    ],
+    "subject": "a school blazer, a white shirt and a striped tie hanging together on one hanger"
+  },
+  {
+    "id": "polish-school-shoes",
+    "label": "Polish school shoes",
+    "category": "school",
+    "keywords": [
+      "polish shoes",
+      "shoe polish",
+      "school shoes",
+      "shine shoes",
+      "black shoes"
+    ],
+    "subject": "a pair of shiny black school shoes beside a plain tin of shoe polish and a shoe brush"
+  },
+  {
+    "id": "sports-kit",
+    "label": "Pack sports kit",
+    "category": "school",
+    "keywords": [
+      "sports kit",
+      "sports bag",
+      "pe kit",
+      "kit bag",
+      "gym clothes",
+      "boots"
+    ],
+    "subject": "an open sports bag with a folded sports shirt, shin guards and soccer boots"
+  },
+  {
+    "id": "fill-water-bottle",
+    "label": "Fill water bottle",
+    "category": "school",
+    "keywords": [
+      "water bottle",
+      "fill water bottle",
+      "bottle",
+      "drink bottle",
+      "school bottle"
+    ],
+    "subject": "a children's sports water bottle with a flip straw, full of water with droplets"
+  },
+  {
+    "id": "put-on-pyjamas",
+    "label": "Put on pyjamas",
+    "category": "bedtime",
+    "keywords": [
+      "pyjamas",
+      "pajamas",
+      "pjs",
+      "jammies",
+      "nightie",
+      "pyjamas on"
+    ],
+    "subject": "a pair of folded pyjamas with a moon and star pattern"
+  },
+  {
+    "id": "bedtime-story",
+    "label": "Bedtime story",
+    "category": "bedtime",
+    "keywords": [
+      "bedtime story",
+      "story",
+      "story time",
+      "read a story",
+      "night story"
+    ],
+    "subject": "an open storybook resting on a soft pillow with a crescent moon and stars above"
+  },
+  {
+    "id": "close-curtains",
+    "label": "Close curtains",
+    "category": "bedtime",
+    "keywords": [
+      "close curtains",
+      "draw curtains",
+      "shut curtains",
+      "close blinds",
+      "curtains closed"
+    ],
+    "subject": "a window with curtains drawn closed and a crescent moon peeking over the top"
+  },
+  {
+    "id": "lay-out-clothes",
+    "label": "Lay out clothes",
+    "category": "bedtime",
+    "keywords": [
+      "lay out clothes",
+      "clothes for tomorrow",
+      "tomorrow's clothes",
+      "outfit for tomorrow",
+      "get clothes ready"
+    ],
+    "subject": "a neatly folded outfit on a small chair with a crescent moon showing through a window behind"
+  },
+  {
+    "id": "charge-tablet",
+    "label": "Charge the tablet",
+    "category": "bedtime",
+    "keywords": [
+      "charge tablet",
+      "charger",
+      "charge ipad",
+      "plug in",
+      "charging",
+      "devices away"
+    ],
+    "subject": "a tablet with a dark blank screen standing upright on a small wooden charging dock, a glowing green lightning bolt beside it, no cables, no wires and no plugs"
+  },
+  {
+    "id": "bedside-water",
+    "label": "Water by the bed",
+    "category": "bedtime",
+    "keywords": [
+      "water by bed",
+      "bedside water",
+      "water for bed",
+      "night water",
+      "bedside table"
+    ],
+    "subject": "a small glass of water on a bedside table beside a little teddy bear"
+  },
+  {
+    "id": "night-light",
+    "label": "Night light on",
+    "category": "bedtime",
+    "keywords": [
+      "night light",
+      "nightlight",
+      "night lamp",
+      "dark",
+      "scared of the dark"
+    ],
+    "subject": "a softly glowing star-shaped night light standing on a shelf in a dark room"
+  },
+  {
+    "id": "tuck-in-teddy",
+    "label": "Tuck in teddy",
+    "category": "bedtime",
+    "keywords": [
+      "tuck in",
+      "teddy to bed",
+      "tuck teddy",
+      "snuggle",
+      "cuddle toy"
+    ],
+    "subject": "a teddy bear sleeping under a tiny patchwork blanket on a pillow"
+  },
+  {
+    "id": "lights-off",
+    "label": "Lights off",
+    "category": "bedtime",
+    "keywords": [
+      "lights off",
+      "light off",
+      "switch off light",
+      "lights out",
+      "turn off light"
+    ],
+    "subject": "a bedside lamp switched off in a dark blue room with a crescent moon and stars in the window"
+  },
+  {
+    "id": "go-to-sleep",
+    "label": "Go to sleep",
+    "category": "bedtime",
+    "keywords": [
+      "sleep",
+      "go to sleep",
+      "bedtime",
+      "bed time",
+      "in bed",
+      "sleep time"
+    ],
+    "subject": "a cosy bed with a fluffy duvet, a sleeping cat curled up on it and a crescent moon above"
+  },
+  {
+    "id": "say-goodnight",
+    "label": "Say goodnight",
+    "category": "bedtime",
+    "keywords": [
+      "goodnight",
+      "good night",
+      "say goodnight",
+      "night night",
+      "sleep tight"
+    ],
+    "subject": "a smiling crescent moon wearing a little nightcap, surrounded by twinkling stars"
+  },
+  {
+    "id": "carry-groceries",
+    "label": "Carry groceries",
+    "category": "helping",
+    "keywords": [
+      "groceries",
+      "carry groceries",
+      "shopping bags",
+      "bring in shopping",
+      "carry bags"
+    ],
+    "subject": "two reusable shopping bags full of groceries with a long loaf of bread and leafy celery sticking out"
+  },
+  {
+    "id": "unpack-shopping",
+    "label": "Unpack shopping",
+    "category": "helping",
+    "keywords": [
+      "unpack shopping",
+      "pack away groceries",
+      "unpack groceries",
+      "pantry",
+      "grocery cupboard"
+    ],
+    "subject": "a tidy pantry shelf with plain tins, jars and a plain cereal box, and an empty folded shopping bag"
+  },
+  {
+    "id": "push-trolley",
+    "label": "Push the trolley",
+    "category": "helping",
+    "keywords": [
+      "trolley",
+      "shopping trolley",
+      "shops",
+      "supermarket",
+      "grocery shopping"
+    ],
+    "subject": "a shopping trolley full of fruit, bread and a bottle of milk"
+  },
+  {
+    "id": "help-cook",
+    "label": "Help cook",
+    "category": "helping",
+    "keywords": [
+      "help cook",
+      "cooking",
+      "make dinner",
+      "help with dinner",
+      "stir",
+      "chef"
+    ],
+    "subject": "a mixing bowl with a wooden spoon in it, a chef's hat and a few cherry tomatoes beside it"
+  },
+  {
+    "id": "help-bake",
+    "label": "Help bake",
+    "category": "helping",
+    "keywords": [
+      "bake",
+      "baking",
+      "cupcakes",
+      "muffins",
+      "cookies",
+      "biscuits",
+      "cake"
+    ],
+    "subject": "a tray of iced cupcakes with sprinkles cooling on a wire rack"
+  },
+  {
+    "id": "wash-fruit-veg",
+    "label": "Wash fruit and veg",
+    "category": "helping",
+    "keywords": [
+      "wash vegetables",
+      "wash fruit",
+      "rinse veggies",
+      "colander",
+      "wash veg"
+    ],
+    "subject": "a colander full of carrots, apples and tomatoes with water droplets"
+  },
+  {
+    "id": "look-after-sibling",
+    "label": "Look after sibling",
+    "category": "helping",
+    "keywords": [
+      "sibling",
+      "brother",
+      "sister",
+      "look after",
+      "little brother",
+      "little sister",
+      "babysit"
+    ],
+    "subject": "a big teddy bear and a little teddy bear sitting side by side with a heart above them"
+  },
+  {
+    "id": "help-with-baby",
+    "label": "Help with baby",
+    "category": "helping",
+    "keywords": [
+      "baby",
+      "nappy",
+      "nappies",
+      "baby bottle",
+      "dummy",
+      "help with baby"
+    ],
+    "subject": "a baby bottle, a folded nappy and a rattle grouped together"
+  },
+  {
+    "id": "pack-suitcase",
+    "label": "Pack suitcase",
+    "category": "helping",
+    "keywords": [
+      "suitcase",
+      "pack suitcase",
+      "pack for holiday",
+      "packing",
+      "overnight bag",
+      "holiday"
+    ],
+    "subject": "an open suitcase with folded clothes, a sun hat and flip-flops inside"
+  },
+  {
+    "id": "help-fix-things",
+    "label": "Help fix things",
+    "category": "helping",
+    "keywords": [
+      "fix",
+      "repair",
+      "tools",
+      "toolbox",
+      "diy",
+      "build"
+    ],
+    "subject": "an open red toolbox with a hammer, a spanner and a screwdriver"
+  },
+  {
+    "id": "party-helper",
+    "label": "Help set up a party",
+    "category": "helping",
+    "keywords": [
+      "party",
+      "birthday",
+      "decorations",
+      "balloons",
+      "party prep",
+      "set up party"
+    ],
+    "subject": "a bunch of colourful balloons with a string of bunting flags"
+  },
+  {
+    "id": "be-a-helper",
+    "label": "Be a helper",
+    "category": "helping",
+    "keywords": [
+      "helper",
+      "helping",
+      "help out",
+      "help mom",
+      "help dad",
+      "chores"
+    ],
+    "subject": "a shiny gold star badge with a red heart in the centre and little sparkles"
+  },
+  {
+    "id": "piano-practice",
+    "label": "Piano practice",
+    "category": "activities",
+    "keywords": [
+      "piano",
+      "piano practice",
+      "keyboard",
+      "practise piano",
+      "music lesson"
+    ],
+    "subject": "a small upright piano with musical notes floating above its keys"
+  },
+  {
+    "id": "guitar-practice",
+    "label": "Guitar practice",
+    "category": "activities",
+    "keywords": [
+      "guitar",
+      "guitar practice",
+      "ukulele",
+      "strum",
+      "practise guitar"
+    ],
+    "subject": "an acoustic guitar with a few musical notes floating beside it"
+  },
+  {
+    "id": "recorder-practice",
+    "label": "Recorder practice",
+    "category": "activities",
+    "keywords": [
+      "recorder",
+      "recorder practice",
+      "flute",
+      "practise recorder",
+      "wind instrument"
+    ],
+    "subject": "a wooden recorder lying diagonally with musical notes floating from its end"
+  },
+  {
+    "id": "soccer-practice",
+    "label": "Soccer practice",
+    "category": "activities",
+    "keywords": [
+      "soccer",
+      "football",
+      "soccer practice",
+      "football practice",
+      "kick ball",
+      "futsal"
+    ],
+    "subject": "a black-and-white soccer ball beside a pair of soccer boots on grass"
+  },
+  {
+    "id": "rugby-practice",
+    "label": "Rugby practice",
+    "category": "activities",
+    "keywords": [
+      "rugby",
+      "rugby practice",
+      "tag rugby",
+      "mini rugby",
+      "touch rugby"
+    ],
+    "subject": "a rugby ball (a smooth plump oval with rounded ends, two coloured stripes around it and no laces or stitching on top) resting on a small kicking tee on a patch of grass"
+  },
+  {
+    "id": "cricket-practice",
+    "label": "Cricket practice",
+    "category": "activities",
+    "keywords": [
+      "cricket",
+      "cricket practice",
+      "nets",
+      "batting",
+      "bowling"
+    ],
+    "subject": "a cricket bat and a red cricket ball in front of three wooden stumps"
+  },
+  {
+    "id": "netball-practice",
+    "label": "Netball practice",
+    "category": "activities",
+    "keywords": [
+      "netball",
+      "netball practice",
+      "shooting hoops",
+      "netball match",
+      "basketball"
+    ],
+    "subject": "a ball dropping into a netball hoop with a net and no backboard"
+  },
+  {
+    "id": "hockey-practice",
+    "label": "Hockey practice",
+    "category": "activities",
+    "keywords": [
+      "hockey",
+      "hockey practice",
+      "hockey stick",
+      "hockey match",
+      "astro"
+    ],
+    "subject": "a hockey stick lying beside a small white hockey ball on green turf"
+  },
+  {
+    "id": "swimming-lesson",
+    "label": "Swimming lesson",
+    "category": "activities",
+    "keywords": [
+      "swimming",
+      "swim",
+      "swimming lesson",
+      "swim lesson",
+      "gala",
+      "goggles"
+    ],
+    "subject": "a pair of swimming goggles and a swimming cap beside blue water ripples"
+  },
+  {
+    "id": "dance-class",
+    "label": "Dance class",
+    "category": "activities",
+    "keywords": [
+      "dance",
+      "ballet",
+      "dancing",
+      "dance class",
+      "modern dance",
+      "ballet class"
+    ],
+    "subject": "a pair of pink ballet shoes with their ribbons tied in a bow"
+  },
+  {
+    "id": "ride-bike",
+    "label": "Ride bike",
+    "category": "activities",
+    "keywords": [
+      "ride bike",
+      "bike ride",
+      "cycling",
+      "bicycle ride",
+      "scooter",
+      "riding"
+    ],
+    "subject": "a small bicycle rolling along a sunny path with speed lines, and a bike helmet beside it"
+  },
+  {
+    "id": "skipping-rope",
+    "label": "Skipping",
+    "category": "activities",
+    "keywords": [
+      "skipping",
+      "skipping rope",
+      "jump rope",
+      "skip",
+      "jumping"
+    ],
+    "subject": "a skipping rope with colourful wooden handles looped in a curve"
+  },
+  {
+    "id": "play-outside",
+    "label": "Play outside",
+    "category": "activities",
+    "keywords": [
+      "play outside",
+      "outdoor play",
+      "outside time",
+      "go outside",
+      "garden play",
+      "jungle gym",
+      "trampoline"
+    ],
+    "subject": "a kite flying in a blue sky above a ball resting on green grass"
+  },
+  {
+    "id": "drawing",
+    "label": "Drawing time",
+    "category": "activities",
+    "keywords": [
+      "drawing",
+      "draw",
+      "sketch",
+      "sketching",
+      "doodle",
+      "art"
+    ],
+    "subject": "a sheet of paper with a simple drawing of a sun and a house, beside a few coloured pencils"
+  },
+  {
+    "id": "painting",
+    "label": "Painting",
+    "category": "activities",
+    "keywords": [
+      "painting",
+      "paint",
+      "paints",
+      "art and craft",
+      "watercolours",
+      "easel"
+    ],
+    "subject": "a paint palette with bright colour blobs and a paintbrush"
+  },
+  {
+    "id": "colouring-in",
+    "label": "Colouring in",
+    "category": "activities",
+    "keywords": [
+      "colouring",
+      "colouring in",
+      "coloring",
+      "colouring book",
+      "crayons",
+      "colour in"
+    ],
+    "subject": "an open colouring book with a half-coloured butterfly and three chunky crayons"
+  },
+  {
+    "id": "puzzle",
+    "label": "Do a puzzle",
+    "category": "activities",
+    "keywords": [
+      "puzzle",
+      "jigsaw",
+      "jigsaw puzzle",
+      "puzzles",
+      "brain teaser"
+    ],
+    "subject": "four colourful jigsaw puzzle pieces fitting together with one piece just apart"
+  },
+  {
+    "id": "board-game",
+    "label": "Board game",
+    "category": "activities",
+    "keywords": [
+      "board game",
+      "games",
+      "dice",
+      "family game",
+      "game night",
+      "snakes and ladders"
+    ],
+    "subject": "a colourful board game path with two playing pieces and a dice showing dots"
+  },
+  {
+    "id": "play-dough",
+    "label": "Play dough",
+    "category": "activities",
+    "keywords": [
+      "play dough",
+      "playdough",
+      "clay",
+      "modelling",
+      "plasticine",
+      "dough"
+    ],
+    "subject": "colourful balls of play dough with a little star-shaped cutter"
+  },
+  {
+    "id": "screen-time-over",
+    "label": "Screen time over",
+    "category": "activities",
+    "keywords": [
+      "screen time",
+      "screens off",
+      "tablet off",
+      "tv off",
+      "no screens",
+      "switch off"
+    ],
+    "subject": "a tablet with a dark switched-off screen lying flat beside a small sand timer whose sand has all run out"
+  },
+  {
+    "id": "share-toys",
+    "label": "Share toys",
+    "category": "kindness",
+    "keywords": [
+      "share",
+      "sharing",
+      "share toys",
+      "share with",
+      "share nicely"
+    ],
+    "subject": "two toy cars parked side by side with a red heart floating above them"
+  },
+  {
+    "id": "take-turns",
+    "label": "Take turns",
+    "category": "kindness",
+    "keywords": [
+      "take turns",
+      "turns",
+      "wait your turn",
+      "my turn",
+      "your turn",
+      "patience"
+    ],
+    "subject": "a seesaw with a teddy bear sitting on one end and a bunny on the other"
+  },
+  {
+    "id": "say-please",
+    "label": "Say please",
+    "category": "kindness",
+    "keywords": [
+      "please",
+      "say please",
+      "manners",
+      "good manners",
+      "polite",
+      "ask nicely"
+    ],
+    "subject": "a soft pink speech bubble with a single shiny golden sparkle inside and nothing written in it"
+  },
+  {
+    "id": "say-thank-you",
+    "label": "Say thank you",
+    "category": "kindness",
+    "keywords": [
+      "thank you",
+      "thanks",
+      "say thank you",
+      "grateful",
+      "gratitude"
+    ],
+    "subject": "a small wrapped gift box with a big bow and a heart floating above it"
+  },
+  {
+    "id": "thank-you-card",
+    "label": "Make a thank-you card",
+    "category": "kindness",
+    "keywords": [
+      "thank you card",
+      "thank-you note",
+      "card",
+      "make a card",
+      "write a card",
+      "note"
+    ],
+    "subject": "a folded card decorated with a heart and a flower, standing next to a crayon"
+  },
+  {
+    "id": "say-sorry",
+    "label": "Say sorry",
+    "category": "kindness",
+    "keywords": [
+      "sorry",
+      "say sorry",
+      "apologise",
+      "apologize",
+      "make up",
+      "forgive"
+    ],
+    "subject": "a red heart with a small plaster stuck across it, with gentle sparkles"
+  },
+  {
+    "id": "call-granny",
+    "label": "Call Granny",
+    "category": "kindness",
+    "keywords": [
+      "call granny",
+      "phone granny",
+      "call gran",
+      "call grandpa",
+      "video call",
+      "ouma",
+      "gogo"
+    ],
+    "subject": "a mobile phone with a dark blank screen surrounded by little hearts and ringing sound waves"
+  },
+  {
+    "id": "hug-teddy",
+    "label": "Give a hug",
+    "category": "kindness",
+    "keywords": [
+      "hug",
+      "hugs",
+      "cuddle",
+      "give a hug",
+      "hug teddy",
+      "cuddles"
+    ],
+    "subject": "a teddy bear hugging a big red heart"
+  },
+  {
+    "id": "pick-flowers",
+    "label": "Flowers for someone",
+    "category": "kindness",
+    "keywords": [
+      "flowers",
+      "pick flowers",
+      "bouquet",
+      "surprise someone",
+      "flowers for mom"
+    ],
+    "subject": "a small bunch of daisies tied with a ribbon"
+  },
+  {
+    "id": "donate-toys",
+    "label": "Donate toys",
+    "category": "kindness",
+    "keywords": [
+      "donate",
+      "give away",
+      "donate toys",
+      "charity",
+      "outgrown toys",
+      "donation box"
+    ],
+    "subject": "a cardboard box with a heart on its side filled with a teddy, a book and a toy car"
+  },
+  {
+    "id": "kind-words",
+    "label": "Use kind words",
+    "category": "kindness",
+    "keywords": [
+      "kind words",
+      "nice words",
+      "compliment",
+      "no shouting",
+      "gentle words",
+      "say something nice"
+    ],
+    "subject": "a speech bubble with colourful little flowers growing out of its top"
+  },
+  {
+    "id": "good-listening",
+    "label": "Good listening",
+    "category": "kindness",
+    "keywords": [
+      "listen",
+      "listening",
+      "good listening",
+      "pay attention",
+      "listening ears"
+    ],
+    "subject": "a cute bunny with big perked-up ears and little sound waves curving towards them"
+  },
+  {
+    "id": "calm-breaths",
+    "label": "Calm deep breaths",
+    "category": "kindness",
+    "keywords": [
+      "calm down",
+      "deep breaths",
+      "breathe",
+      "calm corner",
+      "feelings",
+      "big feelings"
+    ],
+    "subject": "a colourful pinwheel spinning with soft breeze swirls beside a cosy cushion"
+  },
+  {
+    "id": "be-kind",
+    "label": "Be kind",
+    "category": "kindness",
+    "keywords": [
+      "be kind",
+      "kindness",
+      "kind",
+      "be nice",
+      "good deed",
+      "kind act"
+    ],
+    "subject": "a big chunky coral pink heart with one soft lighter highlight shape, surrounded by a few small butter-yellow sparkles, flat colours with no glow and no gradient"
+  }
+]

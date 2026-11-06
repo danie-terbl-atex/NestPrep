@@ -10,6 +10,7 @@ import type { AuthRecord } from './account_auth';
 import { PLACE_EVENTS, TRAIL_DAYS, trailRef } from '../live_location/location_refs';
 import { AUTHORED_LIMIT, AUTHORED_RECORDS } from './authored_records';
 import { HOUSEHOLD_LIMIT } from './deletion_plan';
+import { exportShopLinks } from './export_shop_links';
 import { type PlainValue, isPlainRecord, plainDocument, plainValue } from './plain_value';
 import { personalRefs } from './personal_refs';
 
@@ -48,7 +49,8 @@ export interface PersonalDataExport {
  * calendars and assistants they connected (assistants ADR-0005), and what
  * they put into the household. Store
  * subscriptions they linked are listed without the store's purchase token,
- * and the feedback they sent (feedback ADR-0001) as they sent it.
+ * the feedback they sent (feedback ADR-0001) as they sent it, and each shop
+ * account they linked without its sealed session.
  *
  * Bounded everywhere (`BE-08`); a list cut short says so beside it.
  */
@@ -80,6 +82,7 @@ export async function assembleExport(
       households,
       storeSubscriptions: await exportPurchases(store, uid),
       feedback: await exportFeedback(store, uid),
+      shopLinks: await exportShopLinks(store, uid),
       vaultFiles: files.map((file) => plainValue({ ...file })),
     },
   };

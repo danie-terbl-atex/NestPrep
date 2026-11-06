@@ -42,6 +42,7 @@ import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
+import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart';
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
@@ -190,6 +191,7 @@ void main() {
           Provider<NotificationRepository>.value(
             value: FakeNotificationRepository(),
           ),
+          Provider<DigestPromptStore>.value(value: FakeDigestPromptStore()),
           Provider<ActivityHeartbeat>(
             create: (_) => ActivityHeartbeat(activityRecorder: activity),
           ),

@@ -1,9 +1,14 @@
 import { logger } from 'firebase-functions/v2';
 
 import type { CalendarSources } from './calendar_sources';
-import { syncWindow, toSyncedEvent, type SyncedEventDraft } from './external_occurrence';
+import {
+  syncWindow,
+  toSyncedEvent,
+  type ExternalOccurrence,
+  type SyncedEventDraft,
+} from './external_occurrence';
 import type { ConnectionStatus } from './sync_documents';
-import type { SyncStore } from './sync_store';
+import type { StoredConnection, SyncStore } from './sync_store';
 import { knownZoneOr } from './zoned_time';
 
 /**
@@ -39,9 +44,13 @@ export async function syncConnection(
   const { store } = deps;
   const connection = await store.readConnection(householdId, connectionId);
   if (connection === null) return null;
+  if (connection.provider === 'apple') {
+    return { status: connection.status, eventCount: connection.eventCount, written: 0, deleted: 0 };
+  }
 
   const fail = async (status: ConnectionStatus): Promise<SyncResult> => {
     await store.recordOutcome(householdId, connectionId, { status, eventCount: null });
+    await store.markAttempted(connectionId);
     logger.info('calendar sync did not complete', { connectionId, status });
     return { status, eventCount: connection.eventCount, written: 0, deleted: 0 };
   };
@@ -58,8 +67,26 @@ export async function syncConnection(
     await store.saveCredential(connectionId, outcome.refreshedCredential);
   }
 
+  const result = await applyOccurrences(store, householdId, connection, outcome.occurrences, zone);
+  await store.markAttempted(connectionId);
+  return result;
+}
+
+/**
+ * Puts [occurrences] on the household's clock and writes only what changed:
+ * the half of a sync every source shares, whether a Function fetched them or
+ * the member's iPhone pushed them.
+ */
+export async function applyOccurrences(
+  store: SyncStore,
+  householdId: string,
+  connection: StoredConnection,
+  occurrences: readonly ExternalOccurrence[],
+  zone: string,
+): Promise<SyncResult> {
+  const connectionId = connection.id;
   const drafts = uniqueDrafts(
-    outcome.occurrences.slice(0, MAX_OCCURRENCES_PER_CONNECTION).map((occurrence) =>
+    occurrences.slice(0, MAX_OCCURRENCES_PER_CONNECTION).map((occurrence) =>
       toSyncedEvent(
         occurrence,
         {
@@ -72,8 +99,8 @@ export async function syncConnection(
       ),
     ),
   );
-  if (outcome.occurrences.length > MAX_OCCURRENCES_PER_CONNECTION) {
-    logger.warn('calendar sync capped', { connectionId, found: outcome.occurrences.length });
+  if (occurrences.length > MAX_OCCURRENCES_PER_CONNECTION) {
+    logger.warn('calendar sync capped', { connectionId, found: occurrences.length });
   }
 
   const existing = await store.readFingerprints(householdId, connectionId);

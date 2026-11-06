@@ -7,36 +7,36 @@
  */
 
 @font-face {
-  font-family: 'Mona Sans';
-  src: url('/assets/fonts/MonaSans-Regular.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Regular.ttf') format('truetype');
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Mona Sans';
-  src: url('/assets/fonts/MonaSans-Medium.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Medium.ttf') format('truetype');
   font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Mona Sans';
-  src: url('/assets/fonts/MonaSans-SemiBold.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Mona Sans';
-  src: url('/assets/fonts/MonaSans-Bold.ttf') format('truetype');
+  font-family: 'DM Sans';
+  src: url('/assets/fonts/DMSans-Bold.ttf') format('truetype');
   font-weight: 700;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Mona Sans Display';
-  src: url('/assets/fonts/MonaSansDisplaySemiExpanded-SemiBold.ttf') format('truetype');
+  font-family: 'Fraunces';
+  src: url('/assets/fonts/Fraunces-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-display: swap;
 }
@@ -77,8 +77,8 @@
   --color-on-chrome: #fff8ed;
   --color-on-chrome-muted: #d9cbc6;
 
-  --font-body: 'Mona Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Mona Sans Display', 'Mona Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   --text-display: 2rem;
   --text-headline: 1.5rem;
@@ -196,6 +196,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 600;
+  font-optical-sizing: auto;
   letter-spacing: var(--tracking-display);
   line-height: 1.2;
   margin: 0 0 var(--space-md);
@@ -286,6 +287,7 @@ li + li {
 .wordmark {
   font-family: var(--font-display);
   font-weight: 600;
+  font-optical-sizing: auto;
   font-size: var(--wordmark-header);
   letter-spacing: var(--tracking-wordmark);
   line-height: 1;

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FrameGroceries {
 
- ProductRetailer get shop; CheckersArea get area;
+ ProductRetailer get shop; CheckersArea get area; WoolworthsStore? get store;
 /// Create a copy of FrameGroceries
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $FrameGroceriesCopyWith<FrameGroceries> get copyWith => _$FrameGroceriesCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as FrameGroceries;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrameGroceries&&(identical(other.shop, _this.shop) || other.shop == _this.shop)&&(identical(other.area, _this.area) || other.area == _this.area));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrameGroceries&&(identical(other.shop, _this.shop) || other.shop == _this.shop)&&(identical(other.area, _this.area) || other.area == _this.area)&&(identical(other.store, _this.store) || other.store == _this.store));
 }
 
 
 @override
 int get hashCode {
   final _this = this as FrameGroceries;
-  return Object.hash(runtimeType,_this.shop,_this.area);
+  return Object.hash(runtimeType,_this.shop,_this.area,_this.store);
 }
 
 @override
 String toString() {
   final _this = this as FrameGroceries;
-  return 'FrameGroceries(shop: ${_this.shop}, area: ${_this.area})';
+  return 'FrameGroceries(shop: ${_this.shop}, area: ${_this.area}, store: ${_this.store})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $FrameGroceriesCopyWith<$Res>  {
   factory $FrameGroceriesCopyWith(FrameGroceries value, $Res Function(FrameGroceries) _then) = _$FrameGroceriesCopyWithImpl;
 @useResult
 $Res call({
- ProductRetailer shop, CheckersArea area
+ ProductRetailer shop, CheckersArea area, WoolworthsStore? store
 });
 
 
@@ -68,11 +68,12 @@ class _$FrameGroceriesCopyWithImpl<$Res>
 
 /// Create a copy of FrameGroceries
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? shop = null,Object? area = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? shop = null,Object? area = null,Object? store = freezed,}) {
   return _then(FrameGroceries(
 shop: null == shop ? _self.shop : shop // ignore: cast_nullable_to_non_nullable
 as ProductRetailer,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
-as CheckersArea,
+as CheckersArea,store: freezed == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
+as WoolworthsStore?,
   ));
 }
 
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ProductRetailer shop,  CheckersArea area)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ProductRetailer shop,  CheckersArea area,  WoolworthsStore? store)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FrameGroceries() when $default != null:
-return $default(_that.shop,_that.area);case _:
+return $default(_that.shop,_that.area,_that.store);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.shop,_that.area);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ProductRetailer shop,  CheckersArea area)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ProductRetailer shop,  CheckersArea area,  WoolworthsStore? store)  $default,) {final _that = this;
 switch (_that) {
 case _FrameGroceries():
-return $default(_that.shop,_that.area);case _:
+return $default(_that.shop,_that.area,_that.store);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +199,10 @@ return $default(_that.shop,_that.area);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ProductRetailer shop,  CheckersArea area)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ProductRetailer shop,  CheckersArea area,  WoolworthsStore? store)?  $default,) {final _that = this;
 switch (_that) {
 case _FrameGroceries() when $default != null:
-return $default(_that.shop,_that.area);case _:
+return $default(_that.shop,_that.area,_that.store);case _:
   return null;
 
 }
@@ -213,11 +214,12 @@ return $default(_that.shop,_that.area);case _:
 
 
 class _FrameGroceries extends FrameGroceries {
-  const _FrameGroceries({required this.shop, required this.area}): super._();
+  const _FrameGroceries({required this.shop, required this.area, this.store}): super._();
   
 
 @override final  ProductRetailer shop;
 @override final  CheckersArea area;
+@override final  WoolworthsStore? store;
 
 /// Create a copy of FrameGroceries
 /// with the given fields replaced by the non-null parameter values.
@@ -229,18 +231,18 @@ _$FrameGroceriesCopyWith<_FrameGroceries> get copyWith => __$FrameGroceriesCopyW
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrameGroceries&&(identical(other.shop, shop) || other.shop == shop)&&(identical(other.area, area) || other.area == area));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrameGroceries&&(identical(other.shop, shop) || other.shop == shop)&&(identical(other.area, area) || other.area == area)&&(identical(other.store, store) || other.store == store));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,shop,area);
+    return Object.hash(runtimeType,shop,area,store);
 }
 
 @override
 String toString() {
-    return 'FrameGroceries(shop: $shop, area: $area)';
+    return 'FrameGroceries(shop: $shop, area: $area, store: $store)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$FrameGroceriesCopyWith<$Res> implements $FrameGroceriesCo
   factory _$FrameGroceriesCopyWith(_FrameGroceries value, $Res Function(_FrameGroceries) _then) = __$FrameGroceriesCopyWithImpl;
 @override @useResult
 $Res call({
- ProductRetailer shop, CheckersArea area
+ ProductRetailer shop, CheckersArea area, WoolworthsStore? store
 });
 
 
@@ -268,11 +270,12 @@ class __$FrameGroceriesCopyWithImpl<$Res>
 
 /// Create a copy of FrameGroceries
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? shop = null,Object? area = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? shop = null,Object? area = null,Object? store = freezed,}) {
   return _then(_FrameGroceries(
 shop: null == shop ? _self.shop : shop // ignore: cast_nullable_to_non_nullable
 as ProductRetailer,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
-as CheckersArea,
+as CheckersArea,store: freezed == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
+as WoolworthsStore?,
   ));
 }
 

@@ -46,7 +46,7 @@ Both targets read `lib/app/firebase_options.dart`, plus `android/app/google-serv
 
 ```sh
 flutterfire configure --project=nestprep-643b7 --platforms=android,ios \
-  --ios-bundle-id=io.nullstate.nestprep --out=lib/app/firebase_options.dart
+  --ios-bundle-id=io.nullstate.nestprep.app --out=lib/app/firebase_options.dart
 ```
 
 Emulator ports are fixed in the root `firebase.json` and mirrored in four places —
@@ -152,7 +152,7 @@ so the on-screen copy cannot tell you the backend was unreachable.
   because Xcode writes the bundle to `build/ios/Release-iphoneos/`. Build, then install and launch
   by hand:
   `xcrun devicectl device install app --device <udid> build/ios/Release-iphoneos/Runner.app` and
-  `xcrun devicectl device process launch --device <udid> io.nullstate.nestprep`
+  `xcrun devicectl device process launch --device <udid> io.nullstate.nestprep.app`
   (`xcrun devicectl list devices` for the udid). An emulator build on a phone needs
   `--dart-define=NESTPREP_EMULATOR_HOST=<the Mac's LAN IP>` and the suite started with
   `emulators:lan`; `Info.plist` carries `NSLocalNetworkUsageDescription` and
@@ -176,14 +176,19 @@ so the on-screen copy cannot tell you the backend was unreachable.
   data). The Android channels (`AndroidChannel` — digest, documents, handover, chores, photos, the other home) are created by `MainActivity.kt` over the method channel
   `io.nullstate.nestprep/notifications`, with the app's own words; the status-bar mark is
   `res/drawable/ic_notification.xml`. The permission prompt appears only from a tap on *Turn on
-  notifications*, never at launch. **iOS push is not wired**: `ios/Runner/Runner.entitlements`
-  exists but is not on the Runner target, because a free Apple team cannot sign
-  `aps-environment` — add the Push Notifications capability in Xcode once the Apple Developer
-  Program exists, and upload an APNs auth key to the Firebase project.
-- Fonts are bundled under `assets/fonts/` (Mona Sans for UI, four static cuts; Mona Sans Display
-  SemiExpanded 600 for headings and the wordmark; design-system ADR-0020). They are GitHub's release
-  files byte for byte: the OFL reserves the name "Mona", so a subset or edited cut may not ship
-  under it. `flutter pub get` after changing the `fonts:` block
+  notifications*, never at launch. **iOS push is wired but needs the APNs key**:
+  `ios/Runner/Runner.entitlements` is on the Runner target, signed by the Peak Software team
+  (`UY92F2EKT8`); FCM delivers to iOS only once Peak's APNs auth key is uploaded to the Firebase
+  project for the iOS app `io.nullstate.nestprep.app`.
+- **iOS signs with Peak Software Pty Ltd (`UY92F2EKT8`) as `io.nullstate.nestprep.app`**
+  (foundation ADR on the iOS bundle id). `io.nullstate.nestprep` is held by Daniel's free
+  personal team and cannot move; Android keeps `io.nullstate.nestprep`. A new iPhone needs one
+  `xcodebuild … -destination id=<udid> -allowProvisioningUpdates -allowProvisioningDeviceRegistration`
+  to register it before `flutter build ios` can sign for it.
+- Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
+  headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
+  `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system
+  ADR-0008, restored by ADR-0021). `flutter pub get` after changing the `fonts:` block
   or the family is silently absent. The arch mark is drawn in code (`NestMarkPainter`) from
   `assets/brand/nest_mark.svg`, and the launcher icons and splash are rendered from the same SVG.
 - Every raster of the mark under `assets/brand/` is rendered from `nest_mark.svg` by

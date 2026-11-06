@@ -9,18 +9,20 @@ import 'package:nestprep/features/plan_week/state/lunch_shop_choice.dart';
 import 'package:nestprep/features/plan_week/ui/plan_week_entry_card.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/flags/feature_flag.dart';
+import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_checkers.dart';
 import '../../../support/fake_plan_week.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_planning_harness.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/pump_subscriptions.dart';
 
-/// The way into *Plan my week* says which week it will plan (lunch-box
-/// ADR-0019): the week the board is on, by the name the week bar gives it —
-/// one row in the week's planner (ADR-0022), led by the Checkers logo
-/// (ADR-0024).
+/// Twig's way in *Plan the week*'s chooser (lunch-box ADR-0033), led by the
+/// logo of the shop it plans at (ADR-0024, ADR-0026) — any shop switched on,
+/// on a week that has not gone (ADR-0019).
 void main() {
   late LunchPlanningHarness harness;
 
@@ -44,9 +46,16 @@ void main() {
         child: ListenableBuilder(
           listenable: harness.board,
           builder: (context, _) => switch (harness.board.board) {
-            AsyncData<LunchBoard>(:final value) => PlanWeekEntryCard(
-              board: value,
-              canEdit: true,
+            AsyncData<LunchBoard>(:final value) => Builder(
+              builder: (context) {
+                final shop = PlanWeekEntry.shopFor(context, value);
+                if (shop == null) return const SizedBox.shrink();
+                return PlanWeekEntryCard(
+                  shop: shop,
+                  isPremium: isPremium,
+                  onTap: () {},
+                );
+              },
             ),
             _ => const SizedBox.shrink(),
           },
@@ -66,11 +75,10 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('says "Let Twig plan this week", then "Let Twig plan next '
-      'week" once the board has moved on, and names Checkers in its body '
+  testWidgets('says "Let Twig plan it" and names Checkers in its body '
       '(design-system ADR-0014)', (tester) async {
     await pump(tester);
-    expect(find.text('Let Twig plan this week'), findsOneWidget);
+    expect(find.text('Let Twig plan it'), findsOneWidget);
     expect(
       find.text(
         'Lunches for every child from what Checkers sells, within your '
@@ -78,15 +86,17 @@ void main() {
       ),
       findsOneWidget,
     );
-    harness.board.goToNextWeek();
-    // A real turn for the new window to open (vault lesson on awaiting a
-    // stream subscription's cancel in a widget test).
+  });
+
+  testWidgets('is not offered once the board’s week has gone', (tester) async {
+    await pump(tester);
+    harness.board.goToPreviousWeek();
     await tester.pump();
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pump();
     harness.lunch.emit();
     await tester.pumpAndSettle();
-    expect(find.text('Let Twig plan next week'), findsOneWidget);
+    expect(find.byKey(const ValueKey('plan-week-open')), findsNothing);
   });
 
   testWidgets(
@@ -124,7 +134,7 @@ void main() {
 
     collect(tester.getSemantics(row));
     expect(announced, [
-      '${PlanWeekCopy.entryTitle('this week')}\n${PlanWeekCopy.entryBody(ProductRetailer.checkers)}',
+      '${PlanWeekCopy.entryTitle}\n${PlanWeekCopy.entryBody(ProductRetailer.checkers)}',
     ]);
     final logo = find.descendant(of: row, matching: find.byType(RetailerLogo));
     expect(
@@ -149,7 +159,7 @@ void main() {
       isPremium: false,
     );
     expect(tester.takeException(), isNull);
-    expect(find.text('Let Twig plan this week'), findsOneWidget);
+    expect(find.text('Let Twig plan it'), findsOneWidget);
     expect(find.text(PlanWeekCopy.premiumTag), findsOneWidget);
     expect(
       tester.getSize(find.byType(RetailerLogo)),
@@ -169,5 +179,66 @@ void main() {
       find.text(PlanWeekCopy.entryBody(ProductRetailer.pickNPay)),
       findsOneWidget,
     );
+  });
+
+  testWidgets('Woolworths chosen for lunches leads the row like any shop', (
+    tester,
+  ) async {
+    final choice = planWeekShopChoice(Fixtures.householdId)
+      ..choose(ProductRetailer.woolworths);
+    addTearDown(choice.dispose);
+    await pump(tester, shopChoice: choice);
+    final logo = tester.widget<RetailerLogo>(find.byType(RetailerLogo));
+    expect(logo.retailer, ProductRetailer.woolworths);
+    expect(
+      find.text(PlanWeekCopy.entryBody(ProductRetailer.woolworths)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('with nothing chosen for lunches, the family’s own shop leads '
+      'the row', (tester) async {
+    final family = FakeRetailerPreference();
+    family.chosen[Fixtures.householdId] = ProductRetailer.pickNPay;
+    final choice = planWeekShopChoice(Fixtures.householdId, family: family);
+    addTearDown(choice.dispose);
+    await pump(tester, shopChoice: choice);
+    final logo = tester.widget<RetailerLogo>(find.byType(RetailerLogo));
+    expect(logo.retailer, ProductRetailer.pickNPay);
+  });
+
+  group('with shops switched off', () {
+    Future<void> switchedOff(Set<FeatureFlag> off) async {
+      await harness.close();
+      harness = LunchPlanningHarness(
+        flags: FeatureFlags(
+          defaultOn: true,
+          stored: {for (final flag in off) flag: false},
+        ),
+      );
+    }
+
+    testWidgets('a chosen shop switched off gives way to the first still on', (
+      tester,
+    ) async {
+      await switchedOff({FeatureFlag.addToCheckers, FeatureFlag.addToPnp});
+      final choice = planWeekShopChoice(Fixtures.householdId)
+        ..choose(ProductRetailer.pickNPay);
+      addTearDown(choice.dispose);
+      await pump(tester, shopChoice: choice);
+      final logo = tester.widget<RetailerLogo>(find.byType(RetailerLogo));
+      expect(logo.retailer, ProductRetailer.woolworths);
+    });
+
+    testWidgets('with every shop off there is nothing to plan from, and no '
+        'row', (tester) async {
+      await switchedOff({
+        FeatureFlag.addToCheckers,
+        FeatureFlag.addToPnp,
+        FeatureFlag.addToWoolworths,
+      });
+      await pump(tester);
+      expect(find.byKey(const ValueKey('plan-week-open')), findsNothing);
+    });
   });
 }

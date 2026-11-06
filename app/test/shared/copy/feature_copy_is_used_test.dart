@@ -31,6 +31,9 @@ void main() {
     ('AccountDataCopy', 'lib/shared/copy/account_data_copy.dart'),
     // notifications (notifications ADR-0001 to ADR-0003).
     ('NotificationsCopy', 'lib/shared/copy/notifications_copy.dart'),
+    // chore pictures (todos ADR-0005).
+    ('ChorePictureCopy', 'lib/shared/copy/chore_picture_copy.dart'),
+    ('ShopsCopy', 'lib/shared/copy/shops_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();

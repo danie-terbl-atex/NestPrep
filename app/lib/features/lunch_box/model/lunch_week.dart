@@ -51,6 +51,13 @@ final class LunchWeek implements Comparable<LunchWeek> {
       monday.addDays(offset),
   ];
 
+  /// The school days, by ISO weekday, still to come after [today] — today
+  /// counts as gone (lunch-box ADR-0019).
+  Set<int> daysLeftAfter(CalendarDate today) => {
+    for (final day in schoolDays)
+      if (day.isAfter(today)) day.weekday,
+  };
+
   /// The Sunday before, when the week's prep is done.
   CalendarDate get prepDay => monday.addDays(-1);
 

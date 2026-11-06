@@ -167,6 +167,7 @@ export interface FrameItem {
   readonly stars?: number;
   readonly needsCheck?: true;
   readonly steps?: FrameStep[];
+  readonly picture?: string;
 }
 
 export interface FrameDay {
@@ -348,6 +349,7 @@ function choreItem({ chore, date, done }: ChoreRow): FrameItem {
     ...(note === null ? {} : { note }),
     ...(stars ? { stars: chore.points } : {}),
     ...(stars && chore.needsApproval ? { needsCheck: true as const } : {}),
+    ...(chore.picture === null ? {} : { picture: chore.picture }),
   };
 }
 

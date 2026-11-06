@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../add_to_checkers/state/shop_carts.dart';
+import '../../add_to_checkers/ui/shop_cart_push.dart';
 import '../state/recipe_shop_controller.dart';
-import 'recipe_cart_push.dart';
 
 /// What *Add to grocer* does with what it found (recipes ADR-0005): about
 /// what it costs, then the lines straight into the member's own cart at the
@@ -102,7 +102,7 @@ class RecipeShopFooter extends StatelessWidget {
     if (shop == null || !await controller.addToList()) return;
     final entries = controller.listed;
     if (entries == null || entries.isEmpty || !context.mounted) return;
-    await pushRecipeToCart(
+    await pushToShopCart(
       context,
       shop: shop,
       householdId: householdId,

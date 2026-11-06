@@ -1,3 +1,4 @@
+import '../model/apple_calendar.dart';
 import '../model/calendar_feed_link.dart';
 import '../model/calendar_provider.dart';
 import '../model/provider_availability.dart';
@@ -16,6 +17,15 @@ abstract interface class CalendarSyncDirectory {
   Future<void> connectLink(String householdId, String url);
 
   Future<void> syncNow(String householdId, String connectionId);
+
+  /// Hands the server what this phone's chosen calendars hold; the answer is
+  /// the connection they are filed under. [link] files it the first time;
+  /// without it, a connection that has gone is refused `connectionNotFound`.
+  Future<String> pushAppleCalendar(
+    String householdId, {
+    required bool link,
+    required List<AppleOccurrence> occurrences,
+  });
 
   Future<void> disconnect(String householdId, String connectionId);
 

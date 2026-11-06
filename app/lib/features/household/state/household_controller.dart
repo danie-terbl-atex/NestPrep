@@ -6,6 +6,8 @@ import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
+import '../../family_profiles/data/child_profile_directory.dart';
+import '../../subscriptions/model/premium_feature.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../model/access_defaults.dart';
@@ -15,24 +17,32 @@ import '../model/household.dart';
 import '../model/household_view.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
+import 'new_child_marking.dart';
 
 /// The household screen's controller: the household and its profiles, live, and
 /// the admin actions the screen offers. Created at the route, so its listeners
 /// end when the screen does (foundation ADR-0006).
 final class HouseholdController extends ChangeNotifier
-    with ActionFailureHolder {
+    with ActionFailureHolder
+    implements MakesChildren {
   HouseholdController({
     required HouseholdRepository householdRepository,
     required HouseholdDirectory householdDirectory,
+    required ChildProfileDirectory childProfileDirectory,
     required this.householdId,
     required this.viewerUid,
   }) : _repository = householdRepository,
-       _directory = householdDirectory {
+       _directory = householdDirectory,
+       _newChild = NewChildMarking(
+         childProfileDirectory: childProfileDirectory,
+         householdId: householdId,
+       ) {
     _subscribe();
   }
 
   final HouseholdRepository _repository;
   final HouseholdDirectory _directory;
+  final NewChildMarking _newChild;
   final String householdId;
   final String viewerUid;
 
@@ -44,10 +54,23 @@ final class HouseholdController extends ChangeNotifier
 
   AsyncState<HouseholdView> _view = const AsyncLoading();
   bool _isBusy = false;
+  String? _removingMemberId;
   InviteCode? _lastInvite;
 
   AsyncState<HouseholdView> get view => _view;
   bool get isBusy => _isBusy;
+
+  /// The profile whose removal is on its way to the server.
+  String? get removingMemberId => _removingMemberId;
+
+  @override
+  PremiumFeature? get childAwaitingPremium => _newChild.awaitingPremium;
+
+  @override
+  Future<void> markChildAfterUpgrade() => _run(_newChild.markAfterUpgrade);
+
+  @override
+  void forgetChildAwaitingPremium() => _newChild.forget();
 
   /// The code the last `createInvite` produced, for the sheet to show.
   InviteCode? get lastInvite => _lastInvite;
@@ -71,15 +94,16 @@ final class HouseholdController extends ChangeNotifier
   /// then adjusts (household ADR-0003).
   ///
   /// A kid is made with the consent the adult adding them gave, which the
-  /// rules require (accounts ADR-0005).
+  /// rules require (accounts ADR-0005), and is a child from then on
+  /// (household ADR-0009).
   Future<void> addMember({
     required String displayName,
     required MemberColor color,
     required MemberRole role,
     Birthday? birthday,
     bool guardianConsent = false,
-  }) => _run(
-    () => _repository.addMember(
+  }) => _run(() async {
+    final memberId = await _repository.addMember(
       householdId: householdId,
       displayName: displayName,
       color: color,
@@ -87,8 +111,9 @@ final class HouseholdController extends ChangeNotifier
       birthday: birthday,
       access: AccessDefaults.forRole(role),
       guardianConsent: _consentFor(role, given: guardianConsent),
-    ),
-  );
+    );
+    await _newChild.markIfKid(memberId, role);
+  });
 
   Future<void> updateMember({
     required String memberId,
@@ -132,6 +157,9 @@ final class HouseholdController extends ChangeNotifier
           role: role,
         );
       }
+      if (member != null && member.role != role) {
+        await _newChild.markIfKid(memberId, role);
+      }
     });
   }
 
@@ -145,9 +173,22 @@ final class HouseholdController extends ChangeNotifier
     return GuardianConsent.givenBy(viewer.id);
   }
 
-  Future<void> removeMember(String memberId) => _run(
-    () => _directory.removeMember(householdId: householdId, memberId: memberId),
-  );
+  /// Answers whether the profile is gone.
+  Future<bool> removeMember(String memberId) async {
+    if (_isBusy) return false;
+    _removingMemberId = memberId;
+    try {
+      return await _run(
+        () => _directory.removeMember(
+          householdId: householdId,
+          memberId: memberId,
+        ),
+      );
+    } finally {
+      _removingMemberId = null;
+      notifyListeners();
+    }
+  }
 
   Future<void> createInvite(String memberId) => _run(() async {
     _lastInvite = await _directory.createInvite(

@@ -6,8 +6,10 @@ import 'package:nestprep/features/household/data/invite_sharer.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/invite_step_controller.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_invite_sharer.dart';
 
@@ -18,19 +20,23 @@ void main() {
   late FakeHouseholdRepository repository;
   late FakeHouseholdDirectory directory;
   late FakeInviteSharer sharer;
+  late FakeFamilyProfileRepository children;
   late InviteStepController controller;
 
   setUp(() {
     repository = FakeHouseholdRepository();
     directory = FakeHouseholdDirectory();
     sharer = FakeInviteSharer(appLink: Uri.parse('https://nestprep.test/get'));
+    children = FakeFamilyProfileRepository();
     controller = InviteStepController(
       householdRepository: repository,
       householdDirectory: directory,
+      childProfileDirectory: children,
       inviteSharer: sharer,
       householdId: 'h1',
       householdName: 'The Parkers',
       coloursInUse: const [MemberColor.violet],
+      viewerMemberId: 'm-sam',
     );
   });
 
@@ -136,5 +142,62 @@ void main() {
 
     expect(second, isFalse);
     expect(repository.added, hasLength(1));
+  });
+
+  group('an invited kid is a child before they join (household ADR-0009)', () {
+    test('inviting a kid marks the new profile a child', () async {
+      await controller.invite(
+        displayName: 'Lulu',
+        role: MemberRole.kid,
+        guardianConsent: true,
+      );
+
+      expect(children.writes.single.$1, 'setIsChild');
+      expect(children.writes.single.$2, {
+        'memberId': 'm-new-1',
+        'isChild': true,
+      });
+      expect(controller.sent.single.displayName, 'Lulu');
+    });
+
+    test('inviting a helper marks nobody', () async {
+      await controller.invite(displayName: 'Thandi', role: MemberRole.helper);
+      expect(children.writes, isEmpty);
+    });
+
+    test(
+      'a second child on the free tier is still invited, and waits on premium',
+      () async {
+        children.failWritesWith = const PremiumRequiredFailure(
+          PremiumFeature.additionalChild,
+        );
+        final invited = await controller.invite(
+          displayName: 'Lulu',
+          role: MemberRole.kid,
+          guardianConsent: true,
+        );
+
+        expect(invited, isTrue);
+        expect(directory.invitesMade.single.memberId, 'm-new-1');
+        expect(controller.actionFailure, isNull);
+        expect(controller.childAwaitingPremium, PremiumFeature.additionalChild);
+
+        await controller.markChildAfterUpgrade();
+        expect(children.writes.single.$2['memberId'], 'm-new-1');
+      },
+    );
+
+    test('a marking that fails for another reason is said, and the invite '
+        'stands', () async {
+      children.failWritesWith = const UnavailableFailure();
+      await controller.invite(
+        displayName: 'Lulu',
+        role: MemberRole.kid,
+        guardianConsent: true,
+      );
+
+      expect(controller.sent.single.code, 'ABCD2345');
+      expect(controller.actionFailure, isA<UnavailableFailure>());
+    });
   });
 }

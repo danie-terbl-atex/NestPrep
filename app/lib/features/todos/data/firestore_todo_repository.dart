@@ -119,6 +119,7 @@ final class FirestoreTodoRepository implements TodoRepository {
     String? routineId,
     int points = 0,
     bool needsApproval = false,
+    String? picture,
   }) {
     final tasks = _tasks(householdId);
     if (taskId == null) {
@@ -136,6 +137,7 @@ final class FirestoreTodoRepository implements TodoRepository {
             routineId: routineId,
             points: points,
             needsApproval: needsApproval,
+            picture: picture,
           ),
         ),
       );
@@ -153,6 +155,7 @@ final class FirestoreTodoRepository implements TodoRepository {
         'routineId': routineId,
         'points': points,
         'needsApproval': needsApproval,
+        'picture': picture ?? FieldValue.delete(),
       }),
     );
   }

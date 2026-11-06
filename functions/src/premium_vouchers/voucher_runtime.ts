@@ -5,7 +5,7 @@ import { consumeRateLimit } from '../shared/rate_limit';
 import { callerEmailHashes, liveUserDirectory } from './caller_emails';
 import { firestoreChallenges } from './email_challenges';
 import { type EmailCodeDeps, randomEmailCode } from './email_code';
-import { resendEmailSender, silentEmailSender } from './email_sender';
+import { resendEmailSender, silentEmailSender } from '../shared/email_sender';
 import { premiumEmailFrom, premiumPepper, premiumTesters, resendApiKey } from './premium_config';
 import type { VoucherDeps } from './voucher_deps';
 

@@ -8,6 +8,8 @@
 /// is a switch in the settings screen that silently stops doing anything.
 library;
 
+import '../../../shared/time/calendar_date.dart';
+
 /// What a notification is about. A value a newer server wrote reads as
 /// `digest` — shown plainly, never a crash (`BE-10`).
 enum NotificationCategory {
@@ -103,6 +105,13 @@ abstract final class PushDataKeys {
   static const targetId = 'targetId';
 
   static const all = [householdId, inboxId, target, targetId];
+}
+
+/// A digest's inbox id is the person and the household day it is about
+/// (ADR-0002), so the app can find today's without a query (ADR-0005).
+abstract final class DigestIds {
+  static String of(String memberId, CalendarDate day) =>
+      'digest_${memberId}_${day.iso}';
 }
 
 /// A digest time is a quarter hour; the job runs every fifteen minutes.

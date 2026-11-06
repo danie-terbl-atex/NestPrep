@@ -56,6 +56,14 @@
         "source": "/.well-known/oauth-authorization-server/**",
         "function": { "functionId": "assistantAuth", "region": "europe-west1" }
       },
+      {
+        "source": "/calendarOAuthCallback",
+        "function": { "functionId": "calendarOAuthCallback", "region": "europe-west1" }
+      },
+      {
+        "source": "/calendarFeed",
+        "function": { "functionId": "calendarFeed", "region": "europe-west1" }
+      },
       { "source": "/invite/**", "destination": "/invite/index.html" },
       { "source": "/premium/**", "destination": "/premium/index.html" },
       { "source": "/.well-known/assetlinks.json", "destination": "/well-known/assetlinks.json" }
@@ -94,6 +102,17 @@
         ]
       },
       {
+        "source": "{/reset-password,/reset-password/**}",
+        "headers": [
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://identitytoolkit.googleapis.com; object-src 'none'; frame-ancestors 'none'; form-action 'self'; base-uri 'none'"
+          },
+          { "key": "Referrer-Policy", "value": "no-referrer" },
+          { "key": "Cache-Control", "value": "no-store" }
+        ]
+      },
+      {
         "source": "/__/auth/**",
         "headers": [
           {
@@ -105,6 +124,17 @@
       {
         "source": "{/mcp,/oauth/**,/.well-known/oauth-*,/.well-known/oauth-*/**,/api/premium/**}",
         "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      },
+      {
+        "source": "/calendarOAuthCallback",
+        "headers": [
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'"
+          },
+          { "key": "Referrer-Policy", "value": "no-referrer" },
+          { "key": "Cache-Control", "value": "no-store" }
+        ]
       },
       {
         "source": "{/premium,/premium/**}",

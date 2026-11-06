@@ -21,7 +21,7 @@ final class PlanWeekRig {
       weekBuilder: builder,
       catalogues: planWeekCatalogues(shop),
       shopChoice: planWeekShopChoice(Fixtures.householdId),
-      isPnpOn: () => false,
+      shopsOn: planWeekShopsOn(),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),

@@ -30,10 +30,10 @@ enum TourTarget {
   /// The lunch board with nobody to pack for: the way to family profiles.
   lunchNoChildren,
 
-  /// *Plan the whole week* and its *Fill the week*.
+  /// *Plan the whole week*, the week's planner card.
   lunchPlanner,
 
-  /// *Let Twig plan* inside the planner.
+  /// Its *Plan the week* button, which offers *Let Twig plan it*.
   lunchPlanMyWeek,
 
   /// The tools grid at the foot of the board.

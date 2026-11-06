@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../../../support/fake_document_tools.dart';
 import '../../../support/fake_documents.dart';
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/fake_vault.dart';
@@ -57,6 +58,7 @@ void main() {
     householdController = HouseholdController(
       householdRepository: households,
       householdDirectory: householdDirectory,
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: Fixtures.samUid,
     );

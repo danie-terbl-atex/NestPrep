@@ -4,7 +4,7 @@ import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
 import 'nest_brand_mark.dart';
 
-/// "nestprep" set tight in Mona Sans Display (design-system ADR-0020). Read once, as a
+/// "nestprep" set tight in Fraunces (design-system ADR-0008). Read once, as a
 /// heading, under [semanticsLabel].
 class NestWordmark extends StatelessWidget {
   const NestWordmark({
@@ -33,6 +33,7 @@ class NestWordmark extends StatelessWidget {
           height: 1,
           letterSpacing: -size * 0.04,
           color: nest.colors.ink,
+          fontVariations: [FontVariation('opsz', size)],
         ),
       ),
     );

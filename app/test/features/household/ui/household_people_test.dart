@@ -11,6 +11,7 @@ import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
@@ -44,6 +45,7 @@ void main() {
     controller = HouseholdController(
       householdRepository: repository,
       householdDirectory: directory,
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: viewerUid,
     );

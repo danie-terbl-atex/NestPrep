@@ -7,6 +7,7 @@ import 'package:nestprep/features/plan_week/ui/plan_week_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_plan_week.dart';
 import '../../../support/plan_week_one_idea.dart';
 import '../../../support/plan_week_rig.dart';
 import '../../../support/pump_screen.dart';
@@ -37,6 +38,7 @@ void main() {
         ...rig.harness.lunch.providers,
         ...rig.harness.providers,
         ChangeNotifierProvider<PlanWeekController>.value(value: rig.controller),
+        planWeekCartsProvider(),
       ],
       brightness: brightness,
       textScale: scale,

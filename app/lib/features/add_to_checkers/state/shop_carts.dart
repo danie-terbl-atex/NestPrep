@@ -1,24 +1,33 @@
 import '../../groceries/model/product_match.dart';
+import '../data/cart_pusher.dart';
 import 'cart_push_controller.dart';
 
-/// One cart push per connected shop for the grocery list (add-to-pnp
-/// ADR-0007): each the one generic [CartPushController], over that shop's
-/// own callables, so a push at one shop never waits on or shows the other.
+/// One cart push per connected shop (add-to-pnp ADR-0007): each the one
+/// generic [CartPushController], over that shop's own callables, so a push
+/// at one shop never waits on or shows another.
 final class ShopCarts {
-  const ShopCarts({required this.checkers, required this.pickNPay});
+  ShopCarts(Map<ProductRetailer, CartPushController> byShop)
+    : _byShop = Map.unmodifiable(byShop);
 
-  final CartPushController checkers;
-  final CartPushController pickNPay;
+  ShopCarts.over(
+    Map<ProductRetailer, CartPusher> pushers, {
+    required String householdId,
+  }) : this({
+         for (final MapEntry(key: shop, value: pusher) in pushers.entries)
+           shop: CartPushController(
+             directory: pusher,
+             householdId: householdId,
+           ),
+       });
 
-  /// [shop]'s push. A shop that is not connected has none.
-  CartPushController of(ProductRetailer shop) => switch (shop) {
-    ProductRetailer.checkers => checkers,
-    ProductRetailer.pickNPay => pickNPay,
-    ProductRetailer.woolworths => throw StateError('no cart for $shop'),
-  };
+  final Map<ProductRetailer, CartPushController> _byShop;
+
+  CartPushController of(ProductRetailer shop) =>
+      _byShop[shop] ?? (throw StateError('no cart for $shop'));
 
   void dispose() {
-    checkers.dispose();
-    pickNPay.dispose();
+    for (final cart in _byShop.values) {
+      cart.dispose();
+    }
   }
 }

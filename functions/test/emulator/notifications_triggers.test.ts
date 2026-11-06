@@ -32,7 +32,10 @@ describe('the triggers', () => {
         entryCount: 2,
         delivery: { state: 'pending' },
       });
-    const items = await eventually(inboxOf('handover'), (found) => found.length === 2);
+    const items = await eventually(
+      inboxOf('handover'),
+      (found) => found.length === 2 && found.every((item) => pushOf(item).state !== 'pending'),
+    );
     expect(items.map((item) => item['memberId']).sort()).toEqual([PAT.member, SAM.member]);
     expect(items.every((item) => pushOf(item).state === 'noDevice')).toBe(true);
     const summary = await eventually(

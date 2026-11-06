@@ -14,6 +14,7 @@ import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import 'home_layout_button.dart';
 import 'today_agenda_section.dart';
+import 'today_attention_card.dart';
 import 'today_lists_section.dart';
 import 'today_lunch_section.dart';
 
@@ -75,6 +76,7 @@ class TodayScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: NestSpace.xxl),
+          const NestRiseIn(index: 2, child: TodayAttentionCard()),
           if (sections.isEmpty)
             NestEmptyView(
               icon: LucideIcons.layoutGrid,
@@ -84,7 +86,7 @@ class TodayScreen extends StatelessWidget {
               onAction: () => onSelectTab(HouseholdTab.more),
             ),
           for (final (index, section) in sections.indexed)
-            NestRiseIn(index: index + 2, child: section),
+            NestRiseIn(index: index + 3, child: section),
         ],
       ),
     );

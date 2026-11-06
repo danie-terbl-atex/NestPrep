@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/calendar_sync/model/apple_calendar.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_connection.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_feed_link.dart';
 import 'package:nestprep/features/calendar_sync/model/calendar_provider.dart';
 import 'package:nestprep/features/calendar_sync/model/connection_status.dart';
 import 'package:nestprep/features/calendar_sync/model/provider_availability.dart';
+import 'package:nestprep/features/calendar_sync/state/apple_calendar_sync.dart';
 import 'package:nestprep/features/calendar_sync/state/connected_calendars_controller.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
+import '../../../support/fake_apple_calendar.dart';
 import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_link_opener.dart';
 import '../../../support/household_fixtures.dart';
@@ -248,6 +251,160 @@ void main() {
       expect(controller.actionFailure, isNotNull);
       controller.dismissActionFailure();
       expect(controller.actionFailure, isNull);
+    });
+  });
+
+  group('Apple Calendar, on this iPhone', () {
+    late FakeAppleCalendarReader reader;
+    late MemoryAppleCalendarLinkStore links;
+    late AppleCalendarSync apple;
+
+    final appleConnection = connection(
+      id: 'apple_m-thandi',
+      provider: CalendarProvider.apple,
+      label: '',
+    );
+
+    ConnectedCalendarsController onIphone({
+      String viewerUid = Fixtures.thandiUid,
+      bool isAdmin = false,
+    }) {
+      final controller = ConnectedCalendarsController(
+        calendarSyncRepository: repository,
+        calendarSyncDirectory: directory,
+        linkOpener: opener,
+        householdId: Fixtures.householdId,
+        viewerUid: viewerUid,
+        isAdmin: isAdmin,
+        appleCalendar: apple,
+        now: () => _now,
+      );
+      addTearDown(controller.dispose);
+      return controller;
+    }
+
+    setUp(() {
+      reader = FakeAppleCalendarReader()
+        ..calendarList = const [
+          AppleCalendar(
+            id: 'family',
+            title: 'Family',
+            account: 'iCloud',
+            suggested: true,
+          ),
+        ];
+      links = MemoryAppleCalendarLinkStore();
+      apple = AppleCalendarSync(
+        reader: reader,
+        store: links,
+        directory: directory,
+        now: () => _now,
+      );
+    });
+
+    test('is offered on an iPhone, and nowhere else', () async {
+      expect(
+        controllerFor().providersToConnect,
+        isNot(contains(CalendarProvider.apple)),
+      );
+      final android = ConnectedCalendarsController(
+        calendarSyncRepository: repository,
+        calendarSyncDirectory: directory,
+        linkOpener: opener,
+        householdId: Fixtures.householdId,
+        viewerUid: Fixtures.thandiUid,
+        isAdmin: false,
+        appleCalendar: AppleCalendarSync(
+          reader: FakeAppleCalendarReader(isAvailable: false),
+          store: links,
+          directory: directory,
+        ),
+      );
+      addTearDown(android.dispose);
+      expect(
+        android.providersToConnect,
+        isNot(contains(CalendarProvider.apple)),
+      );
+      expect(onIphone().providersToConnect.first, CalendarProvider.apple);
+    });
+
+    test('links the chosen calendars, then stops offering itself', () async {
+      final controller = onIphone();
+      expect(await controller.appleCalendars(), reader.calendarList);
+
+      expect(await controller.linkApple(['family']), isTrue);
+
+      expect(directory.applePushes.single.link, isTrue);
+      expect(controller.appleCalendarIds, ['family']);
+      expect(controller.isLinkedHere(appleConnection), isTrue);
+      expect(
+        controller.providersToConnect,
+        isNot(contains(CalendarProvider.apple)),
+      );
+    });
+
+    test(
+      'a refused permission is held for the screen, and nothing is sent',
+      () async {
+        reader
+          ..current = AppleCalendarAccess.notDetermined
+          ..answerToRequest = AppleCalendarAccess.denied;
+        final controller = onIphone();
+
+        expect(await controller.appleCalendars(), isNull);
+        expect(
+          controller.actionFailure,
+          isA<CalendarSyncFailure>().having(
+            (failure) => failure.problem,
+            'problem',
+            CalendarSyncProblem.appleCalendarDenied,
+          ),
+        );
+        expect(directory.applePushes, isEmpty);
+      },
+    );
+
+    test('Sync now sends from the phone, not the server', () async {
+      final controller = onIphone();
+      await controller.linkApple(['family']);
+      directory.applePushes.clear();
+
+      await controller.syncNow(appleConnection);
+
+      expect(directory.applePushes, hasLength(1));
+      expect(directory.synced, isEmpty);
+    });
+
+    test('only the phone that linked it can sync it', () async {
+      final controller = onIphone(isAdmin: true);
+      await pumpEventQueue();
+      expect(controller.canManage(appleConnection), isTrue);
+      expect(controller.canSync(appleConnection), isFalse);
+      expect(controller.canSync(connection()), isTrue);
+    });
+
+    test(
+      'disconnecting here forgets the link, so it is not sent again',
+      () async {
+        final controller = onIphone();
+        await controller.linkApple(['family']);
+
+        await controller.disconnect(appleConnection);
+
+        expect(directory.disconnected, ['apple_m-thandi']);
+        expect(links.links, isEmpty);
+        expect(controller.isLinkedHere(appleConnection), isFalse);
+      },
+    );
+
+    test('says so when Settings has since turned access off', () async {
+      await apple.link(Fixtures.thandiUid, Fixtures.householdId, ['family']);
+      reader.current = AppleCalendarAccess.denied;
+
+      final controller = onIphone();
+      await pumpEventQueue();
+
+      expect(controller.appleAccessLost, isTrue);
     });
   });
 

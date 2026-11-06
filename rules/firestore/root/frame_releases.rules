@@ -1,0 +1,6 @@
+// ---- frame update releases ----
+// What a frame's update agent may be offered. Written by the release script,
+// Internal Tools and `reportFrameUpdate`; read only by the update Functions.
+match /frameReleases/{releaseId} {
+  allow read, write: if false;
+}

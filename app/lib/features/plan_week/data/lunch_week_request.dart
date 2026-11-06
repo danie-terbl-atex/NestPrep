@@ -95,7 +95,9 @@ abstract final class LunchWeekRequest {
       'priceCents': product.price.cents,
       'isOnPromotion': product.isOnPromotion,
       'allergens': [for (final allergen in checked.allergens) allergen.name],
-      'allergensKnown': checked.isKnown,
+      // The server keeps an unknown product from every child with an
+      // allergy; one its shop's policy offers on its name is sent as known.
+      'allergensKnown': checked.isKnown || checked.isJudgedByName,
       'packQuantity': switch (product.packCount) {
         final count? when count >= 1 && count <= 100 => count,
         _ => null,

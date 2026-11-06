@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/calendar/state/calendar_controller.dart';
 import 'package:nestprep/features/family_profiles/model/family_roster.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
@@ -7,6 +8,7 @@ import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
+import 'package:nestprep/features/todos/model/task.dart';
 import 'package:nestprep/features/todos/state/todo_controller.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -77,6 +79,7 @@ void main() {
     Brightness brightness = Brightness.light,
     double textScale = 1,
     FamilyRoster? roster,
+    List<Task> tasks = const [],
   }) async {
     await pumpScreen(
       tester,
@@ -93,7 +96,7 @@ void main() {
     );
     lunch.emit(roster: roster);
     todoRepository
-      ..emitTasks([])
+      ..emitTasks(tasks)
       ..emitRoutines([])
       ..emitCompletions([]);
     calendarRepository
@@ -123,6 +126,35 @@ void main() {
     }
     expect(find.text(TodayCopy.agendaEmpty), findsOneWidget);
     expect(find.text(TodayCopy.todoDone), findsOneWidget);
+  });
+
+  Task mine(String id, String title, {String? picture}) => Task(
+    id: id,
+    title: title,
+    dueDate: todos.today,
+    assigneeIds: const [Fixtures.samMemberId],
+    createdBy: Fixtures.samMemberId,
+    picture: picture,
+  );
+
+  testWidgets('a to-do with a picture wears it small; one without, none', (
+    tester,
+  ) async {
+    await pumpFamily(
+      tester,
+      tasks: [
+        mine('teeth', 'Brush teeth', picture: 'brush-teeth'),
+        mine('gran', 'Call Gran'),
+      ],
+    );
+    await tester.scrollUntilVisible(
+      find.text('Call Gran'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final picture = find.byKey(const ValueKey('chore-picture-brush-teeth'));
+    expect(picture, findsOneWidget);
+    expect(find.byType(NestSticker), findsOneWidget);
   });
 
   testWidgets('with nobody to pack for, it asks who to add first', (
@@ -163,8 +195,19 @@ void main() {
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    await pumpFamily(tester, brightness: Brightness.dark, textScale: 2);
+    await pumpFamily(
+      tester,
+      brightness: Brightness.dark,
+      textScale: 2,
+      tasks: [mine('teeth', 'Brush your teeth', picture: 'brush-teeth')],
+    );
 
+    expect(tester.takeException(), isNull);
+    await tester.scrollUntilVisible(
+      find.text('Brush your teeth'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(tester.takeException(), isNull);
   });
 }

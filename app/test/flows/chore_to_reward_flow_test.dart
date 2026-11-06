@@ -99,6 +99,7 @@ void main() {
     await tester.tap(find.text(AppCopy.todosAddTask));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Tidy your room');
+    await tester.pumpAndSettle();
     await tapInSheet(
       tester,
       find.descendant(

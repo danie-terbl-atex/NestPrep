@@ -81,7 +81,9 @@ export interface Cart {
   readonly totalCents: number;
 }
 
+/** A line to write: a new one when `lineId` is null, else that line at this quantity. */
 export interface NewCartLine {
+  readonly lineId: string | null;
   readonly productId: string;
   readonly storeId: string;
   readonly priceCents: number;
@@ -102,7 +104,7 @@ export interface CheckersShop {
   findByArticleCode(context: ShopContext, articleCode: string): Promise<CatalogProduct | null>;
   /** The member's sixty-minute cart. */
   readCart(context: ShopContext): Promise<Cart>;
-  /** Adds lines to the cart — Checkers merges them in — and answers the cart after. */
+  /** Writes lines into the cart — Checkers upserts them by line id — and answers the cart after. */
   addLines(context: ShopContext, cart: Cart, lines: readonly NewCartLine[]): Promise<Cart>;
 }
 

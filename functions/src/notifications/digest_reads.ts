@@ -159,7 +159,20 @@ export async function readLunchBoxes(
 }
 
 const completionShape = z.object({ taskId: z.string(), occurrenceDate: z.string() });
-const taskWithNote = storedTask.extend({ note: z.string().nullable().default(null).catch(null) });
+const taskOnTheDay = storedTask.extend({
+  note: z.string().nullable().default(null).catch(null),
+  picture: z
+    .string()
+    .regex(/^[a-z0-9-]{1,48}$/)
+    .nullable()
+    .default(null)
+    .catch(null),
+});
+
+export function taskRecordOf(id: string, data: unknown): TaskRecord | undefined {
+  const task = parsed(taskOnTheDay, data);
+  return task === undefined ? undefined : { id, task, note: task.note, picture: task.picture };
+}
 
 /** The tasks and routines a day's chores come from, and what was ticked. */
 export interface ChoreRecords {
@@ -192,10 +205,7 @@ export async function readChoreRecords(
   ]);
   const completions = done.docs.flatMap((doc) => parsed(completionShape, doc.data()) ?? []);
   return {
-    tasks: tasks.docs.flatMap((doc) => {
-      const task = parsed(taskWithNote, doc.data());
-      return task === undefined ? [] : [{ id: doc.id, task, note: task.note }];
-    }),
+    tasks: tasks.docs.flatMap((doc) => taskRecordOf(doc.id, doc.data()) ?? []),
     routines: Object.fromEntries(
       routines.docs.flatMap((doc) => {
         const routine = parsed(storedRoutine, doc.data());

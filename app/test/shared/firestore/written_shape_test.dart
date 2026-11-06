@@ -213,6 +213,19 @@ void main() {
         'needsApproval',
       });
       expect(shape.serverAssigned, {'createdAt'});
+      // No picture is left out, never written as null: a task without one
+      // passes rules that predate pictures (todos ADR-0005).
+      expect(json.containsKey('picture'), isFalse);
+      expect(
+        Task(
+          id: 't',
+          title: 'Teeth',
+          dueDate: date,
+          createdBy: 'm-sam',
+          picture: 'brush-teeth',
+        ).toJson()['picture'],
+        'brush-teeth',
+      );
       expect(json['dueDate'], '2026-09-18');
       // No stars and no check is what anybody but family may write (todos
       // ADR-0003) — the rules refuse anything else from a helper.

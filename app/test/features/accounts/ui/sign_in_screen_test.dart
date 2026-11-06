@@ -102,8 +102,13 @@ void main() {
     await tester.tap(find.byTooltip(AppCopy.signInWithApple));
     await tester.pumpAndSettle();
 
+    expect(find.text(AppCopy.signInAppleComingSoonTitle), findsOneWidget);
     expect(find.text(AppCopy.signInAppleComingSoon), findsOneWidget);
     expect(auth.googleSignIns, isEmpty);
+
+    await tester.tap(find.byKey(const ValueKey('apple-coming-soon-ok')));
+    await tester.pumpAndSettle();
+    expect(find.text(AppCopy.signInAppleComingSoonTitle), findsNothing);
   });
 
   testWidgets('tapping Google asks the gateway exactly once', (tester) async {

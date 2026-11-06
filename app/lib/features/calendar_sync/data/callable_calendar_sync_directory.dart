@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../shared/failure/app_failure.dart';
+import '../model/apple_calendar.dart';
 import '../model/calendar_feed_link.dart';
 import '../model/calendar_provider.dart';
 import '../model/provider_availability.dart';
@@ -57,6 +58,26 @@ final class CallableCalendarSyncDirectory implements CalendarSyncDirectory {
       'householdId': householdId,
       'connectionId': connectionId,
     });
+  }
+
+  @override
+  Future<String> pushAppleCalendar(
+    String householdId, {
+    required bool link,
+    required List<AppleOccurrence> occurrences,
+  }) async {
+    final result = await _call('pushAppleCalendar', {
+      'householdId': householdId,
+      'link': link,
+      'occurrences': [
+        for (final occurrence in occurrences) occurrence.toPayload(),
+      ],
+    });
+    final connectionId = result['connectionId'];
+    if (connectionId is! String || connectionId.isEmpty) {
+      throw UnknownFailure(StateError('no connection id'));
+    }
+    return connectionId;
   }
 
   @override

@@ -8,14 +8,19 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/invite_step_controller.dart';
 import 'package:nestprep/features/household/ui/invite_step_screen.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_invite_sharer.dart';
+import '../../../support/fake_subscriptions.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 /// The step a new household opens with (household ADR-0003): "who else keeps
 /// this house running?", an invite made and shared in two taps, and a way out
@@ -24,19 +29,23 @@ void main() {
   late FakeHouseholdRepository repository;
   late FakeHouseholdDirectory directory;
   late FakeInviteSharer sharer;
+  late FakeFamilyProfileRepository children;
   late InviteStepController controller;
 
   setUp(() {
     repository = FakeHouseholdRepository();
     directory = FakeHouseholdDirectory();
     sharer = FakeInviteSharer();
+    children = FakeFamilyProfileRepository();
     controller = InviteStepController(
       householdRepository: repository,
       householdDirectory: directory,
+      childProfileDirectory: children,
       inviteSharer: sharer,
       householdId: Fixtures.householdId,
       householdName: 'The Parkers',
       coloursInUse: const [],
+      viewerMemberId: Fixtures.samMemberId,
     );
   });
 
@@ -80,6 +89,23 @@ void main() {
     brightness: brightness,
     textScale: scale,
   );
+
+  Future<void> inviteAKid(WidgetTester tester) async {
+    await tester.tap(find.text(AccessCopy.setupPartner));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Lulu');
+    await tester.tap(find.text(AccessCopy.roleName(MemberRole.kid)));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text(LegalCopy.guardianConsentLabel));
+    await tester.tap(find.text(LegalCopy.guardianConsentLabel));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.widgetWithText(NestButton, AccessCopy.inviteSend),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(NestButton, AccessCopy.inviteSend));
+    await tester.pumpAndSettle();
+  }
 
   Future<void> inviteSomebody(
     WidgetTester tester, {
@@ -228,4 +254,75 @@ void main() {
 
     expect(tester.takeException(), isNull);
   });
+
+  group(
+    'an invited kid is in lunches before they join (household ADR-0009)',
+    () {
+      testWidgets('inviting a kid marks them a child, and shares the code', (
+        tester,
+      ) async {
+        await pump(tester);
+        await tester.pumpAndSettle();
+
+        await inviteAKid(tester);
+
+        expect(repository.added.single.role, MemberRole.kid);
+        expect(children.writes.single.$2, {
+          'memberId': 'm-new-1',
+          'isChild': true,
+        });
+        expect(sharer.sent.single.text, contains('ABCD2345'));
+      });
+
+      testWidgets('a second child on the free tier is invited, then offered '
+          'premium, and marked once it is bought', (tester) async {
+        tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
+        tester.view.devicePixelRatio = 3;
+        addTearDown(tester.view.reset);
+        final premium = SubscriptionHarness();
+        children.failWritesWith = const PremiumRequiredFailure(
+          PremiumFeature.additionalChild,
+        );
+        await pumpRouter(
+          tester,
+          router: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const InviteStepScreen(),
+              ),
+            ],
+          ),
+          providers: [
+            ChangeNotifierProvider<InviteStepController>.value(
+              value: controller,
+            ),
+            ...premium.providers,
+          ],
+          view: owingTheStep(),
+        );
+        await tester.pumpAndSettle();
+
+        await inviteAKid(tester);
+
+        expect(find.text('ABCD2345'), findsOneWidget);
+        expect(
+          find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
+          findsOneWidget,
+        );
+
+        await tester.tap(find.text(SubscriptionCopy.subscribe));
+        await tester.pump();
+        premium.store.report([purchased()]);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(SubscriptionCopy.done).last);
+        await tester.pumpAndSettle();
+
+        expect(children.writes.single.$2, {
+          'memberId': 'm-new-1',
+          'isChild': true,
+        });
+      });
+    },
+  );
 }

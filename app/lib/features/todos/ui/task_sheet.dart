@@ -8,9 +8,11 @@ import '../../../shared/ui/nest_date_field.dart';
 import '../../../shared/ui/recurrence_editor.dart';
 import '../../chore_points/ui/chore_stars_field.dart';
 import '../../household/model/member.dart';
+import '../../household/model/member_role.dart';
 import '../../household/ui/member_picker.dart';
 import '../model/routine.dart';
 import '../model/task.dart';
+import 'chore_picture_field.dart';
 
 /// What the task sheet came back with. Two different outcomes, so two cases
 /// rather than one class with fields that mean nothing in half of them
@@ -29,6 +31,7 @@ final class TaskSaved extends TaskDraft {
     this.routineId,
     this.points = 0,
     this.needsApproval = false,
+    this.picture,
   });
 
   final String title;
@@ -43,6 +46,9 @@ final class TaskSaved extends TaskDraft {
   /// the choice.
   final int points;
   final bool needsApproval;
+
+  /// The sticker it wears, by id, or null for none (todos ADR-0005).
+  final String? picture;
 }
 
 final class TaskDeleted extends TaskDraft {
@@ -98,6 +104,7 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
   late String? _routineId = widget.existing?.routineId;
   late int _points = widget.existing?.points ?? 0;
   late bool _needsApproval = widget.existing?.needsApproval ?? false;
+  late String? _picture = widget.existing?.picture;
 
   @override
   void dispose() {
@@ -109,6 +116,17 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
   /// A task inside a routine follows the routine's schedule, so offering it its
   /// own would be offering a choice that does nothing (todos ADR-0001).
   bool get _followsARoutine => _routineId != null;
+
+  String? get _whereItShows {
+    final kids = {
+      for (final member in widget.members)
+        if (member.role == MemberRole.kid) member.id,
+    };
+    if (!_assigneeIds.any(kids.contains)) return null;
+    return _assigneeIds.every(kids.contains)
+        ? AppCopy.todosShowsOnChores
+        : AppCopy.todosShowsOnTodoAndChores;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +152,12 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
             label: AppCopy.todosNoteLabel,
             controller: _note,
             maxLines: 2,
+          ),
+          const SizedBox(height: NestSpace.xl),
+          ChorePictureField(
+            title: _title.text,
+            picture: _picture,
+            onChanged: (picture) => setState(() => _picture = picture),
           ),
           if (widget.routines.isNotEmpty) ...[
             const SizedBox(height: NestSpace.xl),
@@ -186,6 +210,15 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
             selectedIds: _assigneeIds,
             onChanged: (ids) => setState(() => _assigneeIds = ids),
           ),
+          if (_whereItShows case final where?) ...[
+            const SizedBox(height: NestSpace.sm),
+            Text(
+              where,
+              style: nest.text.caption.copyWith(
+                color: nest.colors.inkSecondary,
+              ),
+            ),
+          ],
           if (widget.canSetStars) ...[
             const SizedBox(height: NestSpace.xl),
             ChoreStarsField(
@@ -229,6 +262,7 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
         points: _points,
         // A chore worth nothing has nothing to check.
         needsApproval: _points > 0 && _needsApproval,
+        picture: _picture,
       ),
     );
   }

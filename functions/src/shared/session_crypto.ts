@@ -1,11 +1,10 @@
 import { randomBytes, webcrypto } from 'node:crypto';
 
 /**
- * Sealing what a member's shop link stores about their shop account —
- * `checkersLinks/{uid}` under `CHECKERS_SESSION_KEY` (the Checkers build
- * contract) and `pnpLinks/{uid}` under `PNP_SESSION_KEY` (add-to-pnp
- * ADR-0003) — with AES-256-GCM (ENG-18). Each shop has its own key, so
- * rotating one signs nobody out of the other.
+ * Sealing what a member's shop link stores about their shop account — each
+ * `<shop>Links/{uid}` under that shop's own `<SHOP>_SESSION_KEY` (the Checkers
+ * build contract, add-to-pnp ADR-0003) — with AES-256-GCM (ENG-18). Each shop
+ * has its own key, so rotating one signs nobody out of any other.
  *
  * The member's uid is the additional authenticated data, so a sealed value
  * copied onto another member's link does not open. A sealed value is

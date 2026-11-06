@@ -11,7 +11,6 @@ import { parseInput } from '../household/parse_input';
 import { readFlag, type FeatureFlag } from '../shared/feature_flags';
 import { db } from '../shared/firestore';
 import { readLinkedFrame } from './frame_access';
-import { FRAME_AREAS } from './frame_areas';
 import { refuseFrame } from './frame_errors';
 import { type FrameProduct, frameProductsInOrder, searchableProducts } from './frame_groceries';
 import {
@@ -34,11 +33,13 @@ const UNLINKED: SearchFrameProductsResult = { status: 'unlinked' };
 const SHOP_FLAGS: Record<FrameGroceryShop, FeatureFlag> = {
   checkers: 'addToCheckers',
   pickNPay: 'addToPnp',
+  woolworths: 'addToWoolworths',
 };
 
 /**
  * A linked frame looks a grocery item up at the family's shop for it
- * (photo-frames ADR-0012): the frame's shop, near the frame's area, ranked by
+ * (photo-frames ADR-0012): the frame's shop, near the frame's area — at
+ * Woolworths, the store the phone found for it — ranked by
  * Jev as the phone's matches are. A ranking that fails keeps the shop's order.
  */
 export const searchFrameProducts = onCall(
@@ -54,19 +55,14 @@ export const searchFrameProducts = onCall(
 
     let found: FrameShopProduct[];
     try {
-      found = await frameCatalogueHere().search(
-        groceries.shop,
-        FRAME_AREAS[groceries.area],
-        input.query,
-        MAX_RANKED_PRODUCTS,
-      );
+      found = await frameCatalogueHere().search(groceries, input.query, MAX_RANKED_PRODUCTS);
     } catch (error) {
       if (!(error instanceof FrameShopUnavailable)) throw error;
       logger.warn('frame shop search failed', { shop: groceries.shop, reason: error.reason });
       throw refuseFrame('shopUnavailable');
     }
     const products = searchableProducts(found, MAX_RANKED_PRODUCTS);
-    const ranking = await rankingOf(store, linked.home.id, input.query, products);
+    const ranking = await rankingOf(store, linked.home.id, groceries.shop, input.query, products);
     return { status: 'linked', products: frameProductsInOrder(products, ranking) };
   },
 );
@@ -74,12 +70,14 @@ export const searchFrameProducts = onCall(
 async function rankingOf(
   store: Firestore,
   householdId: string,
+  retailer: FrameGroceryShop,
   item: string,
   products: readonly FrameShopProduct[],
 ): Promise<RankedMatch[] | null> {
   if (products.length === 0) return null;
   const input = {
     householdId,
+    retailer,
     item,
     products: products.map((product) => ({
       productId: product.productId,

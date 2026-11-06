@@ -152,6 +152,9 @@ describe('every callable declares what it may cost', () => {
         'redeemKidPairing',
         'resetKidSignIn',
         'revokeKidDevice',
+        // Password reset: an Admin SDK link and an email through Resend, for a
+        // person who cannot sign in (accounts ADR-0012).
+        'sendPasswordReset',
         // Calendar sync (calendar ADR-0003): a provider's token exchange and
         // refresh, a link fetched with an address check, a feed served by
         // token, and a schedule — none of which a rule can do.
@@ -160,6 +163,7 @@ describe('every callable declares what it may cost', () => {
         'connectCalendarLink',
         'disconnectCalendar',
         'listCalendarProviders',
+        'pushAppleCalendar',
         'resetCalendarFeed',
         'shareCalendarFeed',
         'startCalendarConnection',
@@ -283,6 +287,13 @@ describe('every callable declares what it may cost', () => {
         'pnpPushToCart',
         'pnpStartLink',
         'pnpUnlink',
+        // Add to Woolworths: the member's Cognito tokens are sealed and held
+        // by the server, and fill their own Dash cart.
+        'woolworthsCompleteLink',
+        'woolworthsLinkStatus',
+        'woolworthsPushToCart',
+        'woolworthsStartLink',
+        'woolworthsUnlink',
         // Jev's ranking of a grocery line's matches: the TypeSafe key is a
         // server secret (foundation ADR-0021).
         'rankProductMatches',
@@ -301,10 +312,14 @@ describe('every callable declares what it may cost', () => {
         // which only family may put on the wall (C-0023 rev 9), streams a
         // shared recipe's photo (photo-frames ADR-0013), and searches the
         // family's shop and adds to the grocery list in the name of whoever
-        // says they are adding it (photo-frames ADR-0012).
+        // says they are adding it (photo-frames ADR-0012). Its update agent
+        // registers by its own secret, is offered releases no rule could
+        // choose, streams the APK and reports installs that halt a rollout.
         'addFrameEvent',
         'addFrameGroceryItem',
+        'checkFrameUpdate',
         'claimFramePairing',
+        'getFrameUpdateApk',
         'getFrameDay',
         'getFrameLunchPhoto',
         'getFrameMonth',
@@ -312,6 +327,7 @@ describe('every callable declares what it may cost', () => {
         'getFramePhoto',
         'getFramePhotos',
         'pollFramePairing',
+        'reportFrameUpdate',
         'searchFrameProducts',
         'shareToFrame',
         'startFramePairing',

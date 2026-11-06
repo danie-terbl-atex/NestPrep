@@ -32,8 +32,8 @@ const CART_UPDATE_PATH = '/api/v3/carts/update?useProductMinInfoAnnotation=true'
 
 /**
  * Shopping as the member (the Checkers build contract): each picked product
- * re-read at the member's own stores, their cart read, and new lines merged
- * into it. Cart only — nothing here reaches a slot, a checkout or a payment.
+ * re-read at the member's own stores, their cart read, and the packs short
+ * written into it. Cart only — nothing here reaches a slot, a checkout or a payment.
  */
 export class HttpCheckersShop implements CheckersShop {
   constructor(
@@ -72,8 +72,9 @@ export class HttpCheckersShop implements CheckersShop {
   }
 
   async addLines(context: ShopContext, cart: Cart, lines: readonly NewCartLine[]): Promise<Cart> {
-    // Checkers merges the lines it is sent into the cart by line id, so only
-    // the new lines go; a line already there is never re-sent, and so never
+    // Checkers upserts the lines it is sent by line id and sets each one's
+    // quantity, so only the lines that grow go: a new line, or an existing
+    // line at its new, larger quantity. A line not sent is untouched and never
     // zeroed. A cart write is never retried (BE-06).
     const reply = await this.post(context, `${CHECKERS_HOSTS.orders}${CART_UPDATE_PATH}`, {
       carts: [
@@ -132,10 +133,10 @@ export function lineObjectId(now: Date = new Date()): string {
   return seconds + randomBytes(8).toString('hex');
 }
 
-/** A new cart line in the shape the app sends (the OSS clients' capture). */
+/** A cart line in the shape the app sends (the OSS clients' capture). */
 function newLineWire(line: NewCartLine): Record<string, unknown> {
   return {
-    id: lineObjectId(),
+    id: line.lineId ?? lineObjectId(),
     status: 'available',
     price: line.priceCents,
     priceFactor: 100,

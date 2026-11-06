@@ -43,6 +43,32 @@ describe('exportAccountData', () => {
       linkedByUid: h.sam.uid,
       status: 'active',
     });
+    await adminDb()
+      .collection('checkersLinks')
+      .doc(h.sam.uid)
+      .set({
+        deviceId: 'device-sam',
+        pending: null,
+        session: {
+          sealed: 'v1.sealed-checkers-session',
+          expiresAt: new Date('2026-11-05T09:00:00Z'),
+          storeContexts: [],
+          mobileMasked: '+27 ** *** 4567',
+        },
+        updatedAt: new Date('2026-11-05T08:00:00Z'),
+      });
+    await adminDb()
+      .collection('woolworthsLinks')
+      .doc(h.sam.uid)
+      .set({
+        session: {
+          sealed: 'v1.sealed-woolworths-session',
+          idExpiresAt: new Date('2026-11-05T09:30:00Z'),
+          linkedAt: new Date('2026-11-02T07:00:00Z'),
+          emailMasked: 's***@example.com',
+        },
+        updatedAt: new Date('2026-11-05T08:30:00Z'),
+      });
     await adminDb().collection('feedback').doc('f1').set({
       uid: h.sam.uid,
       kind: 'problem',
@@ -76,6 +102,7 @@ describe('exportAccountData', () => {
       vaultFiles: { name: string }[];
       storeSubscriptions: Record<string, unknown>[];
       feedback: { records: { id: string; message: string }[]; cutShort: boolean };
+      shopLinks: Record<string, Record<string, string | null> | null>;
     };
     expect(body.formatVersion).toBe(1);
     expect(body.signIn?.email).toBe(h.sam.email);
@@ -95,6 +122,21 @@ describe('exportAccountData', () => {
       'The lunch board forgets Thursday.',
     ]);
     expect(body.feedback.cutShort).toBe(false);
+    expect(body.shopLinks).toEqual({
+      checkers: {
+        mobileMasked: '+27 ** *** 4567',
+        expiresAt: '2026-11-05T09:00:00.000Z',
+        updatedAt: '2026-11-05T08:00:00.000Z',
+      },
+      pickNPay: null,
+      woolworths: {
+        emailMasked: 's***@example.com',
+        linkedAt: '2026-11-02T07:00:00.000Z',
+        idExpiresAt: '2026-11-05T09:30:00.000Z',
+        updatedAt: '2026-11-05T08:30:00.000Z',
+      },
+    });
+    expect(text).not.toContain('sealed-');
     // The store's own purchase credential is never handed out, even to its owner.
     expect(text).not.toContain('purchase-token');
   });

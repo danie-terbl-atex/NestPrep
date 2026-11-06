@@ -7,6 +7,7 @@ import 'package:provider/single_child_widget.dart';
 import '../features/accounts/model/session.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/notifications/data/callable_notification_directory.dart';
+import '../features/notifications/data/digest_prompt_store.dart';
 import '../features/notifications/data/firebase_push_gateway.dart';
 import '../features/notifications/data/firestore_notification_repository.dart';
 import '../features/notifications/data/firestore_push_token_repository.dart';
@@ -14,6 +15,7 @@ import '../features/notifications/data/notification_directory.dart';
 import '../features/notifications/data/notification_repository.dart';
 import '../features/notifications/data/push_gateway.dart';
 import '../features/notifications/data/push_token_repository.dart';
+import '../features/notifications/data/secure_storage_digest_prompt_store.dart';
 import '../features/notifications/state/push_registrar.dart';
 import '../shared/async/async_state.dart';
 
@@ -37,6 +39,9 @@ List<SingleChildWidget> notificationsProviders() => [
   Provider<NotificationDirectory>(
     create: (context) =>
         CallableNotificationDirectory(context.read<FirebaseFunctions>()),
+  ),
+  Provider<DigestPromptStore>(
+    create: (context) => SecureStorageDigestPromptStore(),
   ),
   Provider<PushGateway>(
     create: (context) => FirebasePushGateway(FirebaseMessaging.instance),

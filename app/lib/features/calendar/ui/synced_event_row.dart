@@ -117,7 +117,7 @@ class SyncedEventRow extends StatelessWidget {
             ),
             const SizedBox(height: NestSpace.sm),
             Text(
-              CalendarSyncCopy.syncedReadOnlyBody,
+              CalendarSyncCopy.syncedReadOnlyBody(event.provider),
               style: nest.text.body.copyWith(color: nest.colors.inkSecondary),
             ),
             const SizedBox(height: NestSpace.xl),

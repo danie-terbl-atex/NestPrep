@@ -73,6 +73,14 @@ abstract final class NestSize {
   static const double twigMedium = 52;
   static const double twigLarge = 96;
 
+  /// A chore's picture (`NestSticker`, todos ADR-0005): beside a row's title;
+  /// a one-tap suggestion in the task sheet; leading a kid's chore, where it
+  /// is the hero for a child who cannot read yet; and in a celebration.
+  static const double stickerSmall = 40;
+  static const double stickerMedium = 56;
+  static const double stickerLarge = 80;
+  static const double stickerHero = 96;
+
   /// A satellite on the welcome's orbit (`NestDot`).
   static const double dot = 12;
   static const double wordmarkSignature = 18;

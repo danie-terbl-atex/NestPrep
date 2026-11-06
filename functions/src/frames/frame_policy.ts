@@ -120,8 +120,11 @@ export function addsEvents(panels: FramePanels): boolean {
 }
 
 /** The shops a frame may add groceries from (photo-frames ADR-0012), by the app's `ProductRetailer.code`. */
-export const FRAME_GROCERY_SHOPS = ['checkers', 'pickNPay'] as const;
+export const FRAME_GROCERY_SHOPS = ['checkers', 'pickNPay', 'woolworths'] as const;
 export type FrameGroceryShop = (typeof FRAME_GROCERY_SHOPS)[number];
+
+/** The price fields a Woolworths store's price list reads, as the phone resolved it for the frame. */
+export const WOOLWORTHS_PRICE_ZONES = ['p10', 'p30', 'p60'] as const;
 
 /** Someone typing an item a letter at a time, debounced, for a long shopping list (ADR-0012). */
 export const FRAME_SEARCH_PRODUCTS_PER_CREDENTIAL: RateLimitRule = {

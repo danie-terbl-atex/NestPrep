@@ -331,6 +331,44 @@ describe('removeMember', () => {
     expect(member.exists).toBe(false);
   });
 
+  it('revokes the code they were sent, so a shared link no longer opens (household ADR-0009)', async () => {
+    const sam = await signUp();
+    const late = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const kidId = await addMember(householdId, 'Kid', 'kid');
+    const siblingId = await addMember(householdId, 'Sibling', 'kid');
+    const kidInvite = await callAs<CreatedInvite>(sam, 'createInvite', {
+      householdId,
+      memberId: kidId,
+    });
+    const siblingInvite = await callAs<CreatedInvite>(sam, 'createInvite', {
+      householdId,
+      memberId: siblingId,
+    });
+
+    await callAs(sam, 'removeMember', { householdId, memberId: kidId });
+
+    expect((await adminDb().collection('invites').doc(kidInvite.code).get()).exists).toBe(false);
+    await expectRefusal(callAs(late, 'redeemInvite', { code: kidInvite.code }), 'inviteNotFound');
+    expect((await adminDb().collection('invites').doc(siblingInvite.code).get()).exists).toBe(true);
+  });
+
+  it('keeps the spent invite of somebody who joined, as the record of it', async () => {
+    const sam = await signUp();
+    const thandi = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const helperMemberId = await addMember(householdId, 'Thandi', 'helper');
+    const invite = await callAs<CreatedInvite>(sam, 'createInvite', {
+      householdId,
+      memberId: helperMemberId,
+    });
+    await callAs(thandi, 'redeemInvite', { code: invite.code });
+
+    await callAs(sam, 'removeMember', { householdId, memberId: helperMemberId });
+
+    expect((await adminDb().collection('invites').doc(invite.code).get()).exists).toBe(true);
+  });
+
   it('refuses an admin removing themselves — that is leaving', async () => {
     const sam = await signUp();
     const { householdId, memberId } = await createHousehold(sam);

@@ -35,6 +35,10 @@ void main() {
     // exactly. These are fixture identifiers, not product copy, and they exist
     // in no store build.
     'lib/app/seeded_sign_in.dart',
+    // The chore-picture library's labels are generated from
+    // tools/chore-pictures/catalogue.json, their one home, with the art
+    // (todos ADR-0005); the picker and the suggestions both read them there.
+    'lib/features/todos/model/chore_picture_catalogue.dart',
     // The gallery is a debug route naming the primitives it is showing; its
     // labels are the widget names, not words anybody is meant to read.
   };

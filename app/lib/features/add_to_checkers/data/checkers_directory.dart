@@ -15,8 +15,8 @@ abstract interface class CheckersDirectory implements CartPusher {
   Future<CheckersLinkStatus> verifyOtp(String code);
 
   /// Puts the matched, unbought items among [itemIds] into the member's own
-  /// Sixty60 cart, one of each item. Cart only — never a slot, a checkout or
-  /// a payment.
+  /// Sixty60 cart, as many packs of each as [quantities] asks. Cart only —
+  /// never a slot, a checkout or a payment.
   @override
   Future<CartPushResult> pushToCart({
     required String householdId,

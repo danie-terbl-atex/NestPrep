@@ -145,6 +145,7 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
     String? routineId,
     int points = 0,
     bool needsApproval = false,
+    String? picture,
   }) {
     final trimmed = title.trim();
     if (trimmed.isEmpty) return Future.value();
@@ -161,6 +162,7 @@ final class TodoController extends ChangeNotifier with ActionFailureHolder {
         routineId: routineId,
         points: points,
         needsApproval: needsApproval,
+        picture: picture,
       ),
     );
   }

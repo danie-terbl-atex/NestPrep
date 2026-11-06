@@ -7,9 +7,11 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
+import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 
@@ -22,14 +24,17 @@ import '../../../support/household_fixtures.dart';
 void main() {
   late FakeHouseholdRepository repository;
   late FakeHouseholdDirectory directory;
+  late FakeFamilyProfileRepository children;
   late HouseholdController controller;
 
   setUp(() {
     repository = FakeHouseholdRepository();
     directory = FakeHouseholdDirectory();
+    children = FakeFamilyProfileRepository();
     controller = HouseholdController(
       householdRepository: repository,
       householdDirectory: directory,
+      childProfileDirectory: children,
       householdId: Fixtures.householdId,
       viewerUid: Fixtures.samUid,
     );
@@ -274,6 +279,151 @@ void main() {
           isEmpty,
           reason: 'neither of these changes who is in the household',
         );
+      },
+    );
+  });
+
+  group(
+    'a kid profile is a child before anybody joins (household ADR-0009)',
+    () {
+      List<(String, Map<String, Object?>)> markings() =>
+          children.writes.where((write) => write.$1 == 'setIsChild').toList();
+
+      test('adding a kid marks the new profile a child', () async {
+        await settle();
+        await controller.addMember(
+          displayName: 'Lulu',
+          color: MemberColor.teal,
+          role: MemberRole.kid,
+          guardianConsent: true,
+        );
+        expect(markings().single.$2, {'memberId': 'm-new-1', 'isChild': true});
+        expect(controller.childAwaitingPremium, isNull);
+      });
+
+      test('adding a grown-up marks nobody', () async {
+        await settle();
+        await controller.addMember(
+          displayName: 'Gogo',
+          color: MemberColor.teal,
+          role: MemberRole.parent,
+        );
+        expect(markings(), isEmpty);
+      });
+
+      test('a profile whose role moves to kid is marked', () async {
+        await settle();
+        await controller.updateMember(
+          memberId: Fixtures.thandiMemberId,
+          displayName: 'Thandi',
+          color: MemberColor.sky,
+          role: MemberRole.kid,
+          guardianConsent: true,
+        );
+        expect(markings().single.$2['memberId'], Fixtures.thandiMemberId);
+      });
+
+      test('renaming a kid marks nothing again', () async {
+        await settle();
+        await controller.updateMember(
+          memberId: Fixtures.kidMemberId,
+          displayName: 'Kiddo',
+          color: MemberColor.sky,
+          role: MemberRole.kid,
+        );
+        expect(
+          markings(),
+          isEmpty,
+          reason: 'unmarking is the parent\'s choice',
+        );
+      });
+
+      test(
+        'a second child on the free tier is still added, and waits on premium',
+        () async {
+          await settle();
+          children.failWritesWith = const PremiumRequiredFailure(
+            PremiumFeature.additionalChild,
+          );
+          await controller.addMember(
+            displayName: 'Lulu',
+            color: MemberColor.teal,
+            role: MemberRole.kid,
+            guardianConsent: true,
+          );
+
+          expect(repository.added.single.displayName, 'Lulu');
+          expect(
+            controller.actionFailure,
+            isNull,
+            reason: 'the answer is the paywall, not a banner',
+          );
+          expect(
+            controller.childAwaitingPremium,
+            PremiumFeature.additionalChild,
+          );
+
+          await controller.markChildAfterUpgrade();
+          expect(markings().single.$2['memberId'], 'm-new-1');
+          expect(controller.childAwaitingPremium, isNull);
+        },
+      );
+
+      test('declining the paywall leaves the profile unmarked', () async {
+        await settle();
+        children.failWritesWith = const PremiumRequiredFailure(
+          PremiumFeature.additionalChild,
+        );
+        await controller.addMember(
+          displayName: 'Lulu',
+          color: MemberColor.teal,
+          role: MemberRole.kid,
+          guardianConsent: true,
+        );
+        controller.forgetChildAwaitingPremium();
+        await controller.markChildAfterUpgrade();
+        expect(markings(), isEmpty);
+      });
+    },
+  );
+
+  group('removing somebody shows it happening', () {
+    test('the profile is marked removing until the server answers', () async {
+      await settle();
+      directory.gate = Completer<void>();
+
+      final removal = controller.removeMember(Fixtures.kidMemberId);
+      await pumpEventQueue();
+      expect(controller.removingMemberId, Fixtures.kidMemberId);
+      expect(controller.isBusy, isTrue);
+
+      directory.release();
+      expect(await removal, isTrue);
+      expect(controller.removingMemberId, isNull);
+      expect(directory.removed.single.memberId, Fixtures.kidMemberId);
+    });
+
+    test('a refused removal clears the mark and answers false', () async {
+      await settle();
+      directory.failWith = const PermissionDeniedFailure();
+
+      expect(await controller.removeMember(Fixtures.kidMemberId), isFalse);
+      expect(controller.removingMemberId, isNull);
+    });
+
+    test(
+      'a second removal while one runs is refused and marks nobody',
+      () async {
+        await settle();
+        directory.gate = Completer<void>();
+
+        final first = controller.removeMember(Fixtures.kidMemberId);
+        await pumpEventQueue();
+        expect(await controller.removeMember(Fixtures.thandiMemberId), isFalse);
+        expect(controller.removingMemberId, Fixtures.kidMemberId);
+
+        directory.release();
+        await first;
       },
     );
   });

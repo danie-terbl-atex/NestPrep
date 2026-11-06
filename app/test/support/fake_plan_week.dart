@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:nestprep/features/add_to_checkers/data/cart_pusher.dart';
 import 'package:nestprep/features/add_to_checkers/data/lunch_shop_preference.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogue.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
+import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_product.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
+import 'package:nestprep/features/add_to_checkers/state/shop_carts.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/live_location/model/coordinates.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
@@ -21,6 +25,12 @@ import 'package:nestprep/features/plan_week/model/lunch_week_reply.dart';
 import 'package:nestprep/features/plan_week/model/packing_preference.dart';
 import 'package:nestprep/features/plan_week/state/lunch_shop_choice.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/money/money.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
+
+import 'fake_checkers.dart';
+import 'household_fixtures.dart';
 
 /// `draftLunchIdeas`, answered by the test: [reply], or [failWith].
 final class FakeLunchIdeaDrafter implements LunchIdeaDrafter {
@@ -123,6 +133,9 @@ final class FakeShopCatalogue implements RetailerCatalogue {
   final queries = <String>[];
   final shelves = <RetailerShelf>[];
 
+  /// How many products each shelf read asked for, in order.
+  final shelfLimits = <int>[];
+
   /// When set, a search waits for it — so a test sees the shop working.
   Completer<void>? gate;
 
@@ -146,6 +159,7 @@ final class FakeShopCatalogue implements RetailerCatalogue {
     int limit = RetailerCatalogue.defaultLimit,
   }) async {
     shelves.add(shelf);
+    shelfLimits.add(limit);
     final failure = failShelf[shelf];
     if (failure != null) throw failure;
     return (byShelf[shelf] ?? const []).take(limit).toList();
@@ -198,21 +212,68 @@ final class FakeLunchShopPreference implements LunchShopPreference {
       kept[householdId] = retailer;
 }
 
-/// Both shops' catalogues for a *Plan my week* test: [checkers], and
-/// [pickNPay] — which, unless given, answers nothing.
+/// Every shop's catalogue for a *Plan my week* test: [checkers], and
+/// [pickNPay] and [woolworths] — which, unless given, answer nothing.
 RetailerCatalogues planWeekCatalogues(
   RetailerCatalogue checkers, {
   RetailerCatalogue? pickNPay,
-}) => RetailerCatalogues(
-  checkers: checkers,
-  pickNPay: pickNPay ?? FakeShopCatalogue(),
-);
+  RetailerCatalogue? woolworths,
+}) => RetailerCatalogues({
+  ProductRetailer.checkers: checkers,
+  ProductRetailer.pickNPay: pickNPay ?? FakeShopCatalogue(),
+  ProductRetailer.woolworths: woolworths ?? FakeShopCatalogue(),
+});
 
-/// The lunch shop choice for [householdId], kept in [preference].
+/// The shops switched on in a *Plan my week* test: Checkers alone unless it
+/// says otherwise.
+List<ProductRetailer> Function() planWeekShopsOn([
+  List<ProductRetailer> shops = const [ProductRetailer.checkers],
+]) =>
+    () => shops;
+
+/// The lunch shop choice for [householdId], kept in [preference], led by
+/// the family's shop in [family].
 LunchShopChoice planWeekShopChoice(
   String householdId, {
   LunchShopPreference? preference,
+  RetailerPreference? family,
 }) => LunchShopChoice(
   preference: preference ?? FakeLunchShopPreference(),
+  familyPreference: family ?? FakeRetailerPreference(),
   householdId: householdId,
+);
+
+/// A shop's cart push answered by the test: [pushResult], or each of
+/// [pushFailures] in turn; every push recorded with its packs.
+final class FakeCartPusher implements CartPusher {
+  CartPushResult? pushResult;
+  final pushFailures = <AppFailure>[];
+  Completer<void>? pushGate;
+  final pushes = <({List<String> itemIds, Map<String, int> quantities})>[];
+
+  @override
+  Future<CartPushResult> pushToCart({
+    required String householdId,
+    required List<String> itemIds,
+    Map<String, int> quantities = const {},
+  }) async {
+    pushes.add((itemIds: itemIds, quantities: quantities));
+    await pushGate?.future;
+    if (pushFailures.isNotEmpty) throw pushFailures.removeAt(0);
+    return pushResult ??
+        const CartPushResult(
+          added: [],
+          skipped: [],
+          cartItemCount: 0,
+          cartTotal: Money.zero(),
+        );
+  }
+}
+
+/// Every shop's cart push for a pumped *Plan my week*, answering nothing.
+SingleChildWidget planWeekCartsProvider() => Provider<ShopCarts>(
+  create: (_) => ShopCarts.over({
+    for (final shop in ProductRetailer.values) shop: FakeCartPusher(),
+  }, householdId: Fixtures.householdId),
+  dispose: (_, carts) => carts.dispose(),
 );

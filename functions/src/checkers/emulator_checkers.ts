@@ -20,7 +20,8 @@ import {
  * - The code is always `123456`.
  * - A product id starting `dead` is not ranged; one starting `0000` is out of
  *   stock; every other 24-hex id is in stock at R19.99, sold each.
- * - Each linked account has one cart, kept in memory for the emulator's life.
+ * - Each linked account has one cart, kept in memory for the emulator's life;
+ *   a line written by its id is set to the quantity sent, as Checkers does.
  */
 export const EMULATOR_OTP = '123456';
 export const EMULATOR_STORE_ID = 'emulator-store';
@@ -83,13 +84,15 @@ export class EmulatorCheckers implements CheckersLogin, CheckersShop {
   }
 
   addLines(context: ShopContext, _cart: Cart, lines: readonly NewCartLine[]): Promise<Cart> {
-    const existing = carts[context.session.userId] ?? [];
-    const added = lines.map((line, index) => ({
-      lineId: `line-${String(existing.length + index)}`,
-      productId: line.productId,
-      quantity: line.quantity,
-    }));
-    carts[context.session.userId] = [...existing, ...added];
+    let cart = carts[context.session.userId] ?? [];
+    for (const line of lines) {
+      const lineId = line.lineId ?? `line-${String(cart.length)}`;
+      const written = { lineId, productId: line.productId, quantity: line.quantity };
+      cart = cart.some((held) => held.lineId === lineId)
+        ? cart.map((held) => (held.lineId === lineId ? written : held))
+        : [...cart, written];
+    }
+    carts[context.session.userId] = cart;
     return Promise.resolve(cartOf(context.session.userId));
   }
 }

@@ -124,6 +124,7 @@ export class ScriptedShop implements CheckersShop {
   readonly byArticle: Record<string, CatalogProduct> = {};
   readonly sent: NewCartLine[][] = [];
   cart: Cart = { cartId: 'cart-1', deliveryAddressId: 'addr-1', lines: [], totalCents: 0 };
+  readonly stockOf: Record<string, number> = {};
   failWith: Error | null = null;
 
   findProducts(_context: unknown, ids: readonly string[]): Promise<CatalogProduct[]> {
@@ -142,13 +143,19 @@ export class ScriptedShop implements CheckersShop {
 
   addLines(_context: unknown, cart: Cart, lines: readonly NewCartLine[]): Promise<Cart> {
     this.sent.push([...lines]);
-    const added = lines.map((line, index) => ({
-      lineId: `new-${String(index)}`,
-      productId: line.productId,
-      quantity: line.quantity,
-    }));
-    const extra = lines.reduce((total, line) => total + line.priceCents * line.quantity, 0);
-    this.cart = { ...cart, lines: [...cart.lines, ...added], totalCents: cart.totalCents + extra };
+    let held = cart.lines;
+    let totalCents = cart.totalCents;
+    lines.forEach((line, index) => {
+      const lineId = line.lineId ?? `new-${String(index)}`;
+      const taken = Math.min(line.quantity, this.stockOf[line.productId] ?? line.quantity);
+      const before = held.find((old) => old.lineId === lineId)?.quantity ?? 0;
+      const written = { lineId, productId: line.productId, quantity: Math.max(before, taken) };
+      totalCents += line.priceCents * (written.quantity - before);
+      held = held.some((old) => old.lineId === lineId)
+        ? held.map((old) => (old.lineId === lineId ? written : old))
+        : [...held, written];
+    });
+    this.cart = { ...cart, lines: held.filter((line) => line.quantity > 0), totalCents };
     return Promise.resolve(this.cart);
   }
 }

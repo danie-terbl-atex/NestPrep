@@ -19,7 +19,7 @@ import {
   sendEmailCode,
   verifyEmailCode,
 } from '../../../src/premium_vouchers/email_code';
-import type { EmailMessage } from '../../../src/premium_vouchers/email_sender';
+import type { EmailMessage } from '../../../src/shared/email_sender';
 import { emailHashOf, otpHashOf } from '../../../src/premium_vouchers/premium_hashes';
 import type { StoredChallenge } from '../../../src/premium_vouchers/voucher_documents';
 import type { RateLimitRule } from '../../../src/shared/rate_limit';

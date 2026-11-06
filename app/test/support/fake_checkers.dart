@@ -5,6 +5,7 @@ import 'package:nestprep/features/add_to_checkers/data/checkers_directory.dart';
 import 'package:nestprep/features/add_to_checkers/data/match_as_you_type_preference.dart';
 import 'package:nestprep/features/add_to_checkers/data/product_match_ranker.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogue.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
 import 'package:nestprep/features/add_to_checkers/model/cart_push_result.dart';
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
@@ -125,7 +126,14 @@ final class FakeCheckersDirectory implements CheckersDirectory {
 
   final otpRequests = <String>[];
   final codes = <String>[];
-  final pushes = <({String householdId, List<String> itemIds})>[];
+  final pushes =
+      <
+        ({
+          String householdId,
+          List<String> itemIds,
+          Map<String, int> quantities,
+        })
+      >[];
   var unlinks = 0;
 
   @override
@@ -161,7 +169,11 @@ final class FakeCheckersDirectory implements CheckersDirectory {
     required List<String> itemIds,
     Map<String, int> quantities = const {},
   }) async {
-    pushes.add((householdId: householdId, itemIds: itemIds));
+    pushes.add((
+      householdId: householdId,
+      itemIds: itemIds,
+      quantities: quantities,
+    ));
     await pushGate?.future;
     if (pushFailures.isNotEmpty) throw pushFailures.removeAt(0);
     return pushResult ??
@@ -206,8 +218,10 @@ List<SingleChildWidget> fakeCheckersProviders({
   FakeCheckersDirectory? directory,
   FakeProductMatchRanker? ranker,
 }) => [
-  Provider<RetailerCatalogue>.value(
-    value: catalogue ?? FakeCheckersCatalogue(),
+  Provider<RetailerCatalogues>.value(
+    value: RetailerCatalogues({
+      ProductRetailer.checkers: catalogue ?? FakeCheckersCatalogue(),
+    }),
   ),
   Provider<CheckersAreaPreference>.value(value: FakeCheckersAreaPreference()),
   Provider<RetailerPreference>.value(value: FakeRetailerPreference()),

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   MAX_OCCURRENCES_PER_CONNECTION,
+  applyOccurrences,
   syncConnection,
   type SyncDeps,
 } from '../../../src/calendar_sync/sync_engine';
@@ -123,5 +124,66 @@ describe('a sync that cannot happen', () => {
     store.zone = 'Mars/Olympus_Mons';
     await syncConnection(deps, 'h1', 'c1');
     expect(store.stored[0]?.startMinute).toBe(14 * 60);
+  });
+});
+
+describe('the scheduler queue', () => {
+  it('moves a connection to the back on every attempt, whatever happened', async () => {
+    await syncConnection(deps, 'h1', 'c1');
+    source.outcome = { kind: 'unreachable' };
+    await syncConnection(deps, 'h1', 'c1');
+    expect(store.attempts).toBe(2);
+  });
+});
+
+describe('an Apple Calendar connection', () => {
+  beforeEach(() => {
+    store.connection = {
+      id: 'apple_m-sam',
+      householdId: 'h1',
+      provider: 'apple',
+      memberId: 'm-sam',
+      ownerUid: 'uid-sam',
+      accountLabel: '',
+      status: 'connected',
+      eventCount: 3,
+    };
+    store.credential = null;
+  });
+
+  it('is left alone by a sync, because only the iPhone can read it', async () => {
+    expect(await syncConnection(deps, 'h1', 'apple_m-sam')).toEqual({
+      status: 'connected',
+      eventCount: 3,
+      written: 0,
+      deleted: 0,
+    });
+    expect(store.outcomes).toEqual([]);
+    expect(store.attempts).toBe(0);
+    expect(source.seenCredentials).toEqual([]);
+  });
+
+  it('takes pushed occurrences through the same diff, without joining the scheduler queue', async () => {
+    const connection = store.connection;
+    if (connection === null) throw new Error('no connection');
+    const pushed = [timed('a', '2026-10-01T14:00:00Z', '2026-10-01T15:00:00Z', 'Dentist')];
+    expect(await applyOccurrences(store, 'h1', connection, pushed, 'Africa/Johannesburg')).toEqual({
+      status: 'connected',
+      eventCount: 1,
+      written: 1,
+      deleted: 0,
+    });
+    expect(store.stored[0]).toMatchObject({
+      provider: 'apple',
+      title: 'Dentist',
+      startMinute: 960,
+    });
+    expect(await applyOccurrences(store, 'h1', connection, [], 'Africa/Johannesburg')).toEqual({
+      status: 'connected',
+      eventCount: 0,
+      written: 0,
+      deleted: 1,
+    });
+    expect(store.attempts).toBe(0);
   });
 });

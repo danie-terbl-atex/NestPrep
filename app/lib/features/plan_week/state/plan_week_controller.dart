@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../add_to_checkers/data/checkers_place_resolver.dart';
 import '../../add_to_checkers/data/retailer_catalogues.dart';
 import '../../family_profiles/model/food_rules.dart';
+import '../../groceries/model/product_match.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/model/lunch_budget_week.dart';
 import '../../lunch_box/model/lunch_slot.dart';
@@ -43,7 +44,7 @@ final class PlanWeekController extends ChangeNotifier {
     required LunchWeekBuilder weekBuilder,
     required RetailerCatalogues catalogues,
     required LunchShopChoice shopChoice,
-    required bool Function() isPnpOn,
+    required List<ProductRetailer> Function() shopsOn,
     required CheckersPlaceResolver placeResolver,
     required ShopWeekSaver saver,
     required ShopWeekGroceries groceries,
@@ -55,7 +56,7 @@ final class PlanWeekController extends ChangeNotifier {
     retailer = PlanWeekRetailer(
       catalogues: catalogues,
       choice: shopChoice,
-      isPnpOn: isPnpOn,
+      shopsOn: shopsOn,
     );
     shopChoice.addListener(_changed);
     variety.addListener(_changed);

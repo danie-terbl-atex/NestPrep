@@ -165,6 +165,37 @@ void main() {
     });
   });
 
+  group('a task\'s picture (todos ADR-0005)', () {
+    test('is written on create, changed and cleared on update', () async {
+      await todos.saveTask(
+        householdId: home.id,
+        title: 'Brush teeth',
+        dueDate: CalendarDate(2026, 11, 5),
+        assigneeIds: [home.memberId],
+        createdBy: home.memberId,
+        picture: 'brush-teeth',
+      );
+      final created = (await todos.watchTasks(home.id).first).single;
+      expect(created.picture, 'brush-teeth');
+
+      Future<String?> update(String? picture) async {
+        await todos.saveTask(
+          householdId: home.id,
+          taskId: created.id,
+          title: 'Brush teeth',
+          dueDate: CalendarDate(2026, 11, 5),
+          assigneeIds: [home.memberId],
+          createdBy: home.memberId,
+          picture: picture,
+        );
+        return (await todos.watchTasks(home.id).first).single.picture;
+      }
+
+      expect(await update('make-bed'), 'make-bed');
+      expect(await update(null), isNull);
+    });
+  });
+
   group('completing an occurrence', () {
     test('is idempotent, because the document id is derived from it', () async {
       // `BE-06`: ticking twice is the same write, not two records.

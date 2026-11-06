@@ -112,6 +112,8 @@ class _PairingSheetBodyState extends State<_PairingSheetBody> {
             ),
             title: widget.member.displayName,
           ),
+          const SizedBox(height: NestSpace.md),
+          const NestBanner(message: KidCopy.pairKidMode),
           const SizedBox(height: NestSpace.lg),
           NestTextField(
             label: KidCopy.pairLabel,

@@ -54,6 +54,7 @@ abstract interface class TodoRepository {
     String? routineId,
     int points = 0,
     bool needsApproval = false,
+    String? picture,
   });
 
   Future<void> deleteTask({

@@ -1,3 +1,4 @@
+import type { DocumentReference, Firestore, Transaction } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 
@@ -6,7 +7,7 @@ import { detachKidDevices, readKidDeviceUids } from '../accounts/kid_devices';
 import { memberDetailRefs } from '../family_profiles/member_details';
 import { forgetWhereTheyWere } from '../live_location/forget_location';
 import { db } from '../shared/firestore';
-import { adminCount, memberRef, readHousehold, roleOf } from './documents';
+import { INVITES, adminCount, memberRef, readHousehold, roleOf } from './documents';
 import { refuse } from './errors';
 import { detachMember, readMember } from './membership';
 import { parseInput, requireUid } from './parse_input';
@@ -25,6 +26,10 @@ import { removeMemberInput } from './schemas';
  * What the household knew about the person — their family profile and their
  * medication — is deleted with them (family-profiles ADR-0001), and so is
  * where they were (live-location ADR-0004).
+ *
+ * An invite nobody has used yet goes too, so a link already shared answers
+ * "not a NestPrep invite" rather than pointing at a profile that is gone
+ * (household ADR-0009).
  */
 export const removeMember = onCall(async (request) => {
   const uid = requireUid(request.auth);
@@ -41,6 +46,12 @@ export const removeMember = onCall(async (request) => {
     if (member === undefined) throw refuse('memberNotFound');
     if (member.claimedBy === uid) throw refuse('cannotRemoveSelf');
     const devices = await readKidDeviceUids(transaction, store, input.householdId, input.memberId);
+    const openInvites = await readOpenInvites(
+      transaction,
+      store,
+      input.householdId,
+      input.memberId,
+    );
 
     if (member.claimedBy !== null) {
       if (member.role === 'admin' && adminCount(household) === 1) {
@@ -58,6 +69,7 @@ export const removeMember = onCall(async (request) => {
       transaction.delete(detail);
     }
     detachKidDevices(transaction, store, input.householdId, devices);
+    for (const invite of openInvites) transaction.delete(invite);
     return devices;
   });
   await kidAuthAccounts().close(kidDevices);
@@ -66,3 +78,20 @@ export const removeMember = onCall(async (request) => {
   logger.info('member removed', { householdId: input.householdId });
   return { householdId: input.householdId };
 });
+
+async function readOpenInvites(
+  transaction: Transaction,
+  store: Firestore,
+  householdId: string,
+  memberId: string,
+): Promise<DocumentReference[]> {
+  const invites = await transaction.get(
+    store
+      .collection(INVITES)
+      .where('householdId', '==', householdId)
+      .where('memberId', '==', memberId),
+  );
+  return invites.docs
+    .filter((invite) => invite.get('redeemedBy') == null)
+    .map((invite) => invite.ref);
+}

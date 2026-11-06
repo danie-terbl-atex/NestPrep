@@ -76,6 +76,7 @@ final class ShopWeek {
     required List<ShopChildWeek> children,
     required List<IdeaSearch> searches,
     required Map<String, int> boxesPerPack,
+    required Set<int> daysLeft,
     Set<LunchSlot>? slots,
     Set<int>? treatDays,
     this.budget,
@@ -88,6 +89,7 @@ final class ShopWeek {
        searches = List.unmodifiable(searches),
        boxesPerPack = Map.unmodifiable(boxesPerPack),
        dishes = Map.unmodifiable(dishes),
+       daysLeft = Set.unmodifiable(daysLeft),
        slots = Set.unmodifiable(slots ?? LunchSlot.values),
        treatDays = Set.unmodifiable(treatDays ?? TreatDays.fridayOnly);
 
@@ -117,6 +119,10 @@ final class ShopWeek {
   /// phone had one for this same week.
   final LunchBudgetWeek? weekSoFar;
 
+  /// The school days, by ISO weekday, that have not gone — the only ones
+  /// planned or shown (lunch-box ADR-0019; the server's `hasGone`).
+  final Set<int> daysLeft;
+
   /// The compartments the brief fills; the others are left as they are.
   final Set<LunchSlot> slots;
 
@@ -127,10 +133,12 @@ final class ShopWeek {
   /// ADR-0021).
   final Map<String, PlannedDish> dishes;
 
-  /// Whether the plan may fill [slot] on [day]: a compartment the brief
-  /// fills, and a treat only on a treat day.
+  /// Whether the plan may fill [slot] on [day]: a day still to come, a
+  /// compartment the brief fills, and a treat only on a treat day.
   bool fills(int day, LunchSlot slot) =>
-      slots.contains(slot) && slot.isPlannedOn(day, treatDays);
+      daysLeft.contains(day) &&
+      slots.contains(slot) &&
+      slot.isPlannedOn(day, treatDays);
 
   int get pickCount =>
       children.fold(0, (total, child) => total + child.added.length);
@@ -194,6 +202,21 @@ final class ShopWeek {
         for (final product in search.keptFor(childId)) (search, product),
   ];
 
+  /// What [pick] buys: its product, or each of its dish's ingredients.
+  List<CheckedProduct> boughtFor(ShopPick pick) => switch (dishOf(pick)) {
+    final dish? => [for (final part in dish.parts) part.product],
+    null => [?productOf(pick)],
+  };
+
+  /// What [child]'s new compartments buy that nothing is known to be in,
+  /// offered to them although they have an allergy — each once.
+  List<CheckedProduct> labelChecksFor(ShopChildWeek child) => {
+    for (final pick in child.added.values)
+      for (final product in boughtFor(pick))
+        if (product.needsLabelCheckFor(child.childId))
+          product.productId: product,
+  }.values.toList();
+
   /// Every new compartment's product — a dish's, each of its ingredients' —
   /// whole packs across every child and every dish that shares one.
   LunchBasket get basket {
@@ -201,11 +224,7 @@ final class ShopWeek {
     final products = <String, CheckedProduct>{};
     for (final child in children) {
       for (final pick in child.added.values) {
-        final bought = switch (dishOf(pick)) {
-          final dish? => [for (final part in dish.parts) part.product],
-          null => [?productOf(pick)],
-        };
-        for (final product in bought) {
+        for (final product in boughtFor(pick)) {
           boxes[product.productId] = (boxes[product.productId] ?? 0) + 1;
           products[product.productId] = product;
         }
@@ -321,6 +340,7 @@ final class ShopWeek {
     children: children ?? this.children,
     searches: searches,
     boxesPerPack: boxesPerPack,
+    daysLeft: daysLeft,
     slots: slots,
     treatDays: treatDays,
     budget: budget,

@@ -99,8 +99,10 @@ abstract final class AppCopy {
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInWithApple = 'Continue with Apple';
+  static const signInAppleComingSoonTitle = 'Apple sign-in is coming soon';
   static const signInAppleComingSoon =
-      'Signing in with Apple is coming soon. Use Google or your email for now.';
+      'For now, continue with Google or your email address.';
+  static const signInAppleComingSoonOk = 'Got it';
 
   // The one way in for a code (accounts ADR-0009): a household invite from
   // family, or a kid sign-in code from a grown-up.
@@ -147,8 +149,8 @@ abstract final class AppCopy {
   /// are registered is exactly what enumeration protection prevents
   /// (accounts ADR-0002).
   static const forgotPasswordSent =
-      'If that address has a NestPrep account, the link is on its way. It is '
-      'worth checking the spam folder.';
+      'If that address has a NestPrep account, the link is on its way from '
+      'admin@nestprep.io. It works for one hour.';
 
   static const signOut = 'Sign out';
   static const account = 'Account';
@@ -195,6 +197,10 @@ abstract final class AppCopy {
   static const todosAssignLabel = 'For';
   static const todosRoutineLabel = 'Part of a routine';
   static const todosAnyone = 'Anyone';
+  static const todosShowsOnChores =
+      'A chore: it shows on Chores, not on To do.';
+  static const todosShowsOnTodoAndChores =
+      'Shows on To do, and on Chores for the children.';
   static const todosNoRoutine = 'On its own';
   static const todosOverdue = 'Overdue';
   static const todosToday = 'Today';
@@ -434,6 +440,9 @@ abstract final class AppCopy {
   static const householdCodeCopied = 'Code copied';
   static const householdRemove = 'Remove';
   static const householdRemoveConfirm = 'Remove from household?';
+  static const householdRemoving = 'Removing…';
+  static String householdRemoved(String name) =>
+      '$name was removed from the household';
   static const householdLeave = 'Leave household';
   static const householdLeaveConfirm = 'Leave this household?';
   static const householdSwitch = 'Switch household';

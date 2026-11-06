@@ -33,7 +33,16 @@ export function calendarSourcesFor(
   return {
     ics,
     oauth,
-    source: (provider) => (provider === 'ics' ? ics : oauth(provider)),
+    source: (provider): CalendarSource | null => {
+      switch (provider) {
+        case 'ics':
+          return ics;
+        case 'apple':
+          return null;
+        default:
+          return oauth(provider);
+      }
+    },
   };
 }
 

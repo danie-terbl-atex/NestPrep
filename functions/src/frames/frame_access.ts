@@ -21,6 +21,7 @@ export interface LinkedFrame {
   readonly frame: FrameDocument;
   readonly home: DocumentReference;
   readonly householdName: string;
+  readonly timeZone: string | null;
   readonly clock: WallClock;
 }
 
@@ -70,6 +71,7 @@ export async function readLinkedFrame(
     frame,
     home,
     householdName: household.name,
+    timeZone: household.timeZone ?? null,
     clock: wallClockOf(now, knownZoneOr(household.timeZone)),
   };
 }

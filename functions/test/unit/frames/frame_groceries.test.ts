@@ -52,6 +52,17 @@ const PNP_PICK = {
   priceCents: 2999,
   imageId: 'medias/838685.jpg',
 };
+const WOOLWORTHS_PICK = {
+  retailer: 'woolworths',
+  productId: '6009178001234',
+  articleCode: '6009178001234',
+  unitOfMeasure: 'EA',
+  name: 'Woolworths Full Cream Milk 2L',
+  brand: 'Woolworths',
+  priceCents: 3699,
+  imageId:
+    'Full-Cream-Milk-2L-6009178001234.jpg?V=kd3s&o=eyJidWNrZXQiOiJ3dy1vbmxpbmUtaW1hZ2VzLXByb2QifQ==&',
+};
 
 function reasonOf(run: () => unknown): unknown {
   try {
@@ -79,9 +90,13 @@ describe('what a frame may send to add', () => {
     expect(input({ quantity: ' 2 L ' }).quantity).toBe('2 L');
   });
 
-  it('a product from either shop, in the shape a pick is stored', () => {
+  it('a product from any connected shop, in the shape a pick is stored', () => {
     expect(input({ product: CHECKERS_PICK }).product).toEqual(CHECKERS_PICK);
     expect(input({ product: PNP_PICK }).product).toEqual(PNP_PICK);
+    expect(input({ product: WOOLWORTHS_PICK }).product).toEqual(WOOLWORTHS_PICK);
+    expect(
+      input({ product: { ...WOOLWORTHS_PICK, unitOfMeasure: 'KG', imageId: undefined } }).product,
+    ).toEqual({ ...WOOLWORTHS_PICK, unitOfMeasure: 'KG', imageId: null });
     expect(input({ product: { ...CHECKERS_PICK, brand: '', imageId: null } }).product).toEqual({
       ...CHECKERS_PICK,
       brand: null,
@@ -98,7 +113,29 @@ describe('what a frame may send to add', () => {
     ['a Checkers id that is not one', { product: { ...CHECKERS_PICK, productId: 'abc' } }],
     ['a PnP code at Checkers', { product: { ...CHECKERS_PICK, productId: PNP_PICK.productId } }],
     ['a PnP code without its unit', { product: { ...PNP_PICK, productId: '000000838685' } }],
-    ['a shop nobody connected', { product: { ...CHECKERS_PICK, retailer: 'woolworths' } }],
+    ['a shop nobody connected', { product: { ...CHECKERS_PICK, retailer: 'spar' } }],
+    ['a Checkers id at Woolworths', { product: { ...WOOLWORTHS_PICK, retailer: 'checkers' } }],
+    ['a Woolworths SKU too short', { product: { ...WOOLWORTHS_PICK, productId: '12345' } }],
+    [
+      'a Woolworths article code that is not its SKU',
+      { product: { ...WOOLWORTHS_PICK, articleCode: '6009178009999' } },
+    ],
+    [
+      'a Woolworths unit it never sells by',
+      { product: { ...WOOLWORTHS_PICK, unitOfMeasure: 'KGM' } },
+    ],
+    [
+      'a Woolworths picture on another path',
+      { product: { ...WOOLWORTHS_PICK, imageId: 'images/../x.jpg' } },
+    ],
+    [
+      'a Woolworths picture with a space',
+      { product: { ...WOOLWORTHS_PICK, imageId: 'milk 2l.jpg' } },
+    ],
+    [
+      'a Woolworths picture past 600',
+      { product: { ...WOOLWORTHS_PICK, imageId: 'x'.repeat(601) } },
+    ],
     ['a lowercase unit', { product: { ...CHECKERS_PICK, unitOfMeasure: 'ea' } }],
     ['a price in rand', { product: { ...CHECKERS_PICK, priceCents: 34.99 } }],
     ['a negative price', { product: { ...CHECKERS_PICK, priceCents: -1 } }],
@@ -129,12 +166,22 @@ describe('the switch on the frame document', () => {
     ).toEqual({ shop: 'pickNPay', area: 'durban' });
   });
 
+  it('and at Woolworths the store and price list the phone found', () => {
+    const groceries = { shop: 'woolworths', area: 'capeTown', store: '2008', priceZone: 'p60' };
+    expect(frameDocument.parse({ ...frame, groceries }).groceries).toEqual(groceries);
+  });
+
   it('is off when missing or broken, and never unlinks the frame', () => {
     for (const groceries of [
       undefined,
       null,
       {},
+      { shop: 'spar', area: 'capeTown' },
       { shop: 'woolworths', area: 'capeTown' },
+      { shop: 'woolworths', area: 'capeTown', store: '2008' },
+      { shop: 'woolworths', area: 'capeTown', store: '20a8', priceZone: 'p30' },
+      { shop: 'woolworths', area: 'capeTown', store: '2008', priceZone: 'p20' },
+      { shop: 'woolworths', area: 'london', store: '2008', priceZone: 'p30' },
       { shop: 'checkers', area: 'london' },
       { shop: 'checkers' },
       'checkers',

@@ -6,7 +6,6 @@ import '../../../app/lunch_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../groceries/model/product_match.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../state/plan_week_controller.dart';
@@ -14,8 +13,8 @@ import 'plan_week_cart_button.dart';
 
 /// Step 5 (lunch-box ADR-0012): the week is in — a moment's celebration,
 /// what was written, anything left out and why, then the basket onto the
-/// grocery list, each line matched at the shop the week was planned at — and
-/// at Pick n Pay, straight into the member's own cart (ADR-0026 §6). A tap,
+/// grocery list, each line matched at the shop the week was planned at, or
+/// straight into the member's own cart there (ADR-0026 §6). A tap,
 /// never automatic, and only for somebody the `groceries` grant lets add to
 /// the list. Twig
 /// celebrates only a week the model built; a week the phone built keeps the
@@ -116,11 +115,9 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
           ),
         ],
         const SizedBox(height: NestSpace.xl),
-        if (mayShop && lines > 0 && retailer == ProductRetailer.pickNPay) ...[
+        if (mayShop && lines > 0) ...[
           const PlanWeekCartButton(),
           const SizedBox(height: NestSpace.sm),
-        ],
-        if (mayShop && lines > 0)
           if (added == null)
             NestButton(
               key: const ValueKey('plan-week-groceries'),
@@ -135,6 +132,7 @@ class _PlanWeekDonePanelState extends State<PlanWeekDonePanel> {
               message: PlanWeekCopy.groceriesAdded(added, retailer),
               tone: NestBannerTone.success,
             ),
+        ],
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: PlanWeekCopy.seeLunches,

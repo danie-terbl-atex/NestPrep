@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_variety.dart';
 import 'package:nestprep/features/plan_week/data/lunch_ideas_request.dart';
@@ -189,6 +190,45 @@ void main() {
       expect(first['allergensKnown'], isTrue);
       expect(first['packQuantity'], 6);
       expect(first['priceCents'], 2500);
+    });
+
+    test('a product only its name is known of goes as known where its shop '
+        'offers it so, and as unknown where it does not', () {
+      final idea = LunchIdea.checked(
+        id: 'idea-1',
+        slot: LunchSlot.fruit,
+        idea: 'Grapes',
+        rulesByChild: rules,
+        origin: IdeaOrigin.drafted,
+      );
+      Map<String, Object?> sent(ProductRetailer shop) {
+        final wire = LunchWeekRequest.toWire(
+          householdId: 'h1',
+          week: LunchFixtures.week,
+          childIds: {ayanda, lwazi},
+          searches: [
+            IdeaSearch(
+              idea: idea,
+              status: IdeaSearchStatus.done,
+              found: [
+                CheckedProduct.of(
+                  planWeekProduct('Grapes 500 g', retailer: shop),
+                  rules,
+                ),
+              ],
+            ),
+          ],
+          packing: packingFor({...LunchSlot.values}),
+        );
+        final ideas = wire['ideas']! as List<Object?>;
+        final products =
+            (ideas.single! as Map<String, Object?>)['products']!
+                as List<Object?>;
+        return products.single! as Map<String, Object?>;
+      }
+
+      expect(sent(ProductRetailer.woolworths)['allergensKnown'], isTrue);
+      expect(sent(ProductRetailer.checkers)['allergensKnown'], isFalse);
     });
   });
 

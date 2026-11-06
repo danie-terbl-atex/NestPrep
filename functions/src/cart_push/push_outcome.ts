@@ -3,11 +3,11 @@ import type { PickedProduct } from './grocery_lines';
 /**
  * What a push into a member's own shop cart answers, the same for every shop
  * (the Checkers build contract, add-to-pnp ADR-0004), so the app shows one
- * result for both. The last four are Pick n Pay's alone: a delivery cart there
- * holds a capped number of items (`cart-full`), and PnP may take fewer than
- * asked when stock is low (`low-stock`) or past a product's order limit
- * (`max-quantity`), or refuse one line outright (`shop-refused`) — each of
- * those the member is told about, item by item (add-to-pnp ADR-0004).
+ * result whichever shop it was. A shop may take fewer packs than asked when
+ * stock is low (`low-stock`); Pick n Pay alone caps a delivery cart's items
+ * (`cart-full`), stops at a product's order limit (`max-quantity`), and may
+ * refuse one line outright (`shop-refused`) — each of those the member is
+ * told about, item by item (add-to-pnp ADR-0004).
  */
 export type SkipReason =
   | 'no-match'

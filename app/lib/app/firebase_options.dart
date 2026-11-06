@@ -58,12 +58,12 @@ class DefaultFirebaseOptions {
   );
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDHTJQGg7UN4rC2p3aypOD0Wiv5rcvXYDk',
-    appId: '1:388847987716:ios:38fce2c74d9cd9427c5951',
+    appId: '1:388847987716:ios:f8fc4343dcc343fc7c5951',
     messagingSenderId: '388847987716',
     projectId: 'nestprep-643b7',
     storageBucket: 'nestprep-643b7.firebasestorage.app',
     androidClientId: '388847987716-2p4eaga9c540g16l2i8i7fsv85c839af.apps.googleusercontent.com',
-    iosClientId: '388847987716-krbsuibgidj259tpf7o0i24gg2uvo56o.apps.googleusercontent.com',
-    iosBundleId: 'io.nullstate.nestprep',
+    iosClientId: '388847987716-2dgmbc767ost374hff0g3a6437r279gt.apps.googleusercontent.com',
+    iosBundleId: 'io.nullstate.nestprep.app',
   );
 }

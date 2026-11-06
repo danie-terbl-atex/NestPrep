@@ -1,0 +1,8 @@
+// ---- add to Woolworths: a member's own Dash link ----
+// Written and read by the Woolworths Functions alone: it holds the member's
+// sealed Cognito tokens, which no client may read, not even its owner; the
+// app asks `woolworthsLinkStatus` instead.
+
+match /woolworthsLinks/{uid} {
+  allow read, write: if false;
+}

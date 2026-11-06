@@ -1,3 +1,5 @@
+import '../../features/notifications/model/notification_vocabulary.dart';
+
 /// The Today tab (design-system ADR-0009).
 abstract final class TodayCopy {
   static String greeting(int minuteOfDay, String? name) {
@@ -34,6 +36,31 @@ abstract final class TodayCopy {
     1 => '1 thing to buy',
     _ => '$count things to buy',
   };
+
+  static String attentionNeeds(int count) =>
+      count == 1 ? 'thing needs you' : 'things need you';
+  static String attentionTitle(int count) => '$count ${attentionNeeds(count)}';
+  static String attentionPart(NotificationCategory kind, int count) {
+    final one = count == 1;
+    return switch (kind) {
+      NotificationCategory.documents =>
+        one ? '1 document to renew' : '$count documents to renew',
+      NotificationCategory.handover =>
+        one ? '1 shift handover' : '$count shift handovers',
+      NotificationCategory.chores =>
+        one ? '1 star request' : '$count star requests',
+      NotificationCategory.photos =>
+        one ? '1 photo from a shift' : '$count photos from shifts',
+      NotificationCategory.coParenting => '$count from the other home',
+      NotificationCategory.places =>
+        one ? '1 arrival or departure' : '$count arrivals and departures',
+      NotificationCategory.digest || NotificationCategory.test =>
+        one ? '1 notification' : '$count notifications',
+    };
+  }
+
+  static String attentionLabel(String title, String detail) =>
+      '$title: $detail. Opens your notifications.';
 
   static const nothingHere = 'Your places are in More';
   static const nothingHereBody =

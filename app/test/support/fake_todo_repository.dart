@@ -34,6 +34,7 @@ final class FakeTodoRepository implements TodoRepository {
           String? routineId,
           int points,
           bool needsApproval,
+          String? picture,
         })
       >[];
   final deletedTasks = <String>[];
@@ -133,6 +134,7 @@ final class FakeTodoRepository implements TodoRepository {
     String? routineId,
     int points = 0,
     bool needsApproval = false,
+    String? picture,
   }) async {
     _refuseIfAsked();
     savedTasks.add((
@@ -144,6 +146,7 @@ final class FakeTodoRepository implements TodoRepository {
       routineId: routineId,
       points: points,
       needsApproval: needsApproval,
+      picture: picture,
     ));
   }
 

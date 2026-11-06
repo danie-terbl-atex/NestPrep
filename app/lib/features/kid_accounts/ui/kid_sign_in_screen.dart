@@ -89,6 +89,8 @@ class _Entries extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
         Text(KidCopy.manageIntro, style: nest.text.bodySecondary),
+        const SizedBox(height: NestSpace.sm),
+        Text(KidCopy.manageFullAppHint, style: nest.text.caption),
         const SizedBox(height: NestSpace.lg),
         for (final entry in entries)
           Padding(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/notifications/data/notification_directory.dart';
 import 'package:nestprep/features/notifications/model/notification_vocabulary.dart';
+import 'package:nestprep/shared/time/calendar_date.dart';
 
 /// The words notifications spells on both sides of the wire (notifications
 /// ADR-0001), read from the Functions' own file — a category, a section, a
@@ -55,6 +56,20 @@ void main() {
     expect(
       NotificationTarget.values.map((value) => value.name),
       listNamed(contract, 'NOTIFICATION_TARGETS'),
+    );
+  });
+
+  test('a digest’s inbox id is the person and the household day', () {
+    final morningDigest = File(
+      '../functions/src/notifications/morning_digest.ts',
+    ).readAsStringSync();
+    expect(
+      morningDigest,
+      contains(r'return `digest_${memberId}_${localDate}`;'),
+    );
+    expect(
+      DigestIds.of('m-sam', CalendarDate(2026, 11, 5)),
+      'digest_m-sam_2026-11-05',
     );
   });
 

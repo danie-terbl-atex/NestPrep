@@ -6,6 +6,12 @@ import { FRAME_SHARE_KINDS, type FrameShareKind } from './frame_documents';
 import { FRAME_LINK_MAX } from './frame_links';
 import { frameRecipeShareInput } from './frame_recipe';
 import { GROCERY_NAME_LIMIT, GROCERY_QUANTITY_LIMIT } from './frame_policy';
+import {
+  FRAME_DEVICE_STATES,
+  FRAME_UPDATE_APPS,
+  FRAME_UPDATE_EVENT_KINDS,
+  FRAME_UPDATE_LIST_LIMIT,
+} from './frame_update_policy';
 
 /**
  * Every photo frame callable's input, parsed at the edge and never cast
@@ -193,6 +199,22 @@ export const frameProductPick = z.discriminatedUnion('retailer', [
     priceCents,
     imageId: z.string().min(1).max(300).nullish().transform(orNull),
   }),
+  z
+    .object({
+      retailer: z.literal('woolworths'),
+      productId: z.string().regex(/^[0-9]{6,14}$/),
+      articleCode: z.string(),
+      unitOfMeasure: z.enum(['EA', 'KG']),
+      name: productText,
+      brand,
+      priceCents,
+      imageId: z
+        .string()
+        .regex(/^[^/\s]{1,600}$/)
+        .nullish()
+        .transform(orNull),
+    })
+    .refine((pick) => pick.articleCode === pick.productId, { path: ['articleCode'] }),
 ]);
 export type FrameProductPick = z.infer<typeof frameProductPick>;
 
@@ -217,6 +239,50 @@ export type AddFrameGroceryItemInput = z.infer<typeof addFrameGroceryItemInput>;
 
 export const unlinkFrameInput = z.object({ secret });
 export type UnlinkFrameInput = z.infer<typeof unlinkFrameInput>;
+
+const versionCode = z.number().int().positive().max(2_100_000_000);
+const installedVersion = z.object({ versionCode, versionName: z.string().max(40) });
+const installedApps = z.object({ home: installedVersion.nullable(), agent: installedVersion });
+const badVersions = z.array(versionCode).max(FRAME_UPDATE_LIST_LIMIT);
+const deviceState = z.enum(FRAME_DEVICE_STATES);
+const LAST_TIMESTAMP_MS = 253_402_300_799_999;
+
+export const checkFrameUpdateInput = z.object({
+  device: secret,
+  frame: secret.nullish().transform(orNull).catch(null),
+  model: z.string().trim().max(80),
+  sdk: z.number().int().min(21).max(99),
+  apps: installedApps,
+  bad: z.object({ home: badVersions, agent: badVersions }),
+  state: deviceState,
+});
+export type CheckFrameUpdateInput = z.infer<typeof checkFrameUpdateInput>;
+
+export const getFrameUpdateApkInput = z.object({
+  device: secret,
+  app: z.enum(FRAME_UPDATE_APPS),
+  versionCode,
+});
+export type GetFrameUpdateApkInput = z.infer<typeof getFrameUpdateApkInput>;
+
+export const frameUpdateEvent = z.object({
+  id: z.string().regex(/^[A-Za-z0-9_-]{8,40}$/),
+  kind: z.enum(FRAME_UPDATE_EVENT_KINDS),
+  app: z.enum(FRAME_UPDATE_APPS),
+  versionCode,
+  fromVersionCode: versionCode.nullish().transform(orNull),
+  detail: z.string().max(200).nullish().transform(orNull),
+  at: z.number().int().min(0).max(LAST_TIMESTAMP_MS),
+});
+export type FrameUpdateEvent = z.infer<typeof frameUpdateEvent>;
+
+export const reportFrameUpdateInput = z.object({
+  device: secret,
+  apps: installedApps,
+  state: deviceState,
+  events: z.array(frameUpdateEvent).min(1).max(FRAME_UPDATE_LIST_LIMIT),
+});
+export type ReportFrameUpdateInput = z.infer<typeof reportFrameUpdateInput>;
 
 function shareTitle(title: string | null | undefined): string | null {
   const cleaned = Array.from((title ?? '').replace(/\p{Cc}/gu, '').trim())

@@ -69,13 +69,13 @@ export function sharePageStyles(): string {
 :root{${variables(LIGHT)}color-scheme:light dark}
 @media (prefers-color-scheme:dark){:root{${variables(DARK)}}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--canvas);color:var(--ink);font:1rem/1.5 "Mona Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--canvas);color:var(--ink);font:1rem/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
 main{max-width:34rem;margin:0 auto;padding:1.5rem 1rem 3rem}
 header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
 header img{width:2.5rem;height:auto}
-header span{font:600 1.5rem/1 "Mona Sans Display","Mona Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:-.04em;color:var(--ink)}
+header span{font:600 1.5rem/1 Fraunces,Georgia,"Times New Roman",serif;letter-spacing:-.04em;color:var(--ink)}
 .card{background:var(--surface);border:1px solid var(--outline);border-radius:1.5rem;padding:1.25rem}
-h1{font:600 1.6rem/1.15 "Mona Sans Display","Mona Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0 0 .5rem;overflow-wrap:anywhere}
+h1{font:600 1.6rem/1.15 Fraunces,Georgia,"Times New Roman",serif;margin:0 0 .5rem;overflow-wrap:anywhere}
 p{margin:0 0 1rem;color:var(--inkSecondary)}
 .tag{display:inline-block;background:var(--accentSoft);color:var(--accentInk);border-radius:999px;padding:.25rem .75rem;font-weight:600;font-size:.875rem;margin-bottom:1rem}
 .document{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--outline);background:var(--tileButter)}

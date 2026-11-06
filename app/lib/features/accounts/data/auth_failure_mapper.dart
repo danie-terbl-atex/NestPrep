@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -49,6 +50,17 @@ AppFailure failureFromFirebaseAuth(FirebaseAuthException error) {
     'invalid-api-key' ||
     'app-not-authorized' => SignInProblem.notConfigured,
     _ => SignInProblem.unknown,
+  });
+}
+
+AppFailure failureFromPasswordReset(FirebaseFunctionsException error) {
+  AppLog.failure('password reset', code: error.code, error: error);
+  final details = error.details;
+  return SignInFailure(switch (details is Map ? details['reason'] : null) {
+    'tooManyAttempts' => SignInProblem.tooManyAttempts,
+    'badRequest' => SignInProblem.invalidEmail,
+    null when error.code == 'unavailable' => SignInProblem.networkUnavailable,
+    _ => SignInProblem.resetUnavailable,
   });
 }
 

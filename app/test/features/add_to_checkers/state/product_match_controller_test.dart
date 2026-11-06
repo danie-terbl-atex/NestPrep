@@ -45,7 +45,10 @@ final class Harness {
 
   late final controller = ProductMatchController(
     finder: ProductFinder(
-      catalogues: RetailerCatalogues(checkers: catalogue, pickNPay: pnp),
+      catalogues: RetailerCatalogues({
+        ProductRetailer.checkers: catalogue,
+        ProductRetailer.pickNPay: pnp,
+      }),
       placeResolver: CheckersPlaceResolver(
         locationSource: location,
         areaPreference: areas,

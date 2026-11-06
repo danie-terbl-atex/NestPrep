@@ -25,6 +25,16 @@ describe('what Jev is asked about a grocery line', () => {
     expect(JSON.stringify(request)).not.toContain('h1');
   });
 
+  it('names the shop being ranked, and Checkers when the phone does not say', () => {
+    expect(matchRequest(input).state).toContain('Checkers Sixty60');
+    const at = (retailer: string): string =>
+      matchRequest(rankProductMatchesInput.parse({ ...input, retailer })).state;
+    expect(at('pickNPay')).toContain('Pick n Pay');
+    expect(at('woolworths')).toContain('Woolworths Dash');
+    expect(at('woolworths')).not.toContain('Checkers');
+    expect(rankProductMatchesInput.safeParse({ ...input, retailer: 'spar' }).success).toBe(false);
+  });
+
   it('refuses more products than one panel shows, or none', () => {
     const many = Array.from({ length: 9 }, (_, n) => ({
       productId: String(n),

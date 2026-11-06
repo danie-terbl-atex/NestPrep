@@ -2,6 +2,7 @@ import { defineSecret, defineString } from 'firebase-functions/params';
 
 import { configured } from '../shared/configured_value';
 import { functionUrlFrom } from '../shared/function_url';
+import { HOSTING_REGION } from '../shared/region';
 import type { OAuthProvider } from './sync_documents';
 
 /**
@@ -16,8 +17,9 @@ import type { OAuthProvider } from './sync_documents';
  *   Secret Manager secrets, bound only to the Functions that exchange or
  *   refresh a token. A bound secret must exist to deploy, so an unconfigured
  *   project holds the value `unset`, which reads as not configured.
- * - `CALENDAR_FUNCTIONS_BASE_URL` — optional; where the OAuth callback and the
- *   feed are reached. Empty derives the default `cloudfunctions.net` address.
+ * - `CALENDAR_FUNCTIONS_BASE_URL` — optional; the Hosting origin that rewrites
+ *   to the OAuth callback and the feed. Google verifies the redirect's domain,
+ *   so production sets it. Empty derives the `cloudfunctions.net` address.
  */
 export const googleClientId = defineString('CALENDAR_GOOGLE_CLIENT_ID', { default: '' });
 export const microsoftClientId = defineString('CALENDAR_MICROSOFT_CLIENT_ID', { default: '' });
@@ -65,5 +67,5 @@ export function oauthClients(withSecrets: boolean): OAuthClients {
  * the address Cloud Functions gives it, or the emulator's.
  */
 export function functionUrl(name: string): string {
-  return functionUrlFrom(configured(functionsBaseUrl.value()), name);
+  return functionUrlFrom(configured(functionsBaseUrl.value()), name, HOSTING_REGION);
 }

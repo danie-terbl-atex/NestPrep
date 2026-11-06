@@ -11,6 +11,8 @@ abstract final class LunchPantryCopy {
   static const planFromPantryOff =
       'Turn on to plan the week around what is already in the house.';
   static const fillFromPantry = 'Fill from the pantry';
+  static const fillFromPantryBody =
+      'Packs the empty days with what is already in the house first.';
   static String weekNeeds(int things) => things == 1
       ? 'This week needs 1 thing the pantry does not have.'
       : 'This week needs $things things the pantry does not have.';

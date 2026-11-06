@@ -9,6 +9,7 @@ import '../features/calendar/state/calendar_controller.dart';
 import '../features/calendar/ui/calendar_screen.dart';
 import '../features/calendar_sync/data/calendar_sync_directory.dart';
 import '../features/calendar_sync/data/calendar_sync_repository.dart';
+import '../features/calendar_sync/state/apple_calendar_sync.dart';
 import '../features/calendar_sync/state/connected_calendars_controller.dart';
 import '../features/calendar_sync/ui/connected_calendars_screen.dart';
 import '../features/household/model/household_area.dart';
@@ -69,6 +70,7 @@ List<GoRoute> calendarRoutes(SessionController session) => [
         canConnect: context.read<HouseholdView>().permissions.canEdit(
           HouseholdArea.calendar,
         ),
+        appleCalendar: context.read<AppleCalendarSync?>(),
       ),
       child: const ConnectedCalendarsScreen(),
     ),

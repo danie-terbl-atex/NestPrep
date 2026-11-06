@@ -46,10 +46,10 @@ void main() {
 
   BasketCompareController build({bool withRanker = true}) =>
       BasketCompareController(
-        catalogues: RetailerCatalogues(
-          checkers: checkersShop,
-          pickNPay: pnpShop,
-        ),
+        catalogues: RetailerCatalogues({
+          ProductRetailer.checkers: checkersShop,
+          ProductRetailer.pickNPay: pnpShop,
+        }),
         placeResolver: CheckersPlaceResolver(
           locationSource: FakeLocationSource(),
           areaPreference: FakeCheckersAreaPreference(),

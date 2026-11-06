@@ -77,7 +77,8 @@ final class HttpCheckersCatalogue implements RetailerCatalogue {
       RetailerShelfKind.displayCategory => {
         'displayCategory': {'id': shelf.id},
       },
-      RetailerShelfKind.pnpCategory => throw ArgumentError.value(shelf.id),
+      RetailerShelfKind.pnpCategory ||
+      RetailerShelfKind.woolworthsGroup => throw ArgumentError.value(shelf.id),
     },
     near: near,
     limit: limit,

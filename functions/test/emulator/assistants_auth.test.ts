@@ -938,7 +938,9 @@ describe('the browser’s endpoints are counted by the hop Google appended, unde
   it('a caller who writes a new first hop each time is still one address', async () => {
     const statuses: number[] = [];
     for (let attempt = 0; attempt <= AUTHORIZE_PER_ADDRESS.limit; attempt += 1) {
-      statuses.push((await authorizeFrom(`10.0.0.${String(attempt)}, 198.51.100.9`)).status);
+      statuses.push(
+        (await authorizeFrom(`10.0.0.${String(attempt)}, 198.51.100.9, 66.249.2.193`)).status,
+      );
     }
     expect(statuses.slice(0, -1).every((status) => status === 400)).toBe(true);
     expect(statuses.at(-1)).toBe(429);

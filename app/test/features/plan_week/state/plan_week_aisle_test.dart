@@ -199,4 +199,53 @@ void main() {
     expect(aisle.shelves, isEmpty);
     expect(aisle.isReading, isFalse);
   });
+
+  test(
+    'a Woolworths shelf brings home fewer best sellers, and its fruit, '
+    'with no contents, is offered to an allergic child with a caution',
+    () async {
+      const fruit = RetailerShelf.woolworthsGroup('cat870106');
+      source.answer = const [
+        AisleShelf(
+          title: 'Fruit for little hands',
+          slot: LunchSlot.fruit,
+          category: fruit,
+        ),
+      ];
+      shop.byShelf[fruit] = [
+        planWeekProduct(
+          'Small bananas',
+          id: 'bananas',
+          retailer: ProductRetailer.woolworths,
+        ),
+      ];
+
+      await aisle.read(
+        shop: ProductRetailer.woolworths,
+        catalogue: shop,
+        near: near,
+        rulesByChild: {lwazi: rules[lwazi]!},
+        slots: every,
+      );
+
+      expect(shop.shelfLimits, [12]);
+      final shelf = aisle.shelves.single;
+      expect(shelf.idea.childIds, [lwazi]);
+      expect(shelf.keptFor(lwazi).single.needsLabelCheckFor(lwazi), isTrue);
+      expect(aisle.forModel.single.products, ['Small bananas']);
+    },
+  );
+
+  test('Checkers and Pick n Pay shelves bring home 24 each', () async {
+    for (final at in [ProductRetailer.checkers, ProductRetailer.pickNPay]) {
+      await aisle.read(
+        shop: at,
+        catalogue: shop,
+        near: near,
+        rulesByChild: rules,
+        slots: {LunchSlot.veg},
+      );
+    }
+    expect(shop.shelfLimits, [24, 24]);
+  });
 }

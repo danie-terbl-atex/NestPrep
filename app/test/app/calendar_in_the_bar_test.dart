@@ -21,6 +21,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
+import '../support/fake_family_profiles.dart';
 import '../support/fake_household.dart';
 import '../support/household_fixtures.dart';
 import '../support/pump_screen.dart';
@@ -43,6 +44,7 @@ void main() {
     household = HouseholdController(
       householdRepository: households,
       householdDirectory: FakeHouseholdDirectory(),
+      childProfileDirectory: FakeFamilyProfileRepository(),
       householdId: Fixtures.householdId,
       viewerUid: Fixtures.samUid,
     );

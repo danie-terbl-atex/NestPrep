@@ -21,6 +21,8 @@ class CalendarConnectionRow extends StatelessWidget {
     required this.isBusy,
     required this.onSyncNow,
     required this.onDisconnect,
+    this.canSync = true,
+    this.onChooseCalendars,
     super.key,
   });
 
@@ -33,6 +35,13 @@ class CalendarConnectionRow extends StatelessWidget {
   final bool isBusy;
   final VoidCallback onSyncNow;
   final VoidCallback onDisconnect;
+
+  /// False for an Apple Calendar this phone did not link: only the phone that
+  /// reads it can send it again.
+  final bool canSync;
+
+  /// Changes which of this iPhone's calendars it reads; null elsewhere.
+  final VoidCallback? onChooseCalendars;
 
   @override
   Widget build(BuildContext context) {
@@ -121,15 +130,25 @@ class CalendarConnectionRow extends StatelessWidget {
               spacing: NestSpace.sm,
               runSpacing: NestSpace.sm,
               children: [
-                NestButton(
-                  label: CalendarSyncCopy.syncNow,
-                  icon: LucideIcons.refreshCw,
-                  variant: NestButtonVariant.tonal,
-                  size: NestButtonSize.small,
-                  isExpanded: false,
-                  isLoading: isBusy,
-                  onPressed: isBusy ? null : onSyncNow,
-                ),
+                if (canSync)
+                  NestButton(
+                    label: CalendarSyncCopy.syncNow,
+                    icon: LucideIcons.refreshCw,
+                    variant: NestButtonVariant.tonal,
+                    size: NestButtonSize.small,
+                    isExpanded: false,
+                    isLoading: isBusy,
+                    onPressed: isBusy ? null : onSyncNow,
+                  ),
+                if (onChooseCalendars case final choose?)
+                  NestButton(
+                    label: CalendarSyncCopy.chooseCalendars,
+                    icon: LucideIcons.listChecks,
+                    variant: NestButtonVariant.ghost,
+                    size: NestButtonSize.small,
+                    isExpanded: false,
+                    onPressed: isBusy ? null : choose,
+                  ),
                 NestButton(
                   label: CalendarSyncCopy.disconnect,
                   icon: LucideIcons.unlink,

@@ -31,12 +31,15 @@ export { cancelKidPairing } from './accounts/cancel_kid_pairing';
 export { redeemKidPairing } from './accounts/redeem_kid_pairing';
 export { revokeKidDevice } from './accounts/revoke_kid_device';
 export { resetKidSignIn } from './accounts/reset_kid_sign_in';
+// Password reset, sent through Resend (accounts ADR-0012).
+export { sendPasswordReset } from './accounts/send_password_reset';
 
 // ---- calendar sync (calendar ADR-0003) ----
 export { listCalendarProviders } from './calendar_sync/list_calendar_providers';
 export { startCalendarConnection } from './calendar_sync/start_calendar_connection';
 export { calendarOAuthCallback } from './calendar_sync/calendar_oauth_callback';
 export { connectCalendarLink } from './calendar_sync/connect_calendar_link';
+export { pushAppleCalendar } from './calendar_sync/push_apple_calendar';
 export { syncCalendarConnection } from './calendar_sync/sync_calendar_connection';
 export { disconnectCalendar } from './calendar_sync/disconnect_calendar';
 export { shareCalendarFeed } from './calendar_sync/share_calendar_feed';
@@ -132,6 +135,12 @@ export { pnpStartLink } from './pnp/pnp_start_link';
 export { pnpCompleteLink } from './pnp/pnp_complete_link';
 export { pnpPushToCart } from './pnp/pnp_push_to_cart';
 export { pnpUnlink } from './pnp/pnp_unlink';
+// ---- add to Woolworths: a member's own Dash cart; the phone signs in to Cognito and relays only the refresh token ----
+export { woolworthsLinkStatus } from './woolworths/woolworths_link_status';
+export { woolworthsStartLink } from './woolworths/woolworths_start_link';
+export { woolworthsCompleteLink } from './woolworths/woolworths_complete_link';
+export { woolworthsPushToCart } from './woolworths/woolworths_push_to_cart';
+export { woolworthsUnlink } from './woolworths/woolworths_unlink';
 // ---- Jev ranks the matches under a grocery line; the member still picks (foundation ADR-0021) ----
 export { rankProductMatches } from './checkers/rank_product_matches';
 // ---- photo frames: a wall frame pairs by code and reads one assembled day (photo-frames ADR-0001) ----
@@ -151,6 +160,9 @@ export { waitFrameShare } from './frames/wait_frame_share';
 export { getFrameRecipePhoto } from './frames/get_frame_recipe_photo';
 export { searchFrameProducts } from './frames/search_frame_products';
 export { addFrameGroceryItem } from './frames/add_frame_grocery_item';
+export { checkFrameUpdate } from './frames/check_frame_update';
+export { getFrameUpdateApk } from './frames/get_frame_update_apk';
+export { reportFrameUpdate } from './frames/report_frame_update';
 // ---- assistants: NestPrep in Claude and ChatGPT — the authorization server, the MCP endpoint and connections (assistants ADR-0001 to ADR-0003) ----
 export { assistantAuth } from './assistants/auth/assistant_auth';
 export { assistantMcp } from './assistants/mcp/assistant_mcp';

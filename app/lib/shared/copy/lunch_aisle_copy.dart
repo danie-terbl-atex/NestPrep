@@ -1,6 +1,7 @@
 /// The names *Plan my week* gives each shop's lunchbox shelves (`FE-19`):
-/// Checkers' own carousel names (lunch-box ADR-0013), and Pick n Pay's
-/// categories as it names them (lunch-box ADR-0026).
+/// Checkers' own carousel names (lunch-box ADR-0013), Pick n Pay's
+/// categories as it names them (lunch-box ADR-0026), and NestPrep's own
+/// names for Woolworths' groups.
 abstract final class LunchAisleCopy {
   // ---- Checkers' Kids Lunchbox shelves (lunch-box ADR-0013) ----
   static const shelfTummyFillers = 'Tummy fillers';
@@ -28,4 +29,16 @@ abstract final class LunchAisleCopy {
   static const pnpFreshVegetables = 'Fresh vegetables';
   static const pnpBiscuits = 'Biscuits and crackers';
   static const pnpChips = 'Chips and dips';
+
+  // ---- Woolworths' browse groups, named by NestPrep ----
+  static const woolworthsSandwichFillers = 'Sandwich fillers';
+  static const woolworthsBreadAndRolls = 'Bread and rolls';
+  static const woolworthsFruitForLittleHands = 'Fruit for little hands';
+  static const woolworthsCrunchyVegSticks = 'Crunchy veg sticks';
+  static const woolworthsYoghurtTime = 'Yoghurt time';
+  static const woolworthsCheesePlease = 'Cheese, please';
+  static const woolworthsCrackersAndRiceCakes = 'Crackers and rice cakes';
+  static const woolworthsDriedFruitNibbles = 'Dried fruit nibbles';
+  static const woolworthsBiscuitTin = 'Biscuit tin';
+  static const woolworthsCrispsAndCrunch = 'Crisps and crunch';
 }

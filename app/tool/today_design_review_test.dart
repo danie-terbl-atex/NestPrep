@@ -8,6 +8,8 @@ import 'package:nestprep/features/lunch_box/model/lunch_pick.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_seed_catalogue.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
+import 'package:nestprep/features/notifications/data/notification_repository.dart';
+import 'package:nestprep/features/notifications/model/inbox_item.dart';
 import 'package:nestprep/features/today/model/home_layout.dart';
 import 'package:nestprep/features/today/state/home_layout_controller.dart';
 import 'package:nestprep/features/today/ui/home_board_screen.dart';
@@ -22,10 +24,12 @@ import '../test/support/fake_calendar_repository.dart';
 import '../test/support/fake_calendar_sync.dart';
 import '../test/support/fake_grocery_repository.dart';
 import '../test/support/fake_home_layout_store.dart';
+import '../test/support/fake_notifications.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/lunch_fixtures.dart';
 import '../test/support/lunch_harness.dart';
+import '../test/support/notifications_fixtures.dart';
 import 'review_press.dart';
 
 /// Today (design-system ADR-0009) in the design-review press, light, dark and
@@ -60,6 +64,22 @@ void main() {
     final calendarRepository = FakeCalendarRepository();
     final syncRepository = FakeCalendarSyncRepository();
     final groceryRepository = FakeGroceryRepository();
+    InboxItem waiting(String id, String category) => InboxItem(
+      id: id,
+      memberId: Fixtures.samMemberId,
+      category: category,
+      title: id,
+      body: '',
+    );
+    final notifications = FakeNotificationRepository(
+      items: [
+        NotificationFixtures.digest(),
+        NotificationFixtures.handover(),
+        waiting('chore-1', 'chores'),
+        waiting('chore-2', 'chores'),
+        waiting('swap', 'coParenting'),
+      ],
+    );
     final todos = TodoController(
       todoRepository: todoRepository,
       householdClock: clock,
@@ -85,6 +105,7 @@ void main() {
       calendar.dispose();
       groceries.dispose();
       await lunch.close();
+      await notifications.close();
     });
 
     await captureScreen(
@@ -97,6 +118,7 @@ void main() {
       textScale: textScale,
       providers: [
         ...lunch.providers,
+        Provider<NotificationRepository>.value(value: notifications),
         if (isBoard)
           ChangeNotifierProvider<HomeLayoutController>(
             create: (_) => HomeLayoutController(

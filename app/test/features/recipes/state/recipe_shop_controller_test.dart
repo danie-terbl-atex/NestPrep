@@ -77,7 +77,10 @@ void main() {
     final areas = FakeCheckersAreaPreference()
       ..chosen[Fixtures.householdId] = CheckersArea.fallback;
     controller = RecipeShopController(
-      catalogues: RetailerCatalogues(checkers: checkers, pickNPay: pnp),
+      catalogues: RetailerCatalogues({
+        ProductRetailer.checkers: checkers,
+        ProductRetailer.pickNPay: pnp,
+      }),
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: areas,

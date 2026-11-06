@@ -259,7 +259,13 @@ describe('the cart', () => {
     const shop = new HttpCheckersShop(scripted, APP);
     const cart = await shop.readCart(context);
     const updated = await shop.addLines(context, cart, [
-      { productId: OUT_OF_STOCK.id, storeId: STORE.storeId, priceCents: 3799, quantity: 2 },
+      {
+        lineId: null,
+        productId: OUT_OF_STOCK.id,
+        storeId: STORE.storeId,
+        priceCents: 3799,
+        quantity: 2,
+      },
     ]);
     expect(updated.lines).toHaveLength(2);
     const body = JSON.parse(scripted.requests[1]?.request.body ?? '{}') as {
@@ -280,6 +286,27 @@ describe('the cart', () => {
       }),
     ]);
     expect(scripted.requests[1]?.url).toContain('/api/v3/carts/update');
+  });
+
+  it('re-sends a line it grows by that line’s own id, at its new quantity', async () => {
+    const before = cartsWith([{ id: 'l1', productId: MILK.id, quantity: 1 }]);
+    const after = cartsWith([{ id: 'l1', productId: MILK.id, quantity: 3 }]);
+    const scripted = http(
+      on('/carts/user', json(200, before)),
+      on('/carts/update', json(200, after)),
+    );
+    const shop = new HttpCheckersShop(scripted, APP);
+    const cart = await shop.readCart(context);
+    const updated = await shop.addLines(context, cart, [
+      { lineId: 'l1', productId: MILK.id, storeId: STORE.storeId, priceCents: 3799, quantity: 3 },
+    ]);
+    expect(updated.lines).toEqual([{ lineId: 'l1', productId: MILK.id, quantity: 3 }]);
+    const body = JSON.parse(scripted.requests[1]?.request.body ?? '{}') as {
+      carts: { lineItems: Record<string, unknown>[] }[];
+    };
+    expect(body.carts[0]?.lineItems).toEqual([
+      expect.objectContaining({ id: 'l1', productId: MILK.id, quantity: 3 }),
+    ]);
   });
 
   it('is unavailable when there is no sixty-minute cart', async () => {

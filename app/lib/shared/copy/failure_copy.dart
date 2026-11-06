@@ -7,6 +7,7 @@ import 'pnp_copy.dart';
 import 'points_copy.dart';
 import 'premium_voucher_copy.dart';
 import 'subscription_copy.dart';
+import 'woolworths_copy.dart';
 
 /// The words for every `AppFailure` (`FE-09`): a screen never shows an
 /// error's own message, only one of these. Split from `AppCopy` when it
@@ -59,6 +60,9 @@ abstract final class FailureCopy {
     CheckersFailure(:final problem) => CheckersCopy.problem(problem),
     // Pick n Pay: the catalogue, the link and the cart (add-to-pnp ADR-0001).
     PnpFailure(:final problem) => PnpCopy.problem(problem),
+    // Woolworths: the catalogue, the sign-in and the cart (add-to-woolworths
+    // ADR-0001).
+    WoolworthsFailure(:final problem) => WoolworthsCopy.problem(problem),
     PhotoFrameFailure(:final problem) => PhotoFrameCopy.problem(problem),
     FramePhotoFailure(:final problem) => PhotoFrameCopy.photoProblem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
@@ -166,6 +170,10 @@ abstract final class FailureCopy {
       'This account has been turned off. Ask whoever set it up.',
     SignInProblem.notConfigured =>
       'Sign-in is not set up on this build of NestPrep yet.',
+    SignInProblem.invalidEmail => 'That does not look like an email address.',
+    SignInProblem.resetUnavailable =>
+      'We could not send the email just now. Please try again in a few '
+          'minutes.',
     SignInProblem.unknown => 'Signing in did not work. Please try again.',
   };
 }

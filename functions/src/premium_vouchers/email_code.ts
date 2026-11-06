@@ -6,7 +6,7 @@ import { logger } from 'firebase-functions/v2';
 import type { RateLimitRule } from '../shared/rate_limit';
 import { refuseSubscription } from '../subscriptions/errors';
 import { type ChallengeStore, EMAIL_CODES_PER_HOUR } from './email_challenges';
-import { type EmailSender, EmailNotSent, emailCodeMessage } from './email_sender';
+import { type EmailMessage, type EmailSender, EmailNotSent } from '../shared/email_sender';
 import { emailHashOf, includesHash, maskEmail, otpHashOf } from './premium_hashes';
 
 const HOUR = 60 * 60;
@@ -31,6 +31,20 @@ export interface EmailCodeDeps {
   readonly newCode: () => string;
   readonly consume: (rule: RateLimitRule, subject: string) => Promise<boolean>;
   readonly now: Date;
+}
+
+export function emailCodeMessage(to: string, code: string): EmailMessage {
+  return {
+    to,
+    subject: `${code} is your NestPrep code`,
+    text: [
+      `Your NestPrep code is ${code}.`,
+      '',
+      'Type it in the NestPrep app to add this email to your account. It works for 10 minutes.',
+      '',
+      'If you did not ask for this code, you can ignore this email.',
+    ].join('\n'),
+  };
 }
 
 export function randomEmailCode(): string {

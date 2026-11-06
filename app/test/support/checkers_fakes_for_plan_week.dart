@@ -12,8 +12,10 @@ RetailerProduct planWeekProduct(
   int? packCount,
   String unit = 'EA',
   bool isInStock = true,
+  ProductRetailer retailer = ProductRetailer.checkers,
+  String? imageId,
 }) => RetailerProduct(
-  retailer: ProductRetailer.checkers,
+  retailer: retailer,
   id: id ?? 'p-${name.toLowerCase().replaceAll(' ', '-')}',
   storeId: 'store-1',
   articleCode: '1000$unit',
@@ -25,4 +27,5 @@ RetailerProduct planWeekProduct(
   isInStock: isInStock,
   ingredientsText: ingredients,
   packCount: packCount,
+  imageId: imageId,
 );

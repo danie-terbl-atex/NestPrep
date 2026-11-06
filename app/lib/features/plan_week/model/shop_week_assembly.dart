@@ -61,7 +61,6 @@ abstract final class ShopWeekAssembly {
           !child.plan.slots.containsKey(key) &&
           used.add('${lunch.childId}/$key');
       if (!isOpen ||
-          _hasGone(child, lunch.day) ||
           search == null ||
           !mayHave ||
           search.idea.slot != lunch.slot ||
@@ -94,6 +93,7 @@ abstract final class ShopWeekAssembly {
                         1)
                     .clamp(1, ShopWeek.packLimit),
       },
+      daysLeft: result.daysLeft,
       slots: packing.slots,
       treatDays: packing.treatDays,
       budget: budget,
@@ -128,7 +128,7 @@ abstract final class ShopWeekAssembly {
     for (final child in result.children) {
       final childWeek = board.childWeek(child.childId);
       for (var day = 1; day <= 5; day++) {
-        if (childWeek == null || _hasGone(childWeek, day)) continue;
+        if (childWeek == null) continue;
         for (final slot in LunchSlot.values) {
           final key = LunchPlan.slotKey(day, slot);
           if (!result.fills(day, slot) ||
@@ -165,6 +165,7 @@ abstract final class ShopWeekAssembly {
       children: result.children,
       searches: searches,
       boxesPerPack: _packs(searches, const {}),
+      daysLeft: result.daysLeft,
       slots: packing.slots,
       treatDays: packing.treatDays,
       budget: budget,
@@ -192,11 +193,6 @@ abstract final class ShopWeekAssembly {
           ),
   };
 
-  /// A school day the board says has happened — today or earlier — is
-  /// never planned (lunch-box ADR-0019; the server's `hasGone`).
-  static bool _hasGone(LunchChildWeek childWeek, int day) =>
-      childWeek.dayOn(day)?.hasHappened ?? true;
-
   /// Budget mode's week only when it is the week being planned.
   static LunchBudgetWeek? _sameWeek(LunchBudgetWeek? week, LunchBoard board) =>
       week != null && week.board.week == board.week ? week : null;
@@ -221,6 +217,7 @@ abstract final class ShopWeekAssembly {
     ],
     searches: searches,
     boxesPerPack: const {},
+    daysLeft: board.week.daysLeftAfter(board.today),
     slots: packing.slots,
     treatDays: packing.treatDays,
   );

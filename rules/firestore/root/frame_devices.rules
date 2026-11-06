@@ -1,0 +1,6 @@
+// ---- frame update devices ----
+// Each frame's update agent, keyed by the hash of its own secret. Written by
+// `checkFrameUpdate`, `reportFrameUpdate` and Internal Tools.
+match /frameDevices/{deviceId} {
+  allow read, write: if false;
+}

@@ -8,10 +8,12 @@ import '../../../shared/links/external_link_opener.dart';
 import '../../../shared/state/action_failure.dart';
 import '../data/calendar_sync_directory.dart';
 import '../data/calendar_sync_repository.dart';
+import '../model/apple_calendar.dart';
 import '../model/calendar_connection.dart';
 import '../model/calendar_feed_link.dart';
 import '../model/calendar_provider.dart';
 import '../model/provider_availability.dart';
+import 'apple_calendar_sync.dart';
 
 /// The connected calendars screen's controller (calendar ADR-0003): the
 /// household's connections and feed link as their listeners last saw them,
@@ -30,18 +32,22 @@ final class ConnectedCalendarsController extends ChangeNotifier
     required this.viewerUid,
     required this.isAdmin,
     this.canConnect = true,
+    AppleCalendarSync? appleCalendar,
     DateTime Function()? now,
   }) : _repository = calendarSyncRepository,
        _directory = calendarSyncDirectory,
        _opener = linkOpener,
+       _apple = appleCalendar,
        _now = now ?? DateTime.now {
     _listen();
     unawaited(_loadAvailability());
+    unawaited(_loadAppleLink());
   }
 
   final CalendarSyncRepository _repository;
   final CalendarSyncDirectory _directory;
   final ExternalLinkOpener _opener;
+  final AppleCalendarSync? _apple;
   final DateTime Function() _now;
   final String householdId;
   final String viewerUid;
@@ -64,6 +70,9 @@ final class ConnectedCalendarsController extends ChangeNotifier
   bool _isSharingFeed = false;
   bool _awaitingBrowser = false;
   int? _connectionsWhenBrowserOpened;
+  AppleCalendarLink? _appleLink;
+  bool _appleAccessLost = false;
+  bool _disposed = false;
 
   AsyncState<List<CalendarConnection>> get connections => _connections;
   AsyncState<ProviderAvailability> get availability => _availability;
@@ -76,6 +85,32 @@ final class ConnectedCalendarsController extends ChangeNotifier
   bool get isAwaitingBrowser => _awaitingBrowser;
 
   bool isBusy(CalendarConnection connection) => _busy.contains(connection.id);
+
+  /// The ways in this phone can offer: Apple Calendar only on an iPhone, and
+  /// not again once this phone has linked it here.
+  List<CalendarProvider> get providersToConnect => [
+    for (final provider in CalendarProvider.values)
+      if (!provider.readsFromPhone ||
+          (_apple?.isAvailable == true && _appleLink == null))
+        provider,
+  ];
+
+  /// The calendars this phone reads for the household, when it linked any.
+  List<String> get appleCalendarIds => _appleLink?.calendarIds ?? const [];
+
+  /// This phone linked Apple Calendar here and has since been refused access
+  /// in Settings, so the week stops catching up until it is turned back on.
+  bool get appleAccessLost => _appleAccessLost;
+
+  bool isLinkedHere(CalendarConnection connection) =>
+      connection.provider.readsFromPhone &&
+      _appleLink?.connectionId == connection.id;
+
+  /// Sync now is the server's for a provider it reads, and only the linked
+  /// phone's for Apple Calendar.
+  bool canSync(CalendarConnection connection) =>
+      canManage(connection) &&
+      (!connection.provider.readsFromPhone || isLinkedHere(connection));
 
   /// How long ago the connection last synced, or null before its first sync.
   Duration? sinceLastSync(CalendarConnection connection) {
@@ -115,6 +150,42 @@ final class ConnectedCalendarsController extends ChangeNotifier
     notifyListeners();
   }
 
+  /// Asks this iPhone for its calendars, asking for access first when it never
+  /// has. Null when it was refused; the refusal is on [actionFailure].
+  Future<List<AppleCalendar>?> appleCalendars() async {
+    final apple = _apple;
+    if (apple == null) return null;
+    List<AppleCalendar>? found;
+    await runAction(() async {
+      await apple.ensureAccess();
+      found = await apple.calendars();
+    });
+    notifyListeners();
+    return found;
+  }
+
+  /// Links the chosen calendars, or changes which ones an existing link
+  /// reads. True when it went through, so the sheet can close.
+  Future<bool> linkApple(List<String> calendarIds) async {
+    final apple = _apple;
+    if (apple == null || _isConnecting) return false;
+    _isConnecting = true;
+    notifyListeners();
+    var linked = false;
+    await runAction(() async {
+      await apple.link(viewerUid, householdId, calendarIds);
+      linked = true;
+    });
+    await _loadAppleLink();
+    _isConnecting = false;
+    notifyListeners();
+    return linked;
+  }
+
+  Future<void> openAppleSettings() => runAction(() async {
+    await _apple?.openSettings();
+  });
+
   /// Connects a calendar link. True when it was connected, so the sheet that
   /// asked can close; false leaves the refusal on [actionFailure].
   Future<bool> connectLink(String url) async {
@@ -132,15 +203,25 @@ final class ConnectedCalendarsController extends ChangeNotifier
     return connected;
   }
 
-  Future<void> syncNow(CalendarConnection connection) => _whileBusy(
-    connection,
-    () => _directory.syncNow(householdId, connection.id),
-  );
+  Future<void> syncNow(CalendarConnection connection) =>
+      _whileBusy(connection, () async {
+        final apple = _apple;
+        if (!connection.provider.readsFromPhone) {
+          return _directory.syncNow(householdId, connection.id);
+        }
+        if (apple == null || !isLinkedHere(connection)) return;
+        await apple.pushIfDue(viewerUid, householdId, force: true);
+        await _loadAppleLink();
+      });
 
-  Future<void> disconnect(CalendarConnection connection) => _whileBusy(
-    connection,
-    () => _directory.disconnect(householdId, connection.id),
-  );
+  Future<void> disconnect(CalendarConnection connection) =>
+      _whileBusy(connection, () async {
+        await _directory.disconnect(householdId, connection.id);
+        if (isLinkedHere(connection)) {
+          await _apple?.forget(viewerUid, householdId);
+          await _loadAppleLink();
+        }
+      });
 
   Future<void> shareFeed() =>
       _feedAction(() => _directory.shareFeed(householdId));
@@ -167,6 +248,23 @@ final class ConnectedCalendarsController extends ChangeNotifier
     notifyListeners();
     _listen();
     await _loadAvailability();
+    await _loadAppleLink();
+  }
+
+  Future<void> _loadAppleLink() async {
+    final apple = _apple;
+    if (apple == null || !apple.isAvailable) return;
+    try {
+      final link = await apple.linkFor(viewerUid, householdId);
+      final lost =
+          link != null && await apple.access() != AppleCalendarAccess.granted;
+      if (_disposed) return;
+      _appleLink = link;
+      _appleAccessLost = lost;
+      notifyListeners();
+    } on AppFailure catch (failure) {
+      if (!_disposed) recordFailure(failure);
+    }
   }
 
   int get _connectionCount => switch (_connections) {
@@ -251,6 +349,7 @@ final class ConnectedCalendarsController extends ChangeNotifier
 
   @override
   void dispose() {
+    _disposed = true;
     unawaited(_cancel());
     super.dispose();
   }

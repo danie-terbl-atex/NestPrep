@@ -10,6 +10,7 @@ import 'package:nestprep/features/family_profiles/model/family_entry.dart';
 import 'package:nestprep/features/family_profiles/model/family_profile.dart';
 import 'package:nestprep/features/family_profiles/model/food_rules.dart';
 import 'package:nestprep/features/family_profiles/model/other_allergy.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_slot.dart';
 import 'package:nestprep/features/plan_week/model/allergen_words.dart';
 import 'package:nestprep/features/plan_week/model/checked_product.dart';
@@ -21,11 +22,13 @@ import '../../../support/lunch_fixtures.dart';
 
 /// NestPrep's own check of a shop's product and a lunch idea, child by child
 /// (lunch-box ADR-0012 §2): the shop's words read for allergens, unknown
-/// contents never offered to a child with allergies, and every leaving-out
+/// contents never offered to a child with allergies — but at Woolworths,
+/// offered on the name with a caution — and every leaving-out
 /// said with its reason.
 void main() {
   const lwazi = LunchFixtures.lwaziId;
   const ayanda = LunchFixtures.ayandaId;
+  const woolworths = ProductRetailer.woolworths;
   final rules = <String, FoodRules>{
     lwazi: LunchFixtures.lwaziEntry.foodRules,
     ayanda: LunchFixtures.ayandaEntry.foodRules,
@@ -99,6 +102,74 @@ void main() {
       expect(riceCakes.isKnown, isFalse);
       expect(riceCakes.childIds, {ayanda});
       expect(riceCakes.reasons.single.kind, LeftOutKind.unknownContents);
+    });
+
+    test('at Checkers and Pick n Pay, unknown contents stay hidden from a '
+        'child with allergies', () {
+      for (final shop in [ProductRetailer.checkers, ProductRetailer.pickNPay]) {
+        final apples = CheckedProduct.of(
+          planWeekProduct('Apples 1kg', retailer: shop),
+          rules,
+        );
+        expect(apples.childIds, {ayanda});
+        expect(apples.reasons.single.kind, LeftOutKind.unknownContents);
+        expect(apples.needsLabelCheckFor(lwazi), isFalse);
+        expect(apples.isJudgedByName, isFalse);
+      }
+    });
+
+    test('at Woolworths, unknown contents are offered to a child with '
+        'allergies, with a caution for them only', () {
+      final grapes = CheckedProduct.of(
+        planWeekProduct('Seedless grapes 500 g', retailer: woolworths),
+        rules,
+      );
+      expect(grapes.isKnown, isFalse);
+      expect(grapes.isJudgedByName, isTrue);
+      expect(grapes.childIds, {lwazi, ayanda});
+      expect(grapes.reasons, isEmpty);
+      expect(grapes.needsLabelCheckFor(lwazi), isTrue);
+      expect(grapes.needsLabelCheckFor(ayanda), isFalse);
+    });
+
+    test('at Woolworths, an allergen in the name still keeps an unknown '
+        'product from the allergic child', () {
+      final butter = CheckedProduct.of(
+        planWeekProduct('Peanut Butter 400 g', retailer: woolworths),
+        rules,
+      );
+      expect(butter.childIds, {ayanda});
+      expect(butter.reasons.single.kind, LeftOutKind.allergy);
+      expect(butter.reasons.single.allergen, Allergen.peanut);
+      expect(butter.labelCheckChildIds, isEmpty);
+    });
+
+    test('at Woolworths, known contents are read as everywhere else', () {
+      final yoghurt = CheckedProduct.of(
+        planWeekProduct(
+          'Kids yoghurt 6 x 100 g',
+          retailer: woolworths,
+          ingredients: 'Milk, peanut pieces',
+        ),
+        rules,
+      );
+      expect(yoghurt.childIds, {ayanda});
+      expect(yoghurt.reasons.single.allergen, Allergen.peanut);
+      expect(yoghurt.labelCheckChildIds, isEmpty);
+    });
+
+    test('unknown contents are hidden at every shop but Woolworths', () {
+      expect(
+        {
+          for (final shop in ProductRetailer.values)
+            shop: CheckedProduct.unknownContentsAt(shop),
+        },
+        {
+          ProductRetailer.checkers: UnknownContents.hidden,
+          ProductRetailer.pickNPay: UnknownContents.hidden,
+          ProductRetailer.woolworths: UnknownContents.offeredWithCaution,
+        },
+      );
     });
 
     test('out of stock, or sold by the kilogram, goes to nobody', () {
