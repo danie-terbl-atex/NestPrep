@@ -1,3 +1,40 @@
+# People — household and family profiles on one screen (design-system ADR, proposed)
+
+Daniel 2026-11-06: family profiles and household should merge into the same screen, maybe split by tab.
+
+Contradicts design-system ADR-0005 §3 (Family profiles is its own tile on More) and §5 / household
+overview constraint ("the people screen holds people only"). Superseded by a new design-system ADR,
+not silently. In v1 (both V1 core). App only: no rules, Functions, contracts or area keys change.
+
+## Shape
+- One **People** screen, a `NestSegmentedControl` under the title: *Household* | *Profiles*.
+  Route-owned like Meals: `/household` is the Household tab, `/family` the Profiles tab; switching
+  `go`es (replaces), so back leaves for More.
+- The control shows only when `FamilyAccess.isVisible`; without the grant it is the people screen as
+  today. A deep link to `/family` stays gated by the redirect.
+- The household route moves into family's ShellRoute so both tabs share the one lazy
+  `FamilyController` (created only when Profiles is first read, kept across switches).
+- More: the Family profiles tile goes; the People card is the one way in. The welcome tour's
+  `moreFamily` stop folds into `morePeople`.
+- Lunch, Today and the share screen still push `/family`, and land on Profiles.
+
+## Checklist
+- [x] ADR (proposed): design-system ADR-0022; household, family-profiles and design-system overviews
+- [x] `PeopleView` + `PeopleViewSwitch`; HouseholdScreen and FamilyScreen use it (title *People*)
+- [x] Route: kept as two routes; the switch `replace`s, so no shell move was needed
+- [x] More: tile dropped; tour `moreFamily` stop gone, People stop's admin text names Profiles
+- [x] Tests: real-router tab test, family navigation (4), family screen, More, household, tour plan
+- [x] analyze --fatal-infos + format on changed files only; people/family design-review pictures retaken
+- [ ] Drive it on a device
+- [x] Godfather lint (no new errors), session log
+
+## Review
+- Tab tests fail when the switch uses `go` (back loses More) and pass with `replace`: mutation-checked.
+- Still failing, from other sessions' in-flight work and not this change: app_router groceries/meals/recipe pick
+  (meals/recipes WIP), app_version, declared_packages, errors_are_never_swallowed, feature_flags (documents flags),
+  one_home_for_copy (`HomeCareRoutineCopy.itemForReader`).
+- Lint's one error is meal-planning's dangling `lunch-box:ADR-0035`, from another session.
+
 # Password reset — branded email through Resend (accounts ADR-0012)
 
 Daniel 2026-11-06: the reset flow is either not working or not hooked up; any email that goes out should be properly formatted, ideally Resend HTML.

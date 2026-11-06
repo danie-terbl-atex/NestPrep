@@ -92,6 +92,29 @@ void main() {
     expect(auth.registrations, ['sam@nestprep.test']);
   });
 
+  testWidgets('the password manager may suggest a new password and save it', (
+    tester,
+  ) async {
+    await pump(tester);
+    final password = find.byType(TextField).at(2);
+    expect(tester.widget<TextField>(password).autofillHints, [
+      AutofillHints.newPassword,
+    ]);
+
+    await fillIn(tester);
+    await tester.tap(find.widgetWithText(NestButton, AppCopy.registerSubmit));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.testTextInput.log.any(
+        (call) =>
+            call.method == 'TextInput.finishAutofillContext' &&
+            call.arguments == true,
+      ),
+      isTrue,
+    );
+  });
+
   testWidgets('an address that already has an account is said in words', (
     tester,
   ) async {

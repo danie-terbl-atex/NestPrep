@@ -22,6 +22,10 @@ abstract final class RecipeShopCopy {
   static const sheetTitle = 'Add to grocer';
   static String searching(ProductRetailer shop, int done, int total) =>
       'Looking at ${CheckersCopy.retailerName(shop)}… $done of $total';
+  static String searchingSemantics(ProductRetailer shop, int done, int total) =>
+      'Looking at ${CheckersCopy.retailerName(shop)}, $done of $total '
+      '${total == 1 ? 'ingredient' : 'ingredients'} done';
+  static String searchingFor(String ingredient) => 'Looking for $ingredient…';
   static String found(ProductRetailer shop) =>
       'Found at ${CheckersCopy.retailerName(shop)}. Untick anything you '
       'don’t need, or tap Change for another product.';
@@ -42,6 +46,7 @@ abstract final class RecipeShopCopy {
       : 'Add $count to the grocery list';
   static String addToCart(ProductRetailer shop) =>
       'Add to my ${CheckersCopy.retailerName(shop)} cart';
+  static const stillLooking = 'Finding products…';
   static String added(int count) => switch (count) {
     0 => 'All of it was on your grocery list already.',
     1 => '1 item added to your grocery list.',

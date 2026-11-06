@@ -32,8 +32,13 @@ class PlanWeekWeekHeader extends StatelessWidget {
           PlanWeekCopy.weekHeadline(weekName.inSentence),
           style: nest.text.headline,
         ),
-        const SizedBox(height: NestSpace.xs),
-        Text(PlanWeekCopy.tapToSwap, style: nest.text.bodySecondary),
+        if (!plan.isEmpty) ...[
+          const SizedBox(height: NestSpace.md),
+          const NestBanner(
+            key: ValueKey('plan-week-tap-to-swap'),
+            message: PlanWeekCopy.tapToSwap,
+          ),
+        ],
         if (plan.daysLeft.length < plan.week.schoolDays.length) ...[
           const SizedBox(height: NestSpace.md),
           PlanWeekDaysLeftNote(week: plan.week, daysLeft: plan.daysLeft),

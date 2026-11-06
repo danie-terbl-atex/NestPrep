@@ -22,6 +22,8 @@ import 'package:nestprep/features/photo_frames/state/frame_photos_controller.dar
 import 'package:nestprep/features/photo_frames/state/photo_frames_controller.dart';
 import 'package:nestprep/features/photo_frames/ui/frame_scanner.dart';
 import 'package:nestprep/features/photo_frames/ui/photo_frames_screen.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
 import 'package:nestprep/shared/copy/woolworths_copy.dart';
@@ -35,6 +37,7 @@ import 'package:provider/single_child_widget.dart';
 import '../../../support/fake_checkers.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_photo_frames.dart';
+import '../../../support/fake_subscriptions.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
@@ -270,6 +273,67 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(repository.updated.single.panels.share, isTrue);
+    });
+
+    testWidgets('a premium household switches where everyone is on', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        extra: [
+          ChangeNotifierProvider<HouseholdEntitlement>(
+            create: (_) => HouseholdEntitlement(
+              entitlementRepository: FakeEntitlementRepository(
+                initial: Entitlement(premiumUntil: DateTime.utc(2100)),
+              ),
+              householdId: Fixtures.householdId,
+            ),
+          ),
+        ],
+      );
+      await emit(tester, [FrameFixtures.frame()]);
+      await openFrame(tester, 'Kitchen frame');
+
+      await tester.ensureVisible(inSheet(find.text(PhotoFrameCopy.people)));
+      await tester.pumpAndSettle();
+      expect(inSheet(find.text(PhotoFrameCopy.peopleBody)), findsOneWidget);
+      expect(find.text(PhotoFrameCopy.peopleNeedsPremium), findsNothing);
+      await tester.tap(inSheet(find.text(PhotoFrameCopy.people)));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(inSheet(find.text(PhotoFrameCopy.save)));
+      await tester.tap(inSheet(find.text(PhotoFrameCopy.save)));
+      await tester.pumpAndSettle();
+
+      expect(repository.updated.single.panels.people, isTrue);
+    });
+
+    testWidgets('without premium where everyone is says so and stays off', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester, [
+        FrameFixtures.frame(panels: const FramePanels(people: true)),
+      ]);
+      await openFrame(tester, 'Kitchen frame');
+
+      await tester.ensureVisible(inSheet(find.text(PhotoFrameCopy.people)));
+      await tester.pumpAndSettle();
+      expect(inSheet(find.text(PhotoFrameCopy.peopleBody)), findsOneWidget);
+      expect(
+        inSheet(find.text(PhotoFrameCopy.peopleNeedsPremium)),
+        findsOneWidget,
+      );
+      final toggle = tester.widget<Switch>(
+        find.descendant(
+          of: find.ancestor(
+            of: inSheet(find.text(PhotoFrameCopy.people)),
+            matching: find.byType(NestListRow),
+          ),
+          matching: find.byType(Switch),
+        ),
+      );
+      expect(toggle.value, isFalse);
+      expect(toggle.onChanged, isNull);
     });
 
     testWidgets('picks whose day it shows', (tester) async {

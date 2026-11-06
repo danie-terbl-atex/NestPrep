@@ -69,9 +69,11 @@ class RecipeShopFooter extends StatelessWidget {
             if (controller.listed?.isEmpty != true)
               NestButton(
                 key: const ValueKey('recipe-shop-cart'),
-                label: RecipeShopCopy.addToCart(shop),
+                label: controller.isSettled
+                    ? RecipeShopCopy.addToCart(shop)
+                    : RecipeShopCopy.stillLooking,
                 icon: LucideIcons.shoppingBasket,
-                isLoading: isBusy,
+                isLoading: isBusy || !controller.isSettled,
                 onPressed: canAdd && !isBusy ? () => _toCart(context) : null,
               ),
             const SizedBox(height: NestSpace.sm),

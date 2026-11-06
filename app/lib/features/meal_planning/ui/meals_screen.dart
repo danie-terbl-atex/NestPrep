@@ -100,6 +100,7 @@ class MealsScreen extends StatelessWidget {
                 ? MealWeekView(
                     onOpenRecipe: onOpenRecipe,
                     onPickRecipe: onPickRecipe,
+                    onOpenLunch: () => onSelectTab(HouseholdTab.lunch),
                   )
                 : RecipeDiscoveryView(
                     onOpen: (recipe, heroTag) =>

@@ -33,6 +33,7 @@ class PlannedDayCard extends StatelessWidget {
     required this.library,
     required this.onOpenRecipe,
     required this.onPickRecipe,
+    required this.onOpenLunch,
     super.key,
   });
 
@@ -41,6 +42,7 @@ class PlannedDayCard extends StatelessWidget {
   final List<Meal> library;
   final ValueChanged<String> onOpenRecipe;
   final RecipePicker onPickRecipe;
+  final VoidCallback onOpenLunch;
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +65,13 @@ class PlannedDayCard extends StatelessWidget {
               date: day.date,
               slot: slot,
               meal: day.meals[slot],
+              schoolLunchFor: slot == MealSlot.lunch
+                  ? day.schoolLunchFor
+                  : const [],
               library: library,
               onOpenRecipe: onOpenRecipe,
               onPickRecipe: onPickRecipe,
+              onOpenLunch: onOpenLunch,
             ),
         ],
       ),
@@ -78,26 +84,41 @@ class _SlotRow extends StatelessWidget {
     required this.date,
     required this.slot,
     required this.meal,
+    required this.schoolLunchFor,
     required this.library,
     required this.onOpenRecipe,
     required this.onPickRecipe,
+    required this.onOpenLunch,
   });
 
   final CalendarDate date;
   final MealSlot slot;
   final Meal? meal;
+  final List<String> schoolLunchFor;
   final List<Meal> library;
   final ValueChanged<String> onOpenRecipe;
   final RecipePicker onPickRecipe;
+  final VoidCallback onOpenLunch;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final planned = meal;
     final recipeId = planned?.recipeId;
-    final canEdit = context.watch<HouseholdView>().permissions.canEdit(
-      HouseholdArea.meals,
-    );
+    final view = context.watch<HouseholdView>();
+    final canEdit = view.permissions.canEdit(HouseholdArea.meals);
+    final schoolNames = [
+      for (final id in schoolLunchFor)
+        ?view.memberById(id)?.displayName.split(' ').first,
+    ]..sort();
+    if (schoolNames.isNotEmpty) {
+      return _SchoolLunchRow(
+        names: schoolNames,
+        atHome: planned,
+        onOpenLunch: onOpenLunch,
+        onPickAtHome: canEdit ? () => _pick(context) : null,
+      );
+    }
     return InkWell(
       borderRadius: BorderRadius.circular(NestRadius.sm),
       onTap: canEdit ? () => _pick(context) : null,
@@ -105,15 +126,7 @@ class _SlotRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: NestSpace.sm),
         child: Row(
           children: [
-            SizedBox(
-              width: NestSize.avatarLarge + NestSpace.lg,
-              child: Text(
-                AppCopy.mealSlotName(slot.name),
-                style: nest.text.caption.copyWith(
-                  color: nest.colors.inkTertiary,
-                ),
-              ),
-            ),
+            _SlotLabel(slot),
             if (recipeId != null) ...[
               PlannedRecipeThumb(recipeId: recipeId),
               const SizedBox(width: NestSpace.md),
@@ -199,5 +212,100 @@ class _SlotRow extends StatelessWidget {
           familySize: familySize,
         );
     }
+  }
+}
+
+class _SlotLabel extends StatelessWidget {
+  const _SlotLabel(this.slot);
+
+  final MealSlot slot;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return SizedBox(
+      width: NestSize.avatarLarge + NestSpace.lg,
+      child: Text(
+        AppCopy.mealSlotName(slot.name),
+        style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
+      ),
+    );
+  }
+}
+
+class _SchoolLunchRow extends StatelessWidget {
+  const _SchoolLunchRow({
+    required this.names,
+    required this.atHome,
+    required this.onOpenLunch,
+    required this.onPickAtHome,
+  });
+
+  final List<String> names;
+  final Meal? atHome;
+  final VoidCallback onOpenLunch;
+  final VoidCallback? onPickAtHome;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final home = atHome;
+    return Row(
+      children: [
+        const _SlotLabel(MealSlot.lunch),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(NestRadius.sm),
+                onTap: onOpenLunch,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: NestSpace.sm),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppCopy.mealsSchoolLunch(names),
+                          style: nest.text.body.copyWith(
+                            color: nest.colors.ink,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        LucideIcons.chevronRight,
+                        size: NestSize.iconSmall,
+                        color: nest.colors.inkTertiary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (home != null)
+                InkWell(
+                  borderRadius: BorderRadius.circular(NestRadius.sm),
+                  onTap: onPickAtHome,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: NestSpace.sm),
+                    child: Text(
+                      AppCopy.mealsAtHome(home.name),
+                      style: nest.text.caption.copyWith(
+                        color: nest.colors.inkSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (home == null && onPickAtHome != null)
+          NestIconButton(
+            icon: LucideIcons.plus,
+            label: AppCopy.mealsPlanLunchAtHome,
+            variant: NestIconButtonVariant.plain,
+            onPressed: onPickAtHome,
+          ),
+      ],
+    );
   }
 }

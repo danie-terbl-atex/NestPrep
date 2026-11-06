@@ -18,11 +18,13 @@ class MealWeekView extends StatelessWidget {
   const MealWeekView({
     required this.onOpenRecipe,
     required this.onPickRecipe,
+    required this.onOpenLunch,
     super.key,
   });
 
   final ValueChanged<String> onOpenRecipe;
   final RecipePicker onPickRecipe;
+  final VoidCallback onOpenLunch;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +105,7 @@ class MealWeekView extends StatelessWidget {
                       library: week.library,
                       onOpenRecipe: onOpenRecipe,
                       onPickRecipe: onPickRecipe,
+                      onOpenLunch: onOpenLunch,
                     ),
                   ),
               ],

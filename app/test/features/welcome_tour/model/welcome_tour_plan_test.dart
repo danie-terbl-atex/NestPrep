@@ -67,7 +67,6 @@ void main() {
         TourTarget.listsSwitch,
         TourTarget.groceryPlans,
         TourTarget.morePeople,
-        TourTarget.moreFamily,
         TourTarget.accountMenu,
       ]);
     });
@@ -79,7 +78,7 @@ void main() {
       expect(stopOf(stops, TourTarget.mealsViews).place, TourPlace.meals);
       expect(stopOf(stops, TourTarget.listsSwitch).place, TourPlace.todos);
       expect(stopOf(stops, TourTarget.groceryPlans).place, TourPlace.groceries);
-      expect(stopOf(stops, TourTarget.moreFamily).place, TourPlace.more);
+      expect(stopOf(stops, TourTarget.morePeople).place, TourPlace.more);
       expect(stops.last.place, TourPlace.today);
     });
 
@@ -156,7 +155,7 @@ void main() {
     ]) {
       expect(targets, isNot(contains(target)), reason: '$target');
     }
-    expect(stopOf(stops, TourTarget.moreFamily).isLookOnly, isTrue);
+    expect(stopOf(stops, TourTarget.morePeople).isLookOnly, isTrue);
     expect(stopOf(stops, TourTarget.mealsViews).isLookOnly, isTrue);
   });
 

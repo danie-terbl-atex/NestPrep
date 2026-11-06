@@ -66,7 +66,11 @@
       },
       { "source": "/invite/**", "destination": "/invite/index.html" },
       { "source": "/premium/**", "destination": "/premium/index.html" },
-      { "source": "/.well-known/assetlinks.json", "destination": "/well-known/assetlinks.json" }
+      { "source": "/.well-known/assetlinks.json", "destination": "/well-known/assetlinks.json" },
+      {
+        "source": "/.well-known/apple-app-site-association",
+        "destination": "/well-known/apple-app-site-association.json"
+      }
     ],
     "headers": [
       {

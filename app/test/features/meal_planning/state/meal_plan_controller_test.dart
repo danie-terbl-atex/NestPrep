@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meal_week.dart';
@@ -26,19 +28,28 @@ void main() {
 
   late FakeMealRepository repository;
   late MealPlanController controller;
+  late StreamController<Map<int, List<String>>> packed;
+  late List<String> packedWeeks;
 
   setUp(() {
     repository = FakeMealRepository();
+    packed = StreamController.broadcast();
+    packedWeeks = [];
     controller = MealPlanController(
       mealRepository: repository,
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      watchPackedDays: (monday) {
+        packedWeeks.add(monday.iso);
+        return packed.stream;
+      },
     );
   });
 
   tearDown(() async {
     controller.dispose();
+    await packed.close();
     await repository.close();
   });
 
@@ -231,5 +242,45 @@ void main() {
 
     await controller.retry();
     expect(controller.week, isA<AsyncLoading<MealWeek>>());
+  });
+
+  group('school lunches', () {
+    test('put the children with a packed box on their day', () async {
+      await emit();
+      packed.add({
+        1: [Fixtures.kidMemberId],
+      });
+      await pumpEventQueue();
+
+      final days = weekOf().days;
+      expect(days[0].schoolLunchFor, [Fixtures.kidMemberId]);
+      expect(days[1].schoolLunchFor, isEmpty);
+      expect(days[5].schoolLunchFor, isEmpty);
+    });
+
+    test('follow the week on show and start empty there', () async {
+      await emit();
+      packed.add({
+        1: [Fixtures.kidMemberId],
+      });
+      await pumpEventQueue();
+
+      controller.goToNextWeek();
+      await pumpEventQueue();
+      await emit();
+
+      expect(packedWeeks, ['2026-09-14', '2026-09-21']);
+      expect(weekOf().days[0].schoolLunchFor, isEmpty);
+    });
+
+    test('a refused lunch read leaves the meals showing', () async {
+      packed.addError(const PermissionDeniedFailure());
+      await emit(
+        meals: [meal('Spaghetti', id: 'spag')],
+        plan: const WeekPlan(id: '2026-09-14', slots: {'2_dinner': 'spag'}),
+      );
+
+      expect(weekOf().days[1].meals[MealSlot.dinner]?.name, 'Spaghetti');
+    });
   });
 }

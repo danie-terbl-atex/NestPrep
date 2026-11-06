@@ -164,15 +164,21 @@ class RecipeShopView extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: NestSpace.sm),
-              Semantics(
-                liveRegion: true,
-                child: Text(
-                  controller.isSettled
-                      ? RecipeShopCopy.found(shop)
-                      : RecipeShopCopy.searching(shop, settled, lines.length),
-                  style: nest.text.bodySecondary,
+              if (controller.isSettled)
+                Semantics(
+                  liveRegion: true,
+                  child: Text(
+                    RecipeShopCopy.found(shop),
+                    style: nest.text.bodySecondary,
+                  ),
+                )
+              else
+                _SearchProgress(
+                  shop: shop,
+                  settled: settled,
+                  total: lines.length,
+                  isLocating: place == null,
                 ),
-              ),
               const SizedBox(height: NestSpace.sm),
               for (final line in lines)
                 RecipeShopRow(
@@ -203,4 +209,59 @@ class RecipeShopView extends StatelessWidget {
     final product = await showRecipeProductChoice(context: context, line: line);
     if (product != null) controller.choose(line.index, product);
   }
+}
+
+/// How far the search has got, in words and as a bar that fills one
+/// ingredient at a time — sweeping, before the first search, while the shop
+/// near the household is still being found.
+class _SearchProgress extends StatelessWidget {
+  const _SearchProgress({
+    required this.shop,
+    required this.settled,
+    required this.total,
+    required this.isLocating,
+  });
+
+  final ProductRetailer shop;
+  final int settled;
+  final int total;
+  final bool isLocating;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return Semantics(
+      liveRegion: true,
+      label: RecipeShopCopy.searchingSemantics(shop, settled, total),
+      excludeSemantics: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            RecipeShopCopy.searching(shop, settled, total),
+            style: nest.text.bodySecondary,
+          ),
+          const SizedBox(height: NestSpace.xs),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(NestRadius.pill),
+            child: isLocating
+                ? _bar(nest, null)
+                : TweenAnimationBuilder<double>(
+                    tween: Tween(end: total == 0 ? 0 : settled / total),
+                    duration: NestMotion.of(context).slow,
+                    curve: NestMotion.enter,
+                    builder: (context, value, _) => _bar(nest, value),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget _bar(NestTheme nest, double? value) => LinearProgressIndicator(
+    value: value,
+    minHeight: NestSpace.xs,
+    backgroundColor: nest.colors.surfaceTint,
+    color: nest.colors.accent,
+  );
 }

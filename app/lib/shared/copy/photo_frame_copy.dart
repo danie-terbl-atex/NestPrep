@@ -53,6 +53,11 @@ abstract final class PhotoFrameCopy {
   static const mealsBody = 'Today’s breakfast, lunch and supper';
   static const lunch = 'Lunch boxes';
   static const lunchBody = 'What’s in each child’s box today';
+  static const people = 'Where everyone is';
+  static const peopleBody =
+      'Shows where everyone who shares their location is, on a map. Anyone '
+      'in the room can see it, helpers and guests included.';
+  static const peopleNeedsPremium = 'Part of Premium.';
   static const helperTitle = 'A helper’s day';
   static const helperBody = 'One helper’s jobs for today';
   static const chooseHelper = 'Whose day?';

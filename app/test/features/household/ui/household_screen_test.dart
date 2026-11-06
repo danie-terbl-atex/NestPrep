@@ -83,7 +83,7 @@ void main() {
     testWidgets('holds the layout while it loads', (tester) async {
       await pump(tester);
       await tester.pump();
-      expect(find.text(AppCopy.householdTitle), findsOneWidget);
+      expect(find.text(MoreCopy.peopleTitle), findsOneWidget);
       expect(find.byType(NestEmptyView), findsNothing);
     });
 
@@ -485,7 +485,7 @@ void main() {
 
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
-      expect(find.text(AppCopy.householdTitle), findsOneWidget);
+      expect(find.text(MoreCopy.peopleTitle), findsOneWidget);
     });
 
     testWidgets('a helper is not — only an admin can make a code', (

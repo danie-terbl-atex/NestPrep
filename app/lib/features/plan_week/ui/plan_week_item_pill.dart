@@ -14,7 +14,7 @@ enum PillLook {
   /// Packed before the plan — quiet, and not the plan's to change.
   existing,
 
-  /// What the plan adds — the slot's pastel, and a tap swaps it.
+  /// What the plan adds — the slot's pastel and a swap mark, and a tap swaps it.
   added,
 
   /// Nothing there, and the plan left it — a tap fills it.
@@ -65,6 +65,8 @@ class PlanWeekItemPill extends StatelessWidget {
     };
     return Semantics(
       button: onTap != null,
+      hint: onTap == null ? null : PlanWeekCopy.swapHint,
+      onTap: onTap,
       label: [
         LunchCopy.slotName(slot),
         label,
@@ -128,11 +130,12 @@ class PlanWeekItemPill extends StatelessWidget {
                       color: colors.warning,
                     ),
                   ],
-                  if (look == PillLook.added &&
-                      origin == PickOrigin.swapped) ...[
+                  if (look == PillLook.added && onTap != null) ...[
                     const SizedBox(width: NestSpace.xs),
                     Icon(
-                      LucideIcons.pencil,
+                      origin == PickOrigin.swapped
+                          ? LucideIcons.pencil
+                          : LucideIcons.arrowLeftRight,
                       size: NestSize.iconBadge,
                       color: colors.inkSecondary,
                     ),

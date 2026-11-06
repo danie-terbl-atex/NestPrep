@@ -53,6 +53,7 @@ void main() {
       'lunch': false,
       'addEvents': false,
       'share': false,
+      'people': false,
       'helperMemberId': null,
     });
   });
@@ -102,6 +103,24 @@ void main() {
         todos: false,
         meals: false,
         lunch: true,
+      ).showsAnything,
+      isTrue,
+    );
+  });
+
+  test('a frame linked before where everyone is has it off', () {
+    expect(frameWithout('people').panels.people, isFalse);
+    expect(const FramePanels().people, isFalse);
+    expect(
+      FramePanels.fromJson(const FramePanels(people: true).toJson()).people,
+      isTrue,
+    );
+    expect(
+      const FramePanels(
+        calendar: false,
+        todos: false,
+        meals: false,
+        people: true,
       ).showsAnything,
       isTrue,
     );

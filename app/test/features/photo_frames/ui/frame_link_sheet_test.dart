@@ -276,6 +276,8 @@ void main() {
     );
     expect(find.text(PhotoFrameCopy.linked), findsNothing);
 
+    await tester.ensureVisible(find.text(PhotoFrameCopy.differentCode));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(PhotoFrameCopy.differentCode));
     await tester.pumpAndSettle();
     expect(find.text(PhotoFrameCopy.scanBody), findsOneWidget);

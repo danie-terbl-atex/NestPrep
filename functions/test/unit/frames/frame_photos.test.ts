@@ -134,7 +134,7 @@ describe('the day tells a frame its screensaver', () => {
   const sources = {
     householdName: 'The Parkers',
     frameName: 'Kitchen',
-    panels: { ...PANELS, lunch: false, addEvents: false, share: false },
+    panels: { ...PANELS, lunch: false, addEvents: false, share: false, people: false },
     today: '2026-09-29',
     localMinute: 9 * 60,
     names: {},

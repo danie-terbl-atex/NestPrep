@@ -40,6 +40,7 @@ export const framePanels = z.object({
   /** Missing on a frame linked by an older app: off. */
   addEvents: z.boolean().default(false),
   share: z.boolean().default(false),
+  people: z.boolean().default(false),
   helperMemberId: id.nullable(),
 });
 export type FramePanels = z.infer<typeof framePanels>;

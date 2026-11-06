@@ -4,7 +4,6 @@ import '../../../shared/flags/feature_flags.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_permissions.dart';
-import '../../household/model/household_place.dart';
 import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_tool.dart';
 import 'tour_place.dart';
@@ -16,8 +15,8 @@ import 'tour_target.dart';
 /// (welcome-tour ADR-0001, ADR-0002).
 ///
 /// Every stop is decided by what navigation itself offers this person — the
-/// bar's [HouseholdTab.isOpenTo], the More tab's [HouseholdPlace], the lunch
-/// board's [LunchTool], the lists' [ListsSwitch] — so the tour points only at
+/// bar's [HouseholdTab.isOpenTo], the lunch board's [LunchTool], the lists'
+/// [ListsSwitch] — so the tour points only at
 /// what they can open (`ENG-01`). What is decided by data rather than by the
 /// grant — one child or two, whether the plans have anything to add — is the
 /// screen's to show or not, and a stop whose component is not there is
@@ -27,15 +26,13 @@ final class WelcomeTourPlan {
     required this.view,
     required this.flags,
     required this.isPremium,
-  }) : _places = HouseholdPlace.openTo(view, flags);
+  });
 
   final HouseholdView view;
   final FeatureFlags flags;
 
   /// The household's entitlement, once it has answered.
   final bool isPremium;
-
-  final Set<HouseholdPlace> _places;
 
   HouseholdPermissions get _permissions => view.permissions;
   bool get _canEditLunch => _permissions.canEdit(HouseholdArea.lunch);
@@ -134,19 +131,13 @@ final class WelcomeTourPlan {
       const TourStop(TourTarget.groceryPlans, place: TourPlace.groceries),
   ];
 
-  /// More is everybody's: the people, then — for whoever the grant shows
-  /// them to — family profiles, the place to start.
+  /// More is everybody's: the people, whose profiles are a tab of the same
+  /// screen (design-system ADR-0022).
   List<TourStop> _more() => [
     TourStop(
       TourTarget.morePeople,
       place: TourPlace.more,
       isLookOnly: !_permissions.isAdmin,
     ),
-    if (_places.contains(HouseholdPlace.familyProfiles))
-      TourStop(
-        TourTarget.moreFamily,
-        place: TourPlace.more,
-        isLookOnly: !_permissions.isFamily,
-      ),
   ];
 }

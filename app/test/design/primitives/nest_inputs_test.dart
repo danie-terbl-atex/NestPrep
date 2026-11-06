@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/shared/copy/app_copy.dart';
 
 import '../../support/pump_kit.dart';
 
@@ -25,6 +26,39 @@ void main() {
         expect(find.text('Name'), findsOneWidget);
         expect(find.text('Type it'), findsOneWidget);
         expect(find.text('Required'), findsOneWidget);
+      });
+
+      testWidgets('a password field shows what was typed, and hides it again', (
+        tester,
+      ) async {
+        await pumpKit(
+          tester,
+          const NestTextField(label: 'Password', obscureText: true),
+          brightness: brightness,
+        );
+        bool hidden() =>
+            tester.widget<TextField>(find.byType(TextField)).obscureText;
+
+        expect(hidden(), isTrue);
+        await tester.tap(find.byTooltip(AppCopy.showPassword));
+        await tester.pump();
+        expect(hidden(), isFalse);
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).autocorrect,
+          isFalse,
+        );
+        await tester.tap(find.byTooltip(AppCopy.hidePassword));
+        await tester.pump();
+        expect(hidden(), isTrue);
+      });
+
+      testWidgets('a plain field has no eye', (tester) async {
+        await pumpKit(
+          tester,
+          const NestTextField(label: 'Name'),
+          brightness: brightness,
+        );
+        expect(find.byTooltip(AppCopy.showPassword), findsNothing);
       });
 
       testWidgets('a chip reports selection and taps', (tester) async {

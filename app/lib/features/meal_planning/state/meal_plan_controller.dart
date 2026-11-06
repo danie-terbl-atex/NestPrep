@@ -17,6 +17,10 @@ import '../model/meal_ingredient.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
 
+typedef PackedDaysWatch = Stream<Map<int, List<String>>> Function(
+  CalendarDate monday,
+);
+
 /// The meal plan's controller: the household's library and the week being
 /// looked at. Moving a week reopens the week's listener and nothing else.
 final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
@@ -25,6 +29,7 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
     required HouseholdClock householdClock,
     required this.householdId,
     required this.memberId,
+    this._watchPackedDays,
     CalendarDate? initialWeekStart,
   }) : _repository = mealRepository,
        _clock = householdClock {
@@ -35,14 +40,17 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
 
   final MealRepository _repository;
   final HouseholdClock _clock;
+  final PackedDaysWatch? _watchPackedDays;
   final String householdId;
   final String memberId;
 
   StreamSubscription<List<Meal>>? _mealSubscription;
   StreamSubscription<WeekPlan>? _weekSubscription;
+  StreamSubscription<Map<int, List<String>>>? _packedSubscription;
 
   List<Meal>? _meals;
   WeekPlan? _plan;
+  Map<int, List<String>> _packedDays = const {};
 
   late CalendarDate _weekStart;
   AsyncState<MealWeek> _week = const AsyncLoading();
@@ -61,6 +69,7 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
     if (monday == _weekStart) return;
     _weekStart = monday;
     _plan = null;
+    _packedDays = const {};
     _week = const AsyncLoading();
     notifyListeners();
     unawaited(_resubscribeToWeek());
@@ -211,11 +220,21 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
       _plan = plan;
       _publish();
     }, onError: _onError);
+    _packedSubscription = _watchPackedDays?.call(_weekStart).listen(
+      (packed) {
+        _packedDays = packed;
+        _publish();
+      },
+      // The week's meals still show when the lunch boxes cannot be read.
+      onError: (Object _) {},
+    );
   }
 
   Future<void> _resubscribeToWeek() async {
     await _weekSubscription?.cancel();
+    await _packedSubscription?.cancel();
     _weekSubscription = null;
+    _packedSubscription = null;
     _subscribeToWeek();
   }
 
@@ -229,6 +248,7 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
         today: today,
         plan: plan,
         meals: meals,
+        packedDays: _packedDays,
       ),
     );
     notifyListeners();
@@ -242,8 +262,10 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
   Future<void> _cancel() async {
     await _mealSubscription?.cancel();
     await _weekSubscription?.cancel();
+    await _packedSubscription?.cancel();
     _mealSubscription = null;
     _weekSubscription = null;
+    _packedSubscription = null;
   }
 
   @override

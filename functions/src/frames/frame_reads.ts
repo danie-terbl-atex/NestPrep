@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { storedRecurrence } from '../chore_points/occurrence_check';
 import { addDays, weekdayOf } from '../calendar_sync/zoned_time';
 import { MEMBERS } from '../household/documents';
+import { MEMBER_LOCATIONS } from '../account_data/personal_refs';
+import { PLACES } from '../live_location/location_refs';
 import { MEMBER_LIMIT } from '../notifications/household_roster';
 import { readChoreRecords, readEventWindow } from '../notifications/digest_reads';
 import { type MemberRecord, storedHousehold } from '../notifications/recipients';
@@ -23,7 +25,15 @@ import {
   frameStoredGroceryItem,
   groceriesEditors,
 } from './frame_groceries';
-import { readFrameLunch } from './frame_lunch_photos';
+import { readFrameLunch, readFramePremium } from './frame_lunch_photos';
+import { readFrameMeals } from './frame_meal_photos';
+import {
+  FRAME_LOCATION_LIMIT,
+  FRAME_PLACE_LIMIT,
+  type FramePeopleSources,
+  frameStoredLocation,
+  frameStoredPlace,
+} from './frame_people';
 import type { FrameMonthSources } from './frame_month';
 import {
   FRAME_DAY_AHEAD,
@@ -86,6 +96,7 @@ type Sources = Pick<
   | 'lunch'
   | 'lunchPhotos'
   | 'groceries'
+  | 'people'
 >;
 
 export async function readFrameSources(
@@ -96,17 +107,21 @@ export async function readFrameSources(
   groceries: FrameGroceries | null = null,
 ): Promise<Sources> {
   const helperId = panels.helperMemberId;
-  const [members, events, chores, meals, homeCare, lunch, groceryItems] = await Promise.all([
-    addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home),
-    panels.calendar ? readEventWindow(home, today, addDays(today, FRAME_DAY_AHEAD)) : undefined,
-    panels.todos || helperId !== null
-      ? readChoreRecords(home, today, addDays(today, -FRAME_OVERDUE_DAYS))
-      : undefined,
-    panels.meals ? readMeals(store, home, today) : undefined,
-    helperId === null ? undefined : readHomeCare(store, home, helperId, today),
-    panels.lunch ? readFrameLunch(store, home, today) : undefined,
-    groceries === null ? undefined : readGroceryItems(home),
-  ]);
+  const premium =
+    panels.lunch || panels.people ? readFramePremium(store, home) : Promise.resolve(false);
+  const [members, events, chores, meals, homeCare, lunch, groceryItems, whereabouts] =
+    await Promise.all([
+      addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home),
+      panels.calendar ? readEventWindow(home, today, addDays(today, FRAME_DAY_AHEAD)) : undefined,
+      panels.todos || helperId !== null
+        ? readChoreRecords(home, today, addDays(today, -FRAME_OVERDUE_DAYS))
+        : undefined,
+      panels.meals ? readMeals(store, home, today) : undefined,
+      helperId === null ? undefined : readHomeCare(store, home, helperId, today),
+      panels.lunch ? readFrameLunch(store, home, today, premium) : undefined,
+      groceries === null ? undefined : readGroceryItems(home),
+      panels.people ? readPeople(home, premium) : undefined,
+    ]);
   const { groceryEditors, ...people } = { groceryEditors: [], ...members };
   return {
     ...people,
@@ -118,6 +133,29 @@ export async function readFrameSources(
     ...(groceries === null || groceryItems === undefined
       ? {}
       : { groceries: { shop: groceries.shop, editors: groceryEditors, items: groceryItems } }),
+    ...(whereabouts === undefined ? {} : { people: whereabouts }),
+  };
+}
+
+async function readPeople(
+  home: DocumentReference,
+  premium: Promise<boolean>,
+): Promise<FramePeopleSources | undefined> {
+  if (!(await premium)) return undefined;
+  const [locationDocs, placeDocs] = await Promise.all([
+    home.collection(MEMBER_LOCATIONS).limit(FRAME_LOCATION_LIMIT).get(),
+    home.collection(PLACES).limit(FRAME_PLACE_LIMIT).get(),
+  ]);
+  return {
+    locations: locationDocs.docs.flatMap((doc) => {
+      const location = parsed(frameStoredLocation, doc.data());
+      return location === null ? [] : [{ ...location, memberId: doc.id }];
+    }),
+    places: placeDocs.docs.flatMap((doc) => {
+      const place = parsed(frameStoredPlace, doc.data());
+      return place === null ? [] : [{ ...place, id: doc.id }];
+    }),
+    now: Date.now(),
   };
 }
 
@@ -221,7 +259,8 @@ async function readMeals(
   const slots = parsed(planShape, plan.data())?.slots ?? {};
   const weekday = String(weekdayOf(today));
   const todays = MEAL_SLOTS.flatMap((slot) => slots[`${weekday}_${slot}`] ?? []);
-  return { slots, mealNames: await namesOf(store, home, 'meals', todays) };
+  const { names, photos } = await readFrameMeals(store, home, todays);
+  return { slots, mealNames: names, photos };
 }
 
 async function readHomeCare(

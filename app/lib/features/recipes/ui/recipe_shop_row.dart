@@ -112,6 +112,26 @@ class _Found extends StatelessWidget {
     final nest = NestTheme.of(context);
     final note = nest.text.caption.copyWith(color: nest.colors.inkSecondary);
     final product = line.chosen;
+    if (line.search == RecipeShopSearch.searching) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: RecipeShopRow.imageSize),
+        child: Row(
+          children: [
+            SizedBox.square(
+              dimension: NestSize.iconSmall,
+              child: CircularProgressIndicator(
+                strokeWidth: NestStroke.focus,
+                color: nest.colors.accent,
+              ),
+            ),
+            const SizedBox(width: NestSpace.sm),
+            Expanded(
+              child: Text(RecipeShopCopy.searchingFor(line.name), style: note),
+            ),
+          ],
+        ),
+      );
+    }
     if (!line.isSettled) {
       return const NestSkeleton(height: RecipeShopRow.imageSize);
     }

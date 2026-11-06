@@ -126,6 +126,8 @@ abstract final class AppCopy {
   static const signInOr = 'or';
   static const signInEmailLabel = 'Email';
   static const signInPasswordLabel = 'Password';
+  static const showPassword = 'Show password';
+  static const hidePassword = 'Hide password';
   static const signInWithEmail = 'Sign in';
   static const signInForgotPassword = 'Forgotten your password?';
   static const signInNoAccount = 'New here?';
@@ -344,6 +346,10 @@ abstract final class AppCopy {
   static const mealsLibrary = 'Meals you have made before';
   static const mealsClearSlot = 'Clear';
   static const mealsNothingPlanned = 'Nothing planned';
+  static String mealsSchoolLunch(List<String> names) =>
+      'School lunch · ${names.join(', ')}';
+  static String mealsAtHome(String meal) => 'At home: $meal';
+  static const mealsPlanLunchAtHome = 'Plan lunch at home';
   static const mealsManage = 'Meals';
   static const mealsRename = 'Rename meal';
   static const mealsDelete = 'Delete meal';
@@ -420,7 +426,6 @@ abstract final class AppCopy {
   static const myNameLabel = 'What should we call you?';
   static const inviteCodeLabel = 'Invite code';
   static const inviteCodeHint = 'ABCD2345';
-  static const householdTitle = 'Household';
   static const householdAddMember = 'Add a person';
   static const householdEditMember = 'Edit person';
   static const householdMemberName = 'Name';

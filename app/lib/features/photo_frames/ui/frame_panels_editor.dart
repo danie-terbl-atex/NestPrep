@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/photo_frame_copy.dart';
 import '../../household/model/member.dart';
+import '../../subscriptions/state/household_entitlement.dart';
 import '../model/frame_panels.dart';
 
 class FramePanelsEditor extends StatelessWidget {
@@ -22,6 +24,7 @@ class FramePanelsEditor extends StatelessWidget {
     final nest = NestTheme.of(context);
     final change = onChanged;
     final helperId = panels.helperMemberId;
+    final premium = context.watch<HouseholdEntitlement?>()?.isPremium ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -76,6 +79,22 @@ class FramePanelsEditor extends StatelessWidget {
           onChanged: change == null
               ? null
               : (value) => change(panels.copyWith(lunch: value)),
+        ),
+        _PanelRow(
+          icon: LucideIcons.mapPin,
+          tint: NestTileTint.lilac,
+          title: PhotoFrameCopy.people,
+          subtitle: PhotoFrameCopy.peopleBody,
+          value: premium && panels.people,
+          onChanged: change == null || !premium
+              ? null
+              : (value) => change(panels.copyWith(people: value)),
+          footer: premium
+              ? null
+              : Text(
+                  PhotoFrameCopy.peopleNeedsPremium,
+                  style: nest.text.caption,
+                ),
         ),
         if (helpers.isNotEmpty) ...[
           _PanelRow(
@@ -149,6 +168,7 @@ class _PanelRow extends StatelessWidget {
     required this.subtitle,
     required this.value,
     required this.onChanged,
+    this.footer,
   });
 
   final IconData icon;
@@ -157,6 +177,7 @@ class _PanelRow extends StatelessWidget {
   final String subtitle;
   final bool value;
   final ValueChanged<bool>? onChanged;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +185,7 @@ class _PanelRow extends StatelessWidget {
     return NestListRow(
       title: title,
       subtitle: subtitle,
+      footer: footer,
       leading: NestIconTile(
         icon: icon,
         tint: tint,

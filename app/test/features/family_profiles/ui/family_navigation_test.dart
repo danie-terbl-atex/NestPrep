@@ -10,8 +10,12 @@ import 'package:nestprep/features/family_profiles/state/family_controller.dart';
 import 'package:nestprep/features/family_profiles/state/member_health_controller.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
 import 'package:nestprep/features/family_profiles/ui/family_screen.dart';
+import 'package:nestprep/features/household/model/access_grant.dart';
+import 'package:nestprep/features/household/model/access_level.dart';
+import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
+import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
@@ -20,10 +24,11 @@ import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 
-/// Family profiles are reached from More and open *over* it,
-/// and a profile opens over the family — each with a way back, because a
-/// capability with no way in is not done, and a pushed screen with no way back
-/// closes the app (`FE-17`, the vault lesson on finished-but-unreachable).
+/// Family profiles are People's Profiles tab, reached from More's People card
+/// and opening *over* More (design-system ADR-0022), and a profile opens over
+/// the family — each with a way back, because a capability with no way in is
+/// not done, and a pushed screen with no way back closes the app (`FE-17`, the
+/// vault lesson on finished-but-unreachable).
 void main() {
   late FakeFamilyProfileRepository repository;
   late FakeHouseholdRepository households;
@@ -63,7 +68,11 @@ void main() {
     await households.close();
   });
 
-  Future<void> pump(WidgetTester tester, String initialLocation) async {
+  Future<void> pump(
+    WidgetTester tester,
+    String initialLocation, {
+    HouseholdView? view,
+  }) async {
     tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -76,6 +85,10 @@ void main() {
             path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
             builder: (context, state) =>
                 HouseholdMoreScreen(onSelectTab: (_) {}),
+          ),
+          GoRoute(
+            path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
+            builder: (context, state) => const HouseholdScreen(),
           ),
           GoRoute(
             path: FamilyRoute.path,
@@ -95,6 +108,7 @@ void main() {
         ChangeNotifierProvider<FamilyController>.value(value: family),
         ChangeNotifierProvider<MemberHealthController>.value(value: health),
       ],
+      view: view,
     );
     households.emitHousehold(Fixtures.household());
     households.emitMembers([Fixtures.sam, Fixtures.thandi, Fixtures.kid]);
@@ -104,20 +118,44 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('More is the way in', (tester) async {
+  testWidgets('More is the way in: People, then its Profiles tab', (
+    tester,
+  ) async {
     await pump(
       tester,
       HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
     );
-    await tester.tap(find.text(FamilyCopy.openFromHousehold));
+    expect(find.text(FamilyCopy.openFromHousehold), findsNothing);
+    await tester.tap(find.text(MoreCopy.peopleTitle));
     await tester.pumpAndSettle();
+    expect(find.byType(HouseholdScreen), findsOneWidget);
 
+    await tester.tap(find.text(MoreCopy.peopleProfiles));
+    await tester.pumpAndSettle();
     expect(find.text(FamilyCopy.children), findsOneWidget);
-    expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
+    expect(find.byType(HouseholdScreen), findsNothing);
 
+    await tester.tap(find.text(MoreCopy.peopleHousehold));
+    await tester.pumpAndSettle();
+    expect(find.byType(HouseholdScreen), findsOneWidget);
+
+    await tester.tap(find.text(MoreCopy.peopleProfiles));
+    await tester.pumpAndSettle();
     await tester.tap(find.byIcon(LucideIcons.arrowLeft));
     await tester.pumpAndSettle();
     expect(find.text(MoreCopy.subtitle), findsOneWidget);
+    expect(find.byType(FamilyScreen), findsNothing);
+    expect(find.byType(HouseholdScreen), findsNothing);
+  });
+
+  testWidgets('without the profiles grant, People has no tabs', (tester) async {
+    await pump(
+      tester,
+      HouseholdRoute.householdPathFor(Fixtures.householdId),
+      view: Fixtures.helperView(AccessGrant.uniform(AccessLevel.none)),
+    );
+    expect(find.byType(HouseholdScreen), findsOneWidget);
+    expect(find.text(MoreCopy.peopleProfiles), findsNothing);
   });
 
   testWidgets('a profile opens over the family, and back lands on it', (

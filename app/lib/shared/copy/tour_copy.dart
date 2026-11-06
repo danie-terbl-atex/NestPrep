@@ -48,7 +48,6 @@ abstract final class TourCopy {
         TourTarget.listsSwitch => 'To do and groceries',
         TourTarget.groceryPlans => GroceryPlanCopy.title,
         TourTarget.morePeople => MoreCopy.peopleTitle,
-        TourTarget.moreFamily => FamilyCopy.title,
       };
 
   static String body(
@@ -117,13 +116,9 @@ abstract final class TourCopy {
     TourTarget.morePeople when isLookOnly =>
       'Everyone in this household, and what each of them looks after.',
     TourTarget.morePeople =>
-      'Invite the people who help, and choose what each of them can see.',
-    TourTarget.moreFamily when isLookOnly =>
-      'The children’s allergies and what they eat, so you always know '
-          'what’s safe.',
-    TourTarget.moreFamily =>
-      'Start here: allergies, likes, medication and school for each person. '
-          'The lunch box reads them.',
+      'Invite the people who help, and choose what each of them can see. '
+          'Profiles holds allergies, likes and school for each person — the '
+          'lunch box reads them.',
   };
 
   static String _premium(TourPremium premium, String line) => switch (premium) {

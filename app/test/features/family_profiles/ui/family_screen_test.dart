@@ -80,7 +80,7 @@ void main() {
   testWidgets('holds the layout while it loads', (tester) async {
     await pump(tester);
     await tester.pump();
-    expect(find.text(FamilyCopy.title), findsOneWidget);
+    expect(find.text(MoreCopy.peopleTitle), findsOneWidget);
     expect(find.text(FamilyCopy.children), findsNothing);
   });
 
@@ -166,6 +166,8 @@ void main() {
       await loaded(tester);
 
       await tester.scrollUntilVisible(find.text('Oakwood Primary').last, 200);
+      await tester.ensureVisible(find.text('Oakwood Primary').last);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Oakwood Primary').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text(FamilyCopy.deleteSchool));
@@ -182,6 +184,8 @@ void main() {
       await loaded(tester);
 
       await tester.scrollUntilVisible(find.text('Oakwood Primary').last, 200);
+      await tester.ensureVisible(find.text('Oakwood Primary').last);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Oakwood Primary').last);
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(EditableText), 'Oakwood Prep');

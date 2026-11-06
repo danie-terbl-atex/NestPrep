@@ -61,7 +61,4 @@ enum TourTarget {
 
   /// The people card on More.
   morePeople,
-
-  /// The Family profiles tile on More.
-  moreFamily,
 }

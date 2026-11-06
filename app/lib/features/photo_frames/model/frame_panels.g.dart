@@ -13,6 +13,7 @@ _FramePanels _$FramePanelsFromJson(Map<String, dynamic> json) => _FramePanels(
   lunch: json['lunch'] as bool? ?? false,
   addEvents: json['addEvents'] as bool? ?? false,
   share: json['share'] as bool? ?? false,
+  people: json['people'] as bool? ?? false,
   helperMemberId: json['helperMemberId'] as String?,
 );
 
@@ -24,5 +25,6 @@ Map<String, dynamic> _$FramePanelsToJson(_FramePanels instance) =>
       'lunch': instance.lunch,
       'addEvents': instance.addEvents,
       'share': instance.share,
+      'people': instance.people,
       'helperMemberId': instance.helperMemberId,
     };

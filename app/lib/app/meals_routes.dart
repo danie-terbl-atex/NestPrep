@@ -3,7 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
+import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
+import '../features/lunch_box/data/lunch_repository.dart';
+import '../features/lunch_box/data/lunch_week_reader.dart';
+import '../features/lunch_box/model/lunch_week.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/meal_planning/model/meals_view.dart';
 import '../features/meal_planning/state/meal_plan_controller.dart';
@@ -52,6 +56,7 @@ ShellRoute mealsRoutes() => ShellRoute(
             householdClock: context.read<HouseholdClock>(),
             householdId: householdId,
             memberId: viewerMemberIdOf(context),
+            watchPackedDays: _packedDaysFor(context, householdId),
           ),
           child: MealsScreen(
             view: MealsRoute.viewFrom(state),
@@ -155,3 +160,17 @@ ShellRoute mealsRoutes() => ShellRoute(
     ),
   ],
 );
+
+PackedDaysWatch? _packedDaysFor(BuildContext context, String householdId) {
+  final permissions = context.read<HouseholdView>().permissions;
+  if (!permissions.canUse(HouseholdArea.lunch)) return null;
+  final reader = LunchWeekReader(context.read<LunchRepository>());
+  final ownChildId = permissions.hasOwnOnly(HouseholdArea.lunch)
+      ? viewerMemberIdOf(context)
+      : null;
+  return (monday) => reader.watchPackedDays(
+    householdId,
+    LunchWeek.of(monday),
+    ownChildId: ownChildId,
+  );
+}

@@ -5,7 +5,9 @@ import 'package:nestprep/app/household_place_redirect.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/nanny_hub_route.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
+import 'package:nestprep/features/household/model/household_place.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
+import 'package:nestprep/features/household/ui/household_place_tile.dart';
 import 'package:nestprep/features/household/ui/household_places.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 
@@ -47,8 +49,11 @@ void main() {
     await pumpPlaces(tester, NannyFixtures.carerView());
     expect(find.text(NannyCopy.openFromHousehold), findsOneWidget);
     expect(
-      tester.getTopLeft(find.text(NannyCopy.openFromHousehold)).dy,
-      lessThan(tester.getTopLeft(find.text(FamilyCopy.openFromHousehold)).dy),
+      tester
+          .widgetList<HouseholdPlaceTile>(find.byType(HouseholdPlaceTile))
+          .first
+          .place,
+      HouseholdPlace.nannyHub,
     );
     await tester.tap(find.text(NannyCopy.openFromHousehold));
     await tester.pumpAndSettle();

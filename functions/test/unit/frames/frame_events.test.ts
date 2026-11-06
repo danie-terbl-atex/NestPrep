@@ -121,6 +121,7 @@ describe('the switch', () => {
     lunch: false,
     addEvents: true,
     share: false,
+    people: false,
     helperMemberId: null,
   };
 
@@ -333,6 +334,7 @@ describe('the day says who may add', () => {
     lunch: false,
     addEvents: true,
     share: false,
+    people: false,
     helperMemberId: null,
   };
   const sources = {

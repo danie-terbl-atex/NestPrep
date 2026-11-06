@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
-import { type DocumentReference, Timestamp } from 'firebase-admin/firestore';
+import { type DocumentReference, GeoPoint, Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { addDays, wallClockOf, weekdayOf } from '../../src/calendar_sync/zoned_time';
@@ -65,6 +65,7 @@ interface Day {
   meals?: { slots: Record<string, unknown>[] };
   lunch?: { boxes: { name: string; photo?: string }[] };
   groceries?: { shop: string; by: string[]; toBuy: Record<string, unknown>[] };
+  people?: { home?: Record<string, unknown>; people: Record<string, unknown>[] };
 }
 
 const PANELS = { calendar: true, todos: true, meals: false, helperMemberId: null };
@@ -1125,6 +1126,14 @@ function lunchPhotoOf(body: unknown): Promise<Response> {
   });
 }
 
+async function setPremium(h: Household, premium: boolean): Promise<void> {
+  const until = Date.now() + (premium ? 86_400_000 : -86_400_000);
+  await household(h.householdId)
+    .collection('entitlement')
+    .doc('current')
+    .set({ premiumUntil: new Date(until) });
+}
+
 describe('a frame’s lunch-box pictures (photo-frames ADR-0009)', () => {
   const MAIN = { itemId: 'i1', name: 'Cheese sandwich', allergens: ['milk'] };
   const FRUIT = { itemId: 'i2', name: 'Apple', allergens: [] };
@@ -1158,14 +1167,6 @@ describe('a frame’s lunch-box pictures (photo-frames ADR-0009)', () => {
         .save(BEACH, { contentType: 'image/jpeg', resumable: false });
     }
     return key;
-  }
-
-  async function setPremium(h: Household, premium: boolean): Promise<void> {
-    const until = Date.now() + (premium ? 86_400_000 : -86_400_000);
-    await household(h.householdId)
-      .collection('entitlement')
-      .doc('current')
-      .set({ premiumUntil: new Date(until) });
   }
 
   it('names a premium box’s ready picture and streams it, and nothing else', async () => {
@@ -1215,6 +1216,87 @@ describe('a frame’s lunch-box pictures (photo-frames ADR-0009)', () => {
     const { secret } = await linkedFrame(h, { ...PANELS, calendar: false, lunch: true });
     expect((await dayOf(secret)).lunch?.boxes[0]).not.toHaveProperty('photo');
     expect((await household(h.householdId).collection('lunchPhotos').get()).empty).toBe(true);
+  });
+});
+
+describe('where everyone is, on a frame (C-0023 rev 15)', () => {
+  const SCHOOL = new GeoPoint(-33.96221, 18.47123);
+
+  async function givenPositions(h: Household): Promise<number> {
+    const mia = await addProfile(h.householdId, 'Mia Parker', 'kid');
+    const home = household(h.householdId);
+    const reportedAt = Date.now() - 60_000;
+    const position = {
+      point: SCHOOL,
+      accuracyMetres: 12,
+      reportedAt: Timestamp.fromMillis(reportedAt),
+      sharingUntil: Timestamp.fromMillis(Date.now() + 3_600_000),
+      batteryPercent: 40,
+      charging: true,
+      motion: 'driving',
+    };
+    await home.collection('memberLocations').doc(h.samMemberId).set(position);
+    await home
+      .collection('memberLocations')
+      .doc(mia)
+      .set({ ...position, sharingUntil: Timestamp.fromMillis(Date.now() - 1_000) });
+    await home.collection('memberLocations').doc('m-gone').set(position);
+    await home
+      .collection('places')
+      .doc('school')
+      .set({ name: 'School', centre: SCHOOL, radiusMetres: 75, icon: 'school' });
+    await home
+      .collection('places')
+      .doc('home')
+      .set({ name: 'Home', centre: new GeoPoint(-33.95, 18.46), radiusMetres: 150, icon: 'home' });
+    return reportedAt;
+  }
+
+  it('shows the day’s members and who is where, while switched on and premium', async () => {
+    const h = await samsHousehold();
+    const reportedAt = await givenPositions(h);
+    await setPremium(h, true);
+    const { secret, frameId } = await linkedFrame(h, { ...PANELS, people: true });
+
+    const day = await dayOf(secret);
+    expect(day.people).toEqual({
+      home: { lat: -33.95, lng: 18.46, radiusMetres: 150 },
+      people: [
+        { name: 'Mia' },
+        {
+          name: 'Sam',
+          lat: -33.96221,
+          lng: 18.47123,
+          accuracyMetres: 12,
+          reportedAt,
+          liveUntil: reportedAt + 120_000,
+          place: 'School',
+        },
+      ],
+    });
+    expect(day.people?.people.map(({ name }) => name)).toEqual(
+      day.household?.members.map(({ name }) => name),
+    );
+
+    await setPremium(h, false);
+    expect(await dayOf(secret)).not.toHaveProperty('people');
+
+    await setPremium(h, true);
+    await household(h.householdId)
+      .collection('frames')
+      .doc(frameId)
+      .update({ 'panels.people': false });
+    expect(await dayOf(secret)).not.toHaveProperty('people');
+  });
+
+  it('a frame linked without the switch has it off and never shows it', async () => {
+    const h = await samsHousehold();
+    await givenPositions(h);
+    await setPremium(h, true);
+    const { secret, frameId } = await linkedFrame(h);
+    const stored = await household(h.householdId).collection('frames').doc(frameId).get();
+    expect(stored.get('panels.people')).toBe(false);
+    expect(await dayOf(secret)).not.toHaveProperty('people');
   });
 });
 
@@ -1522,6 +1604,48 @@ describe('a recipe shared from the app cooks along on the frame (photo-frames AD
     await shareTo(h, frameId);
     const page = await waitShare(secret);
     expect((await recipePhotoOf({ secret, id: page.share?.id })).status).toBe(404);
+  });
+
+  it('shows a meal planned from a recipe with the recipe’s card on the Meals screen', async () => {
+    const h = await samsHousehold();
+    await givenBobotie();
+    const home = household(h.householdId);
+    await home
+      .collection('meals')
+      .doc('recipe-bobotie')
+      .set({ name: 'Bobotie', nameKey: 'bobotie', recipeId: 'bobotie' });
+    await home.collection('meals').doc('toasties').set({ name: 'Toasties', nameKey: 'toasties' });
+    const date = today();
+    await home
+      .collection('mealPlans')
+      .doc(addDays(date, 1 - weekdayOf(date)))
+      .set({
+        slots: {
+          [`${String(weekdayOf(date))}_lunch`]: 'toasties',
+          [`${String(weekdayOf(date))}_dinner`]: 'recipe-bobotie',
+        },
+      });
+    for (const bucket of ['nestprep-643b7.appspot.com', 'nestprep-643b7.firebasestorage.app']) {
+      await adminStorage()
+        .bucket(bucket)
+        .file(BOBOTIE.photo.card)
+        .save(BEACH, { contentType: 'image/jpeg', resumable: false });
+    }
+    const { secret, frameId } = await linkedFrame(h, { ...PANELS, meals: true });
+
+    expect((await dayOf(secret)).meals).toEqual({
+      slots: [
+        { slot: 'lunch', title: 'Toasties' },
+        { slot: 'dinner', title: 'Bobotie', photo: 'recipe-bobotie' },
+      ],
+    });
+    const photo = await recipePhotoOf({ secret, id: 'recipe-bobotie' });
+    expect(photo.status).toBe(200);
+    expect(photo.headers.get('content-type')).toBe('image/jpeg');
+    expect((await recipePhotoOf({ secret, id: 'toasties' })).status).toBe(404);
+
+    await frameOf(h, frameId).update({ 'panels.meals': false });
+    expect((await recipePhotoOf({ secret, id: 'recipe-bobotie' })).status).toBe(404);
   });
 });
 

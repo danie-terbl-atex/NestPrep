@@ -72,5 +72,17 @@ abstract class LunchPlan with _$LunchPlan {
 
   bool get isEmpty => slots.isEmpty;
 
+  static Map<int, List<String>> packedDaysOf(Iterable<LunchPlan> plans) {
+    final packed = <int, List<String>>{};
+    for (final plan in plans) {
+      for (var day = 1; day <= LunchWeek.schoolDayCount; day++) {
+        if (!plan.boxOn(day).isEmpty) {
+          (packed[day] ??= []).add(plan.childId);
+        }
+      }
+    }
+    return packed;
+  }
+
   LunchWeek get lunchWeek => LunchWeek.parse(week);
 }

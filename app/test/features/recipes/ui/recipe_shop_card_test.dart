@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
 import 'package:nestprep/features/add_to_pnp/data/pnp_directory.dart';
 import 'package:nestprep/features/add_to_woolworths/data/woolworths_directory.dart';
@@ -173,6 +176,37 @@ void main() {
     expect(groceries.addedMatched, isNotEmpty);
     expect(groceries.addedMatched.first.name, 'Beef mince');
     expect(find.text(RecipeShopCopy.done), findsOneWidget);
+  });
+
+  testWidgets('shows how far the search has got while the shop answers', (
+    tester,
+  ) async {
+    await pump(tester);
+    await scrollToCard(tester);
+    final gate = catalogue.gate = Completer<void>();
+
+    await tester.tap(find.byKey(const ValueKey('recipe-shop-open')));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+
+    expect(
+      find.text(RecipeShopCopy.searchingFor('Beef mince')),
+      findsOneWidget,
+    );
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(find.text(RecipeShopCopy.stillLooking), findsOneWidget);
+    final cart = tester.widget<NestButton>(
+      find.byKey(const ValueKey('recipe-shop-cart')),
+    );
+    expect(cart.isLoading, isTrue);
+
+    gate.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+    expect(find.text(RecipeShopCopy.stillLooking), findsNothing);
+    expect(find.text(RecipeShopCopy.found(ProductRetailer.checkers)), findsOne);
   });
 
   testWidgets('fits at 200% text, 360 wide, in the dark', (tester) async {

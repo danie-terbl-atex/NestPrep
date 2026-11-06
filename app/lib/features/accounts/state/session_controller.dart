@@ -111,14 +111,14 @@ final class SessionController extends ChangeNotifier {
 
   Future<void> signInWithGoogle() => _attemptSignIn(_auth.signInWithGoogle);
 
-  Future<void> signInWithEmail({
+  Future<bool> signInWithEmail({
     required String email,
     required String password,
   }) => _attemptSignIn(
     () => _auth.signInWithEmail(email: email.trim(), password: password),
   );
 
-  Future<void> signInWithSeededUser({
+  Future<bool> signInWithSeededUser({
     required String email,
     required String password,
   }) => _attemptSignIn(
@@ -164,8 +164,8 @@ final class SessionController extends ChangeNotifier {
 
   AuthUser? _currentUser;
 
-  Future<void> _attemptSignIn(Future<AuthUser> Function() signIn) async {
-    if (_isSigningIn) return;
+  Future<bool> _attemptSignIn(Future<AuthUser> Function() signIn) async {
+    if (_isSigningIn) return false;
     _isSigningIn = true;
     _signInFailure = null;
     notifyListeners();
@@ -173,10 +173,12 @@ final class SessionController extends ChangeNotifier {
       await signIn();
       // The auth stream drives the rest; it has already fired by the time this
       // returns, or it will in a moment.
+      return true;
     } on AppFailure catch (failure) {
       _signInFailure = failure is SignInFailure && !failure.isWorthShowing
           ? null
           : failure;
+      return false;
     } finally {
       _isSigningIn = false;
       notifyListeners();

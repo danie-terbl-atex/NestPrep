@@ -64,7 +64,6 @@ void main() {
       MoreCopy.sectionWeek,
       PointsCopy.screenTitle,
       MoreCopy.sectionFamily,
-      FamilyCopy.openFromHousehold,
       LocationCopy.title,
       MoreCopy.sectionHome,
       HomeCareCopy.openFromHousehold,
@@ -76,6 +75,11 @@ void main() {
       await scrollTo(tester, text);
       expect(find.text(text), findsOneWidget, reason: text);
     }
+    expect(
+      find.text(FamilyCopy.openFromHousehold),
+      findsNothing,
+      reason: 'family profiles are a tab of People (design-system ADR-0022)',
+    );
   });
 
   group('the way to photo frames', () {

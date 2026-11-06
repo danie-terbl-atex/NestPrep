@@ -191,7 +191,9 @@ abstract final class PlanWeekCopy {
       '${_count(count, 'choice was', 'choices were')} left out because it '
       'did not fit a child’s rules.';
   static const alreadyPacked = 'Already packed';
-  static const tapToSwap = 'Tap anything new to swap it or clear it.';
+  static const tapToSwap =
+      'Want to change something? Tap it to see alternatives.';
+  static const swapHint = 'See alternatives';
 
   /// Why the week shows no treat before Friday (lunch-box ADR-0003). The
   /// *balanced* reason is this line's framing, not the ADR's — it awaits

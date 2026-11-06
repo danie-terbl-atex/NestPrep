@@ -8,14 +8,13 @@ import '../../assistants/ui/assistants_link.dart';
 import '../../nanny_hub/model/nanny_access.dart';
 import '../../referrals/ui/referral_link.dart';
 import '../../subscriptions/ui/plan_link.dart';
-import '../../welcome_tour/model/tour_target.dart';
-import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/household_place.dart';
 import '../model/household_view.dart';
 import 'household_place_tile.dart';
 
 /// Every place a household has beyond the four tabs in the bar, grouped by
-/// what it is for, on the More tab (design-system ADR-0005) — each only for
+/// what it is for, on the More tab (design-system ADR-0005) — family profiles
+/// excepted, which is a tab of People (ADR-0022) — each only for
 /// somebody the household's grant and its switches let use it (household
 /// ADR-0003), as [HouseholdPlace] decides for the welcome tour too
 /// (welcome-tour ADR-0001). A section with nothing in it for this person is
@@ -48,16 +47,6 @@ class HouseholdPlaces extends StatelessWidget {
     ];
 
     final family = [
-      // family-profiles: what each person eats, cannot eat and needs, for
-      // whoever the `familyProfiles` grant lets see it (ADR-0002).
-      if (open.contains(HouseholdPlace.familyProfiles))
-        TourAnchor(
-          target: TourTarget.moreFamily,
-          child: HouseholdPlaceTile(
-            place: HouseholdPlace.familyProfiles,
-            view: view,
-          ),
-        ),
       // Live location: each person's own to share, and it ends on its own.
       if (open.contains(HouseholdPlace.whereWeAre))
         HouseholdPlaceTile(place: HouseholdPlace.whereWeAre, view: view),

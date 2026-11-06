@@ -168,8 +168,10 @@ void main() {
     'controller.joinWithCode(_code.text.trim())',
     'controller.createHousehold(',
     // The same shape for the two ways in that are not Google: both keep their
-    // AppFailure for the screen's banner (accounts ADR-0002).
-    'controller.register(',
+    // AppFailure for the screen's banner (accounts ADR-0002), and only then
+    // tell the password manager to save, which cannot fail (accounts ADR-0013).
+    '_register(controller)',
+    '_signInWithEmail()',
     'controller.send(_email.text)',
     // Goes through `runAction`, which keeps an AppFailure for the banner.
     '_resumeReporting(',

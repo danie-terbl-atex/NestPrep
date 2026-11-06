@@ -60,4 +60,66 @@ void main() {
     await pumpEventQueue();
     expect(errors.single, isA<PermissionDeniedFailure>());
   });
+
+  group('packed days', () {
+    test('names each child with something in their box that day', () async {
+      final emitted = <Map<int, List<String>>>[];
+      final subscription = LunchWeekReader(repository)
+          .watchPackedDays(Fixtures.householdId, LunchFixtures.week)
+          .listen(emitted.add);
+      addTearDown(subscription.cancel);
+
+      final apple = LunchPick.of(LunchFixtures.apple);
+      repository.emitPlans([
+        LunchFixtures.plan(
+          LunchFixtures.lwaziId,
+          slots: {
+            LunchFixtures.key(1, LunchSlot.fruit): apple,
+            LunchFixtures.key(3, LunchSlot.fruit): apple,
+          },
+        ),
+        LunchFixtures.plan(
+          LunchFixtures.ayandaId,
+          slots: {LunchFixtures.key(1, LunchSlot.fruit): apple},
+        ),
+        LunchFixtures.plan('m-empty'),
+      ]);
+      await pumpEventQueue();
+
+      expect(emitted.single, {
+        1: [LunchFixtures.lwaziId, LunchFixtures.ayandaId],
+        3: [LunchFixtures.lwaziId],
+      });
+    });
+
+    test('a kid with the own grant reads only their own plan', () async {
+      final emitted = <Map<int, List<String>>>[];
+      final subscription = LunchWeekReader(repository)
+          .watchPackedDays(
+            Fixtures.householdId,
+            LunchFixtures.week,
+            ownChildId: LunchFixtures.lwaziId,
+          )
+          .listen(emitted.add);
+      addTearDown(subscription.cancel);
+
+      repository.emitPlan(
+        LunchFixtures.plan(
+          LunchFixtures.lwaziId,
+          slots: {
+            LunchFixtures.key(2, LunchSlot.fruit): LunchPick.of(
+              LunchFixtures.apple,
+            ),
+          },
+        ),
+      );
+      await pumpEventQueue();
+
+      expect(repository.watchedPlans, ['m-kid_2026-W40']);
+      expect(repository.watchedWindows, isEmpty);
+      expect(emitted.single, {
+        2: [LunchFixtures.lwaziId],
+      });
+    });
+  });
 }

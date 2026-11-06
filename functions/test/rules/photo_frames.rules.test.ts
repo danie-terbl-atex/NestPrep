@@ -120,6 +120,9 @@ describe('family looks after the household’s frames', () => {
       { ...PANELS, share: 'yes' },
       { ...PANELS, share: null },
       { ...PANELS, share: 1 },
+      { ...PANELS, people: 'yes' },
+      { ...PANELS, people: null },
+      { ...PANELS, people: 1 },
       'all',
     ]) {
       await assertFails(updateDoc(doc(db, FRAME), { panels }));
@@ -151,6 +154,26 @@ describe('family looks after the household’s frames', () => {
       }),
     );
     await assertSucceeds(updateDoc(doc(db, FRAME), { panels: PANELS }));
+  });
+
+  it('with the switch to show where everyone is or without it, as an older app writes them', async () => {
+    const db = await asUser(PEOPLE.parent.uid);
+    await assertSucceeds(updateDoc(doc(db, FRAME), { panels: { ...PANELS, people: true } }));
+    await assertSucceeds(
+      updateDoc(doc(db, FRAME), {
+        panels: { ...PANELS, lunch: true, addEvents: true, share: true, people: false },
+      }),
+    );
+    await assertSucceeds(updateDoc(doc(db, FRAME), { panels: PANELS }));
+  });
+
+  it('but nobody outside the family switches where everyone is on', async () => {
+    for (const person of NOT_FAMILY) {
+      const db = await asUser(PEOPLE[person].uid);
+      await assertFails(updateDoc(doc(db, FRAME), { panels: { ...PANELS, people: true } }));
+    }
+    const db = await kidDevice();
+    await assertFails(updateDoc(doc(db, FRAME), { panels: { ...PANELS, people: true } }));
   });
 
   it('but never writes the share itself, which only `shareToFrame` does', async () => {

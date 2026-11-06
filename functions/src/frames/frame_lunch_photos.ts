@@ -32,12 +32,10 @@ export async function readFrameLunch(
   store: Firestore,
   home: DocumentReference,
   today: string,
+  premium: Promise<boolean> = readFramePremium(store, home),
 ): Promise<FrameLunch> {
-  const [lunch, entitlement] = await Promise.all([
-    readLunchPicks(home, today),
-    entitlementRef(store, home.id).get(),
-  ]);
-  if (lunch.length === 0 || tierFrom(entitlement.data(), new Date()) !== 'premium') {
+  const [lunch, isPremium] = await Promise.all([readLunchPicks(home, today), premium]);
+  if (lunch.length === 0 || !isPremium) {
     return { lunch, lunchPhotos: {} };
   }
 
@@ -64,4 +62,12 @@ export async function readFrameLunch(
     }),
   );
   return { lunch, lunchPhotos };
+}
+
+export async function readFramePremium(
+  store: Firestore,
+  home: DocumentReference,
+): Promise<boolean> {
+  const entitlement = await entitlementRef(store, home.id).get();
+  return tierFrom(entitlement.data(), new Date()) === 'premium';
 }

@@ -44,6 +44,7 @@ const NONE = {
   lunch: false,
   addEvents: false,
   share: false,
+  people: false,
   helperMemberId: null,
 };
 
@@ -478,6 +479,27 @@ describe('the meals panel', () => {
   });
 });
 
+describe('a meal planned from a recipe', () => {
+  it('names its picture by the meal, and only when the recipe has one', () => {
+    const day = assembleFrameDay(
+      sources({
+        panels: { ...NONE, meals: true },
+        meals: {
+          slots: { '2_lunch': 'toast', '2_dinner': 'recipe-bobotie' },
+          mealNames: { toast: 'Toasties', 'recipe-bobotie': 'Bobotie' },
+          photos: ['recipe-bobotie'],
+        },
+      }),
+    );
+    expect(day.meals).toEqual({
+      slots: [
+        { slot: 'lunch', title: 'Toasties' },
+        { slot: 'dinner', title: 'Bobotie', photo: 'recipe-bobotie' },
+      ],
+    });
+  });
+});
+
 describe('an event’s note and whether it repeats', () => {
   it('a note is trimmed, capped at five hundred characters, and null when blank', () => {
     expect(frameNote('  Gate code 4521 \n')).toBe('Gate code 4521');
@@ -712,5 +734,77 @@ describe('the frame callables’ edge', () => {
     ['a lunch switch that is not one', { ...claim, panels: { ...claim.panels, lunch: 'yes' } }],
   ])('claimFramePairing refuses %s', (_, body) => {
     expect(() => parseInput(claimFramePairingInput, body)).toThrow(HttpsError);
+  });
+});
+
+describe('the where-everyone-is panel (C-0023 rev 15)', () => {
+  const people = {
+    locations: [
+      {
+        memberId: 'm-mia',
+        lat: -33.96221,
+        lng: 18.47123,
+        accuracyMetres: 12,
+        reportedAt: 1_762_400_000_000,
+        sharingUntil: 1_762_400_600_000,
+        continuous: false,
+      },
+    ],
+    places: [],
+    now: 1_762_400_060_000,
+  };
+
+  it('names the day’s members, by first name and in its order', () => {
+    const day = assembleFrameDay(sources({ panels: { ...NONE, people: true }, people }));
+    expect(day.people).toEqual({
+      people: [
+        {
+          name: 'Mia',
+          lat: -33.96221,
+          lng: 18.47123,
+          accuracyMetres: 12,
+          reportedAt: 1_762_400_000_000,
+          liveUntil: 1_762_400_120_000,
+        },
+        { name: 'Sam' },
+        { name: 'Thandi' },
+      ],
+    });
+    expect(day.people?.people.map(({ name }) => name)).toEqual(
+      day.household.members.map(({ name }) => name),
+    );
+  });
+
+  it('is absent when switched off, and when there was nothing read for it (no premium)', () => {
+    expect(assembleFrameDay(sources({ people })).people).toBeUndefined();
+    expect(assembleFrameDay(sources({ panels: { ...NONE, people: true } }))).not.toHaveProperty(
+      'people',
+    );
+  });
+
+  it('a frame stored before the switch existed has it off, and so does a broken one', () => {
+    const base = { name: 'Kitchen', lastSeenAt: null };
+    const panels = { calendar: true, todos: true, meals: true, helperMemberId: null };
+    expect(frameDocument.parse({ ...base, panels }).panels.people).toBe(false);
+    expect(
+      frameDocument.parse({ ...base, panels: { ...panels, people: 'yes' } }).panels.people,
+    ).toBe(false);
+    expect(
+      frameDocument.parse({ ...base, panels: { ...panels, people: true } }).panels.people,
+    ).toBe(true);
+  });
+
+  it('claimFramePairing takes the switch, an older app’s claim has it off, and refuses a non-switch', () => {
+    const claim = {
+      householdId: 'h1',
+      code: 'abc234',
+      name: 'Kitchen',
+      panels: { calendar: true, todos: false, meals: true, helperMemberId: null },
+    };
+    expect(parseInput(claimFramePairingInput, claim).panels.people).toBe(false);
+    const on = { ...claim, panels: { ...claim.panels, people: true } };
+    expect(parseInput(claimFramePairingInput, on).panels.people).toBe(true);
+    const broken = { ...claim, panels: { ...claim.panels, people: 'yes' } };
+    expect(() => parseInput(claimFramePairingInput, broken)).toThrow(HttpsError);
   });
 });

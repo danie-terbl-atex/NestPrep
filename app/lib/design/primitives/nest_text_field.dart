@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../shared/copy/app_copy.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
+import 'nest_icon_button.dart';
 
 /// The text input. Rounded, hairline, with the label above and the error
 /// below in the danger ink; validation happens in the form, not here (`FE-10`).
-class NestTextField extends StatelessWidget {
+///
+/// An [obscureText] field always carries an eye that shows what was typed, so
+/// a password is never typed blind (accounts ADR-0013).
+class NestTextField extends StatefulWidget {
   const NestTextField({
     required this.label,
     this.controller,
@@ -26,6 +32,7 @@ class NestTextField extends StatelessWidget {
     this.autofocus = false,
     this.inputFormatters,
     this.textCapitalization = TextCapitalization.sentences,
+    this.autofillHints,
     super.key,
   });
 
@@ -52,6 +59,17 @@ class NestTextField extends StatelessWidget {
 
   final TextCapitalization textCapitalization;
 
+  /// What the platform's password manager may fill here and offer to save;
+  /// saving needs the fields inside an `AutofillGroup` (accounts ADR-0013).
+  final Iterable<String>? autofillHints;
+
+  @override
+  State<NestTextField> createState() => _NestTextFieldState();
+}
+
+class _NestTextFieldState extends State<NestTextField> {
+  bool _revealed = false;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
@@ -60,36 +78,53 @@ class NestTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: nest.text.label.copyWith(color: c.inkSecondary)),
+        Text(
+          widget.label,
+          style: nest.text.label.copyWith(color: c.inkSecondary),
+        ),
         const SizedBox(height: NestSpace.sm),
         TextField(
-          controller: controller,
-          focusNode: focusNode,
-          enabled: enabled,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          inputFormatters: inputFormatters,
-          textCapitalization: textCapitalization,
-          obscureText: obscureText,
-          maxLines: maxLines,
-          autofocus: autofocus,
-          onChanged: onChanged,
-          onSubmitted: onSubmitted,
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          enabled: widget.enabled,
+          keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
+          inputFormatters: widget.inputFormatters,
+          textCapitalization: widget.textCapitalization,
+          obscureText: widget.obscureText && !_revealed,
+          autocorrect: !widget.obscureText,
+          enableSuggestions: !widget.obscureText,
+          autofillHints: widget.autofillHints,
+          maxLines: widget.maxLines,
+          autofocus: widget.autofocus,
+          onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
           style: nest.text.body,
           decoration: InputDecoration(
-            hintText: hint,
-            errorText: errorText,
-            helperText: helperText,
+            hintText: widget.hint,
+            errorText: widget.errorText,
+            helperText: widget.helperText,
             errorStyle: nest.text.caption.copyWith(color: c.danger),
             helperStyle: nest.text.caption,
-            prefixIcon: prefixIcon == null
+            prefixIcon: widget.prefixIcon == null
                 ? null
                 : Icon(
-                    prefixIcon,
+                    widget.prefixIcon,
                     size: NestSize.iconMedium,
                     color: c.inkTertiary,
                   ),
-            suffixIcon: suffix,
+            suffixIcon: widget.obscureText
+                ? NestIconButton(
+                    icon: _revealed ? LucideIcons.eyeOff : LucideIcons.eye,
+                    label: _revealed
+                        ? AppCopy.hidePassword
+                        : AppCopy.showPassword,
+                    variant: NestIconButtonVariant.plain,
+                    onPressed: widget.enabled
+                        ? () => setState(() => _revealed = !_revealed)
+                        : null,
+                  )
+                : widget.suffix,
           ),
         ),
       ],

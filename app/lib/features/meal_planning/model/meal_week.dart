@@ -4,12 +4,18 @@ import 'week_plan.dart';
 
 /// One day of the week's plan, with the meals already looked up.
 class PlannedDay {
-  const PlannedDay({required this.date, required this.meals});
+  const PlannedDay({
+    required this.date,
+    required this.meals,
+    this.schoolLunchFor = const [],
+  });
 
   final CalendarDate date;
 
   /// The meal in each slot, or null for an empty one.
   final Map<MealSlot, Meal?> meals;
+
+  final List<String> schoolLunchFor;
 
   bool get isEmpty => meals.values.every((meal) => meal == null);
 }
@@ -30,6 +36,7 @@ class MealWeek {
     required CalendarDate today,
     required WeekPlan plan,
     required List<Meal> meals,
+    Map<int, List<String>> packedDays = const {},
   }) {
     final byId = {for (final meal in meals) meal.id: meal};
     return MealWeek(
@@ -38,7 +45,7 @@ class MealWeek {
       library: meals,
       days: [
         for (var offset = 0; offset < WeekPlan.daysInAWeek; offset++)
-          _dayAt(weekStart, offset, plan, byId),
+          _dayAt(weekStart, offset, plan, byId, packedDays),
       ],
     );
   }
@@ -57,10 +64,12 @@ class MealWeek {
     int offset,
     WeekPlan plan,
     Map<String, Meal> byId,
+    Map<int, List<String>> packedDays,
   ) {
     final date = weekStart.addDays(offset);
     return PlannedDay(
       date: date,
+      schoolLunchFor: packedDays[date.weekday] ?? const [],
       meals: {
         for (final slot in MealSlot.values)
           slot: byId[plan.mealIdAt(date.weekday, slot) ?? ''],

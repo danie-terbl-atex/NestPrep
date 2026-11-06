@@ -16,6 +16,8 @@ abstract final class MoreCopy {
   static const documentsBody = 'Folders, private vaults and scans.';
 
   static const peopleTitle = 'People';
+  static const peopleHousehold = 'Household';
+  static const peopleProfiles = 'Profiles';
   static String peopleCount(int count) => count == 1
       ? '1 person in this household'
       : '$count people in this household';

@@ -181,6 +181,46 @@ void main() {
     expect(auth.googleSignIns, hasLength(1));
   });
 
+  testWidgets('the password manager is offered a sign-in only once it worked', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.pumpAndSettle();
+    final fields = find.byType(TextField);
+    expect(tester.widget<TextField>(fields.at(0)).autofillHints, [
+      AutofillHints.username,
+      AutofillHints.email,
+    ]);
+    expect(tester.widget<TextField>(fields.at(1)).autofillHints, [
+      AutofillHints.password,
+    ]);
+    expect(find.byType(AutofillGroup), findsOneWidget);
+
+    bool savedCredentials() => tester.testTextInput.log.any(
+      (call) =>
+          call.method == 'TextInput.finishAutofillContext' &&
+          call.arguments == true,
+    );
+    final signIn = find.widgetWithText(NestButton, AppCopy.signInWithEmail);
+
+    auth.failSignInWith = const SignInFailure(SignInProblem.wrongCredentials);
+    await tester.enterText(fields.at(0), 'sam@nestprep.test');
+    await tester.enterText(fields.at(1), 'not-it');
+    await tester.pump();
+    await tester.ensureVisible(signIn);
+    await tester.tap(signIn);
+    await tester.pumpAndSettle();
+    expect(savedCredentials(), isFalse);
+
+    auth.failSignInWith = null;
+    await tester.enterText(fields.at(1), 'nestprep-8');
+    await tester.pump();
+    await tester.tap(signIn);
+    await tester.pumpAndSettle();
+    expect(auth.emailSignIns, hasLength(2));
+    expect(savedCredentials(), isTrue);
+  });
+
   testWidgets('the screen comes to rest', (tester) async {
     await pump(tester);
 

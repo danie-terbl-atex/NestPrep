@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,9 @@ import 'sign_in_screen.dart';
 ///
 /// On success nothing happens here: registering signs the person in, the
 /// session's auth stream fires, and the router moves them on to the consent
-/// step and the household gate (accounts ADR-0007).
+/// step and the household gate (accounts ADR-0007). The password manager may
+/// suggest a strong password, and is asked to save it once the account exists
+/// (accounts ADR-0013).
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -57,73 +60,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
         onPressed: () => context.go(SignInScreen.path),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (failure != null) ...[
-              NestBanner(
-                message: AppCopy.failure(failure),
-                tone: NestBannerTone.danger,
+        child: AutofillGroup(
+          onDisposeAction: AutofillContextAction.cancel,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (failure != null) ...[
+                NestBanner(
+                  message: AppCopy.failure(failure),
+                  tone: NestBannerTone.danger,
+                ),
+                const SizedBox(height: NestSpace.lg),
+              ],
+              NestTextField(
+                label: AppCopy.registerNameLabel,
+                hint: AppCopy.registerNameHint,
+                controller: _name,
+                enabled: !controller.isBusy,
+                textCapitalization: TextCapitalization.words,
+                autofillHints: const [AutofillHints.name],
+                textInputAction: TextInputAction.next,
+                prefixIcon: LucideIcons.user,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: NestSpace.md),
+              NestTextField(
+                label: AppCopy.signInEmailLabel,
+                controller: _email,
+                enabled: !controller.isBusy,
+                keyboardType: TextInputType.emailAddress,
+                autofillHints: const [
+                  AutofillHints.username,
+                  AutofillHints.email,
+                ],
+                textCapitalization: TextCapitalization.none,
+                textInputAction: TextInputAction.next,
+                prefixIcon: LucideIcons.atSign,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: NestSpace.md),
+              NestTextField(
+                label: AppCopy.signInPasswordLabel,
+                hint: AppCopy.registerPasswordHint,
+                controller: _password,
+                enabled: !controller.isBusy,
+                obscureText: true,
+                autofillHints: const [AutofillHints.newPassword],
+                textCapitalization: TextCapitalization.none,
+                textInputAction: TextInputAction.done,
+                prefixIcon: LucideIcons.lock,
+                onChanged: (_) => setState(() {}),
+                onSubmitted: (_) => _submit(controller),
+              ),
+              const SizedBox(height: NestSpace.xl),
+              NestButton(
+                label: AppCopy.registerSubmit,
+                isLoading: controller.isBusy,
+                onPressed: _canSubmit ? () => _submit(controller) : null,
               ),
               const SizedBox(height: NestSpace.lg),
+              Text(
+                AppCopy.registerHasAccount,
+                style: NestTheme.of(context).text.caption
+                    .copyWith(color: NestTheme.of(context).colors.inkTertiary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: NestSpace.sm),
+              NestButton(
+                label: AppCopy.registerSignInInstead,
+                variant: NestButtonVariant.ghost,
+                size: NestButtonSize.small,
+                onPressed: controller.isBusy
+                    ? null
+                    : () => context.go(SignInScreen.path),
+              ),
             ],
-            NestTextField(
-              label: AppCopy.registerNameLabel,
-              hint: AppCopy.registerNameHint,
-              controller: _name,
-              enabled: !controller.isBusy,
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.next,
-              prefixIcon: LucideIcons.user,
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: NestSpace.md),
-            NestTextField(
-              label: AppCopy.signInEmailLabel,
-              controller: _email,
-              enabled: !controller.isBusy,
-              keyboardType: TextInputType.emailAddress,
-              textCapitalization: TextCapitalization.none,
-              textInputAction: TextInputAction.next,
-              prefixIcon: LucideIcons.atSign,
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: NestSpace.md),
-            NestTextField(
-              label: AppCopy.signInPasswordLabel,
-              hint: AppCopy.registerPasswordHint,
-              controller: _password,
-              enabled: !controller.isBusy,
-              obscureText: true,
-              textCapitalization: TextCapitalization.none,
-              textInputAction: TextInputAction.done,
-              prefixIcon: LucideIcons.lock,
-              onChanged: (_) => setState(() {}),
-              onSubmitted: (_) => _submit(controller),
-            ),
-            const SizedBox(height: NestSpace.xl),
-            NestButton(
-              label: AppCopy.registerSubmit,
-              isLoading: controller.isBusy,
-              onPressed: _canSubmit ? () => _submit(controller) : null,
-            ),
-            const SizedBox(height: NestSpace.lg),
-            Text(
-              AppCopy.registerHasAccount,
-              style: NestTheme.of(context).text.caption
-                  .copyWith(color: NestTheme.of(context).colors.inkTertiary),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: NestSpace.sm),
-            NestButton(
-              label: AppCopy.registerSignInInstead,
-              variant: NestButtonVariant.ghost,
-              size: NestButtonSize.small,
-              onPressed: controller.isBusy
-                  ? null
-                  : () => context.go(SignInScreen.path),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -131,12 +143,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _submit(RegisterController controller) {
     if (!_canSubmit || controller.isBusy) return;
-    unawaited(
-      controller.register(
-        name: _name.text,
-        email: _email.text,
-        password: _password.text,
-      ),
+    unawaited(_register(controller));
+  }
+
+  Future<void> _register(RegisterController controller) async {
+    final registered = await controller.register(
+      name: _name.text,
+      email: _email.text,
+      password: _password.text,
     );
+    if (registered) TextInput.finishAutofillContext();
   }
 }

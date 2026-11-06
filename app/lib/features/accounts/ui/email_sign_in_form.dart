@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -9,6 +12,10 @@ import '../../../shared/copy/app_copy.dart';
 /// flight, and why it failed, belong to the session and are rendered by the
 /// screen above (`FE-07`). Kept apart from [SeededAccountPicker], which is the
 /// emulator's shortcut past this form and must never become it.
+///
+/// The platform's password manager fills both fields and is asked to save them
+/// only once the sign-in worked, never for an attempt that failed or a form
+/// left for another screen (accounts ADR-0013).
 class EmailSignInForm extends StatefulWidget {
   const EmailSignInForm({
     required this.isBusy,
@@ -18,7 +25,7 @@ class EmailSignInForm extends StatefulWidget {
   });
 
   final bool isBusy;
-  final void Function({required String email, required String password})
+  final Future<bool> Function({required String email, required String password})
   onSubmit;
   final VoidCallback onForgotPassword;
 
@@ -44,54 +51,63 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   bool get _canSubmit =>
       _email.text.trim().isNotEmpty && _password.text.isNotEmpty;
 
-  void _submit() {
+  Future<void> _signInWithEmail() async {
     if (!_canSubmit || widget.isBusy) return;
-    widget.onSubmit(email: _email.text, password: _password.text);
+    final signedIn = await widget.onSubmit(
+      email: _email.text,
+      password: _password.text,
+    );
+    if (signedIn) TextInput.finishAutofillContext();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        NestTextField(
-          label: AppCopy.signInEmailLabel,
-          controller: _email,
-          enabled: !widget.isBusy,
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          textCapitalization: TextCapitalization.none,
-          prefixIcon: LucideIcons.atSign,
-          onChanged: (_) => setState(() {}),
-          onSubmitted: (_) => _passwordFocus.requestFocus(),
-        ),
-        const SizedBox(height: NestSpace.md),
-        NestTextField(
-          label: AppCopy.signInPasswordLabel,
-          controller: _password,
-          focusNode: _passwordFocus,
-          enabled: !widget.isBusy,
-          obscureText: true,
-          textInputAction: TextInputAction.done,
-          textCapitalization: TextCapitalization.none,
-          prefixIcon: LucideIcons.lock,
-          onChanged: (_) => setState(() {}),
-          onSubmitted: (_) => _submit(),
-        ),
-        const SizedBox(height: NestSpace.lg),
-        NestButton(
-          label: AppCopy.signInWithEmail,
-          isLoading: widget.isBusy,
-          onPressed: _canSubmit ? _submit : null,
-        ),
-        const SizedBox(height: NestSpace.sm),
-        NestButton(
-          label: AppCopy.signInForgotPassword,
-          variant: NestButtonVariant.ghost,
-          size: NestButtonSize.small,
-          onPressed: widget.isBusy ? null : widget.onForgotPassword,
-        ),
-      ],
+    return AutofillGroup(
+      onDisposeAction: AutofillContextAction.cancel,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          NestTextField(
+            label: AppCopy.signInEmailLabel,
+            autofillHints: const [AutofillHints.username, AutofillHints.email],
+            controller: _email,
+            enabled: !widget.isBusy,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            textCapitalization: TextCapitalization.none,
+            prefixIcon: LucideIcons.atSign,
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => _passwordFocus.requestFocus(),
+          ),
+          const SizedBox(height: NestSpace.md),
+          NestTextField(
+            label: AppCopy.signInPasswordLabel,
+            controller: _password,
+            focusNode: _passwordFocus,
+            enabled: !widget.isBusy,
+            obscureText: true,
+            autofillHints: const [AutofillHints.password],
+            textInputAction: TextInputAction.done,
+            textCapitalization: TextCapitalization.none,
+            prefixIcon: LucideIcons.lock,
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => unawaited(_signInWithEmail()),
+          ),
+          const SizedBox(height: NestSpace.lg),
+          NestButton(
+            label: AppCopy.signInWithEmail,
+            isLoading: widget.isBusy,
+            onPressed: _canSubmit ? () => unawaited(_signInWithEmail()) : null,
+          ),
+          const SizedBox(height: NestSpace.sm),
+          NestButton(
+            label: AppCopy.signInForgotPassword,
+            variant: NestButtonVariant.ghost,
+            size: NestButtonSize.small,
+            onPressed: widget.isBusy ? null : widget.onForgotPassword,
+          ),
+        ],
+      ),
     );
   }
 }

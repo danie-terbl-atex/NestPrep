@@ -396,6 +396,7 @@ describe('the day', () => {
       lunch: false,
       addEvents: false,
       share: false,
+      people: false,
       helperMemberId: null,
     },
     screensaver: null,

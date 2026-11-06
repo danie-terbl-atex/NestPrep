@@ -1,4 +1,5 @@
 import '../../../shared/async/combine_latest.dart';
+import '../model/lunch_plan.dart';
 import '../model/lunch_week.dart';
 import '../model/lunch_week_items.dart';
 import 'lunch_repository.dart';
@@ -25,4 +26,18 @@ final class LunchWeekReader {
     _repository.watchItems(householdId),
     (plans, library) => LunchWeekItems.from(plans: plans, library: library),
   );
+
+  /// [ownChildId] is a kid reading with the `own` grant, which opens their
+  /// one plan and no other.
+  Stream<Map<int, List<String>>> watchPackedDays(
+    String householdId,
+    LunchWeek week, {
+    String? ownChildId,
+  }) =>
+      (ownChildId == null
+              ? _repository.watchPlans(householdId, from: week, to: week)
+              : _repository
+                    .watchPlan(householdId, childId: ownChildId, week: week)
+                    .map((plan) => [plan]))
+          .map(LunchPlan.packedDaysOf);
 }

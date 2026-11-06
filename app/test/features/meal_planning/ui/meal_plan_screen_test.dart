@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
@@ -25,19 +28,25 @@ void main() {
 
   late FakeMealRepository repository;
   late MealPlanController controller;
+  late StreamController<Map<int, List<String>>> packed;
+  late List<HouseholdTab> openedTabs;
 
   setUp(() {
     repository = FakeMealRepository();
+    packed = StreamController.broadcast();
+    openedTabs = [];
     controller = MealPlanController(
       mealRepository: repository,
       householdClock: HouseholdClock('Africa/Johannesburg', now: () => _nowUtc),
       householdId: Fixtures.householdId,
       memberId: Fixtures.samMemberId,
+      watchPackedDays: (_) => packed.stream,
     );
   });
 
   tearDown(() async {
     controller.dispose();
+    await packed.close();
     await repository.close();
   });
 
@@ -50,7 +59,7 @@ void main() {
     MealsScreen(
       view: MealsView.week,
       onSelectView: (_) {},
-      onSelectTab: (_) {},
+      onSelectTab: openedTabs.add,
       onPickRecipe: (_, _) async => null,
       onOpenRecipe: (_, {heroTag}) {},
     ),
@@ -65,9 +74,11 @@ void main() {
     WidgetTester tester, {
     List<Meal> meals = const [],
     WeekPlan? plan,
+    Map<int, List<String>>? packedDays,
   }) async {
     repository.emitMeals(meals);
     repository.emitWeek(plan ?? WeekPlan.empty(controller.weekStart));
+    if (packedDays != null) packed.add(packedDays);
     await tester.pumpAndSettle();
   }
 
@@ -187,6 +198,54 @@ void main() {
     expect(find.textContaining('permission-denied'), findsNothing);
   });
 
+  group('a school day with a packed box', () {
+    const mondayBox = {
+      1: [Fixtures.kidMemberId],
+    };
+
+    testWidgets('says school lunch for the child and opens the lunch tab', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester, packedDays: mondayBox);
+
+      final school = find.text(AppCopy.mealsSchoolLunch(['Kid']));
+      expect(school, findsOneWidget);
+      await tester.tap(school);
+      expect(openedTabs, [HouseholdTab.lunch]);
+    });
+
+    testWidgets('shows a lunch at home under it, which opens the picker', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(
+        tester,
+        meals: [meal('Toasties', id: 'toast')],
+        plan: const WeekPlan(id: '2026-09-14', slots: {'1_lunch': 'toast'}),
+        packedDays: mondayBox,
+      );
+
+      final atHome = find.text(AppCopy.mealsAtHome('Toasties'));
+      expect(atHome, findsOneWidget);
+      expect(find.text('Toasties'), findsNothing);
+      await tester.tap(atHome);
+      await tester.pumpAndSettle();
+      expect(find.text(AppCopy.mealsLibrary), findsOneWidget);
+    });
+
+    testWidgets('with nothing at home, still lets a lunch at home be planned', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester, packedDays: mondayBox);
+
+      await tester.tap(find.bySemanticsLabel(AppCopy.mealsPlanLunchAtHome));
+      await tester.pumpAndSettle();
+      expect(find.text(AppCopy.mealsPickTitle), findsOneWidget);
+    });
+  });
+
   testWidgets('renders in dark and at 200% text without overflowing', (
     tester,
   ) async {
@@ -198,7 +257,14 @@ void main() {
     await emit(
       tester,
       meals: [meal('Spaghetti bolognese with garlic bread', id: 'spag')],
-      plan: const WeekPlan(id: '2026-09-14', slots: {'2_dinner': 'spag'}),
+      plan: const WeekPlan(
+        id: '2026-09-14',
+        slots: {'2_dinner': 'spag', '1_lunch': 'spag'},
+      ),
+      packedDays: const {
+        1: [Fixtures.kidMemberId, Fixtures.thandiMemberId],
+        2: [Fixtures.kidMemberId],
+      },
     );
 
     expect(tester.takeException(), isNull);

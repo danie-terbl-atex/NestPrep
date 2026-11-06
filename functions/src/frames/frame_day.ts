@@ -24,6 +24,12 @@ import {
   refreshAfterSeconds,
 } from './frame_policy';
 import { memberColorHex } from './member_colors';
+import {
+  type FrameNamedMember,
+  type FramePeople,
+  type FramePeopleSources,
+  peoplePanel,
+} from './frame_people';
 import type { FramePanels } from './frame_schemas';
 
 /**
@@ -87,6 +93,7 @@ export interface MealDay {
   readonly slots: Readonly<Record<string, string>>;
   /** mealId → its name. */
   readonly mealNames: Readonly<Record<string, string>>;
+  readonly photos?: readonly string[];
 }
 
 export interface FrameDaySources {
@@ -114,6 +121,7 @@ export interface FrameDaySources {
   readonly lunchPhotos?: Readonly<Record<string, { readonly id: string }>>;
   /** The list and who may add to it, read only while the frame adds groceries (ADR-0012). */
   readonly groceries?: FrameGroceriesSources;
+  readonly people?: FramePeopleSources;
 }
 
 export interface FrameEvent {
@@ -185,20 +193,24 @@ export interface FrameDay {
     readonly name: string;
     readonly items: (FrameItem & { readonly detail?: string })[];
   };
-  readonly meals?: { readonly slots: { readonly slot: MealSlot; readonly title: string }[] };
+  readonly meals?: {
+    readonly slots: { readonly slot: MealSlot; readonly title: string; readonly photo?: string }[];
+  };
   readonly lunch?: { readonly boxes: FrameLunchBox[] };
   readonly sharing?: true;
   /** The frame's shop, who may say they are adding, and what is still to buy (ADR-0012). */
   readonly groceries?: FrameGroceriesDay;
+  readonly people?: FramePeople;
 }
 
 export function assembleFrameDay(sources: FrameDaySources): FrameDay {
   const { panels } = sources;
   const helperId = panels.helperMemberId;
   const helperName = helperId === null ? undefined : sources.names[helperId];
+  const named = namedMembers(sources.names);
   return {
     status: 'linked',
-    household: { name: sources.householdName, members: membersOf(sources) },
+    household: { name: sources.householdName, members: membersOf(named, sources) },
     frame: { name: sources.frameName },
     today: sources.today,
     refreshAfterSeconds: refreshAfterSeconds(sources.localMinute),
@@ -215,6 +227,9 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
     ...(sources.groceries === undefined
       ? {}
       : { groceries: groceriesPanel(sources.groceries, sources.names) }),
+    ...(panels.people && sources.people !== undefined
+      ? { people: peoplePanel(named, sources.people) }
+      : {}),
   };
 }
 
@@ -241,16 +256,21 @@ function byName<T extends { readonly name: string }>(a: T, b: T): number {
   return a.name.localeCompare(b.name);
 }
 
-function membersOf(sources: FrameDaySources): FrameMember[] {
-  const kids = new Set(sources.kids);
-  return Object.entries(sources.names)
+function namedMembers(names: FrameDaySources['names']): FrameNamedMember[] {
+  return Object.entries(names)
     .flatMap(([id, displayName]) => {
       const name = firstName(displayName);
-      if (name === '') return [];
-      const color = memberColorHex(sources.colors[id]);
-      return [kids.has(id) ? { name, color, kid: true as const } : { name, color }];
+      return name === '' ? [] : [{ id, name }];
     })
     .sort(byName);
+}
+
+function membersOf(named: readonly FrameNamedMember[], sources: FrameDaySources): FrameMember[] {
+  const kids = new Set(sources.kids);
+  return named.map(({ id, name }) => {
+    const color = memberColorHex(sources.colors[id]);
+    return kids.has(id) ? { name, color, kid: true as const } : { name, color };
+  });
 }
 
 function addersOf(sources: FrameDaySources): string[] {
@@ -442,7 +462,8 @@ function mealsPanel(sources: FrameDaySources): NonNullable<FrameDay['meals']> {
     slots: MEAL_SLOTS.flatMap((slot) => {
       const mealId = plan.slots[`${String(weekday)}_${slot}`];
       const title = mealId === undefined ? undefined : plan.mealNames[mealId];
-      return title === undefined ? [] : [{ slot, title }];
+      if (mealId === undefined || title === undefined) return [];
+      return [plan.photos?.includes(mealId) ? { slot, title, photo: mealId } : { slot, title }];
     }),
   };
 }

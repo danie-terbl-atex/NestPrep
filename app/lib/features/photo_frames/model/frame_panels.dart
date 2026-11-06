@@ -15,6 +15,7 @@ abstract class FramePanels with _$FramePanels {
     /// on (photo-frames ADR-0008).
     @Default(false) bool addEvents,
     @Default(false) bool share,
+    @Default(false) bool people,
     String? helperMemberId,
   }) = _FramePanels;
 
@@ -24,5 +25,5 @@ abstract class FramePanels with _$FramePanels {
       _$FramePanelsFromJson(json);
 
   bool get showsAnything =>
-      calendar || todos || meals || lunch || helperMemberId != null;
+      calendar || todos || meals || lunch || people || helperMemberId != null;
 }

@@ -7,13 +7,16 @@ import '../../../shared/time/household_clock.dart';
 import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/household_view.dart';
+import '../model/people_view.dart';
 import '../state/household_controller.dart';
 import 'household_body.dart';
 import 'member_sheet.dart';
 import 'new_child_paywall.dart';
+import 'people_view_switch.dart';
 
-/// The household: who is in it, who has joined, and the admin actions. All four
-/// async states come from the kit (`FE-08`).
+/// People's Household tab (design-system ADR-0022): who is in the household,
+/// who has joined, and the admin actions. All four async states come from the
+/// kit (`FE-08`).
 class HouseholdScreen extends StatelessWidget {
   const HouseholdScreen({super.key});
 
@@ -24,7 +27,7 @@ class HouseholdScreen extends StatelessWidget {
     final controller = context.watch<HouseholdController>();
     final failure = controller.actionFailure;
     return NestScaffold(
-      title: AppCopy.householdTitle,
+      title: MoreCopy.peopleTitle,
       // This screen is pushed from a tab, so it carries the way back itself
       // rather than relying on the system gesture alone (`FE-17`). A deep link
       // straight here has nothing to pop, and then there is no button.
@@ -33,6 +36,7 @@ class HouseholdScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const PeopleViewSwitch(current: PeopleView.household),
           if (failure != null)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.lg),

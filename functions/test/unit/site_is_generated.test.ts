@@ -301,6 +301,42 @@ describe('an invite link opens the app or says how to join (household ADR-0005)'
   });
 });
 
+describe('a saved password is the same login in the app and on the site (accounts ADR-0013)', () => {
+  const firebase = JSON.parse(read('firebase.json')) as { hosting: { rewrites: object[] } };
+  const pbxproj = read('app/ios/Runner.xcodeproj/project.pbxproj');
+  const runner =
+    /DEVELOPMENT_TEAM = (\w+);[\s\S]*?PRODUCT_BUNDLE_IDENTIFIER = (io\.nullstate\.nestprep\.app);/.exec(
+      pbxproj,
+    );
+
+  it('lets Android share logins between the app and the site', () => {
+    const links = JSON.parse(String(site.get('well-known/assetlinks.json'))) as {
+      relation: string[];
+    }[];
+    expect(links[0]?.relation).toContain('delegate_permission/common.get_login_creds');
+  });
+
+  it('vouches for the iOS app the Runner target signs, on the domain its entitlement names', () => {
+    const association = JSON.parse(
+      String(site.get('well-known/apple-app-site-association.json')),
+    ) as { webcredentials: { apps: string[] } };
+    expect(runner).not.toBeNull();
+    expect(association.webcredentials.apps).toEqual([
+      `${String(runner?.[1])}.${String(runner?.[2])}`,
+    ]);
+    const origin = /PUBLIC_SITE_ORIGIN = 'https:\/\/([^']+)'/.exec(
+      read('functions/src/accounts/password_reset_email.ts'),
+    )?.[1];
+    expect(read('app/ios/Runner/Runner.entitlements')).toContain(
+      `webcredentials:${String(origin)}`,
+    );
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/.well-known/apple-app-site-association',
+      destination: '/well-known/apple-app-site-association.json',
+    });
+  });
+});
+
 describe('the Premium gift page and the redeem page (subscriptions ADR-0003, ADR-0004)', () => {
   const firebase = JSON.parse(read('firebase.json')) as {
     hosting: {

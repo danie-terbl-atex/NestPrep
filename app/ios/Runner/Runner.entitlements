@@ -6,10 +6,18 @@
   FCM only delivers once the Peak team's APNs auth key is uploaded to the
   Firebase project (Project settings → Cloud Messaging → the iOS app
   io.nullstate.nestprep.app).
+
+  The associated domain lets iOS offer to save a NestPrep password to the
+  Keychain, filed under app.nestprep.io, which serves the matching
+  apple-app-site-association file (accounts ADR-0013).
 -->
 <plist version="1.0">
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>webcredentials:app.nestprep.io</string>
+	</array>
 </dict>
 </plist>

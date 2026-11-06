@@ -25,11 +25,11 @@ function photoFrameIsName(name) {
   return name is string && name.size() > 0 && name.size() <= 40;
 }
 
-// `lunch`, `addEvents` and `share` are optional: a frame linked by an older
-// app has none of them, and that is off (photo-frames ADR-0003, ADR-0008).
+// `lunch`, `addEvents`, `share` and `people` are optional: a frame linked by an
+// older app has none of them, and that is off (photo-frames ADR-0003, ADR-0008).
 function photoFrameArePanels(householdId, panels) {
   return panels is map
-    && panels.keys().hasOnly(['calendar', 'todos', 'meals', 'lunch', 'addEvents', 'share', 'helperMemberId'])
+    && panels.keys().hasOnly(['calendar', 'todos', 'meals', 'lunch', 'addEvents', 'share', 'people', 'helperMemberId'])
     && panels.keys().hasAll(['calendar', 'todos', 'meals', 'helperMemberId'])
     && panels.calendar is bool
     && panels.todos is bool
@@ -37,6 +37,7 @@ function photoFrameArePanels(householdId, panels) {
     && panels.get('lunch', false) is bool
     && panels.get('addEvents', false) is bool
     && panels.get('share', false) is bool
+    && panels.get('people', false) is bool
     && (panels.helperMemberId == null
           || (isNonEmptyString(panels.helperMemberId)
                 && exists(/databases/$(database)/documents/households/$(householdId)/members/$(panels.helperMemberId))));

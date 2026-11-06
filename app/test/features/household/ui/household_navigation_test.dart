@@ -20,11 +20,12 @@ import '../../../support/household_fixtures.dart';
 /// what a person actually sees and whether there is anywhere to go back to.
 void main() {
   const moreTitle = 'More';
+  const peopleScreenTitle = 'The people screen';
 
   /// The household screen as the route builds it: a back button only when
   /// something pushed it.
   Widget householdScreen(BuildContext context) => NestScaffold(
-    title: AppCopy.householdTitle,
+    title: peopleScreenTitle,
     leading: context.canPop()
         ? NestIconButton(
             icon: LucideIcons.arrowLeft,
@@ -79,7 +80,7 @@ void main() {
     await tester.tap(find.text(MoreCopy.peopleTitle));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(peopleScreenTitle), findsOneWidget);
     // The whole point: there is somewhere to go back to. Without this, the
     // system back button closes the app.
     expect(find.byIcon(LucideIcons.arrowLeft), findsOneWidget);
@@ -99,7 +100,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(moreTitle), findsOneWidget);
-    expect(find.text(AppCopy.householdTitle), findsNothing);
+    expect(find.text(peopleScreenTitle), findsNothing);
   });
 
   testWidgets('a deep link straight to the household offers no way back', (
@@ -110,7 +111,7 @@ void main() {
       routerFrom(HouseholdRoute.householdPathFor(Fixtures.householdId)),
     );
 
-    expect(find.text(AppCopy.householdTitle), findsOneWidget);
+    expect(find.text(peopleScreenTitle), findsOneWidget);
     // Nothing pushed it, so a back button would lead nowhere.
     expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
   });

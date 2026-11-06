@@ -124,6 +124,7 @@ export const frameDocument = z.object({
       lunch: z.boolean().catch(false),
       addEvents: z.boolean().catch(false),
       share: z.boolean().catch(false),
+      people: z.boolean().catch(false),
       helperMemberId: z.string().min(1).nullable().catch(null),
     })
     .catch({
@@ -133,6 +134,7 @@ export const frameDocument = z.object({
       lunch: false,
       addEvents: false,
       share: false,
+      people: false,
       helperMemberId: null,
     }),
   lastSeenAt: z.instanceof(Timestamp).nullable().catch(null),

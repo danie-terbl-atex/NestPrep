@@ -397,6 +397,39 @@ void main() {
     },
   );
 
+  // design-system ADR-0022: Household and Profiles are People's two tabs,
+  // across two shells, and back from either lands on More.
+  testWidgets('People switches between its tabs, and back lands on More', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+    router.go(HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more));
+    await settle(tester);
+
+    unawaited(
+      router.push(HouseholdRoute.householdPathFor(Fixtures.householdId)),
+    );
+    await settle(tester);
+    expect(find.byType(HouseholdScreen), findsOneWidget);
+
+    await tester.tap(find.text(MoreCopy.peopleProfiles));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byType(FamilyScreen), findsOneWidget);
+    expect(find.byType(HouseholdScreen), findsNothing);
+
+    await tester.tap(find.text(MoreCopy.peopleHousehold));
+    await settle(tester);
+    expect(find.byType(HouseholdScreen), findsOneWidget);
+    expect(find.byType(FamilyScreen), findsNothing);
+
+    router.pop();
+    await settle(tester);
+    expect(find.byType(HouseholdMoreScreen), findsOneWidget);
+    expect(find.byType(HouseholdScreen), findsNothing);
+  });
+
   // family-profiles: the family and a profile under their own shell.
   testWidgets('the family and a profile build, with both controllers', (
     tester,

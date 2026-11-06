@@ -34,6 +34,10 @@ export const COPIED_ASSETS = [
   ['hosting/src/reset-password.js', 'assets/reset-password.js'],
   ['hosting/src/connect-config.json', 'assets/connect-config.json'],
   ['hosting/src/well-known/assetlinks.json', 'well-known/assetlinks.json'],
+  [
+    'hosting/src/well-known/apple-app-site-association.json',
+    'well-known/apple-app-site-association.json',
+  ],
 ];
 
 /** The two documents the app bundles and the site publishes. */

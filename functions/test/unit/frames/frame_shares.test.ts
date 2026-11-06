@@ -34,6 +34,7 @@ const PANELS = {
   lunch: false,
   addEvents: false,
   share: true,
+  people: false,
   helperMemberId: null,
 };
 
