@@ -21,8 +21,16 @@ export const accountEmailFrom = defineString('ACCOUNT_EMAIL_FROM', { default: ''
 
 const NO_RESET_FOR = new Set(['auth/user-not-found', 'auth/email-not-found', 'auth/user-disabled']);
 
+/**
+ * The account is looked up first because, with email enumeration protection
+ * on, Identity Toolkit answers an unknown address with no link and the Admin
+ * SDK turns that into `auth/internal-error` — indistinguishable from a real
+ * outage. The Auth emulator has no such protection, so only the cloud shows it.
+ */
 async function firebaseResetLink(email: string): Promise<string | null> {
   try {
+    const user = await getAuth().getUserByEmail(email);
+    if (user.disabled) return null;
     return await getAuth().generatePasswordResetLink(email);
   } catch (error: unknown) {
     const code = (error as { code?: unknown }).code;
