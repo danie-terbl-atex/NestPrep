@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
-version: 3
-updated: 2026-11-05
+version: 4
+updated: 2026-11-08
 ---
 NestPrep helps one household run its week: school lunches planned per child, the family calendar, the grocery list, to-dos and chores, the papers you keep needing, and what a nanny or helper needs for a shift. To do that it has to hold information about you and the people you live with, including your children. This policy says what we hold, why, where it is kept, who else touches it, how long we keep it, and what you can do about it.
 
@@ -70,6 +70,7 @@ A parent can sign a child's device in as that child's profile with a short code 
 
 - Events you and your household add: titles, times, who they are for, how they repeat, and notes.
 - If you connect a **Google or Outlook calendar**, we keep the permission those services give us to read your events (an access credential) on our servers only, never on other household members' phones, and copy the events into your household calendar. We only ask to read, never to change, your calendars. You can disconnect at any time, which deletes the credential.
+- NestPrep's use and transfer to any other app of information received from Google APIs will adhere to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements. We read your Google Calendar events only to show them in your household's calendar, its morning digest and on its nestprep Home frame. We never use them for advertising, never sell them, never use them to train AI models, and nobody at NestPrep reads them unless you ask us to for support, or the law or security requires it.
 - If you add a calendar by pasting a **calendar link**, we keep that link on our servers only, because the link itself is the key to that calendar.
 - If you **share the household calendar as a feed**, we create a secret link and keep only a scrambled form (a hash) of it. Anybody with the link can read the household's events, so treat it like a key; you can reset it at any time.
 - A view of how the week's work was shared between the household's adults is worked out on your phone from what the app already shows you. It is not stored.
