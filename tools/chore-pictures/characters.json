@@ -1,0 +1,67 @@
+[
+ {
+  "id": "shark-open",
+  "subject": "a friendly goofy chubby cartoon shark seen exactly from the side, facing right, body tilted upward at 45 degrees as if leaping, mouth wide open showing a few rounded white teeth, big happy eye, light blue-grey body with a cream belly. Only the shark, no water, no splashes, no sparkles"
+ },
+ {
+  "id": "shark-shut",
+  "pose_of": "shark-open",
+  "subject": "the exact same shark as in the last reference image, same size, same position, same angle, same colours, but now with its mouth closed in a big satisfied smile and puffed full cheeks, eye happily closed. Only the shark, no water, no splashes, no sparkles"
+ },
+ {
+  "id": "shark-fin",
+  "subject": "a single light blue-grey shark dorsal fin, a simple curved triangle with a flat bottom edge, as if sticking up out of water. Only the fin, no water, no waves, no sparkles"
+ },
+ {
+  "id": "bird-up",
+  "subject": "a cheerful plump little round songbird flying, seen exactly from the side, facing right, coral pink body with a butter yellow belly, both wings raised high above its back, small feet dangling below, happy eye. Only the bird, no sparkles, no motion lines"
+ },
+ {
+  "id": "bird-down",
+  "pose_of": "bird-up",
+  "subject": "the exact same bird as in the last reference image, same size, same position, same colours, facing right, but now with both wings swept down below its body in a downstroke. Only the bird, no sparkles, no motion lines"
+ },
+ {
+  "id": "nest",
+  "subject": "an empty cosy round bird's nest woven from light brown twigs, seen slightly from above so the hollow is visible, with one small green leaf. Only the nest, no eggs, no bird, no branch, no sparkles"
+ },
+ {
+  "id": "rocket",
+  "subject": "a chunky toy space rocket pointing straight up, cream body with a coral pink nose cone and fins and one round sky blue window. Only the rocket, no flame, no smoke, no stars, no sparkles"
+ },
+ {
+  "id": "dino-foot",
+  "subject": "one huge chunky sage green dinosaur leg and foot seen from the side, stomping straight down: the thick leg comes down from the very top edge of the picture and is cut off by the top edge, ending at the bottom in a big flat foot with three rounded cream claws pointing right. Only the leg and foot, no ground, no dust, no sparkles"
+ },
+ {
+  "id": "ufo",
+  "subject": "a cute friendly flying saucer seen exactly from the side, lilac metal disc with a sky blue glass dome on top and a row of small round butter yellow lights along its rim. Only the saucer, no light beam, no alien, no stars, no sparkles"
+ },
+ {
+  "id": "chameleon-shut",
+  "subject": "a cute chubby sage green chameleon seen exactly from the side, facing left, standing on four little feet, tightly curled spiral tail, one big round happy eye, mouth closed in a smile. Only the chameleon, no branch, no leaves, no tongue, no sparkles"
+ },
+ {
+  "id": "chameleon-open",
+  "pose_of": "chameleon-shut",
+  "subject": "the exact same chameleon as in the last reference image, same size, same position, same colours, facing left, but now with its mouth wide open, showing the pink inside of the mouth. Only the chameleon, no tongue sticking out, no branch, no leaves, no sparkles"
+ },
+ {
+  "id": "chest-shut",
+  "subject": "a chunky wooden pirate treasure chest with butter yellow metal bands and a round lock, lid closed, seen from the front and slightly from above. Only the chest, no coins, no sparkles"
+ },
+ {
+  "id": "chest-open",
+  "pose_of": "chest-shut",
+  "subject": "the exact same treasure chest as in the last reference image, drawn from exactly the same viewpoint with the box in exactly the same place, same size and same colours, the lock still at the front in the same spot. The only change: the curved lid is now swung open and stands upright behind the box, and the inside is empty and glowing butter yellow. Only the chest, no coins, no gems, no sparkles"
+ },
+ {
+  "id": "dragon-idle",
+  "subject": "a cute chubby baby dragon seen exactly from the side, facing right, sitting upright, sage green body with a butter yellow belly, two small lilac wings, little rounded horns, big happy eye, mouth closed in a smile. Only the dragon, no fire, no smoke, no sparkles"
+ },
+ {
+  "id": "dragon-puff",
+  "pose_of": "dragon-idle",
+  "subject": "the exact same baby dragon as in the last reference image, same size, same position, same colours, facing right, but now leaning forward slightly with its mouth wide open and round as if blowing hard, eye squeezed shut. Only the dragon, no fire, no flame, no smoke, no sparkles"
+ }
+]

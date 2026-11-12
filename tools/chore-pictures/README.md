@@ -40,3 +40,21 @@ entries in `catalogue.json`.
 2. Generate it, process it, and review it on Oat and on Night.
 3. Run `build.py`, then ship an app build and a frame APK. An older build simply shows no picture for
    the new id.
+
+## Celebration characters
+
+The frame's chore celebrations (NestPrep-Home ADR-0020) use characters in the same style. `characters.json`
+lists them; an entry with `pose_of` is a second pose of that character.
+
+```sh
+python3 generate.py --catalogue characters.json --out work/characters/raw \
+  --refs anchors/brush-teeth.png anchors/make-bed.png anchors/water-plants.png --ids <base ids>
+python3 generate.py --catalogue characters.json --out work/characters/raw \
+  --refs anchors/brush-teeth.png anchors/make-bed.png work/characters/raw/<base id>.png --ids <pose id>
+.venv/bin/python characters.py
+```
+
+Generate a pose with its base picture as the **last** reference, so the two line up. `characters.py` cuts
+them out, crops both poses of a character with one shared box (a pose swap must not jump) and writes 512 px
+WebPs to `../NestPrep-Home/app/src/main/assets/celebration/`.
+

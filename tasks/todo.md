@@ -1,3 +1,22 @@
+# Chore celebrations: ten random scenes for the app and the frame
+
+Asked by Daniel 2026-11-12. All ten scenes are built on the frame and accepted by Daniel the same evening; the app port is not started.
+
+Approach: cut-out sprites (a few bitmaps per scene, moved by translate/rotate/scale only) between the existing colour flood and the existing star, words and confetti. No Lottie, Rive or video. Art from `tools/chore-pictures` in the sticker style; Twig is not used (design-system ADR-0012).
+
+- [x] Daniel: approve the approach and pick the scenes (all ten)
+- [ ] HTML canvas prototype of all scenes with placeholder art, 30 fps cap, for choreography sign-off
+- [ ] ADRs (proposed) before code: NestPrep-Home (scene stage, sprite assets, APK size) and design-system or todos (app side)
+- [x] Frame: `CelebrationAct` seam + Kaboom (no art), in the NestPrep-Home working tree, uncommitted. Frame Pro (RSFM156, 1920x1080): median 7-10 ms, 90th 10-13 ms over ~210 frames a run; 108 unit tests pass
+- [ ] Kaboom on an Android 6 frame (RSFM101 or WF-1009): not measured yet
+- [ ] Put a normal build back on the Frame Pro 241f09c5dbf42a2: it runs a preview build of the working tree at versionCode 12
+- [x] NestPrep-Home ADR-0020 (celebration acts) accepted by Daniel 2026-11-12. The remote-ADB session planned to use that number and will get the next one
+- [x] Art: `tools/chore-pictures/characters.json` + `characters.py`; 15 sprites at 512 px, 376 KB, reviewed on blue and lilac only
+- [x] Frame: all ten scenes, shuffle bag, next scene decoded ahead of the tap. Frame Pro: every scene median 7-10 ms, 90th 10-14 ms; 111 unit tests pass; APK 2.97 MB -> 3.35 MB
+- [ ] Not checked: portrait, an Android 6 frame, a guava or butter child colour, "All done" with each scene
+- [ ] App: the same scenes in `NestCelebration` (reduced motion keeps today's card)
+- [ ] Tests, devices in light and dark, Godfather overviews, frame release through the agent
+
 # People — household and family profiles on one screen (design-system ADR, proposed)
 
 Daniel 2026-11-06: family profiles and household should merge into the same screen, maybe split by tab.
