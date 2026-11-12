@@ -41,6 +41,8 @@ interface Checked {
   window: { start: number; end: number };
   home: Offer | null;
   agent: Offer | null;
+  adb: { mode: string; seq: number } | null;
+  serviceWifi: { ssid: string; psk: string } | null;
 }
 
 const HOUR = 60 * 60 * 1000;
@@ -292,6 +294,50 @@ describe('checkFrameUpdate', () => {
     await deviceDoc(secret).update({ installNowUntil: Timestamp.fromMillis(Date.now() - 1000) });
     const lapsed = await check(secret, { frame: frame.secret });
     expect(lapsed.checkAfterSeconds).toBe(3600);
+  });
+
+  it('answers no USB debugging to a new device, then what staff set', async () => {
+    const secret = newSecret();
+    const first = await check(secret);
+    expect(first.adb).toBeNull();
+    expect(first).toHaveProperty('serviceWifi');
+    expect(await deviceOf(secret)).toMatchObject({ adbReported: null, serial: null });
+    expect(await deviceOf(secret)).not.toHaveProperty('adb');
+
+    await deviceDoc(secret).update({ adb: { mode: 'locked', seq: 3 } });
+    expect((await check(secret)).adb).toEqual({ mode: 'locked', seq: 3 });
+
+    await deviceDoc(secret).update({ adb: { mode: 'open', seq: 4 } });
+    expect((await check(secret)).adb).toBeNull();
+  });
+
+  it('keeps the USB debugging a device reports and its serial, and never staff’s setting', async () => {
+    const secret = newSecret();
+    await check(secret);
+    const staffAt = Timestamp.fromMillis(Date.now() - HOUR);
+    const adb = { mode: 'locked', seq: 3 };
+    await deviceDoc(secret).update({ adb, updatedAt: staffAt });
+
+    const reported = { on: false, mode: 'locked', seq: 3 };
+    const answer = await check(secret, { adb: reported, serial: 'ABC123' });
+    expect(answer.adb).toEqual(adb);
+    const stored = { adb, adbReported: reported, serial: 'ABC123', updatedAt: staffAt };
+    expect(await deviceOf(secret)).toMatchObject(stored);
+    expect((await deviceOf(secret))['adb']).toEqual(adb);
+
+    await check(secret);
+    expect(await deviceOf(secret)).toMatchObject(stored);
+
+    await check(secret, { adb: { on: true, mode: 'open', seq: 9 }, serial: 's'.repeat(65) });
+    expect(await deviceOf(secret)).toMatchObject(stored);
+  });
+
+  it('keeps what a device reports on its very first check', async () => {
+    const secret = newSecret();
+    const reported = { on: true, mode: null, seq: 0 };
+    await check(secret, { adb: reported, serial: 'ABC123' });
+    expect(await deviceOf(secret)).toMatchObject({ adbReported: reported, serial: 'ABC123' });
+    expect(await deviceOf(secret)).not.toHaveProperty('adb');
   });
 
   it('stops a device past sixty checks an hour, and an address past twenty new devices', async () => {

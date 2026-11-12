@@ -28,6 +28,12 @@ export const FRAME_UPDATE_EVENT_KINDS = [
   'verifyFailed',
 ] as const;
 
+export const FRAME_ADB_MODES = ['on', 'trial', 'locked'] as const;
+export type FrameAdbMode = (typeof FRAME_ADB_MODES)[number];
+
+export const FRAME_ADB_SEQ_MAX = 2_147_483_647;
+export const FRAME_SERIAL_MAX = 64;
+
 export const FRAME_APK_CONTENT_TYPE = 'application/vnd.android.package-archive';
 
 export const FRAME_UPDATE_LIST_LIMIT = 20;
@@ -337,4 +343,20 @@ function newestCounted(counted: Record<string, string[]>): Record<string, string
     .sort(([a], [b]) => versionOf(b) - versionOf(a) || a.localeCompare(b))
     .slice(0, FRAME_COUNTED_LIMIT);
   return Object.fromEntries(newest);
+}
+
+export interface FrameServiceWifi {
+  readonly ssid: string;
+  readonly psk: string;
+}
+
+const WIFI_SSID_MAX_BYTES = 32;
+const WIFI_PSK_MIN = 8;
+const WIFI_PSK_MAX = 63;
+
+export function serviceWifiOf(ssid: string, psk: string): FrameServiceWifi | null {
+  if (ssid === '' || Buffer.byteLength(ssid, 'utf8') > WIFI_SSID_MAX_BYTES) return null;
+  if (psk.length < WIFI_PSK_MIN || psk.length > WIFI_PSK_MAX) return null;
+  if (ssid.includes('"') || psk.includes('"')) return null;
+  return { ssid, psk };
 }

@@ -3,8 +3,10 @@ import { z } from 'zod';
 
 import {
   type CountableRelease,
+  FRAME_ADB_MODES,
   FRAME_DEVICE_RINGS,
   FRAME_RELEASE_STAGES,
+  FRAME_SERIAL_MAX,
   FRAME_UPDATE_APPS,
   type FrameUpdateApp,
   releaseIdOf,
@@ -81,6 +83,19 @@ const storedEvent = z.looseObject({ id: z.string() });
 export const frameDeviceDocument = z.object({
   ring: z.enum(FRAME_DEVICE_RINGS).catch('standard'),
   installNowUntil: z.instanceof(Timestamp).nullable().catch(null),
+  adb: z
+    .object({ mode: z.enum(FRAME_ADB_MODES), seq: z.number().int().min(1) })
+    .nullable()
+    .catch(null),
+  adbReported: z
+    .object({
+      on: z.boolean(),
+      mode: z.enum(FRAME_ADB_MODES).nullable(),
+      seq: z.number().int().min(0),
+    })
+    .nullable()
+    .catch(null),
+  serial: z.string().min(1).max(FRAME_SERIAL_MAX).nullable().catch(null),
   events: z
     .array(z.unknown())
     .catch([])

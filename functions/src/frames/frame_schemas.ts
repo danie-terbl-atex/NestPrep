@@ -7,7 +7,10 @@ import { FRAME_LINK_MAX } from './frame_links';
 import { frameRecipeShareInput } from './frame_recipe';
 import { GROCERY_NAME_LIMIT, GROCERY_QUANTITY_LIMIT } from './frame_policy';
 import {
+  FRAME_ADB_MODES,
+  FRAME_ADB_SEQ_MAX,
   FRAME_DEVICE_STATES,
+  FRAME_SERIAL_MAX,
   FRAME_UPDATE_APPS,
   FRAME_UPDATE_EVENT_KINDS,
   FRAME_UPDATE_LIST_LIMIT,
@@ -247,6 +250,11 @@ const installedApps = z.object({ home: installedVersion.nullable(), agent: insta
 const badVersions = z.array(versionCode).max(FRAME_UPDATE_LIST_LIMIT);
 const deviceState = z.enum(FRAME_DEVICE_STATES);
 const LAST_TIMESTAMP_MS = 253_402_300_799_999;
+const reportedAdb = z.object({
+  on: z.boolean(),
+  mode: z.enum(FRAME_ADB_MODES).nullable(),
+  seq: z.number().int().min(0).max(FRAME_ADB_SEQ_MAX),
+});
 
 export const checkFrameUpdateInput = z.object({
   device: secret,
@@ -256,6 +264,8 @@ export const checkFrameUpdateInput = z.object({
   apps: installedApps,
   bad: z.object({ home: badVersions, agent: badVersions }),
   state: deviceState,
+  serial: z.string().trim().min(1).max(FRAME_SERIAL_MAX).nullish().transform(orNull).catch(null),
+  adb: reportedAdb.nullish().transform(orNull).catch(null),
 });
 export type CheckFrameUpdateInput = z.infer<typeof checkFrameUpdateInput>;
 

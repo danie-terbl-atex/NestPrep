@@ -27,6 +27,7 @@ import {
   offerFor,
   releaseTallies,
   resumeOffset,
+  serviceWifiOf,
   visibleStages,
   withFetched,
 } from '../../../src/frames/frame_update_policy';
@@ -375,6 +376,31 @@ describe('what a frame’s update agent sends', () => {
     expect(parseInput(checkFrameUpdateInput, { ...check, frame: 'short' }).frame).toBeNull();
   });
 
+  it('may say its serial and the USB debugging it applied', () => {
+    const adb = { on: false, mode: 'locked', seq: 3 };
+    const parsed = parseInput(checkFrameUpdateInput, { ...check, serial: ' ABC123 ', adb });
+    expect(parsed.serial).toBe('ABC123');
+    expect(parsed.adb).toEqual(adb);
+    expect(
+      parseInput(checkFrameUpdateInput, { ...check, adb: { on: true, mode: null, seq: 0 } }).adb,
+    ).toEqual({ on: true, mode: null, seq: 0 });
+    expect(parseInput(checkFrameUpdateInput, check)).toMatchObject({ serial: null, adb: null });
+  });
+
+  it.each([
+    ['a serial longer than sixty-four', { serial: 's'.repeat(65) }, 'serial'],
+    ['a blank serial', { serial: '   ' }, 'serial'],
+    ['a serial that is not text', { serial: 12345 }, 'serial'],
+    ['a mode it does not have', { adb: { on: true, mode: 'open', seq: 1 } }, 'adb'],
+    ['a seq below zero', { adb: { on: true, mode: 'on', seq: -1 } }, 'adb'],
+    ['a seq past an int', { adb: { on: true, mode: 'on', seq: 2_147_483_648 } }, 'adb'],
+    ['a seq that is not whole', { adb: { on: true, mode: 'on', seq: 1.5 } }, 'adb'],
+    ['USB debugging with no on', { adb: { mode: 'on', seq: 1 } }, 'adb'],
+    ['USB debugging that is not an object', { adb: 'on' }, 'adb'],
+  ] as const)('a check reads %s as not sent, and still goes through', (_, change, field) => {
+    expect(parseInput(checkFrameUpdateInput, { ...check, ...change })[field]).toBeNull();
+  });
+
   it('may have no home app installed, but always has itself', () => {
     expect(() =>
       parseInput(checkFrameUpdateInput, { ...check, apps: { ...check.apps, home: null } }),
@@ -594,6 +620,66 @@ describe('a device document as stored', () => {
     expect(device.fetched).toEqual({ 'home-4': at });
     expect(device.counted).toEqual({ 'home-4': ['installed'] });
     expect(frameDeviceDocument.parse({})).toMatchObject({ events: [], fetched: {}, counted: {} });
+  });
+
+  it('reads no USB debugging, report or serial where none is stored', () => {
+    expect(frameDeviceDocument.parse({})).toMatchObject({
+      adb: null,
+      adbReported: null,
+      serial: null,
+    });
+  });
+
+  it('reads what staff set, the agent reported and the serial', () => {
+    const stored = {
+      adb: { mode: 'trial', seq: 2 },
+      adbReported: { on: true, mode: null, seq: 0 },
+      serial: 'ABC123',
+    };
+    expect(frameDeviceDocument.parse(stored)).toMatchObject(stored);
+  });
+
+  it.each([
+    ['a mode staff do not have', { mode: 'open', seq: 1 }],
+    ['a seq of zero', { mode: 'on', seq: 0 }],
+    ['a seq that is not whole', { mode: 'on', seq: 1.5 }],
+    ['no seq', { mode: 'locked' }],
+    ['no mode', { seq: 4 }],
+    ['text', 'locked'],
+  ])('reads USB debugging with %s as none', (_, adb) => {
+    expect(frameDeviceDocument.parse({ adb }).adb).toBeNull();
+  });
+
+  it('reads a report or a serial it cannot make sense of as none', () => {
+    const device = frameDeviceDocument.parse({
+      adbReported: { on: 'yes', mode: 'on', seq: 1 },
+      serial: 's'.repeat(65),
+    });
+    expect(device).toMatchObject({ adbReported: null, serial: null });
+  });
+});
+
+describe('the service Wi-Fi a frame is told', () => {
+  it('is the configured network', () => {
+    expect(serviceWifiOf('NestPrep Service', 'eight-ch')).toEqual({
+      ssid: 'NestPrep Service',
+      psk: 'eight-ch',
+    });
+    expect(serviceWifiOf('s'.repeat(32), 'p'.repeat(63))).not.toBeNull();
+    expect(serviceWifiOf('be"nch', 'password1')).toBeNull();
+    expect(serviceWifiOf('bench', 'pass"word1')).toBeNull();
+  });
+
+  it.each([
+    ['no name', '', 'long-enough'],
+    ['no password', 'NestPrep Service', ''],
+    ['neither', '', ''],
+    ['a name longer than thirty-two bytes', 's'.repeat(33), 'long-enough'],
+    ['a name of thirty-two characters that is more bytes', 'é'.repeat(32), 'long-enough'],
+    ['a password shorter than eight', 'NestPrep Service', 'seven77'],
+    ['a password longer than sixty-three', 'NestPrep Service', 'p'.repeat(64)],
+  ])('is none with %s', (_, ssid, psk) => {
+    expect(serviceWifiOf(ssid, psk)).toBeNull();
   });
 });
 

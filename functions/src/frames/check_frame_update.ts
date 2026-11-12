@@ -11,6 +11,7 @@ import { secretHash } from './frame_documents';
 import { refuseFrame } from './frame_errors';
 import { FRAME_DEVICE_OPTIONS } from './frame_policy';
 import { type CheckFrameUpdateInput, checkFrameUpdateInput } from './frame_schemas';
+import { frameServiceWifi } from './frame_update_config';
 import {
   FRAME_RELEASES,
   type FrameDeviceDocument,
@@ -24,6 +25,8 @@ import {
   FRAME_NEW_DEVICE_PER_ADDRESS,
   FRAME_UPDATE_CHECK_PER_CREDENTIAL,
   FRAME_UPDATE_CHECK_PER_DEVICE,
+  type FrameAdbMode,
+  type FrameServiceWifi,
   type FrameUpdateApp,
   type InstallWindow,
   checkAfterSeconds,
@@ -39,11 +42,18 @@ export interface FrameUpdateOffer {
   readonly sha256: string;
 }
 
+export interface FrameAdbSetting {
+  readonly mode: FrameAdbMode;
+  readonly seq: number;
+}
+
 export interface CheckFrameUpdateResult {
   readonly checkAfterSeconds: number;
   readonly window: InstallWindow;
   readonly home: FrameUpdateOffer | null;
   readonly agent: FrameUpdateOffer | null;
+  readonly adb: FrameAdbSetting | null;
+  readonly serviceWifi: FrameServiceWifi | null;
 }
 
 export const checkFrameUpdate = onCall(
@@ -96,6 +106,8 @@ export const checkFrameUpdate = onCall(
       }),
       home: offered('home'),
       agent: offered('agent'),
+      adb: device.adb,
+      serviceWifi: device.adb === null ? null : frameServiceWifi(),
     };
   },
 );
@@ -116,6 +128,8 @@ async function recordCheck(
     frame: linked === null ? null : { householdId: linked.home.id, frameId: linked.frameId },
     frameName: linked?.frame.name ?? null,
     householdName: linked?.householdName ?? null,
+    ...(input.adb === null ? {} : { adbReported: input.adb }),
+    ...(input.serial === null ? {} : { serial: input.serial }),
   };
   const outcome = await store.runTransaction(async (transaction) => {
     const snapshot = await transaction.get(ref);
@@ -124,6 +138,8 @@ async function recordCheck(
       return { created: false, device: frameDeviceDocument.parse(snapshot.data()) };
     }
     transaction.create(ref, {
+      adbReported: null,
+      serial: null,
       ...seen,
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
