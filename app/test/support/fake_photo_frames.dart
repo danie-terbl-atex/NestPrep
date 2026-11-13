@@ -39,6 +39,8 @@ final class FakePhotoFrameRepository implements PhotoFrameRepository {
         })
       >[];
   final unlinked = <String>[];
+  AppFailure? failGroceriesWith;
+  final groceriesSet = <({String frameId, FrameGroceries? groceries})>[];
 
   void emit(List<PhotoFrame> frames) => _frames.add(frames);
   void failWith(Object error) => _frames.addError(error);
@@ -65,6 +67,17 @@ final class FakePhotoFrameRepository implements PhotoFrameRepository {
       screensaver: screensaver,
       groceries: groceries,
     ));
+  }
+
+  @override
+  Future<void> setGroceries({
+    required String householdId,
+    required String frameId,
+    required FrameGroceries? groceries,
+  }) async {
+    final failure = failGroceriesWith;
+    if (failure != null) throw failure;
+    groceriesSet.add((frameId: frameId, groceries: groceries));
   }
 
   @override

@@ -9,13 +9,17 @@ import 'recipe_tag.dart';
 /// week: what is good for us tonight, what to make on Sunday, for a braai, on
 /// a busy night, for pudding.
 enum RecipeShelfKind {
+  ours,
   healthyWeeknights,
   sundayClassics,
   braaiDay,
   quickWeeknights,
   somethingSweet;
 
+  int get fewestOnShelf => this == ours ? 1 : 2;
+
   bool matches(Recipe recipe) => switch (this) {
+    ours => recipe.isOwn,
     healthyWeeknights =>
       recipe.tags.contains(RecipeTag.healthy) &&
           recipe.courseIn(RecipeContext.dinner) == RecipeCourse.main,

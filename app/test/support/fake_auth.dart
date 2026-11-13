@@ -29,8 +29,13 @@ final class FakeAuthGateway implements AuthGateway {
   /// What the next session check answers.
   SessionCheck sessionCheck = SessionCheck.accepted;
 
+  /// Set to make revoking Apple fail the way a cancelled confirmation would.
+  AppFailure? failAppleRevokeWith;
+
   int signOutCount = 0;
+  int appleRevokes = 0;
   final googleSignIns = <int>[];
+  final appleSignIns = <int>[];
   final registrations = <String>[];
   final emailSignIns = <String>[];
   final passwordResetsSentTo = <String>[];
@@ -58,6 +63,25 @@ final class FakeAuthGateway implements AuthGateway {
         displayName: 'Sam Parent',
       ),
     );
+  }
+
+  @override
+  Future<AuthUser> signInWithApple() async {
+    appleSignIns.add(appleSignIns.length);
+    return _signIn(
+      const AuthUser(
+        uid: 'uid-apple',
+        email: 'relay@privaterelay.appleid.com',
+        displayName: 'Sam Parent',
+      ),
+    );
+  }
+
+  @override
+  Future<void> revokeAppleSignIn() async {
+    final failure = failAppleRevokeWith;
+    if (failure != null) throw failure;
+    appleRevokes += 1;
   }
 
   @override

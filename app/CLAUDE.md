@@ -170,21 +170,26 @@ so the on-screen copy cannot tell you the backend was unreachable.
   `-derivedDataPath ../build/ios SYMROOT=../build/ios`, or Crashlytics' upload phase cannot find
   its script). Change a shape in all three and the rules partial together. An Android emulator has
   no real movement: drive it with `adb emu geo fix <lng> <lat>`.
-- **Push notifications (notifications ADR-0001, ADR-0003).** `firebase_messaging` is used only in
+- **Push notifications (notifications ADR-0001, ADR-0003, ADR-0006).** `firebase_messaging` is used only in
   `features/notifications/data/firebase_push_gateway.dart`; FCM has no emulator, so a token is
   fetched from the real service on both targets (it is a way to reach the phone, not household
   data). The Android channels (`AndroidChannel` — digest, documents, handover, chores, photos, the other home) are created by `MainActivity.kt` over the method channel
   `io.nullstate.nestprep/notifications`, with the app's own words; the status-bar mark is
-  `res/drawable/ic_notification.xml`. The permission prompt appears only from a tap on *Turn on
-  notifications*, never at launch. **iOS push is wired but needs the APNs key**:
+  `res/drawable/ic_notification.xml`. The permission prompt appears the first time a person opens a household on a phone that has never
+  answered (`FirstOpenPushPrompt`, notifications ADR-0006), and after that only from *Turn on
+  notifications*. **iOS push works** (since 2026-11-07):
   `ios/Runner/Runner.entitlements` is on the Runner target, signed by the Peak Software team
-  (`UY92F2EKT8`); FCM delivers to iOS only once Peak's APNs auth key is uploaded to the Firebase
-  project for the iOS app `io.nullstate.nestprep.app`.
+  (`UY92F2EKT8`), and Peak's APNs auth key is uploaded to the Firebase project for the iOS app
+  `io.nullstate.nestprep.app`. A new team or bundle id needs its own key uploaded.
 - **iOS signs with Peak Software Pty Ltd (`UY92F2EKT8`) as `io.nullstate.nestprep.app`**
   (foundation ADR on the iOS bundle id). `io.nullstate.nestprep` is held by Daniel's free
   personal team and cannot move; Android keeps `io.nullstate.nestprep`. A new iPhone needs one
   `xcodebuild … -destination id=<udid> -allowProvisioningUpdates -allowProvisioningDeviceRegistration`
-  to register it before `flutter build ios` can sign for it.
+  to register it before `flutter build ios` can sign for it. The *NestPrep Maps (iOS)* key in
+  `nestprep-643b7` allows only listed bundle IDs (both of the above, since 2026-11-06); a bundle ID
+  it does not list gets a blank blue map with only the Google logo, and nothing in the logs.
+  Store builds use `~/development/flutter` (the `flutter` on PATH is too old):
+  `flutter build ipa --release --dart-define=NESTPREP_MAPS=on --build-number=<next>`.
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
   headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
   `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system

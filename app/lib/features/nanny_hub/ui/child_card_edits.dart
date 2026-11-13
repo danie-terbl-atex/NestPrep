@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/failure/app_failure.dart';
 import '../model/child_in_care.dart';
 import '../model/photo_change.dart';
 import '../state/nanny_hub_controller.dart';
@@ -53,34 +54,88 @@ class ChildCardEdits {
     );
   }
 
-  Future<void> changePhoto(BuildContext context) async {
-    PhotoChange change = const PhotoKept();
-    final saved = await showNestSheet<bool>(
-      context: context,
-      title: NannyCopy.photoOfChild,
-      builder: (sheetContext) => Column(
+  Future<void> changePhoto(BuildContext context) => showNestSheet<void>(
+    context: context,
+    title: NannyCopy.photoOfChild,
+    builder: (_) => _ChildPhotoSheet(controller: controller, child: child),
+  );
+}
+
+/// Stays open while the photo uploads, so the person sees it working, and
+/// keeps the picked photo when the upload is refused.
+class _ChildPhotoSheet extends StatefulWidget {
+  const _ChildPhotoSheet({required this.controller, required this.child});
+
+  final NannyHubController controller;
+  final ChildInCare child;
+
+  @override
+  State<_ChildPhotoSheet> createState() => _ChildPhotoSheetState();
+}
+
+class _ChildPhotoSheetState extends State<_ChildPhotoSheet> {
+  PhotoChange _change = const PhotoKept();
+  bool _isSaving = false;
+  AppFailure? _failure;
+
+  Future<void> _save() async {
+    final change = _change;
+    if (change is PhotoKept) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() {
+      _isSaving = true;
+      _failure = null;
+    });
+    await widget.controller.edit.changeCardPhoto(
+      widget.child.memberId,
+      change,
+      current: widget.child.card.photoId,
+    );
+    if (!mounted) return;
+    final failure = widget.controller.actionFailure;
+    if (failure == null) {
+      Navigator.of(context).pop();
+      return;
+    }
+    widget.controller.dismissActionFailure();
+    setState(() {
+      _isSaving = false;
+      _failure = failure;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final failure = _failure;
+    return SingleChildScrollView(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (failure != null) ...[
+            NestBanner(
+              message: AppCopy.failure(failure),
+              tone: NestBannerTone.danger,
+            ),
+            const SizedBox(height: NestSpace.lg),
+          ],
           PhotoField(
-            currentPhotoId: child.card.photoId,
-            label: child.member.displayName,
-            onPick: controller.pickPhoto,
-            onChanged: (picked) => change = picked,
+            currentPhotoId: widget.child.card.photoId,
+            label: widget.child.member.displayName,
+            onPick: widget.controller.pickPhoto,
+            onChanged: (picked) => _change = picked,
+            enabled: !_isSaving,
           ),
           const SizedBox(height: NestSpace.xl),
           NestButton(
-            label: NannyCopy.save,
-            onPressed: () => Navigator.of(sheetContext).pop(true),
+            label: _isSaving ? NannyCopy.uploadingPhoto : NannyCopy.save,
+            isLoading: _isSaving,
+            onPressed: _isSaving ? null : _save,
           ),
         ],
       ),
-    );
-    if (saved != true || change is PhotoKept) return;
-    await controller.edit.changeCardPhoto(
-      _childId,
-      change,
-      current: child.card.photoId,
     );
   }
 }

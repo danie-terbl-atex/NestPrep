@@ -5,9 +5,17 @@
  * A failure is a `ModelCallError`, with the same kinds and the same retry
  * policy as a text call.
  */
+import type { ModelPart } from './generative_model';
+
+export type ImageAspectRatio = '1:1' | '4:3' | '16:9';
+
 export interface ImageRequest {
   readonly prompt: string;
-  readonly aspectRatio: '4:3';
+  readonly aspectRatio: ImageAspectRatio;
+  /** Reference pictures, sent before the prompt. */
+  readonly parts?: readonly ModelPart[];
+  readonly system?: string;
+  readonly personGeneration?: 'ALLOW_NONE' | 'ALLOW_ADULT';
   /** Billing labels, as on a text request: which feature spent it. */
   readonly labels: Readonly<Record<string, string>>;
 }

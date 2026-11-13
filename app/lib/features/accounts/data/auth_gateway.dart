@@ -23,6 +23,19 @@ abstract interface class AuthGateway {
 
   Future<AuthUser> signInWithGoogle();
 
+  /// Sign in with Apple, offered on iOS only (accounts ADR-0014). Apple sends
+  /// the person's name on the first authorisation alone, and Firebase keeps it
+  /// as the display name.
+  Future<AuthUser> signInWithApple();
+
+  /// Revokes NestPrep's Apple token for the signed-in account, after Apple has
+  /// confirmed it is them, so that deleting the account also ends the Apple
+  /// link (App Store guideline 5.1.1(v), accounts ADR-0014). Does nothing for
+  /// an account without Apple. Throws
+  /// `AccountDataProblem.appleNotConfirmed` when the confirmation is
+  /// cancelled or the revoke fails.
+  Future<void> revokeAppleSignIn();
+
   /// Signing in with an address and a password. Throws
   /// `SignInProblem.wrongCredentials` for every wrong-credential shape,
   /// because enumeration protection makes them indistinguishable on purpose.

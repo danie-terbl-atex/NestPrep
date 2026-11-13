@@ -60,6 +60,16 @@ export const REWARD_ASKED_TEXT: PushText = {
   body: 'The stars are set aside until you hand it over.',
 };
 
+export const BUDDY_HATCHED_TEXT: PushText = {
+  title: 'Your buddy hatched!',
+  body: 'Come and see what hatched.',
+};
+
+export const PORTRAIT_READY_TEXT: PushText = {
+  title: 'Your Nest portrait is ready',
+  body: 'It is in the frame’s photos too.',
+};
+
 export const TEST_TEXT: PushText = {
   title: 'Notifications are on',
   body: 'This is how NestPrep will tap you on the shoulder.',

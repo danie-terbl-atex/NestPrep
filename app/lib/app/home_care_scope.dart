@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 
 import '../features/home_care/data/cleaning_job_repository.dart';
 import '../features/home_care/data/helper_profile_repository.dart';
+import '../features/home_care/data/helper_shift_repository.dart';
 import '../features/home_care/data/home_care_library_repository.dart';
 import '../features/home_care/data/read_aloud.dart';
 import '../features/home_care/data/translation_repository.dart';
 import '../features/home_care/state/helper_language_controller.dart';
+import '../features/home_care/state/helper_shifts_controller.dart';
 import '../features/home_care/state/home_care_controller.dart';
 import '../features/home_care/state/read_aloud_controller.dart';
 import '../features/household/model/household_view.dart';
@@ -48,6 +50,18 @@ Widget homeCareScope(BuildContext context, GoRouterState state, Widget child) {
             home.access,
             isOn: flags.isOn(FeatureFlag.homeCareHelperLanguage),
           ),
+      ),
+      ChangeNotifierProxyProvider2<
+        HomeCareController,
+        FeatureFlagsController,
+        HelperShiftsController
+      >(
+        create: (context) => HelperShiftsController(
+          repository: context.read<HelperShiftRepository>(),
+          householdId: householdId,
+        ),
+        update: (context, home, flags, controller) => controller!
+          ..follow(home.access, isOn: flags.isOn(FeatureFlag.homeCareShifts)),
       ),
       ChangeNotifierProxyProvider<
         HelperLanguageController,

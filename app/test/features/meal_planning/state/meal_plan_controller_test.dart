@@ -5,6 +5,7 @@ import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meal_week.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
+import 'package:nestprep/features/recipes/model/recipe_link.dart';
 import 'package:nestprep/features/recipes/model/recipe_meal_lines.dart';
 import 'package:nestprep/features/recipes/model/recipe_scale.dart';
 import 'package:nestprep/shared/async/async_state.dart';
@@ -132,6 +133,18 @@ void main() {
 
     expect(repository.addedMeals.single, 'Spaghetti');
     expect(repository.writtenSlots.single.slots.values.single, 'meal-0');
+  });
+
+  test('a picked own recipe links through the household, never the '
+      'catalogue', () async {
+    await emit();
+    final own = RecipeFixtures.own();
+    await controller.setSlotFromRecipe('2_dinner', own, familySize: 3);
+
+    expect(repository.recipeMeals.single.link, HouseholdRecipeLink(own.id));
+    expect(repository.writtenSlots.single.slots, {
+      '2_dinner': Meal.idForRecipe(own.id),
+    });
   });
 
   test('a picked recipe becomes its household meal, scaled to the family, '

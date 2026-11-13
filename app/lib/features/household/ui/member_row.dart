@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/member.dart';
 
 /// One profile in the household list. The colour is never the only signal that
@@ -17,6 +18,7 @@ class MemberRow extends StatelessWidget {
     required this.onRemove,
     this.accessSummary,
     this.onAccess,
+    this.onChangePicture,
     this.isRemoving = false,
     this.actionsEnabled = true,
     super.key,
@@ -41,6 +43,11 @@ class MemberRow extends StatelessWidget {
   /// Opens the access editor. Null for family, and for anybody but an admin.
   final VoidCallback? onAccess;
 
+  /// For somebody who cannot manage the household: their own picture, or
+  /// anybody's for family (avatars ADR-0001). Null when it is not theirs to
+  /// change.
+  final VoidCallback? onChangePicture;
+
   /// This profile's removal is on its way: the row says so and offers
   /// nothing until it is gone or refused.
   final bool isRemoving;
@@ -59,10 +66,7 @@ class MemberRow extends StatelessWidget {
       return Semantics(
         liveRegion: true,
         child: NestListRow(
-          leading: Opacity(
-            opacity: 0.5,
-            child: NestAvatar(name: member.displayName, color: member.color),
-          ),
+          leading: Opacity(opacity: 0.5, child: MemberAvatar(member: member)),
           title: member.displayName,
           titleStyle: nest.text.bodyStrong.copyWith(
             color: nest.colors.inkTertiary,
@@ -78,11 +82,19 @@ class MemberRow extends StatelessWidget {
         ),
       );
     }
+    final changePicture = canManage ? null : onChangePicture;
     return NestListRow(
-      leading: NestAvatar(name: member.displayName, color: member.color),
+      leading: changePicture == null
+          ? MemberAvatar(member: member)
+          : NestEditablePicture(
+              label: AvatarCopy.changePictureOf(member.displayName),
+              pipSize: NestSize.iconMedium,
+              onTap: changePicture,
+              child: MemberAvatar(member: member),
+            ),
       title: member.displayName,
       subtitle: _subtitle,
-      onTap: canManage && actionsEnabled ? onEdit : null,
+      onTap: canManage ? (actionsEnabled ? onEdit : null) : changePicture,
       trailing: !canManage
           ? null
           : Row(

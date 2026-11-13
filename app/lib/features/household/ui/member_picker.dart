@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/member.dart';
 
 /// Chooses who something is for. No selection means *anyone*, which is a real
@@ -98,11 +99,7 @@ class _MemberChip extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                NestAvatar(
-                  name: member.displayName,
-                  color: member.color,
-                  size: NestSize.iconMedium,
-                ),
+                MemberAvatar(member: member, size: NestSize.iconMedium),
                 const SizedBox(width: NestSpace.sm),
                 Text(
                   member.displayName,

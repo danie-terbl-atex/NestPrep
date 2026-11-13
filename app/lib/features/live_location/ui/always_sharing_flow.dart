@@ -75,7 +75,9 @@ class AlwaysSharingDisclosure extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final point in LocationCopy.disclosurePoints)
+          for (final point in LocationCopy.disclosurePoints(
+            motionSensors: Theme.of(context).platform == TargetPlatform.iOS,
+          ))
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.md),
               child: Row(

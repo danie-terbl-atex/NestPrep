@@ -18,11 +18,12 @@ describe('what a frame may tick', () => {
     expect(inTickReach('2026-10-26', '2026-10-25')).toBe(false);
   });
 
-  it('a task or a routine, with a real date and nothing else', () => {
+  it('a task, a routine or a job, with a real date and nothing else', () => {
     const body = { secret: SECRET, kind: 'task', id: 'dishes', date: '2026-10-25', done: true };
     expect(parseInput(tickFrameItemInput, body)).toEqual(body);
+    expect(parseInput(tickFrameItemInput, { ...body, kind: 'job' }).kind).toBe('job');
     for (const bad of [
-      { ...body, kind: 'job' },
+      { ...body, kind: 'event' },
       { ...body, date: '2026-13-01' },
       { ...body, date: '25 Oct' },
       { ...body, id: '' },

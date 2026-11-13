@@ -57,7 +57,7 @@ abstract interface class CleaningJobRepository {
   Future<void> handIn({
     required String householdId,
     required CleaningJob job,
-    required JobPhoto afterPhoto,
+    required JobPhoto? afterPhoto,
     required String by,
   });
 

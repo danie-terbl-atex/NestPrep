@@ -18,6 +18,11 @@ abstract final class SubscriptionCopy {
   static String givenUntil(String date) => 'Free Premium until $date.';
   static const free = 'Free';
 
+  // ---- how a Premium household is told (subscriptions ADR-0007) ----
+  static const membershipTitle = 'nestprep Premium';
+  static String membershipBody(String household) =>
+      'Every part of nestprep, for everyone in $household.';
+
   // ---- the paywall ----
   static String headline(PremiumFeature feature) => switch (feature) {
     PremiumFeature.additionalChild => 'Room for every child',
@@ -28,6 +33,9 @@ abstract final class SubscriptionCopy {
     PremiumFeature.recipeShopping => 'From recipe to trolley',
     PremiumFeature.familyLocation => 'Always know everyone got there',
     PremiumFeature.listScan => 'Snap the list, skip the typing',
+    PremiumFeature.ownRecipes => 'Your family’s recipes, all in one place',
+    PremiumFeature.avatarCreate => 'A new buddy whenever they dream one up',
+    PremiumFeature.avatarPortrait => 'Your whole nest in one picture',
     PremiumFeature.aiPlanning || PremiumFeature.direct => 'NestPrep Premium',
   };
 
@@ -53,6 +61,15 @@ abstract final class SubscriptionCopy {
     PremiumFeature.listScan =>
       'Take a photo of any shopping list and every item lands on your grocery '
           'list — or straight onto your cart at your shop.',
+    PremiumFeature.ownRecipes =>
+      'Type them in, paste a link or snap a photo. They plan, shop and cook '
+          'like every other recipe, for your household only.',
+    PremiumFeature.avatarCreate =>
+      'Turn drawings, pets and made-up buddies into pictures 12 times a '
+          'month, each kept beside the drawing it came from.',
+    PremiumFeature.avatarPortrait =>
+      'Everyone’s characters together in one picture for the season, '
+          'straight onto your frame’s slideshow.',
     PremiumFeature.familyLocation =>
       'Share all day without opening the app, see where everybody has been '
           'for 30 days, and hear when they reach school or home.',

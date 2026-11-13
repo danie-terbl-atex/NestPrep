@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../lunch_box/model/lunch_plan.dart';
 import '../../lunch_box/model/lunch_slot.dart';
 import '../model/shop_week.dart';
@@ -38,7 +39,7 @@ class PlanWeekChildCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              NestAvatar(name: member.displayName, color: member.color),
+              MemberAvatar(member: member),
               const SizedBox(width: NestSpace.md),
               Expanded(
                 child: Column(

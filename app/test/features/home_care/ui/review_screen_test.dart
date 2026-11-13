@@ -39,6 +39,18 @@ void main() {
     expect(find.bySemanticsLabel(HomeCareCopy.afterPhoto), findsOneWidget);
   });
 
+  testWidgets('says so when it was handed in without a photo', (tester) async {
+    HomeCareHarness.makeRoom(tester);
+    await harness.pump(tester, location: review);
+    await harness.emit(
+      tester,
+      jobList: [HomeCareFixtures.handedIn().copyWith(afterPhoto: null)],
+    );
+    expect(find.text(HomeCareCopy.noAfterPhoto), findsOneWidget);
+    expect(find.bySemanticsLabel(HomeCareCopy.afterPhoto), findsNothing);
+    expect(find.text(HomeCareCopy.approve), findsOneWidget);
+  });
+
   testWidgets('approving writes the approval and goes back', (tester) async {
     await open(tester);
     await tester.tap(find.text(HomeCareCopy.approve));

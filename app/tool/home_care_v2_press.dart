@@ -1,7 +1,9 @@
 import 'package:nestprep/features/home_care/data/translation_repository.dart';
 import 'package:nestprep/features/home_care/model/language/helper_language.dart';
 import 'package:nestprep/features/home_care/model/language/helper_profile.dart';
+import 'package:nestprep/features/home_care/model/shift/helper_shift.dart';
 import 'package:nestprep/features/home_care/state/helper_language_controller.dart';
+import 'package:nestprep/features/home_care/state/helper_shifts_controller.dart';
 import 'package:nestprep/features/home_care/state/home_care_controller.dart';
 import 'package:nestprep/features/home_care/state/read_aloud_controller.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
@@ -51,6 +53,7 @@ final class PictureTranslations implements TranslationRepository {
 final class HomeCareV2Press {
   HomeCareV2Press(HomeCareController home) {
     languages.follow(home.access, isOn: true);
+    shifts.follow(home.access, isOn: true);
     _viewer = home.access.viewerMemberId ?? Fixtures.samMemberId;
   }
 
@@ -63,13 +66,22 @@ final class HomeCareV2Press {
     householdId: Fixtures.householdId,
   );
   final reader = ReadAloudController(readAloud: FakeReadAloud());
+  final _shiftRepository = FakeHelperShiftRepository();
+  late final shifts = HelperShiftsController(
+    repository: _shiftRepository,
+    householdId: Fixtures.householdId,
+  );
   late final String _viewer;
 
   List<SingleChildWidget> get providers => [
     ChangeNotifierProvider<FeatureFlagsController>.value(value: _flags),
     ChangeNotifierProvider<HelperLanguageController>.value(value: languages),
     ChangeNotifierProvider<ReadAloudController>.value(value: reader),
+    ChangeNotifierProvider<HelperShiftsController>.value(value: shifts),
   ];
+
+  /// The shifts so far (home-care ADR-0007).
+  void clock(List<HelperShift> clocked) => _shiftRepository.emitShifts(clocked);
 
   /// The viewer reads in [language]; Thandi, when she is not the viewer,
   /// in isiZulu.
@@ -90,9 +102,11 @@ final class HomeCareV2Press {
 
   Future<void> close() async {
     reader.dispose();
+    shifts.dispose();
     languages.dispose();
     _flags.dispose();
     await _profiles.close();
+    await _shiftRepository.close();
     await _flagSource.close();
   }
 }

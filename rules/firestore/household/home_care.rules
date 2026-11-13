@@ -128,8 +128,10 @@ match /homeCareJobs/{jobId} {
                 && homeCareLogsTheChange(householdId, jobId, before, after)));
   }
 
-  // Handing in: every step ticked and an after photo named for this
-  // revision, so a second hand-in never reuses the first one's object.
+  // Handing in: every step ticked. The after photo is optional (home-care
+  // ADR-0008); one that is given is named for this revision, so a second
+  // hand-in never reuses the first one's object, and one without a photo
+  // clears the field rather than keep the last hand-in's.
   function homeCareIsHandIn(householdId, jobId, before, after, changed) {
     return changed.hasOnly(
              ['doneStepIds', 'status', 'revision', 'afterPhoto', 'updatedAt'])
@@ -137,7 +139,8 @@ match /homeCareJobs/{jobId} {
       && after.status == 'submitted'
       && after.doneStepIds is list
       && after.doneStepIds.size() == before.steps.size()
-      && homeCareIsPhoto(after.afterPhoto, 'after-' + string(after.revision))
+      && (after.afterPhoto == null
+            || homeCareIsPhoto(after.afterPhoto, 'after-' + string(after.revision)))
       && homeCareLogsTheChange(householdId, jobId, before, after);
   }
 

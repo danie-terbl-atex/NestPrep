@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../shared/log/app_log.dart';
+import '../../../shared/log/best_effort.dart';
 import '../../../shared/photos/kept_photo_files.dart';
 import 'recipe_photo_source.dart';
 
@@ -27,6 +28,18 @@ final class StorageRecipePhotoSource implements RecipePhotoSource {
         if (bytes == null) _requests.removeWhere((asked, _) => asked == path);
         return bytes;
       });
+
+  @override
+  Future<void> forget(Iterable<String> paths) async {
+    for (final path in paths) {
+      _requests.removeWhere((asked, _) => asked == path);
+      await bestEffort(
+        'forget recipe photo',
+        code: 'forget-photo',
+        run: () => _kept.forget(path),
+      );
+    }
+  }
 
   Future<Uint8List?> _fetch(String path) async {
     try {

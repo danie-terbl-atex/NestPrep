@@ -9,7 +9,7 @@
 2. Tap the language chip → **Choose a language**: Afrikaans, isiZulu, isiXhosa, Sesotho, Setswana, Sepedi, Xitsonga, chiShona, Chichewa. The screen says "Machine translated", with **Show English too**.
 3. **Read aloud** reads the job in her language.
 4. **Start the job** → read the safety panel → **I have read it — show the steps**.
-5. Tick each step → take the after photo ("Show it is clean") → **Hand it in**.
+5. Tick each step → add an after photo if you can ("Show it is clean"; it is optional) → **Hand it in**.
 6. Switch to the parent's phone: **Review the job** → **Approve**.
 
 ## Not live yet / check first

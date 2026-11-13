@@ -1,0 +1,487 @@
+{
+  "nestlings": [
+    {
+      "name": "pip",
+      "label": "Pip",
+      "creature": "songbird",
+      "hatchling": "a tiny newly hatched round songbird chick, coral pink fluff with a butter yellow tummy, big round happy eyes, a tiny orange beak, two little wing stubs and a small tuft of head feathers",
+      "egg": "coral pink spots",
+      "young": "a little taller, proper small wings folded at its sides, a bigger tuft of head feathers",
+      "grown": "sleek coral pink feathers, a butter yellow chest, a jaunty curl of head feathers and a proud puffed chest",
+      "faces": [
+        {"x": 0.523, "y": 0.367, "w": 0.255},
+        {"x": 0.547, "y": 0.309, "w": 0.334},
+        {"x": 0.548, "y": 0.312, "w": 0.337},
+        {"x": 0.428, "y": 0.369, "w": 0.372}
+      ]
+    },
+    {
+      "name": "olive",
+      "label": "Olive",
+      "creature": "owl",
+      "hatchling": "a tiny newly hatched baby owl, round sage green fluff with a cream heart-shaped face disc, huge round happy eyes, a tiny butter yellow beak and two small ear tufts",
+      "egg": "sage green leaf-shaped spots",
+      "young": "taller, small wings folded at its sides, longer ear tufts",
+      "grown": "a wise friendly owl with big tall ear tufts, a cream face disc and little chevron chest feathers",
+      "faces": [
+        {"x": 0.481, "y": 0.342, "w": 0.34},
+        {"x": 0.502, "y": 0.334, "w": 0.388},
+        {"x": 0.498, "y": 0.355, "w": 0.375},
+        {"x": 0.5, "y": 0.35, "w": 0.363}
+      ]
+    },
+    {
+      "name": "sunny",
+      "label": "Sunny",
+      "creature": "duck",
+      "hatchling": "a tiny newly hatched duckling, round butter yellow fluff, round happy eyes, a little coral orange bill and two wing stubs",
+      "egg": "butter yellow wavy stripes",
+      "young": "taller, small wings folded at its sides, a cheeky curl of feather on its head",
+      "grown": "a happy grown duck, butter yellow with a lilac wing patch and a cheeky curl of feather on its head",
+      "faces": [
+        {"x": 0.497, "y": 0.375, "w": 0.296},
+        {"x": 0.501, "y": 0.323, "w": 0.366},
+        {"x": 0.5, "y": 0.405, "w": 0.445},
+        {"x": 0.489, "y": 0.325, "w": 0.35}
+      ]
+    },
+    {
+      "name": "bramble",
+      "label": "Bramble",
+      "creature": "hedgehog",
+      "hatchling": "a tiny newly born baby hedgehog, round lilac body with soft short lilac spines, a cream face and tummy, round happy eyes and a little dark plum button nose",
+      "egg": "lilac dots",
+      "young": "bigger, its spines a little longer and fluffier",
+      "grown": "a happy grown hedgehog with a full crown of lilac spines framing its cream face",
+      "faces": [
+        {"x": 0.5, "y": 0.395, "w": 0.305},
+        {"x": 0.501, "y": 0.395, "w": 0.302},
+        {"x": 0.498, "y": 0.4, "w": 0.293},
+        {"x": 0.499, "y": 0.391, "w": 0.29}
+      ]
+    },
+    {
+      "name": "pebble",
+      "label": "Pebble",
+      "creature": "African penguin",
+      "hatchling": "a tiny newly hatched African penguin chick, round soft grey-brown fluff with a cream tummy and face, round happy eyes, a little dark beak and two flipper stubs",
+      "egg": "soft grey speckles",
+      "young": "taller, starting to get its black and white feathers, the cream face showing a little coral pink patch above each eye",
+      "grown": "a smart grown African penguin, black head and back, a cream face and chest, a black band across the chest, a little coral pink patch above each eye",
+      "faces": [
+        {"x": 0.497, "y": 0.307, "w": 0.296},
+        {"x": 0.498, "y": 0.273, "w": 0.388},
+        {"x": 0.494, "y": 0.382, "w": 0.449},
+        {"x": 0.498, "y": 0.277, "w": 0.42}
+      ]
+    },
+    {
+      "name": "rosie",
+      "label": "Rosie",
+      "creature": "flamingo",
+      "hatchling": "a tiny newly hatched flamingo chick, round pale pink fluff, round happy eyes and a little curved cream beak with a dark tip",
+      "egg": "coral pink swirls",
+      "young": "taller with a gently curved neck, its fluff turning brighter coral pink",
+      "grown": "an elegant grown flamingo in bright coral pink with a gracefully curved neck and a cream and dark plum curved beak",
+      "faces": [
+        {"x": 0.519, "y": 0.45, "w": 0.277},
+        {"x": 0.57, "y": 0.336, "w": 0.375},
+        {"x": 0.591, "y": 0.308, "w": 0.35},
+        {"x": 0.574, "y": 0.333, "w": 0.379}
+      ]
+    },
+    {
+      "name": "zuri",
+      "label": "Zuri",
+      "creature": "hoopoe",
+      "hatchling": "a tiny newly hatched hoopoe chick, round warm cinnamon orange fluff, a little fan-shaped crest with dark tips, round happy eyes and a short slim beak",
+      "egg": "cinnamon orange freckles",
+      "young": "taller, its fan crest bigger, little black and cream striped wings folded at its sides",
+      "grown": "a grown hoopoe with a big proud cinnamon orange fan crest with black and cream tips, a long slim curved beak, black and cream striped wings folded at its sides",
+      "faces": [
+        {"x": 0.499, "y": 0.439, "w": 0.27},
+        {"x": 0.501, "y": 0.439, "w": 0.27},
+        {"x": 0.498, "y": 0.432, "w": 0.261},
+        {"x": 0.494, "y": 0.439, "w": 0.258}
+      ]
+    },
+    {
+      "name": "jewel",
+      "label": "Jewel",
+      "creature": "sunbird",
+      "hatchling": "a tiny newly hatched sunbird chick, round emerald sage green fluff with a coral pink chest, round happy eyes and a slim slightly curved beak",
+      "egg": "emerald green speckles",
+      "young": "taller and sleeker, small wings folded at its sides, a brighter coral chest",
+      "grown": "a shiny grown sunbird with glossy emerald green feathers, a bright coral red chest band with a butter yellow edge, a long slim curved beak",
+      "faces": [
+        {"x": 0.503, "y": 0.323, "w": 0.264},
+        {"x": 0.561, "y": 0.28, "w": 0.223},
+        {"x": 0.536, "y": 0.282, "w": 0.216},
+        {"x": 0.591, "y": 0.235, "w": 0.286}
+      ]
+    },
+    {
+      "name": "mango",
+      "label": "Mango",
+      "creature": "hornbill",
+      "hatchling": "a tiny newly hatched hornbill chick, round cream and soft grey fluff, round happy eyes with long lashes and a big curved butter yellow beak",
+      "egg": "butter yellow and grey speckles",
+      "young": "taller, cream and black spotted wings folded at its sides, a bigger butter yellow beak",
+      "grown": "a cheerful grown yellow-billed hornbill with a cream face and chest, black and cream spotted wings folded at its sides, long eyelashes and a big curved butter yellow beak",
+      "faces": [
+        {"x": 0.503, "y": 0.36, "w": 0.391},
+        {"x": 0.466, "y": 0.352, "w": 0.426},
+        {"x": 0.48, "y": 0.359, "w": 0.439},
+        {"x": 0.438, "y": 0.364, "w": 0.417}
+      ]
+    },
+    {
+      "name": "ember",
+      "label": "Ember",
+      "creature": "little dragon",
+      "hatchling": "a tiny newly hatched baby dragon, round lilac body with a butter yellow tummy, round happy eyes, two tiny soft horns, small coral pink back spikes and two tiny bat-like wing stubs",
+      "egg": "lilac scales",
+      "young": "bigger, with small coral pink wings tucked behind it, slightly longer horns",
+      "grown": "a friendly grown little dragon, lilac with a butter yellow tummy, two soft horns, coral pink back spikes and coral pink wings folded behind its shoulders, a big friendly smile",
+      "faces": [
+        {"x": 0.502, "y": 0.4, "w": 0.248},
+        {"x": 0.447, "y": 0.334, "w": 0.283},
+        {"x": 0.394, "y": 0.411, "w": 0.372},
+        {"x": 0.445, "y": 0.366, "w": 0.293}
+      ]
+    },
+    {
+      "name": "biscuit",
+      "label": "Biscuit",
+      "creature": "bat-eared fox",
+      "hatchling": "a tiny newborn bat-eared fox kit, round sandy tan fur with a cream face, two very big round ears, round happy eyes and a little dark nose",
+      "egg": "sandy tan spots",
+      "young": "bigger, its huge ears standing taller, a little dark mask around the eyes",
+      "grown": "a grown bat-eared fox with enormous round ears, sandy tan fur, a cream chest and a little dark mask around its happy eyes",
+      "faces": [
+        {"x": 0.5, "y": 0.448, "w": 0.286},
+        {"x": 0.5, "y": 0.459, "w": 0.274},
+        {"x": 0.5, "y": 0.523, "w": 0.318},
+        {"x": 0.495, "y": 0.466, "w": 0.286}
+      ]
+    },
+    {
+      "name": "clover",
+      "label": "Clover",
+      "creature": "bunny",
+      "hatchling": "a tiny newborn bunny, round cream fur with lilac-tipped ears, round happy eyes, a little coral pink nose and pink inner ears",
+      "egg": "lilac and sage pastel stripes",
+      "young": "bigger, longer ears standing up, one ear a little floppy",
+      "grown": "a grown bunny with tall lilac-tipped ears, cream fur, a fluffy cream chest and a little coral pink nose",
+      "faces": [
+        {"x": 0.5, "y": 0.418, "w": 0.331},
+        {"x": 0.5, "y": 0.418, "w": 0.331},
+        {"x": 0.475, "y": 0.65, "w": 0.388},
+        {"x": 0.5, "y": 0.532, "w": 0.318}
+      ]
+    },
+    {
+      "name": "scout",
+      "label": "Scout",
+      "creature": "meerkat",
+      "hatchling": "a tiny newborn meerkat pup, round sandy fur, dark patches around big round happy eyes, a little dark nose and small rounded ears",
+      "egg": "sandy brown stripes",
+      "young": "taller and sitting up straight on lookout, little paws held together at its chest",
+      "grown": "a grown meerkat standing tall on lookout, sandy fur with faint stripes, dark eye patches, little paws held at its chest",
+      "faces": [
+        {"x": 0.489, "y": 0.315, "w": 0.35},
+        {"x": 0.493, "y": 0.281, "w": 0.35},
+        {"x": 0.506, "y": 0.277, "w": 0.366},
+        {"x": 0.506, "y": 0.284, "w": 0.353}
+      ]
+    },
+    {
+      "name": "nugget",
+      "label": "Nugget",
+      "creature": "pangolin",
+      "hatchling": "a tiny newborn pangolin, round body covered in soft butter yellow and caramel scales like a little pinecone, a cream face, round happy eyes and a small pointed nose",
+      "egg": "caramel scale shapes",
+      "young": "bigger, its scales more defined, a scaly tail curling around in front of it",
+      "grown": "a grown pangolin with a body of neat caramel and butter yellow overlapping scales, a cream face and a long scaly tail curled around in front of it",
+      "faces": [
+        {"x": 0.497, "y": 0.384, "w": 0.328},
+        {"x": 0.455, "y": 0.32, "w": 0.363},
+        {"x": 0.485, "y": 0.32, "w": 0.36},
+        {"x": 0.492, "y": 0.32, "w": 0.36}
+      ]
+    },
+    {
+      "name": "pudding",
+      "label": "Pudding",
+      "creature": "dassie",
+      "hatchling": "a tiny newborn dassie, a very round chubby rock hyrax with soft warm brown fur, a cream tummy, small round ears, round happy eyes and a little dark nose",
+      "egg": "warm brown pebble spots",
+      "young": "rounder and chubbier, sitting up happily",
+      "grown": "a very round contented grown dassie with soft warm brown fur, a cream chest, tiny round ears and rosy cheeks",
+      "faces": [
+        {"x": 0.498, "y": 0.391, "w": 0.344},
+        {"x": 0.498, "y": 0.25, "w": 0.375},
+        {"x": 0.5, "y": 0.261, "w": 0.382},
+        {"x": 0.492, "y": 0.334, "w": 0.423}
+      ]
+    },
+    {
+      "name": "toffee",
+      "label": "Toffee",
+      "creature": "tortoise",
+      "hatchling": "a tiny newly hatched leopard tortoise, a domed butter yellow shell with caramel and dark plum patches, a sage green head with round happy eyes and a little smile",
+      "egg": "caramel and butter yellow patches",
+      "young": "bigger, a higher domed patterned shell, peeking its head out proudly",
+      "grown": "a grown leopard tortoise with a tall domed butter yellow shell with caramel patches, a friendly sage green face and a wise little smile",
+      "faces": [
+        {"x": 0.742, "y": 0.384, "w": 0.277},
+        {"x": 0.743, "y": 0.355, "w": 0.286},
+        {"x": 0.5, "y": 0.414, "w": 0.509},
+        {"x": 0.756, "y": 0.35, "w": 0.29}
+      ]
+    },
+    {
+      "name": "nova",
+      "label": "Nova",
+      "creature": "bush baby",
+      "hatchling": "a tiny newborn bush baby, round soft lilac grey fur, enormous round shiny eyes, big round thin ears and a little pink nose",
+      "egg": "little lilac stars",
+      "young": "bigger, holding up two little paws, its huge ears and eyes still enormous",
+      "grown": "a grown bush baby with soft lilac grey fur, enormous round shiny eyes, big round ears and a long fluffy tail curled over its shoulder",
+      "faces": [
+        {"x": 0.501, "y": 0.409, "w": 0.398},
+        {"x": 0.492, "y": 0.402, "w": 0.404},
+        {"x": 0.497, "y": 0.402, "w": 0.391},
+        {"x": 0.491, "y": 0.414, "w": 0.344}
+      ]
+    },
+    {
+      "name": "splash",
+      "label": "Splash",
+      "creature": "seal",
+      "hatchling": "a tiny newborn Cape fur seal pup, round sleek soft grey-brown body, big round shiny happy eyes, whiskers and two little flippers",
+      "egg": "pale blue water ripples",
+      "young": "bigger and sleeker, its head held up, little flippers at its sides",
+      "grown": "a grown Cape fur seal, sleek warm grey-brown with a cream chin, small ears, long whiskers and a big friendly grin",
+      "faces": [
+        {"x": 0.492, "y": 0.27, "w": 0.391},
+        {"x": 0.497, "y": 0.266, "w": 0.391},
+        {"x": 0.5, "y": 0.266, "w": 0.382},
+        {"x": 0.498, "y": 0.264, "w": 0.439}
+      ]
+    },
+    {
+      "name": "cotton",
+      "label": "Cotton",
+      "creature": "lamb",
+      "hatchling": "a tiny newborn lamb, round cloud-like cream wool, a soft butter cream face, floppy ears, round happy eyes and a little coral pink nose",
+      "egg": "fluffy cream cloud shapes",
+      "young": "bigger and fluffier, a woolly tuft on top of its head",
+      "grown": "a grown fluffy sheep with a big cloud of cream wool, a butter cream face, floppy ears and a curly woolly fringe",
+      "faces": [
+        {"x": 0.5, "y": 0.352, "w": 0.286},
+        {"x": 0.5, "y": 0.352, "w": 0.286},
+        {"x": 0.495, "y": 0.5, "w": 0.35},
+        {"x": 0.5, "y": 0.352, "w": 0.286}
+      ]
+    },
+    {
+      "name": "bao",
+      "label": "Bao",
+      "creature": "panda",
+      "hatchling": "a tiny newborn panda cub, round cream white fur with black round ears, black patches around round happy eyes and a little black nose",
+      "egg": "black and cream patches",
+      "young": "bigger and chubbier, hugging a small sage green bamboo leaf",
+      "grown": "a chubby grown panda with cream white fur, black ears, black eye patches, black shoulders and a sage green bamboo sprig held at its chest",
+      "faces": [
+        {"x": 0.502, "y": 0.368, "w": 0.261},
+        {"x": 0.501, "y": 0.309, "w": 0.302},
+        {"x": 0.499, "y": 0.316, "w": 0.334},
+        {"x": 0.5, "y": 0.323, "w": 0.318}
+      ]
+    },
+    {
+      "name": "peanut",
+      "label": "Peanut",
+      "creature": "elephant",
+      "hatchling": "a tiny newborn baby elephant, round soft lilac grey skin, big floppy ears with coral pink insides, round happy eyes and a short curled-up trunk",
+      "egg": "soft grey wrinkles",
+      "young": "bigger, its ears bigger and flappier, its trunk raised in a happy toot",
+      "grown": "a grown little elephant with lilac grey skin, very big ears with coral pink insides, two small cream tusks and its trunk raised in a happy toot",
+      "faces": [
+        {"x": 0.497, "y": 0.368, "w": 0.34},
+        {"x": 0.5, "y": 0.336, "w": 0.369},
+        {"x": 0.5, "y": 0.359, "w": 0.363},
+        {"x": 0.498, "y": 0.364, "w": 0.375}
+      ]
+    },
+    {
+      "name": "squeak",
+      "label": "Squeak",
+      "creature": "rain frog",
+      "hatchling": "a tiny newly hatched desert rain frog, a very round chubby sandy butter yellow body, big round happy eyes on top, a tiny wide smile and two little stubby arms",
+      "egg": "sandy speckles",
+      "young": "rounder and chubbier, puffed up proudly",
+      "grown": "a very round puffed-up grown rain frog, sandy butter yellow with faint speckles, big round eyes and a tiny wide grumpy-cute smile",
+      "faces": [
+        {"x": 0.492, "y": 0.22, "w": 0.436},
+        {"x": 0.502, "y": 0.134, "w": 0.484},
+        {"x": 0.498, "y": 0.13, "w": 0.503},
+        {"x": 0.502, "y": 0.202, "w": 0.579}
+      ]
+    },
+    {
+      "name": "dotty",
+      "label": "Dotty",
+      "creature": "ladybird",
+      "hatchling": "a tiny newly hatched baby ladybird, a round coral red shell with dark plum spots, a round dark face with big round happy eyes and two short curly antennae",
+      "egg": "coral red dots",
+      "young": "bigger with more spots, its antennae longer and curlier",
+      "grown": "a grown ladybird with a shiny round coral red spotted shell, a dark face with big happy eyes, curly antennae and little lilac wings peeking from under its shell",
+      "faces": [
+        {"x": 0.636, "y": 0.394, "w": 0.242},
+        {"x": 0.676, "y": 0.33, "w": 0.258},
+        {"x": 0.619, "y": 0.5, "w": 0.366},
+        {"x": 0.673, "y": 0.334, "w": 0.248}
+      ]
+    },
+    {
+      "name": "ziggy",
+      "label": "Ziggy",
+      "creature": "chameleon",
+      "hatchling": "a tiny newly hatched flap-neck chameleon, round sage green body with a butter yellow stripe, big round turret eyes and a tiny smile",
+      "egg": "sage green and butter yellow zigzags",
+      "young": "bigger, a small crest on its head, its tail curled into a spiral in front of it",
+      "grown": "a grown chameleon, sage green with butter yellow and coral pink stripes, a little helmet crest, big round turret eyes and its tail curled into a spiral",
+      "faces": [
+        {"x": 0.5, "y": 0.3, "w": 0.363},
+        {"x": 0.628, "y": 0.234, "w": 0.436},
+        {"x": 0.614, "y": 0.274, "w": 0.414},
+        {"x": 0.62, "y": 0.292, "w": 0.477}
+      ]
+    }
+  ],
+  "accessories": [
+    {"id": "party-hat", "label": "Party hat", "slot": "top", "stars": 0, "subject": "a cone-shaped cartoon party hat with lilac and coral pink stripes and a fluffy cream pom-pom on top, seen from the front, tilted slightly. Only the hat"},
+    {"id": "beanie", "label": "Beanie", "slot": "top", "stars": 0, "subject": "a cosy knitted beanie hat in sage green with a cream folded brim and a big coral pink pom-pom, seen from the front. Only the hat"},
+    {"id": "cap", "label": "Cap", "slot": "top", "stars": 0, "subject": "a sporty baseball cap in coral pink with a butter yellow peak facing forward and a little button on top, seen from the front. Only the cap"},
+    {"id": "bow", "label": "Bow", "slot": "top", "stars": 0, "subject": "a big soft hair bow in coral pink with lilac polka dots and a round knot in the middle, seen from the front. Only the bow"},
+    {"id": "flower-crown", "label": "Flower crown", "slot": "top", "stars": 10, "see_through": true, "subject": "a flower crown seen straight from the front as a single gently curved band, like a tiara: a row of small coral pink, butter yellow and lilac daisies with sage green leaves, wider than it is tall, not a ring or an oval. Only the flower crown"},
+    {"id": "bunny-ears", "label": "Bunny ears", "slot": "top", "stars": 10, "subject": "a lilac headband with two tall soft bunny ears with coral pink insides, seen from the front. Only the headband and ears"},
+    {"id": "cat-ears", "label": "Cat ears", "slot": "top", "stars": 10, "one_piece": true, "subject": "a dark plum headband with two pointed cat ears with coral pink insides, seen from the front. Only the headband and ears"},
+    {"id": "chef-hat", "label": "Chef hat", "slot": "top", "stars": 15, "subject": "a tall puffy cream chef hat with a sage green band, seen from the front. Only the hat"},
+    {"id": "safari-hat", "label": "Safari hat", "slot": "top", "stars": 15, "subject": "a round-brimmed khaki safari explorer hat with a sage green band and a little butter yellow feather, seen from the front. Only the hat"},
+    {"id": "crown", "label": "Crown", "slot": "top", "stars": 20, "subject": "a chunky golden butter yellow cartoon crown with three rounded points and coral pink round jewels, seen from the front. Only the crown"},
+    {"id": "antennae", "label": "Antennae", "slot": "top", "stars": 20, "subject": "a lilac headband with two bouncy springy antennae topped with shiny butter yellow star-shaped bobbles, seen from the front. Only the headband and antennae"},
+    {"id": "pirate-hat", "label": "Pirate hat", "slot": "top", "stars": 25, "subject": "a dark plum tricorn pirate hat with a butter yellow trim and a coral pink star emblem on the front, seen from the front. Only the hat"},
+    {"id": "wizard-hat", "label": "Wizard hat", "slot": "top", "stars": 30, "subject": "a tall floppy pointed wizard hat in deep lilac with a wide brim, scattered butter yellow stars and moons, the tip flopping to one side, seen from the front. Only the hat"},
+    {"id": "halo", "label": "Halo", "slot": "top", "stars": 35, "see_through": true, "subject": "a glowing butter yellow halo ring floating flat, seen from slightly above as a wide oval, with three tiny sparkles. Only the halo"},
+    {"id": "unicorn-horn", "label": "Unicorn horn", "slot": "top", "stars": 40, "subject": "a lilac headband with a spiral golden butter yellow unicorn horn in the middle and two small coral pink and cream flowers at its base, seen from the front. Only the headband and horn"},
+    {"id": "star-crown", "label": "Star crown", "slot": "top", "stars": 60, "subject": "a magnificent golden butter yellow crown whose points are five rounded stars, with lilac and coral pink round jewels and tiny sparkles around it, seen from the front. Only the crown"},
+    {"id": "round-glasses", "label": "Round glasses", "slot": "face", "stars": 0, "eyes": [[0.267, 0.5], [0.733, 0.5]], "subject": "a pair of big round dark plum spectacles, seen straight from the front, perfectly level and symmetrical, no arms visible. The lenses are completely empty pure white #FFFFFF, no tint, no colour, no shine. Only the glasses"},
+    {"id": "star-sunglasses", "label": "Star sunglasses", "slot": "face", "stars": 15, "eyes": [[0.25, 0.5], [0.74, 0.5]], "subject": "a pair of fun star-shaped sunglasses with coral pink frames and dark lilac tinted lenses, seen straight from the front, perfectly level and symmetrical, no arms visible. Only the sunglasses"},
+    {"id": "heart-glasses", "label": "Heart glasses", "slot": "face", "stars": 20, "eyes": [[0.25, 0.49], [0.74, 0.49]], "subject": "a pair of heart-shaped sunglasses with butter yellow frames and coral pink tinted lenses, seen straight from the front, perfectly level and symmetrical, no arms visible. Only the sunglasses"},
+    {"id": "hero-mask", "label": "Hero mask", "slot": "face", "stars": 20, "eyes": [[0.29, 0.5], [0.71, 0.5]], "subject": "a superhero eye mask in coral pink with two big round empty eye holes set wide apart, seen straight from the front, perfectly level and symmetrical, with no ties, no strings and no cords. Only the mask"},
+    {"id": "monocle", "label": "Monocle", "slot": "face", "stars": 25, "eyes": [[0.467, 0.4]], "scale": 0.6, "subject": "a single round golden butter yellow monocle with a clear empty lens and a short dangling chain, seen straight from the front. Only the monocle"},
+    {"id": "football", "label": "Football", "slot": "badge", "stars": 0, "subject": "a round cartoon soccer ball with cream and dark plum patches. Only the ball"},
+    {"id": "book", "label": "Book", "slot": "badge", "stars": 0, "subject": "a chunky open storybook with a sage green cover and cream pages with no writing, a coral pink ribbon bookmark. Only the book"},
+    {"id": "star", "label": "Star", "slot": "badge", "stars": 0, "subject": "a chunky rounded five-pointed star in butter yellow with a happy little shine. Only the star"},
+    {"id": "rugby-ball", "label": "Rugby ball", "slot": "badge", "stars": 5, "subject": "an oval cartoon rugby ball in warm tan with a sage green stripe and cream stitching, tilted. Only the ball"},
+    {"id": "cricket-bat", "label": "Cricket bat", "slot": "badge", "stars": 5, "subject": "a small wooden cricket bat in warm tan with a sage green grip, tilted, with a coral red cricket ball beside it. Only the bat and ball"},
+    {"id": "paintbrush", "label": "Paintbrush", "slot": "badge", "stars": 5, "subject": "a chunky paintbrush with a butter yellow handle and a coral pink painted tip, tilted, with three little round paint dots in lilac, sage and coral beside it. Only the brush and dots"},
+    {"id": "heart", "label": "Heart", "slot": "badge", "stars": 5, "subject": "a chunky rounded coral pink heart with a little shine. Only the heart"},
+    {"id": "rainbow", "label": "Rainbow", "slot": "badge", "stars": 10, "subject": "a chunky arched rainbow with coral pink, butter yellow, sage green and lilac bands, resting on two small fluffy cream clouds. Only the rainbow"},
+    {"id": "ice-cream", "label": "Ice cream", "slot": "badge", "stars": 10, "subject": "an ice cream cone with two scoops, coral pink and butter yellow, a lilac sprinkle topping and a waffle cone. Only the ice cream"},
+    {"id": "guitar", "label": "Guitar", "slot": "badge", "stars": 15, "subject": "a small acoustic guitar in coral pink with a cream soundboard and a sage green neck, tilted. Only the guitar"},
+    {"id": "rocket", "label": "Rocket", "slot": "badge", "stars": 25, "subject": "a chubby cartoon rocket in cream with coral pink fins and nose, a round lilac window and a butter yellow flame, tilted upward. Only the rocket"},
+    {"id": "dinosaur", "label": "Dinosaur", "slot": "badge", "stars": 30, "one_piece": true, "subject": "a cute round little sage green dinosaur toy with butter yellow back spikes and a happy face, side view. Only the dinosaur"},
+    {"id": "unicorn", "label": "Unicorn", "slot": "badge", "stars": 35, "subject": "a cute round little cream unicorn toy with a lilac and coral pink mane and a butter yellow horn, side view. Only the unicorn"},
+    {"id": "trophy", "label": "Trophy", "slot": "badge", "stars": 50, "subject": "a shiny golden butter yellow trophy cup with two round handles, a coral pink star on the front and a sage green base. Only the trophy"},
+    {"id": "flower-ring", "label": "Flower ring", "slot": "ring", "stars": 20, "subject": "a perfectly circular wreath frame of small coral pink, butter yellow and lilac flowers and sage green leaves going all the way round, an even thin ring, the large centre completely empty white"},
+    {"id": "star-ring", "label": "Star ring", "slot": "ring", "stars": 25, "subject": "a perfectly circular frame made of small butter yellow rounded stars evenly spaced and touching all the way round, an even thin ring, the large centre completely empty white"},
+    {"id": "rainbow-ring", "label": "Rainbow ring", "slot": "ring", "stars": 30, "subject": "a perfectly circular ring frame made of four thin concentric bands, coral pink, butter yellow, sage green and lilac, all the way round, an even thin ring, the large centre completely empty white"},
+    {"id": "gold-ring", "label": "Gold ring", "slot": "ring", "stars": 40, "subject": "a perfectly circular ring frame of polished golden butter yellow with small coral pink round jewels evenly spaced all the way round, an even thin ring, the large centre completely empty white"},
+    {"id": "sparkle-ring", "label": "Sparkle ring", "slot": "ring", "stars": 50, "subject": "a perfectly circular ring frame of lilac with little butter yellow four-pointed sparkles and tiny coral pink hearts evenly spaced all the way round, an even thin ring, the large centre completely empty white"}
+  ],
+  "moments": [
+    {"id": "birthday-hat", "label": "Birthday hat", "slot": "top", "rule": {"kind": "birthday"}, "subject": "a cone-shaped birthday party hat in coral pink with butter yellow polka dots, a frilly lilac trim around the bottom and a small lit cream birthday candle on top instead of a pom-pom, seen from the front. Only the hat"},
+    {"id": "festive-hat", "label": "Festive hat", "slot": "top", "rule": {"kind": "dates", "from": "12-20", "to": "12-26"}, "subject": "a floppy coral red Christmas stocking cap with a fluffy cream brim and a fluffy cream pom-pom at its drooping tip, seen from the front. Only the hat"},
+    {"id": "new-year-crown", "label": "New Year crown", "slot": "top", "rule": {"kind": "dates", "from": "12-31", "to": "01-01"}, "subject": "a sparkly party crown of shiny lilac and butter yellow card with little star bursts and a few curly coral pink streamers, seen from the front. Only the crown"},
+    {"id": "easter-ears", "label": "Easter ears", "slot": "top", "rule": {"kind": "easter", "from": -2, "to": 1}, "subject": "a butter yellow headband with two tall soft cream bunny ears with coral pink insides and a tiny pastel lilac egg with sage stripes tucked at the base. Only the headband, ears and egg"},
+    {"id": "valentine-heart", "label": "Valentine's heart", "slot": "badge", "rule": {"kind": "dates", "from": "02-14", "to": "02-14"}, "subject": "two chunky rounded hearts overlapping, one coral pink and one lilac, with a tiny butter yellow sparkle. Only the hearts"},
+    {"id": "earth-day", "label": "Earth Day", "slot": "badge", "rule": {"kind": "dates", "from": "04-22", "to": "04-22"}, "subject": "a little round planet Earth globe with no face with soft sage green land and pale blue sea, with a small sprouting sage leaf on top. Only the globe"},
+    {"id": "book-day", "label": "Book Day", "slot": "badge", "rule": {"kind": "dates", "from": "04-23", "to": "04-23"}, "subject": "a small stack of three chunky books in coral pink, butter yellow and lilac with blank spines, a tiny sparkle above. Only the books"},
+    {"id": "winter-beanie", "label": "Winter beanie", "slot": "top", "rule": {"kind": "dates", "from": "06-21", "to": "06-23", "hemisphere": "south"}, "art": "winter-beanie", "subject": "a chunky cable-knit winter beanie in lilac with a cream snowflake pattern band, a fluffy cream pom-pom and two little ear flaps with cream tassels, seen from the front. Only the hat"},
+    {"id": "winter-beanie-north", "label": "Winter beanie", "slot": "top", "rule": {"kind": "dates", "from": "12-21", "to": "12-23", "hemisphere": "north"}, "art": "winter-beanie"},
+    {"id": "spring-flowers", "label": "Spring flowers", "slot": "top", "rule": {"kind": "dates", "from": "09-01", "to": "09-03", "hemisphere": "south"}, "art": "spring-flowers", "subject": "a full, lush wreath crown of big blossoms, a pink protea in the middle with coral pink and butter yellow daisies and lilac blossoms and sage green leaves, with two tiny butter yellow butterflies, seen from the front as an arc. Only the flower crown"},
+    {"id": "spring-flowers-north", "label": "Spring flowers", "slot": "top", "rule": {"kind": "dates", "from": "03-20", "to": "03-22", "hemisphere": "north"}, "art": "spring-flowers"},
+    {"id": "heritage-braai-hat", "label": "Heritage Day hat", "slot": "top", "rule": {"kind": "dates", "from": "09-24", "to": "09-24"}, "subject": "a puffy cream chef hat with a band of colourful zigzag pattern in coral pink, butter yellow, sage green and basil green, with a small pair of braai tongs tucked into the band. Only the hat"},
+    {"id": "back-to-school", "label": "Back to school", "slot": "badge", "rule": {"kind": "dates", "from": "01-14", "to": "01-16", "hemisphere": "south"}, "art": "back-to-school", "subject": "a chubby little school backpack in sage green with a coral pink pocket, butter yellow straps and a pencil peeking out of the top. Only the backpack"},
+    {"id": "back-to-school-north", "label": "Back to school", "slot": "badge", "rule": {"kind": "dates", "from": "09-02", "to": "09-04", "hemisphere": "north"}, "art": "back-to-school"},
+    {"id": "spooky-hat", "label": "Spooky hat", "slot": "top", "rule": {"kind": "dates", "from": "10-31", "to": "10-31"}, "subject": "a friendly pointy witch hat in deep lilac with a coral pink band, a little butter yellow buckle and a tiny plain orange pumpkin with no face tucked in the band, the tip bent to one side, seen from the front. Only the hat"}
+  ],
+  "buddy": {
+    "creature": [
+      {"id": "dragon", "label": "Dragon"},
+      {"id": "unicorn", "label": "Unicorn"},
+      {"id": "robot", "label": "Robot"},
+      {"id": "dinosaur", "label": "Dinosaur"},
+      {"id": "kitten", "label": "Kitten"},
+      {"id": "puppy", "label": "Puppy"},
+      {"id": "bunny", "label": "Bunny"},
+      {"id": "owl", "label": "Owl"},
+      {"id": "monster", "label": "Friendly monster"},
+      {"id": "alien", "label": "Alien"},
+      {"id": "octopus", "label": "Octopus"},
+      {"id": "narwhal", "label": "Narwhal"}
+    ],
+    "colour": [
+      {"id": "pink", "label": "Pink"},
+      {"id": "yellow", "label": "Yellow"},
+      {"id": "purple", "label": "Purple"},
+      {"id": "green", "label": "Green"},
+      {"id": "blue", "label": "Blue"},
+      {"id": "orange", "label": "Orange"},
+      {"id": "red", "label": "Red"},
+      {"id": "gold", "label": "Gold"},
+      {"id": "white", "label": "White"},
+      {"id": "rainbow", "label": "Rainbow"}
+    ],
+    "loves": [
+      {"id": "pancakes", "label": "Pancakes"},
+      {"id": "football", "label": "Football"},
+      {"id": "books", "label": "Books"},
+      {"id": "music", "label": "Music"},
+      {"id": "space", "label": "Space"},
+      {"id": "beach", "label": "The beach"},
+      {"id": "painting", "label": "Painting"},
+      {"id": "dancing", "label": "Dancing"},
+      {"id": "gardening", "label": "Gardening"},
+      {"id": "bugs", "label": "Bugs"}
+    ],
+    "wears": [
+      {"id": "crown", "label": "Crown"},
+      {"id": "party-hat", "label": "Party hat"},
+      {"id": "glasses", "label": "Glasses"},
+      {"id": "cape", "label": "Cape"},
+      {"id": "bow-tie", "label": "Bow tie"},
+      {"id": "scarf", "label": "Scarf"},
+      {"id": "sneakers", "label": "Sneakers"},
+      {"id": "backpack", "label": "Backpack"},
+      {"id": "flower-crown", "label": "Flower crown"},
+      {"id": "wizard-hat", "label": "Wizard hat"}
+    ],
+    "power": [
+      {"id": "flying", "label": "Flying"},
+      {"id": "super-speed", "label": "Super speed"},
+      {"id": "invisible", "label": "Turning invisible"},
+      {"id": "bubbles", "label": "Bubbles"},
+      {"id": "rainbows", "label": "Rainbows"},
+      {"id": "giggles", "label": "Giggles"},
+      {"id": "tiny", "label": "Shrinking tiny"},
+      {"id": "glow", "label": "Glowing in the dark"},
+      {"id": "animal-talk", "label": "Talking to animals"},
+      {"id": "magic", "label": "Magic"}
+    ]
+  }
+}

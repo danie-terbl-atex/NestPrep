@@ -243,6 +243,14 @@ void main() {
     compressor.refuse.add(0);
     await pump(tester, brightness: Brightness.dark, scale: 2);
     empty.dispose();
+    for (
+      var i = 0;
+      i < 6 && find.text(PhotoFrameCopy.photoFailed).evaluate().isEmpty;
+      i++
+    ) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+    }
     expect(find.text(PhotoFrameCopy.photoFailed), findsWidgets);
     expect(tester.takeException(), isNull);
 

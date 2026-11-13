@@ -8,6 +8,7 @@ import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/avatar_studio_opener.dart';
 import '../../kid_accounts/ui/kid_sign_in_link.dart';
 import '../data/invite_sharer.dart';
 import '../model/household_area.dart';
@@ -94,6 +95,7 @@ class HouseholdBody extends StatelessWidget {
                         )
                       : null,
                   onEdit: () => _editMember(context, member),
+                  onChangePicture: avatarStudioOpener(context, member.id),
                   onInvite: member.isClaimed
                       ? null
                       : () => _invite(context, member),
@@ -210,6 +212,7 @@ class HouseholdBody extends StatelessWidget {
       context: context,
       today: context.read<HouseholdClock>().today,
       existing: member,
+      onChangePicture: avatarStudioOpener(context, member.id),
     );
     if (result == null) return;
     await controller.updateMember(

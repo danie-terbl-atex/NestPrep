@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/state/session_controller.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
+import '../features/avatars/model/avatar_place.dart';
 import '../features/chore_points/data/points_repository.dart';
 import '../features/chore_points/data/reward_repository.dart';
 import '../features/chore_points/state/kid_points_controller.dart';
@@ -26,6 +27,7 @@ import '../features/meal_planning/data/meal_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
+import 'avatar_routes.dart';
 import 'household_route.dart';
 import 'lunch_planning_route.dart';
 import 'lunch_planning_routes.dart';
@@ -91,6 +93,17 @@ List<RouteBase> kidRoutes(SessionController session) => [
               identity: kid,
             ),
           ),
+          ProxyProvider<KidHomeController, AvatarPlace?>(
+            update: (context, home, _) =>
+                switch ((home.household, home.today)) {
+                  (final household?, final today?) => AvatarPlace.of(
+                    householdId: household.id,
+                    timeZone: household.timeZone,
+                    today: today,
+                  ),
+                  _ => null,
+                },
+          ),
           // The kid's stars follow the home: they open once it knows today
           // and the grant shows jobs (todos ADR-0003, accounts ADR-0004).
           ChangeNotifierProxyProvider<KidHomeController, KidPointsController>(
@@ -128,6 +141,7 @@ List<RouteBase> kidRoutes(SessionController session) => [
     },
   ),
   kidLunchChooseRoute(() => session.kidIdentity),
+  kidAvatarStudioRoute(session),
 ];
 
 /// The parent's kid sign-in screen, under the household shell so it has the
@@ -150,6 +164,7 @@ GoRoute kidSignInRoute() => GoRoute(
 /// screens, a stale deep link — sends it home.
 String? redirectForKid(String location) =>
     location == KidRoute.homePath ||
-        location == LunchPlanningRoute.kidChoosePath
+        location == LunchPlanningRoute.kidChoosePath ||
+        location == AvatarRoute.kidPath
     ? null
     : KidRoute.homePath;

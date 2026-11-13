@@ -4,6 +4,7 @@ import '../../household/model/access_level.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
+import '../../household/model/member_role.dart';
 import 'cleaning_job.dart';
 import 'routine/room_routine.dart';
 
@@ -16,17 +17,29 @@ import 'routine/room_routine.dart';
 /// her and asks for exactly those. Whoever a job is assigned to may work it.
 @immutable
 final class HomeCareAccess {
-  const HomeCareAccess({required this.level, required this.viewerMemberId});
+  const HomeCareAccess({
+    required this.level,
+    required this.viewerMemberId,
+    this.isWorker = false,
+  });
 
   factory HomeCareAccess.of(HouseholdView view) => HomeCareAccess(
     level: view.permissions.levelIn(HouseholdArea.homeCare),
     viewerMemberId: view.permissions.ownMemberId ?? view.viewerMember?.id,
+    isWorker: switch (view.viewerMember?.role) {
+      MemberRole.helper || MemberRole.carer => true,
+      _ => false,
+    },
   );
 
   final AccessLevel level;
 
   /// The profile `own` compares a job's helper with.
   final String? viewerMemberId;
+
+  /// Whether the viewer is a helper or a carer — somebody the household
+  /// employs, whatever grant they hold.
+  final bool isWorker;
 
   /// Whether home care appears in the app at all.
   bool get isVisible => level.isAnything;
@@ -63,6 +76,14 @@ final class HomeCareAccess {
   bool canSetLanguageOf(String memberId) =>
       canManage || (isVisible && memberId == viewerMemberId);
 
+  /// Whether the viewer clocks in and out herself (home-care ADR-0007): a
+  /// helper or carer who sees home care, at any level.
+  bool get clocksIn => isWorker && isVisible && viewerMemberId != null;
+
+  /// End a shift: family anybody's, anybody else only her own.
+  bool canEndShiftOf(String helperId) =>
+      canManage || (isVisible && helperId == viewerMemberId);
+
   /// Who a job can be given to: anybody the household's grant lets see home
   /// care — helpers first, because that is who it is usually for.
   static List<Member> helpersIn(HouseholdView view) {
@@ -84,8 +105,9 @@ final class HomeCareAccess {
   bool operator ==(Object other) =>
       other is HomeCareAccess &&
       other.level == level &&
-      other.viewerMemberId == viewerMemberId;
+      other.viewerMemberId == viewerMemberId &&
+      other.isWorker == isWorker;
 
   @override
-  int get hashCode => Object.hash(level, viewerMemberId);
+  int get hashCode => Object.hash(level, viewerMemberId, isWorker);
 }

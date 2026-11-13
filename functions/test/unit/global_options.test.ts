@@ -54,6 +54,8 @@ const LONGER_TIMEOUTS: Readonly<Record<string, number>> = {
   getFramePhoto: 60,
   getFrameLunchPhoto: 60,
   getFrameRecipePhoto: 60,
+  getFrameAvatar: 60,
+  getFrameJobPhoto: 60,
   // A frame's long poll for a page shared from a phone holds for fifty seconds.
   waitFrameShare: 90,
   // A frame's product search finds the shop's store for its area, then
@@ -81,6 +83,13 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   buildLunchWeek: { memoryMb: 512, timeoutSeconds: 60 },
   // An image takes far longer than a JSON answer (lunch-box ADR-0015).
   lunchPhoto: { memoryMb: 512, timeoutSeconds: 120 },
+  // Drafting a recipe waits on Vertex the same way (recipes ADR-0008).
+  draftRecipe: { memoryMb: 512, timeoutSeconds: 60 },
+  scanRecipeDocument: { memoryMb: 512, timeoutSeconds: 120 },
+  draftDocumentRecipe: { memoryMb: 512, timeoutSeconds: 120 },
+  // A creation reads its reference, draws, checks the picture and keeps it,
+  // each a model call of its own (avatars ADR-0003, ADR-0006).
+  onAvatarCreation: { memoryMb: 512, timeoutSeconds: 300 },
 };
 
 /** A scheduled job sets its own timeout; everything else is a callable. */
@@ -144,9 +153,15 @@ describe('every function — callable, trigger or schedule', () => {
     // fill the cart, unlink. Apple Calendar: the push from the member's
     // iPhone. Frame updates: the agent's check and report, and the APK it
     // downloads. Password reset: the one callable that emails the link
-    // through Resend (accounts ADR-0012).
+    // through Resend (accounts ADR-0012). A household's own recipes: save and
+    // delete (recipes ADR-0007), and drafting one (recipes ADR-0008); listing
+    // a PDF's recipes and drafting one of them (recipes ADR-0009). Avatars:
+    // two triggers, the look and the Wardrobe (avatars ADR-0001, ADR-0004),
+    // and a member's picture for the frame (C-0023 rev 18); two more, a
+    // creation and a keepsake taken off the shelf (avatars ADR-0003, ADR-0005),
+    // and the hourly sweep of creations a dead run left behind.
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(130);
+    expect(endpoints()).toHaveLength(143);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
@@ -217,6 +232,7 @@ describe('every function — callable, trigger or schedule', () => {
     expect(scheduled.map(([name]) => name)).toContain('reconcileSubscriptions');
     expect(scheduled.map(([name]) => name)).toContain('composeMorningDigests');
     expect(scheduled.map(([name]) => name)).toContain('deliverNotifications');
+    expect(scheduled.map(([name]) => name)).toContain('sweepAvatarCreations');
     for (const [name, endpoint] of scheduled) {
       expect(endpoint.timeoutSeconds, name).toBeGreaterThanOrEqual(30);
       expect(endpoint.timeoutSeconds, name).toBeLessThanOrEqual(300);

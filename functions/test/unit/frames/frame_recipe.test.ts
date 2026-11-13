@@ -7,6 +7,7 @@ import {
   frameRecipeDocument,
   frameRecipePhotoPath,
   frameRecipeShareInput,
+  ownRecipeFrameDocument,
   type FrameRecipeDocument,
   type FrameRecipeShareInput,
 } from '../../../src/frames/frame_recipe';
@@ -138,5 +139,80 @@ describe('a recipe shared to a frame', () => {
     ['a long id', { ...input, id: 'a'.repeat(61) }],
   ])('refuses %s', (_why, value) => {
     expect(frameRecipeShareInput.safeParse(value).success).toBe(false);
+  });
+});
+
+describe('a household’s own recipe on the frame (photo-frames ADR-0018)', () => {
+  const OWN_ID = 'own-0123456789abcdef0123';
+  const line = (name: string, quantity: number | null): Record<string, unknown> => ({
+    name,
+    quantity,
+    unit: quantity === null ? null : 'g',
+    note: quantity === null ? 'to taste' : null,
+    group: null,
+  });
+  const own = (more: Record<string, unknown> = {}): Record<string, unknown> => ({
+    source: 'own',
+    name: 'Gran’s bobotie',
+    summary: '',
+    servings: 6,
+    prepMinutes: 0,
+    cookMinutes: 40,
+    ingredients: [line('Mince', 500), line('Salt', null)],
+    steps: ['Bake for 40 minutes.'],
+    photo: { card: 'c.jpg', hero: 'h.jpg', credit: null, sourceUrl: null },
+    notes: 'Serve with chutney.',
+    gallery: [],
+    allergens: [],
+    ...more,
+  });
+
+  it('accepts its id and the household marker, and a share with no marker stays valid', () => {
+    const shared = { id: OWN_ID, people: 4, amounts: [] };
+    expect(frameRecipeShareInput.parse({ ...shared, household: true }).household).toBe(true);
+    expect(frameRecipeShareInput.parse(shared).household).toBeUndefined();
+    expect(frameRecipeShareInput.safeParse({ ...shared, household: 'yes' }).success).toBe(false);
+  });
+
+  it('builds the same keys a catalogue recipe does, with nothing to show as null', () => {
+    const source = ownRecipeFrameDocument.parse(own());
+    const built = buildFrameRecipe(source, { id: OWN_ID, people: 4, amounts: ['335 g', null] });
+    expect(built).not.toBeNull();
+    expect(frameRecipe.parse(built)).toEqual(built);
+    const catalogue = buildFrameRecipe(document, share());
+    expect(Object.keys(built ?? {}).sort()).toEqual(Object.keys(catalogue ?? {}).sort());
+    expect(built).toMatchObject({
+      recipeId: OWN_ID,
+      difficulty: null,
+      prepNote: null,
+      prepMinutes: 0,
+      cookMinutes: 40,
+      photo: true,
+    });
+    expect(built?.ingredients).toEqual([
+      { group: null, amount: '335 g', name: 'Mince', note: null },
+      { group: null, amount: null, name: 'Salt', note: 'to taste' },
+    ]);
+    expect(built?.steps[0]?.timers).toHaveLength(1);
+    expect(frameRecipePhotoPath(source)).toBe('h.jpg');
+  });
+
+  it('takes 30 lines and no photo', () => {
+    const ingredients = Array.from({ length: 30 }, (_, at) => line(`Thing ${String(at)}`, null));
+    const source = ownRecipeFrameDocument.parse(own({ ingredients, photo: null }));
+    const built = buildFrameRecipe(source, {
+      id: OWN_ID,
+      people: 2,
+      amounts: ingredients.map(() => null),
+    });
+    expect(built?.ingredients).toHaveLength(30);
+    expect(built?.photo).toBe(false);
+    expect(frameRecipePhotoPath(source)).toBeNull();
+  });
+
+  it('refuses anything that is not an own recipe', () => {
+    expect(ownRecipeFrameDocument.safeParse(own({ source: 'ai' })).success).toBe(false);
+    expect(ownRecipeFrameDocument.safeParse(own({ source: undefined })).success).toBe(false);
+    expect(ownRecipeFrameDocument.safeParse(undefined).success).toBe(false);
   });
 });

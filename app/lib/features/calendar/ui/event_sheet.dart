@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -103,6 +104,9 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
   late final _title = TextEditingController(
     text: widget.existing?.title ?? widget.draft?.title ?? '',
   );
+  late final _note = TextEditingController(
+    text: widget.existing?.note ?? widget.draft?.note ?? '',
+  );
   late CalendarDate _date =
       widget.existing?.date ?? widget.draft?.date ?? widget.initialDate;
   late bool _isAllDay =
@@ -125,6 +129,7 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
   @override
   void dispose() {
     _title.dispose();
+    _note.dispose();
     super.dispose();
   }
 
@@ -150,6 +155,18 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
             controller: _title,
             autofocus: widget.existing == null,
             onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: NestSpace.lg),
+          NestTextField(
+            label: AppCopy.calendarNotesLabel,
+            hint: AppCopy.calendarNotesHint,
+            controller: _note,
+            maxLines: 4,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(HouseholdEvent.noteMaxLength),
+            ],
           ),
           const SizedBox(height: NestSpace.xl),
           NestDateField(
@@ -255,6 +272,7 @@ class _EventSheetBodyState extends State<_EventSheetBody> {
     Navigator.of(context).pop(
       EventSaved(
         title: _title.text,
+        note: _note.text,
         date: _date,
         startMinute: _isAllDay ? null : _startMinute,
         endMinute: _isAllDay ? null : _endMinute,

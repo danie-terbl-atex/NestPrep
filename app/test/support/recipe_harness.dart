@@ -13,8 +13,10 @@ import 'fake_recipe_repository.dart';
 /// ADR-0003): the catalogue's one listener over a fake repository, the
 /// pictures, and the meals a recipe is planned into.
 final class RecipeHarness {
-  RecipeHarness({RecipePhotoSource? photos})
+  RecipeHarness({RecipePhotoSource? photos, this.ownRecipesOf})
     : photos = photos ?? FakeRecipePhotoSource();
+
+  final String? ownRecipesOf;
 
   final recipes = FakeRecipeRepository();
   final meals = FakeMealRepository();
@@ -27,6 +29,7 @@ final class RecipeHarness {
   late final catalogue = RecipeCatalogueController(
     recipeRepository: recipes,
     householdClock: clock,
+    ownRecipesOf: ownRecipesOf,
   );
 
   List<SingleChildWidget> get providers => [

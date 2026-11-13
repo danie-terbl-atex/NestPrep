@@ -67,6 +67,7 @@ void main() {
             builder: (_, _) => ChangeNotifierProvider(
               create: (_) => AccountDeletionController(
                 accountDataGateway: gateway,
+                revokeAppleSignIn: () async {},
                 signOut: () async => signOuts++,
               ),
               child: const DeleteAccountScreen(),

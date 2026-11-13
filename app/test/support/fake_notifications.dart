@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
 import 'package:nestprep/features/notifications/data/notification_directory.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
@@ -9,8 +10,11 @@ import 'package:nestprep/features/notifications/model/inbox_item.dart';
 import 'package:nestprep/features/notifications/model/notification_settings.dart';
 import 'package:nestprep/features/notifications/model/push_arrival.dart';
 import 'package:nestprep/features/notifications/model/push_token.dart';
+import 'package:nestprep/features/notifications/state/push_registrar.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 /// A person's inbox and settings held in memory, the way Firestore would hand
 /// them back: every listener gets what is there now, then every change —
@@ -247,3 +251,15 @@ final class FakeDigestPromptStore implements DigestPromptStore {
     CalendarDate day,
   ) async => offered['$householdId/$memberId'] = day;
 }
+
+/// The phone's registration, never started, so the household's first open
+/// asks nobody anything (notifications ADR-0006).
+SingleChildWidget idlePushRegistrarProvider() =>
+    ChangeNotifierProvider<PushRegistrar>(
+      create: (_) => PushRegistrar(
+        gateway: FakePushGateway(),
+        tokens: FakePushTokenRepository(),
+        session: ValueNotifier(''),
+        signedInUid: () => '',
+      ),
+    );

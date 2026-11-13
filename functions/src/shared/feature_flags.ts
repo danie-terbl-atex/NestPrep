@@ -42,6 +42,8 @@ export const FEATURE_FLAGS = [
   'homeCareRoutines',
   'homeCareStock',
   'homeCareHelperLanguage',
+  // ---- a helper clocks in and out (home-care ADR-0007) ----
+  'homeCareShifts',
   // ---- plan my week from the store with AI (lunch-box ADR-0012) ----
   'planMyWeek',
   // ---- add to Checkers: product matches and a member's own cart (the Checkers build contract) ----
@@ -54,6 +56,11 @@ export const FEATURE_FLAGS = [
   'photoFrames',
   // ---- NestPrep in Claude and ChatGPT (assistants ADR-0001) ----
   'assistants',
+  // ---- a household's own recipes, typed, read from a page or a photo (recipes ADR-0007, ADR-0008) ----
+  'householdRecipes',
+  // ---- avatars: Nestlings, the Wardrobe and moments (avatars ADR-0001 to ADR-0004), then made ones ----
+  'avatars',
+  'avatarCreations',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

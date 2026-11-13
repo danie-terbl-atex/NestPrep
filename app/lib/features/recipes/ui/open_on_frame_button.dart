@@ -26,8 +26,8 @@ class OpenOnFrameButton extends StatelessWidget {
     final state =
         context.watch<FrameAvailability?>()?.state ??
         FrameAvailabilityState.hidden;
-    // The frame builds its recipe from the catalogue; a household's own
-    // recipe isn't there to build.
+    // A recipe Plan my week drafted stays off the frame (photo-frames
+    // ADR-0013 §8).
     if (recipe.isAiDrafted) return const SizedBox.shrink();
     return switch (state) {
       FrameAvailabilityState.hidden ||

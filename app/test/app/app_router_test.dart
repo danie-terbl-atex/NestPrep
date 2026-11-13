@@ -48,9 +48,13 @@ import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart'
 import 'package:nestprep/features/product_analytics/data/beta_numbers_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
 import 'package:nestprep/features/product_analytics/ui/beta_numbers_screen.dart';
+import 'package:nestprep/features/recipes/data/own_recipe_photo_store.dart';
+import 'package:nestprep/features/recipes/data/own_recipe_repository.dart';
+import 'package:nestprep/features/recipes/data/recipe_photo_picker.dart';
 import 'package:nestprep/features/recipes/data/recipe_photo_source.dart';
 import 'package:nestprep/features/recipes/data/recipe_repository.dart';
 import 'package:nestprep/features/recipes/model/recipe.dart';
+import 'package:nestprep/features/recipes/ui/recipe_builder_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_picker_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_screen.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
@@ -84,6 +88,7 @@ import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_notifications.dart';
+import '../support/fake_own_recipes.dart';
 import '../support/fake_photo_frames.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_recipe_photos.dart';
@@ -181,6 +186,9 @@ void main() {
           Provider<MealRepository>.value(value: meals),
           Provider<RecipeRepository>.value(value: recipes),
           Provider<RecipePhotoSource>.value(value: FakeRecipePhotoSource()),
+          Provider<OwnRecipeRepository>.value(value: FakeOwnRecipeRepository()),
+          Provider<OwnRecipePhotoStore>.value(value: FakeOwnRecipePhotoStore()),
+          Provider<RecipePhotoPicker>.value(value: FakeRecipePhotoPicker()),
           Provider<PhotoFrameRepository>.value(
             value: FakePhotoFrameRepository(),
           ),
@@ -192,6 +200,7 @@ void main() {
             value: FakeNotificationRepository(),
           ),
           Provider<DigestPromptStore>.value(value: FakeDigestPromptStore()),
+          idlePushRegistrarProvider(),
           Provider<ActivityHeartbeat>(
             create: (_) => ActivityHeartbeat(activityRecorder: activity),
           ),
@@ -294,6 +303,7 @@ void main() {
     router.go(MealsRoute.recipePathFor(Fixtures.householdId, 'bobotie'));
     await settle(tester);
     recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    recipes.emitOwn(const []);
     await settle(tester);
 
     expect(tester.takeException(), isNull);
@@ -303,6 +313,58 @@ void main() {
       find.text(RecipeFixtures.bobotie.name, skipOffstage: false),
       findsWidgets,
     );
+  });
+
+  testWidgets('adding a recipe has its own address, ahead of any recipe\'s '
+      '(recipes ADR-0007)', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(MealsRoute.newRecipePathFor(Fixtures.householdId));
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(RecipeBuilderScreen), findsOneWidget);
+    expect(find.byType(RecipeScreen), findsNothing);
+    expect(find.text(OwnRecipeCopy.newTitle), findsOneWidget);
+  });
+
+  testWidgets('editing an own recipe waits for it, then opens on it '
+      '(recipes ADR-0007)', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(
+      MealsRoute.editRecipePathFor(
+        Fixtures.householdId,
+        RecipeFixtures.ownRecipeId,
+      ),
+    );
+    await settle(tester);
+    expect(find.byType(RecipeBuilderScreen), findsNothing);
+
+    recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    recipes.emitOwn([RecipeFixtures.own()]);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(RecipeBuilderScreen), findsOneWidget);
+    expect(find.text(RecipeFixtures.own().name), findsWidgets);
+  });
+
+  testWidgets('a catalogue recipe has nothing to edit', (tester) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+
+    router.go(MealsRoute.editRecipePathFor(Fixtures.householdId, 'bobotie'));
+    await settle(tester);
+    recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    recipes.emitOwn(const []);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(RecipeBuilderScreen), findsNothing);
+    expect(find.text(RecipeCopy.missingTitle), findsOneWidget);
   });
 
   testWidgets('picking a recipe for a slot hands the recipe back to the week', (
@@ -327,6 +389,7 @@ void main() {
     );
     await settle(tester);
     recipes.emitCatalogue([RecipeFixtures.bobotie]);
+    recipes.emitOwn(const []);
     await settle(tester);
 
     expect(tester.takeException(), isNull);

@@ -138,12 +138,13 @@ export function vertexBody(request: ModelRequest): Record<string, unknown> {
       // Extraction needs reading, not reasoning; thinking tokens are billed as
       // output and would multiply the cost of every call (foundation ADR-0015).
       thinkingConfig: { thinkingBudget: 0 },
+      ...(request.mediaResolution === 'high' ? { mediaResolution: 'MEDIA_RESOLUTION_HIGH' } : {}),
     },
     labels: request.labels,
   };
 }
 
-function vertexPart(part: ModelPart): Record<string, unknown> {
+export function vertexPart(part: ModelPart): Record<string, unknown> {
   return part.kind === 'text'
     ? { text: part.text }
     : { inlineData: { mimeType: part.mimeType, data: part.base64 } };

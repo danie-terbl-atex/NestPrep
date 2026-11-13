@@ -5,6 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/ui/back_leading.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../model/language/helper_language.dart';
@@ -131,7 +132,7 @@ class _LanguageRow extends StatelessWidget {
                   size: NestSize.avatarMedium,
                   iconSize: NestSize.iconMedium,
                 )
-              : NestAvatar(name: person.displayName, color: person.color),
+              : MemberAvatar(member: person),
           trailing: canSet ? const Icon(LucideIcons.chevronRight) : null,
           onTap: canSet ? () => _choose(context, language, id, chosen) : null,
         ),

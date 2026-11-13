@@ -12,6 +12,7 @@ enum PhotoFrameProblem {
   itemNotFound,
   itemOutOfReach,
   whoNeeded,
+  shiftsOff,
   addingOff,
   notAllowedToAdd,
   eventOutOfReach,

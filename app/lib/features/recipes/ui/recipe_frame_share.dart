@@ -12,6 +12,7 @@ FrameShareRecipe recipeFrameShare(Recipe recipe, RecipeScale scale) =>
       people: scale.people,
       amounts: frameAmounts(recipe.ingredients, scale),
       cardPhotoPath: recipe.photo?.card,
+      isHousehold: recipe.isOwn,
     );
 
 List<String?> frameAmounts(List<RecipeIngredient> lines, RecipeScale scale) => [

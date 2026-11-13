@@ -26,6 +26,12 @@ void main() {
     expect(amounts[4], '1/4 cup');
   });
 
+  test('only an own recipe is marked as the household\'s', () {
+    final scale = RecipeScale.asWritten(4);
+    expect(recipeFrameShare(bobotie, scale).isHousehold, isFalse);
+    expect(recipeFrameShare(RecipeFixtures.own(), scale).isHousehold, isTrue);
+  });
+
   test('a line with no quantity is null, never an empty string', () {
     final scale = RecipeScale.asWritten(bobotie.servings);
     final amounts = frameAmounts(bobotie.ingredients, scale);

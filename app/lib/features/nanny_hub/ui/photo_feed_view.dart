@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/photo_feed.dart';
 import '../model/photo_update.dart';
@@ -126,7 +127,7 @@ class _FeedHeader extends StatelessWidget {
     return Row(
       children: [
         if (person != null) ...[
-          NestAvatar(name: person.displayName, color: person.color),
+          MemberAvatar(member: person),
           const SizedBox(width: NestSpace.md),
         ],
         Expanded(

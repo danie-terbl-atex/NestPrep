@@ -1,3 +1,75 @@
+# Avatars — Nestlings, photos, Wardrobe, moments, AI creations, keepsakes, Nest portrait (avatars ADR-0001…0006, proposed)
+
+Daniel 2026-11-12: every idea approved; this feature's decisions are the standard where earlier ones disagree. Premium 12 creations/month, free 1 ever; no parent approval; art from our own pipeline. Plan: `~/.claude/plans/fizzy-snacking-pearl.md`. Godfather: `avatars` feature node.
+
+## Phase 0 — spikes and groundwork
+- [x] Region: `gemini-3.1-flash-image` answers only on `global` (europe-west4/west1, us-central1 → 404), so drawings are processed on global infrastructure and the policy must say so
+- [x] Filter spike (`tools/avatar-spike/spike.py`, Vertex `global`, `ALLOW_NONE`): creatures/pets → toys 9/9 (~12 s); every person drawing `IMAGE_SAFETY` 9/9, even asked for an animal 2/2; describe in words (gemini-2.5-flash EU) → draw a Nestling from words 3/3. ADR-0003 rev 2 + lesson written
+- [x] Style sample: 4 Nestlings × egg + 3 stages + crown, party hat, football (`tools/avatar-pictures/sample.json`), consistent across stages; grown stages need a tighter head-and-shoulders framing for 28 px
+- [ ] Daniel: approve the Nestling style (sample sheet) before the full batch
+- [x] Tune the describe prompt to name hair and clothing colours (`referenceCheck` asks for both; server-ai review)
+- [ ] Repeat the filter spike on 10+ real drawings from Daniel's kids
+- [ ] Daniel: request a Vertex image quota increase for `gemini-3.1-flash-image` on nestprep-643b7 (`tasks/avatars-deploy.md`, step 4)
+- [x] Godfather: `avatars` node, ADR-0001…0006, overview (lint 0 errors)
+- [ ] Work-index row for avatars (with Phase 1's first commit)
+
+Everything ticked below is **built and tested in the tree, not committed, not deployed, not seen on a device**.
+
+## Phase 1 — looks for everyone (free)
+- [x] `tools/avatar-pictures/`: catalogue.json, the whole library (151 assets), face anchors for all 96 Nestlings
+- [ ] Daniel reviews the art (four redrawn pictures, the green glasses; `tasks/reviews/avatars-art.md`)
+- [x] Functions: `onMemberAvatarWritten`, photo verification, member deletion/erasure/export, flag `avatars`
+- [x] Rules: `avatars.rules` (Firestore + Storage), member `look` key, denied-case tests
+- [x] App: `NestAvatar` picture + layers, `MemberAvatar`, call sites, map markers, Avatar Studio (Nestlings, Photo with circle crop), copy, tests, design-review pictures
+- [x] Legal: privacy v6 + terms v4 text, `hosting/public` built; the four promises hold in code (`tasks/avatars-deploy.md`, step 7)
+
+## Phase 2 — on the frame (C-0023 rev 18, rev 19)
+- [x] `frame_reads`/`frame_day` avatar, `getFrameAvatar`, contract rev 18; rev 19 `base: {initial: true}`
+- [x] NestPrep-Home: `AvatarArt`, avatars `PhotoCache`, `AvatarBitmaps`, every surface, fallback, tests
+- [x] One golden fixture (`functions/test/fixtures/frame_avatars.json`) held by the server's, the frame's and the app's tests
+- [ ] Release through the agent, both frames
+
+## Phase 3 — stars and growth
+- [x] Stage in `stageLine`, hatch celebration, Wardrobe + `onAvatarPurchase`, shop switch, moments (Dart + TS + fixtures)
+
+## Phase 4 — AI creations
+- [x] Image door, per-feature allowance + lifetime, `avatarCheck`, `onAvatarCreation`, three recipes, Create tab, Keepsakes, emulator canned replies
+- [x] `sweepAvatarCreations`: hourly, ends creations a dead run left at `checking`/`drawing`, refunds, deletes the reference
+
+## Phase 5 — portrait, push, seeds
+- [x] Nest portrait into the frame album, *buddy hatched* push, emulator + cloud-demo seeds (cloud seed not run)
+- [ ] Devices: a phone (crop, camera, hatch) and both frames
+
+## To ship
+- [ ] Daniel: commit, then `tasks/avatars-deploy.md` in order (rules and index, triggers, frame functions, flags, Hosting, frame release)
+- [ ] Copy for a household out of tries rather than creations (`limitReached` says "all 12")
+
+## Review (integration, 2026-11-13; `tasks/reviews/avatars-integration.md`)
+- Functions: build and lint clean; unit 155 files, 2897 passed; rules 1316 passed; emulator `avatar_creations` 19, `avatars` 13, `photo_frames` 62, `chore_points` 9, all passed.
+- App: `flutter analyze --fatal-infos lib test tool` clean; full `flutter test` 6061 passed, 4 skipped, 19 failed, the same 19 as `tasks/reviews/avatars-app.md` lists, none in avatar code.
+- Frame: `:app:testDebugUnitTest` 132 passed, `assembleDebug` builds.
+- End to end on the seeded emulator suite: seeded looks, a linked frame's `getFrameDay` and `getFrameAvatar`, a buddy and a drawing to `ready`, a kid's purchase and a keepsake delete all behaved.
+- Added: the shared fixture and its three tests, the stuck-creation sweep with its index, and the frame's composed initial in each site's own typeface.
+
+# Four app fixes — frame groceries at link, push prompt on first open, event notes, nanny photo feedback (2026-11-12)
+
+Daniel 2026-11-12. All client-only; no rules, Functions or deploy. Plan: `~/.claude/plans/hazy-floating-clock.md`.
+
+## Checklist
+- [x] Frame groceries can be switched on while linking (`FrameGroceriesSection`, `FrameLinkController.setGroceries`, `PhotoFrameRepository.setGroceries`)
+- [x] Permission prompt on the first open of a household (`FirstOpenPushPrompt`; notifications ADR-0006, accepted, narrows ADR-0003)
+- [x] Event notes in the sheet, a preview on the row, a details sheet on tap; editing no longer wipes a note
+- [x] Child photo sheet stays open with *Uploading photo…* until stored, keeps the photo on a refusal; `PhotoField` shows *Getting the photo ready…* while picking
+- [x] Godfather: ADR-0006, ADR-0003 status restored to proposed, notifications, calendar and photo-frames overviews; lint 0 errors
+- [ ] On a device (emulator backend): fresh-install prompt, an event with notes → details → edit keeps the note, child photo spinner, link a frame with groceries on (needs a frame code)
+- [ ] Daniel: commit
+
+## Review
+- `flutter analyze --fatal-infos`: clean. Touched suites: photo frames + design 584, notifications + app, calendar + school letter 262, nanny hub 358 — all of mine green.
+- Full `flutter test`: 5855 pass, 19 fail, none in code I touched: app router (missing HomeCareLibraryRepository provider), store readiness, lunch pantry, mental load, handover, beta numbers, referral and nanny v2 contracts, declared packages, swallowed errors (older notifications calls), feature flags, one home for copy (`HomeCareRoutineCopy.itemForReader`). In-flight work from other sessions.
+- Found and fixed on the way: the event sheet dropped `note` on every save, so editing in the app wiped notes from the frame, assistants and school letters.
+- Not on a device: no simulator or Android device was booted, and the paired iPhone is not reachable.
+
 # Chore celebrations: ten random scenes for the app and the frame
 
 Asked by Daniel 2026-11-12. All ten scenes are built on the frame and accepted by Daniel the same evening; the app port is not started.
@@ -16,6 +88,59 @@ Approach: cut-out sprites (a few bitmaps per scene, moved by translate/rotate/sc
 - [ ] Not checked: portrait, an Android 6 frame, a guava or butter child colour, "All done" with each scene
 - [ ] App: the same scenes in `NestCelebration` (reduced motion keeps today's card)
 - [ ] Tests, devices in light and dark, Godfather overviews, frame release through the agent
+
+# Add Your Own Recipe — builder, link import, snap (recipes ADR-0007, ADR-0008; photo-frames ADR-0018; all proposed)
+
+Daniel 2026-11-09. In v1: subscriptions ADR-0006, Premium, due by launch. Full plan:
+`~/.claude/plans/humble-greeting-otter.md`. Test on simulators against the emulator before anything reaches prod.
+
+## Checklist
+- [x] Phase 0: ADRs written as proposed, ids read back
+- [x] Phase 1: rules partials, index, Storage partial, denied-case tests
+- [x] Phase 2: `saveHouseholdRecipe`, `deleteHouseholdRecipe`, flag, Premium trigger, meta-tests
+- [x] Phase 3: model and parser, builder, photos, discovery, recipe page
+- [x] Phase 4: meal `householdRecipeId`, Add to week, Add to grocer, edits reach the meal
+- [x] Phase 5: own recipes on the frame, C-0023 next revision
+- [x] Phase 6: `draftRecipe`, canned replies, live switch, eval over 20 real pages
+- [x] Phase 7: link import and Snap in the app
+- [x] Phase 8: share sheet
+- [x] Phase 9: privacy v5, terms v3, `site:build`; Godfather write-back, `lint`, session log
+- [x] iPhone Simulator, emulator, real model: share → builder → save → Our recipes → recipe page
+- [ ] Daniel by hand: iOS and Android, both share entries, Snap, Helper, kid device, light and dark
+- [ ] Daniel reads privacy v5, terms v3 and the flagged copy; commit; deploy in order
+
+## Review (2026-11-09)
+- Functions unit 2600 passed; rules 1264 passed; emulator 715/797 (the 82 also fail on clean HEAD).
+- App analyze 0 issues; `flutter test` 5789 passed, 19 failed, none in recipes (15 also fail on clean
+  HEAD; 4 are meta-tests on other sessions' files).
+- `integration_test/own_recipe_repository_test.dart`: 3 passed on the iPhone 17 Simulator.
+- Live eval: 16 of 20 drafted, 0 RECITATION; first run truncated long methods at 20 steps, fixed in the
+  prompt plus a `cutShort` banner. Phone's own client read 14/14 public recipe pages (curl got 402/403 on 4).
+- Found on the Simulator: a live call under the emulator hung on the admin SDK's token request; fixed with
+  a gcloud subprocess for the emulator only (Godfather lesson).
+- Not shown by the harness: whether an already-open list updates the moment Save lands (a fresh open does,
+  and the controller updates live in a probe). Daniel's hands-on pass checks it.
+
+# Sign in with Apple — iOS only (accounts ADR-0014, proposed)
+
+Daniel 2026-11-07: first blocker from the store-readiness dive. iOS only for now; I configure the Firebase
+provider once he hands over Peak's Sign in with Apple key. In v1 (App Store submission). Blast radius:
+accounts sign-in and account deletion on the client; Firebase Auth config; Runner entitlements. No rules,
+Functions or contracts change (`caller_emails.ts` already counts `apple.com` as proving an email).
+
+## Checklist
+- [x] ADR-0014 (proposed) before code
+- [x] `AuthGateway.signInWithApple` / `revokeAppleSignIn`; Firebase impl via `signInWithProvider(AppleAuthProvider())`
+- [x] `canceled` → `SignInProblem.cancelled`; `AccountDataProblem.appleNotConfirmed` + copy
+- [x] `SessionController.signInWithApple`; Apple mark only on iOS; coming-soon sheet and copy gone
+- [x] Delete account: revoke Apple before `deleteAccount`; a cancelled confirmation stops it
+- [x] `com.apple.developer.applesignin` on Runner.entitlements
+- [x] Tests: fake gateway, sign-in screen (iOS shows / Android hides / tap signs in), session, deletion
+- [x] analyze --fatal-infos, format, the accounts + account_data tests
+- [x] Firebase: enable `apple.com` with bundle id + code-flow key (needs Daniel's .p8, Key ID)
+- [x] Device: Apple sign-in on an iPhone (devicectl): Daniel confirmed 2026-11-08 that it works
+- [x] Godfather: accounts overview constraints + ledger, work index row 46, outside-asks (key row), lint 0 errors
+- [x] Session log
 
 # People — household and family profiles on one screen (design-system ADR, proposed)
 
@@ -424,3 +549,21 @@ Daniel 2026-11-05: on the first open of the day, a morning digest button on top 
 ## Review
 
 Pre-existing failures in the working tree (not this change, confirmed by running without the host): app_router groceries/meals/recipe pick, and 16 others from in-flight work.
+
+# A Premium household is told so (subscriptions ADR-0007)
+
+Daniel 2026-11-13: nothing in the app shows a household is on Premium; come up with something solid and put it on his iPhone.
+
+- [x] ADR-0007 (proposed): Butter is Premium's colour; a seal beside the wordmark on Today, a card at the top of More, a hairline trim on the bar; free and lapsed households see none of it
+- [x] Kit: `NestPremiumSeal`, `NestPremiumCard` (once-only sheen, `NestMotion.sheen`), `NestBottomBar.hasPremiumTrim`; Ink on Butter and Oat in the contrast test; gallery group
+- [x] `PremiumLockup` on Today, `PremiumMembershipCard` on More (family: when it renews, opens Plan & billing; others: no date, not a control), trim from `HouseholdTabBar`
+- [x] Tests: kit, lockup, More (family, helper, free, dark 200% at 360 wide); press `tool/premium_design_review_test.dart` → `app/design-review/premium-*.png`
+- [x] Whole suite, then Daniel's iPhone
+- [x] Godfather: overview, lint, session log
+
+## Review
+
+- `flutter analyze --fatal-infos` clean. Full suite: 6080 pass, 19 fail; none name these files, and they are the in-flight failures listed above (app_router, errors_are_never_swallowed, declared_packages, feature_flags and others).
+- Pictures checked in light, dark and dark at 200%: `app/design-review/premium-*.png`.
+- Release build with demo logins installed in place and launched on Daniel's iPhone (2), 2026-11-13 07:32. Not seen on the phone by me.
+- Not committed. ADR-0007 stays proposed until Daniel has looked. Not built: the kid device's home, a one-time welcome to Premium.

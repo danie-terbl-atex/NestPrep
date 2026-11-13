@@ -7,8 +7,11 @@ import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
+import '../../household/model/member.dart';
 import '../model/event_occurrence.dart';
+import '../model/household_event.dart';
 import '../state/calendar_controller.dart';
+import 'event_details_sheet.dart';
 import 'event_sheet.dart';
 import 'member_stripe.dart';
 
@@ -33,9 +36,7 @@ class EventRow extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(NestRadius.lg),
-        onTap: view.permissions.canEdit(HouseholdArea.calendar)
-            ? () => _edit(context, view)
-            : null,
+        onTap: () => _open(context, view, members),
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,6 +63,30 @@ class EventRow extends StatelessWidget {
                           color: nest.colors.inkTertiary,
                         ),
                       ),
+                      if (event.note?.trim() case final note?
+                          when note.isNotEmpty) ...[
+                        const SizedBox(height: NestSpace.xxs),
+                        Row(
+                          children: [
+                            Icon(
+                              LucideIcons.notebookPen,
+                              size: NestSize.iconSmall,
+                              color: nest.colors.inkTertiary,
+                            ),
+                            const SizedBox(width: NestSpace.xs),
+                            Expanded(
+                              child: Text(
+                                note,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: nest.text.caption.copyWith(
+                                  color: nest.colors.inkSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -73,21 +98,35 @@ class EventRow extends StatelessWidget {
     );
   }
 
+  static String timeOf(HouseholdEvent event) {
+    final startMinute = event.startMinute;
+    if (startMinute == null) return AppCopy.calendarAllDay;
+    final start = NestDates.timeOfDay(startMinute);
+    final endMinute = event.endMinute;
+    if (endMinute == null) return start;
+    return '$start – ${NestDates.timeOfDay(endMinute)}';
+  }
+
   String _subtitle(List<String> memberNames) {
-    final event = occurrence.event;
-    final when = event.isAllDay
-        ? AppCopy.calendarAllDay
-        : _timeRange(event.startMinute!, event.endMinute);
     final who = memberNames.isEmpty
         ? AppCopy.calendarEveryone
         : memberNames.join(', ');
-    return '$when · $who';
+    return '${timeOf(occurrence.event)} · $who';
   }
 
-  String _timeRange(int startMinute, int? endMinute) {
-    final start = NestDates.timeOfDay(startMinute);
-    if (endMinute == null) return start;
-    return '$start – ${NestDates.timeOfDay(endMinute)}';
+  Future<void> _open(
+    BuildContext context,
+    HouseholdView view,
+    List<Member> members,
+  ) async {
+    final wantsEdit = await showEventDetailsSheet(
+      context: context,
+      occurrence: occurrence,
+      members: members,
+      today: today,
+      canEdit: view.permissions.canEdit(HouseholdArea.calendar),
+    );
+    if (wantsEdit && context.mounted) await _edit(context, view);
   }
 
   Future<void> _edit(BuildContext context, HouseholdView view) async {

@@ -22,6 +22,7 @@ export const FRAME_REFUSALS = {
   itemNotFound: ['not-found', 'That is not something this frame shows.'],
   itemOutOfReach: ['out-of-range', 'A frame ticks off today and the last week only.'],
   whoNeeded: ['failed-precondition', 'Say who did it.'],
+  shiftsOff: ['failed-precondition', 'Shifts are switched off.'],
   addingOff: ['failed-precondition', 'This frame does not add events.'],
   notAllowedToAdd: ['permission-denied', 'That person may not add to the calendar.'],
   eventOutOfReach: ['out-of-range', 'A frame adds events from today to a year ahead.'],

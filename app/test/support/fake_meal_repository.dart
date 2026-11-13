@@ -4,6 +4,7 @@ import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meal_ingredient.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
+import 'package:nestprep/features/recipes/model/recipe_link.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/text/normalised_name.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
@@ -26,6 +27,9 @@ final class FakeMealRepository implements MealRepository {
   /// The library `addMeal` deduplicates against.
   final knownMeals = <Meal>[];
 
+  /// The own recipes that have a meal, for `rewriteOwnRecipeMealLines`.
+  final plannedOwnRecipes = <String>{};
+
   final watchedWeeks = <String>[];
   final addedMeals = <String>[];
   final renamedMeals = <({String mealId, String name})>[];
@@ -33,6 +37,7 @@ final class FakeMealRepository implements MealRepository {
       <
         ({
           String recipeId,
+          RecipeLink link,
           String name,
           List<MealIngredient> ingredients,
           String addedBy,
@@ -95,7 +100,7 @@ final class FakeMealRepository implements MealRepository {
   @override
   Future<String> addRecipeMeal({
     required String householdId,
-    required String recipeId,
+    required RecipeLink link,
     required String name,
     required List<MealIngredient> ingredients,
     required String addedBy,
@@ -103,12 +108,27 @@ final class FakeMealRepository implements MealRepository {
     await holdRecipeMeal?.future;
     _refuseIfAsked();
     recipeMeals.add((
-      recipeId: recipeId,
+      recipeId: link.recipeId,
+      link: link,
       name: name,
       ingredients: ingredients,
       addedBy: addedBy,
     ));
-    return Meal.idForRecipe(recipeId);
+    return Meal.idForRecipe(link.recipeId);
+  }
+
+  @override
+  Future<void> rewriteOwnRecipeMealLines({
+    required String householdId,
+    required String recipeId,
+    required List<MealIngredient> ingredients,
+  }) async {
+    _refuseIfAsked();
+    if (!plannedOwnRecipes.contains(recipeId)) return;
+    ingredientWrites.add((
+      mealId: Meal.idForRecipe(recipeId),
+      ingredients: ingredients,
+    ));
   }
 
   @override

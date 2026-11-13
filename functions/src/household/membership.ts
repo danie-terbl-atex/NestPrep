@@ -39,6 +39,27 @@ export async function findClaimedMember(
 }
 
 /**
+ * The profile this uid claimed, by the test the rules' `hasClaimed` applies to
+ * a write's author: `claimedBy` is the uid. The household's `profiles` map is
+ * tried first; an account claimed before the map existed is found by the query.
+ */
+export async function claimedMemberIdOf(
+  store: Firestore,
+  householdId: string,
+  profiles: Readonly<Record<string, string>> | undefined,
+  uid: string,
+): Promise<string | null> {
+  const members = store.collection(HOUSEHOLDS).doc(householdId).collection(MEMBERS);
+  const mapped = profiles?.[uid];
+  if (mapped !== undefined) {
+    const profile = await members.doc(mapped).get();
+    if (profile.get('claimedBy') === uid) return mapped;
+  }
+  const claimed = await members.where('claimedBy', '==', uid).limit(1).get();
+  return claimed.docs[0]?.id ?? null;
+}
+
+/**
  * Detaches an account from a household everywhere it is recorded: the profile
  * becomes unclaimed, the household's uid→role map loses the uid, and the
  * account's household list loses the household. The profile itself stays, so

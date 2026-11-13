@@ -127,11 +127,28 @@ void main() {
   // forget nobody has thought about yet, and a name that has gone is an excuse
   // waiting to be handed to something else.
   const accountedFor = {
+    // Avatars: the seen-stage store logs its own platform failures, a photo
+    // read answers null on any failure, wearing runs through `runAction`, and
+    // the rest close a listener (avatars ADR-0001, ADR-0004).
+    '_celebrateIfNew(',
+    'store.markSeen(',
+    '_load(store',
+    '_balanceSubscription?.cancel())',
+    '_purchases.remove(purchaseId)?.cancel())',
+    'wear(accessory.slot',
     // Your shops: reading a shop's link status keeps an AppFailure on that
     // shop's row, and coming back from a link screen only reads it again.
     '_load(shop)',
     'controller.refresh(shop)',
     '_openLink(context controller)',
+    // A shared link's import opening over the shell. The screen keeps its own
+    // failures, and a new share must not wait for the member to leave it.
+    '_openImport(link)',
+    // A shared PDF's import, likewise; `receive` keeps an AppFailure for the
+    // start panel, and the inbox logs a platform or file failure as gone
+    // (recipes ADR-0009).
+    '_openPdfImport(pdf)',
+    'controller.receive(shared.token)',
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
     // Decoding Twig's poses ahead of time (design-system ADR-0012).

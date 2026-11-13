@@ -181,10 +181,13 @@ void main() {
       expect(photos.writes, isEmpty);
     });
 
-    test('will not hand in without an after photo', () async {
+    test('hands in without an after photo, storing none', () async {
       await follow(HomeCareFixtures.job(doneStepIds: const ['s1', 's2', 's3']));
-      expect(await controller.actions.handIn(), isFalse);
-      expect(jobs.writes, isEmpty);
+      expect(await controller.actions.handIn(), isTrue);
+      expect(photos.writes, isEmpty);
+      final (method, arguments) = jobs.writes.single;
+      expect(method, 'handIn');
+      expect(arguments['afterPhoto'], isNull);
     });
   });
 

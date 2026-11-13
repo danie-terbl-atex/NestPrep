@@ -186,7 +186,7 @@ void main() {
           id: Meal.idForRecipe('bobotie'),
           name: 'Bobotie',
           addedBy: Fixtures.samMemberId,
-        ),
+        ).copyWith(recipeId: 'bobotie'),
       ]);
       await pumpEventQueue();
       expect(page.isPlanned, isTrue);
@@ -198,7 +198,7 @@ void main() {
           id: Meal.idForRecipe('malva-pudding'),
           name: 'Malva pudding',
           addedBy: Fixtures.samMemberId,
-        ),
+        ).copyWith(recipeId: 'malva-pudding'),
       ]);
       await pumpEventQueue();
       expect(page.isPlanned, isFalse);

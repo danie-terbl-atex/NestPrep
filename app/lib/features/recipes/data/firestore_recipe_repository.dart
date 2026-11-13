@@ -29,6 +29,22 @@ final class FirestoreRecipeRepository implements RecipeRepository {
       .handleError((Object error) => throw failureFromFirebase(error));
 
   @override
+  Stream<List<Recipe>> watchOwnRecipes(String householdId) => _firestore
+      .collection('households')
+      .doc(householdId)
+      .collection(collection)
+      .where('source', isEqualTo: RecipeDocument.ownSource)
+      .orderBy('name')
+      .limit(RecipeRepository.ownRecipeLimit)
+      .snapshots()
+      .map(
+        (snapshot) => [
+          for (final doc in snapshot.docs) ?_recipeOf(doc, isHousehold: true),
+        ],
+      )
+      .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
   Future<List<Recipe>> fetchByIds(Set<String> ids) async {
     try {
       final snapshots = await Future.wait([

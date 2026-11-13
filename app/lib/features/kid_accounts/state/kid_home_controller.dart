@@ -9,6 +9,7 @@ import '../../../shared/time/calendar_date.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../accounts/model/kid_identity.dart';
 import '../../household/data/household_repository.dart';
+import '../../household/model/household.dart';
 import '../../household/model/household_permissions.dart';
 import '../../household/model/member.dart';
 import '../../lunch_box/data/lunch_repository.dart';
@@ -58,6 +59,7 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
   final _subscriptions = <StreamSubscription<Object?>>[];
   late KidAreaReads _reads = _newReads();
   HouseholdClock? _clock;
+  Household? _household;
   Member? _member;
 
   AsyncState<KidDay> _day = const AsyncLoading();
@@ -70,6 +72,8 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
 
   /// The household's today, once its zone has arrived.
   CalendarDate? get today => _clock?.today;
+
+  Household? get household => _household;
 
   String get _householdId => identity.householdId;
   String get _memberId => identity.memberId;
@@ -98,6 +102,7 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
     await _cancel();
     _reads = _newReads();
     _clock = null;
+    _household = null;
     _member = null;
     _day = const AsyncLoading();
     notifyListeners();
@@ -118,7 +123,12 @@ final class KidHomeController extends ChangeNotifier with ActionFailureHolder {
   void _subscribe() {
     _listen(_households.watchHousehold(_householdId), (household) {
       if (household == null) return _disconnect();
-      if (_clock != null) return;
+      final hadHousehold = _household;
+      _household = household;
+      if (_clock != null) {
+        if (hadHousehold?.avatarShop != household.avatarShop) notifyListeners();
+        return;
+      }
       final clock = _clockFor(household.timeZone);
       _clock = clock;
       _reads.start(clock.today);

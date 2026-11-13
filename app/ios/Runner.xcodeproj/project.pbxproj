@@ -17,6 +17,7 @@
 		65F4711BBFD84092AA99DAA5 /* ShareToFrame.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D93B67E0F9A9B17D52E34D91 /* ShareToFrame.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		AC1CA1E00000000000000002 /* AppleCalendarChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1CA1E00000000000000001 /* AppleCalendarChannel.swift */; };
+		5A4EDF000000000000000002 /* SharedPdfChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4EDF000000000000000001 /* SharedPdfChannel.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		831AE4BD1F04BC68B78D8FB6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ECDD124E555233296D1602A3 /* GoogleService-Info.plist */; };
@@ -113,6 +114,8 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AC1CA1E00000000000000001 /* AppleCalendarChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCalendarChannel.swift; sourceTree = "<group>"; };
+		5A4EDF000000000000000001 /* SharedPdfChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedPdfChannel.swift; sourceTree = "<group>"; };
+		5A4EDF000000000000000003 /* ShareToFrame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareToFrame.entitlements; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -215,6 +218,7 @@
 				7F6CE7ACD6C6707DFB0CE594 /* ShareViewController.swift */,
 				A12F2747BD24ED3AC69C26C8 /* Info.plist */,
 				CE05012EAA6FFA999E3AAE5D /* ShareToFrame.xcconfig */,
+				5A4EDF000000000000000003 /* ShareToFrame.entitlements */,
 			);
 			name = ShareToFrame;
 			path = ShareToFrame;
@@ -277,6 +281,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				AC1CA1E00000000000000001 /* AppleCalendarChannel.swift */,
+				5A4EDF000000000000000001 /* SharedPdfChannel.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				AC10CA7E0000000000000001 /* Location */,
@@ -609,6 +614,7 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				AC1CA1E00000000000000002 /* AppleCalendarChannel.swift in Sources */,
+				5A4EDF000000000000000002 /* SharedPdfChannel.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
 				AC10CA7E0000000000000003 /* AddressLookup.swift in Sources */,
@@ -820,6 +826,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareToFrame/ShareToFrame.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = UY92F2EKT8;
@@ -1008,6 +1015,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareToFrame/ShareToFrame.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = UY92F2EKT8;
@@ -1035,6 +1043,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = ShareToFrame/ShareToFrame.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = UY92F2EKT8;

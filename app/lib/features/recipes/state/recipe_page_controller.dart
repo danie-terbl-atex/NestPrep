@@ -53,6 +53,7 @@ final class RecipePageController extends ChangeNotifier
   final _done = <int>{};
   bool _isAdding = false;
   bool _isPlanned = false;
+  bool _isHeld = false;
   late final StreamSubscription<List<Meal>> _subscription;
 
   /// Loading, failed, or the recipe — null when the catalogue does not hold
@@ -85,11 +86,27 @@ final class RecipePageController extends ChangeNotifier
   /// pressed again until it lands (`FE-10`).
   bool get isAdding => _isAdding;
 
+  /// While it is being deleted the page keeps showing it, rather than
+  /// "not found" for the moment before the route leaves.
+  void holdRecipe() => _isHeld = true;
+
+  void releaseRecipe(RecipeCatalogueController catalogue) {
+    _isHeld = false;
+    followCatalogue(catalogue);
+  }
+
   void followCatalogue(RecipeCatalogueController catalogue) {
+    if (_isHeld) return;
     final next = switch (catalogue.catalogue) {
       AsyncLoading() => const AsyncLoading<Recipe?>(),
       AsyncFailure(:final failure) => AsyncFailure<Recipe?>(failure),
-      AsyncData() => AsyncData<Recipe?>(catalogue.recipe(recipeId)),
+      AsyncData() => switch ((
+        catalogue.recipe(recipeId),
+        catalogue.ownFailure,
+      )) {
+        (null, final failure?) => AsyncFailure<Recipe?>(failure),
+        (final recipe, _) => AsyncData<Recipe?>(recipe),
+      },
     };
     final arrived = switch (next) {
       AsyncData(:final value?) => value,
@@ -142,7 +159,7 @@ final class RecipePageController extends ChangeNotifier
       await runAction(() async {
         final mealId = await _meals.addRecipeMeal(
           householdId: householdId,
-          recipeId: recipe.id,
+          link: recipe.link,
           name: recipe.name,
           ingredients: recipeMealLines(recipe, scale),
           addedBy: memberId,
@@ -187,8 +204,9 @@ final class RecipePageController extends ChangeNotifier
   }
 
   void _followMeals(List<Meal> meals) {
-    final id = Meal.idForRecipe(recipeId);
-    final isPlanned = meals.any((meal) => meal.id == id);
+    final isPlanned = meals.any(
+      (meal) => meal.recipeLink?.recipeId == recipeId,
+    );
     if (isPlanned == _isPlanned) return;
     _isPlanned = isPlanned;
     notifyListeners();

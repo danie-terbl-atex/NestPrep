@@ -61,7 +61,7 @@ void main() {
     expect(find.byTooltip(AppCopy.signInWithGoogle), findsOneWidget);
   });
 
-  testWidgets('Google and Apple are marks below the address sign-in', (
+  testWidgets('Google and Apple are marks below the address sign-in on iOS', (
     tester,
   ) async {
     await pump(tester);
@@ -78,7 +78,15 @@ void main() {
       findsNothing,
       reason: 'the mark is the button; the words are its label',
     );
-  });
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
+
+  testWidgets('Android offers Google alone', (tester) async {
+    await pump(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip(AppCopy.signInWithGoogle), findsOneWidget);
+    expect(find.byTooltip(AppCopy.signInWithApple), findsNothing);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
   testWidgets('each mark is a labelled button to a screen reader', (
     tester,
@@ -90,11 +98,9 @@ void main() {
     expect(find.bySemanticsLabel(AppCopy.signInWithGoogle), findsOneWidget);
     expect(find.bySemanticsLabel(AppCopy.signInWithApple), findsOneWidget);
     handle.dispose();
-  });
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
-  testWidgets('Apple says it is coming rather than doing nothing', (
-    tester,
-  ) async {
+  testWidgets('tapping Apple signs in with Apple once', (tester) async {
     await pump(tester);
     await tester.pumpAndSettle();
 
@@ -102,14 +108,9 @@ void main() {
     await tester.tap(find.byTooltip(AppCopy.signInWithApple));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppCopy.signInAppleComingSoonTitle), findsOneWidget);
-    expect(find.text(AppCopy.signInAppleComingSoon), findsOneWidget);
+    expect(auth.appleSignIns, hasLength(1));
     expect(auth.googleSignIns, isEmpty);
-
-    await tester.tap(find.byKey(const ValueKey('apple-coming-soon-ok')));
-    await tester.pumpAndSettle();
-    expect(find.text(AppCopy.signInAppleComingSoonTitle), findsNothing);
-  });
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
   testWidgets('tapping Google asks the gateway exactly once', (tester) async {
     await pump(tester);

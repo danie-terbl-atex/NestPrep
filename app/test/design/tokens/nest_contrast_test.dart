@@ -222,6 +222,16 @@ void main() {
     });
   }
 
+  test('Ink on Premium’s Butter, and on its Oat tile, meets AA in both themes '
+      '(subscriptions ADR-0007)', () {
+    for (final ground in [NestColors.butter, NestColors.oat]) {
+      expect(
+        contrast(NestColors.inkBrand, ground),
+        greaterThanOrEqualTo(_aaText),
+      );
+    }
+  });
+
   test('a member colour round-trips by name and falls back safely', () {
     expect(MemberColor.fromName('mint'), MemberColor.mint);
     expect(MemberColor.fromName('not-a-colour'), MemberColor.violet);

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../data/street_names.dart';
 import '../model/coordinates.dart';
 import '../model/located_member.dart';
@@ -22,10 +23,7 @@ class LocatedMemberRow extends StatelessWidget {
     final nest = NestTheme.of(context);
     final metres = located.metresFromViewer;
     return NestListRow(
-      leading: NestAvatar(
-        name: located.member.displayName,
-        color: located.member.color,
-      ),
+      leading: MemberAvatar(member: located.member),
       title: located.member.displayName,
       subtitle: _status,
       footer: located.isSomewhere ? _Where(located: located) : null,

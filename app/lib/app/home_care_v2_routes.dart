@@ -6,6 +6,7 @@ import '../features/home_care/state/home_care_controller.dart';
 import '../features/home_care/state/routines_controller.dart';
 import '../features/home_care/ui/languages_screen.dart';
 import '../features/home_care/ui/routines_screen.dart';
+import '../features/home_care/ui/shifts_screen.dart';
 import '../features/home_care/ui/stock_screen.dart';
 import '../features/home_care/ui/today_rooms_screen.dart';
 import '../shared/time/household_clock.dart';
@@ -24,6 +25,10 @@ List<RouteBase> homeCareV2Routes() => [
   GoRoute(
     path: HomeCareRoute.languagesPath,
     builder: (context, state) => const LanguagesScreen(),
+  ),
+  GoRoute(
+    path: HomeCareRoute.shiftsPath,
+    builder: (context, state) => const ShiftsScreen(),
   ),
   ShellRoute(
     builder: (context, state, child) =>

@@ -16,6 +16,10 @@ abstract interface class RecipeRepository {
   /// it, paging per context replaces the single read (§7).
   static const catalogueLimit = 200;
 
+  Stream<List<Recipe>> watchOwnRecipes(String householdId);
+
+  static const ownRecipeLimit = 300;
+
   /// The published recipes among [ids], in no particular order. One that is
   /// missing, retired or unreadable by this build is left out, never a
   /// failure: whatever named it shows its own words instead.

@@ -88,6 +88,10 @@ abstract final class NestSize {
   static const double avatarSmall = 28;
   static const double avatarMedium = 40;
   static const double avatarLarge = 56;
+  static const double avatarHero = 112;
+  static const double creationReveal = 208;
+  static const double pickTile = 84;
+  static const double cropperMax = 320;
   static const double sheetHandleWidth = 44;
   static const double sheetHandleHeight = 4;
   static const double bottomBarHeight = 68;

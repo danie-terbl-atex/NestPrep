@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase-admin/firestore';
 import { describe, expect, it } from 'vitest';
 
 import { readAiSettings, type AiSettings } from '../../../src/ai/ai_settings';
@@ -167,5 +168,39 @@ describe('a picture that fails', () => {
     await expect(runImageCall(broken, call)).rejects.toThrow(RangeError);
     expect(ledger.settlements[0]?.settlement).toMatchObject({ ok: false, reason: 'error' });
     expect(ledger.usage.calls).toBe(0);
+  });
+});
+
+describe('a creation, against its own allowance (avatars ADR-0003)', () => {
+  const creation: ImageCall = {
+    ...call,
+    feature: 'avatarCreate',
+    request: { ...request, aspectRatio: '1:1', labels: { feature: 'avatarCreate' } },
+  };
+
+  it('spends a creation, not a monthly call, and says how many creations are left', async () => {
+    const { deps, ledger } = world(['image']);
+    ledger.entitlement = { premiumUntil: Timestamp.fromDate(new Date('2027-01-01T00:00:00Z')) };
+    const result = await runImageCall(deps, creation);
+    expect(result.callsLeft).toBe(11);
+    expect(ledger.usage).toEqual({ calls: 0, attempts: 0 });
+    expect(ledger.created).toEqual({ month: 1, lifetime: 1, attempts: 1 });
+  });
+
+  it('gives a free household one in all, then refuses before the model is asked', async () => {
+    const { deps, ledger, model } = world(['image']);
+    expect((await runImageCall(deps, creation)).callsLeft).toBe(0);
+    expect(
+      await refusalOf(() => runImageCall(deps, { ...creation, feature: 'avatarPortrait' })),
+    ).toBe('aiLimitReached');
+    expect(model.calls).toBe(1);
+    expect(ledger.created.lifetime).toBe(1);
+  });
+
+  it('gives the creation back when the picture is blocked', async () => {
+    const { deps, ledger } = world([new ModelCallError('blocked', 'IMAGE_SAFETY')]);
+    expect(await refusalOf(() => runImageCall(deps, creation))).toBe('aiDeclined');
+    expect(ledger.created).toEqual({ month: 0, lifetime: 0, attempts: 1 });
+    expect(ledger.usage).toEqual({ calls: 0, attempts: 0 });
   });
 });

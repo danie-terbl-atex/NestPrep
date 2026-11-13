@@ -16,8 +16,10 @@ import '../model/deletion_preview.dart';
 final class AccountDeletionController extends ChangeNotifier {
   AccountDeletionController({
     required AccountDataGateway accountDataGateway,
+    required Future<void> Function() revokeAppleSignIn,
     required Future<void> Function() signOut,
   }) : _gateway = accountDataGateway,
+       _revokeApple = revokeAppleSignIn,
        _endSession = signOut {
     unawaited(load());
   }
@@ -26,6 +28,7 @@ final class AccountDeletionController extends ChangeNotifier {
   static const confirmationWord = 'DELETE';
 
   final AccountDataGateway _gateway;
+  final Future<void> Function() _revokeApple;
   final Future<void> Function() _endSession;
 
   AsyncState<DeletionPreview> _preview = const AsyncLoading();
@@ -71,6 +74,7 @@ final class AccountDeletionController extends ChangeNotifier {
     _deleteFailure = null;
     _notify();
     try {
+      await _revokeApple();
       await _gateway.deleteAccount(
         endingHouseholdIds: preview.value.endingHouseholdIds,
       );

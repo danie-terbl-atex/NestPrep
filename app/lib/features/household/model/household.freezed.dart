@@ -25,7 +25,7 @@ mixin _$Household {
 /// `setCarerShiftOnly`; the rules read it on every request.
 @JsonKey(includeToJson: false) Map<String, bool> get shiftOnly;/// `invitePeople` while a new household's admin has not yet finished or
 /// skipped the invite step (household ADR-0003).
-@JsonKey(includeToJson: false) String? get pendingSetupStep; String? get createdBy;@ServerTimestampConverter() DateTime? get createdAt;
+@JsonKey(includeToJson: false) String? get pendingSetupStep; String? get createdBy;@ServerTimestampConverter() DateTime? get createdAt;@JsonKey(includeToJson: false) bool get avatarShop;@JsonKey(includeToJson: false) bool get avatarCreationsOn;
 /// Create a copy of Household
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -39,20 +39,20 @@ $HouseholdCopyWith<Household> get copyWith => _$HouseholdCopyWithImpl<Household>
 @override
 bool operator ==(Object other) {
   final _this = this as Household;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Household&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.timeZone, _this.timeZone) || other.timeZone == _this.timeZone)&&const DeepCollectionEquality().equals(other.members, _this.members)&&const DeepCollectionEquality().equals(other.access, _this.access)&&const DeepCollectionEquality().equals(other.profiles, _this.profiles)&&const DeepCollectionEquality().equals(other.shiftOnly, _this.shiftOnly)&&(identical(other.pendingSetupStep, _this.pendingSetupStep) || other.pendingSetupStep == _this.pendingSetupStep)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Household&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.timeZone, _this.timeZone) || other.timeZone == _this.timeZone)&&const DeepCollectionEquality().equals(other.members, _this.members)&&const DeepCollectionEquality().equals(other.access, _this.access)&&const DeepCollectionEquality().equals(other.profiles, _this.profiles)&&const DeepCollectionEquality().equals(other.shiftOnly, _this.shiftOnly)&&(identical(other.pendingSetupStep, _this.pendingSetupStep) || other.pendingSetupStep == _this.pendingSetupStep)&&(identical(other.createdBy, _this.createdBy) || other.createdBy == _this.createdBy)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.avatarShop, _this.avatarShop) || other.avatarShop == _this.avatarShop)&&(identical(other.avatarCreationsOn, _this.avatarCreationsOn) || other.avatarCreationsOn == _this.avatarCreationsOn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Household;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.timeZone,const DeepCollectionEquality().hash(_this.members),const DeepCollectionEquality().hash(_this.access),const DeepCollectionEquality().hash(_this.profiles),const DeepCollectionEquality().hash(_this.shiftOnly),_this.pendingSetupStep,_this.createdBy,_this.createdAt);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.timeZone,const DeepCollectionEquality().hash(_this.members),const DeepCollectionEquality().hash(_this.access),const DeepCollectionEquality().hash(_this.profiles),const DeepCollectionEquality().hash(_this.shiftOnly),_this.pendingSetupStep,_this.createdBy,_this.createdAt,_this.avatarShop,_this.avatarCreationsOn);
 }
 
 @override
 String toString() {
   final _this = this as Household;
-  return 'Household(id: ${_this.id}, name: ${_this.name}, timeZone: ${_this.timeZone}, members: ${_this.members}, access: ${_this.access}, profiles: ${_this.profiles}, shiftOnly: ${_this.shiftOnly}, pendingSetupStep: ${_this.pendingSetupStep}, createdBy: ${_this.createdBy}, createdAt: ${_this.createdAt})';
+  return 'Household(id: ${_this.id}, name: ${_this.name}, timeZone: ${_this.timeZone}, members: ${_this.members}, access: ${_this.access}, profiles: ${_this.profiles}, shiftOnly: ${_this.shiftOnly}, pendingSetupStep: ${_this.pendingSetupStep}, createdBy: ${_this.createdBy}, createdAt: ${_this.createdAt}, avatarShop: ${_this.avatarShop}, avatarCreationsOn: ${_this.avatarCreationsOn})';
 }
 
 
@@ -63,7 +63,7 @@ abstract mixin class $HouseholdCopyWith<$Res>  {
   factory $HouseholdCopyWith(Household value, $Res Function(Household) _then) = _$HouseholdCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String timeZone, Map<String, String> members,@JsonKey(includeToJson: false)@GrantsByUidConverter() Map<String, AccessGrant> access,@JsonKey(includeToJson: false) Map<String, String> profiles,@JsonKey(includeToJson: false) Map<String, bool> shiftOnly,@JsonKey(includeToJson: false) String? pendingSetupStep, String? createdBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String timeZone, Map<String, String> members,@JsonKey(includeToJson: false)@GrantsByUidConverter() Map<String, AccessGrant> access,@JsonKey(includeToJson: false) Map<String, String> profiles,@JsonKey(includeToJson: false) Map<String, bool> shiftOnly,@JsonKey(includeToJson: false) String? pendingSetupStep, String? createdBy,@ServerTimestampConverter() DateTime? createdAt,@JsonKey(includeToJson: false) bool avatarShop,@JsonKey(includeToJson: false) bool avatarCreationsOn
 });
 
 
@@ -80,7 +80,7 @@ class _$HouseholdCopyWithImpl<$Res>
 
 /// Create a copy of Household
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? timeZone = null,Object? members = null,Object? access = null,Object? profiles = null,Object? shiftOnly = null,Object? pendingSetupStep = freezed,Object? createdBy = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? timeZone = null,Object? members = null,Object? access = null,Object? profiles = null,Object? shiftOnly = null,Object? pendingSetupStep = freezed,Object? createdBy = freezed,Object? createdAt = freezed,Object? avatarShop = null,Object? avatarCreationsOn = null,}) {
   return _then(Household(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -92,7 +92,9 @@ as Map<String, String>,shiftOnly: null == shiftOnly ? _self.shiftOnly : shiftOnl
 as Map<String, bool>,pendingSetupStep: freezed == pendingSetupStep ? _self.pendingSetupStep : pendingSetupStep // ignore: cast_nullable_to_non_nullable
 as String?,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,avatarShop: null == avatarShop ? _self.avatarShop : avatarShop // ignore: cast_nullable_to_non_nullable
+as bool,avatarCreationsOn: null == avatarCreationsOn ? _self.avatarCreationsOn : avatarCreationsOn // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -177,10 +179,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeToJson: false)  bool avatarShop, @JsonKey(includeToJson: false)  bool avatarCreationsOn)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Household() when $default != null:
-return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt,_that.avatarShop,_that.avatarCreationsOn);case _:
   return orElse();
 
 }
@@ -198,10 +200,10 @@ return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeToJson: false)  bool avatarShop, @JsonKey(includeToJson: false)  bool avatarCreationsOn)  $default,) {final _that = this;
 switch (_that) {
 case _Household():
-return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt,_that.avatarShop,_that.avatarCreationsOn);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -218,10 +220,10 @@ return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String id,  String name,  String timeZone,  Map<String, String> members, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access, @JsonKey(includeToJson: false)  Map<String, String> profiles, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly, @JsonKey(includeToJson: false)  String? pendingSetupStep,  String? createdBy, @ServerTimestampConverter()  DateTime? createdAt, @JsonKey(includeToJson: false)  bool avatarShop, @JsonKey(includeToJson: false)  bool avatarCreationsOn)?  $default,) {final _that = this;
 switch (_that) {
 case _Household() when $default != null:
-return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_that.profiles,_that.shiftOnly,_that.pendingSetupStep,_that.createdBy,_that.createdAt,_that.avatarShop,_that.avatarCreationsOn);case _:
   return null;
 
 }
@@ -233,7 +235,7 @@ return $default(_that.id,_that.name,_that.timeZone,_that.members,_that.access,_t
 @JsonSerializable()
 
 class _Household extends Household {
-  const _Household({@JsonKey(includeToJson: false) required this.id, required this.name, required this.timeZone,  Map<String, String> members = const <String, String>{}, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access = const <String, AccessGrant>{}, @JsonKey(includeToJson: false)  Map<String, String> profiles = const <String, String>{}, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly = const <String, bool>{}, @JsonKey(includeToJson: false) this.pendingSetupStep, this.createdBy, @ServerTimestampConverter() this.createdAt}): _members = members,_access = access,_profiles = profiles,_shiftOnly = shiftOnly,super._();
+  const _Household({@JsonKey(includeToJson: false) required this.id, required this.name, required this.timeZone,  Map<String, String> members = const <String, String>{}, @JsonKey(includeToJson: false)@GrantsByUidConverter()  Map<String, AccessGrant> access = const <String, AccessGrant>{}, @JsonKey(includeToJson: false)  Map<String, String> profiles = const <String, String>{}, @JsonKey(includeToJson: false)  Map<String, bool> shiftOnly = const <String, bool>{}, @JsonKey(includeToJson: false) this.pendingSetupStep, this.createdBy, @ServerTimestampConverter() this.createdAt, @JsonKey(includeToJson: false) this.avatarShop = true, @JsonKey(includeToJson: false) this.avatarCreationsOn = true}): _members = members,_access = access,_profiles = profiles,_shiftOnly = shiftOnly,super._();
   factory _Household.fromJson(Map<String, dynamic> json) => _$HouseholdFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String id;
@@ -286,6 +288,8 @@ class _Household extends Household {
 @override@JsonKey(includeToJson: false) final  String? pendingSetupStep;
 @override final  String? createdBy;
 @override@ServerTimestampConverter() final  DateTime? createdAt;
+@override@JsonKey(includeToJson: false) final  bool avatarShop;
+@override@JsonKey(includeToJson: false) final  bool avatarCreationsOn;
 
 /// Create a copy of Household
 /// with the given fields replaced by the non-null parameter values.
@@ -300,18 +304,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Household&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone)&&const DeepCollectionEquality().equals(other.members, _members)&&const DeepCollectionEquality().equals(other.access, _access)&&const DeepCollectionEquality().equals(other.profiles, _profiles)&&const DeepCollectionEquality().equals(other.shiftOnly, _shiftOnly)&&(identical(other.pendingSetupStep, pendingSetupStep) || other.pendingSetupStep == pendingSetupStep)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Household&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone)&&const DeepCollectionEquality().equals(other.members, _members)&&const DeepCollectionEquality().equals(other.access, _access)&&const DeepCollectionEquality().equals(other.profiles, _profiles)&&const DeepCollectionEquality().equals(other.shiftOnly, _shiftOnly)&&(identical(other.pendingSetupStep, pendingSetupStep) || other.pendingSetupStep == pendingSetupStep)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.avatarShop, avatarShop) || other.avatarShop == avatarShop)&&(identical(other.avatarCreationsOn, avatarCreationsOn) || other.avatarCreationsOn == avatarCreationsOn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,timeZone,const DeepCollectionEquality().hash(_members),const DeepCollectionEquality().hash(_access),const DeepCollectionEquality().hash(_profiles),const DeepCollectionEquality().hash(_shiftOnly),pendingSetupStep,createdBy,createdAt);
+    return Object.hash(runtimeType,id,name,timeZone,const DeepCollectionEquality().hash(_members),const DeepCollectionEquality().hash(_access),const DeepCollectionEquality().hash(_profiles),const DeepCollectionEquality().hash(_shiftOnly),pendingSetupStep,createdBy,createdAt,avatarShop,avatarCreationsOn);
 }
 
 @override
 String toString() {
-    return 'Household(id: $id, name: $name, timeZone: $timeZone, members: $members, access: $access, profiles: $profiles, shiftOnly: $shiftOnly, pendingSetupStep: $pendingSetupStep, createdBy: $createdBy, createdAt: $createdAt)';
+    return 'Household(id: $id, name: $name, timeZone: $timeZone, members: $members, access: $access, profiles: $profiles, shiftOnly: $shiftOnly, pendingSetupStep: $pendingSetupStep, createdBy: $createdBy, createdAt: $createdAt, avatarShop: $avatarShop, avatarCreationsOn: $avatarCreationsOn)';
 }
 
 
@@ -322,7 +326,7 @@ abstract mixin class _$HouseholdCopyWith<$Res> implements $HouseholdCopyWith<$Re
   factory _$HouseholdCopyWith(_Household value, $Res Function(_Household) _then) = __$HouseholdCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false) String id, String name, String timeZone, Map<String, String> members,@JsonKey(includeToJson: false)@GrantsByUidConverter() Map<String, AccessGrant> access,@JsonKey(includeToJson: false) Map<String, String> profiles,@JsonKey(includeToJson: false) Map<String, bool> shiftOnly,@JsonKey(includeToJson: false) String? pendingSetupStep, String? createdBy,@ServerTimestampConverter() DateTime? createdAt
+@JsonKey(includeToJson: false) String id, String name, String timeZone, Map<String, String> members,@JsonKey(includeToJson: false)@GrantsByUidConverter() Map<String, AccessGrant> access,@JsonKey(includeToJson: false) Map<String, String> profiles,@JsonKey(includeToJson: false) Map<String, bool> shiftOnly,@JsonKey(includeToJson: false) String? pendingSetupStep, String? createdBy,@ServerTimestampConverter() DateTime? createdAt,@JsonKey(includeToJson: false) bool avatarShop,@JsonKey(includeToJson: false) bool avatarCreationsOn
 });
 
 
@@ -339,7 +343,7 @@ class __$HouseholdCopyWithImpl<$Res>
 
 /// Create a copy of Household
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? timeZone = null,Object? members = null,Object? access = null,Object? profiles = null,Object? shiftOnly = null,Object? pendingSetupStep = freezed,Object? createdBy = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? timeZone = null,Object? members = null,Object? access = null,Object? profiles = null,Object? shiftOnly = null,Object? pendingSetupStep = freezed,Object? createdBy = freezed,Object? createdAt = freezed,Object? avatarShop = null,Object? avatarCreationsOn = null,}) {
   return _then(_Household(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -351,7 +355,9 @@ as Map<String, String>,shiftOnly: null == shiftOnly ? _self._shiftOnly : shiftOn
 as Map<String, bool>,pendingSetupStep: freezed == pendingSetupStep ? _self.pendingSetupStep : pendingSetupStep // ignore: cast_nullable_to_non_nullable
 as String?,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,avatarShop: null == avatarShop ? _self.avatarShop : avatarShop // ignore: cast_nullable_to_non_nullable
+as bool,avatarCreationsOn: null == avatarCreationsOn ? _self.avatarCreationsOn : avatarCreationsOn // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -35,4 +35,5 @@ const _$EntryKindEnumMap = {
   EntryKind.choreUndone: 'choreUndone',
   EntryKind.reward: 'reward',
   EntryKind.rewardReturned: 'rewardReturned',
+  EntryKind.accessory: 'accessory',
 };

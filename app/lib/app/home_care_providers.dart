@@ -8,10 +8,12 @@ import '../features/home_care/data/cleaning_job_repository.dart';
 import '../features/home_care/data/firebase_translation_repository.dart';
 import '../features/home_care/data/firestore_cleaning_job_repository.dart';
 import '../features/home_care/data/firestore_helper_profile_repository.dart';
+import '../features/home_care/data/firestore_helper_shift_repository.dart';
 import '../features/home_care/data/firestore_home_care_library_repository.dart';
 import '../features/home_care/data/firestore_routine_repository.dart';
 import '../features/home_care/data/flutter_tts_read_aloud.dart';
 import '../features/home_care/data/helper_profile_repository.dart';
+import '../features/home_care/data/helper_shift_repository.dart';
 import '../features/home_care/data/home_care_library_repository.dart';
 import '../features/home_care/data/image_picker_photo_source.dart';
 import '../features/home_care/data/job_photo_store.dart';
@@ -56,6 +58,10 @@ List<SingleChildWidget> homeCareProviders() => [
   Provider<HelperProfileRepository>(
     create: (context) =>
         FirestoreHelperProfileRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<HelperShiftRepository>(
+    create: (context) =>
+        FirestoreHelperShiftRepository(context.read<FirebaseFirestore>()),
   ),
   Provider<TranslationRepository>(
     create: (context) => FirebaseTranslationRepository(

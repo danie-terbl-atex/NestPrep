@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../data/household_directory.dart';
 import '../model/member.dart';
 
@@ -50,10 +51,7 @@ class _InviteSheetBodyState extends State<_InviteSheetBody> {
       mainAxisSize: MainAxisSize.min,
       children: [
         NestListRow(
-          leading: NestAvatar(
-            name: widget.member.displayName,
-            color: widget.member.color,
-          ),
+          leading: MemberAvatar(member: widget.member),
           title: widget.member.displayName,
           subtitle: AppCopy.householdUnclaimed,
         ),

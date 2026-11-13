@@ -5,7 +5,7 @@ import type { z } from 'zod';
 
 import { functionUrlFrom } from '../shared/function_url';
 import { UnusableEmail } from './issue_vouchers';
-import { premiumEmailPepper, storeInvokerEmail } from './premium_config';
+import { premiumEmailPepper, storeInvokerEmail, storeInvokers } from './premium_config';
 import { type IdTokenCheck, googleIdTokenCheck, isStoreCaller } from './store_caller';
 
 export interface StoreRequest {
@@ -56,7 +56,7 @@ export function storeEndpoint<S extends z.ZodType>(
   answer: (input: z.infer<S>) => Promise<Readonly<Record<string, unknown>>>,
 ): HttpsFunction {
   return onRequest(
-    { invoker: 'private', secrets: [premiumEmailPepper] },
+    { invoker: storeInvokers(), secrets: [premiumEmailPepper] },
     async (req: Request, res: Response) => {
       res.setHeader('Cache-Control', 'no-store');
       try {

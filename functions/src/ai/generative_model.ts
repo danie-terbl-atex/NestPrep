@@ -44,6 +44,8 @@ export interface ModelRequest {
   readonly responseSchema: ResponseSchema;
   readonly maxOutputTokens: number;
   readonly temperature: number;
+  /** Vertex reads a single image at its finest only when asked, and refuses it for several. */
+  readonly mediaResolution?: 'high';
   /**
    * Billing labels Vertex attaches to the call — which feature spent it.
    * Lower-case letters, digits, `_` and `-` only.

@@ -115,7 +115,7 @@ void main() {
           id: Meal.idForRecipe('bobotie'),
           name: 'Bobotie',
           addedBy: Fixtures.samMemberId,
-        ),
+        ).copyWith(recipeId: 'bobotie'),
     ]);
     await tester.pumpAndSettle();
   }

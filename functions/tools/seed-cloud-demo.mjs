@@ -26,6 +26,7 @@
 import { CLOUD_CAST } from './cloud-demo/cast.mjs';
 import { connect, demoPassword } from './cloud-demo/admin.mjs';
 import { createContext } from './cloud-demo/context.mjs';
+import { seedAvatars } from './cloud-demo/avatars.mjs';
 import { seedCalendar } from './cloud-demo/calendar.mjs';
 import { seedDocuments } from './cloud-demo/documents.mjs';
 import { seedGroceries } from './cloud-demo/groceries.mjs';
@@ -83,6 +84,7 @@ for (const part of [
   seedCalendar,
   seedTodos,
   seedStars,
+  seedAvatars,
   seedMeals,
   seedLunch,
   seedLunchStock,

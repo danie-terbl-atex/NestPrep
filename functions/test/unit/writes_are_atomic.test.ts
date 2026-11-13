@@ -177,6 +177,19 @@ describe('every callable declares what it may cost', () => {
         'reserveRewardPoints',
         'reviewChore',
         'settleReward',
+        // Avatars: what a member owns and the look mirrored onto them are the
+        // Functions' alone, checked against a catalogue no rule holds; an
+        // accessory bought with stars moves the ledger, the balance and what
+        // is owned at once (avatars ADR-0001, ADR-0004). A creation is checked,
+        // drawn, charged to an allowance and kept by a trigger, because a kid
+        // device cannot call a callable; so is a keepsake deleted (ADR-0003,
+        // ADR-0005). The hourly sweep ends the creations a dead run left
+        // behind and gives their claims back.
+        'onAvatarCreation',
+        'onAvatarKeepsakeDelete',
+        'onAvatarPurchase',
+        'onMemberAvatarWritten',
+        'sweepAvatarCreations',
         // Nanny hub: ending a shift writes a summary derived from every entry
         // the carer logged, which no rule can read or count (nanny-hub
         // ADR-0002).
@@ -300,6 +313,15 @@ describe('every callable declares what it may cost', () => {
         // A household recipe's allergen codes come from word lists no rule
         // can run, so only a Function writes one (recipes ADR-0002).
         'saveLunchRecipes',
+        // A household's own recipe the same way (recipes ADR-0007), and the
+        // model door that drafts one, writing nothing but the cap's ledger
+        // (recipes ADR-0008), and the two that read a PDF's pages (recipes
+        // ADR-0009).
+        'deleteHouseholdRecipe',
+        'draftRecipe',
+        'saveHouseholdRecipe',
+        'scanRecipeDocument',
+        'draftDocumentRecipe',
         // Photo frames: a device with no Auth user pairs by a code a parent
         // claims, and reads a day assembled across areas no grant opens to it
         // (photo-frames ADR-0001), and unlinks itself with its own secret
@@ -324,6 +346,11 @@ describe('every callable declares what it may cost', () => {
         'getFrameLunchPhoto',
         'getFrameMonth',
         'getFrameRecipePhoto',
+        'getFrameAvatar',
+        // A job's photo for the helper's day, and her clock at the wall
+        // (photo-frames ADR-0020).
+        'getFrameJobPhoto',
+        'setFrameShift',
         'getFramePhoto',
         'getFramePhotos',
         'pollFramePairing',

@@ -21,6 +21,10 @@ enum AccountDataProblem {
 
   /// The phone's share sheet would not open for the finished export.
   shareUnavailable,
+
+  /// The account has Apple, and Apple did not confirm it is them, so its
+  /// token could not be revoked and nothing was deleted (accounts ADR-0014).
+  appleNotConfirmed,
 }
 
 final class AccountDataFailure extends AppFailure {

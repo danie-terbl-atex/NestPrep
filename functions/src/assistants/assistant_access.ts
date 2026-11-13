@@ -1,7 +1,8 @@
 import type { Firestore } from 'firebase-admin/firestore';
 
 import { isFamilyRole, type Level } from '../household/access';
-import { HOUSEHOLDS, MEMBERS, type HouseholdDocument } from '../household/documents';
+import { HOUSEHOLDS, type HouseholdDocument } from '../household/documents';
+import { claimedMemberIdOf } from '../household/membership';
 import { levelNow } from '../household/shift_window';
 import { APP_CONFIG, readFlag } from '../shared/feature_flags';
 import { SCOPE_NEEDS, type AssistantScope } from './assistant_scopes';
@@ -100,7 +101,12 @@ export async function requireAccess(
     }
   }
 
-  const memberId = await claimedMemberId(store, principal.householdId, household, principal.uid);
+  const memberId = await claimedMemberIdOf(
+    store,
+    principal.householdId,
+    household.profiles,
+    principal.uid,
+  );
   if (memberId === null) {
     throw new AssistantRefusal(
       'forbidden',
@@ -124,26 +130,4 @@ export async function requireSwitchedOn(store: Firestore): Promise<void> {
       'NestPrep assistants are switched off.',
     );
   }
-}
-
-/**
- * The profile this uid claimed, by the test the rules' `hasClaimed` applies to
- * a write's author — `claimedBy` is the uid — so the app can later edit what an
- * assistant wrote. The household's `profiles` map is tried first; an account
- * claimed before the map existed is found by the query.
- */
-async function claimedMemberId(
-  store: Firestore,
-  householdId: string,
-  household: HouseholdDocument,
-  uid: string,
-): Promise<string | null> {
-  const members = store.collection(HOUSEHOLDS).doc(householdId).collection(MEMBERS);
-  const mapped = household.profiles?.[uid];
-  if (mapped !== undefined) {
-    const profile = await members.doc(mapped).get();
-    if (profile.get('claimedBy') === uid) return mapped;
-  }
-  const claimed = await members.where('claimedBy', '==', uid).limit(1).get();
-  return claimed.docs[0]?.id ?? null;
 }

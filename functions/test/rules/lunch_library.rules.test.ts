@@ -187,6 +187,26 @@ describe('lunchItems/{itemId}', () => {
     }
   });
 
+  it('refuses a link to an own recipe, which can be deleted (recipes ADR-0007 §7)', async () => {
+    const own = 'own-0123456789abcdef0123';
+    await givenData(async (db) => {
+      await setDoc(doc(db, `${RECIPES}/${own}`), {
+        name: 'Bobotie',
+        source: 'own',
+        allergens: [],
+        addedBy: 'm-sam',
+        createdAt: new Date(),
+      });
+    });
+    await assertFails(
+      setDoc(doc(await asUser(SAM), `${ITEMS}/bobotie`), {
+        ...newItem,
+        allergens: [],
+        householdRecipeId: own,
+      }),
+    );
+  });
+
   it('never changes or drops the link, nor takes the recipe’s codes off the dish', async () => {
     await givenTheWrapRecipe();
     await givenData(async (db) => {

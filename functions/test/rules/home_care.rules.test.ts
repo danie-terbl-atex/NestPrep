@@ -346,6 +346,41 @@ describe('the helper working through her job', () => {
     );
   });
 
+  it('hands in without an after photo', async () => {
+    await assertSucceeds(
+      change(await as('cleaner'), {
+        job: JOBS.cleaners,
+        fields: { doneStepIds: ['s1', 's2'], status: 'submitted', revision: 1 },
+        revision: 1,
+        event: { status: 'submitted', by: CLEANER },
+      }),
+    );
+  });
+
+  it('hands in again without a photo only by clearing the last one', async () => {
+    await givenHomeCareRecords({
+      cleaners: { status: 'sentBack', revision: 3, afterPhoto: AFTER(2), reviewNote: 'Again' },
+    });
+    const db = await as('cleaner');
+    const again = { doneStepIds: ['s1', 's2'], status: 'submitted', revision: 4 };
+    await assertFails(
+      change(db, {
+        job: JOBS.cleaners,
+        fields: again,
+        revision: 4,
+        event: { status: 'submitted', by: CLEANER },
+      }),
+    );
+    await assertSucceeds(
+      change(db, {
+        job: JOBS.cleaners,
+        fields: { ...again, afterPhoto: null },
+        revision: 4,
+        event: { status: 'submitted', by: CLEANER },
+      }),
+    );
+  });
+
   it('refuses a hand-in with a step left, or an after photo under the wrong name', async () => {
     const db = await as('cleaner');
     await assertFails(

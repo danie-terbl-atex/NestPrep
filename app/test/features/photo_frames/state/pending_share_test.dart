@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/photo_frames/model/shared_page.dart';
+import 'package:nestprep/features/photo_frames/model/shared_pdf.dart';
 import 'package:nestprep/features/photo_frames/state/pending_share.dart';
 
 void main() {
@@ -61,4 +62,39 @@ void main() {
       expect(invites, [Uri.parse('nestprep://invite/ABCD2345')]);
     },
   );
+  test('holds a shared PDF by its token alone, until it is taken', () async {
+    links.add(Uri.parse('nestprep://share?pdf=4F1C2D3E-1111-2222'));
+    await pumpEventQueue();
+    expect(pending.pdf, const SharedPdf('4F1C2D3E-1111-2222'));
+    expect(pending.page, isNull);
+    expect(pending.isWaiting, isTrue);
+
+    expect(pending.takePdf(), const SharedPdf('4F1C2D3E-1111-2222'));
+    expect(pending.isWaiting, isFalse);
+    expect(pending.takePdf(), isNull);
+  });
+
+  test('a PDF wins over a link in the same share, and replaces a page', () async {
+    links
+      ..add(Uri.parse('nestprep://share?url=https://one.example.com'))
+      ..add(
+        Uri.parse(
+          'nestprep://share?pdf=4F1C2D3E-1111-2222&url=https://two.example.com',
+        ),
+      );
+    await pumpEventQueue();
+    expect(pending.page, isNull);
+    expect(pending.pdf?.token, '4F1C2D3E-1111-2222');
+  });
+
+  test('a token that could be a path is ignored', () async {
+    for (final token in ['../../Documents/vault', '/etc/passwd', 'short', '']) {
+      links.add(
+        Uri(scheme: 'nestprep', host: 'share', queryParameters: {'pdf': token}),
+      );
+    }
+    await pumpEventQueue();
+    expect(pending.isWaiting, isFalse);
+    expect(notified, 0);
+  });
 }

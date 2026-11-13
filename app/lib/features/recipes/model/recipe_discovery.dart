@@ -73,7 +73,9 @@ final class RecipeDiscovery {
   static Recipe? tonightFrom(List<Recipe> recipes, CalendarDate today) {
     final mains = [
       for (final recipe in recipes)
-        if (recipe.courseIn(RecipeContext.dinner) == RecipeCourse.main) recipe,
+        if (!recipe.isOwn &&
+            recipe.courseIn(RecipeContext.dinner) == RecipeCourse.main)
+          recipe,
     ]..sort((a, b) => a.id.compareTo(b.id));
     if (mains.isEmpty) return null;
     return mains[_epoch.daysUntil(today) % mains.length];
@@ -81,9 +83,10 @@ final class RecipeDiscovery {
 
   static final _epoch = CalendarDate(2026, 1, 1);
 
-  /// A shelf with fewer than two on it is not a shelf.
   static RecipeShelf? _shelf(RecipeShelfKind kind, List<Recipe> recipes) {
     final on = recipes.where(kind.matches).take(RecipeShelf.limit).toList();
-    return on.length < 2 ? null : RecipeShelf(kind: kind, recipes: on);
+    return on.length < kind.fewestOnShelf
+        ? null
+        : RecipeShelf(kind: kind, recipes: on);
   }
 }

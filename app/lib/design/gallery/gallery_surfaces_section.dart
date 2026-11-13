@@ -28,6 +28,25 @@ class GallerySurfacesSection extends StatelessWidget {
           ],
         ),
         GalleryGroup(
+          title: 'Premium',
+          children: [
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: NestPremiumSeal(label: 'Premium'),
+            ),
+            NestPremiumCard(
+              title: 'nestprep Premium',
+              body: 'Every part of nestprep, for everyone in The Parkers.',
+              detail: 'Renews on Sun 13 Dec',
+              onTap: () {},
+            ),
+            const NestPremiumCard(
+              title: 'nestprep Premium',
+              body: 'Every part of nestprep, for everyone in The Parkers.',
+            ),
+          ],
+        ),
+        GalleryGroup(
           title: 'Twig, the AI mascot',
           children: [
             Wrap(
@@ -173,6 +192,86 @@ class GallerySurfacesSection extends StatelessWidget {
                     isHighlighted: color == MemberColor.violet,
                   ),
               ],
+            ),
+            Wrap(
+              spacing: NestSpace.xl,
+              runSpacing: NestSpace.xl,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              children: [
+                for (final (size, layers) in const [
+                  (NestSize.avatarSmall, <NestAvatarSlot>[]),
+                  (NestSize.avatarMedium, [NestAvatarSlot.top]),
+                  (
+                    NestSize.avatarLarge,
+                    [NestAvatarSlot.top, NestAvatarSlot.badge],
+                  ),
+                  (
+                    NestSize.mark,
+                    [
+                      NestAvatarSlot.ring,
+                      NestAvatarSlot.top,
+                      NestAvatarSlot.badge,
+                    ],
+                  ),
+                ])
+                  NestAvatar(
+                    name: 'Pip',
+                    color: MemberColor.coral,
+                    size: size,
+                    picture: const AssetImage(
+                      'assets/avatars/nestling-pip-2.webp',
+                    ),
+                    layers: [
+                      for (final slot in layers)
+                        NestAvatarLayer(
+                          slot: slot,
+                          image: AssetImage(switch (slot) {
+                            NestAvatarSlot.top =>
+                              'assets/avatars/acc-crown.webp',
+                            NestAvatarSlot.badge =>
+                              'assets/avatars/acc-football.webp',
+                            _ => 'assets/avatars/acc-star-ring.webp',
+                          }),
+                        ),
+                    ],
+                  ),
+                NestEditablePicture(
+                  label: 'Change picture',
+                  onTap: () {},
+                  child: const NestAvatar(
+                    name: 'Olive',
+                    color: MemberColor.mint,
+                    size: NestSize.mark,
+                    layers: [
+                      NestAvatarLayer(
+                        slot: NestAvatarSlot.top,
+                        image: AssetImage('assets/avatars/acc-party-hat.webp'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: NestSize.cropperMax,
+              child: NestPickGrid(
+                children: [
+                  for (final (index, name) in const [
+                    'pip',
+                    'olive',
+                    'sunny',
+                  ].indexed)
+                    NestPickTile(
+                      label: name,
+                      isSelected: index == 0,
+                      onTap: () {},
+                      picture: Image.asset(
+                        'assets/avatars/nestling-$name-1.webp',
+                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ],
         ),

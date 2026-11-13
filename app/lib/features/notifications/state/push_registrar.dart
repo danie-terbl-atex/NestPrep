@@ -18,7 +18,8 @@ import '../model/push_token.dart';
 /// on sign-out so a shared phone stops buzzing for the last person.
 ///
 /// It never asks for permission by itself. [turnOn] is the only way the
-/// phone's prompt appears, and only a person's tap calls it.
+/// phone's prompt appears: from a person's tap, or from the first open of a
+/// household on a phone that has never answered (ADR-0006).
 final class PushRegistrar extends ChangeNotifier {
   PushRegistrar({
     required this._gateway,

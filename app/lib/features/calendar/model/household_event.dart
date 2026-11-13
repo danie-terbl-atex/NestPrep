@@ -71,4 +71,7 @@ abstract class HouseholdEvent with _$HouseholdEvent {
   }
 
   static const minutesInADay = 24 * 60;
+
+  /// What the frame keeps of a note (`NOTE_MAX` in `frame_day.ts`).
+  static const noteMaxLength = 500;
 }

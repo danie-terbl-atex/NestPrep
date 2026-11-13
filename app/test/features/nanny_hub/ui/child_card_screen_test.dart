@@ -1,15 +1,22 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
 import 'package:nestprep/app/nanny_hub_route.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/family_profiles/model/member_health.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/nanny_hub/model/care_routine.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_family_profiles.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/nanny_fixtures.dart';
 import '../../../support/pump_nanny_hub.dart';
+import '../../../support/pump_until.dart';
 
 void main() {
   late NannyFakes fakes;
@@ -157,5 +164,111 @@ void main() {
     await open(tester, brightness: Brightness.dark, textScale: 2);
     await tester.scrollUntilVisible(find.text(NannyCopy.settling), 300);
     expect(tester.takeException(), isNull);
+  });
+
+  group('the child’s photo', () {
+    Future<void> tapInSheet(WidgetTester tester, String text) async {
+      await tester.ensureVisible(find.text(text));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(text));
+    }
+
+    Future<void> openPhotoSheet(WidgetTester tester) async {
+      final change = find.text(NannyCopy.changePhoto);
+      final target = change.evaluate().isEmpty
+          ? find.text(NannyCopy.addPhoto)
+          : change;
+      await tester.tap(target);
+      await tester.pumpAndSettle();
+      expect(find.text(NannyCopy.photoOfChild), findsOneWidget);
+    }
+
+    Future<void> pickOne(WidgetTester tester) async {
+      fakes.picker.next = Uint8List.fromList(
+        img.encodeJpg(img.Image(width: 40, height: 30)),
+      );
+      await tester.tap(find.text(NannyCopy.choosePhoto));
+      await tester.pumpAndSettle();
+    }
+
+    NestButton saveButton(WidgetTester tester) => tester.widget<NestButton>(
+      find.ancestor(
+        of: find.textContaining(
+          RegExp('^(${NannyCopy.save}|${NannyCopy.uploadingPhoto})\$'),
+        ),
+        matching: find.byType(NestButton),
+      ),
+    );
+
+    testWidgets('says it is getting the photo ready while it opens', (
+      tester,
+    ) async {
+      await open(tester);
+      await openPhotoSheet(tester);
+      fakes.picker.holdPicks = Completer<void>();
+      fakes.picker.next = Uint8List.fromList(
+        img.encodeJpg(img.Image(width: 40, height: 30)),
+      );
+      await tester.tap(find.text(NannyCopy.choosePhoto));
+      await tester.pump();
+      expect(find.text(NannyCopy.openingPhoto), findsOneWidget);
+
+      fakes.picker.holdPicks!.complete();
+      await tester.pumpAndSettle();
+      expect(find.text(NannyCopy.openingPhoto), findsNothing);
+    });
+
+    testWidgets('stays open, saying it is uploading, until it is stored', (
+      tester,
+    ) async {
+      await open(tester);
+      await openPhotoSheet(tester);
+      await pickOne(tester);
+      fakes.photos.holdUploads = Completer<void>();
+
+      await tapInSheet(tester, NannyCopy.save);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(NannyCopy.photoOfChild), findsOneWidget);
+      expect(saveButton(tester).isLoading, isTrue);
+      expect(fakes.hub.writes, isEmpty);
+
+      fakes.photos.holdUploads!.complete();
+      await pumpUntil(
+        tester,
+        () => fakes.hub.writes.isNotEmpty,
+        reason: 'the photo is compressed in an isolate, then stored',
+      );
+      expect(find.text(NannyCopy.photoOfChild), findsNothing);
+      expect(fakes.hub.writes.single.$1, 'saveCardPhoto');
+    });
+
+    testWidgets('a refused upload keeps the sheet and says why', (
+      tester,
+    ) async {
+      await open(tester);
+      await openPhotoSheet(tester);
+      await pickOne(tester);
+      fakes.photos.failUploadsWith = const NannyHubFailure(
+        NannyHubProblem.photoTooLarge,
+      );
+
+      await tapInSheet(tester, NannyCopy.save);
+      await pumpUntil(
+        tester,
+        () => find.byType(NestBanner).evaluate().isNotEmpty,
+        reason: 'the photo is compressed in an isolate, then refused',
+      );
+
+      expect(find.text(NannyCopy.photoOfChild), findsOneWidget);
+      expect(
+        find.text(
+          AppCopy.failure(const NannyHubFailure(NannyHubProblem.photoTooLarge)),
+        ),
+        findsOneWidget,
+      );
+      expect(saveButton(tester).isLoading, isFalse);
+      expect(fakes.hub.writes, isEmpty);
+    });
   });
 }

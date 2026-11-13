@@ -35,6 +35,9 @@ export const CONVERSION_TRIGGERS = [
   'recipeShopping',
   'familyLocation',
   'listScan',
+  'ownRecipes',
+  'avatarCreate',
+  'avatarPortrait',
   'direct',
 ] as const;
 export type ConversionTrigger = (typeof CONVERSION_TRIGGERS)[number];

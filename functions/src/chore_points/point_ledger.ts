@@ -1,5 +1,7 @@
 import { FieldValue, type Firestore, type Transaction } from 'firebase-admin/firestore';
 
+import { type AvatarStage, isAvatarStage, starStage } from '../avatars/avatar_stage';
+import { memberRef } from '../household/documents';
 import { balanceRef, entryRef } from './point_refs';
 import { parseSnapshot, storedBalance, type StoredBalance } from './point_documents';
 import { NO_STREAK, nextStreak } from './streak';
@@ -17,7 +19,9 @@ import { NO_STREAK, nextStreak } from './streak';
  * every member a transaction will touch before [stageLine] is called for any.
  */
 
-export type EntryKind = 'chore' | 'choreUndone' | 'reward' | 'rewardReturned';
+export type EntryKind = 'chore' | 'choreUndone' | 'reward' | 'rewardReturned' | 'accessory';
+
+const SPENT: readonly EntryKind[] = ['reward', 'rewardReturned', 'accessory'];
 
 export interface LedgerLine {
   readonly entryId: string;
@@ -32,20 +36,31 @@ export interface LedgerLine {
 
 const EMPTY: StoredBalance = { balance: 0, earned: 0, spent: 0, ...NO_STREAK };
 
+/** A balance, and the stage of the kid's look when they have one (avatars ADR-0004). */
+export interface LedgerBalance extends StoredBalance {
+  readonly lookStage: AvatarStage | null;
+}
+
 export async function readBalance(
   transaction: Transaction,
   store: Firestore,
   householdId: string,
   memberId: string,
-): Promise<StoredBalance> {
-  const snapshot = await transaction.get(balanceRef(store, householdId, memberId));
-  return parseSnapshot(snapshot, storedBalance) ?? EMPTY;
+): Promise<LedgerBalance> {
+  const [snapshot, member] = await transaction.getAll(
+    balanceRef(store, householdId, memberId),
+    memberRef(store, householdId, memberId),
+  );
+  const stored =
+    (snapshot === undefined ? undefined : parseSnapshot(snapshot, storedBalance)) ?? EMPTY;
+  const stage: unknown = member?.get('role') === 'kid' ? member.get('look.stage') : undefined;
+  return { ...stored, lookStage: isAvatarStage(stage) ? stage : null };
 }
 
 /** What a line does to a balance. Pure, so the arithmetic is tested alone. */
 export function applyLine(balance: StoredBalance, line: LedgerLine): StoredBalance {
   const earnedDelta = line.kind === 'chore' || line.kind === 'choreUndone' ? line.delta : 0;
-  const spentDelta = line.kind === 'reward' || line.kind === 'rewardReturned' ? -line.delta : 0;
+  const spentDelta = SPENT.includes(line.kind) ? -line.delta : 0;
   // Only the three streak fields are taken from it: `nextStreak` hands back
   // what it was given when nothing moves, which here is the whole balance.
   const streak = line.earnedOn === undefined ? balance : nextStreak(balance, line.earnedOn);
@@ -59,15 +74,23 @@ export function applyLine(balance: StoredBalance, line: LedgerLine): StoredBalan
   };
 }
 
-/** Stages one line and its balance; returns the balance after it. */
+/**
+ * Stages one line and its balance, and the look's stage when the stars grow
+ * it; returns the balance after it.
+ */
 export function stageLine(
   transaction: Transaction,
   store: Firestore,
   householdId: string,
-  balance: StoredBalance,
+  balance: LedgerBalance,
   line: LedgerLine,
-): StoredBalance {
+): LedgerBalance {
   const after = applyLine(balance, line);
+  const stage = starStage(after);
+  const grows = balance.lookStage !== null && stage > balance.lookStage;
+  if (grows) {
+    transaction.update(memberRef(store, householdId, line.memberId), { 'look.stage': stage });
+  }
   transaction.set(entryRef(store, householdId, line.entryId), {
     memberId: line.memberId,
     delta: line.delta,
@@ -81,5 +104,5 @@ export function stageLine(
     ...after,
     updatedAt: FieldValue.serverTimestamp(),
   });
-  return after;
+  return { ...after, lookStage: grows ? stage : balance.lookStage };
 }

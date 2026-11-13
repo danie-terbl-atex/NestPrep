@@ -1,4 +1,9 @@
-import type { DocumentReference, Firestore } from 'firebase-admin/firestore';
+import {
+  type DocumentReference,
+  type Firestore,
+  type Query,
+  Timestamp,
+} from 'firebase-admin/firestore';
 import { z } from 'zod';
 
 import { storedRecurrence } from '../chore_points/occurrence_check';
@@ -17,7 +22,9 @@ import {
   mondayOf,
   routinesDueOn,
 } from './frame_day';
+import { readFlag } from '../shared/feature_flags';
 import { type FrameGroceries, parsed } from './frame_documents';
+import { HOME_CARE_JOBS, HOME_CARE_SHIFTS, frameMarks, hasFramePhoto } from './frame_jobs';
 import { calendarEditors } from './frame_events';
 import {
   type FrameGroceriesSources,
@@ -50,6 +57,8 @@ import type { FramePanels } from './frame_schemas';
  */
 
 const JOB_LIMIT = 50;
+/** One is expected; a phone that was offline can leave a second, and an end closes them all. */
+const OPEN_SHIFT_LIMIT = 10;
 const HOME_CARE_ROUTINE_LIMIT = 100;
 
 const memberShape = z.object({
@@ -58,6 +67,8 @@ const memberShape = z.object({
   role: z.string().catch(''),
   claimedBy: z.string().nullable().catch(null),
   access: z.unknown().optional(),
+  look: z.unknown().optional(),
+  birthday: z.string().optional().catch(undefined),
 });
 const nameShape = z.object({ name: z.string() });
 const planShape = z.object({ slots: z.record(z.string(), z.string()).catch({}) });
@@ -72,7 +83,10 @@ const jobShape = z.object({
   note: z.string().nullable().default(null).catch(null),
   steps: stepsShape,
   doneStepIds: z.array(z.string()).catch([]),
+  beforePhoto: z.unknown().optional(),
+  marks: z.unknown().optional(),
 });
+const shiftShape = z.object({ startedAt: z.instanceof(Timestamp) });
 export const homeCareRoutineShape = z.object({
   name: z.string(),
   roomId: z.string(),
@@ -88,6 +102,8 @@ type Sources = Pick<
   | 'names'
   | 'colors'
   | 'kids'
+  | 'looks'
+  | 'birthdays'
   | 'adders'
   | 'events'
   | 'chores'
@@ -184,7 +200,13 @@ export async function readMonthSources(
   return events === undefined ? { names } : { names, events };
 }
 
-type FrameMember = MemberRecord & { readonly color?: string | undefined };
+type FrameMember = MemberRecord & {
+  readonly color?: string | undefined;
+  readonly look?: unknown;
+  readonly birthday?: string | undefined;
+};
+
+type MemberSources = Pick<Sources, 'names' | 'colors' | 'kids' | 'looks' | 'birthdays'>;
 
 async function readMemberRecords(home: DocumentReference): Promise<FrameMember[]> {
   const docs = await home.collection(MEMBERS).limit(MEMBER_LIMIT).get();
@@ -194,9 +216,7 @@ async function readMemberRecords(home: DocumentReference): Promise<FrameMember[]
   });
 }
 
-function namesAndColors(
-  members: readonly FrameMember[],
-): Pick<Sources, 'names' | 'colors' | 'kids'> {
+function namesAndColors(members: readonly FrameMember[]): MemberSources {
   return {
     kids: members.flatMap((member) => (member.role === 'kid' ? [member.id] : [])),
     names: Object.fromEntries(members.map((member) => [member.id, member.displayName])),
@@ -205,12 +225,20 @@ function namesAndColors(
         member.color === undefined ? [] : [[member.id, member.color] as const],
       ),
     ),
+    looks: Object.fromEntries(
+      members.flatMap((member) =>
+        member.look === undefined ? [] : [[member.id, member.look] as const],
+      ),
+    ),
+    birthdays: Object.fromEntries(
+      members.flatMap((member) =>
+        member.birthday === undefined ? [] : [[member.id, member.birthday] as const],
+      ),
+    ),
   };
 }
 
-export async function readMembers(
-  home: DocumentReference,
-): Promise<Pick<Sources, 'names' | 'colors' | 'kids'>> {
+export async function readMembers(home: DocumentReference): Promise<MemberSources> {
   return namesAndColors(await readMemberRecords(home));
 }
 
@@ -219,7 +247,7 @@ export async function readMembers(
  * ADR-0008) and which may add to the grocery list (ADR-0012).
  */
 export async function readMembersWithGrants(home: DocumentReference): Promise<
-  Pick<Sources, 'names' | 'colors' | 'kids'> & {
+  MemberSources & {
     readonly adders: string[];
     readonly groceryEditors: string[];
   }
@@ -269,9 +297,9 @@ async function readHomeCare(
   helperId: string,
   today: string,
 ): Promise<HomeCareDay> {
-  const [jobDocs, routineDocs] = await Promise.all([
+  const [jobDocs, routineDocs, shiftStartedAt] = await Promise.all([
     home
-      .collection('homeCareJobs')
+      .collection(HOME_CARE_JOBS)
       .where('helperId', '==', helperId)
       .where('dueDate', '>=', addDays(today, -FRAME_OVERDUE_DAYS))
       .where('dueDate', '<=', today)
@@ -282,10 +310,20 @@ async function readHomeCare(
       .where('helperId', '==', helperId)
       .limit(HOME_CARE_ROUTINE_LIMIT)
       .get(),
+    readOpenShift(store, home, helperId),
   ]);
   const jobs = jobDocs.docs.flatMap((doc) => {
     const job = parsed(jobShape, doc.data());
-    return job === null ? [] : [{ ...job, id: doc.id }];
+    if (job === null) return [];
+    const { beforePhoto, marks, ...shown } = job;
+    return [
+      {
+        ...shown,
+        id: doc.id,
+        hasPhoto: hasFramePhoto(doc.id, beforePhoto),
+        marks: frameMarks(marks),
+      },
+    ];
   });
   const routines = routineDocs.docs.flatMap((doc) => {
     const routine = parsed(homeCareRoutineShape, doc.data());
@@ -313,5 +351,32 @@ async function readHomeCare(
     ...jobs.map((job) => job.roomId),
     ...due.map((routine) => routine.roomId),
   ]);
-  return { jobs, routines: due, ticks, rooms };
+  return {
+    jobs,
+    routines: due,
+    ticks,
+    rooms,
+    ...(shiftStartedAt === undefined ? {} : { shiftStartedAt }),
+  };
+}
+
+/** When the helper clocked in, null while she is out, undefined while shifts are off. */
+async function readOpenShift(
+  store: Firestore,
+  home: DocumentReference,
+  helperId: string,
+): Promise<Date | null | undefined> {
+  if (!(await readFlag(store, 'homeCareShifts'))) return undefined;
+  const open = await openShiftsOf(home, helperId).get();
+  const shift = parsed(shiftShape, open.docs[0]?.data());
+  return shift === null ? null : shift.startedAt.toDate();
+}
+
+/** The helper's open shift; equality only, so it needs no composite index. */
+export function openShiftsOf(home: DocumentReference, helperId: string): Query {
+  return home
+    .collection(HOME_CARE_SHIFTS)
+    .where('helperId', '==', helperId)
+    .where('status', '==', 'open')
+    .limit(OPEN_SHIFT_LIMIT);
 }

@@ -5,6 +5,15 @@ import {
   revokeDocumentShareInput,
 } from '../../../src/documents/share/share_schemas';
 import { readShoppingListInput } from '../../../src/list_scan/schemas';
+import { draftRecipeInput } from '../../../src/recipes/draft_recipe_schemas';
+import {
+  draftDocumentRecipeInput,
+  scanRecipeDocumentInput,
+} from '../../../src/recipes/recipe_document_schemas';
+import {
+  deleteHouseholdRecipeInput,
+  saveHouseholdRecipeInput,
+} from '../../../src/recipes/own_recipe';
 import { readSchoolLetterInput } from '../../../src/school_letter/schemas';
 import {
   acceptCoParentInviteInput,
@@ -43,6 +52,7 @@ import {
   pollFramePairingInput,
   reportFrameUpdateInput,
   startFramePairingInput,
+  setFrameShiftInput,
   tickFrameItemInput,
   unlinkFrameInput,
 } from '../../../src/frames/frame_schemas';
@@ -161,6 +171,65 @@ export const featureBodies = {
   readShoppingList: {
     schema: readShoppingListInput,
     body: { householdId: 'h1', mimeType: 'image/jpeg', data: '/9j/4AAQ' },
+  },
+  // A household's own recipe (recipes ADR-0007, ADR-0008): photos as ids, never
+  // paths, and every optional value required-and-nullable.
+  saveHouseholdRecipe: {
+    schema: saveHouseholdRecipeInput,
+    body: {
+      householdId: 'h1',
+      recipeId: 'own-0123456789abcdef0123',
+      name: 'Bobotie',
+      summary: '',
+      contexts: ['dinner'],
+      placement: { dinner: 'main' },
+      ingredients: [{ name: 'Mince', quantity: 1, unit: 'kg', note: null, group: null }],
+      steps: ['Bake it.'],
+      servings: 6,
+      prepMinutes: 20,
+      cookMinutes: 40,
+      notes: null,
+      origin: 'typed',
+      sourceUrl: null,
+      sourceName: null,
+      alsoContains: [],
+      photo: null,
+      gallery: [],
+    },
+  },
+  deleteHouseholdRecipe: {
+    schema: deleteHouseholdRecipeInput,
+    body: { householdId: 'h1', recipeId: 'own-0123456789abcdef0123' },
+  },
+  draftRecipe: {
+    schema: draftRecipeInput,
+    body: {
+      householdId: 'h1',
+      page: {
+        url: 'https://example.com/bobotie',
+        title: null,
+        jsonLd: ['{}'],
+        text: '',
+        imageUrls: [],
+      },
+    },
+  },
+  scanRecipeDocument: {
+    schema: scanRecipeDocumentInput,
+    body: {
+      householdId: 'h1',
+      documentName: 'Dough it easy',
+      pages: [{ number: 1, data: '/9j/' }],
+    },
+  },
+  draftDocumentRecipe: {
+    schema: draftDocumentRecipeInput,
+    body: {
+      householdId: 'h1',
+      documentName: 'Dough it easy',
+      recipeName: 'Focaccia',
+      pages: [{ number: 28, top: '/9j/', bottom: '/9j/', whole: null }],
+    },
   },
   // Co-parenting (household ADR-0004): every optional text is
   // required-and-nullable, so the app always says whether there is one.
@@ -282,6 +351,7 @@ export const featureBodies = {
     schema: tickFrameItemInput,
     body: { secret: FRAME_SECRET, kind: 'task', id: 'task-1', date: '2026-10-25', done: true },
   },
+  setFrameShift: { schema: setFrameShiftInput, body: { secret: FRAME_SECRET, on: true } },
   // The times, note and repeat are optional; their cases are in `frames/frame_events.test.ts`.
   addFrameEvent: {
     schema: addFrameEventInput,

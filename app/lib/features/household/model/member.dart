@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/firestore/server_timestamp_converter.dart';
+import '../../avatars/model/member_look.dart';
+import '../../avatars/model/member_look_converter.dart';
 import 'access_grant.dart';
 import 'access_grant_converter.dart';
 import 'birthday.dart';
@@ -41,6 +43,7 @@ abstract class Member with _$Member {
     /// A parent's consent, on a child's profile (accounts ADR-0005). Absent
     /// on every adult, and on every child profile made before it existed.
     @JsonKey(includeIfNull: false) GuardianConsent? guardianConsent,
+    @JsonKey(includeToJson: false) @MemberLookConverter() MemberLook? look,
   }) = _Member;
 
   const Member._();

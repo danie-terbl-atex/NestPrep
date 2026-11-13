@@ -3,13 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../../shared/flags/feature_flags_controller.dart';
-import '../../add_to_checkers/data/checkers_area_preference.dart';
-import '../../add_to_checkers/data/retailer_preference.dart';
-import '../../add_to_checkers/model/checkers_area.dart';
-import '../../add_to_checkers/model/retailer_switch.dart';
 import '../../add_to_woolworths/data/woolworths_store_finder.dart';
-import '../../groceries/model/product_match.dart';
 import '../model/frame_groceries.dart';
 import '../model/frame_panels.dart';
 import '../model/frame_screensaver.dart';
@@ -55,26 +49,6 @@ class _EditSheetBodyState extends State<_EditSheetBody> {
   late FramePanels _panels = widget.frame.panels;
   late FrameScreensaver _screensaver = widget.frame.screensaver;
   late FrameGroceries? _groceries = widget.frame.groceries;
-  late final Future<({CheckersArea? area, ProductRetailer? shop})> _phoneChoice;
-
-  @override
-  void initState() {
-    super.initState();
-    _phoneChoice = _readPhoneChoice(
-      context.read<PhotoFramesController>().householdId,
-      areas: context.read<CheckersAreaPreference?>(),
-      shops: context.read<RetailerPreference?>(),
-    );
-  }
-
-  static Future<({CheckersArea? area, ProductRetailer? shop})> _readPhoneChoice(
-    String householdId, {
-    required CheckersAreaPreference? areas,
-    required RetailerPreference? shops,
-  }) async => (
-    area: await areas?.read(householdId),
-    shop: await shops?.read(householdId),
-  );
 
   @override
   void dispose() {
@@ -113,10 +87,6 @@ class _EditSheetBodyState extends State<_EditSheetBody> {
     final controller = context.watch<PhotoFramesController>();
     final failure = controller.actionFailure;
     final isSaving = controller.isSaving;
-    final flags = context.watch<FeatureFlagsController?>();
-    final shops = flags == null
-        ? const <ProductRetailer>[]
-        : shopsOn(flags.isOn);
     final canSave =
         PhotoFramesController.isValidName(_name.text) && _panels.showsAnything;
     return SingleChildScrollView(
@@ -144,17 +114,12 @@ class _EditSheetBodyState extends State<_EditSheetBody> {
                 ? null
                 : (panels) => setState(() => _panels = panels),
           ),
-          FutureBuilder(
-            future: _phoneChoice,
-            builder: (context, phoneChoice) => FrameGroceriesEditor(
-              groceries: _groceries,
-              shopsOn: shops,
-              defaultShop: phoneChoice.data?.shop,
-              defaultArea: phoneChoice.data?.area ?? CheckersArea.fallback,
-              onChanged: isSaving
-                  ? null
-                  : (groceries) => setState(() => _groceries = groceries),
-            ),
+          FrameGroceriesSection(
+            householdId: controller.householdId,
+            groceries: _groceries,
+            onChanged: isSaving
+                ? null
+                : (groceries) => setState(() => _groceries = groceries),
           ),
           const SizedBox(height: NestSpace.xl),
           FrameScreensaverEditor(

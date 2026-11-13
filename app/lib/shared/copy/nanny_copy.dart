@@ -105,6 +105,8 @@ abstract final class NannyCopy {
   static const changePhoto = 'Change photo';
   static const removePhoto = 'Remove photo';
   static const photoOfChild = 'Photo of the child';
+  static const uploadingPhoto = 'Uploading photo…';
+  static const openingPhoto = 'Getting the photo ready…';
 
   // Editing a routine and a list.
   static const routineStep = 'What happens';

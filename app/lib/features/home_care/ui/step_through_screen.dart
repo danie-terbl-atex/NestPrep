@@ -152,9 +152,7 @@ class _Steps extends StatelessWidget {
             label: HomeCareCopy.handIn,
             icon: LucideIcons.circleCheckBig,
             isLoading: actions.isBusy,
-            onPressed: actions.afterPhoto == null || actions.isBusy
-                ? null
-                : () => _handIn(context),
+            onPressed: actions.isBusy ? null : () => _handIn(context),
           ),
         ] else if (canWork)
           Text(

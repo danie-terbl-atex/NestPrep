@@ -57,6 +57,7 @@ Future<void> pumpScreen(
         'lunch/share',
         'notifications',
         'household/close',
+        'plan',
         'frames',
         'frames/photos',
       ])

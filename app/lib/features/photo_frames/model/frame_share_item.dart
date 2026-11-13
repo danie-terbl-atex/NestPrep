@@ -25,6 +25,7 @@ final class FrameShareRecipe extends FrameShareItem {
     required this.people,
     required this.amounts,
     this.cardPhotoPath,
+    this.isHousehold = false,
   });
 
   final String recipeId;
@@ -35,6 +36,7 @@ final class FrameShareRecipe extends FrameShareItem {
   /// no quantity: the server refuses any other shape as `badRecipe`.
   final List<String?> amounts;
   final String? cardPhotoPath;
+  final bool isHousehold;
 
   @override
   bool get isSendable => true;

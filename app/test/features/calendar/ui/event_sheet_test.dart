@@ -226,4 +226,57 @@ void main() {
 
     expect(result, isNull);
   });
+
+  group('event notes', () {
+    testWidgets('a new event carries the notes typed for it', (tester) async {
+      await open(tester);
+      await tester.enterText(
+        fieldLabelled(AppCopy.calendarTitleLabel),
+        'Mia’s birthday',
+      );
+      await tester.enterText(
+        fieldLabelled(AppCopy.calendarNotesLabel),
+        'Gift request: a horse',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      await tapInSheet(
+        tester,
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+
+      expect((result! as EventSaved).note, 'Gift request: a horse');
+    });
+
+    testWidgets('editing keeps the notes the event already had', (
+      tester,
+    ) async {
+      await open(
+        tester,
+        existing: schoolRun().copyWith(note: 'Bring the swimming bag'),
+      );
+      expect(find.text('Bring the swimming bag'), findsOneWidget);
+
+      await tapInSheet(
+        tester,
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+      );
+
+      expect((result! as EventSaved).note, 'Bring the swimming bag');
+    });
+
+    testWidgets('notes stop at what the frame keeps', (tester) async {
+      await open(tester);
+      await tester.enterText(
+        fieldLabelled(AppCopy.calendarNotesLabel),
+        'x' * (HouseholdEvent.noteMaxLength + 50),
+      );
+      await tester.pumpAndSettle();
+
+      final field = tester.widget<TextField>(
+        fieldLabelled(AppCopy.calendarNotesLabel),
+      );
+      expect(field.controller!.text, hasLength(HouseholdEvent.noteMaxLength));
+    });
+  });
 }

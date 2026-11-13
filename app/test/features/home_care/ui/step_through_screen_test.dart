@@ -107,6 +107,17 @@ void main() {
     expect((arguments['afterPhoto']! as JobPhoto).photoId, 'after-2');
   });
 
+  testWidgets('every step done: hands in without a photo too', (tester) async {
+    await open(tester, done: const ['s1', 's2', 's3']);
+    await tester.tap(find.text(HomeCareCopy.handIn));
+    await tester.pumpAndSettle();
+
+    expect(harness.photos.writes, isEmpty);
+    final (method, arguments) = harness.jobs.writes.single;
+    expect(method, 'handIn');
+    expect(arguments['afterPhoto'], isNull);
+  });
+
   testWidgets('a refused camera is said in words', (tester) async {
     harness.camera.failWith = const HomeCareFailure(
       HomeCareProblem.cameraRefused,

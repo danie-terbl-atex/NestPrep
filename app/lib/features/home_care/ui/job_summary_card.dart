@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/cleaning_job.dart';
 import '../model/home_care_board.dart';
 import 'due_tag.dart';
@@ -56,7 +57,7 @@ class JobSummaryCard extends StatelessWidget {
                     size: NestSize.avatarMedium,
                     iconSize: NestSize.iconMedium,
                   )
-                : NestAvatar(name: helper.displayName, color: helper.color),
+                : MemberAvatar(member: helper),
           ),
           const SizedBox(height: NestSpace.sm),
           StepProgressBar(

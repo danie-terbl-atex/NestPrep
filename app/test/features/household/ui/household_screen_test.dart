@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/household/model/household.dart';
+import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
@@ -145,6 +146,35 @@ void main() {
       await pump(tester, viewerUid: Fixtures.thandiUid);
       await emit(tester);
       expect(find.byIcon(LucideIcons.userPlus), findsNothing);
+    });
+
+    testWidgets('a helper may change their own picture, and nobody else\'s', (
+      tester,
+    ) async {
+      controllerFor(Fixtures.thandiUid);
+      await pumpScreen(
+        tester,
+        const HouseholdScreen(),
+        providers: [
+          ChangeNotifierProvider<HouseholdController>.value(value: controller),
+          Provider<HouseholdView>.value(
+            value: Fixtures.view(viewerUid: Fixtures.thandiUid),
+          ),
+        ],
+      );
+      await emit(tester);
+      tester.view.physicalSize = const Size(800, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey(Fixtures.thandiMemberId)),
+          matching: find.byType(NestEditablePicture),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(NestEditablePicture), findsOneWidget);
     });
 
     testWidgets('only an unclaimed profile can be invited', (tester) async {

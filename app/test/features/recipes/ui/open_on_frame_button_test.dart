@@ -8,6 +8,7 @@ import 'package:nestprep/features/photo_frames/model/frame_panels.dart';
 import 'package:nestprep/features/photo_frames/model/photo_frame.dart';
 import 'package:nestprep/features/photo_frames/state/frame_availability.dart';
 import 'package:nestprep/features/photo_frames/ui/cook_along_teaser_sheet.dart';
+import 'package:nestprep/features/recipes/model/recipe.dart';
 import 'package:nestprep/features/recipes/model/recipe_scale.dart';
 import 'package:nestprep/features/recipes/state/recipe_catalogue_controller.dart';
 import 'package:nestprep/features/recipes/state/recipe_page_controller.dart';
@@ -50,6 +51,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     HouseholdView? view,
+    Recipe? recipe,
     bool framesOn = true,
     Brightness brightness = Brightness.light,
     double scale = 1,
@@ -67,7 +69,7 @@ void main() {
           mealRepository: harness.meals,
           householdId: Fixtures.householdId,
           memberId: Fixtures.samMemberId,
-          recipeId: RecipeFixtures.bobotie.id,
+          recipeId: (recipe ?? RecipeFixtures.bobotie).id,
           familySize: 4,
         ),
         update: (_, catalogue, page) => page!..followCatalogue(catalogue),
@@ -97,7 +99,7 @@ void main() {
       brightness: brightness,
       textScale: scale,
     );
-    harness.recipes.emitCatalogue(RecipeFixtures.catalogue);
+    harness.recipes.emitCatalogue([...RecipeFixtures.catalogue, ?recipe]);
     await tester.pumpAndSettle();
   }
 
@@ -231,6 +233,27 @@ void main() {
     });
     expect(find.text(PhotoFrameCopy.openingOn(kitchen.name)), findsOneWidget);
     expect(find.text(CookAlongCopy.sentBody), findsOneWidget);
+  });
+
+  testWidgets('an own recipe opens too, saying it is the household\'s', (
+    tester,
+  ) async {
+    final own = RecipeFixtures.own();
+    await pump(tester, recipe: own);
+    await emit(tester, [kitchen]);
+    await scrollToScaler(tester);
+
+    await tester.tap(openButton());
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await emit(tester, [kitchen]);
+    await tester.tap(find.text(PhotoFrameCopy.showOn(kitchen.name)));
+    await tester.pumpAndSettle();
+
+    final payload = directory.payloads.single;
+    final recipe = payload['recipe']! as Map<String, Object?>;
+    expect(recipe['id'], own.id);
+    expect(recipe['household'], isTrue);
   });
 
   group('the teaser survives', () {

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { OWN_SOURCE } from '../recipes/own_recipe';
 import { DIFFICULTIES } from '../recipes/recipe';
 import { stepTimers } from './frame_recipe_timers';
 
@@ -17,6 +18,7 @@ export const frameRecipeShareInput = z.object({
   id: z.string().max(60).regex(RECIPE_ID),
   people: z.number().int().min(1).max(PEOPLE_MAX),
   amounts: z.array(frameAmount.nullable()).max(RECIPE_LINES_MAX),
+  household: z.literal(true).optional(),
 });
 export type FrameRecipeShareInput = z.infer<typeof frameRecipeShareInput>;
 
@@ -42,6 +44,24 @@ export const frameRecipeDocument = z.object({
 });
 export type FrameRecipeDocument = z.infer<typeof frameRecipeDocument>;
 
+export type FrameRecipeSource = Omit<FrameRecipeDocument, 'status' | 'difficulty'> & {
+  readonly difficulty: FrameRecipeDocument['difficulty'] | null;
+};
+
+export const ownRecipeFrameDocument = z
+  .object({
+    source: z.literal(OWN_SOURCE),
+    name: z.string(),
+    summary: z.string(),
+    servings: z.number().int(),
+    prepMinutes: z.number().int(),
+    cookMinutes: z.number().int(),
+    ingredients: frameRecipeDocument.shape.ingredients,
+    steps: z.array(z.string()),
+    photo: frameRecipeDocument.shape.photo,
+  })
+  .transform((recipe): FrameRecipeSource => ({ ...recipe, difficulty: null, prepNote: null }));
+
 const frameStepTimer = z.object({
   start: z.number().int().min(0),
   end: z.number().int().min(0),
@@ -57,7 +77,7 @@ export const frameRecipe = z.object({
   servings: z.number().int(),
   prepMinutes: z.number().int(),
   cookMinutes: z.number().int(),
-  difficulty: z.enum(DIFFICULTIES),
+  difficulty: z.enum(DIFFICULTIES).nullable(),
   photo: z.boolean(),
   prepNote: z.string().nullable(),
   ingredients: z.array(
@@ -73,7 +93,7 @@ export const frameRecipe = z.object({
 export type FrameRecipe = z.infer<typeof frameRecipe>;
 
 export function buildFrameRecipe(
-  recipe: FrameRecipeDocument,
+  recipe: FrameRecipeSource,
   share: FrameRecipeShareInput,
 ): FrameRecipe | null {
   const { ingredients } = recipe;
@@ -103,6 +123,6 @@ export function buildFrameRecipe(
   };
 }
 
-export function frameRecipePhotoPath(recipe: FrameRecipeDocument): string | null {
+export function frameRecipePhotoPath(recipe: FrameRecipeSource): string | null {
   return recipe.photo?.hero ?? null;
 }

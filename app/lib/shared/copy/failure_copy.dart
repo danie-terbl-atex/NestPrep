@@ -47,6 +47,8 @@ abstract final class FailureCopy {
     SchoolLetterFailure(:final problem) => SchoolLetterCopy.problem(problem),
     // snap a shopping list (list-scan ADR-0001).
     ListScanFailure(:final problem) => ListScanCopy.problem(problem),
+    OwnRecipeFailure(:final problem) => OwnRecipeCopy.problem(problem),
+    RecipeImportFailure(:final problem) => RecipeImportCopy.problem(problem),
     MentalLoadFailure(:final problem) => MentalLoadCopy.problem(problem),
     // plan my week with AI (lunch-box ADR-0011).
     PlanWeekFailure(:final problem) => PlanWeekCopy.problem(problem),
@@ -65,6 +67,7 @@ abstract final class FailureCopy {
     WoolworthsFailure(:final problem) => WoolworthsCopy.problem(problem),
     PhotoFrameFailure(:final problem) => PhotoFrameCopy.problem(problem),
     FramePhotoFailure(:final problem) => PhotoFrameCopy.photoProblem(problem),
+    AvatarFailure(:final problem) => AvatarCopy.problem(problem),
     UnknownFailure() => 'Something went wrong. Please try again.',
   };
 

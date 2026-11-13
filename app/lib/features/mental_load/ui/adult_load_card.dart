@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/week_load.dart';
 
 /// One adult's week: what they picked up, kind by kind, and a few of the
@@ -51,7 +52,7 @@ class AdultLoadCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    NestAvatar(name: name, color: adult.member.color),
+                    MemberAvatar(member: adult.member),
                     const SizedBox(width: NestSpace.md),
                     Expanded(
                       child: Column(

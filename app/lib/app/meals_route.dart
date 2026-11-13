@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/meal_planning/model/meals_view.dart';
 import '../features/meal_planning/model/week_plan.dart';
+import '../features/recipes/model/recipe_import_way.dart';
 import '../shared/time/calendar_date.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
@@ -15,12 +16,21 @@ abstract final class MealsRoute {
   static const recipesSegment = 'recipes';
   static const recipeParameter = 'recipeId';
   static const pickSegment = 'pick';
+  static const newSegment = 'new';
+  static const editSegment = 'edit';
+  static const importSegment = 'import';
+  static const importPdfSegment = 'import-pdf';
+  static const wayQuery = 'way';
   static const slotQuery = 'slot';
   static const dayQuery = 'day';
 
   static final path = '${HouseholdRoute.path}/${HouseholdTab.meals.segment}';
   static final recipePath = '$path/$recipesSegment/:$recipeParameter';
   static final pickPath = '$path/$pickSegment';
+  static final newRecipePath = '$path/$recipesSegment/$newSegment';
+  static final editRecipePath = '$recipePath/$editSegment';
+  static final importRecipePath = '$path/$recipesSegment/$importSegment';
+  static final importPdfPath = '$path/$recipesSegment/$importPdfSegment';
 
   /// The tab on [view]; the recipes, its default, carry no query.
   static String pathFor(
@@ -34,6 +44,28 @@ abstract final class MealsRoute {
   static String recipePathFor(String householdId, String recipeId) =>
       '${HouseholdRoute.pathFor(householdId, HouseholdTab.meals)}'
       '/$recipesSegment/${Uri.encodeComponent(recipeId)}';
+
+  static String newRecipePathFor(String householdId) =>
+      '${HouseholdRoute.pathFor(householdId, HouseholdTab.meals)}'
+      '/$recipesSegment/$newSegment';
+
+  static String importRecipePathFor(String householdId, RecipeImportWay way) =>
+      Uri(
+        path:
+            '${HouseholdRoute.pathFor(householdId, HouseholdTab.meals)}'
+            '/$recipesSegment/$importSegment',
+        queryParameters: {wayQuery: way.name},
+      ).toString();
+
+  static String importPdfPathFor(String householdId) =>
+      '${HouseholdRoute.pathFor(householdId, HouseholdTab.meals)}'
+      '/$recipesSegment/$importPdfSegment';
+
+  static RecipeImportWay importWayFrom(GoRouterState state) =>
+      RecipeImportWay.fromQuery(state.uri.queryParameters[wayQuery]);
+
+  static String editRecipePathFor(String householdId, String recipeId) =>
+      '${recipePathFor(householdId, recipeId)}/$editSegment';
 
   static String pickPathFor(
     String householdId, {

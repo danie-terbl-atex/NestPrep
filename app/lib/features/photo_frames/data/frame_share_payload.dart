@@ -9,8 +9,19 @@ Map<String, Object?> frameSharePayload({
   'frameId': frameId,
   ...switch (item) {
     FrameSharePage(:final page) => {'url': page.url, 'title': ?page.title},
-    FrameShareRecipe(:final recipeId, :final people, :final amounts) => {
-      'recipe': {'id': recipeId, 'people': people, 'amounts': amounts},
-    },
+    FrameShareRecipe(
+      :final recipeId,
+      :final people,
+      :final amounts,
+      :final isHousehold,
+    ) =>
+      {
+        'recipe': {
+          'id': recipeId,
+          'people': people,
+          'amounts': amounts,
+          if (isHousehold) 'household': true,
+        },
+      },
   },
 };

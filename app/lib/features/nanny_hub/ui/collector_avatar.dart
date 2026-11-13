@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import 'collector_look.dart';
 import 'nanny_photo.dart';
 
@@ -33,11 +34,7 @@ class CollectorAvatar extends StatelessWidget {
       );
     }
     if (member != null) {
-      return NestAvatar(
-        name: member.displayName,
-        color: member.color,
-        size: size,
-      );
+      return MemberAvatar(member: member, size: size);
     }
     return NestIconTile(
       icon: LucideIcons.user,

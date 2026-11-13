@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:nestprep/features/home_care/data/helper_profile_repository.dart';
+import 'package:nestprep/features/home_care/data/helper_shift_repository.dart';
 import 'package:nestprep/features/home_care/data/read_aloud.dart';
 import 'package:nestprep/features/home_care/data/routine_repository.dart';
 import 'package:nestprep/features/home_care/data/translation_repository.dart';
@@ -8,10 +9,59 @@ import 'package:nestprep/features/home_care/model/language/helper_language.dart'
 import 'package:nestprep/features/home_care/model/language/helper_profile.dart';
 import 'package:nestprep/features/home_care/model/routine/room_routine.dart';
 import 'package:nestprep/features/home_care/model/routine/routine_tick.dart';
+import 'package:nestprep/features/home_care/model/shift/helper_shift.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
 import 'fake_home_care.dart';
+
+/// A helper's clocked shifts, driven by hand (home-care ADR-0007).
+final class FakeHelperShiftRepository
+    with RecordsWrites
+    implements HelperShiftRepository {
+  final _shifts = StreamController<List<HelperShift>>.broadcast();
+
+  /// Each read's scope: null for everybody's, else the helper asked for.
+  final shiftsAskedFor = <String?>[];
+
+  /// Holds a write open until completed — for a second tap while one is on
+  /// its way.
+  Completer<void>? gate;
+
+  void emitShifts(List<HelperShift> shifts) => _shifts.add(shifts);
+  void failShiftsWith(Object error) => _shifts.addError(error);
+
+  Future<void> close() => _shifts.close();
+
+  @override
+  Stream<List<HelperShift>> watchShifts(
+    String householdId, {
+    String? helperId,
+  }) {
+    shiftsAskedFor.add(helperId);
+    return _shifts.stream;
+  }
+
+  @override
+  Future<void> startShift({
+    required String householdId,
+    required String helperId,
+    required String by,
+  }) async {
+    await gate?.future;
+    await record('startShift', {'helperId': helperId, 'by': by});
+  }
+
+  @override
+  Future<void> endShift({
+    required String householdId,
+    required String shiftId,
+    required String by,
+  }) async {
+    await gate?.future;
+    await record('endShift', {'shiftId': shiftId, 'by': by});
+  }
+}
 
 /// The room routines and their ticks, driven by hand (home-care ADR-0004).
 final class FakeRoutineRepository

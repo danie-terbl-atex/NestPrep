@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
 import { UnusableEmail } from '../../../src/premium_vouchers/issue_vouchers';
+import { storeInvokers } from '../../../src/premium_vouchers/premium_config';
 import {
   type IdTokenCheck,
   bearerOf,
@@ -130,5 +131,17 @@ describe('a store call', () => {
         throw new Error('firestore down');
       }),
     ).rejects.toThrow('firestore down');
+  });
+});
+
+describe('who Cloud Run lets reach the store endpoints', () => {
+  it('is the store’s service account, so a deploy writes the grant instead of emptying it', () => {
+    expect(storeInvokers(STORE)).toEqual([STORE]);
+    expect(storeInvokers(` ${STORE.toUpperCase()} `)).toEqual([STORE]);
+  });
+
+  it('is nobody until the store’s service account is configured', () => {
+    expect(storeInvokers('')).toBe('private');
+    expect(storeInvokers('unset')).toBe('private');
   });
 });

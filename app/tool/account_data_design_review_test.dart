@@ -65,6 +65,7 @@ void main() {
     testWidgets('delete-my-account-$theme', (tester) async {
       final controller = AccountDeletionController(
         accountDataGateway: FakeAccountDataGateway(),
+        revokeAppleSignIn: () async {},
         signOut: () async {},
       );
       addTearDown(controller.dispose);

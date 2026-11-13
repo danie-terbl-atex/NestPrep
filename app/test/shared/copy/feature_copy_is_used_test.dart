@@ -34,6 +34,8 @@ void main() {
     // chore pictures (todos ADR-0005).
     ('ChorePictureCopy', 'lib/shared/copy/chore_picture_copy.dart'),
     ('ShopsCopy', 'lib/shared/copy/shops_copy.dart'),
+    // a household's own recipes (recipes ADR-0007).
+    ('OwnRecipeCopy', 'lib/shared/copy/own_recipe_copy.dart'),
   ]) {
     test('$className carries no words nothing says', () {
       final source = File(path).readAsStringSync();

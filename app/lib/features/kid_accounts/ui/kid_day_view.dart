@@ -29,6 +29,8 @@ class KidDayView extends StatelessWidget {
     this.stars,
     this.shelf,
     this.lunchPicks,
+    this.wardrobe,
+    this.onChangePicture,
     this.noteFor = _noNote,
     super.key,
   });
@@ -40,6 +42,8 @@ class KidDayView extends StatelessWidget {
 
   /// Lunch to choose, when a grown-up offered some (lunch-box ADR-0008).
   final Widget? lunchPicks;
+  final Widget? wardrobe;
+  final VoidCallback? onChangePicture;
   final KidChoreNote Function(TaskOccurrence chore) noteFor;
 
   static KidChoreNote _noNote(TaskOccurrence chore) =>
@@ -50,7 +54,9 @@ class KidDayView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSpace.huge),
       children: [
-        NestRiseIn(child: KidHeroCard(day: day)),
+        NestRiseIn(
+          child: KidHeroCard(day: day, onChangePicture: onChangePicture),
+        ),
         if (stars case final stars?) ...[
           const SizedBox(height: NestSpace.lg),
           NestRiseIn(index: 1, child: stars),
@@ -104,6 +110,10 @@ class KidDayView extends StatelessWidget {
         if (shelf case final shelf?) ...[
           const SizedBox(height: NestSpace.xxl),
           shelf,
+        ],
+        if (wardrobe case final wardrobe?) ...[
+          const SizedBox(height: NestSpace.xxl),
+          wardrobe,
         ],
         if (day.areas.food) ...[
           const SizedBox(height: NestSpace.xxl),

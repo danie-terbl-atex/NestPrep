@@ -11,6 +11,52 @@ import 'package:nestprep/features/recipes/model/recipe_tag.dart';
 /// and sides, a braai, a breakfast, a family lunch, puddings and one
 /// lunch-box recipe — enough for every chip, shelf and the people scaler.
 abstract final class RecipeFixtures {
+  static const ownRecipeId = 'own-0123456789abcdef0123';
+
+  static RecipePhoto ownPhoto(String photoId, {String? credit}) => RecipePhoto(
+    card: 'households/h1/recipePhotos/$ownRecipeId/$photoId-card.jpg',
+    hero: 'households/h1/recipePhotos/$ownRecipeId/$photoId-hero.jpg',
+    credit: credit,
+  );
+
+  /// As the server writes it: a family's own, with nothing it cannot verify.
+  static Recipe own({
+    String id = ownRecipeId,
+    String name = 'Gran’s bobotie',
+    Set<Allergen> allergens = const {Allergen.egg},
+    RecipePhoto? photo,
+    List<RecipePhoto> gallery = const [],
+    String? notes,
+    String? sourceUrl,
+    String? sourceName,
+    Set<Allergen> alsoContains = const {},
+  }) => Recipe(
+    id: id,
+    name: name,
+    summary: 'The one she made on Sundays.',
+    contexts: const {RecipeContext.dinner},
+    placement: const {RecipeContext.dinner: 'main'},
+    allergens: allergens,
+    dietTags: const [],
+    ingredients: const [
+      RecipeIngredient(name: 'Beef mince', quantity: 500, unit: 'g'),
+      RecipeIngredient(name: 'Eggs', quantity: 2, group: 'For the custard'),
+    ],
+    steps: const ['Brown the mince.', 'Bake with the custard.'],
+    servings: 4,
+    prepMinutes: 20,
+    cookMinutes: 40,
+    prepAhead: false,
+    isOwn: true,
+    photo: photo,
+    gallery: gallery,
+    notes: notes,
+    sourceUrl: sourceUrl,
+    sourceName: sourceName,
+    alsoContains: alsoContains,
+    addedBy: 'm-sam',
+  );
+
   static RecipePhoto photo(String id) => RecipePhoto(
     card: 'recipes/$id/card-abc123.jpg',
     hero: 'recipes/$id/hero-abc123.jpg',

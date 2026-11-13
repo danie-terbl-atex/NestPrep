@@ -11,6 +11,14 @@ import { db } from '../shared/firestore';
 import { type LinkedFrame, readLinkedFrame } from './frame_access';
 import { parsed } from './frame_documents';
 import { refuseFrame } from './frame_errors';
+import {
+  HANDED_IN_STATUSES,
+  HOME_CARE_JOBS,
+  JOB_EVENTS,
+  WITH_HELPER_STATUSES,
+  frameJobShape,
+  handInFields,
+} from './frame_jobs';
 import { FRAME_DEVICE_OPTIONS, FRAME_TICK_PER_CREDENTIAL } from './frame_policy';
 import { homeCareRoutineShape, homeCareTickShape, readMembers } from './frame_reads';
 import { tickFrameItemInput, type TickFrameItemInput } from './frame_schemas';
@@ -35,11 +43,8 @@ export const tickFrameItem = onCall(
     if (linked === null) return UNLINKED;
     if (!inTickReach(input.date, linked.clock.date)) throw refuseFrame('itemOutOfReach');
 
-    const done =
-      input.kind === 'task'
-        ? await tickTask(store, linked, input)
-        : await tickRoutine(store, linked, input);
-    return { status: 'linked', done };
+    const tick = { task: tickTask, routine: tickRoutine, job: handInJob }[input.kind];
+    return { status: 'linked', done: await tick(store, linked, input) };
   },
 );
 
@@ -96,6 +101,45 @@ async function creditedMember(
   const memberId = creditFor(eligible, names, by);
   if (memberId === null) throw refuseFrame('whoNeeded');
   return memberId;
+}
+
+/**
+ * Hands the frame's helper's job in as the app would without an after photo
+ * (photo-frames ADR-0020, home-care ADR-0008): the status change and its
+ * history event in one transaction. There is no way back from the wall.
+ */
+async function handInJob(
+  store: Firestore,
+  { frame, home }: LinkedFrame,
+  input: TickFrameItemInput,
+): Promise<boolean> {
+  const ref = home.collection(HOME_CARE_JOBS).doc(input.id);
+  return store.runTransaction(async (transaction) => {
+    const job = parsed(frameJobShape, (await transaction.get(ref)).data());
+    if (
+      job === null ||
+      job.helperId !== frame.panels.helperMemberId ||
+      job.dueDate !== input.date ||
+      (input.step ?? null) !== null
+    ) {
+      throw refuseFrame('itemNotFound');
+    }
+    if (HANDED_IN_STATUSES.includes(job.status)) {
+      if (input.done) return true;
+      throw refuseFrame('itemNotFound');
+    }
+    if (!WITH_HELPER_STATUSES.includes(job.status)) throw refuseFrame('itemNotFound');
+    if (!input.done) return false;
+    const fields = handInFields(job);
+    transaction.update(ref, { ...fields, updatedAt: FieldValue.serverTimestamp() });
+    transaction.set(ref.collection(JOB_EVENTS).doc(String(fields.revision)), {
+      status: fields.status,
+      by: job.helperId,
+      note: null,
+      at: FieldValue.serverTimestamp(),
+    });
+    return true;
+  });
 }
 
 async function tickRoutine(

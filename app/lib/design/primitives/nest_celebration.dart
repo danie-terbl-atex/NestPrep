@@ -18,6 +18,7 @@ class NestCelebration extends StatefulWidget {
     this.message,
     this.note,
     this.picture,
+    this.length,
     super.key,
   });
 
@@ -27,6 +28,7 @@ class NestCelebration extends StatefulWidget {
 
   /// Shown in place of the star — a chore's own picture (todos ADR-0005).
   final Widget? picture;
+  final Duration? length;
   final VoidCallback onDone;
 
   static const confettiKey = ValueKey('nest-celebration-confetti');
@@ -40,6 +42,7 @@ class NestCelebration extends StatefulWidget {
     String? message,
     String? note,
     Widget? picture,
+    Duration? length,
   }) {
     final overlay = Overlay.of(context, rootOverlay: true);
     _showing[overlay]?.remove();
@@ -50,6 +53,7 @@ class NestCelebration extends StatefulWidget {
         message: message,
         note: note,
         picture: picture,
+        length: length,
         onDone: () {
           if (_showing[overlay] == entry) _showing[overlay] = null;
           entry.remove();
@@ -103,7 +107,9 @@ class _NestCelebrationState extends State<NestCelebration>
       );
     }
     _controller
-      ..duration = motion.celebration
+      ..duration = _isReduced
+          ? motion.celebration
+          : widget.length ?? motion.celebration
       ..forward();
   }
 

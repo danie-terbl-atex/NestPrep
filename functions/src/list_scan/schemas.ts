@@ -11,7 +11,7 @@ export const MAX_LIST_PHOTO_BYTES = 4 * 1024 * 1024;
  * Twice the photo limit in base64: between the two the photo is refused as
  * `listPhotoTooLarge`, which the app can put in words; past it, a bad request.
  */
-const MAX_BASE64_LENGTH = Math.ceil(MAX_LIST_PHOTO_BYTES / 3) * 4 * 2;
+export const MAX_BASE64_LENGTH = Math.ceil(MAX_LIST_PHOTO_BYTES / 3) * 4 * 2;
 
 /** Reading a shopping list, parsed at the edge (ENG-09, BE-03). The photo is never stored. */
 export const readShoppingListInput = z.object({

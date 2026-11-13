@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../state/kid_sign_in_controller.dart';
 import 'kid_code_letters.dart';
@@ -106,10 +107,7 @@ class _PairingSheetBodyState extends State<_PairingSheetBody> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NestListRow(
-            leading: NestAvatar(
-              name: widget.member.displayName,
-              color: widget.member.color,
-            ),
+            leading: MemberAvatar(member: widget.member),
             title: widget.member.displayName,
           ),
           const SizedBox(height: NestSpace.md),

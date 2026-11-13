@@ -56,6 +56,12 @@ export { awardChorePoints } from './chore_points/award_chore_points';
 export { reserveRewardPoints } from './chore_points/reserve_reward_points';
 export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
+// ---- avatars: a member's look mirrored from their choice, the Wardrobe, creations and keepsakes (avatars ADR-0001 to ADR-0006) ----
+export { onMemberAvatarWritten } from './avatars/on_member_avatar_written';
+export { onAvatarPurchase } from './avatars/on_avatar_purchase';
+export { onAvatarCreation } from './avatars/on_avatar_creation';
+export { onAvatarKeepsakeDelete } from './avatars/on_avatar_keepsake_delete';
+export { sweepAvatarCreations } from './avatars/sweep_avatar_creations';
 // ---- nanny hub: ending a shift writes the parents' summary (nanny-hub ADR-0002) ----
 export { endNannyShift } from './nanny_hub/end_nanny_shift';
 // ---- subscriptions: free and premium in both stores (subscriptions ADR-0001) ----
@@ -121,6 +127,11 @@ export { notifyPlaceEvent } from './live_location/notify_place_event';
 export { draftLunchIdeas } from './plan_week/draft_lunch_ideas';
 export { buildLunchWeek } from './plan_week/build_lunch_week';
 export { saveLunchRecipes } from './recipes/save_lunch_recipes';
+export { saveHouseholdRecipe } from './recipes/save_household_recipe';
+export { deleteHouseholdRecipe } from './recipes/delete_household_recipe';
+export { draftRecipe } from './recipes/draft_recipe';
+export { scanRecipeDocument } from './recipes/scan_recipe_document';
+export { draftDocumentRecipe } from './recipes/draft_document_recipe';
 // ---- a picture of the lunch box, made once per combination (lunch-box ADR-0015, foundation ADR-0015) ----
 export { lunchPhoto } from './lunch_photos/lunch_photo';
 // ---- add to Checkers: a member's own Sixty60 cart, linked by SMS code (the Checkers build contract) ----
@@ -154,10 +165,13 @@ export { getFramePhoto } from './frames/get_frame_photo';
 export { getFrameLunchPhoto } from './frames/get_frame_lunch_photo';
 export { unlinkFrame } from './frames/unlink_frame';
 export { tickFrameItem } from './frames/tick_frame_item';
+export { getFrameJobPhoto } from './frames/get_frame_job_photo';
+export { setFrameShift } from './frames/set_frame_shift';
 export { addFrameEvent } from './frames/add_frame_event';
 export { shareToFrame } from './frames/share_to_frame';
 export { waitFrameShare } from './frames/wait_frame_share';
 export { getFrameRecipePhoto } from './frames/get_frame_recipe_photo';
+export { getFrameAvatar } from './frames/get_frame_avatar';
 export { searchFrameProducts } from './frames/search_frame_products';
 export { addFrameGroceryItem } from './frames/add_frame_grocery_item';
 export { checkFrameUpdate } from './frames/check_frame_update';

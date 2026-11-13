@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 
 /// One booked shift: when, whose (for family), the note, whether it is on now,
@@ -41,7 +42,7 @@ class BookingRow extends StatelessWidget {
                 icon: LucideIcons.calendarCheck,
                 tint: NestTileTint.basil,
               )
-            : NestAvatar(name: person.displayName, color: person.color),
+            : MemberAvatar(member: person),
         title: person == null ? when : person.displayName,
         subtitle: lines.isEmpty ? null : lines.join('\n'),
         footer: isOnNow

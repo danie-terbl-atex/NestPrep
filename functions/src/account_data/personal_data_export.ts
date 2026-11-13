@@ -1,6 +1,7 @@
 import type { Firestore, QuerySnapshot } from 'firebase-admin/firestore';
 
 import { exportConnections } from '../assistants/connections/export_connections';
+import { AVATAR_MEMBER_RECORDS } from '../avatars/avatar_keepsakes';
 import { CALENDAR_CONNECTIONS } from '../calendar_sync/sync_documents';
 import { GRANTS, VAULT_DOCUMENTS, VIEWS, vaultRef } from '../documents/vault_refs';
 import { FEEDBACK_EXPORT_LIMIT, feedbackOf } from '../feedback/feedback_documents';
@@ -122,9 +123,28 @@ async function exportHousehold(
     connectedCalendars: connections.docs.map((doc) => plainDocument(doc.id, doc.data())),
     connectedAssistants: await exportConnections(store, householdId, uid),
     whatYouAdded: member === undefined ? {} : await exportAuthored(store, householdId, member.id),
+    yourAvatarCreations:
+      member === undefined ? {} : await exportAvatarRecords(store, householdId, member.id),
     whereYouHaveBeen:
       member === undefined ? null : await exportLocationHistory(store, householdId, member.id),
   };
+}
+
+async function exportAvatarRecords(
+  store: Firestore,
+  householdId: string,
+  memberId: string,
+): Promise<PlainValue> {
+  const sections: Record<string, PlainValue> = {};
+  for (const collection of AVATAR_MEMBER_RECORDS) {
+    const page = await householdRef(store, householdId)
+      .collection(collection)
+      .where('memberId', '==', memberId)
+      .limit(AUTHORED_LIMIT)
+      .get();
+    sections[collection] = page.docs.map((doc) => plainDocument(doc.id, doc.data()));
+  }
+  return sections;
 }
 
 async function exportLocationHistory(

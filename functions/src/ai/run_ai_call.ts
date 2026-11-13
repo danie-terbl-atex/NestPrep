@@ -2,7 +2,7 @@ import { logger } from 'firebase-functions/v2';
 import type { z } from 'zod';
 
 import { refuseAi, type AiRefusal } from './ai_refusals';
-import { isFeatureOn, type AiFeature, type AiSettings } from './ai_settings';
+import { chargeOf, isFeatureOn, type AiFeature, type AiSettings } from './ai_settings';
 import { NO_USAGE, type GenerativeModel, type ModelRequest } from './generative_model';
 import { IMAGE_CALL_LIMITS, callForImage } from './image_call';
 import type { ImageModel, ImageReply, ImageRequest } from './image_model';
@@ -132,6 +132,7 @@ export async function spendAiCall<T>(
     uid: spend.uid,
     now: deps.now(),
     monthlyCalls: deps.settings.monthlyCalls,
+    charge: chargeOf(deps.settings, spend.feature),
   });
 
   let reply;

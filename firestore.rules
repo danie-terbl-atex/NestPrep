@@ -769,6 +769,179 @@ service cloud.firestore {
         allow delete: if false;
       }
 
+      // ==== rules/firestore/household/avatars.rules ====
+      // ---- avatars: a member's look, the Wardrobe and made pictures (avatars ADR-0001 to ADR-0006) ----
+      //
+      // A look is as public as a name, so everyone in the household reads these,
+      // kid devices included: avatars are not an area. A member's choice is
+      // written by family for anyone, or by the member themselves; what they own
+      // and the look mirrored onto the member are the Functions' alone.
+
+      function avatarsIsAssetId(value) {
+        return value is string && value.matches('^[a-z0-9-]{1,48}$');
+      }
+
+      function avatarsIsHash(value) {
+        return value is string && value.matches('^[0-9a-f]{32}$');
+      }
+
+      function avatarsIsWorn(wear, slot) {
+        return !(slot in wear) || (avatarsIsAssetId(wear[slot]) && wear[slot].matches('^acc-.*$'));
+      }
+
+      function avatarsIsChoice(choice) {
+        return choice is map
+          && choice.keys().hasOnly(['base', 'stage', 'wear'])
+          && choice.keys().hasAll(['base', 'wear'])
+          && choice.base is string
+          && (choice.base == 'initial'
+              || choice.base.matches('^preset:[a-z0-9-]{1,40}$')
+              || choice.base.matches('^image:[0-9a-f]{32}$'))
+          && (!('stage' in choice)
+              || (choice.stage is int && choice.stage >= 0 && choice.stage <= 3))
+          && choice.wear is map
+          && choice.wear.keys().hasOnly(['top', 'badge', 'ring', 'face'])
+          && avatarsIsWorn(choice.wear, 'top')
+          && avatarsIsWorn(choice.wear, 'badge')
+          && avatarsIsWorn(choice.wear, 'ring')
+          && avatarsIsWorn(choice.wear, 'face');
+      }
+
+      function avatarsActsFor(memberId) {
+        return isFamily(householdId) || isOwnMember(householdId, memberId);
+      }
+
+      function avatarsIsAMember(memberId) {
+        return memberId is string
+          && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
+      }
+
+      match /memberAvatars/{memberId} {
+        allow read: if isInHousehold(householdId);
+
+        allow create: if avatarsActsFor(memberId)
+          && avatarsIsAMember(memberId)
+          && request.resource.data.keys().hasOnly(['choice', 'pendingPhoto', 'updatedBy', 'updatedAt'])
+          && request.resource.data.keys().hasAll(['choice', 'updatedBy', 'updatedAt'])
+          && avatarsIsChoice(request.resource.data.choice)
+          && (!('pendingPhoto' in request.resource.data)
+              || avatarsIsHash(request.resource.data.pendingPhoto))
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow update: if avatarsActsFor(memberId)
+          && request.resource.data.keys()
+               .hasOnly(['choice', 'pendingPhoto', 'owned', 'updatedBy', 'updatedAt'])
+          && !changedKeys().hasAny(['owned'])
+          && avatarsIsChoice(request.resource.data.choice)
+          && (!('pendingPhoto' in request.resource.data)
+              || avatarsIsHash(request.resource.data.pendingPhoto))
+          && isOwnMember(householdId, request.resource.data.updatedBy)
+          && isServerTime('updatedAt');
+
+        allow delete: if false;
+      }
+
+      // A child buys an accessory with their stars, or family buys it for them.
+      // Four fields and nothing else: the price, the outcome and the reason are the
+      // trigger's to write (avatars ADR-0004).
+      match /avatarPurchases/{purchaseId} {
+        allow read: if isInHousehold(householdId);
+
+        allow create: if avatarsActsFor(request.resource.data.memberId)
+          && request.resource.data.keys()
+               .hasOnly(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
+          && request.resource.data.keys()
+               .hasAll(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
+          && avatarsIsAMember(request.resource.data.memberId)
+          && avatarsIsAssetId(request.resource.data.accessoryId)
+          && request.resource.data.accessoryId.matches('^acc-.*$')
+          && isOwnMember(householdId, request.resource.data.requestedBy)
+          && isServerTime('requestedAt');
+
+        allow update, delete: if false;
+      }
+
+      function avatarsIsBuddy(buddy) {
+        return buddy is map
+          && buddy.keys().hasOnly(['creature', 'colour', 'loves', 'wears', 'power'])
+          && buddy.keys().hasAll(['creature', 'colour', 'loves', 'wears', 'power'])
+          && avatarsIsAssetId(buddy.creature)
+          && avatarsIsAssetId(buddy.colour)
+          && avatarsIsAssetId(buddy.loves)
+          && avatarsIsAssetId(buddy.wears)
+          && avatarsIsAssetId(buddy.power);
+      }
+
+      // A picture to be made: the member, the recipe and its few choices (avatars
+      // ADR-0003, ADR-0006). A drawing or a pet brings its uploaded reference, a
+      // buddy its chips; the portrait is family's and the household's. What becomes
+      // of it is the trigger's to write.
+      function avatarsIsRecipeShaped(data) {
+        return (data.recipe in ['drawing', 'pet']
+                && 'inboxId' in data
+                && !data.keys().hasAny(['buddy', 'extra']))
+          || (data.recipe == 'buddy'
+              && 'buddy' in data
+              && !('inboxId' in data))
+          || (data.recipe == 'portrait'
+              && isFamily(householdId)
+              && data.memberId == data.requestedBy
+              && !data.keys().hasAny(['style', 'buddy', 'extra', 'inboxId']));
+      }
+
+      match /avatarCreations/{creationId} {
+        allow read: if isInHousehold(householdId);
+
+        allow create: if avatarsActsFor(request.resource.data.memberId)
+          && request.resource.data.keys().hasOnly(
+               ['memberId', 'recipe', 'style', 'buddy', 'extra', 'inboxId', 'requestedBy',
+                'requestedAt'])
+          && request.resource.data.keys()
+               .hasAll(['memberId', 'recipe', 'requestedBy', 'requestedAt'])
+          && avatarsIsAMember(request.resource.data.memberId)
+          && request.resource.data.recipe in ['drawing', 'buddy', 'pet', 'portrait']
+          && avatarsIsRecipeShaped(request.resource.data)
+          && (!('style' in request.resource.data)
+              || request.resource.data.style
+                   in ['plush', 'clay', 'knitted', 'wooden', 'vinyl', 'sticker'])
+          && (!('buddy' in request.resource.data) || avatarsIsBuddy(request.resource.data.buddy))
+          && (!('extra' in request.resource.data)
+              || (request.resource.data.extra is string && request.resource.data.extra.size() <= 60))
+          && (!('inboxId' in request.resource.data)
+              || (request.resource.data.inboxId is string
+                  && request.resource.data.inboxId.matches('^[A-Za-z0-9_-]{8,64}$')))
+          && isOwnMember(householdId, request.resource.data.requestedBy)
+          && isServerTime('requestedAt');
+
+        allow update, delete: if false;
+      }
+
+      match /avatarKeepsakes/{keepsakeId} {
+        allow read: if isInHousehold(householdId);
+        allow write: if false;
+      }
+
+      function avatarsKeepsake(keepsakeId) {
+        return /databases/$(database)/documents/households/$(householdId)/avatarKeepsakes/$(keepsakeId);
+      }
+
+      // A keepsake to be deleted from the shelf, by family or by the member it
+      // belongs to, a kid device included; the trigger deletes the keepsake, its
+      // files and this request (avatars ADR-0005).
+      match /avatarKeepsakeDeletes/{keepsakeId} {
+        allow read: if isInHousehold(householdId);
+
+        allow create: if exists(avatarsKeepsake(keepsakeId))
+          && avatarsActsFor(get(avatarsKeepsake(keepsakeId)).data.memberId)
+          && request.resource.data.keys().hasOnly(['requestedBy', 'requestedAt'])
+          && request.resource.data.keys().hasAll(['requestedBy', 'requestedAt'])
+          && isOwnMember(householdId, request.resource.data.requestedBy)
+          && isServerTime('requestedAt');
+
+        allow update, delete: if false;
+      }
+
       // ==== rules/firestore/household/calendar.rules ====
       // ---- calendar (calendar ADR-0001, ADR-0002) ----
 
@@ -1697,8 +1870,10 @@ service cloud.firestore {
                       && homeCareLogsTheChange(householdId, jobId, before, after)));
         }
 
-        // Handing in: every step ticked and an after photo named for this
-        // revision, so a second hand-in never reuses the first one's object.
+        // Handing in: every step ticked. The after photo is optional (home-care
+        // ADR-0008); one that is given is named for this revision, so a second
+        // hand-in never reuses the first one's object, and one without a photo
+        // clears the field rather than keep the last hand-in's.
         function homeCareIsHandIn(householdId, jobId, before, after, changed) {
           return changed.hasOnly(
                    ['doneStepIds', 'status', 'revision', 'afterPhoto', 'updatedAt'])
@@ -1706,7 +1881,8 @@ service cloud.firestore {
             && after.status == 'submitted'
             && after.doneStepIds is list
             && after.doneStepIds.size() == before.steps.size()
-            && homeCareIsPhoto(after.afterPhoto, 'after-' + string(after.revision))
+            && (after.afterPhoto == null
+                  || homeCareIsPhoto(after.afterPhoto, 'after-' + string(after.revision)))
             && homeCareLogsTheChange(householdId, jobId, before, after);
         }
 
@@ -1965,6 +2141,56 @@ service cloud.firestore {
           && (routine.recurrence == null || routine.recurrence is map);
       }
 
+      // ==== rules/firestore/household/home_care_shifts.rules ====
+      // ---- home care: a helper's shifts (home-care ADR-0007) ----
+
+      // One stretch of work, clocked in and out. Both instants are the server's,
+      // a shift only ever moves open → ended, and nobody edits or deletes one:
+      // it is the record a later leave calculation reads. The wall frame writes
+      // the same document through `setFrameShift`, as `frame`.
+      match /homeCareShifts/{shiftId} {
+        allow read: if canView(householdId, 'homeCare')
+          || (hasOwnOnly(householdId, 'homeCare')
+                && resource.data.helperId == ownMemberId(householdId));
+
+        allow create: if request.resource.data.keys().hasOnly(
+               ['helperId', 'status', 'startedAt', 'startedBy', 'startedVia',
+                'endedAt', 'endedBy', 'endedVia'])
+          && request.resource.data.keys().hasAll(
+               ['helperId', 'status', 'startedAt', 'startedBy', 'startedVia',
+                'endedAt', 'endedBy', 'endedVia'])
+          && request.resource.data.status == 'open'
+          && request.resource.data.startedVia == 'app'
+          && request.resource.data.endedAt == null
+          && request.resource.data.endedBy == null
+          && request.resource.data.endedVia == null
+          && isServerTime('startedAt')
+          && isOwnMember(householdId, request.resource.data.startedBy)
+          && homeCareShiftIsTheirs(householdId, request.resource.data.helperId,
+               request.resource.data.startedBy)
+          && exists(/databases/$(database)/documents/households/$(householdId)/members/$(request.resource.data.helperId));
+
+        allow update: if resource.data.status == 'open'
+          && onlyChanged(['status', 'endedAt', 'endedBy', 'endedVia'])
+          && request.resource.data.status == 'ended'
+          && request.resource.data.endedVia == 'app'
+          && isServerTime('endedAt')
+          && isOwnMember(householdId, request.resource.data.endedBy)
+          && homeCareShiftIsTheirs(householdId, resource.data.helperId,
+               request.resource.data.endedBy);
+
+        allow delete: if false;
+      }
+
+      // Family (whoever holds `edit`) clocks anybody; anybody else who sees home
+      // care clocks only herself. `by` is already known to be the caller's profile.
+      function homeCareShiftIsTheirs(householdId, helperId, by) {
+        return canEdit(householdId, 'homeCare')
+          || (helperId == by
+                && (hasOwnOnly(householdId, 'homeCare')
+                      || canView(householdId, 'homeCare')));
+      }
+
       // ==== rules/firestore/household/household.rules ====
       // Every member reads it, and so does a kid device: the name, the zone that
       // makes "today" the household's today, and the `kids` map its own access is
@@ -1975,11 +2201,22 @@ service cloud.firestore {
       // Functions, which is why there is no client write that touches it.
       allow create, delete: if false;
 
-      allow update: if isAdmin(householdId)
-        && ((onlyChanged(['name', 'timeZone'])
-              && isNonEmptyString(request.resource.data.name)
-              && isNonEmptyString(request.resource.data.timeZone))
-            || isFinishingSetup());
+      allow update: if (isAdmin(householdId)
+          && ((onlyChanged(['name', 'timeZone'])
+                && isNonEmptyString(request.resource.data.name)
+                && isNonEmptyString(request.resource.data.timeZone))
+              || isFinishingSetup()))
+        || isSwitchingAvatars();
+
+      // Whether stars buy accessories in the Wardrobe (avatars ADR-0004) and whether
+      // the household makes AI creations (avatars ADR-0003). Absent reads as on; any
+      // family adult may turn either off and on again.
+      function isSwitchingAvatars() {
+        return isFamily(householdId)
+          && onlyChanged(['avatarShop', 'avatarCreationsOn'])
+          && request.resource.data.get('avatarShop', true) is bool
+          && request.resource.data.get('avatarCreationsOn', true) is bool;
+      }
 
       // The invite step `createHousehold` opens (household ADR-0003). An admin
       // may close it — done or skipped — and never open it again.
@@ -2067,15 +2304,17 @@ service cloud.firestore {
       }
 
       // ==== rules/firestore/household/household_recipes.rules ====
-      // ---- household recipes (recipes ADR-0002) ----
-      // The dishes a household used from Plan my week (lunch-box ADR-0021), saved
-      // as its own recipes. Only the `saveLunchRecipes` Function writes one: their
-      // allergen codes come from word lists no rule can run. Immutable and never
-      // deleted — lunch items link to them. Read one at a time by id, never listed.
+      // ---- household recipes (recipes ADR-0002, ADR-0007) ----
+      // `ai` is read by id with lunch; `own` is listed with meals. Only Functions
+      // write either: allergen codes come from word lists no rule can run.
 
       match /recipes/{recipeId} {
-        allow get: if canView(householdId, 'lunch');
-        allow list: if false;
+        allow get: if canView(householdId, 'lunch')
+          || (canView(householdId, 'meals')
+                && (resource == null || resource.data.source == 'own'));
+        allow list: if canView(householdId, 'meals')
+          && resource.data.source == 'own'
+          && request.query.limit <= 300;
         allow write: if false;
       }
 
@@ -2337,8 +2576,9 @@ service cloud.firestore {
       }
 
       // `recipeId` names the catalogue recipe an item was made from (recipes
-      // ADR-0001), `householdRecipeId` the household's own (recipes ADR-0002) — one
-      // or neither. The update rule's `onlyChanged` leaves both out, so neither
+      // ADR-0001), `householdRecipeId` an AI recipe of the household's (recipes
+      // ADR-0002) — one or neither, and never an own recipe, which can be deleted
+      // (ADR-0007 §7). The update rule's `onlyChanged` leaves both out, so neither
       // changes once set.
       function isLunchItem(data) {
         return data.keys().hasOnly(
@@ -2354,7 +2594,9 @@ service cloud.firestore {
           && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60))
           && (!('recipeId' in data) || isLunchText(data.recipeId, 60))
           && (!('householdRecipeId' in data)
-                || (isLunchText(data.householdRecipeId, 60) && !('recipeId' in data)));
+                || (data.householdRecipeId is string
+                      && data.householdRecipeId.matches('ai-[0-9a-f]{20}')
+                      && !('recipeId' in data)));
       }
 
       // An item linked to a household recipe carries at least every allergen code
@@ -2878,18 +3120,20 @@ service cloud.firestore {
 
         allow create: if canEdit(householdId, 'meals')
           && request.resource.data.keys().hasOnly(
-               ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients', 'recipeId'])
+               ['name', 'nameKey', 'addedBy', 'createdAt', 'ingredients', 'recipeId', 'householdRecipeId'])
           && isNonEmptyString(request.resource.data.name)
           && isNormalisedKey(request.resource.data.nameKey)
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('createdAt')
           && mealsIngredientsAreValid(request.resource.data.get('ingredients', []))
-          && mealsRecipeLinkIsValid(mealId, request.resource.data);
+          && mealsRecipeLinkIsValid(mealId, request.resource.data)
+          && mealsOwnRecipeLinkIsValid(mealId, request.resource.data);
 
         // Renaming is the adder's or an admin's; what goes in a meal is anybody's
         // who edits meals (meal-planning ADR-0002) — the two never share a write.
-        // Neither list names `recipeId`, so the link is never added, changed or
-        // removed after create (recipes ADR-0003 §6).
+        // Neither list names `recipeId` or `householdRecipeId`, so a client never
+        // adds, changes or removes a link after create (recipes ADR-0003 §6,
+        // ADR-0007 §6).
         allow update: if canEdit(householdId, 'meals')
           && ((onlyChanged(['name', 'nameKey'])
                 && isNonEmptyString(request.resource.data.name)
@@ -2911,7 +3155,16 @@ service cloud.firestore {
             || (data.recipeId is string
                 && data.recipeId.size() > 0
                 && data.recipeId.size() <= 60
+                && !data.recipeId.matches('own-.*')
                 && mealId == 'recipe-' + data.recipeId);
+        }
+
+        function mealsOwnRecipeLinkIsValid(mealId, data) {
+          return !('householdRecipeId' in data)
+            || (data.householdRecipeId is string
+                && data.householdRecipeId.matches('own-[0-9a-f]{20}')
+                && !('recipeId' in data)
+                && mealId == 'recipe-' + data.householdRecipeId);
         }
 
         function isNormalisedKey(value) {

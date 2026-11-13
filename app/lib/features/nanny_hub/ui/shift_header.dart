@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/shift.dart';
 import 'hub_clock.dart';
@@ -31,11 +32,7 @@ class ShiftHeader extends StatelessWidget {
     return Row(
       children: [
         if (person != null) ...[
-          NestAvatar(
-            name: person.displayName,
-            color: person.color,
-            size: NestSize.avatarLarge,
-          ),
+          MemberAvatar(member: person, size: NestSize.avatarLarge),
           const SizedBox(width: NestSpace.md),
         ],
         Expanded(

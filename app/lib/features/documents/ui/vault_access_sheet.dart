@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../state/vault_controller.dart';
@@ -91,7 +92,7 @@ class _AccessRow extends StatelessWidget {
         subtitle: isFamily
             ? VaultCopy.accessAlways
             : AppCopy.roleName(member.roleName),
-        leading: NestAvatar(name: member.displayName, color: member.color),
+        leading: MemberAvatar(member: member),
         trailing: isFamily
             ? const Icon(LucideIcons.shieldCheck)
             : Switch(value: isGranted, onChanged: onChanged),

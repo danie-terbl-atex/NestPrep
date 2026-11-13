@@ -1,0 +1,48 @@
+// ---- home care: a helper's shifts (home-care ADR-0007) ----
+
+// One stretch of work, clocked in and out. Both instants are the server's,
+// a shift only ever moves open → ended, and nobody edits or deletes one:
+// it is the record a later leave calculation reads. The wall frame writes
+// the same document through `setFrameShift`, as `frame`.
+match /homeCareShifts/{shiftId} {
+  allow read: if canView(householdId, 'homeCare')
+    || (hasOwnOnly(householdId, 'homeCare')
+          && resource.data.helperId == ownMemberId(householdId));
+
+  allow create: if request.resource.data.keys().hasOnly(
+         ['helperId', 'status', 'startedAt', 'startedBy', 'startedVia',
+          'endedAt', 'endedBy', 'endedVia'])
+    && request.resource.data.keys().hasAll(
+         ['helperId', 'status', 'startedAt', 'startedBy', 'startedVia',
+          'endedAt', 'endedBy', 'endedVia'])
+    && request.resource.data.status == 'open'
+    && request.resource.data.startedVia == 'app'
+    && request.resource.data.endedAt == null
+    && request.resource.data.endedBy == null
+    && request.resource.data.endedVia == null
+    && isServerTime('startedAt')
+    && isOwnMember(householdId, request.resource.data.startedBy)
+    && homeCareShiftIsTheirs(householdId, request.resource.data.helperId,
+         request.resource.data.startedBy)
+    && exists(/databases/$(database)/documents/households/$(householdId)/members/$(request.resource.data.helperId));
+
+  allow update: if resource.data.status == 'open'
+    && onlyChanged(['status', 'endedAt', 'endedBy', 'endedVia'])
+    && request.resource.data.status == 'ended'
+    && request.resource.data.endedVia == 'app'
+    && isServerTime('endedAt')
+    && isOwnMember(householdId, request.resource.data.endedBy)
+    && homeCareShiftIsTheirs(householdId, resource.data.helperId,
+         request.resource.data.endedBy);
+
+  allow delete: if false;
+}
+
+// Family (whoever holds `edit`) clocks anybody; anybody else who sees home
+// care clocks only herself. `by` is already known to be the caller's profile.
+function homeCareShiftIsTheirs(householdId, helperId, by) {
+  return canEdit(householdId, 'homeCare')
+    || (helperId == by
+          && (hasOwnOnly(householdId, 'homeCare')
+                || canView(householdId, 'homeCare')));
+}

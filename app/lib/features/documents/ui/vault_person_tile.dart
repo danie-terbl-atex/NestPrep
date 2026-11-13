@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 
 /// One person's vault on the vault home: their mark and name, how much is in
@@ -41,11 +42,7 @@ class VaultPersonTile extends StatelessWidget {
           AppCopy.documentsInFolder(count),
           if (shared != null) VaultCopy.sharedWith(shared),
         ].join(' · '),
-        leading: NestAvatar(
-          name: member.displayName,
-          color: member.color,
-          size: NestSize.avatarLarge,
-        ),
+        leading: MemberAvatar(member: member, size: NestSize.avatarLarge),
         footer: needsAttention == 0
             ? null
             : NestBadge(

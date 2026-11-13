@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/family_entry.dart';
 
 /// The top of a profile: who this is, how old, and whether they are a child —
@@ -11,6 +12,7 @@ class FamilyProfileHeader extends StatelessWidget {
     required this.entry,
     required this.age,
     required this.onToggleChild,
+    this.onChangePicture,
     super.key,
   });
 
@@ -21,6 +23,8 @@ class FamilyProfileHeader extends StatelessWidget {
 
   /// Null when the viewer may not change this profile.
   final VoidCallback? onToggleChild;
+
+  final VoidCallback? onChangePicture;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +38,14 @@ class FamilyProfileHeader extends StatelessWidget {
     ].join(' · ');
     return Row(
       children: [
-        NestAvatar(
-          name: member.displayName,
-          color: member.color,
-          size: NestSize.mark,
-        ),
+        switch (onChangePicture) {
+          final change? => NestEditablePicture(
+            label: AvatarCopy.changePictureOf(member.displayName),
+            onTap: change,
+            child: MemberAvatar(member: member, size: NestSize.mark),
+          ),
+          null => MemberAvatar(member: member, size: NestSize.mark),
+        },
         const SizedBox(width: NestSpace.lg),
         Expanded(
           child: Column(

@@ -1,5 +1,6 @@
 import type { DocumentReference, Firestore } from 'firebase-admin/firestore';
 
+import { MEMBER_AVATARS } from '../avatars/avatar_refs';
 import { HOUSEHOLDS } from '../household/documents';
 
 /** What the household knows about a member (family-profiles ADR-0001). */
@@ -10,7 +11,7 @@ export const MEMBER_HEALTH = 'memberHealth';
 
 /**
  * Every document that describes one member beyond the member itself, keyed by
- * the member's id. They go with the member: `removeMember` deletes them in the
+ * the member's id — their profile, medication and look (avatars ADR-0001). They go with the member: `removeMember` deletes them in the
  * same transaction, so a removed child's allergies and medication do not
  * outlive them — no client may delete them (family-profiles ADR-0001).
  */
@@ -23,5 +24,6 @@ export function memberDetailRefs(
   return [
     household.collection(FAMILY_PROFILES).doc(memberId),
     household.collection(MEMBER_HEALTH).doc(memberId),
+    household.collection(MEMBER_AVATARS).doc(memberId),
   ];
 }

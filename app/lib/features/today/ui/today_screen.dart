@@ -10,6 +10,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../subscriptions/ui/premium_lockup.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import 'home_layout_button.dart';
@@ -53,7 +54,7 @@ class TodayScreen extends StatelessWidget {
     ];
 
     return NestScaffold(
-      leading: const NestBrandLockup(semanticsLabel: AppCopy.appName),
+      leading: const PremiumLockup(),
       trailing: const [
         HomeLayoutButton(),
         TourAnchor(target: TourTarget.bell, child: NotificationBell()),

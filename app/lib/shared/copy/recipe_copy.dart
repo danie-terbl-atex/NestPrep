@@ -97,6 +97,7 @@ abstract final class RecipeCopy {
   };
 
   static String facet(RecipeFacet facet) => switch (facet) {
+    RecipeFacet.ours => 'Ours',
     RecipeFacet.braai => 'Braai',
     RecipeFacet.quick => 'Quick',
     RecipeFacet.healthy => 'Healthy',
@@ -122,6 +123,7 @@ abstract final class RecipeCopy {
   static const tonightAction = 'Cook this';
 
   static String shelf(RecipeShelfKind kind) => switch (kind) {
+    RecipeShelfKind.ours => 'Our recipes',
     RecipeShelfKind.healthyWeeknights => 'Healthy weeknights',
     RecipeShelfKind.sundayClassics => 'Sunday classics',
     RecipeShelfKind.braaiDay => 'Braai day',

@@ -6,21 +6,24 @@ import { isFamilyRole } from '../household/access';
 import { householdRef, memberRef } from '../household/documents';
 import { refuse } from '../household/errors';
 import { parseInput, requireUid } from '../household/parse_input';
+import { HOUSEHOLD_RECIPES } from '../recipes/household_recipe';
 import { RECIPES } from '../recipes/recipe';
 import { readFlag } from '../shared/feature_flags';
 import { db } from '../shared/firestore';
+import { pageLink } from '../shared/page_link';
 import { consumeRateLimit } from '../shared/rate_limit';
 import { firstName } from './frame_day';
 import { type FrameShareKind, frameDocument, frameRef, framesOf, parsed } from './frame_documents';
 import { type FrameRefusal, refuseFrame } from './frame_errors';
-import { frameLink } from './frame_links';
 import { FRAME_SHARE_PER_UID } from './frame_policy';
 import {
   type FrameRecipe,
   type FrameRecipeShareInput,
+  type FrameRecipeSource,
   buildFrameRecipe,
   frameRecipeDocument,
   frameRecipePhotoPath,
+  ownRecipeFrameDocument,
 } from './frame_recipe';
 import { type ShareToFrameInput, shareToFrameInput } from './frame_schemas';
 
@@ -91,17 +94,17 @@ async function shareContent(
   store: Firestore,
   input: ShareToFrameInput,
 ): Promise<ShareContent | FrameRefusal> {
-  if ('recipe' in input) return recipeContent(store, input.recipe);
-  const url = frameLink(input.url);
+  if ('recipe' in input) return recipeContent(store, input.householdId, input.recipe);
+  const url = pageLink(input.url);
   return url === null ? 'badLink' : { kind: 'page', url, title: input.title };
 }
 
 async function recipeContent(
   store: Firestore,
+  householdId: string,
   share: FrameRecipeShareInput,
 ): Promise<ShareContent | FrameRefusal> {
-  const stored = await store.collection(RECIPES).doc(share.id).get();
-  const recipe = stored.exists ? parsed(frameRecipeDocument, stored.data()) : null;
+  const recipe = await recipeToShare(store, householdId, share);
   if (recipe === null) return 'recipeNotFound';
   const built = buildFrameRecipe(recipe, share);
   if (built === null) return 'badRecipe';
@@ -111,6 +114,22 @@ async function recipeContent(
     recipe: built,
     photoPath: frameRecipePhotoPath(recipe),
   };
+}
+
+async function recipeToShare(
+  store: Firestore,
+  householdId: string,
+  share: FrameRecipeShareInput,
+): Promise<FrameRecipeSource | null> {
+  if (share.household !== true) {
+    const stored = await store.collection(RECIPES).doc(share.id).get();
+    return parsed(frameRecipeDocument, stored.data());
+  }
+  const stored = await householdRef(store, householdId)
+    .collection(HOUSEHOLD_RECIPES)
+    .doc(share.id)
+    .get();
+  return parsed(ownRecipeFrameDocument, stored.data());
 }
 
 async function senderName(

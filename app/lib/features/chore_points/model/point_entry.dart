@@ -6,7 +6,7 @@ part 'point_entry.freezed.dart';
 part 'point_entry.g.dart';
 
 /// Why a child's stars moved (todos ADR-0003).
-enum EntryKind { chore, choreUndone, reward, rewardReturned }
+enum EntryKind { chore, choreUndone, reward, rewardReturned, accessory }
 
 /// One line of a child's ledger, at `households/{id}/pointEntries/{id}`.
 /// Append-only and written only by Functions; the balance is the sum of these.

@@ -14,6 +14,7 @@ import '../features/household/state/member_access_controller.dart';
 import '../features/household/ui/close_household_screen.dart';
 import '../features/household/ui/invite_step_screen.dart';
 import '../features/household/ui/member_access_screen.dart';
+import 'avatar_routes.dart';
 import 'household_route.dart';
 
 /// The routes the people screen opens under the household shell — the invite
@@ -63,6 +64,7 @@ List<GoRoute> householdAccessRoutes() => [
       );
     },
   ),
+  avatarStudioRoute(),
   // Closing the household for good (household ADR-0007).
   GoRoute(
     path: '${HouseholdRoute.path}/${HouseholdRoute.closeSegment}',

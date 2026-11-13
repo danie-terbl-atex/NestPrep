@@ -1,5 +1,6 @@
 import '../../meal_planning/model/meal_ingredient.dart';
 import 'recipe.dart';
+import 'recipe_ingredient.dart';
 import 'recipe_scale.dart';
 import 'scaled_ingredients.dart';
 
@@ -11,8 +12,14 @@ import 'scaled_ingredients.dart';
 /// A line with no amount stays a bare name; a line in a unit this build does
 /// not know keeps its name and loses the amount rather than claiming a count
 /// it never was.
-List<MealIngredient> recipeMealLines(Recipe recipe, RecipeScale scale) => [
-  for (final line in recipe.ingredients.take(MealIngredient.lineLimit))
+List<MealIngredient> recipeMealLines(Recipe recipe, RecipeScale scale) =>
+    mealLinesOf(recipe.ingredients, scale);
+
+List<MealIngredient> mealLinesOf(
+  List<RecipeIngredient> ingredients,
+  RecipeScale scale,
+) => [
+  for (final line in ingredients.take(MealIngredient.lineLimit))
     _mealLine(scaleIngredient(line, scale)),
 ];
 

@@ -28,6 +28,7 @@ AppFailure failureFromGoogleSignIn(GoogleSignInException error) {
 AppFailure failureFromFirebaseAuth(FirebaseAuthException error) {
   AppLog.failure('firebase sign-in', code: error.code, error: error);
   return SignInFailure(switch (error.code) {
+    'canceled' || 'web-context-canceled' => SignInProblem.cancelled,
     'network-request-failed' => SignInProblem.networkUnavailable,
     'user-disabled' => SignInProblem.accountDisabled,
     // Enumeration protection is on, so Firebase returns these three almost

@@ -39,7 +39,7 @@ class BeforeAndAfter extends StatelessWidget {
     final afterView = _Labelled(
       label: HomeCareCopy.after,
       child: after == null
-          ? const NestSkeleton(height: NestSize.previewHeight)
+          ? const _NoAfterPhoto()
           : JobPhotoView(
               photo: after,
               frameAspectRatio: job.beforePhoto.aspectRatio,
@@ -70,6 +70,30 @@ class BeforeAndAfter extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _NoAfterPhoto extends StatelessWidget {
+  const _NoAfterPhoto();
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return NestCard(
+      variant: NestCardVariant.flat,
+      child: Row(
+        children: [
+          Icon(LucideIcons.cameraOff, color: nest.colors.inkSecondary),
+          const SizedBox(width: NestSpace.md),
+          Expanded(
+            child: Text(
+              HomeCareCopy.noAfterPhoto,
+              style: nest.text.bodySecondary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,20 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 
 /// The sign-in providers as a row of their marks, below the address form
-/// (accounts ADR-0009). Google signs in; Apple is on the screen ahead of its
-/// sign-in and says so when tapped, rather than doing nothing.
+/// (accounts ADR-0009). Apple is offered on iOS only (accounts ADR-0014).
 class SignInProviders extends StatelessWidget {
   const SignInProviders({
     required this.isBusy,
     required this.onGoogle,
+    required this.onApple,
     super.key,
   });
 
   final bool isBusy;
   final VoidCallback onGoogle;
+  final VoidCallback onApple;
+
+  static bool get offersApple => defaultTargetPlatform == TargetPlatform.iOS;
 
   @override
   Widget build(BuildContext context) {
@@ -27,39 +31,15 @@ class SignInProviders extends StatelessWidget {
           isLoading: isBusy,
           onPressed: onGoogle,
         ),
-        const SizedBox(width: NestSpace.lg),
-        NestProviderButton(
-          provider: NestProvider.apple,
-          label: AppCopy.signInWithApple,
-          onPressed: isBusy ? null : () => _appleComingSoon(context),
-        ),
+        if (offersApple) ...[
+          const SizedBox(width: NestSpace.lg),
+          NestProviderButton(
+            provider: NestProvider.apple,
+            label: AppCopy.signInWithApple,
+            onPressed: isBusy ? null : onApple,
+          ),
+        ],
       ],
-    );
-  }
-
-  void _appleComingSoon(BuildContext context) {
-    showNestSheet<void>(
-      context: context,
-      title: AppCopy.signInAppleComingSoonTitle,
-      builder: (sheetContext) {
-        final nest = NestTheme.of(sheetContext);
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              AppCopy.signInAppleComingSoon,
-              style: nest.text.body.copyWith(color: nest.colors.inkSecondary),
-            ),
-            const SizedBox(height: NestSpace.xl),
-            NestButton(
-              key: const ValueKey('apple-coming-soon-ok'),
-              label: AppCopy.signInAppleComingSoonOk,
-              onPressed: () => Navigator.of(sheetContext).pop(),
-            ),
-          ],
-        );
-      },
     );
   }
 }

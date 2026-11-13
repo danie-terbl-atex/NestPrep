@@ -15,6 +15,7 @@ import io.nullstate.nestprep.location.LocationChannel
 // vault opens behind it (documents ADR-0003, `local_auth`).
 class MainActivity : FlutterFragmentActivity() {
     private var location: LocationChannel? = null
+    private val sharedPdfs by lazy { SharedPdfs(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) shareLink(intent)?.let { setIntent(it) }
@@ -27,8 +28,12 @@ class MainActivity : FlutterFragmentActivity() {
 
     private fun shareLink(intent: Intent?): Intent? {
         if (intent?.action != Intent.ACTION_SEND) return null
-        val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString().orEmpty()
         val link = Uri.Builder().scheme("nestprep").authority("share")
+        sharedPdfs.hold(intent)?.let { token ->
+            link.appendQueryParameter("pdf", token)
+            return Intent(Intent.ACTION_VIEW, link.build()).addFlags(intent.flags)
+        }
+        val text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString().orEmpty()
         WEB_LINK.find(text)?.let { link.appendQueryParameter("url", it.value) }
         intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT)?.toString()?.trim()
             ?.takeIf { it.isNotEmpty() }
@@ -39,6 +44,7 @@ class MainActivity : FlutterFragmentActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         location = LocationChannel(this, flutterEngine.dartExecutor.binaryMessenger)
+        sharedPdfs.register(flutterEngine.dartExecutor.binaryMessenger)
         // The notification channels (`AndroidChannel` in the app) a person can
         // silence one by one in the phone's own settings (notifications
         // ADR-0001). Their names come from the app's copy; this only asks

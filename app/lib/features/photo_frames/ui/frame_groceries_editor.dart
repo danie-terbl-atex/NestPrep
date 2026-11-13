@@ -1,11 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/checkers_copy.dart';
 import '../../../shared/copy/photo_frame_copy.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
+import '../../add_to_checkers/data/checkers_area_preference.dart';
+import '../../add_to_checkers/data/retailer_preference.dart';
 import '../../add_to_checkers/model/checkers_area.dart';
+import '../../add_to_checkers/model/retailer_switch.dart';
 import '../../groceries/model/product_match.dart';
 import '../model/frame_groceries.dart';
+
+/// [FrameGroceriesEditor] with what it offers read from the app: the shops
+/// switched on, and the shop and area this phone last chose for [householdId],
+/// which a frame switched on starts at.
+class FrameGroceriesSection extends StatefulWidget {
+  const FrameGroceriesSection({
+    required this.householdId,
+    required this.groceries,
+    required this.onChanged,
+    super.key,
+  });
+
+  final String householdId;
+  final FrameGroceries? groceries;
+  final ValueChanged<FrameGroceries?>? onChanged;
+
+  @override
+  State<FrameGroceriesSection> createState() => _FrameGroceriesSectionState();
+}
+
+class _FrameGroceriesSectionState extends State<FrameGroceriesSection> {
+  late final Future<({CheckersArea? area, ProductRetailer? shop})>
+  _phoneChoice = _readPhoneChoice(
+    widget.householdId,
+    areas: context.read<CheckersAreaPreference?>(),
+    shops: context.read<RetailerPreference?>(),
+  );
+
+  static Future<({CheckersArea? area, ProductRetailer? shop})> _readPhoneChoice(
+    String householdId, {
+    required CheckersAreaPreference? areas,
+    required RetailerPreference? shops,
+  }) async => (
+    area: await areas?.read(householdId),
+    shop: await shops?.read(householdId),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final flags = context.watch<FeatureFlagsController?>();
+    return FutureBuilder(
+      future: _phoneChoice,
+      builder: (context, phoneChoice) => FrameGroceriesEditor(
+        groceries: widget.groceries,
+        shopsOn: flags == null ? const [] : shopsOn(flags.isOn),
+        defaultShop: phoneChoice.data?.shop,
+        defaultArea: phoneChoice.data?.area ?? CheckersArea.fallback,
+        onChanged: widget.onChanged,
+      ),
+    );
+  }
+}
 
 /// *Add groceries from the frame*, and the shop and area it picks products
 /// at. Offered while a shop is switched on; a frame already adding keeps its

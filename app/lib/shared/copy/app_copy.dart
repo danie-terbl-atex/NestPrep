@@ -14,6 +14,8 @@ export 'account_data_copy.dart';
 export 'ai_copy.dart';
 // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
 export 'assistants_copy.dart';
+export 'avatar_copy.dart';
+export 'avatar_creation_copy.dart';
 // closing a household for good (household ADR-0007).
 export 'close_household_copy.dart';
 // family-profiles: its words live in their own file, reached through this one.
@@ -56,6 +58,7 @@ export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
+export 'own_recipe_copy.dart';
 // photo frames on the wall (photo-frames ADR-0001).
 export 'photo_frame_copy.dart';
 // plan my week with AI: its words live in their own file (lunch-box ADR-0011).
@@ -63,6 +66,8 @@ export 'plan_week_again_copy.dart';
 export 'plan_week_copy.dart';
 // recipes: NestPrep's published recipes.
 export 'recipe_copy.dart';
+export 'recipe_document_copy.dart';
+export 'recipe_import_copy.dart';
 export 'recipe_shop_copy.dart';
 // referrals: give a month, get a month (subscriptions ADR-0002).
 export 'referral_copy.dart';
@@ -99,10 +104,6 @@ abstract final class AppCopy {
 
   static const signInWithGoogle = 'Continue with Google';
   static const signInWithApple = 'Continue with Apple';
-  static const signInAppleComingSoonTitle = 'Apple sign-in is coming soon';
-  static const signInAppleComingSoon =
-      'For now, continue with Google or your email address.';
-  static const signInAppleComingSoonOk = 'Got it';
 
   // The one way in for a code (accounts ADR-0009): a household invite from
   // family, or a kid sign-in code from a grown-up.
@@ -323,6 +324,11 @@ abstract final class AppCopy {
   static const calendarDayEmpty = 'Nothing on';
   static const calendarSkip = 'Skip this one';
   static const calendarTitleLabel = 'What is happening?';
+  static const calendarNotesLabel = 'Event notes';
+  static const calendarNotesHint =
+      'Anything worth remembering — the gift wish is a horse';
+  static const calendarEventDetails = 'Event';
+  static const calendarRepeats = 'Repeats';
   static const calendarWeekFilter = 'Showing';
 
   /// A birthday is derived from a member's profile and cannot be changed from

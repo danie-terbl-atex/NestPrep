@@ -27,6 +27,12 @@ abstract final class HomeCareRoute {
   static const stockPath = '$path/stock';
   static const languagesPath = '$path/languages';
 
+  /// Who is clocked in, and the shifts so far (home-care ADR-0007).
+  static const shiftsPath = '$path/shifts';
+
+  static String shiftsPathFor(String householdId) =>
+      '${pathFor(householdId)}/shifts';
+
   static String routinesPathFor(String householdId) =>
       '${pathFor(householdId)}/routines';
 

@@ -15,6 +15,12 @@ abstract interface class PhotoFrameRepository {
     required FrameGroceries? groceries,
   });
 
+  Future<void> setGroceries({
+    required String householdId,
+    required String frameId,
+    required FrameGroceries? groceries,
+  });
+
   Future<void> unlinkFrame({
     required String householdId,
     required String frameId,

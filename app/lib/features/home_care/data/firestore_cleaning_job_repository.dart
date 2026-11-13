@@ -136,14 +136,14 @@ final class FirestoreCleaningJobRepository implements CleaningJobRepository {
   Future<void> handIn({
     required String householdId,
     required CleaningJob job,
-    required JobPhoto afterPhoto,
+    required JobPhoto? afterPhoto,
     required String by,
   }) => _change(
     householdId,
     job,
     fields: {
       'doneStepIds': [for (final step in job.steps) step.id],
-      'afterPhoto': afterPhoto.toJson(),
+      'afterPhoto': afterPhoto?.toJson(),
     },
     movesTo: JobStatus.submitted,
     by: by,

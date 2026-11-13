@@ -14,7 +14,9 @@ class NestMotion {
     required this.stagger,
     required this.tick,
     required this.celebration,
+    required this.sheen,
     required this._revolution,
+    required this._wobble,
     required this.isReduced,
   });
 
@@ -27,7 +29,9 @@ class NestMotion {
     stagger: Duration(milliseconds: 60),
     tick: Duration(milliseconds: 450),
     celebration: Duration(milliseconds: 2200),
+    sheen: Duration(milliseconds: 1400),
     revolution: Duration(seconds: 60),
+    wobble: Duration(milliseconds: 1800),
     isReduced: false,
   );
 
@@ -40,7 +44,9 @@ class NestMotion {
     stagger: Duration.zero,
     tick: Duration.zero,
     celebration: Duration(milliseconds: 1400),
+    sheen: Duration.zero,
     revolution: Duration.zero,
+    wobble: Duration.zero,
     isReduced: true,
   );
 
@@ -65,11 +71,19 @@ class NestMotion {
   /// Not zero under reduce-motion: the card still has to be read.
   final Duration celebration;
 
+  /// The once-only sheen across Premium's card, its wait included.
+  final Duration sheen;
+
   /// One full turn of the slowest ring of the welcome's orbit
   /// (design-system ADR-0006). Zero under reduce-motion, and in the widget
   /// suite (see [debugHoldStill]).
   Duration get revolution => debugHoldStill ? Duration.zero : _revolution;
   final Duration _revolution;
+
+  /// One rock and rest of an egg that is still hatching. Zero under
+  /// reduce-motion and in the widget suite, like [revolution].
+  Duration get wobble => debugHoldStill ? Duration.zero : _wobble;
+  final Duration _wobble;
 
   final bool isReduced;
 

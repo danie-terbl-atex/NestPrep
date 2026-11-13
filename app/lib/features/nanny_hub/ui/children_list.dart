@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../family_profiles/model/member_health.dart';
 import '../../family_profiles/ui/allergy_names.dart';
 import '../model/child_in_care.dart';
@@ -84,11 +85,7 @@ class _ChildRow extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          NestAvatar(
-            name: member.displayName,
-            color: member.color,
-            size: NestSize.avatarLarge,
-          ),
+          MemberAvatar(member: member, size: NestSize.avatarLarge),
           const SizedBox(width: NestSpace.md),
           Expanded(
             child: Column(

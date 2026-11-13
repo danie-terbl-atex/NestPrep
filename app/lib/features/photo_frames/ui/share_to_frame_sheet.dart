@@ -15,16 +15,21 @@ import '../model/photo_frame.dart';
 import '../model/shared_page.dart';
 import '../state/share_to_frame_controller.dart';
 
-Future<void> showShareToFrameSheet({
+/// True when the member chose to save the page as a recipe. The sheet is closed
+/// by then, so the caller can open the paywall or the import.
+Future<bool> showShareToFrameSheet({
   required BuildContext context,
   required FrameShareItem item,
-}) {
+  bool canSaveAsRecipe = false,
+}) async {
   final view = context.read<HouseholdView>();
   final repository = context.read<PhotoFrameRepository>();
   final directory = context.read<PhotoFrameDirectory>();
-  return showNestSheet<void>(
+  final isSaving = await showNestSheet<bool>(
     context: context,
-    title: PhotoFrameCopy.showOnFrame,
+    title: item is FrameSharePage
+        ? PhotoFrameCopy.sharedPage
+        : PhotoFrameCopy.showOnFrame,
     builder: (_) => ChangeNotifierProvider(
       create: (_) => ShareToFrameController(
         photoFrameRepository: repository,
@@ -33,19 +38,28 @@ Future<void> showShareToFrameSheet({
         item: item,
         isFamily: view.permissions.isFamily,
       ),
-      child: const _ShareSheetBody(),
+      child: _ShareSheetBody(canSaveAsRecipe: canSaveAsRecipe),
     ),
   );
+  return isSaving ?? false;
 }
 
 class _ShareSheetBody extends StatelessWidget {
-  const _ShareSheetBody();
+  const _ShareSheetBody({required this.canSaveAsRecipe});
+
+  final bool canSaveAsRecipe;
 
   @override
   Widget build(BuildContext context) {
     final share = context.watch<ShareToFrameController>();
     final item = share.item;
+    final offersRecipe = canSaveAsRecipe && item.isSendable;
     final beat = switch ((share.isFamily, item.isSendable, share.sentTo)) {
+      (false, false, _) when canSaveAsRecipe => const _Notice(
+        icon: LucideIcons.unlink,
+        message: PhotoFrameCopy.noLinkShared,
+      ),
+      (false, _, _) when offersRecipe => const SizedBox.shrink(),
       (false, _, _) => const _Notice(
         icon: LucideIcons.lock,
         message: PhotoFrameCopy.shareOnlyFamily,
@@ -55,6 +69,10 @@ class _ShareSheetBody extends StatelessWidget {
         message: PhotoFrameCopy.noLinkShared,
       ),
       (_, _, final sent?) => _Sent(frame: sent, item: item),
+      _ when item is FrameSharePage => _PageFrames(
+        share: share,
+        isOnlyWay: !offersRecipe,
+      ),
       _ => _Choose(share: share),
     };
     return SingleChildScrollView(
@@ -69,12 +87,78 @@ class _ShareSheetBody extends StatelessWidget {
             },
             const SizedBox(height: NestSpace.lg),
           ],
+          if (offersRecipe && share.sentTo == null) ...[
+            const _SaveAsRecipe(),
+            const SizedBox(height: NestSpace.xl),
+          ],
           AnimatedSwitcher(
             duration: NestMotion.of(context).standard,
             child: KeyedSubtree(key: ValueKey(beat.runtimeType), child: beat),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SaveAsRecipe extends StatelessWidget {
+  const _SaveAsRecipe();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      NestButton(
+        key: const ValueKey('share-save-as-recipe'),
+        label: PhotoFrameCopy.saveAsRecipe,
+        icon: LucideIcons.bookHeart,
+        onPressed: () => Navigator.of(context).pop(true),
+      ),
+      const SizedBox(height: NestSpace.md),
+      const NestToneRow(
+        key: ValueKey('share-recipe-privacy'),
+        icon: LucideIcons.lock,
+        title: RecipeImportCopy.privacyTitle,
+        subtitle: RecipeImportCopy.linkPrivacyBody,
+      ),
+    ],
+  );
+}
+
+class _PageFrames extends StatelessWidget {
+  const _PageFrames({required this.share, required this.isOnlyWay});
+
+  final ShareToFrameController share;
+  final bool isOnlyWay;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final hasNoFrames = switch (share.frames) {
+      AsyncData(value: []) => true,
+      _ => false,
+    };
+    if (isOnlyWay && hasNoFrames) return _Choose(share: share);
+    final isStillLooking = !isOnlyWay && share.frames is AsyncLoading;
+    if (isStillLooking || (hasNoFrames && !share.hasAnyFrame)) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const NestSectionHeader(title: PhotoFrameCopy.showOnFrame),
+        const SizedBox(height: NestSpace.sm),
+        if (hasNoFrames)
+          Text(
+            PhotoFrameCopy.noSharingFramesQuiet,
+            key: const ValueKey('share-no-frames-quiet'),
+            style: nest.text.caption,
+          )
+        else
+          _Choose(share: share),
+      ],
     );
   }
 }

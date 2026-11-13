@@ -1,11 +1,13 @@
-// ---- household recipes (recipes ADR-0002) ----
-// The dishes a household used from Plan my week (lunch-box ADR-0021), saved
-// as its own recipes. Only the `saveLunchRecipes` Function writes one: their
-// allergen codes come from word lists no rule can run. Immutable and never
-// deleted — lunch items link to them. Read one at a time by id, never listed.
+// ---- household recipes (recipes ADR-0002, ADR-0007) ----
+// `ai` is read by id with lunch; `own` is listed with meals. Only Functions
+// write either: allergen codes come from word lists no rule can run.
 
 match /recipes/{recipeId} {
-  allow get: if canView(householdId, 'lunch');
-  allow list: if false;
+  allow get: if canView(householdId, 'lunch')
+    || (canView(householdId, 'meals')
+          && (resource == null || resource.data.source == 'own'));
+  allow list: if canView(householdId, 'meals')
+    && resource.data.source == 'own'
+    && request.query.limit <= 300;
   allow write: if false;
 }

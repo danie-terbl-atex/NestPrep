@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/member.dart';
 
 /// Picks one member from a few, and comes back null when nobody was picked.
@@ -24,7 +25,7 @@ Future<Member?> showMemberChoiceSheet({
           padding: const EdgeInsets.only(bottom: NestSpace.xs),
           child: NestListRow(
             key: ValueKey(member.id),
-            leading: NestAvatar(name: member.displayName, color: member.color),
+            leading: MemberAvatar(member: member),
             title: member.displayName,
             onTap: () => Navigator.of(sheetContext).pop(member),
           ),

@@ -21,6 +21,7 @@ import UIKit
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     LocationChannel.register(location, messenger: engineBridge.applicationRegistrar.messenger())
     AppleCalendarChannel.register(messenger: engineBridge.applicationRegistrar.messenger())
+    SharedPdfChannel.register(messenger: engineBridge.applicationRegistrar.messenger())
     location.flutterStarted()
   }
 }

@@ -22,16 +22,29 @@ final class FakeRecipeRepository implements RecipeRepository {
   Completer<void>? hold;
 
   final _catalogue = StreamController<List<Recipe>>.broadcast();
+  final _own = StreamController<List<Recipe>>.broadcast();
   var catalogueListens = 0;
+  final ownListens = <String>[];
 
   void emitCatalogue(List<Recipe> recipes) => _catalogue.add(recipes);
   void failCatalogueWith(AppFailure failure) => _catalogue.addError(failure);
-  Future<void> close() => _catalogue.close();
+  void emitOwn(List<Recipe> recipes) => _own.add(recipes);
+  void failOwnWith(AppFailure failure) => _own.addError(failure);
+  Future<void> close() async {
+    await _catalogue.close();
+    await _own.close();
+  }
 
   @override
   Stream<List<Recipe>> watchCatalogue() {
     catalogueListens++;
     return _catalogue.stream;
+  }
+
+  @override
+  Stream<List<Recipe>> watchOwnRecipes(String householdId) {
+    ownListens.add(householdId);
+    return _own.stream;
   }
 
   @override

@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../chore_points/ui/chore_stars_tag.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
@@ -453,11 +454,7 @@ class _AssigneeAvatars extends StatelessWidget {
         for (final member in members.take(3))
           Padding(
             padding: const EdgeInsets.only(left: NestSpace.xxs),
-            child: NestAvatar(
-              name: member.displayName,
-              color: member.color,
-              size: NestSize.avatarSmall,
-            ),
+            child: MemberAvatar(member: member, size: NestSize.avatarSmall),
           ),
       ],
     );

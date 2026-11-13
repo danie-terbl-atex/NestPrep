@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/kid_day.dart';
 
 /// The top of a kid's home: their own colour, their initial, their name, and
@@ -14,9 +16,10 @@ import '../model/kid_day.dart';
 /// progress is said in words as well as drawn; the bar is never the only
 /// signal.
 class KidHeroCard extends StatelessWidget {
-  const KidHeroCard({required this.day, super.key});
+  const KidHeroCard({required this.day, this.onChangePicture, super.key});
 
   final KidDay day;
+  final VoidCallback? onChangePicture;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +39,23 @@ class KidHeroCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                NestAvatar(
-                  name: day.me.displayName,
-                  color: day.me.color,
-                  size: NestSize.mark,
-                  isHighlighted: true,
-                ),
+                switch (onChangePicture) {
+                  final change? => NestEditablePicture(
+                    label: AvatarCopy.changePicture,
+                    icon: LucideIcons.sparkles,
+                    onTap: change,
+                    child: MemberAvatar(
+                      member: day.me,
+                      size: NestSize.mark,
+                      highlighted: true,
+                    ),
+                  ),
+                  null => MemberAvatar(
+                    member: day.me,
+                    size: NestSize.mark,
+                    highlighted: true,
+                  ),
+                },
                 const SizedBox(width: NestSpace.lg),
                 Expanded(
                   child: Column(

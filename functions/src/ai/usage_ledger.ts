@@ -1,4 +1,4 @@
-import type { AiFeature, MonthlyCalls } from './ai_settings';
+import type { AiCharge, AiFeature, MonthlyCalls } from './ai_settings';
 import type { ModelUsage } from './generative_model';
 import type { AiTier } from './usage_rules';
 
@@ -15,6 +15,7 @@ export interface ClaimRequest {
   readonly uid: string;
   readonly now: Date;
   readonly monthlyCalls: MonthlyCalls;
+  readonly charge: AiCharge;
 }
 
 /** A call the household has been charged for, until it is settled. */
@@ -24,7 +25,8 @@ export interface AiClaim {
   readonly callId: string;
   readonly feature: AiFeature;
   readonly tier: AiTier;
-  /** What is left this month once this call is counted. */
+  readonly charge: AiCharge['kind'];
+  /** What is left once this call is counted: calls this month, or the allowance's creations. */
   readonly callsLeft: number;
 }
 

@@ -146,6 +146,9 @@ describe('a week summarised from its ledgers', () => {
       recipeShopping: 0,
       familyLocation: 0,
       listScan: 0,
+      ownRecipes: 0,
+      avatarCreate: 0,
+      avatarPortrait: 0,
       direct: 1,
     });
   });
@@ -162,6 +165,9 @@ describe('a week summarised from its ledgers', () => {
       recipeShopping: 0,
       familyLocation: 0,
       listScan: 0,
+      ownRecipes: 0,
+      avatarCreate: 0,
+      avatarPortrait: 0,
       direct: 0,
     });
   });

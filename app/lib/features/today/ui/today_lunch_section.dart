@@ -6,6 +6,7 @@ import '../../../app/family_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_board.dart';
@@ -118,7 +119,7 @@ class _ChildLunch extends StatelessWidget {
         child: Row(
           children: [
             if (picks.isEmpty)
-              NestAvatar(name: member.displayName, color: member.color)
+              MemberAvatar(member: member)
             else
               ClipRRect(
                 borderRadius: BorderRadius.circular(NestRadius.sm),

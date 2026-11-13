@@ -14,6 +14,7 @@ import 'package:nestprep/features/add_to_woolworths/model/woolworths_store.dart'
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/photo_frames/data/photo_frame_directory.dart';
+import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart';
 import 'package:nestprep/features/photo_frames/model/frame_groceries.dart';
 import 'package:nestprep/features/photo_frames/model/frame_panels.dart';
 import 'package:nestprep/features/photo_frames/model/frame_screensaver.dart';
@@ -100,6 +101,7 @@ void main() {
       ChangeNotifierProvider<PhotoFramesController>.value(value: controller),
       ChangeNotifierProvider<FramePhotosController>.value(value: photos),
       Provider<PhotoFrameDirectory>.value(value: FakePhotoFrameDirectory()),
+      Provider<PhotoFrameRepository>.value(value: repository),
       Provider<FrameScanner>.value(value: FakeFrameScanner()),
       Provider<CheckersAreaPreference>.value(value: areas),
       Provider<RetailerPreference>.value(value: shopsChosen),

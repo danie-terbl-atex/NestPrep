@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
 import '../../../shared/format/nest_dates.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/calendar_connection.dart';
 import 'calendar_source_look.dart';
@@ -68,7 +69,7 @@ class CalendarConnectionRow extends StatelessWidget {
                       size: NestSize.avatarMedium,
                       iconSize: NestSize.iconMedium,
                     )
-                  : NestAvatar(name: owner!.displayName, color: owner!.color),
+                  : MemberAvatar(member: owner!),
               const SizedBox(width: NestSpace.md),
               Expanded(
                 child: Column(

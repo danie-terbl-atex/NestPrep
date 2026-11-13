@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { isPremiumAt } from '../subscriptions/subscription_documents';
-import type { MonthlyCalls } from './ai_settings';
+import type { AiCharge, AiFeature, Allowance, AllowanceName, MonthlyCalls } from './ai_settings';
 
 /**
  * The pure half of the monthly cap (foundation ADR-0015): which month a call
@@ -90,4 +90,85 @@ export function decideClaim(usage: MonthUsage, cap: number): ClaimDecision {
   if (usage.attempts >= cap * ATTEMPT_HEADROOM) return { allowed: false };
   const callsAfter = usage.calls + 1;
   return { allowed: true, callsAfter, callsLeft: cap - callsAfter };
+}
+
+export const LIFETIME_USAGE = 'lifetime';
+
+/** How many of [features] a stored `byFeature` map counts; missing or bad is zero. */
+export function countOf(stored: unknown, features: readonly AiFeature[]): number {
+  const parsed = z
+    .object({ byFeature: z.record(z.string(), z.unknown()).catch({}) })
+    .safeParse(stored ?? {});
+  if (!parsed.success) return 0;
+  return features.reduce((total, feature) => {
+    const value = parsed.data.byFeature[feature];
+    return total + (typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : 0);
+  }, 0);
+}
+
+export interface AllowanceUsage {
+  readonly month: number;
+  readonly lifetime: number;
+  /** Every call started for the allowance this month, its checks included; never refunded. */
+  readonly attempts: number;
+}
+
+/** The most calls one creation makes: its reference or words read, the picture, the picture checked. */
+export const CALLS_PER_CREATION = 3;
+
+export const ALLOWANCE_ATTEMPTS = 'allowanceAttempts';
+
+export function allowanceAttemptsOf(stored: unknown, name: AllowanceName): number {
+  const parsed = z
+    .object({ [ALLOWANCE_ATTEMPTS]: z.record(z.string(), z.unknown()).catch({}) })
+    .safeParse(stored ?? {});
+  const value = parsed.success ? parsed.data[ALLOWANCE_ATTEMPTS][name] : undefined;
+  return typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : 0;
+}
+
+/**
+ * The calls an allowance may start in a month, refused and failed ones
+ * included. It is the allowance's own: a child sending photo after photo that
+ * is refused closes creations for the month and never the household's other AI.
+ */
+export function allowanceAttemptCeiling(tier: AiTier, allowance: Allowance): number {
+  const creations = tier === 'premium' ? allowance.premiumMonthly : allowance.freeLifetime;
+  return creations * CALLS_PER_CREATION * ATTEMPT_HEADROOM;
+}
+
+export function allowanceAttemptsLeft(
+  tier: AiTier,
+  used: AllowanceUsage,
+  allowance: Allowance,
+): number {
+  return Math.max(0, allowanceAttemptCeiling(tier, allowance) - used.attempts);
+}
+
+/** What a tier may still make: premium by the month, free once in the household's life. */
+export function allowanceLeft(tier: AiTier, used: AllowanceUsage, allowance: Allowance): number {
+  return tier === 'premium'
+    ? Math.max(0, allowance.premiumMonthly - used.month)
+    : Math.max(0, allowance.freeLifetime - used.lifetime);
+}
+
+/**
+ * Whether one more call of [charge] fits. A call against an allowance, or one
+ * of its checks charged to nothing, never touches the monthly call cap or its
+ * attempts: it is bounded by the allowance's own attempt ceiling.
+ */
+export function decideCharge(
+  charge: AiCharge,
+  usage: MonthUsage,
+  cap: number,
+  tier: AiTier,
+  used: AllowanceUsage,
+): ClaimDecision {
+  if (charge.kind === 'calls') return decideClaim(usage, cap);
+  if (allowanceAttemptsLeft(tier, used, charge.allowance) <= 0) return { allowed: false };
+  if (charge.kind === 'none') {
+    return { allowed: true, callsAfter: usage.calls, callsLeft: Math.max(0, cap - usage.calls) };
+  }
+  const left = allowanceLeft(tier, used, charge.allowance);
+  if (left <= 0) return { allowed: false };
+  return { allowed: true, callsAfter: usage.calls, callsLeft: left - 1 };
 }

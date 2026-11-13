@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../add_to_woolworths/data/woolworths_store_finder.dart';
 import '../../kid_accounts/ui/kid_code_field.dart';
 import '../data/photo_frame_directory.dart';
+import '../data/photo_frame_repository.dart';
 import '../state/frame_link_controller.dart';
 import '../state/photo_frames_controller.dart';
+import 'frame_groceries_editor.dart';
 import 'frame_name_field.dart';
 import 'frame_panels_editor.dart';
 import 'frame_scanner.dart';
@@ -16,6 +19,8 @@ Future<void> showFrameLinkSheet({
   required PhotoFramesController controller,
 }) {
   final directory = context.read<PhotoFrameDirectory>();
+  final repository = context.read<PhotoFrameRepository>();
+  final woolworthsStores = context.read<WoolworthsStoreFinder>();
   final scanner = context.read<FrameScanner>();
   return showNestSheet<void>(
     context: context,
@@ -23,6 +28,8 @@ Future<void> showFrameLinkSheet({
     builder: (_) => ChangeNotifierProvider(
       create: (_) => FrameLinkController(
         photoFrameDirectory: directory,
+        photoFrameRepository: repository,
+        woolworthsStoreFor: woolworthsStores.storeFor,
         householdId: controller.householdId,
         helpers: controller.helpers,
       ),
@@ -62,7 +69,9 @@ class _LinkSheetBodyState extends State<_LinkSheetBody> {
         name: _name,
         onNameChanged: () => setState(() {}),
       ),
-      FrameLinkStep.linked => const _Linked(),
+      FrameLinkStep.linked => _Linked(
+        groceriesDidNotSave: link.groceriesDidNotSave,
+      ),
     };
     return SingleChildScrollView(
       child: AnimatedSwitcher(
@@ -203,6 +212,11 @@ class _Details extends StatelessWidget {
           helpers: link.helpers,
           onChanged: link.isLinking ? null : link.setPanels,
         ),
+        FrameGroceriesSection(
+          householdId: link.householdId,
+          groceries: link.groceries,
+          onChanged: link.isLinking ? null : link.setGroceries,
+        ),
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: PhotoFrameCopy.linkAction,
@@ -222,7 +236,9 @@ class _Details extends StatelessWidget {
 }
 
 class _Linked extends StatelessWidget {
-  const _Linked();
+  const _Linked({required this.groceriesDidNotSave});
+
+  final bool groceriesDidNotSave;
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +263,13 @@ class _Linked extends StatelessWidget {
           textAlign: TextAlign.center,
           style: nest.text.headline,
         ),
+        if (groceriesDidNotSave) ...[
+          const SizedBox(height: NestSpace.lg),
+          const NestBanner(
+            message: PhotoFrameCopy.linkedWithoutGroceries,
+            tone: NestBannerTone.warning,
+          ),
+        ],
         const SizedBox(height: NestSpace.xl),
         NestButton(
           label: PhotoFrameCopy.done,

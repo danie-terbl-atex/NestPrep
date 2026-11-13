@@ -196,6 +196,16 @@ describe('a ledger line and the balance it leads to', () => {
     });
   });
 
+  it('an accessory from the Wardrobe is spent, like a reward (avatars ADR-0004)', () => {
+    const rich = { ...empty, balance: 30, earned: 30, bestStreak: 4 };
+    expect(applyLine(rich, line({ delta: -20, kind: 'accessory' }))).toMatchObject({
+      balance: 10,
+      earned: 30,
+      spent: 20,
+      bestStreak: 4,
+    });
+  });
+
   it('the balance is always the sum of the lines', () => {
     const lines = [
       line({ delta: 5, earnedOn: TODAY }),
@@ -204,6 +214,7 @@ describe('a ledger line and the balance it leads to', () => {
       line({ delta: -8, kind: 'reward' }),
       line({ delta: 8, kind: 'rewardReturned' }),
       line({ delta: -3, kind: 'reward' }),
+      line({ delta: -2, kind: 'accessory' }),
     ];
     const final = lines.reduce(applyLine, empty);
     expect(final.balance).toBe(lines.reduce((sum, each) => sum + each.delta, 0));

@@ -4,6 +4,7 @@ import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
 import '../../../shared/text/normalised_name.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../recipes/model/recipe_link.dart';
 import '../model/meal.dart';
 import '../model/meal_ingredient.dart';
 import '../model/week_plan.dart';
@@ -91,12 +92,12 @@ final class FirestoreMealRepository implements MealRepository {
   @override
   Future<String> addRecipeMeal({
     required String householdId,
-    required String recipeId,
+    required RecipeLink link,
     required String name,
     required List<MealIngredient> ingredients,
     required String addedBy,
   }) async {
-    final mealId = Meal.idForRecipe(recipeId);
+    final mealId = Meal.idForRecipe(link.recipeId);
     final document = _meals(householdId).doc(mealId);
     // Read from the cache when offline, as the library itself is; a meal
     // already there keeps its name and its creator (`upsertRecipeMeal`).
@@ -109,11 +110,12 @@ final class FirestoreMealRepository implements MealRepository {
       ),
       create: () => _guarded(
         () => document.set(
-          Meal.named(
-            id: mealId,
+          Meal.ofRecipe(
+            link: link,
             name: name,
+            ingredients: ingredients,
             addedBy: addedBy,
-          ).copyWith(ingredients: ingredients, recipeId: recipeId),
+          ),
         ),
       ),
       updateIngredients: () => setIngredients(
@@ -123,6 +125,24 @@ final class FirestoreMealRepository implements MealRepository {
       ),
     );
     return mealId;
+  }
+
+  @override
+  Future<void> rewriteOwnRecipeMealLines({
+    required String householdId,
+    required String recipeId,
+    required List<MealIngredient> ingredients,
+  }) async {
+    final mealId = Meal.idForRecipe(recipeId);
+    final meal = await _guardedRead(
+      () async => (await _meals(householdId).doc(mealId).get()).data(),
+    );
+    if (meal?.householdRecipeId != recipeId) return;
+    await setIngredients(
+      householdId: householdId,
+      mealId: mealId,
+      ingredients: ingredients,
+    );
   }
 
   @override

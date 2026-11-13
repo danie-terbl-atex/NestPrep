@@ -118,6 +118,7 @@ void main() {
           value: FakeNotificationRepository(),
         ),
         Provider<DigestPromptStore>.value(value: FakeDigestPromptStore()),
+        idlePushRegistrarProvider(),
         Provider<ActivityHeartbeat>(
           create: (_) =>
               ActivityHeartbeat(activityRecorder: FakeActivityRecorder()),

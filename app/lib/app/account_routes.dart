@@ -48,6 +48,7 @@ List<RouteBase> accountRoutes() => [
     builder: (context, state) => ChangeNotifierProvider(
       create: (context) => AccountDeletionController(
         accountDataGateway: context.read<AccountDataGateway>(),
+        revokeAppleSignIn: context.read<SessionController>().revokeAppleSignIn,
         signOut: context.read<SessionController>().signOut,
       ),
       child: const DeleteAccountScreen(),

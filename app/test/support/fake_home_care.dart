@@ -117,7 +117,7 @@ final class FakeCleaningJobRepository
   Future<void> handIn({
     required String householdId,
     required CleaningJob job,
-    required JobPhoto afterPhoto,
+    required JobPhoto? afterPhoto,
     required String by,
   }) => record('handIn', {'jobId': job.id, 'afterPhoto': afterPhoto, 'by': by});
 

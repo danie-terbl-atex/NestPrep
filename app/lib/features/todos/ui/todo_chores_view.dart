@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../model/kid_chores.dart';
@@ -115,11 +116,7 @@ class _KidHeader extends StatelessWidget {
           children: [
             Row(
               children: [
-                NestAvatar(
-                  name: kid.displayName,
-                  color: kid.color,
-                  size: NestSize.avatarLarge,
-                ),
+                MemberAvatar(member: kid, size: NestSize.avatarLarge),
                 const SizedBox(width: NestSpace.lg),
                 Expanded(
                   child: Column(

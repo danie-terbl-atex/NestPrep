@@ -1,5 +1,5 @@
 import { isOccurrence, type StoredRecurrence } from '../chore_points/occurrence_check';
-import { addDays, weekdayOf } from '../calendar_sync/zoned_time';
+import { addDays, knownZoneOr, wallClockOf, weekdayOf } from '../calendar_sync/zoned_time';
 import { choreOccurrencesOn, eventOccurrencesOn } from '../notifications/day_occurrences';
 import {
   type ChoreRecords,
@@ -23,6 +23,9 @@ import {
   addsEvents,
   refreshAfterSeconds,
 } from './frame_policy';
+import { hemisphereOf } from '../avatars/avatar_moments';
+import { type FrameAvatar, frameAvatarOf } from './frame_avatar';
+import type { FrameShift } from './frame_jobs';
 import { memberColorHex } from './member_colors';
 import {
   type FrameNamedMember,
@@ -66,6 +69,10 @@ export interface HomeCareJobRecord {
   readonly note: string | null;
   readonly steps: readonly HomeCareStep[];
   readonly doneStepIds: readonly string[];
+  /** Whether its before photo can be fetched by the job's id (ADR-0020). */
+  readonly hasPhoto?: boolean;
+  /** The parent's circles over that photo, each a flat `x, y, …` list of 0–1. */
+  readonly marks?: readonly (readonly number[])[];
 }
 
 export interface HomeCareRoutineRecord {
@@ -86,6 +93,11 @@ export interface HomeCareDay {
   readonly ticks: Readonly<Record<string, readonly string[]>>;
   /** roomId → its name. */
   readonly rooms: Readonly<Record<string, string>>;
+  /**
+   * When the helper's open shift started, null while she is clocked out, and
+   * absent while `homeCareShifts` is off (ADR-0020).
+   */
+  readonly shiftStartedAt?: Date | null;
 }
 
 export interface MealDay {
@@ -110,6 +122,12 @@ export interface FrameDaySources {
   readonly colors: Readonly<Record<string, string>>;
   /** The members whose role is `kid`: their chores get the Chores screen (rev 10). */
   readonly kids?: readonly string[];
+  /** memberId → the look the Functions mirrored onto them, as stored (rev 18). */
+  readonly looks?: Readonly<Record<string, unknown>>;
+  /** memberId → their birthday as stored, for today's birthday hat (rev 18). */
+  readonly birthdays?: Readonly<Record<string, string>>;
+  /** The household's zone, which says the hemisphere a season's moment follows (rev 18). */
+  readonly timeZone?: string | null;
   /** The members who may add an event from the frame, read only while it may (ADR-0008). */
   readonly adders?: readonly string[];
   readonly events?: EventWindow;
@@ -144,6 +162,7 @@ export interface FrameMember {
   /** `#RRGGBB`; null when the stored colour is not in the palette. */
   readonly color: string | null;
   readonly kid?: true;
+  readonly avatar?: FrameAvatar;
 }
 
 export interface FrameLunchBox {
@@ -176,6 +195,9 @@ export interface FrameItem {
   readonly needsCheck?: true;
   readonly steps?: FrameStep[];
   readonly picture?: string;
+  /** A job's own id while it has a before photo, for `getFrameJobPhoto` (ADR-0020). */
+  readonly photo?: string;
+  readonly marks?: number[][];
 }
 
 export interface FrameDay {
@@ -192,6 +214,7 @@ export interface FrameDay {
   readonly helper?: {
     readonly name: string;
     readonly items: (FrameItem & { readonly detail?: string })[];
+    readonly shift?: FrameShift;
   };
   readonly meals?: {
     readonly slots: { readonly slot: MealSlot; readonly title: string; readonly photo?: string }[];
@@ -219,7 +242,13 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
     ...(addsEvents(panels) ? { addEvents: { by: addersOf(sources) } } : {}),
     ...(panels.todos ? { todos: todosPanel(sources) } : {}),
     ...(helperId !== null && helperName !== undefined
-      ? { helper: { name: firstName(helperName), items: helperItems(sources, helperId) } }
+      ? {
+          helper: {
+            name: firstName(helperName),
+            items: helperItems(sources, helperId),
+            ...shiftOf(sources),
+          },
+        }
       : {}),
     ...(panels.meals ? { meals: mealsPanel(sources) } : {}),
     ...(panels.lunch ? { lunch: lunchPanel(sources) } : {}),
@@ -267,9 +296,20 @@ function namedMembers(names: FrameDaySources['names']): FrameNamedMember[] {
 
 function membersOf(named: readonly FrameNamedMember[], sources: FrameDaySources): FrameMember[] {
   const kids = new Set(sources.kids);
+  const hemisphere = hemisphereOf(sources.timeZone);
   return named.map(({ id, name }) => {
     const color = memberColorHex(sources.colors[id]);
-    return kids.has(id) ? { name, color, kid: true as const } : { name, color };
+    const avatar = frameAvatarOf(sources.looks?.[id], {
+      today: sources.today,
+      hemisphere,
+      birthday: sources.birthdays?.[id] ?? null,
+    });
+    return {
+      name,
+      color,
+      ...(kids.has(id) ? { kid: true as const } : {}),
+      ...(avatar === undefined ? {} : { avatar }),
+    };
   });
 }
 
@@ -414,11 +454,30 @@ function jobItem(job: HomeCareJobRecord, rooms: HomeCareDay['rooms']): HelperIte
       id: job.id,
       date: job.dueDate,
       ...(note === null ? {} : { note }),
+      ...(job.status === 'submitted' ? { needsCheck: true as const } : {}),
       steps: stepsOf(job.steps, job.doneStepIds),
+      ...(job.hasPhoto === true ? { photo: job.id } : {}),
+      ...(job.hasPhoto === true && job.marks !== undefined && job.marks.length > 0
+        ? { marks: job.marks.map((mark) => [...mark]) }
+        : {}),
     },
     job.roomId,
     rooms,
   );
+}
+
+/** A shift that started at [clock], on the household's wall. */
+export function frameShiftSince(clock: { date: string; minute: number }): FrameShift {
+  return { on: true, since: clockTime(clock.minute) ?? '00:00', sinceDate: clock.date };
+}
+
+function shiftOf(sources: FrameDaySources): { shift?: FrameShift } {
+  const startedAt = sources.homeCare?.shiftStartedAt;
+  if (startedAt === undefined) return {};
+  if (startedAt === null) return { shift: { on: false } };
+  return {
+    shift: frameShiftSince(wallClockOf(startedAt, knownZoneOr(sources.timeZone ?? undefined))),
+  };
 }
 
 function helperItems(sources: FrameDaySources, helperId: string): HelperItem[] {

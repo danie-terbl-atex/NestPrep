@@ -18,6 +18,7 @@ class PhotoField extends StatefulWidget {
     required this.label,
     required this.onPick,
     required this.onChanged,
+    this.enabled = true,
     super.key,
   });
 
@@ -28,6 +29,7 @@ class PhotoField extends StatefulWidget {
   final String label;
   final Future<Uint8List?> Function(PhotoSource source) onPick;
   final ValueChanged<PhotoChange> onChanged;
+  final bool enabled;
 
   @override
   State<PhotoField> createState() => _PhotoFieldState();
@@ -35,10 +37,14 @@ class PhotoField extends StatefulWidget {
 
 class _PhotoFieldState extends State<PhotoField> {
   PhotoChange _change = const PhotoKept();
+  bool _isPicking = false;
 
   Future<void> _pick(PhotoSource source) async {
+    setState(() => _isPicking = true);
     final bytes = await widget.onPick(source);
-    if (bytes == null || !mounted) return;
+    if (!mounted) return;
+    setState(() => _isPicking = false);
+    if (bytes == null) return;
     _set(PhotoPicked(bytes));
   }
 
@@ -78,11 +84,12 @@ class _PhotoFieldState extends State<PhotoField> {
       ),
       _ => null,
     };
+    final canChange = widget.enabled && !_isPicking;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ?preview,
-        if (preview != null) const SizedBox(height: NestSpace.sm),
+        if (_isPicking) const _Opening() else ?preview,
+        if (_isPicking || preview != null) const SizedBox(height: NestSpace.sm),
         Wrap(
           spacing: NestSpace.sm,
           runSpacing: NestSpace.sm,
@@ -90,22 +97,56 @@ class _PhotoFieldState extends State<PhotoField> {
             NestChip(
               label: NannyCopy.takePhoto,
               icon: LucideIcons.camera,
-              onTap: () => _pick(PhotoSource.camera),
+              onTap: canChange ? () => _pick(PhotoSource.camera) : null,
             ),
             NestChip(
               label: NannyCopy.choosePhoto,
               icon: LucideIcons.images,
-              onTap: () => _pick(PhotoSource.library),
+              onTap: canChange ? () => _pick(PhotoSource.library) : null,
             ),
             if (_hasPhoto)
               NestChip(
                 label: NannyCopy.removePhoto,
                 icon: LucideIcons.trash2,
-                onTap: () => _set(const PhotoRemoved()),
+                onTap: canChange ? () => _set(const PhotoRemoved()) : null,
               ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _Opening extends StatelessWidget {
+  const _Opening();
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(NestRadius.lg),
+      child: AspectRatio(
+        aspectRatio: 4 / 3,
+        child: ColoredBox(
+          color: nest.colors.surfaceTint,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator.adaptive(),
+                const SizedBox(height: NestSpace.md),
+                Text(
+                  NannyCopy.openingPhoto,
+                  textAlign: TextAlign.center,
+                  style: nest.text.caption.copyWith(
+                    color: nest.colors.inkSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

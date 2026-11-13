@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/cleaning_job.dart';
 import '../model/home_care_room.dart';
@@ -66,11 +67,7 @@ class JobCard extends StatelessWidget {
               ),
               if (helper case final member?) ...[
                 const SizedBox(width: NestSpace.sm),
-                NestAvatar(
-                  name: member.displayName,
-                  color: member.color,
-                  size: NestSize.avatarSmall,
-                ),
+                MemberAvatar(member: member, size: NestSize.avatarSmall),
               ],
             ],
           ),

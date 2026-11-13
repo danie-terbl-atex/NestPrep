@@ -74,6 +74,18 @@ final class FirestorePhotoFrameRepository implements PhotoFrameRepository {
   };
 
   @override
+  Future<void> setGroceries({
+    required String householdId,
+    required String frameId,
+    required FrameGroceries? groceries,
+  }) => _guarded(
+    () =>
+        _frames(householdId)
+            .doc(frameId)
+            .update({'groceries': groceries?.toJson() ?? FieldValue.delete()}),
+  );
+
+  @override
   Future<void> unlinkFrame({
     required String householdId,
     required String frameId,

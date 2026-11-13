@@ -7,11 +7,22 @@ allow read: if isInHousehold(householdId);
 // Functions, which is why there is no client write that touches it.
 allow create, delete: if false;
 
-allow update: if isAdmin(householdId)
-  && ((onlyChanged(['name', 'timeZone'])
-        && isNonEmptyString(request.resource.data.name)
-        && isNonEmptyString(request.resource.data.timeZone))
-      || isFinishingSetup());
+allow update: if (isAdmin(householdId)
+    && ((onlyChanged(['name', 'timeZone'])
+          && isNonEmptyString(request.resource.data.name)
+          && isNonEmptyString(request.resource.data.timeZone))
+        || isFinishingSetup()))
+  || isSwitchingAvatars();
+
+// Whether stars buy accessories in the Wardrobe (avatars ADR-0004) and whether
+// the household makes AI creations (avatars ADR-0003). Absent reads as on; any
+// family adult may turn either off and on again.
+function isSwitchingAvatars() {
+  return isFamily(householdId)
+    && onlyChanged(['avatarShop', 'avatarCreationsOn'])
+    && request.resource.data.get('avatarShop', true) is bool
+    && request.resource.data.get('avatarCreationsOn', true) is bool;
+}
 
 // The invite step `createHousehold` opens (household ADR-0003). An admin
 // may close it — done or skipped — and never open it again.

@@ -1,0 +1,171 @@
+// ---- avatars: a member's look, the Wardrobe and made pictures (avatars ADR-0001 to ADR-0006) ----
+//
+// A look is as public as a name, so everyone in the household reads these,
+// kid devices included: avatars are not an area. A member's choice is
+// written by family for anyone, or by the member themselves; what they own
+// and the look mirrored onto the member are the Functions' alone.
+
+function avatarsIsAssetId(value) {
+  return value is string && value.matches('^[a-z0-9-]{1,48}$');
+}
+
+function avatarsIsHash(value) {
+  return value is string && value.matches('^[0-9a-f]{32}$');
+}
+
+function avatarsIsWorn(wear, slot) {
+  return !(slot in wear) || (avatarsIsAssetId(wear[slot]) && wear[slot].matches('^acc-.*$'));
+}
+
+function avatarsIsChoice(choice) {
+  return choice is map
+    && choice.keys().hasOnly(['base', 'stage', 'wear'])
+    && choice.keys().hasAll(['base', 'wear'])
+    && choice.base is string
+    && (choice.base == 'initial'
+        || choice.base.matches('^preset:[a-z0-9-]{1,40}$')
+        || choice.base.matches('^image:[0-9a-f]{32}$'))
+    && (!('stage' in choice)
+        || (choice.stage is int && choice.stage >= 0 && choice.stage <= 3))
+    && choice.wear is map
+    && choice.wear.keys().hasOnly(['top', 'badge', 'ring', 'face'])
+    && avatarsIsWorn(choice.wear, 'top')
+    && avatarsIsWorn(choice.wear, 'badge')
+    && avatarsIsWorn(choice.wear, 'ring')
+    && avatarsIsWorn(choice.wear, 'face');
+}
+
+function avatarsActsFor(memberId) {
+  return isFamily(householdId) || isOwnMember(householdId, memberId);
+}
+
+function avatarsIsAMember(memberId) {
+  return memberId is string
+    && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
+}
+
+match /memberAvatars/{memberId} {
+  allow read: if isInHousehold(householdId);
+
+  allow create: if avatarsActsFor(memberId)
+    && avatarsIsAMember(memberId)
+    && request.resource.data.keys().hasOnly(['choice', 'pendingPhoto', 'updatedBy', 'updatedAt'])
+    && request.resource.data.keys().hasAll(['choice', 'updatedBy', 'updatedAt'])
+    && avatarsIsChoice(request.resource.data.choice)
+    && (!('pendingPhoto' in request.resource.data)
+        || avatarsIsHash(request.resource.data.pendingPhoto))
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt');
+
+  allow update: if avatarsActsFor(memberId)
+    && request.resource.data.keys()
+         .hasOnly(['choice', 'pendingPhoto', 'owned', 'updatedBy', 'updatedAt'])
+    && !changedKeys().hasAny(['owned'])
+    && avatarsIsChoice(request.resource.data.choice)
+    && (!('pendingPhoto' in request.resource.data)
+        || avatarsIsHash(request.resource.data.pendingPhoto))
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt');
+
+  allow delete: if false;
+}
+
+// A child buys an accessory with their stars, or family buys it for them.
+// Four fields and nothing else: the price, the outcome and the reason are the
+// trigger's to write (avatars ADR-0004).
+match /avatarPurchases/{purchaseId} {
+  allow read: if isInHousehold(householdId);
+
+  allow create: if avatarsActsFor(request.resource.data.memberId)
+    && request.resource.data.keys()
+         .hasOnly(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
+    && request.resource.data.keys()
+         .hasAll(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
+    && avatarsIsAMember(request.resource.data.memberId)
+    && avatarsIsAssetId(request.resource.data.accessoryId)
+    && request.resource.data.accessoryId.matches('^acc-.*$')
+    && isOwnMember(householdId, request.resource.data.requestedBy)
+    && isServerTime('requestedAt');
+
+  allow update, delete: if false;
+}
+
+function avatarsIsBuddy(buddy) {
+  return buddy is map
+    && buddy.keys().hasOnly(['creature', 'colour', 'loves', 'wears', 'power'])
+    && buddy.keys().hasAll(['creature', 'colour', 'loves', 'wears', 'power'])
+    && avatarsIsAssetId(buddy.creature)
+    && avatarsIsAssetId(buddy.colour)
+    && avatarsIsAssetId(buddy.loves)
+    && avatarsIsAssetId(buddy.wears)
+    && avatarsIsAssetId(buddy.power);
+}
+
+// A picture to be made: the member, the recipe and its few choices (avatars
+// ADR-0003, ADR-0006). A drawing or a pet brings its uploaded reference, a
+// buddy its chips; the portrait is family's and the household's. What becomes
+// of it is the trigger's to write.
+function avatarsIsRecipeShaped(data) {
+  return (data.recipe in ['drawing', 'pet']
+          && 'inboxId' in data
+          && !data.keys().hasAny(['buddy', 'extra']))
+    || (data.recipe == 'buddy'
+        && 'buddy' in data
+        && !('inboxId' in data))
+    || (data.recipe == 'portrait'
+        && isFamily(householdId)
+        && data.memberId == data.requestedBy
+        && !data.keys().hasAny(['style', 'buddy', 'extra', 'inboxId']));
+}
+
+match /avatarCreations/{creationId} {
+  allow read: if isInHousehold(householdId);
+
+  allow create: if avatarsActsFor(request.resource.data.memberId)
+    && request.resource.data.keys().hasOnly(
+         ['memberId', 'recipe', 'style', 'buddy', 'extra', 'inboxId', 'requestedBy',
+          'requestedAt'])
+    && request.resource.data.keys()
+         .hasAll(['memberId', 'recipe', 'requestedBy', 'requestedAt'])
+    && avatarsIsAMember(request.resource.data.memberId)
+    && request.resource.data.recipe in ['drawing', 'buddy', 'pet', 'portrait']
+    && avatarsIsRecipeShaped(request.resource.data)
+    && (!('style' in request.resource.data)
+        || request.resource.data.style
+             in ['plush', 'clay', 'knitted', 'wooden', 'vinyl', 'sticker'])
+    && (!('buddy' in request.resource.data) || avatarsIsBuddy(request.resource.data.buddy))
+    && (!('extra' in request.resource.data)
+        || (request.resource.data.extra is string && request.resource.data.extra.size() <= 60))
+    && (!('inboxId' in request.resource.data)
+        || (request.resource.data.inboxId is string
+            && request.resource.data.inboxId.matches('^[A-Za-z0-9_-]{8,64}$')))
+    && isOwnMember(householdId, request.resource.data.requestedBy)
+    && isServerTime('requestedAt');
+
+  allow update, delete: if false;
+}
+
+match /avatarKeepsakes/{keepsakeId} {
+  allow read: if isInHousehold(householdId);
+  allow write: if false;
+}
+
+function avatarsKeepsake(keepsakeId) {
+  return /databases/$(database)/documents/households/$(householdId)/avatarKeepsakes/$(keepsakeId);
+}
+
+// A keepsake to be deleted from the shelf, by family or by the member it
+// belongs to, a kid device included; the trigger deletes the keepsake, its
+// files and this request (avatars ADR-0005).
+match /avatarKeepsakeDeletes/{keepsakeId} {
+  allow read: if isInHousehold(householdId);
+
+  allow create: if exists(avatarsKeepsake(keepsakeId))
+    && avatarsActsFor(get(avatarsKeepsake(keepsakeId)).data.memberId)
+    && request.resource.data.keys().hasOnly(['requestedBy', 'requestedAt'])
+    && request.resource.data.keys().hasAll(['requestedBy', 'requestedAt'])
+    && isOwnMember(householdId, request.resource.data.requestedBy)
+    && isServerTime('requestedAt');
+
+  allow update, delete: if false;
+}

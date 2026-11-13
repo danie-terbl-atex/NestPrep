@@ -6,6 +6,7 @@ import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/meal_planning/ui/planned_day_card.dart';
+import 'package:nestprep/features/recipes/model/recipe_link.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:provider/provider.dart';
@@ -133,6 +134,69 @@ void main() {
 
     await tester.tap(find.text(RecipeCopy.howToMakeShort));
     expect(opened, ['bobotie']);
+  });
+
+  group('a household\'s own recipe on the week (recipes ADR-0007)', () {
+    Future<void> plannedOwn(WidgetTester tester, Meal meal) async {
+      harness.recipes.emitCatalogue(RecipeFixtures.catalogue);
+      harness.meals.emitMeals([meal]);
+      harness.meals.emitWeek(
+        WeekPlan(
+          id: harness.clock.today.weekStart.iso,
+          slots: {
+            WeekPlan.slotKey(harness.clock.today.weekday, MealSlot.dinner):
+                meal.id,
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    const ownId = RecipeFixtures.ownRecipeId;
+
+    testWidgets('shows how to make it, through the household\'s link', (
+      tester,
+    ) async {
+      await pump(tester, MealsView.week);
+      await plannedOwn(
+        tester,
+        Meal.ofRecipe(
+          link: const HouseholdRecipeLink(ownId),
+          name: 'Gran\'s bobotie',
+          ingredients: const [],
+          addedBy: Fixtures.samMemberId,
+        ),
+      );
+      await tester.dragUntilVisible(
+        find.text(RecipeCopy.howToMakeShort),
+        find.byType(Scrollable).last,
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(RecipeCopy.howToMakeShort));
+      expect(opened, [ownId]);
+    });
+
+    testWidgets('once its recipe has gone it is a plain meal, still on the '
+        'week', (tester) async {
+      await pump(tester, MealsView.week);
+      await plannedOwn(
+        tester,
+        Meal.named(
+          id: Meal.idForRecipe(ownId),
+          name: 'Gran\'s bobotie',
+          addedBy: Fixtures.samMemberId,
+        ),
+      );
+      await tester.dragUntilVisible(
+        find.text('Gran\'s bobotie'),
+        find.byType(Scrollable).last,
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Gran\'s bobotie'), findsOneWidget);
+      expect(find.text(RecipeCopy.howToMakeShort), findsNothing);
+    });
   });
 
   testWidgets('an empty slot picks a NestPrep recipe and plans it there', (

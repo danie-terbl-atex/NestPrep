@@ -32,7 +32,7 @@ abstract final class LocationCopy {
   static const batteryHint = 'Sharing keeps stopping?';
 
   static const disclosureTitle = 'Share where you are, all the time';
-  static const disclosurePoints = [
+  static List<String> disclosurePoints({required bool motionSensors}) => [
     'NestPrep collects this phone’s location in the background — even when '
         'the app is closed or not in use — so your family can see where you '
         'are on the map.',
@@ -40,8 +40,9 @@ abstract final class LocationCopy {
         'reach or leave places like home or school.',
     'Only people your household lets see the map can see it. Nobody else, '
         'and never for advertising.',
-    'It uses the phone’s motion sensors to switch location off while you '
-        'are still, which saves battery. Your phone may ask about that next.',
+    if (motionSensors)
+      'It uses the phone’s motion sensors to switch location off while you '
+          'are still, which saves battery. Your phone may ask about that next.',
     'You can pause it any time: here, or from the notification on Android.',
   ];
   static const disclosureNext =

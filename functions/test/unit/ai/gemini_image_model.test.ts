@@ -94,6 +94,46 @@ describe('the request', () => {
   });
 });
 
+describe('a request with references', () => {
+  it('sends the system text, the pictures before the prompt, and the asked shape', () => {
+    const square: ImageRequest = {
+      prompt: 'A plush toy of this drawing',
+      aspectRatio: '1:1',
+      parts: [{ kind: 'inline', mimeType: 'image/webp', base64: 'AAAA' }],
+      system: 'Original characters only.',
+      labels: { feature: 'avatarCreate' },
+    };
+    expect(geminiImageBody(square)).toEqual({
+      systemInstruction: { parts: [{ text: 'Original characters only.' }] },
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { inlineData: { mimeType: 'image/webp', data: 'AAAA' } },
+            { text: 'A plush toy of this drawing' },
+          ],
+        },
+      ],
+      generationConfig: {
+        responseModalities: ['IMAGE'],
+        imageConfig: {
+          aspectRatio: '1:1',
+          personGeneration: 'ALLOW_NONE',
+          imageOutputOptions: { mimeType: 'image/jpeg', compressionQuality: 82 },
+        },
+      },
+    });
+  });
+
+  it('keeps no people unless the request says otherwise', () => {
+    const wide: ImageRequest = { ...request, aspectRatio: '16:9', personGeneration: 'ALLOW_ADULT' };
+    expect(geminiImageBody(wide)['generationConfig']).toMatchObject({
+      imageConfig: { aspectRatio: '16:9', personGeneration: 'ALLOW_ADULT' },
+    });
+    expect(geminiImageBody(request)).not.toHaveProperty('systemInstruction');
+  });
+});
+
 describe('an answer', () => {
   it('is the decoded bytes, their type and the model', async () => {
     const reply = await imageModelWith(() => json(pictured())).generate(

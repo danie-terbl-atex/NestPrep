@@ -102,5 +102,8 @@ abstract final class AccountDataCopy {
       'Your data was prepared but did not download. Try again.',
     AccountDataProblem.shareUnavailable =>
       'Nothing on this phone offered to save the file. Try again.',
+    AccountDataProblem.appleNotConfirmed =>
+      'Apple needs to confirm it is you before your account can be deleted. '
+          'Nothing was deleted. Try again.',
   };
 }

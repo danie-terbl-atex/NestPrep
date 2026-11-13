@@ -72,6 +72,8 @@ abstract final class PhotoFrameCopy {
   static const groceriesArea = 'Prices near';
   static const linkAction = 'Link frame';
   static const linked = 'Linked — it’ll fill in a few seconds';
+  static const linkedWithoutGroceries =
+      'Groceries didn’t switch on. Open the frame and switch them on again.';
   static const done = 'Done';
 
   // ---- one frame ----
@@ -84,6 +86,8 @@ abstract final class PhotoFrameCopy {
   static const keep = 'Keep it';
 
   // ---- a page shared from the phone ----
+  static const sharedPage = 'Shared page';
+  static const saveAsRecipe = 'Save as a household recipe';
   static const showOnFrame = 'Show on frame';
   static String showOn(String name) => 'Show on $name';
   static const chooseFrame = 'Which frame should open it?';
@@ -91,6 +95,9 @@ abstract final class PhotoFrameCopy {
   static const noSharingFrames = 'No frame opens recipes or pages yet';
   static const noSharingFramesBody =
       'Go to More → Photo frames, tap a frame and switch on “$share”.';
+  static const noSharingFramesQuiet =
+      'None of your frames opens pages yet. You can switch that on under More '
+      '→ Photo frames.';
   static const shareOnlyFamily =
       'Only family can send to a frame. Ask a parent to send it.';
   static const noLinkShared =
@@ -184,6 +191,7 @@ abstract final class PhotoFrameCopy {
     PhotoFrameProblem.itemOutOfReach =>
       'A frame can tick off today and the last week only.',
     PhotoFrameProblem.whoNeeded => 'Choose who did it, then try again.',
+    PhotoFrameProblem.shiftsOff => 'Shifts are switched off for now.',
     PhotoFrameProblem.addingOff =>
       'This frame doesn’t add events. Switch it on in the frame’s settings.',
     PhotoFrameProblem.notAllowedToAdd =>

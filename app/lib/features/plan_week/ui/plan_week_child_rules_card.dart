@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../family_profiles/model/family_entry.dart';
 
 /// One chosen child in the brief: what NestPrep will keep out of their box —
@@ -32,7 +33,7 @@ class PlanWeekChildRulesCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          NestAvatar(name: member.displayName, color: member.color),
+          MemberAvatar(member: member),
           const SizedBox(width: NestSpace.md),
           Expanded(
             child: Column(

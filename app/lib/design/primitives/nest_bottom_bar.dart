@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../tokens/nest_colors.dart';
 import '../tokens/nest_motion.dart';
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -20,12 +21,17 @@ class NestBottomBar extends StatelessWidget {
     required this.items,
     required this.selectedIndex,
     required this.onSelect,
+    this.hasPremiumTrim = false,
     super.key,
   });
 
   final List<NestBottomBarItem> items;
   final int selectedIndex;
   final ValueChanged<int> onSelect;
+
+  /// A hairline of Butter round the bar (subscriptions ADR-0007). Decoration:
+  /// the seal and the card say Premium in words.
+  final bool hasPremiumTrim;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,14 @@ class NestBottomBar extends StatelessWidget {
       child: DecoratedBox(
         decoration: ShapeDecoration(
           color: c.chrome,
-          shape: const StadiumBorder(),
+          shape: StadiumBorder(
+            side: hasPremiumTrim
+                ? const BorderSide(
+                    color: NestColors.butter,
+                    width: NestSpace.xxs,
+                  )
+                : BorderSide.none,
+          ),
           shadows: nest.shadows.floating,
         ),
         // A floor, not a height: the names grow with the text setting, and

@@ -78,6 +78,7 @@ class SignInScreen extends StatelessWidget {
                   child: SignInProviders(
                     isBusy: session.isSigningIn,
                     onGoogle: session.signInWithGoogle,
+                    onApple: session.signInWithApple,
                   ),
                 ),
                 const SizedBox(height: NestSpace.xxl),

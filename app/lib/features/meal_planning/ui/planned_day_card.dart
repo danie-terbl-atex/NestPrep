@@ -104,7 +104,7 @@ class _SlotRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final planned = meal;
-    final recipeId = planned?.recipeId;
+    final recipeId = planned?.recipeLink?.recipeId;
     final view = context.watch<HouseholdView>();
     final canEdit = view.permissions.canEdit(HouseholdArea.meals);
     final schoolNames = [

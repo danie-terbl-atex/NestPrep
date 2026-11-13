@@ -25,20 +25,32 @@ final class RecipeCatalogueController extends ChangeNotifier {
   RecipeCatalogueController({
     required RecipeRepository recipeRepository,
     required HouseholdClock householdClock,
+    this.ownRecipesOf,
   }) : _repository = recipeRepository,
        _clock = householdClock {
     _subscribe();
+    _subscribeToOwn();
   }
 
   final RecipeRepository _repository;
   final HouseholdClock _clock;
 
+  /// The household whose own recipes join the catalogue; null for somebody the
+  /// rules would not let read them.
+  final String? ownRecipesOf;
+
   StreamSubscription<List<Recipe>>? _subscription;
+  StreamSubscription<List<Recipe>>? _ownSubscription;
+  List<Recipe>? _published;
+  List<Recipe>? _own;
+  AppFailure? _ownFailure;
   AsyncState<RecipeCatalogue> _catalogue = const AsyncLoading();
   RecipeFilter _filter = const RecipeFilter();
   RecipeDiscovery? _discovery;
 
   AsyncState<RecipeCatalogue> get catalogue => _catalogue;
+
+  AppFailure? get ownFailure => _ownFailure;
   RecipeFilter get filter => _filter;
 
   /// What the recipes view shows, or null until the catalogue has arrived.
@@ -65,10 +77,24 @@ final class RecipeCatalogueController extends ChangeNotifier {
   /// than first, so the retry never waits on it.
   Future<void> retry() async {
     final stale = _subscription?.cancel();
+    final staleOwn = _ownSubscription?.cancel();
+    _published = null;
+    _own = null;
+    _ownFailure = null;
     _catalogue = const AsyncLoading();
     _discovery = null;
     notifyListeners();
     _subscribe();
+    _subscribeToOwn();
+    await stale;
+    await staleOwn;
+  }
+
+  Future<void> retryOwnRecipes() async {
+    final stale = _ownSubscription?.cancel();
+    _ownFailure = null;
+    notifyListeners();
+    _subscribeToOwn();
     await stale;
   }
 
@@ -81,10 +107,40 @@ final class RecipeCatalogueController extends ChangeNotifier {
 
   void _subscribe() {
     _subscription = _repository.watchCatalogue().listen((recipes) {
-      _catalogue = AsyncData(RecipeCatalogue(recipes));
-      _derive();
-      notifyListeners();
+      _published = recipes;
+      _merge();
     }, onError: _onError);
+  }
+
+  void _subscribeToOwn() {
+    final householdId = ownRecipesOf;
+    if (householdId == null) return;
+    _ownSubscription = _repository.watchOwnRecipes(householdId).listen((own) {
+      _own = own;
+      _ownFailure = null;
+      _merge();
+    }, onError: _onOwnError);
+  }
+
+  bool get _ownHasAnswered =>
+      ownRecipesOf == null || _own != null || _ownFailure != null;
+
+  // Holding here is what stops an own recipe's page flashing "gone" while only
+  // the catalogue has arrived.
+  void _merge() {
+    final published = _published;
+    if (published != null && _ownHasAnswered) {
+      _catalogue = AsyncData(
+        RecipeCatalogue.merged(published, _own ?? const []),
+      );
+      _derive();
+    }
+    notifyListeners();
+  }
+
+  void _onOwnError(Object error) {
+    _ownFailure = error is AppFailure ? error : UnknownFailure(error);
+    _merge();
   }
 
   void _derive() {
@@ -99,6 +155,7 @@ final class RecipeCatalogueController extends ChangeNotifier {
   }
 
   void _onError(Object error) {
+    _published = null;
     _catalogue = AsyncFailure(
       error is AppFailure ? error : UnknownFailure(error),
     );
@@ -106,7 +163,10 @@ final class RecipeCatalogueController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _cancel() async => _subscription?.cancel();
+  Future<void> _cancel() async {
+    await _subscription?.cancel();
+    await _ownSubscription?.cancel();
+  }
 
   @override
   void dispose() {

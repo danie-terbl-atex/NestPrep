@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/log/best_effort.dart';
+import '../../avatars/data/avatar_photo_store.dart';
+import '../../avatars/model/resolved_avatar.dart';
+import '../../avatars/ui/avatar_place_of.dart';
+import '../../avatars/ui/resolved_avatar_of.dart';
 import '../model/coordinates.dart';
 import '../model/family_place.dart';
 import '../model/located_member.dart';
@@ -69,14 +74,37 @@ class _FamilyMapState extends State<FamilyMap> {
 
   Future<void> _drawMarkers() async {
     final theme = NestTheme.of(context);
+    final place = avatarPlaceOf(context, listen: false);
+    final photos = context.read<AvatarPhotoStore?>();
+    final looks = {
+      for (final located in widget.members)
+        located.member.id: resolvedAvatarOf(
+          context,
+          located.member,
+          listen: false,
+        ),
+    };
     final markers = <Marker>{};
     for (final located in widget.members) {
       final at = located.at;
       if (at == null) continue;
+      final avatar = looks[located.member.id];
+      final photo = switch ((avatar?.base, place, photos)) {
+        (ResolvedImage(:final hash), final place?, final photos?) =>
+          await photos.read(
+            householdId: place.householdId,
+            memberId: located.member.id,
+            hash: hash,
+          ),
+        _ => null,
+      };
+      if (!mounted) return;
       final icon = await _icons.of(
         name: located.member.displayName,
         color: located.member.color,
         theme: theme,
+        avatar: avatar,
+        photo: photo,
       );
       markers.add(
         Marker(

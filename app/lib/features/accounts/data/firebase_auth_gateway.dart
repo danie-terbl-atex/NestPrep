@@ -86,6 +86,36 @@ final class FirebaseAuthGateway implements AuthGateway {
   }
 
   @override
+  Future<AuthUser> signInWithApple() =>
+      _signIn(() => _auth.signInWithProvider(_appleProvider()));
+
+  @override
+  Future<void> revokeAppleSignIn() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+    final hasApple = user.providerData.any(
+      (info) => info.providerId == AppleAuthProvider.PROVIDER_ID,
+    );
+    if (!hasApple) return;
+    try {
+      final confirmed = await user.reauthenticateWithProvider(_appleProvider());
+      final code = confirmed.additionalUserInfo?.authorizationCode;
+      if (code == null) {
+        AppLog.failure('apple revoke', code: 'no-authorization-code');
+        throw const AccountDataFailure(AccountDataProblem.appleNotConfirmed);
+      }
+      await _auth.revokeTokenWithAuthorizationCode(code);
+    } on FirebaseAuthException catch (error) {
+      AppLog.failure('apple revoke', code: error.code, error: error);
+      throw const AccountDataFailure(AccountDataProblem.appleNotConfirmed);
+    }
+  }
+
+  AppleAuthProvider _appleProvider() => AppleAuthProvider()
+    ..addScope('email')
+    ..addScope('name');
+
+  @override
   Future<AuthUser> signInWithEmail({
     required String email,
     required String password,

@@ -17,6 +17,14 @@
       ]
     },
     {
+      "collectionGroup": "recipes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "source", "order": "ASCENDING" },
+        { "fieldPath": "name", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "nannyBookings",
       "queryScope": "COLLECTION",
       "fields": [
@@ -73,6 +81,14 @@
       ]
     },
     {
+      "collectionGroup": "homeCareShifts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "helperId", "order": "ASCENDING" },
+        { "fieldPath": "startedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "homeCareRoutineTicks",
       "queryScope": "COLLECTION",
       "fields": [
@@ -119,6 +135,14 @@
       "fields": [
         { "fieldPath": "push.state", "order": "ASCENDING" },
         { "fieldPath": "push.sendAfter", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "avatarCreations",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "requestedAt", "order": "ASCENDING" }
       ]
     },
     {

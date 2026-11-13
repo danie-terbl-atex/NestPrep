@@ -34,6 +34,19 @@ export function testerUidsFrom(value: string): string[] {
 }
 
 export function storeInvokerEmail(): string | null {
-  const email = configured(storeInvokerServiceAccount.value());
+  return storeInvokerFrom(storeInvokerServiceAccount.value());
+}
+
+function storeInvokerFrom(value: string): string | null {
+  const email = configured(value);
   return email === null ? null : email.toLowerCase();
+}
+
+// `invoker` is read at deploy discovery, where params have no value yet but the CLI has loaded
+// `.env.<project>` into process.env. 'private' makes every deploy empty the run.invoker binding.
+export function storeInvokers(
+  value = process.env['STORE_INVOKER_SERVICE_ACCOUNT'] ?? '',
+): 'private' | [string] {
+  const email = storeInvokerFrom(value);
+  return email === null ? 'private' : [email];
 }

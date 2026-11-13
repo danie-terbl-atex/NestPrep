@@ -45,6 +45,7 @@ abstract final class PointsCopy {
     EntryKind.choreUndone => 'Chore unticked',
     EntryKind.reward => 'Spent on a treat',
     EntryKind.rewardReturned => 'Treat declined, stars back',
+    EntryKind.accessory => 'Spent in the star shop',
   };
 
   static const spendFor = 'Spend stars';

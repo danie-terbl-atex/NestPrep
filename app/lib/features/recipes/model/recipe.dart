@@ -7,6 +7,8 @@ import 'recipe_course.dart';
 import 'recipe_cuisine.dart';
 import 'recipe_difficulty.dart';
 import 'recipe_ingredient.dart';
+import 'recipe_link.dart';
+import 'recipe_origin.dart';
 import 'recipe_photo.dart';
 import 'recipe_tag.dart';
 
@@ -66,9 +68,20 @@ abstract class Recipe with _$Recipe {
     /// Estimated energy in one serving as written (recipes ADR-0006); a
     /// household's own recipe has none.
     int? kcalPerServing,
+    @Default(false) bool isOwn,
+    String? notes,
+    @Default(<RecipePhoto>[]) List<RecipePhoto> gallery,
+    @Default(RecipeOrigin.typed) RecipeOrigin origin,
+    String? sourceUrl,
+    String? sourceName,
+    @Default(<Allergen>{}) Set<Allergen> alsoContains,
+    String? addedBy,
   }) = _Recipe;
 
   const Recipe._();
+
+  RecipeLink get link =>
+      isOwn || isAiDrafted ? HouseholdRecipeLink(id) : CatalogueRecipeLink(id);
 
   static const vegetarianTag = 'vegetarian';
   static const veganTag = 'vegan';

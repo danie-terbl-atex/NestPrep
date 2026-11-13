@@ -131,7 +131,7 @@ final class MealPlanController extends ChangeNotifier with ActionFailureHolder {
     );
     final mealId = await _repository.addRecipeMeal(
       householdId: householdId,
-      recipeId: recipe.id,
+      link: recipe.link,
       name: recipe.name,
       ingredients: recipeMealLines(recipe, scale),
       addedBy: memberId,

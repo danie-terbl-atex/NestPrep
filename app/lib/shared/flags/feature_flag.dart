@@ -83,6 +83,10 @@ enum FeatureFlag {
   /// ADR-0006).
   homeCareHelperLanguage('homeCareHelperLanguage'),
 
+  /// A helper clocks in and out, in the app and at a frame (home-care
+  /// ADR-0007).
+  homeCareShifts('homeCareShifts'),
+
   // ---- plan my week with AI (lunch-box ADR-0011) ----
 
   /// One tap plans the week's lunches, dinners and the shopping list —
@@ -114,7 +118,15 @@ enum FeatureFlag {
 
   /// NestPrep in Claude and ChatGPT: a member connects an assistant that adds
   /// events and grocery items as them (assistants ADR-0001).
-  assistants('assistants');
+  assistants('assistants'),
+
+  /// A household's own recipes, typed, read from a page or from a photo —
+  /// premium as well (recipes ADR-0007, ADR-0008).
+  householdRecipes('householdRecipes'),
+
+  avatars('avatars'),
+
+  avatarCreations('avatarCreations');
 
   const FeatureFlag(this.field);
 

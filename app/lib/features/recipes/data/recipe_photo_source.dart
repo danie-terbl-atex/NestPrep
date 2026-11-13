@@ -6,4 +6,6 @@ import 'dart:typed_data';
 /// is decoration, and a recipe without one still cooks.
 abstract interface class RecipePhotoSource {
   Future<Uint8List?> photo(String path);
+
+  Future<void> forget(Iterable<String> paths);
 }

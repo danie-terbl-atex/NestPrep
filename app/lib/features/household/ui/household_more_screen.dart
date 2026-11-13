@@ -6,6 +6,8 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../subscriptions/state/household_entitlement.dart';
+import '../../subscriptions/ui/premium_membership_card.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/household_view.dart';
@@ -25,6 +27,7 @@ class HouseholdMoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final view = context.watch<HouseholdView>();
+    final isPremium = context.watch<HouseholdEntitlement>().isPremium;
     return NestScaffold(
       title: view.household.name,
       subtitle: MoreCopy.subtitle,
@@ -35,6 +38,10 @@ class HouseholdMoreScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          if (isPremium) ...[
+            const NestRiseIn(child: PremiumMembershipCard()),
+            const SizedBox(height: NestSpace.lg),
+          ],
           TourAnchor(
             target: TourTarget.morePeople,
             child: HouseholdPeopleCard(view: view),

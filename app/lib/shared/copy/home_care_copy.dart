@@ -10,6 +10,7 @@ export 'home_care_language_copy.dart';
 export 'home_care_library_copy.dart';
 export 'home_care_routine_copy.dart';
 export 'home_care_safety_copy.dart';
+export 'home_care_shift_copy.dart';
 export 'home_care_stock_copy.dart';
 
 /// Every word the home-care job screens say (`FE-19`) — exported from
@@ -118,7 +119,9 @@ abstract final class HomeCareCopy {
       'next.';
   static const afterPrompt = 'Show it is clean';
   static const afterPromptBody =
-      'Take a photo of the same spot now, so it can be checked.';
+      'Add a photo of the same spot if you can. You can hand it in without '
+      'one.';
+  static const noAfterPhoto = 'Handed in without a photo.';
   static const beforePhoto = 'The spot before cleaning';
   static const afterPhoto = 'The spot after cleaning';
   static const before = 'Before';
@@ -193,7 +196,7 @@ abstract final class HomeCareCopy {
 
   static const stepThroughTitle = 'Work through it';
   static const handIn = 'Hand it in';
-  static const tickEveryStep = 'Tick every step, then take the after photo.';
+  static const tickEveryStep = 'Tick every step, then hand it in.';
   static String stepForReader(
     int number,
     String step, {

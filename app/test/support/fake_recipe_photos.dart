@@ -17,10 +17,14 @@ final class FakeRecipePhotoSource implements RecipePhotoSource {
 
   final Uint8List? bytes;
   final asked = <String>[];
+  final forgotten = <String>[];
 
   @override
   Future<Uint8List?> photo(String path) async {
     asked.add(path);
     return bytes;
   }
+
+  @override
+  Future<void> forget(Iterable<String> paths) async => forgotten.addAll(paths);
 }

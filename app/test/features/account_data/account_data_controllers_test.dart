@@ -16,13 +16,22 @@ void main() {
   group('AccountDeletionController', () {
     late FakeAccountDataGateway gateway;
     late int signOuts;
+    late List<String> steps;
+    late AppFailure? failAppleRevokeWith;
     late AccountDeletionController controller;
 
     setUp(() async {
       gateway = FakeAccountDataGateway();
       signOuts = 0;
+      steps = [];
+      failAppleRevokeWith = null;
       controller = AccountDeletionController(
         accountDataGateway: gateway,
+        revokeAppleSignIn: () async {
+          final failure = failAppleRevokeWith;
+          if (failure != null) throw failure;
+          steps.add('revoke apple');
+        },
         signOut: () async => signOuts++,
       );
       await pumpEventQueue();
@@ -54,6 +63,32 @@ void main() {
         expect(signOuts, 1);
       },
     );
+
+    test('revokes Apple before the account is deleted', () async {
+      controller.typeConfirmation('DELETE');
+      await controller.delete();
+      expect(steps, ['revoke apple']);
+      expect(gateway.deletions, hasLength(1));
+    });
+
+    test('an Apple confirmation that did not happen deletes nothing', () async {
+      failAppleRevokeWith = const AccountDataFailure(
+        AccountDataProblem.appleNotConfirmed,
+      );
+      controller.typeConfirmation('DELETE');
+      await controller.delete();
+      expect(gateway.deletions, isEmpty);
+      expect(signOuts, 0);
+      expect(controller.isDeleting, isFalse);
+      expect(
+        controller.deleteFailure,
+        isA<AccountDataFailure>().having(
+          (failure) => failure.problem,
+          'problem',
+          AccountDataProblem.appleNotConfirmed,
+        ),
+      );
+    });
 
     test(
       'sends once, however often it is pressed while one is on its way',

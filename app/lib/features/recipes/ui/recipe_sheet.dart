@@ -54,7 +54,11 @@ class RecipeSheet extends StatelessWidget {
           ],
         ),
         const SizedBox(height: NestSpace.md),
-        Text(_contains(recipe.allergens), style: nest.text.caption),
+        Text(_contains(recipe), style: nest.text.caption),
+        if (recipe.isOwn && recipe.allergens.isNotEmpty) ...[
+          const SizedBox(height: NestSpace.xs),
+          Text(OwnRecipeCopy.allergensFound, style: nest.text.caption),
+        ],
         if (recipe.isAiDrafted) ...[
           const SizedBox(height: NestSpace.xs),
           Text(RecipeCopy.draftedNote, style: nest.text.caption),
@@ -102,12 +106,14 @@ class RecipeSheet extends StatelessWidget {
   }
 
   /// Said in words, never only as tags (`FE-13`).
-  static String _contains(Set<Allergen> allergens) => allergens.isEmpty
-      ? RecipeCopy.containsNone
+  static String _contains(Recipe recipe) => recipe.allergens.isEmpty
+      ? (recipe.isOwn
+            ? OwnRecipeCopy.allergensNoneFound
+            : RecipeCopy.containsNone)
       : RecipeCopy.contains(
           [
             for (final allergen in Allergen.values)
-              if (allergens.contains(allergen))
+              if (recipe.allergens.contains(allergen))
                 FamilyCopy.allergenName(allergen).toLowerCase(),
           ].join(', '),
         );

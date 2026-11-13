@@ -10,7 +10,7 @@ import {
 import type { ImageModel, ImageReply, ImageRequest } from '../../../src/ai/image_model';
 import type { CallClock } from '../../../src/ai/structured_call';
 import type { AiClaim, ClaimRequest, Settlement, UsageLedger } from '../../../src/ai/usage_ledger';
-import { decideClaim, tierFrom, type MonthUsage } from '../../../src/ai/usage_rules';
+import { decideCharge, tierFrom, type MonthUsage } from '../../../src/ai/usage_rules';
 import { refuseAi } from '../../../src/ai/ai_refusals';
 
 /** A scripted attempt that never answers until it is aborted. */
@@ -117,6 +117,7 @@ export class FakeClock implements CallClock {
  */
 export class InMemoryUsageLedger implements UsageLedger {
   usage: MonthUsage = { calls: 0, attempts: 0 };
+  created = { month: 0, lifetime: 0, attempts: 0 };
   entitlement: unknown = undefined;
   readonly settlements: { claim: AiClaim; settlement: Settlement }[] = [];
   private next = 0;
@@ -124,9 +125,24 @@ export class InMemoryUsageLedger implements UsageLedger {
 
   claim(request: ClaimRequest): Promise<AiClaim> {
     const tier = tierFrom(this.entitlement, request.now);
-    const decision = decideClaim(this.usage, request.monthlyCalls[tier]);
+    const decision = decideCharge(
+      request.charge,
+      this.usage,
+      request.monthlyCalls[tier],
+      tier,
+      this.created,
+    );
     if (!decision.allowed) return Promise.reject(refuseAi('aiLimitReached'));
-    this.usage = { calls: this.usage.calls + 1, attempts: this.usage.attempts + 1 };
+    if (request.charge.kind === 'calls') {
+      this.usage = { calls: this.usage.calls + 1, attempts: this.usage.attempts + 1 };
+    } else {
+      const made = request.charge.kind === 'allowance' ? 1 : 0;
+      this.created = {
+        month: this.created.month + made,
+        lifetime: this.created.lifetime + made,
+        attempts: this.created.attempts + 1,
+      };
+    }
     this.next += 1;
     return Promise.resolve({
       householdId: request.householdId,
@@ -134,6 +150,7 @@ export class InMemoryUsageLedger implements UsageLedger {
       callId: `call-${String(this.next)}`,
       feature: request.feature,
       tier,
+      charge: request.charge.kind,
       callsLeft: decision.callsLeft,
     });
   }
@@ -142,7 +159,16 @@ export class InMemoryUsageLedger implements UsageLedger {
     if (this.settled.has(claim.callId)) return Promise.resolve();
     this.settled.add(claim.callId);
     this.settlements.push({ claim, settlement });
-    if (!settlement.ok) this.usage = { ...this.usage, calls: this.usage.calls - 1 };
+    if (!settlement.ok && claim.charge === 'calls') {
+      this.usage = { ...this.usage, calls: this.usage.calls - 1 };
+    }
+    if (!settlement.ok && claim.charge === 'allowance') {
+      this.created = {
+        ...this.created,
+        month: this.created.month - 1,
+        lifetime: this.created.lifetime - 1,
+      };
+    }
     return Promise.resolve();
   }
 }

@@ -4,6 +4,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../data/points_directory.dart';
 import '../model/point_claim.dart';
@@ -42,7 +43,7 @@ class ClaimReviewRow extends StatelessWidget {
           Row(
             children: [
               if (who != null) ...[
-                NestAvatar(name: who.displayName, color: who.color),
+                MemberAvatar(member: who),
                 const SizedBox(width: NestSpace.md),
               ],
               Expanded(

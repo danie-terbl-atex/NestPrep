@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../avatars/ui/nest_portrait_entry.dart';
 import '../model/frame_photo.dart';
 import '../state/frame_photos_controller.dart';
 import 'frame_photo_tile.dart';
@@ -117,6 +118,7 @@ class _Album extends StatelessWidget {
               _Notice(controller: controller),
               Text(PhotoFrameCopy.photosIntro, style: nest.text.bodySecondary),
               const SizedBox(height: NestSpace.md),
+              const NestPortraitEntry(),
               Text(
                 PhotoFrameCopy.photoCount(photos.length),
                 style: nest.text.label,

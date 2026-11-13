@@ -231,11 +231,13 @@ Premium vouchers and codes (`src/premium_vouchers/`, subscriptions ADR-0003, ADR
 C-0026) turn a frame bought on the store, or a Premium code typed on the web, into a `premiumGrants`
 document of source `frame` or `code`, composed like a referral month. Emails, codes and one-time codes
 are kept only as HMAC-SHA256 under `PREMIUM_EMAIL_PEPPER`; gift-link tokens only as SHA-256.
-`issuePremiumVouchers` and `voidFrameVoucher` (africa-south1) are `invoker: 'private'`: Cloud Run IAM
-decides who reaches them, and the handler also checks the bearer ID token's `email` against
-`STORE_INVOKER_SERVICE_ACCOUNT`, audience the function's cloudfunctions.net URL. **The store's service
-account needs `roles/run.invoker` on both services, granted by hand** — `firebase deploy` never touches
-the invoker of a private function. Under the emulator no Google ID token exists, so both refuse 403; the
+`issuePremiumVouchers` and `voidFrameVoucher` (africa-south1) take `STORE_INVOKER_SERVICE_ACCOUNT` as
+their only invoker (`storeInvokers()`, read from `.env.<project>` at deploy discovery): Cloud Run IAM
+decides who reaches them, and the handler also checks the bearer ID token's `email` against the same
+account, audience the function's cloudfunctions.net URL. **Every deploy rewrites the `roles/run.invoker`
+binding from that value**; with it empty they are `invoker: 'private'`, and a deploy empties the binding.
+Never grant the store by hand: the next deploy takes a hand grant away (it did on 2026-11-09, and every
+voucher push was refused 403 until it was restored). Under the emulator no Google ID token exists, so both refuse 403; the
 emulator tests drive their bodies directly. `premiumWeb` (europe-west1, behind Hosting's `/api/premium/**`)
 is the public gift and redeem pages' endpoint. Gift lookups and reassigns are limited per address
 (`callerAddress`) only, and a reassign per new email too: a 256-bit token needs no shared budget, and one
@@ -265,8 +267,8 @@ cannot read those grants and drops them from any restatement it makes:
    exist, and with no `premiumCodes` the redeem page creates none, so nothing can be claimed.
 2. Only once step 1 is serving everywhere (`gcloud run revisions list --region africa-south1` shows
    no older revision taking traffic): set `STORE_INVOKER_SERVICE_ACCOUNT`, run
-   `firebase deploy --only functions:issuePremiumVouchers,functions:voidFrameVoucher`, grant the store
-   `roles/run.invoker` on `issuepremiumvouchers` and `voidframevoucher`, seed codes, deploy Hosting, then
+   `firebase deploy --only functions:issuePremiumVouchers,functions:voidFrameVoucher` (which grants the
+   store `roles/run.invoker` on both services), seed codes, deploy Hosting, then
    switch on the store's push.
 
 When a buyer says their gift went to the wrong person, or a forwarded link used up its five moves,
@@ -310,10 +312,16 @@ deploy (foundation ADR-0014, ADR-0015), both set by hand in the console and unre
 - `appConfig/flags` — one boolean per V2 capability (`snapSchoolLetter`, …). Absent means on under
   the emulator and **off in the cloud**.
 - `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`, `features.lunchPhoto`,
-  `features.productMatch` (Jev's grocery ranking, never counted),
+  `features.listScan`, `features.recipeImport`, `features.productMatch` (Jev's grocery ranking, never counted),
+  `features.avatarCheck` (never counted), `features.avatarCreate` and `features.avatarPortrait`,
   `monthlyCalls.free` and `monthlyCalls.premium`. Absent means on, 10 calls a month free and 100
   premium. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
-  costs anything.
+  costs anything. `features.avatarCreate` may instead be `{premiumMonthly, freeLifetime}` (default
+  12 and 1): creations and portraits share that allowance, counted in `aiUsage/{month}.byFeature`
+  and `aiUsage/lifetime`, never against the monthly calls (avatars ADR-0003). Every call started
+  for it, checks included, counts in `aiUsage/{month}.allowanceAttempts.avatarCreate` and never in
+  `attempts`: nine a creation the tier may make (9 free, 108 premium a month), so refused photos
+  close creations for the month and never the household's other AI.
 
 ## AI (`src/ai/`, foundation ADR-0015)
 
@@ -325,7 +333,10 @@ a `responseSchema`, a `feature` label) and a zod schema, and sends the model the
 POPIA section). Vertex is reached as the Functions' service account — **no API key exists**; the
 runtime service account needs `roles/aiplatform.user`. Under the emulator the model is
 `EmulatorModel`, which answers from `aiEmulator/{feature}.reply` (or fails with `failWith`), so no
-test or local run reaches Vertex or bills anything.
+test or local run reaches Vertex or bills anything. The one exception is a person's choice:
+`live: true` on `aiEmulator/recipeImport`, and no other feature's document, asks the real model on
+your own `gcloud` sign-in (recipes ADR-0008 §11); the seed clears it on every start.
+`tools/recipe-import-eval.mjs [--dry] <url> …` runs the real prompt over real pages and writes nothing.
 
 **A decision goes to Jev, not Gemini** (foundation ADR-0022 in Godfather): choosing or scoring
 among options NestPrep already holds. A feature builds a `DecisionRequest` (`label`, `state`,
@@ -340,7 +351,18 @@ must name `AI_DECISION_MODEL`, or a non-interactive deploy stops asking for it.
 
 A picture goes through `runImageCall` — the same switch, claim and refund, with an `ImageModel`
 (Imagen in the cloud; under the emulator `EmulatorImageModel`, which returns
-`assets/emulator_lunch_photo.jpg` unless `aiEmulator/{feature}.failWith` says otherwise).
+`assets/emulator_lunch_photo.jpg`, `emulator_avatar.jpg` or `emulator_portrait.jpg` by the asked
+aspect unless `aiEmulator/{feature}.failWith` says otherwise). A canned text reply may be a `cycle`
+of replies answered in turn; the seed cycles `avatarDrawingCheck` through a creature and a person.
+`onAvatarCreation` (avatars ADR-0003) is the one trigger that spends AI: checks under `avatarCheck`,
+the picture under `avatarCreate` or `avatarPortrait`. A run that dies leaves its request at `checking` or
+`drawing`; `sweepAvatarCreations` (hourly, `europe-west1`; body `sweepStuckCreations`) ends any older
+than an hour as `failed`/`unavailable` (or `ready` when the picture was already kept), settles the
+creation claims still `claimed` on the ledger as failed, and deletes the inbox reference. It needs the
+`avatarCreations` collection-group index (`status`, `requestedAt`) in `firestore.indexes.json`.
+`test/fixtures/frame_avatars.json` is what `assembleFrameDay` sends the wall for a set of looks; the
+frame's tests parse a byte-identical copy and the app's resolve the same looks
+(`test/unit/frames/frame_avatars_fixture.test.ts` says how to write it again).
 `lunchPhoto` (lunch-box ADR-0015) caches each box's picture by combination: catalogue-only boxes at
 `lunchPhotos/{key}` (shared by every household), anything else at `households/{h}/lunchPhotos/{key}`
 — a Firestore document no client reads, and a `.jpg` of the same name in Storage.

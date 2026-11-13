@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/kid_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/kid_device.dart';
 import '../model/kid_sign_in_entry.dart';
 import 'kid_device_row.dart';
@@ -36,7 +37,7 @@ class KidSignInCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NestListRow(
-            leading: NestAvatar(name: member.displayName, color: member.color),
+            leading: MemberAvatar(member: member),
             title: member.displayName,
             subtitle: devices.isEmpty
                 ? KidCopy.manageNoDevices

@@ -8,7 +8,7 @@ import {
 import { householdRef, memberRef } from '../household/documents';
 import { todayIn } from '../documents/expiry_schedule';
 import { decideClaim, type DesiredClaim, type Ineligible } from './chore_eligibility';
-import { readBalance, stageLine, type LedgerLine } from './point_ledger';
+import { readBalance, stageLine, type LedgerBalance, type LedgerLine } from './point_ledger';
 import { claimRef, completionRef, routineRef, taskRef } from './point_refs';
 import {
   parseSnapshot,
@@ -16,7 +16,6 @@ import {
   storedCompletion,
   storedRoutine,
   storedTask,
-  type StoredBalance,
   type StoredClaim,
   type StoredCompletion,
 } from './point_documents';
@@ -118,10 +117,10 @@ function stageClaim(
   claim: {
     readonly desired: DesiredClaim;
     readonly round: number;
-    readonly balance: StoredBalance | undefined;
+    readonly balance: LedgerBalance | undefined;
     readonly today: string;
     readonly completionId: string;
-    readonly stage: (balance: StoredBalance, line: LedgerLine) => void;
+    readonly stage: (balance: LedgerBalance, line: LedgerLine) => void;
   },
 ): 'awarded' | 'pending' {
   const { desired: next, round } = claim;

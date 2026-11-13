@@ -3,7 +3,13 @@ import { z } from 'zod';
 import type { AccessTokenSource } from './access_token';
 import { ModelCallError } from './generative_model';
 import type { ImageModel, ImageReply, ImageRequest } from './image_model';
-import { errorName, failureKindForStatus, readJson, vertexEndpoint } from './vertex_model';
+import {
+  errorName,
+  failureKindForStatus,
+  readJson,
+  vertexEndpoint,
+  vertexPart,
+} from './vertex_model';
 
 /**
  * A Gemini image model on Vertex AI, over `generateContent` with an image
@@ -81,15 +87,23 @@ export class GeminiImageModel implements ImageModel {
   }
 }
 
-/** The request as a Gemini image model spells it: one JPEG, no people. */
+/** The request as a Gemini image model spells it: one JPEG, no people unless asked. */
 export function geminiImageBody(request: ImageRequest): Record<string, unknown> {
   return {
-    contents: [{ role: 'user', parts: [{ text: request.prompt }] }],
+    ...(request.system === undefined
+      ? {}
+      : { systemInstruction: { parts: [{ text: request.system }] } }),
+    contents: [
+      {
+        role: 'user',
+        parts: [...(request.parts ?? []).map(vertexPart), { text: request.prompt }],
+      },
+    ],
     generationConfig: {
       responseModalities: ['IMAGE'],
       imageConfig: {
         aspectRatio: request.aspectRatio,
-        personGeneration: 'ALLOW_NONE',
+        personGeneration: request.personGeneration ?? 'ALLOW_NONE',
         imageOutputOptions: { mimeType: 'image/jpeg', compressionQuality: 82 },
       },
     },

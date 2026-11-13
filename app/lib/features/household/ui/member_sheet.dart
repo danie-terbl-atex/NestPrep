@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/birthday.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
@@ -38,18 +39,28 @@ Future<MemberDraft?> showMemberSheet({
   required BuildContext context,
   required CalendarDate today,
   Member? existing,
+  VoidCallback? onChangePicture,
 }) => showNestSheet<MemberDraft>(
   context: context,
   title: existing == null
       ? AppCopy.householdAddMember
       : AppCopy.householdEditMember,
-  builder: (sheetContext) => _MemberSheetBody(existing: existing, today: today),
+  builder: (sheetContext) => _MemberSheetBody(
+    existing: existing,
+    today: today,
+    onChangePicture: onChangePicture,
+  ),
 );
 
 class _MemberSheetBody extends StatefulWidget {
-  const _MemberSheetBody({required this.existing, required this.today});
+  const _MemberSheetBody({
+    required this.existing,
+    required this.today,
+    this.onChangePicture,
+  });
 
   final Member? existing;
+  final VoidCallback? onChangePicture;
 
   /// Today where the household lives, which is what bounds the birthday picker
   /// (foundation ADR-0007).
@@ -116,6 +127,21 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
             selected: _color,
             onSelect: (color) => setState(() => _color = color),
           ),
+          if ((widget.existing, widget.onChangePicture) case (
+            final member?,
+            final change?,
+          )) ...[
+            const SizedBox(height: NestSpace.md),
+            NestListRow(
+              leading: MemberAvatar(member: member.copyWith(color: _color)),
+              title: AvatarCopy.changePicture,
+              trailing: Icon(
+                LucideIcons.chevronRight,
+                color: nest.colors.inkSecondary,
+              ),
+              onTap: change,
+            ),
+          ],
           const SizedBox(height: NestSpace.xl),
           Text(
             AppCopy.householdMemberRole,

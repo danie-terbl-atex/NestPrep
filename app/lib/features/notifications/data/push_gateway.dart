@@ -29,8 +29,8 @@ abstract interface class PushGateway {
   /// What the phone says now, without asking anybody anything.
   Future<PushPermission> permission();
 
-  /// Shows the phone's own prompt — only ever from a person's tap
-  /// (notifications ADR-0003).
+  /// Shows the phone's own prompt, through `PushRegistrar.turnOn` only
+  /// (notifications ADR-0003, ADR-0006).
   Future<PushPermission> requestPermission();
 
   /// This phone's token, or null when it has none to give — an iPhone with no

@@ -1,0 +1,715 @@
+{
+  "about": "Shared by app/test/features/avatars/model/avatar_moments_test.dart and the Functions' moment tests (avatars ADR-0001, ADR-0004). A case's expect is the layer shown in each slot that holds a moment; a slot it leaves out shows no moment. Each stages row is the stage a child's stars give, before the never-goes-down rule.",
+  "moments": [
+    {
+      "id": "moment-birthday-hat",
+      "slot": "top",
+      "rule": {
+        "kind": "birthday"
+      }
+    },
+    {
+      "id": "moment-winter-beanie",
+      "slot": "top",
+      "rule": {
+        "kind": "dates",
+        "from": "06-21",
+        "to": "06-23",
+        "hemisphere": "south"
+      }
+    },
+    {
+      "id": "moment-winter-beanie-north",
+      "slot": "top",
+      "rule": {
+        "kind": "dates",
+        "from": "12-21",
+        "to": "12-23",
+        "hemisphere": "north"
+      }
+    },
+    {
+      "id": "moment-festive-hat",
+      "slot": "top",
+      "rule": {
+        "kind": "dates",
+        "from": "12-20",
+        "to": "12-26"
+      }
+    },
+    {
+      "id": "moment-new-year-crown",
+      "slot": "top",
+      "rule": {
+        "kind": "dates",
+        "from": "12-31",
+        "to": "01-01"
+      }
+    },
+    {
+      "id": "moment-easter-ears",
+      "slot": "top",
+      "rule": {
+        "kind": "easter",
+        "from": -2,
+        "to": 1
+      }
+    },
+    {
+      "id": "moment-heritage-braai-hat",
+      "slot": "top",
+      "rule": {
+        "kind": "dates",
+        "from": "09-24",
+        "to": "09-24"
+      }
+    },
+    {
+      "id": "moment-valentine-heart",
+      "slot": "badge",
+      "rule": {
+        "kind": "dates",
+        "from": "02-14",
+        "to": "02-14"
+      }
+    },
+    {
+      "id": "moment-back-to-school",
+      "slot": "badge",
+      "rule": {
+        "kind": "dates",
+        "from": "01-14",
+        "to": "01-16",
+        "hemisphere": "south"
+      }
+    }
+  ],
+  "easter": [
+    {
+      "year": 2000,
+      "sunday": "2000-04-23"
+    },
+    {
+      "year": 2019,
+      "sunday": "2019-04-21"
+    },
+    {
+      "year": 2024,
+      "sunday": "2024-03-31"
+    },
+    {
+      "year": 2025,
+      "sunday": "2025-04-20"
+    },
+    {
+      "year": 2026,
+      "sunday": "2026-04-05"
+    },
+    {
+      "year": 2027,
+      "sunday": "2027-03-28"
+    },
+    {
+      "year": 2028,
+      "sunday": "2028-04-16"
+    },
+    {
+      "year": 2038,
+      "sunday": "2038-04-25"
+    },
+    {
+      "year": 2285,
+      "sunday": "2285-03-22"
+    }
+  ],
+  "hemispheres": [
+    {
+      "zone": "Africa/Johannesburg",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Maseru",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Mbabane",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Windhoek",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Gaborone",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Harare",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Lusaka",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Maputo",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Blantyre",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Lubumbashi",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Luanda",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Dar_es_Salaam",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Kigali",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Africa/Bujumbura",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Indian/Antananarivo",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Indian/Mauritius",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Indian/Reunion",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Indian/Mayotte",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Indian/Comoro",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Auckland",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Chatham",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Fiji",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Tongatapu",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Apia",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Noumea",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Port_Moresby",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Pacific/Tahiti",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Sao_Paulo",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Santiago",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Montevideo",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Asuncion",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/La_Paz",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Lima",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Asia/Jakarta",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Atlantic/St_Helena",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Australia/Sydney",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Australia/Perth",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Antarctica/McMurdo",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Argentina/Buenos_Aires",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "America/Argentina/Cordoba",
+      "hemisphere": "south"
+    },
+    {
+      "zone": "Europe/London",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "America/New_York",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Africa/Lagos",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Africa/Cairo",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Africa/Nairobi",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Africa/Kinshasa",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "America/Buenos_Aires",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Asia/Kolkata",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Asia/Singapore",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Pacific/Honolulu",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "America/Bogota",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "UTC",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Etc/UTC",
+      "hemisphere": "north"
+    },
+    {
+      "zone": "Not/AZone",
+      "hemisphere": "north"
+    }
+  ],
+  "cases": [
+    {
+      "name": "an ordinary day shows nothing",
+      "today": "2026-11-12",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "the festive hat on Christmas",
+      "today": "2026-12-25",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-festive-hat"
+      }
+    },
+    {
+      "name": "the festive hat on its first day",
+      "today": "2026-12-20",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-festive-hat"
+      }
+    },
+    {
+      "name": "the festive hat not the day after it ends",
+      "today": "2026-12-27",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "something worn on top keeps its slot",
+      "today": "2026-12-25",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {
+        "top": "acc-crown"
+      },
+      "expect": {}
+    },
+    {
+      "name": "a birthday takes the slot even over something worn",
+      "today": "2026-12-25",
+      "zone": "Africa/Johannesburg",
+      "birthday": "--12-25",
+      "wear": {
+        "top": "acc-crown"
+      },
+      "expect": {
+        "top": "moment-birthday-hat"
+      }
+    },
+    {
+      "name": "a birthday with a year counts too, and beats Heritage Day",
+      "today": "2026-09-24",
+      "zone": "Africa/Johannesburg",
+      "birthday": "2018-09-24",
+      "wear": {},
+      "expect": {
+        "top": "moment-birthday-hat"
+      }
+    },
+    {
+      "name": "Heritage Day on its own",
+      "today": "2026-09-24",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-heritage-braai-hat"
+      }
+    },
+    {
+      "name": "a birthday on another day is no hat",
+      "today": "2026-09-23",
+      "zone": "Africa/Johannesburg",
+      "birthday": "2018-09-24",
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "the year wraps: New Year's Eve",
+      "today": "2026-12-31",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-new-year-crown"
+      }
+    },
+    {
+      "name": "the year wraps: New Year's Day",
+      "today": "2027-01-01",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-new-year-crown"
+      }
+    },
+    {
+      "name": "the year wraps: over on the second",
+      "today": "2027-01-02",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "the year wraps: not in the middle of the year",
+      "today": "2026-07-01",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "a southern winter in Johannesburg",
+      "today": "2026-06-22",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-winter-beanie"
+      }
+    },
+    {
+      "name": "no southern winter in London",
+      "today": "2026-06-22",
+      "zone": "Europe/London",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "a northern winter in London comes before the festive hat",
+      "today": "2026-12-22",
+      "zone": "Europe/London",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-winter-beanie-north"
+      }
+    },
+    {
+      "name": "the festive hat in Johannesburg on the same day",
+      "today": "2026-12-22",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-festive-hat"
+      }
+    },
+    {
+      "name": "a northern winter in New York",
+      "today": "2026-12-21",
+      "zone": "America/New_York",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-winter-beanie-north"
+      }
+    },
+    {
+      "name": "a southern winter in Sydney",
+      "today": "2026-06-21",
+      "zone": "Australia/Sydney",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-winter-beanie"
+      }
+    },
+    {
+      "name": "Easter Sunday 2026",
+      "today": "2026-04-05",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-easter-ears"
+      }
+    },
+    {
+      "name": "Good Friday 2026",
+      "today": "2026-04-03",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-easter-ears"
+      }
+    },
+    {
+      "name": "Easter Monday 2026",
+      "today": "2026-04-06",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-easter-ears"
+      }
+    },
+    {
+      "name": "the Thursday before Easter 2026",
+      "today": "2026-04-02",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "the Tuesday after Easter 2026",
+      "today": "2026-04-07",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "Easter 2027 is in March",
+      "today": "2027-03-28",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-easter-ears"
+      }
+    },
+    {
+      "name": "Easter Saturday 2027",
+      "today": "2027-03-27",
+      "zone": "Europe/London",
+      "birthday": null,
+      "wear": {},
+      "expect": {
+        "top": "moment-easter-ears"
+      }
+    },
+    {
+      "name": "a badge moment beside something worn on top",
+      "today": "2027-02-14",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {
+        "top": "acc-crown"
+      },
+      "expect": {
+        "badge": "moment-valentine-heart"
+      }
+    },
+    {
+      "name": "something worn as a badge keeps its slot",
+      "today": "2027-02-14",
+      "zone": "Africa/Johannesburg",
+      "birthday": null,
+      "wear": {
+        "badge": "acc-football"
+      },
+      "expect": {}
+    },
+    {
+      "name": "two slots at once",
+      "today": "2027-01-15",
+      "zone": "Africa/Johannesburg",
+      "birthday": "--01-15",
+      "wear": {},
+      "expect": {
+        "top": "moment-birthday-hat",
+        "badge": "moment-back-to-school"
+      }
+    },
+    {
+      "name": "back to school is southern",
+      "today": "2027-01-15",
+      "zone": "Europe/London",
+      "birthday": null,
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "a 29 February birthday shows on the 28th in a common year",
+      "today": "2027-02-28",
+      "zone": "Africa/Johannesburg",
+      "birthday": "2016-02-29",
+      "wear": {},
+      "expect": {
+        "top": "moment-birthday-hat"
+      }
+    },
+    {
+      "name": "and not on 1 March",
+      "today": "2027-03-01",
+      "zone": "Africa/Johannesburg",
+      "birthday": "2016-02-29",
+      "wear": {},
+      "expect": {}
+    },
+    {
+      "name": "a 29 February birthday shows on the 29th in a leap year",
+      "today": "2028-02-29",
+      "zone": "Africa/Johannesburg",
+      "birthday": "--02-29",
+      "wear": {},
+      "expect": {
+        "top": "moment-birthday-hat"
+      }
+    },
+    {
+      "name": "and not on the 28th then",
+      "today": "2028-02-28",
+      "zone": "Africa/Johannesburg",
+      "birthday": "--02-29",
+      "wear": {},
+      "expect": {}
+    }
+  ],
+  "stages": [
+    {
+      "earned": 0,
+      "bestStreak": 0,
+      "stage": 0
+    },
+    {
+      "earned": 1,
+      "bestStreak": 0,
+      "stage": 1
+    },
+    {
+      "earned": 0,
+      "bestStreak": 1,
+      "stage": 1
+    },
+    {
+      "earned": 0,
+      "bestStreak": 2,
+      "stage": 1
+    },
+    {
+      "earned": 5,
+      "bestStreak": 2,
+      "stage": 1
+    },
+    {
+      "earned": 0,
+      "bestStreak": 3,
+      "stage": 2
+    },
+    {
+      "earned": 9,
+      "bestStreak": 6,
+      "stage": 2
+    },
+    {
+      "earned": 0,
+      "bestStreak": 7,
+      "stage": 3
+    },
+    {
+      "earned": 40,
+      "bestStreak": 12,
+      "stage": 3
+    }
+  ]
+}

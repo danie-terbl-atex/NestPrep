@@ -6,6 +6,7 @@ import '../model/recipe_context.dart';
 import '../model/recipe_cuisine.dart';
 import '../model/recipe_difficulty.dart';
 import '../model/recipe_ingredient.dart';
+import '../model/recipe_origin.dart';
 import '../model/recipe_photo.dart';
 import '../model/recipe_tag.dart';
 
@@ -19,6 +20,7 @@ import '../model/recipe_tag.dart';
 abstract final class RecipeDocument {
   static const published = 'published';
   static const aiSource = 'ai';
+  static const ownSource = 'own';
 
   /// One of NestPrep's catalogue recipes: only a published one is read.
   static ParsedDocument<Recipe> parse(String id, Map<String, Object?> data) {
@@ -84,6 +86,14 @@ abstract final class RecipeDocument {
           DocumentFields.text(data['difficulty']),
         ),
         photo: _photo(data['photo']),
+        isOwn: data['source'] == ownSource,
+        notes: DocumentFields.text(data['notes']),
+        gallery: _gallery(data['gallery']),
+        origin: RecipeOrigin.fromName(DocumentFields.text(data['origin'])),
+        sourceUrl: DocumentFields.text(data['sourceUrl']),
+        sourceName: DocumentFields.text(data['sourceName']),
+        alsoContains: Allergen.parseCodes(data['alsoContains']) ?? const {},
+        addedBy: DocumentFields.text(data['addedBy']),
       ),
     );
   }
@@ -112,6 +122,11 @@ abstract final class RecipeDocument {
       isGenerated: value['generated'] == true,
     );
   }
+
+  static List<RecipePhoto> _gallery(Object? value) => switch (value) {
+    final List<Object?> photos => [for (final photo in photos) ?_photo(photo)],
+    _ => const [],
+  };
 
   static Set<RecipeContext> _contexts(Object? value) => switch (value) {
     final List<Object?> names => {

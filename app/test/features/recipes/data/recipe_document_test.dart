@@ -7,6 +7,8 @@ import 'package:nestprep/features/recipes/model/recipe_context.dart';
 import 'package:nestprep/features/recipes/model/recipe_course.dart';
 import 'package:nestprep/features/recipes/model/recipe_cuisine.dart';
 import 'package:nestprep/features/recipes/model/recipe_difficulty.dart';
+import 'package:nestprep/features/recipes/model/recipe_link.dart';
+import 'package:nestprep/features/recipes/model/recipe_origin.dart';
 import 'package:nestprep/features/recipes/model/recipe_tag.dart';
 import 'package:nestprep/shared/firestore/parsed_document.dart';
 
@@ -236,6 +238,102 @@ void main() {
       expect(recipe.difficulty, isNull);
       expect(recipe.cuisine, isNull);
       expect(recipe.cookMinutes, 0);
+    });
+  });
+
+  group('a household\'s own recipe (recipes ADR-0007)', () {
+    Map<String, Object?> own() => {
+      'name': 'Gran\'s bobotie',
+      'summary': '',
+      'source': 'own',
+      'contexts': ['dinner'],
+      'placement': {'dinner': 'main'},
+      'allergens': ['egg', 'milk'],
+      'alsoContains': ['milk'],
+      'dietTags': <String>[],
+      'kcalPerServing': null,
+      'ingredients': [
+        {
+          'name': 'Eggs',
+          'quantity': 2,
+          'unit': null,
+          'note': null,
+          'group': 'For the custard',
+        },
+      ],
+      'steps': ['Bake it.'],
+      'servings': 6,
+      'prepMinutes': 0,
+      'cookMinutes': 45,
+      'notes': 'Better the next day.',
+      'origin': 'link',
+      'sourceUrl': 'https://drizzleanddip.com/bobotie',
+      'sourceName': 'drizzleanddip.com',
+      'addedBy': 'm-sam',
+      'photo': {
+        'card': 'households/h/recipePhotos/own-1/abcdefgh-card.jpg',
+        'hero': 'households/h/recipePhotos/own-1/abcdefgh-hero.jpg',
+        'credit': null,
+        'sourceUrl': null,
+      },
+      'gallery': [
+        {
+          'card': 'households/h/recipePhotos/own-1/ijklmnop-card.jpg',
+          'hero': 'households/h/recipePhotos/own-1/ijklmnop-hero.jpg',
+          'credit': 'Drizzle and Dip',
+          'sourceUrl': 'https://drizzleanddip.com/bobotie',
+        },
+      ],
+    };
+
+    Recipe read(Map<String, Object?> data) =>
+        switch (RecipeDocument.parseHousehold('own-1', data)) {
+          ValidDocument(:final value) => value,
+          RejectedDocument(:final reason) => fail('rejected: $reason'),
+        };
+
+    test('reads whole, with no status to be published by', () {
+      final recipe = read(own());
+      expect(recipe.isOwn, isTrue);
+      expect(recipe.isAiDrafted, isFalse);
+      expect(recipe.notes, 'Better the next day.');
+      expect(recipe.origin, RecipeOrigin.link);
+      expect(recipe.sourceName, 'drizzleanddip.com');
+      expect(recipe.alsoContains, {Allergen.milk});
+      expect(recipe.addedBy, 'm-sam');
+      expect(recipe.photo?.credit, isNull);
+      expect(recipe.photo?.isGenerated, isFalse);
+      expect(recipe.gallery.single.credit, 'Drizzle and Dip');
+      expect(recipe.ingredients.single.group, 'For the custard');
+      expect(recipe.link, const HouseholdRecipeLink('own-1'));
+    });
+
+    test('falls back on everything only the catalogue carries', () {
+      final recipe = read(own());
+      expect(recipe.difficulty, isNull);
+      expect(recipe.cuisine, isNull);
+      expect(recipe.tags, isEmpty);
+      expect(recipe.prepAhead, isFalse);
+      expect(recipe.prepNote, isNull);
+      expect(recipe.kcalPerServing, isNull);
+      expect(recipe.dietTags, isEmpty);
+    });
+
+    test('is left out when an allergen is one this build cannot check', () {
+      expect(
+        RecipeDocument.parseHousehold('own-1', {
+          ...own(),
+          'allergens': ['egg', 'mustard'],
+        }),
+        isA<RejectedDocument<Recipe>>(),
+      );
+    });
+
+    test('a catalogue recipe has none of it', () {
+      final recipe = valid(fields());
+      expect(recipe.isOwn, isFalse);
+      expect(recipe.gallery, isEmpty);
+      expect(recipe.link, const CatalogueRecipeLink('r1'));
     });
   });
 }

@@ -80,6 +80,7 @@ describe('the export link lives an hour, and no longer', () => {
     const objects: ObjectStore = {
       deletePrefix: () => Promise.resolve(),
       save: () => Promise.resolve(),
+      read: () => Promise.resolve(null),
       listCreatedBefore: (prefix, before) =>
         Promise.resolve(
           Object.entries(created)
@@ -240,6 +241,8 @@ describe('the inventory of what is a person’s', () => {
     'homeCareRoutineTicks.updatedBy',
     'lunchPacked.by',
     'nannyShifts.byMemberId',
+    'homeCareShifts.startedBy',
+    'homeCareShifts.endedBy',
     // A household setting someone last changed, not something they made.
     'grocerySettings.updatedBy',
     'homeCareHelpers.updatedBy',
@@ -247,6 +250,10 @@ describe('the inventory of what is a person’s', () => {
     'lunchPantry.updatedBy',
     'lunchPrices.updatedBy',
     'nannySchoolRuns.updatedBy',
+    // A member's look is exported with their details, whoever last chose it.
+    'memberAvatars.updatedBy',
+    // A keepsake's deletion, which the trigger carries out and removes at once.
+    'avatarKeepsakeDeletes.requestedBy',
     // A door or alarm code is the household's, and never goes into a download.
     'nannySecrets.createdBy',
   ];
@@ -268,6 +275,7 @@ describe('the inventory of what is a person’s', () => {
       NANNY_CHILD_CARDS,
       'familyProfiles',
       'memberHealth',
+      'memberAvatars',
     ]) {
       expect(partials, collection).toContain(`match /${collection}/{`);
     }

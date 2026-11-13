@@ -12,6 +12,7 @@ import 'package:nestprep/features/home_care/model/room_kind.dart';
 import 'package:nestprep/features/home_care/model/routine/room_routine.dart';
 import 'package:nestprep/features/home_care/model/routine/routine_cadence.dart';
 import 'package:nestprep/features/home_care/model/routine/routine_tick.dart';
+import 'package:nestprep/features/home_care/model/shift/helper_shift.dart';
 import 'package:nestprep/features/home_care/model/spot_mark.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 
@@ -100,7 +101,37 @@ List<ModelFixture> homeCareModelFixtures() {
     updatedBy: 'm2',
     updatedAt: at,
   );
+  final shift = HelperShift(
+    id: 'shift-1',
+    helperId: 'm2',
+    startedBy: 'm2',
+    startedAt: at,
+    endedAt: at.add(const Duration(hours: 8)),
+    endedBy: 'm1',
+    endedVia: HelperShift.frame,
+    status: HelperShift.ended,
+  );
   return [
+    ModelFixture(
+      label: 'HelperShift',
+      id: shift.id,
+      value: shift,
+      toJson: shift.toJson,
+      fromJson: HelperShift.fromJson,
+      keys: const {
+        'helperId',
+        'status',
+        'startedAt',
+        'startedBy',
+        'startedVia',
+        'endedAt',
+        'endedBy',
+        'endedVia',
+      },
+      note:
+          'exactly what `home_care_shifts.rules` lets a shift be made with; '
+          'both instants are the server\'s (home-care ADR-0007).',
+    ),
     ModelFixture(
       label: 'RoomRoutine',
       id: routine.id,

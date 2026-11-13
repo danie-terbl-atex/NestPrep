@@ -31,6 +31,7 @@ class MealsScreen extends StatelessWidget {
     required this.onSelectTab,
     required this.onOpenRecipe,
     required this.onPickRecipe,
+    this.recipesEntry,
     super.key,
   });
 
@@ -43,6 +44,7 @@ class MealsScreen extends StatelessWidget {
   final void Function(String recipeId, {String? heroTag}) onOpenRecipe;
 
   final RecipePicker onPickRecipe;
+  final Widget? recipesEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +105,7 @@ class MealsScreen extends StatelessWidget {
                     onOpenLunch: () => onSelectTab(HouseholdTab.lunch),
                   )
                 : RecipeDiscoveryView(
+                    addEntry: recipesEntry,
                     onOpen: (recipe, heroTag) =>
                         onOpenRecipe(recipe.id, heroTag: heroTag),
                   ),

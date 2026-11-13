@@ -12,6 +12,7 @@ import '../model/recipe.dart';
 import '../state/recipe_catalogue_controller.dart';
 import '../state/recipe_page_controller.dart';
 import 'add_to_week_sheet.dart';
+import 'recipe_gallery.dart';
 import 'recipe_page_body.dart';
 import 'recipe_picture.dart';
 
@@ -23,9 +24,17 @@ import 'recipe_picture.dart';
 /// The back button is there in every state, so a link to a retired recipe
 /// is never a dead end; where it goes is the route's [onBack].
 class RecipeScreen extends StatelessWidget {
-  const RecipeScreen({required this.onBack, this.heroTag, super.key});
+  const RecipeScreen({
+    required this.onBack,
+    this.heroTag,
+    this.onEdit,
+    this.onDeleted,
+    super.key,
+  });
 
   final VoidCallback onBack;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDeleted;
 
   /// The tag of the card this page was opened from, whose photo flies in to
   /// become the page's; null for a page reached any other way.
@@ -82,10 +91,15 @@ class RecipeScreen extends StatelessWidget {
           children: [
             NestPhotoHero(
               heroTag: heroTag,
-              photo: RecipePicture(
-                path: value.photo?.hero,
-                previewPath: value.photo?.card,
-              ),
+              photo: switch (value.photo) {
+                final cover? when value.gallery.isNotEmpty => RecipeGallery(
+                  photos: [cover, ...value.gallery],
+                ),
+                final cover => RecipePicture(
+                  path: cover?.hero,
+                  previewPath: cover?.card,
+                ),
+              },
               backLabel: AppCopy.back,
               onBack: onBack,
               semanticsLabel: RecipeCopy.photoOf(value.name),
@@ -105,7 +119,7 @@ class RecipeScreen extends StatelessWidget {
                   onAction: controller.dismissActionFailure,
                 ),
               ),
-            RecipePageBody(recipe: value),
+            RecipePageBody(recipe: value, onEdit: onEdit, onDeleted: onDeleted),
           ],
         ),
       },

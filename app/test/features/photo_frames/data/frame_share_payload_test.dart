@@ -32,6 +32,33 @@ void main() {
     expect(payload.containsKey('title'), isFalse);
   });
 
+  test('an own recipe says so: the server reads the household\'s, not the '
+      'catalogue', () {
+    expect(
+      frameSharePayload(
+        householdId: 'house',
+        frameId: 'frame-kitchen',
+        item: const FrameShareRecipe(
+          recipeId: 'own-0123456789abcdef0123',
+          name: 'Gran\'s bobotie',
+          people: 4,
+          amounts: ['500 g', null],
+          isHousehold: true,
+        ),
+      ),
+      {
+        'householdId': 'house',
+        'frameId': 'frame-kitchen',
+        'recipe': {
+          'id': 'own-0123456789abcdef0123',
+          'people': 4,
+          'amounts': ['500 g', null],
+          'household': true,
+        },
+      },
+    );
+  });
+
   test('a recipe sends its id, people and amounts, and nothing else', () {
     expect(
       frameSharePayload(

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/avatar_routes.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../accounts/state/session_controller.dart';
+import '../../avatars/ui/avatar_studio_tab.dart';
+import '../../avatars/ui/hatch_watcher.dart';
+import '../../avatars/ui/kid_wardrobe_shelf.dart';
 import '../../chore_points/model/kid_chore_note.dart';
 import '../../chore_points/model/reward.dart';
 import '../../chore_points/state/kid_points_controller.dart';
@@ -43,6 +49,9 @@ class KidHomeScreen extends StatelessWidget {
       _ => null,
     };
     final day = controller.day;
+    final avatarsOn = AvatarRoute.isOn(
+      context.watch<FeatureFlagsController?>(),
+    );
     if (day case AsyncFailure(
       failure: KidSignInFailure(problem: KidSignInProblem.deviceDisconnected),
     )) {
@@ -100,35 +109,53 @@ class KidHomeScreen extends StatelessWidget {
               isEmpty: (_) => false,
               onRetry: controller.retry,
               emptyBuilder: (_) => const SizedBox.shrink(),
-              dataBuilder: (context, value) => KidDayView(
-                day: value,
-                onToggle: (index) {
-                  final chore = value.chores[index];
-                  if (!chore.isDone) {
-                    celebrateChore(
-                      context,
-                      kidName: value.me.displayName,
-                      chore: chore,
-                      finishesTheDay: isLastOpenOf(value.chores, chore),
-                    );
-                  }
-                  controller.toggle(chore);
-                },
-                // Stars follow the jobs' grant (todos ADR-0003): hidden with
-                // them, and never in the way of the rest of the day.
-                stars: points == null
-                    ? null
-                    : KidStarsSection(points: points, onRetry: stars.retry),
-                shelf: loaded == null
-                    ? null
-                    : KidRewardShelf(
-                        points: loaded,
-                        isAsking: stars.isAsking,
-                        onAsk: (reward) => _ask(context, stars, reward),
-                      ),
-                lunchPicks: const KidLunchPicksCard(),
-                noteFor: (chore) =>
-                    KidChoreNote.of(chore, loaded?.claimFor(chore.key)),
+              dataBuilder: (context, value) => HatchWatcher(
+                householdId: controller.identity.householdId,
+                kid: value.me,
+                child: KidDayView(
+                  day: value,
+                  onToggle: (index) {
+                    final chore = value.chores[index];
+                    if (!chore.isDone) {
+                      celebrateChore(
+                        context,
+                        kidName: value.me.displayName,
+                        chore: chore,
+                        finishesTheDay: isLastOpenOf(value.chores, chore),
+                      );
+                    }
+                    controller.toggle(chore);
+                  },
+                  // Stars follow the jobs' grant (todos ADR-0003): hidden with
+                  // them, and never in the way of the rest of the day.
+                  stars: points == null
+                      ? null
+                      : KidStarsSection(points: points, onRetry: stars.retry),
+                  shelf: loaded == null
+                      ? null
+                      : KidRewardShelf(
+                          points: loaded,
+                          isAsking: stars.isAsking,
+                          onAsk: (reward) => _ask(context, stars, reward),
+                        ),
+                  lunchPicks: const KidLunchPicksCard(),
+                  onChangePicture: avatarsOn
+                      ? () => context.push(AvatarRoute.kidPathFor())
+                      : null,
+                  wardrobe: avatarsOn
+                      ? KidWardrobeShelf(
+                          me: value.me,
+                          shopIsOpen: controller.household?.avatarShop ?? true,
+                          onOpen: () => context.push(
+                            AvatarRoute.kidPathFor(
+                              tab: AvatarStudioTab.wardrobe,
+                            ),
+                          ),
+                        )
+                      : null,
+                  noteFor: (chore) =>
+                      KidChoreNote.of(chore, loaded?.claimFor(chore.key)),
+                ),
               ),
             ),
           ),

@@ -22,13 +22,22 @@ final class KeptPhotoFiles {
   }) async {
     final kept = _bytes[path];
     if (kept != null) return kept;
-    final file = File('${(await _folder()).path}/${path.replaceAll('/', '_')}');
+    final file = await _fileFor(path);
     if (await file.exists()) return _bytes[path] = await file.readAsBytes();
     final bytes = await orFetch();
     if (bytes == null) return null;
     await file.writeAsBytes(bytes, flush: true);
     return _bytes[path] = bytes;
   }
+
+  Future<void> forget(String path) async {
+    _bytes.remove(path);
+    final file = await _fileFor(path);
+    if (await file.exists()) await file.delete();
+  }
+
+  Future<File> _fileFor(String path) async =>
+      File('${(await _folder()).path}/${path.replaceAll('/', '_')}');
 
   Future<Directory> _folder() async {
     final support = await getApplicationSupportDirectory();

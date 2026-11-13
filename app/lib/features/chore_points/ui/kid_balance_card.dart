@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/point_balance.dart';
 
@@ -39,11 +40,7 @@ class KidBalanceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              NestAvatar(
-                name: child.displayName,
-                color: child.color,
-                size: NestSize.avatarLarge,
-              ),
+              MemberAvatar(member: child, size: NestSize.avatarLarge),
               const SizedBox(width: NestSpace.md),
               Expanded(
                 child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
@@ -11,6 +12,7 @@ import 'package:nestprep/shared/copy/subscription_copy.dart';
 
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_screen.dart';
 
 /// More: the household's people and every place beyond the bar, one tap from
@@ -28,11 +30,15 @@ void main() {
     Brightness brightness = Brightness.light,
     double scale = 1,
     FakeFeatureFlagSource? flags,
+    bool isPremium = false,
   }) async {
     await pumpScreen(
       tester,
       HouseholdMoreScreen(onSelectTab: (_) {}),
-      providers: [if (flags != null) featureFlagsProvider(source: flags)],
+      providers: [
+        if (flags != null) featureFlagsProvider(source: flags),
+        if (isPremium) premiumEntitlementProvider(),
+      ],
       view: view,
       brightness: brightness,
       textScale: scale,
@@ -80,6 +86,76 @@ void main() {
       findsNothing,
       reason: 'family profiles are a tab of People (design-system ADR-0022)',
     );
+  });
+
+  group('a household with Premium (subscriptions ADR-0007)', () {
+    testWidgets('family reads it first, with when it renews, and it opens '
+        'plan and billing over More', (tester) async {
+      tallPhone(tester);
+      await pump(tester, isPremium: true);
+
+      expect(find.text(SubscriptionCopy.membershipTitle), findsOneWidget);
+      expect(
+        find.text(
+          SubscriptionCopy.membershipBody(Fixtures.view().household.name),
+        ),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Renews on '), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text(SubscriptionCopy.membershipTitle)).dy,
+        lessThan(tester.getTopLeft(find.text(MoreCopy.peopleTitle)).dy),
+      );
+      expect(
+        tester.widget<NestBottomBar>(find.byType(NestBottomBar)).hasPremiumTrim,
+        isTrue,
+      );
+
+      await tester.tap(find.text(SubscriptionCopy.membershipTitle));
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(MoreCopy.subtitle), findsOneWidget);
+    });
+
+    testWidgets('a helper reads it too, with no date and nowhere to go', (
+      tester,
+    ) async {
+      await pump(tester, view: cleaningOnly, isPremium: true);
+
+      expect(find.text(SubscriptionCopy.membershipTitle), findsOneWidget);
+      expect(find.textContaining('Renews on '), findsNothing);
+      await tester.tap(find.text(SubscriptionCopy.membershipTitle));
+      await tester.pumpAndSettle();
+      expect(find.byType(Placeholder), findsNothing);
+    });
+
+    testWidgets('a free household is shown none of it', (tester) async {
+      await pump(tester);
+
+      expect(find.text(SubscriptionCopy.membershipTitle), findsNothing);
+      expect(
+        tester.widget<NestBottomBar>(find.byType(NestBottomBar)).hasPremiumTrim,
+        isFalse,
+      );
+    });
+
+    testWidgets('it holds at phone width in dark at 200% text', (tester) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(
+        tester,
+        brightness: Brightness.dark,
+        scale: 2,
+        isPremium: true,
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text(SubscriptionCopy.membershipTitle), findsOneWidget);
+    });
   });
 
   group('the way to photo frames', () {

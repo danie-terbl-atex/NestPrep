@@ -5,6 +5,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/avatar_studio_opener.dart';
 import '../model/family_entry.dart';
 import '../model/family_roster.dart';
 import '../state/family_controller.dart';
@@ -64,6 +65,7 @@ class FamilyMemberBody extends StatelessWidget {
           entry: entry,
           age: entry.member.birthday?.ageOn(today),
           onToggleChild: canEdit ? () => flows.toggleChild(context) : null,
+          onChangePicture: avatarStudioOpener(context, entry.memberId),
         ),
         gap,
         if (showsRules) ...[FoodRulesSummary(rules: entry.foodRules), gap],

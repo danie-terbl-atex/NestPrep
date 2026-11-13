@@ -154,6 +154,22 @@ void main() {
     },
   );
 
+  test('signing in with Apple asks the gateway once', () async {
+    await controller.signInWithApple();
+    expect(auth.appleSignIns, hasLength(1));
+    expect(controller.signInFailure, isNull);
+  });
+
+  test(
+    'backing out of the Apple sheet is not a failure worth showing',
+    () async {
+      auth.failSignInWith = const SignInFailure(SignInProblem.cancelled);
+      await controller.signInWithApple();
+      expect(controller.signInFailure, isNull);
+      expect(controller.isSigningIn, isFalse);
+    },
+  );
+
   test('a sign-in that really failed becomes copy', () async {
     auth.failSignInWith = const SignInFailure(SignInProblem.notConfigured);
     await controller.signInWithGoogle();

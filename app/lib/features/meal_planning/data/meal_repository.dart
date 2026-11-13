@@ -1,4 +1,5 @@
 import '../../../shared/time/calendar_date.dart';
+import '../../recipes/model/recipe_link.dart';
 import '../model/meal.dart';
 import '../model/meal_ingredient.dart';
 import '../model/week_plan.dart';
@@ -24,18 +25,25 @@ abstract interface class MealRepository {
     required String addedBy,
   });
 
-  /// The household meal a catalogue recipe becomes (recipes ADR-0003 §6):
+  /// The household meal a recipe becomes (recipes ADR-0003 §6, ADR-0007 §6):
   /// `meals/recipe-<recipeId>`, made with [name], [ingredients] and an
-  /// immutable `recipeId` the first time, and after that only its
+  /// immutable `recipeId` or `householdRecipeId` the first time, and after that only its
   /// [ingredients] rewritten — so planning it for a different number of
   /// people changes the amounts and keeps whatever the family renamed it to.
   /// Returns the meal's id.
   Future<String> addRecipeMeal({
     required String householdId,
-    required String recipeId,
+    required RecipeLink link,
     required String name,
     required List<MealIngredient> ingredients,
     required String addedBy,
+  });
+
+  /// Rewrites the lines of the meal an own recipe became, when it has one.
+  Future<void> rewriteOwnRecipeMealLines({
+    required String householdId,
+    required String recipeId,
+    required List<MealIngredient> ingredients,
   });
 
   Future<void> renameMeal({

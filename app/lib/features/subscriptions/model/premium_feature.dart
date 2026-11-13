@@ -33,6 +33,17 @@ enum PremiumFeature {
   /// shop (list-scan ADR-0001).
   listScan,
 
+  /// A household's own recipes, typed, read from a page or from a photo
+  /// (recipes ADR-0007).
+  ownRecipes,
+
+  /// Drawings, buddies and pets made into avatars, past a free household's
+  /// one (avatars ADR-0003).
+  avatarCreate,
+
+  /// The household's Nest portrait for the frame (avatars ADR-0006).
+  avatarPortrait,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

@@ -25,7 +25,7 @@ mixin _$Recipe {
  String? get about; RecipeCuisine? get cuisine; Set<RecipeTag> get tags;/// Time on the stove or in the oven, beside [prepMinutes].
  int get cookMinutes; RecipeDifficulty? get difficulty; RecipePhoto? get photo;/// Estimated energy in one serving as written (recipes ADR-0006); a
 /// household's own recipe has none.
- int? get kcalPerServing;
+ int? get kcalPerServing; bool get isOwn; String? get notes; List<RecipePhoto> get gallery; RecipeOrigin get origin; String? get sourceUrl; String? get sourceName; Set<Allergen> get alsoContains; String? get addedBy;
 /// Create a copy of Recipe
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,20 +37,20 @@ $RecipeCopyWith<Recipe> get copyWith => _$RecipeCopyWithImpl<Recipe>(this as Rec
 @override
 bool operator ==(Object other) {
   final _this = this as Recipe;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Recipe&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.summary, _this.summary) || other.summary == _this.summary)&&const DeepCollectionEquality().equals(other.contexts, _this.contexts)&&const DeepCollectionEquality().equals(other.placement, _this.placement)&&const DeepCollectionEquality().equals(other.allergens, _this.allergens)&&const DeepCollectionEquality().equals(other.dietTags, _this.dietTags)&&const DeepCollectionEquality().equals(other.ingredients, _this.ingredients)&&const DeepCollectionEquality().equals(other.steps, _this.steps)&&(identical(other.servings, _this.servings) || other.servings == _this.servings)&&(identical(other.prepMinutes, _this.prepMinutes) || other.prepMinutes == _this.prepMinutes)&&(identical(other.prepAhead, _this.prepAhead) || other.prepAhead == _this.prepAhead)&&(identical(other.prepNote, _this.prepNote) || other.prepNote == _this.prepNote)&&(identical(other.isAiDrafted, _this.isAiDrafted) || other.isAiDrafted == _this.isAiDrafted)&&(identical(other.about, _this.about) || other.about == _this.about)&&(identical(other.cuisine, _this.cuisine) || other.cuisine == _this.cuisine)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&(identical(other.cookMinutes, _this.cookMinutes) || other.cookMinutes == _this.cookMinutes)&&(identical(other.difficulty, _this.difficulty) || other.difficulty == _this.difficulty)&&(identical(other.photo, _this.photo) || other.photo == _this.photo)&&(identical(other.kcalPerServing, _this.kcalPerServing) || other.kcalPerServing == _this.kcalPerServing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Recipe&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.summary, _this.summary) || other.summary == _this.summary)&&const DeepCollectionEquality().equals(other.contexts, _this.contexts)&&const DeepCollectionEquality().equals(other.placement, _this.placement)&&const DeepCollectionEquality().equals(other.allergens, _this.allergens)&&const DeepCollectionEquality().equals(other.dietTags, _this.dietTags)&&const DeepCollectionEquality().equals(other.ingredients, _this.ingredients)&&const DeepCollectionEquality().equals(other.steps, _this.steps)&&(identical(other.servings, _this.servings) || other.servings == _this.servings)&&(identical(other.prepMinutes, _this.prepMinutes) || other.prepMinutes == _this.prepMinutes)&&(identical(other.prepAhead, _this.prepAhead) || other.prepAhead == _this.prepAhead)&&(identical(other.prepNote, _this.prepNote) || other.prepNote == _this.prepNote)&&(identical(other.isAiDrafted, _this.isAiDrafted) || other.isAiDrafted == _this.isAiDrafted)&&(identical(other.about, _this.about) || other.about == _this.about)&&(identical(other.cuisine, _this.cuisine) || other.cuisine == _this.cuisine)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&(identical(other.cookMinutes, _this.cookMinutes) || other.cookMinutes == _this.cookMinutes)&&(identical(other.difficulty, _this.difficulty) || other.difficulty == _this.difficulty)&&(identical(other.photo, _this.photo) || other.photo == _this.photo)&&(identical(other.kcalPerServing, _this.kcalPerServing) || other.kcalPerServing == _this.kcalPerServing)&&(identical(other.isOwn, _this.isOwn) || other.isOwn == _this.isOwn)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&const DeepCollectionEquality().equals(other.gallery, _this.gallery)&&(identical(other.origin, _this.origin) || other.origin == _this.origin)&&(identical(other.sourceUrl, _this.sourceUrl) || other.sourceUrl == _this.sourceUrl)&&(identical(other.sourceName, _this.sourceName) || other.sourceName == _this.sourceName)&&const DeepCollectionEquality().equals(other.alsoContains, _this.alsoContains)&&(identical(other.addedBy, _this.addedBy) || other.addedBy == _this.addedBy));
 }
 
 
 @override
 int get hashCode {
   final _this = this as Recipe;
-  return Object.hashAll([runtimeType,_this.id,_this.name,_this.summary,const DeepCollectionEquality().hash(_this.contexts),const DeepCollectionEquality().hash(_this.placement),const DeepCollectionEquality().hash(_this.allergens),const DeepCollectionEquality().hash(_this.dietTags),const DeepCollectionEquality().hash(_this.ingredients),const DeepCollectionEquality().hash(_this.steps),_this.servings,_this.prepMinutes,_this.prepAhead,_this.prepNote,_this.isAiDrafted,_this.about,_this.cuisine,const DeepCollectionEquality().hash(_this.tags),_this.cookMinutes,_this.difficulty,_this.photo,_this.kcalPerServing]);
+  return Object.hashAll([runtimeType,_this.id,_this.name,_this.summary,const DeepCollectionEquality().hash(_this.contexts),const DeepCollectionEquality().hash(_this.placement),const DeepCollectionEquality().hash(_this.allergens),const DeepCollectionEquality().hash(_this.dietTags),const DeepCollectionEquality().hash(_this.ingredients),const DeepCollectionEquality().hash(_this.steps),_this.servings,_this.prepMinutes,_this.prepAhead,_this.prepNote,_this.isAiDrafted,_this.about,_this.cuisine,const DeepCollectionEquality().hash(_this.tags),_this.cookMinutes,_this.difficulty,_this.photo,_this.kcalPerServing,_this.isOwn,_this.notes,const DeepCollectionEquality().hash(_this.gallery),_this.origin,_this.sourceUrl,_this.sourceName,const DeepCollectionEquality().hash(_this.alsoContains),_this.addedBy]);
 }
 
 @override
 String toString() {
   final _this = this as Recipe;
-  return 'Recipe(id: ${_this.id}, name: ${_this.name}, summary: ${_this.summary}, contexts: ${_this.contexts}, placement: ${_this.placement}, allergens: ${_this.allergens}, dietTags: ${_this.dietTags}, ingredients: ${_this.ingredients}, steps: ${_this.steps}, servings: ${_this.servings}, prepMinutes: ${_this.prepMinutes}, prepAhead: ${_this.prepAhead}, prepNote: ${_this.prepNote}, isAiDrafted: ${_this.isAiDrafted}, about: ${_this.about}, cuisine: ${_this.cuisine}, tags: ${_this.tags}, cookMinutes: ${_this.cookMinutes}, difficulty: ${_this.difficulty}, photo: ${_this.photo}, kcalPerServing: ${_this.kcalPerServing})';
+  return 'Recipe(id: ${_this.id}, name: ${_this.name}, summary: ${_this.summary}, contexts: ${_this.contexts}, placement: ${_this.placement}, allergens: ${_this.allergens}, dietTags: ${_this.dietTags}, ingredients: ${_this.ingredients}, steps: ${_this.steps}, servings: ${_this.servings}, prepMinutes: ${_this.prepMinutes}, prepAhead: ${_this.prepAhead}, prepNote: ${_this.prepNote}, isAiDrafted: ${_this.isAiDrafted}, about: ${_this.about}, cuisine: ${_this.cuisine}, tags: ${_this.tags}, cookMinutes: ${_this.cookMinutes}, difficulty: ${_this.difficulty}, photo: ${_this.photo}, kcalPerServing: ${_this.kcalPerServing}, isOwn: ${_this.isOwn}, notes: ${_this.notes}, gallery: ${_this.gallery}, origin: ${_this.origin}, sourceUrl: ${_this.sourceUrl}, sourceName: ${_this.sourceName}, alsoContains: ${_this.alsoContains}, addedBy: ${_this.addedBy})';
 }
 
 
@@ -61,7 +61,7 @@ abstract mixin class $RecipeCopyWith<$Res>  {
   factory $RecipeCopyWith(Recipe value, $Res Function(Recipe) _then) = _$RecipeCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String summary, Set<RecipeContext> contexts, Map<RecipeContext, String> placement, Set<Allergen> allergens, List<String> dietTags, List<RecipeIngredient> ingredients, List<String> steps, int servings, int prepMinutes, bool prepAhead, String? prepNote, bool isAiDrafted, String? about, RecipeCuisine? cuisine, Set<RecipeTag> tags, int cookMinutes, RecipeDifficulty? difficulty, RecipePhoto? photo, int? kcalPerServing
+ String id, String name, String summary, Set<RecipeContext> contexts, Map<RecipeContext, String> placement, Set<Allergen> allergens, List<String> dietTags, List<RecipeIngredient> ingredients, List<String> steps, int servings, int prepMinutes, bool prepAhead, String? prepNote, bool isAiDrafted, String? about, RecipeCuisine? cuisine, Set<RecipeTag> tags, int cookMinutes, RecipeDifficulty? difficulty, RecipePhoto? photo, int? kcalPerServing, bool isOwn, String? notes, List<RecipePhoto> gallery, RecipeOrigin origin, String? sourceUrl, String? sourceName, Set<Allergen> alsoContains, String? addedBy
 });
 
 
@@ -78,7 +78,7 @@ class _$RecipeCopyWithImpl<$Res>
 
 /// Create a copy of Recipe
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? summary = null,Object? contexts = null,Object? placement = null,Object? allergens = null,Object? dietTags = null,Object? ingredients = null,Object? steps = null,Object? servings = null,Object? prepMinutes = null,Object? prepAhead = null,Object? prepNote = freezed,Object? isAiDrafted = null,Object? about = freezed,Object? cuisine = freezed,Object? tags = null,Object? cookMinutes = null,Object? difficulty = freezed,Object? photo = freezed,Object? kcalPerServing = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? summary = null,Object? contexts = null,Object? placement = null,Object? allergens = null,Object? dietTags = null,Object? ingredients = null,Object? steps = null,Object? servings = null,Object? prepMinutes = null,Object? prepAhead = null,Object? prepNote = freezed,Object? isAiDrafted = null,Object? about = freezed,Object? cuisine = freezed,Object? tags = null,Object? cookMinutes = null,Object? difficulty = freezed,Object? photo = freezed,Object? kcalPerServing = freezed,Object? isOwn = null,Object? notes = freezed,Object? gallery = null,Object? origin = null,Object? sourceUrl = freezed,Object? sourceName = freezed,Object? alsoContains = null,Object? addedBy = freezed,}) {
   return _then(Recipe(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -101,7 +101,15 @@ as Set<RecipeTag>,cookMinutes: null == cookMinutes ? _self.cookMinutes : cookMin
 as int,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as RecipeDifficulty?,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
 as RecipePhoto?,kcalPerServing: freezed == kcalPerServing ? _self.kcalPerServing : kcalPerServing // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,isOwn: null == isOwn ? _self.isOwn : isOwn // ignore: cast_nullable_to_non_nullable
+as bool,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,gallery: null == gallery ? _self.gallery : gallery // ignore: cast_nullable_to_non_nullable
+as List<RecipePhoto>,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as RecipeOrigin,sourceUrl: freezed == sourceUrl ? _self.sourceUrl : sourceUrl // ignore: cast_nullable_to_non_nullable
+as String?,sourceName: freezed == sourceName ? _self.sourceName : sourceName // ignore: cast_nullable_to_non_nullable
+as String?,alsoContains: null == alsoContains ? _self.alsoContains : alsoContains // ignore: cast_nullable_to_non_nullable
+as Set<Allergen>,addedBy: freezed == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of Recipe
@@ -198,10 +206,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing,  bool isOwn,  String? notes,  List<RecipePhoto> gallery,  RecipeOrigin origin,  String? sourceUrl,  String? sourceName,  Set<Allergen> alsoContains,  String? addedBy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Recipe() when $default != null:
-return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing);case _:
+return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing,_that.isOwn,_that.notes,_that.gallery,_that.origin,_that.sourceUrl,_that.sourceName,_that.alsoContains,_that.addedBy);case _:
   return orElse();
 
 }
@@ -219,10 +227,10 @@ return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing,  bool isOwn,  String? notes,  List<RecipePhoto> gallery,  RecipeOrigin origin,  String? sourceUrl,  String? sourceName,  Set<Allergen> alsoContains,  String? addedBy)  $default,) {final _that = this;
 switch (_that) {
 case _Recipe():
-return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing);case _:
+return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing,_that.isOwn,_that.notes,_that.gallery,_that.origin,_that.sourceUrl,_that.sourceName,_that.alsoContains,_that.addedBy);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -239,10 +247,10 @@ return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String summary,  Set<RecipeContext> contexts,  Map<RecipeContext, String> placement,  Set<Allergen> allergens,  List<String> dietTags,  List<RecipeIngredient> ingredients,  List<String> steps,  int servings,  int prepMinutes,  bool prepAhead,  String? prepNote,  bool isAiDrafted,  String? about,  RecipeCuisine? cuisine,  Set<RecipeTag> tags,  int cookMinutes,  RecipeDifficulty? difficulty,  RecipePhoto? photo,  int? kcalPerServing,  bool isOwn,  String? notes,  List<RecipePhoto> gallery,  RecipeOrigin origin,  String? sourceUrl,  String? sourceName,  Set<Allergen> alsoContains,  String? addedBy)?  $default,) {final _that = this;
 switch (_that) {
 case _Recipe() when $default != null:
-return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing);case _:
+return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement,_that.allergens,_that.dietTags,_that.ingredients,_that.steps,_that.servings,_that.prepMinutes,_that.prepAhead,_that.prepNote,_that.isAiDrafted,_that.about,_that.cuisine,_that.tags,_that.cookMinutes,_that.difficulty,_that.photo,_that.kcalPerServing,_that.isOwn,_that.notes,_that.gallery,_that.origin,_that.sourceUrl,_that.sourceName,_that.alsoContains,_that.addedBy);case _:
   return null;
 
 }
@@ -254,7 +262,7 @@ return $default(_that.id,_that.name,_that.summary,_that.contexts,_that.placement
 
 
 class _Recipe extends Recipe {
-  const _Recipe({required this.id, required this.name, required this.summary, required  Set<RecipeContext> contexts, required  Map<RecipeContext, String> placement, required  Set<Allergen> allergens, required  List<String> dietTags, required  List<RecipeIngredient> ingredients, required  List<String> steps, required this.servings, required this.prepMinutes, required this.prepAhead, this.prepNote, this.isAiDrafted = false, this.about, this.cuisine,  Set<RecipeTag> tags = const <RecipeTag>{}, this.cookMinutes = 0, this.difficulty, this.photo, this.kcalPerServing}): _contexts = contexts,_placement = placement,_allergens = allergens,_dietTags = dietTags,_ingredients = ingredients,_steps = steps,_tags = tags,super._();
+  const _Recipe({required this.id, required this.name, required this.summary, required  Set<RecipeContext> contexts, required  Map<RecipeContext, String> placement, required  Set<Allergen> allergens, required  List<String> dietTags, required  List<RecipeIngredient> ingredients, required  List<String> steps, required this.servings, required this.prepMinutes, required this.prepAhead, this.prepNote, this.isAiDrafted = false, this.about, this.cuisine,  Set<RecipeTag> tags = const <RecipeTag>{}, this.cookMinutes = 0, this.difficulty, this.photo, this.kcalPerServing, this.isOwn = false, this.notes,  List<RecipePhoto> gallery = const <RecipePhoto>[], this.origin = RecipeOrigin.typed, this.sourceUrl, this.sourceName,  Set<Allergen> alsoContains = const <Allergen>{}, this.addedBy}): _contexts = contexts,_placement = placement,_allergens = allergens,_dietTags = dietTags,_ingredients = ingredients,_steps = steps,_tags = tags,_gallery = gallery,_alsoContains = alsoContains,super._();
   
 
 @override final  String id;
@@ -333,6 +341,26 @@ class _Recipe extends Recipe {
 /// Estimated energy in one serving as written (recipes ADR-0006); a
 /// household's own recipe has none.
 @override final  int? kcalPerServing;
+@override@JsonKey() final  bool isOwn;
+@override final  String? notes;
+ final  List<RecipePhoto> _gallery;
+@override@JsonKey() List<RecipePhoto> get gallery {
+  if (_gallery is EqualUnmodifiableListView) return _gallery;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_gallery);
+}
+
+@override@JsonKey() final  RecipeOrigin origin;
+@override final  String? sourceUrl;
+@override final  String? sourceName;
+ final  Set<Allergen> _alsoContains;
+@override@JsonKey() Set<Allergen> get alsoContains {
+  if (_alsoContains is EqualUnmodifiableSetView) return _alsoContains;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_alsoContains);
+}
+
+@override final  String? addedBy;
 
 /// Create a copy of Recipe
 /// with the given fields replaced by the non-null parameter values.
@@ -344,18 +372,18 @@ _$RecipeCopyWith<_Recipe> get copyWith => __$RecipeCopyWithImpl<_Recipe>(this, _
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Recipe&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other.contexts, _contexts)&&const DeepCollectionEquality().equals(other.placement, _placement)&&const DeepCollectionEquality().equals(other.allergens, _allergens)&&const DeepCollectionEquality().equals(other.dietTags, _dietTags)&&const DeepCollectionEquality().equals(other.ingredients, _ingredients)&&const DeepCollectionEquality().equals(other.steps, _steps)&&(identical(other.servings, servings) || other.servings == servings)&&(identical(other.prepMinutes, prepMinutes) || other.prepMinutes == prepMinutes)&&(identical(other.prepAhead, prepAhead) || other.prepAhead == prepAhead)&&(identical(other.prepNote, prepNote) || other.prepNote == prepNote)&&(identical(other.isAiDrafted, isAiDrafted) || other.isAiDrafted == isAiDrafted)&&(identical(other.about, about) || other.about == about)&&(identical(other.cuisine, cuisine) || other.cuisine == cuisine)&&const DeepCollectionEquality().equals(other.tags, _tags)&&(identical(other.cookMinutes, cookMinutes) || other.cookMinutes == cookMinutes)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.kcalPerServing, kcalPerServing) || other.kcalPerServing == kcalPerServing));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Recipe&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.summary, summary) || other.summary == summary)&&const DeepCollectionEquality().equals(other.contexts, _contexts)&&const DeepCollectionEquality().equals(other.placement, _placement)&&const DeepCollectionEquality().equals(other.allergens, _allergens)&&const DeepCollectionEquality().equals(other.dietTags, _dietTags)&&const DeepCollectionEquality().equals(other.ingredients, _ingredients)&&const DeepCollectionEquality().equals(other.steps, _steps)&&(identical(other.servings, servings) || other.servings == servings)&&(identical(other.prepMinutes, prepMinutes) || other.prepMinutes == prepMinutes)&&(identical(other.prepAhead, prepAhead) || other.prepAhead == prepAhead)&&(identical(other.prepNote, prepNote) || other.prepNote == prepNote)&&(identical(other.isAiDrafted, isAiDrafted) || other.isAiDrafted == isAiDrafted)&&(identical(other.about, about) || other.about == about)&&(identical(other.cuisine, cuisine) || other.cuisine == cuisine)&&const DeepCollectionEquality().equals(other.tags, _tags)&&(identical(other.cookMinutes, cookMinutes) || other.cookMinutes == cookMinutes)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.kcalPerServing, kcalPerServing) || other.kcalPerServing == kcalPerServing)&&(identical(other.isOwn, isOwn) || other.isOwn == isOwn)&&(identical(other.notes, notes) || other.notes == notes)&&const DeepCollectionEquality().equals(other.gallery, _gallery)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.sourceUrl, sourceUrl) || other.sourceUrl == sourceUrl)&&(identical(other.sourceName, sourceName) || other.sourceName == sourceName)&&const DeepCollectionEquality().equals(other.alsoContains, _alsoContains)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy));
 }
 
 
 @override
 int get hashCode {
-    return Object.hashAll([runtimeType,id,name,summary,const DeepCollectionEquality().hash(_contexts),const DeepCollectionEquality().hash(_placement),const DeepCollectionEquality().hash(_allergens),const DeepCollectionEquality().hash(_dietTags),const DeepCollectionEquality().hash(_ingredients),const DeepCollectionEquality().hash(_steps),servings,prepMinutes,prepAhead,prepNote,isAiDrafted,about,cuisine,const DeepCollectionEquality().hash(_tags),cookMinutes,difficulty,photo,kcalPerServing]);
+    return Object.hashAll([runtimeType,id,name,summary,const DeepCollectionEquality().hash(_contexts),const DeepCollectionEquality().hash(_placement),const DeepCollectionEquality().hash(_allergens),const DeepCollectionEquality().hash(_dietTags),const DeepCollectionEquality().hash(_ingredients),const DeepCollectionEquality().hash(_steps),servings,prepMinutes,prepAhead,prepNote,isAiDrafted,about,cuisine,const DeepCollectionEquality().hash(_tags),cookMinutes,difficulty,photo,kcalPerServing,isOwn,notes,const DeepCollectionEquality().hash(_gallery),origin,sourceUrl,sourceName,const DeepCollectionEquality().hash(_alsoContains),addedBy]);
 }
 
 @override
 String toString() {
-    return 'Recipe(id: $id, name: $name, summary: $summary, contexts: $contexts, placement: $placement, allergens: $allergens, dietTags: $dietTags, ingredients: $ingredients, steps: $steps, servings: $servings, prepMinutes: $prepMinutes, prepAhead: $prepAhead, prepNote: $prepNote, isAiDrafted: $isAiDrafted, about: $about, cuisine: $cuisine, tags: $tags, cookMinutes: $cookMinutes, difficulty: $difficulty, photo: $photo, kcalPerServing: $kcalPerServing)';
+    return 'Recipe(id: $id, name: $name, summary: $summary, contexts: $contexts, placement: $placement, allergens: $allergens, dietTags: $dietTags, ingredients: $ingredients, steps: $steps, servings: $servings, prepMinutes: $prepMinutes, prepAhead: $prepAhead, prepNote: $prepNote, isAiDrafted: $isAiDrafted, about: $about, cuisine: $cuisine, tags: $tags, cookMinutes: $cookMinutes, difficulty: $difficulty, photo: $photo, kcalPerServing: $kcalPerServing, isOwn: $isOwn, notes: $notes, gallery: $gallery, origin: $origin, sourceUrl: $sourceUrl, sourceName: $sourceName, alsoContains: $alsoContains, addedBy: $addedBy)';
 }
 
 
@@ -366,7 +394,7 @@ abstract mixin class _$RecipeCopyWith<$Res> implements $RecipeCopyWith<$Res> {
   factory _$RecipeCopyWith(_Recipe value, $Res Function(_Recipe) _then) = __$RecipeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String summary, Set<RecipeContext> contexts, Map<RecipeContext, String> placement, Set<Allergen> allergens, List<String> dietTags, List<RecipeIngredient> ingredients, List<String> steps, int servings, int prepMinutes, bool prepAhead, String? prepNote, bool isAiDrafted, String? about, RecipeCuisine? cuisine, Set<RecipeTag> tags, int cookMinutes, RecipeDifficulty? difficulty, RecipePhoto? photo, int? kcalPerServing
+ String id, String name, String summary, Set<RecipeContext> contexts, Map<RecipeContext, String> placement, Set<Allergen> allergens, List<String> dietTags, List<RecipeIngredient> ingredients, List<String> steps, int servings, int prepMinutes, bool prepAhead, String? prepNote, bool isAiDrafted, String? about, RecipeCuisine? cuisine, Set<RecipeTag> tags, int cookMinutes, RecipeDifficulty? difficulty, RecipePhoto? photo, int? kcalPerServing, bool isOwn, String? notes, List<RecipePhoto> gallery, RecipeOrigin origin, String? sourceUrl, String? sourceName, Set<Allergen> alsoContains, String? addedBy
 });
 
 
@@ -383,7 +411,7 @@ class __$RecipeCopyWithImpl<$Res>
 
 /// Create a copy of Recipe
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? summary = null,Object? contexts = null,Object? placement = null,Object? allergens = null,Object? dietTags = null,Object? ingredients = null,Object? steps = null,Object? servings = null,Object? prepMinutes = null,Object? prepAhead = null,Object? prepNote = freezed,Object? isAiDrafted = null,Object? about = freezed,Object? cuisine = freezed,Object? tags = null,Object? cookMinutes = null,Object? difficulty = freezed,Object? photo = freezed,Object? kcalPerServing = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? summary = null,Object? contexts = null,Object? placement = null,Object? allergens = null,Object? dietTags = null,Object? ingredients = null,Object? steps = null,Object? servings = null,Object? prepMinutes = null,Object? prepAhead = null,Object? prepNote = freezed,Object? isAiDrafted = null,Object? about = freezed,Object? cuisine = freezed,Object? tags = null,Object? cookMinutes = null,Object? difficulty = freezed,Object? photo = freezed,Object? kcalPerServing = freezed,Object? isOwn = null,Object? notes = freezed,Object? gallery = null,Object? origin = null,Object? sourceUrl = freezed,Object? sourceName = freezed,Object? alsoContains = null,Object? addedBy = freezed,}) {
   return _then(_Recipe(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -406,7 +434,15 @@ as Set<RecipeTag>,cookMinutes: null == cookMinutes ? _self.cookMinutes : cookMin
 as int,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as RecipeDifficulty?,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
 as RecipePhoto?,kcalPerServing: freezed == kcalPerServing ? _self.kcalPerServing : kcalPerServing // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,isOwn: null == isOwn ? _self.isOwn : isOwn // ignore: cast_nullable_to_non_nullable
+as bool,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,gallery: null == gallery ? _self._gallery : gallery // ignore: cast_nullable_to_non_nullable
+as List<RecipePhoto>,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as RecipeOrigin,sourceUrl: freezed == sourceUrl ? _self.sourceUrl : sourceUrl // ignore: cast_nullable_to_non_nullable
+as String?,sourceName: freezed == sourceName ? _self.sourceName : sourceName // ignore: cast_nullable_to_non_nullable
+as String?,alsoContains: null == alsoContains ? _self._alsoContains : alsoContains // ignore: cast_nullable_to_non_nullable
+as Set<Allergen>,addedBy: freezed == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

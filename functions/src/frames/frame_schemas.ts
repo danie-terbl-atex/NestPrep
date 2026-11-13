@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 import { daysInMonth } from '../calendar_sync/zoned_time';
+import { PAGE_LINK_MAX } from '../shared/page_link';
 import { NOTE_MAX } from './frame_day';
 import { FRAME_SHARE_KINDS, type FrameShareKind } from './frame_documents';
-import { FRAME_LINK_MAX } from './frame_links';
 import { frameRecipeShareInput } from './frame_recipe';
 import { GROCERY_NAME_LIMIT, GROCERY_QUANTITY_LIMIT } from './frame_policy';
 import {
@@ -85,7 +85,7 @@ export type GetFramePhotoInput = z.infer<typeof getFramePhotoInput>;
 
 export const tickFrameItemInput = z.object({
   secret,
-  kind: z.enum(['task', 'routine']),
+  kind: z.enum(['task', 'routine', 'job']),
   id,
   date: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
   done: z.boolean(),
@@ -95,6 +95,10 @@ export const tickFrameItemInput = z.object({
   step: id.nullable().optional(),
 });
 export type TickFrameItemInput = z.infer<typeof tickFrameItemInput>;
+
+/** Clock the frame's helper in (`on`) or out (photo-frames ADR-0020). */
+export const setFrameShiftInput = z.object({ secret, on: z.boolean() });
+export type SetFrameShiftInput = z.infer<typeof setFrameShiftInput>;
 
 const name = z.string().trim().min(1).max(60);
 
@@ -139,7 +143,7 @@ export const FRAME_SHARE_ID = /^[A-Za-z0-9_-]{8,64}$/;
 export const sharePageInput = z.object({
   householdId: id,
   frameId: id,
-  url: z.string().max(FRAME_LINK_MAX),
+  url: z.string().max(PAGE_LINK_MAX),
   title: z.string().nullish().transform(shareTitle),
 });
 

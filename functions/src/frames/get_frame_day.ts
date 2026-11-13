@@ -35,6 +35,7 @@ export const getFrameDay = onCall(
       screensaver: frame.screensaver,
       today: clock.date,
       localMinute: clock.minute,
+      timeZone: linked.timeZone,
       ...sources,
     });
   },

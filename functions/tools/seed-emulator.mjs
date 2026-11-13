@@ -25,7 +25,8 @@
 import { createRequire } from 'node:module';
 
 import { cannedLunchIdeasReply, cannedLunchWeekReply } from './canned-plan-week.mjs';
-import { PEOPLE, seedDemoHousehold } from './demo-household.mjs';
+import { earnStars, seedLooks } from './cloud-demo/avatars.mjs';
+import { HOUSEHOLD_ID, PEOPLE, seedDemoHousehold } from './demo-household.mjs';
 
 const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'nestprep-643b7';
 const PASSWORD = 'nestprep';
@@ -68,6 +69,32 @@ async function seedUser({ uid, email, displayName }) {
 }
 
 /**
+ * The household's looks (avatars ADR-0001, ADR-0004): Mia three days of
+ * stars, so her Nestling has fledged, and the crown she bought with them;
+ * Leo still an egg; Sam grown, in glasses.
+ */
+async function seedEmulatorLooks(store) {
+  await earnStars(store, HOUSEHOLD_ID, 'mia', {
+    dates: ['2026-11-01', '2026-11-02', '2026-11-03'],
+    each: 10,
+    title: 'Helped at home',
+  });
+  return seedLooks(store, HOUSEHOLD_ID, {
+    chosenBy: 'sam',
+    purchases: [{ id: 'demo-mia-crown', memberId: 'mia', accessoryId: 'acc-crown' }],
+    looks: [
+      { memberId: 'mia', choice: { base: 'preset:pip', wear: { top: 'acc-crown' } } },
+      { memberId: 'leo', choice: { base: 'preset:olive', wear: {} } },
+      {
+        memberId: 'sam',
+        choice: { base: 'preset:sunny', stage: 3, wear: { face: 'acc-round-glasses' } },
+      },
+      { memberId: 'alex', choice: { base: 'preset:pebble', stage: 3, wear: { top: 'acc-cap' } } },
+    ],
+  });
+}
+
+/**
  * What the emulator's model answers when a school letter is snapped (calendar
  * ADR-0005): two events a week and two weeks out, so a local run shows a
  * review list. There is no Vertex under the emulator; only Functions read it.
@@ -106,13 +133,67 @@ async function seedCannedReplies(store) {
     ],
   };
   await replies.doc('listScan').set({ reply: JSON.stringify(shoppingList) });
-  return 'canned school-letter, plan-my-week and shopping-list replies for the emulator model';
+  // Import a recipe (recipes ADR-0008): what any page or photo reads as locally.
+  // A start clears `live`, so the real model is only ever on by a person's choice that run.
+  const recipe = {
+    isRecipe: true,
+    name: 'Bobotie',
+    summary: 'Spiced mince baked under a golden egg custard.',
+    placement: { dinner: 'main' },
+    servings: 6,
+    prepMinutes: 20,
+    cookMinutes: 40,
+    ingredients: [
+      { name: 'Beef mince', quantity: 1, unit: 'kg', note: null, group: null },
+      { name: 'Onions', quantity: 2, unit: null, note: 'chopped', group: null },
+      { name: 'Medium curry powder', quantity: 2, unit: 'tbsp', note: null, group: null },
+      { name: 'Eggs', quantity: 2, unit: null, note: null, group: 'For the custard' },
+      { name: 'Milk', quantity: 250, unit: 'ml', note: null, group: 'For the custard' },
+    ],
+    steps: [
+      'Fry the onions until soft, then brown the mince with the curry powder.',
+      'Press the mince into a baking dish.',
+      'Beat the eggs and milk together and pour over the mince.',
+      'Bake at 180°C for 40 minutes, until the custard is set.',
+    ],
+    notes: 'Serve with yellow rice and chutney.',
+  };
+  await replies.doc('recipeImport').set({ reply: JSON.stringify(recipe) });
+  // Avatar creations (avatars ADR-0003): drawings read as a creature, then as a
+  // person drawn as a Nestling from words, in turn; any photo as a pet; any
+  // buddy words and any made picture as fine.
+  const creature = {
+    kind: 'drawing-of-creature',
+    hairColour: null,
+    outfit: null,
+    favouriteThings: ['a star'],
+    mood: 'happy',
+  };
+  const person = {
+    kind: 'drawing-of-person',
+    hairColour: 'yellow scribbles',
+    outfit: 'a pink dress with yellow dots',
+    favouriteThings: ['a sun', 'a kite'],
+    mood: 'happy',
+  };
+  await replies.doc('avatarDrawingCheck').set({
+    cycle: [JSON.stringify(creature), JSON.stringify(person)],
+  });
+  await replies.doc('avatarPetCheck').set({
+    reply: JSON.stringify({ ...creature, kind: 'photo-of-pet', favouriteThings: [] }),
+  });
+  await replies.doc('avatarExtraCheck').set({ reply: JSON.stringify({ allowed: true }) });
+  await replies.doc('avatarResultCheck').set({
+    reply: JSON.stringify({ realisticHumanFace: false, logo: false, text: false }),
+  });
+  return 'canned school-letter, plan-my-week, shopping-list, recipe-import and avatar replies for the emulator model';
 }
 
 const lines = [];
 for (const person of PEOPLE) lines.push(await seedUser(person));
 lines.push(await seedDemoHousehold(db()));
 lines.push(await seedCannedReplies(db()));
+lines.push(await seedEmulatorLooks(db()));
 const catalogue = await publishCatalogue(db(), objectStore(), { write: true });
 lines.push(
   `recipe photos: ${catalogue.photos.uploaded} uploaded, ${catalogue.photos.present} already there`,

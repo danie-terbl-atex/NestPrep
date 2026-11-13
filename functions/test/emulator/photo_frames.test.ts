@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
-import { type DocumentReference, GeoPoint, Timestamp } from 'firebase-admin/firestore';
+import { type DocumentReference, FieldValue, GeoPoint, Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { addDays, wallClockOf, weekdayOf } from '../../src/calendar_sync/zoned_time';
@@ -61,7 +61,7 @@ interface Day {
   calendar?: { days: { date: string; events: Record<string, unknown>[] }[] };
   addEvents?: { by: string[] };
   todos?: { items: Record<string, unknown>[] };
-  helper?: { name: string; items: Record<string, unknown>[] };
+  helper?: { name: string; items: Record<string, unknown>[]; shift?: { on: boolean } };
   meals?: { slots: Record<string, unknown>[] };
   lunch?: { boxes: { name: string; photo?: string }[] };
   groceries?: { shop: string; by: string[]; toBuy: Record<string, unknown>[] };
@@ -282,6 +282,7 @@ describe('a frame pairs, is claimed, and reads its day', () => {
           detail: 'Kitchen',
         },
       ],
+      shift: { on: false },
     });
     expect(day.meals).toEqual({ slots: [{ slot: 'dinner', title: 'Chicken curry' }] });
     const said = JSON.stringify(day);
@@ -1646,6 +1647,200 @@ describe('a recipe shared from the app cooks along on the frame (photo-frames AD
 
     await frameOf(h, frameId).update({ 'panels.meals': false });
     expect((await recipePhotoOf({ secret, id: 'recipe-bobotie' })).status).toBe(404);
+  });
+
+  describe('a household’s own recipe (photo-frames ADR-0018)', () => {
+    const OWN_ID = 'own-0123456789abcdef0123';
+    const ownRecipe = (h: Household): Record<string, unknown> => {
+      const folder = `households/${h.householdId}/recipePhotos/${OWN_ID}`;
+      return {
+        source: 'own',
+        name: 'Gran’s bobotie',
+        summary: '',
+        contexts: ['dinner'],
+        placement: { dinner: 'main' },
+        allergens: ['egg'],
+        alsoContains: [],
+        dietTags: [],
+        kcalPerServing: null,
+        servings: 6,
+        prepMinutes: 20,
+        cookMinutes: 0,
+        ingredients: [
+          { name: 'Beef mince', quantity: 1, unit: 'kg', note: null, group: null },
+          { name: 'Salt', quantity: null, unit: null, note: 'to taste', group: null },
+        ],
+        steps: ['Bake for 35 minutes, until set.'],
+        notes: null,
+        origin: 'typed',
+        sourceUrl: null,
+        sourceName: null,
+        photo: {
+          card: `${folder}/coverphoto-card.jpg`,
+          hero: `${folder}/coverphoto-hero.jpg`,
+          credit: null,
+          sourceUrl: null,
+        },
+        gallery: [],
+        addedBy: 'm-sam',
+      };
+    };
+    const ownShare = { id: OWN_ID, people: 4, amounts: ['665 g', null], household: true };
+
+    async function givenOwnRecipe(h: Household, more: Record<string, unknown> = {}): Promise<void> {
+      await household(h.householdId)
+        .collection('recipes')
+        .doc(OWN_ID)
+        .set({ ...ownRecipe(h), ...more });
+    }
+
+    async function givenItsPhotos(h: Household): Promise<void> {
+      const { photo } = ownRecipe(h) as { photo: { card: string; hero: string } };
+      for (const bucket of ['nestprep-643b7.appspot.com', 'nestprep-643b7.firebasestorage.app']) {
+        for (const path of [photo.card, photo.hero]) {
+          await adminStorage()
+            .bucket(bucket)
+            .file(path)
+            .save(BEACH, { contentType: 'image/jpeg', resumable: false });
+        }
+      }
+    }
+
+    async function aRecipeFrame(h: Household): Promise<{ secret: string; frameId: string }> {
+      const { secret, frameId } = await linkedFrame(h, { ...PANELS, share: true });
+      await shareTo(h, frameId);
+      await callAs(null, 'waitFrameShare', { secret, accepts: ACCEPTS });
+      return { secret, frameId };
+    }
+
+    it('reaches the frame as the same FrameRecipe, with its photo', async () => {
+      const h = await samsHousehold();
+      await givenOwnRecipe(h);
+      await givenItsPhotos(h);
+      const { secret, frameId } = await aRecipeFrame(h);
+
+      expect(await shareRecipe(h, frameId, ownShare)).toEqual({ shared: true });
+      const answer = await callAs<{ status: string; share: Record<string, unknown> }>(
+        null,
+        'waitFrameShare',
+        { secret, accepts: ACCEPTS },
+      );
+
+      expect(answer.share).toMatchObject({
+        kind: 'recipe',
+        title: 'Gran’s bobotie',
+        recipe: {
+          recipeId: OWN_ID,
+          name: 'Gran’s bobotie',
+          summary: '',
+          people: 4,
+          servings: 6,
+          prepMinutes: 20,
+          cookMinutes: 0,
+          difficulty: null,
+          photo: true,
+          prepNote: null,
+          ingredients: [
+            { group: null, amount: '665 g', name: 'Beef mince', note: null },
+            { group: null, amount: null, name: 'Salt', note: 'to taste' },
+          ],
+        },
+      });
+      const photo = await recipePhotoOf({ secret, id: answer.share['id'] });
+      expect(photo.status).toBe(200);
+    });
+
+    it('takes 30 lines and no photo', async () => {
+      const h = await samsHousehold();
+      const ingredients = Array.from({ length: 30 }, (_, at) => ({
+        name: `Thing ${String(at)}`,
+        quantity: null,
+        unit: null,
+        note: null,
+        group: null,
+      }));
+      await givenOwnRecipe(h, { ingredients, photo: null });
+      const { frameId } = await aRecipeFrame(h);
+      await shareRecipe(h, frameId, { ...ownShare, amounts: ingredients.map(() => null) });
+      const share = (await frameOf(h, frameId).get()).get('share') as {
+        recipe: { ingredients: unknown[]; photo: boolean };
+        photoPath: string | null;
+      };
+      expect(share.recipe.ingredients).toHaveLength(30);
+      expect(share.recipe.photo).toBe(false);
+      expect(share.photoPath).toBeNull();
+    });
+
+    it('is looked up only when marked, and never in the catalogue’s place', async () => {
+      const h = await samsHousehold();
+      await givenOwnRecipe(h);
+      const { frameId } = await aRecipeFrame(h);
+      await expectRefusal(
+        shareRecipe(h, frameId, { id: OWN_ID, people: 4, amounts: ownShare.amounts }),
+        'recipeNotFound',
+      );
+    });
+
+    it('refuses a marked share of an AI recipe, or one that is gone', async () => {
+      const h = await samsHousehold();
+      const { frameId } = await aRecipeFrame(h);
+      await expectRefusal(shareRecipe(h, frameId, ownShare), 'recipeNotFound');
+      await household(h.householdId)
+        .collection('recipes')
+        .doc('ai-0123456789abcdef0123')
+        .set({ ...ownRecipe(h), source: 'ai' });
+      await expectRefusal(
+        shareRecipe(h, frameId, { ...ownShare, id: 'ai-0123456789abcdef0123' }),
+        'recipeNotFound',
+      );
+    });
+
+    it('never reads another household’s recipe', async () => {
+      const h = await samsHousehold();
+      const other = await samsHousehold();
+      await givenOwnRecipe(other);
+      const { frameId } = await aRecipeFrame(h);
+      await expectRefusal(shareRecipe(h, frameId, ownShare), 'recipeNotFound');
+    });
+
+    it('refuses amounts that do not line up', async () => {
+      const h = await samsHousehold();
+      await givenOwnRecipe(h);
+      const { frameId } = await aRecipeFrame(h);
+      await expectRefusal(
+        shareRecipe(h, frameId, { ...ownShare, amounts: ['665 g'] }),
+        'badRecipe',
+      );
+    });
+
+    it('shows on the Meals screen when planned, and drops off when unlinked', async () => {
+      const h = await samsHousehold();
+      await givenOwnRecipe(h);
+      await givenItsPhotos(h);
+      const home = household(h.householdId);
+      const mealId = `recipe-${OWN_ID}`;
+      await home
+        .collection('meals')
+        .doc(mealId)
+        .set({ name: 'Gran’s bobotie', nameKey: 'gran’s bobotie', householdRecipeId: OWN_ID });
+      const date = today();
+      await home
+        .collection('mealPlans')
+        .doc(addDays(date, 1 - weekdayOf(date)))
+        .set({ slots: { [`${String(weekdayOf(date))}_dinner`]: mealId } });
+      const { secret } = await linkedFrame(h, { ...PANELS, meals: true });
+
+      expect((await dayOf(secret)).meals).toEqual({
+        slots: [{ slot: 'dinner', title: 'Gran’s bobotie', photo: mealId }],
+      });
+      expect((await recipePhotoOf({ secret, id: mealId })).status).toBe(200);
+
+      await home.collection('meals').doc(mealId).update({ householdRecipeId: FieldValue.delete() });
+      expect((await dayOf(secret)).meals).toEqual({
+        slots: [{ slot: 'dinner', title: 'Gran’s bobotie' }],
+      });
+      expect((await recipePhotoOf({ secret, id: mealId })).status).toBe(404);
+    });
   });
 });
 

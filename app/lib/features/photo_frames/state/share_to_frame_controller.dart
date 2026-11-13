@@ -30,6 +30,7 @@ final class ShareToFrameController extends ChangeNotifier {
 
   StreamSubscription<List<PhotoFrame>>? _subscription;
   AsyncState<List<PhotoFrame>> _frames = const AsyncLoading();
+  bool _hasAnyFrame = false;
   String? _sendingTo;
   PhotoFrame? _sentTo;
   AppFailure? _failure;
@@ -43,6 +44,8 @@ final class ShareToFrameController extends ChangeNotifier {
   };
 
   AsyncState<List<PhotoFrame>> get frames => _frames;
+
+  bool get hasAnyFrame => _hasAnyFrame;
 
   String? get sendingTo => _sendingTo;
 
@@ -93,6 +96,7 @@ final class ShareToFrameController extends ChangeNotifier {
   }
 
   void _onFrames(List<PhotoFrame> frames) {
+    _hasAnyFrame = frames.isNotEmpty;
     _frames = AsyncData([
       for (final frame in frames)
         if (frame.panels.share) frame,

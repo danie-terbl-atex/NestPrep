@@ -16,6 +16,7 @@ _Meal _$MealFromJson(Map<String, dynamic> json) => _Meal(
       ? const <MealIngredient>[]
       : const MealIngredientsConverter().fromJson(json['ingredients'] as List?),
   recipeId: json['recipeId'] as String?,
+  householdRecipeId: json['householdRecipeId'] as String?,
 );
 
 Map<String, dynamic> _$MealToJson(_Meal instance) => <String, dynamic>{
@@ -25,4 +26,5 @@ Map<String, dynamic> _$MealToJson(_Meal instance) => <String, dynamic>{
   'createdAt': const ServerTimestampConverter().toJson(instance.createdAt),
   'ingredients': const MealIngredientsConverter().toJson(instance.ingredients),
   'recipeId': ?instance.recipeId,
+  'householdRecipeId': ?instance.householdRecipeId,
 };

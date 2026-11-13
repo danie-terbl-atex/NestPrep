@@ -9,15 +9,19 @@ import '../model/recipe_photo.dart';
 /// foot of the recipe, because an open licence asks for the credit and a
 /// generated picture must never pass as a photo of the cook's result.
 class RecipePhotoCredit extends StatelessWidget {
-  const RecipePhotoCredit({required this.photo, super.key});
+  const RecipePhotoCredit({required this.photo, this.isOwn = false, super.key});
 
   final RecipePhoto photo;
+
+  /// A family's own photo with no credit is theirs, not an illustration.
+  final bool isOwn;
 
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final credit = photo.credit;
     final source = photo.sourceUrl;
+    if (isOwn && credit == null) return const SizedBox.shrink();
     final words = photo.isGenerated || credit == null
         ? RecipeCopy.photoIllustrative
         : RecipeCopy.photoCredit(credit, photo.licence);

@@ -7,8 +7,8 @@ enum PushPermission {
   /// Not read yet.
   unknown,
 
-  /// Never asked — the moment to ask is a person's tap, not a launch
-  /// (notifications ADR-0003).
+  /// Never asked: the first open of a household asks (notifications
+  /// ADR-0006).
   notAsked,
   granted,
 

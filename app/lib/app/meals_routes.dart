@@ -14,11 +14,15 @@ import '../features/meal_planning/state/meal_plan_controller.dart';
 import '../features/meal_planning/ui/meals_screen.dart';
 import '../features/photo_frames/data/photo_frame_repository.dart';
 import '../features/photo_frames/state/frame_availability.dart';
+import '../features/recipes/data/own_recipe_repository.dart';
+import '../features/recipes/data/recipe_photo_source.dart';
 import '../features/recipes/data/recipe_repository.dart';
 import '../features/recipes/model/family_size.dart';
 import '../features/recipes/model/recipe.dart';
+import '../features/recipes/state/own_recipe_deleter.dart';
 import '../features/recipes/state/recipe_catalogue_controller.dart';
 import '../features/recipes/state/recipe_page_controller.dart';
+import '../features/recipes/ui/own_recipes_entry.dart';
 import '../features/recipes/ui/recipe_picker_screen.dart';
 import '../features/recipes/ui/recipe_screen.dart';
 import '../shared/flags/feature_flag.dart';
@@ -27,6 +31,7 @@ import '../shared/time/household_clock.dart';
 import 'household_route.dart';
 import 'household_tab_navigation.dart';
 import 'meals_route.dart';
+import 'own_recipe_routes.dart';
 import 'viewer_member.dart';
 
 /// The Meals tab's routes under the household shell (design-system
@@ -39,10 +44,16 @@ import 'viewer_member.dart';
 /// back to it as it was left.
 ShellRoute mealsRoutes() => ShellRoute(
   builder: (context, state, child) => ChangeNotifierProvider(
-    create: (context) => RecipeCatalogueController(
-      recipeRepository: context.read<RecipeRepository>(),
-      householdClock: context.read<HouseholdClock>(),
-    ),
+    create: (context) {
+      final view = context.read<HouseholdView>();
+      return RecipeCatalogueController(
+        recipeRepository: context.read<RecipeRepository>(),
+        householdClock: context.read<HouseholdClock>(),
+        ownRecipesOf: view.permissions.canView(HouseholdArea.meals)
+            ? view.household.id
+            : null,
+      );
+    },
     child: child,
   ),
   routes: [
@@ -71,6 +82,17 @@ ShellRoute mealsRoutes() => ShellRoute(
             ),
             onPickRecipe: (slot, day) => context.push<Recipe>(
               MealsRoute.pickPathFor(householdId, slot: slot, day: day),
+            ),
+            recipesEntry: OwnRecipesEntry(
+              onOpenBuilder: (draft) => context.push(
+                MealsRoute.newRecipePathFor(householdId),
+                extra: draft,
+              ),
+              onImport: (way) => context.push(
+                MealsRoute.importRecipePathFor(householdId, way),
+              ),
+              onImportPdf: () =>
+                  context.push(MealsRoute.importPdfPathFor(householdId)),
             ),
           ),
         );
@@ -101,6 +123,7 @@ ShellRoute mealsRoutes() => ShellRoute(
         );
       },
     ),
+    ...ownRecipeRoutes(),
     GoRoute(
       path: MealsRoute.recipePath,
       pageBuilder: (context, state) {
@@ -141,13 +164,25 @@ ShellRoute mealsRoutes() => ShellRoute(
                       ..followFlag(
                         framesOn: flags.isOn(FeatureFlag.photoFrames),
                       ),
-                    child: RecipeScreen(
-                      heroTag: heroTag,
-                      // A link straight here has nothing under it: back is the
-                      // recipes, never out of the app.
-                      onBack: () => context.canPop()
-                          ? context.pop()
-                          : context.go(MealsRoute.pathFor(householdId)),
+                    child: ChangeNotifierProvider(
+                      create: (context) => OwnRecipeDeleter(
+                        ownRecipes: context.read<OwnRecipeRepository>(),
+                        photoSource: context.read<RecipePhotoSource>(),
+                        householdId: householdId,
+                      ),
+                      child: RecipeScreen(
+                        heroTag: heroTag,
+                        // A link straight here has nothing under it: back is the
+                        // recipes, never out of the app.
+                        onBack: () => _leaveRecipe(context, householdId),
+                        onDeleted: () => _leaveRecipe(context, householdId),
+                        onEdit: () => context.push(
+                          MealsRoute.editRecipePathFor(
+                            householdId,
+                            MealsRoute.recipeIdFrom(state),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
             );
@@ -160,6 +195,10 @@ ShellRoute mealsRoutes() => ShellRoute(
     ),
   ],
 );
+
+void _leaveRecipe(BuildContext context, String householdId) => context.canPop()
+    ? context.pop()
+    : context.go(MealsRoute.pathFor(householdId));
 
 PackedDaysWatch? _packedDaysFor(BuildContext context, String householdId) {
   final permissions = context.read<HouseholdView>().permissions;

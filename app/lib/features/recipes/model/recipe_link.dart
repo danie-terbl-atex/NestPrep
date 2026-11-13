@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 /// Which recipe something opens (recipes ADR-0002): one NestPrep publishes
-/// (`recipes/{id}`) or one of the household's own, drafted by *Plan my week*
-/// (`households/{householdId}/recipes/{id}`). A lunch item carries one or
-/// neither, in two separate fields, so the kind is never guessed from an id.
+/// (`recipes/{id}`) or one of the household's own, drafted by *Plan my week* or
+/// added by a member (`households/{householdId}/recipes/{id}`). A lunch item or
+/// a meal carries one or neither, in two separate fields, so the kind is never
+/// guessed from an id.
 @immutable
 sealed class RecipeLink {
   const RecipeLink(this.recipeId);
@@ -35,7 +36,8 @@ final class CatalogueRecipeLink extends RecipeLink {
   const CatalogueRecipeLink(super.recipeId);
 }
 
-/// A recipe the household saved from *Plan my week* (recipes ADR-0002).
+/// A recipe the household saved from *Plan my week* (recipes ADR-0002) or added
+/// itself (recipes ADR-0007).
 final class HouseholdRecipeLink extends RecipeLink {
   const HouseholdRecipeLink(super.recipeId);
 }

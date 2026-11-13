@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 import '../model/nanny_access.dart';
 import '../model/nanny_hub.dart';
@@ -194,7 +195,7 @@ class _OtherShiftRow extends StatelessWidget {
       child: NestListRow(
         leading: carer == null
             ? const NestIconTile(icon: LucideIcons.baby)
-            : NestAvatar(name: carer.displayName, color: carer.color),
+            : MemberAvatar(member: carer),
         title: title,
         subtitle: NannyCopy.viewShift,
         trailing: const Icon(LucideIcons.chevronRight),

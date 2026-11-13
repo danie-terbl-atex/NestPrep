@@ -98,6 +98,20 @@ export const SCREENSAVER_IDLE_MINUTES = [0, 1, 2, 5, 10, 15, 30, 60] as const;
 export const SCREENSAVER_SECONDS_PER_PHOTO = [10, 20, 30, 60] as const;
 
 /** A family ticking through the day at the wall, and undoing a few (photo-frames ADR-0007). */
+/** A day's jobs fetched once each, and again after the app is cleared (photo-frames ADR-0020). */
+export const FRAME_JOB_PHOTO_PER_CREDENTIAL: RateLimitRule = {
+  name: 'getFrameJobPhoto:credential',
+  limit: 120,
+  windowSeconds: 60 * 60,
+};
+
+/** In and out a few times a day, with room for a changed mind (photo-frames ADR-0020). */
+export const FRAME_SHIFT_PER_CREDENTIAL: RateLimitRule = {
+  name: 'setFrameShift:credential',
+  limit: 30,
+  windowSeconds: 60 * 60,
+};
+
 export const FRAME_TICK_PER_CREDENTIAL: RateLimitRule = {
   name: 'tickFrameItem:credential',
   limit: 240,
@@ -177,6 +191,13 @@ export const FRAME_SHARE_WAIT_PER_CREDENTIAL: RateLimitRule = {
 
 export const FRAME_RECIPE_PHOTO_PER_CREDENTIAL: RateLimitRule = {
   name: 'getFrameRecipePhoto:credential',
+  limit: 60,
+  windowSeconds: 60 * 60,
+};
+
+/** A few members' pictures, fetched once each when one changes, and their retries (C-0023 rev 18). */
+export const FRAME_AVATAR_PER_CREDENTIAL: RateLimitRule = {
+  name: 'getFrameAvatar:credential',
   limit: 60,
   windowSeconds: 60 * 60,
 };

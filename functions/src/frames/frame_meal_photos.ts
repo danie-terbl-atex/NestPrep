@@ -1,12 +1,18 @@
 import type { DocumentReference, Firestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
+import { HOUSEHOLD_RECIPES } from '../recipes/household_recipe';
 import { RECIPES } from '../recipes/recipe';
 import { parsed } from './frame_documents';
 
 /** A meal's picture is asked for by the household's meal id (`recipe-<recipeId>`), never a path. */
 
-const mealShape = z.object({ name: z.string(), recipeId: z.string().min(1).optional() });
+const mealShape = z.object({
+  name: z.string(),
+  recipeId: z.string().min(1).optional(),
+  householdRecipeId: z.string().min(1).optional(),
+});
+type Meal = z.infer<typeof mealShape>;
 
 const recipePhotoShape = z.object({
   photo: z
@@ -32,20 +38,31 @@ export async function readFrameMeals(
     const meal = parsed(mealShape, doc.data());
     return meal === null ? [] : [{ id: doc.id, ...meal }];
   });
-  const recipeIds = [...new Set(meals.flatMap(({ recipeId }) => recipeId ?? []))];
+  const recipeRefs = meals.flatMap((meal) => recipeRefOf(store, home, meal) ?? []);
   const pictured = new Set(
-    recipeIds.length === 0
+    recipeRefs.length === 0
       ? []
-      : (await store.getAll(...recipeIds.map((id) => store.collection(RECIPES).doc(id))))
+      : (await store.getAll(...recipeRefs))
           .filter((doc) => recipePhotoPath(doc.data()) !== null)
-          .map((doc) => doc.id),
+          .map((doc) => doc.ref.path),
   );
   return {
     names: Object.fromEntries(meals.map(({ id, name }) => [id, name])),
-    photos: meals.flatMap(({ id, recipeId }) =>
-      recipeId !== undefined && pictured.has(recipeId) ? [id] : [],
-    ),
+    photos: meals.flatMap((meal) => {
+      const path = recipeRefOf(store, home, meal)?.path;
+      return path !== undefined && pictured.has(path) ? [meal.id] : [];
+    }),
   };
+}
+
+function recipeRefOf(
+  store: Firestore,
+  home: DocumentReference,
+  meal: Meal,
+): DocumentReference | null {
+  if (meal.recipeId !== undefined) return store.collection(RECIPES).doc(meal.recipeId);
+  if (meal.householdRecipeId === undefined) return null;
+  return home.collection(HOUSEHOLD_RECIPES).doc(meal.householdRecipeId);
 }
 
 export async function mealPhotoPath(
@@ -54,9 +71,8 @@ export async function mealPhotoPath(
   mealId: string,
 ): Promise<string | null> {
   const meal = parsed(mealShape, (await home.collection('meals').doc(mealId).get()).data());
-  if (meal?.recipeId === undefined) return null;
-  const recipe = await store.collection(RECIPES).doc(meal.recipeId).get();
-  return recipePhotoPath(recipe.data());
+  const recipe = meal === null ? null : recipeRefOf(store, home, meal);
+  return recipe === null ? null : recipePhotoPath((await recipe.get()).data());
 }
 
 function recipePhotoPath(data: unknown): string | null {

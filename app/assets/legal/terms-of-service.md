@@ -1,7 +1,7 @@
 ---
 title: Terms of Service
-version: 2
-updated: 2026-11-05
+version: 4
+updated: 2026-11-12
 ---
 These terms are the agreement between you and us when you use NestPrep. Please read them with our Privacy Policy, which explains what we do with your information. By creating an account and ticking that you agree, you accept these terms.
 
@@ -41,18 +41,23 @@ We may suspend or close an account that breaks these rules, and will tell you wh
 
 Everything you and your household put into NestPrep, including events, lists, lunch plans, photos and documents, remains **yours**. You give us permission to store, copy, process and display it only as needed to run NestPrep for you and the people you share it with, as described in our Privacy Policy. That permission ends when the content is deleted, apart from backup copies, which are overwritten within the period our Privacy Policy states.
 
+Recipes you save from a website or a PDF, and their pictures, may belong to somebody else. NestPrep keeps them for your household's own private use, shows where they came from, and never publishes them. You are responsible for what you choose to save, and for not sharing it further where you have no right to. If you own something saved in NestPrep and believe it should not be there, contact us and we will look into it.
+
 ## 6. Allergies, medication and health: an aid, not a guarantee
 
 This matters most, so we say it plainly.
 
 - **NestPrep is not medical advice** and is not a medical device. Nothing in it replaces advice from a doctor, a dietitian or a pharmacist.
 - **Allergy and food-rule checks are an aid, not a guarantee.** When NestPrep keeps an item out of a child's lunch plan, it does so from the allergens you or your household recorded against that item and that child. It cannot know about ingredients that were not recorded, recipes or products that change, cross-contamination, or anything a school or another person adds. **Always read the label and check what goes into your child's lunch box yourself.**
+- **Allergens on a recipe your household adds are read from its words.** They can be wrong or missing, especially if a recipe is not written in English, or a product contains something its name does not say. Check the recipe yourself before serving it to anyone with an allergy.
 - Medication, emergency and collection details are only as accurate as the people who entered them. Keep them up to date and make sure every carer knows how to reach you and emergency services directly.
 - In an emergency, call emergency services first. Do not rely on the app.
 
 ## 7. AI suggestions
 
-Some features use artificial intelligence to suggest things, for example events read from a photo of a school letter. AI can be wrong. Suggestions are only proposals: **check them before you confirm them**, because nothing is added to your household until you do. AI features have monthly limits, which are higher on premium.
+Some features use artificial intelligence to suggest things, for example events read from a photo of a school letter, or a recipe read from a web page. AI can be wrong. Suggestions are only proposals: **check them before you confirm them**, because nothing is added to your household until you do. The one exception is adding several recipes from a PDF at once: those are saved as they were read, so check each one before you cook from it, and change or delete it if anything is wrong. AI features have monthly limits, which are higher on premium.
+
+**Avatar creations.** When you ask our AI to make an avatar, only give it a drawing or photo that is yours or your family's to use, and never a photo of a person. Do not ask for a character from a film, a TV show or a game, or for a brand or logo: NestPrep draws original characters. We may refuse a request, for example when a photo shows a person. A free household can make one creation in all, and a premium household 12 a month. AI pictures can come out strange or imperfect; you choose whether to use one, and you can delete it.
 
 ## 8. Location sharing
 

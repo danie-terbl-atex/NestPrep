@@ -82,28 +82,31 @@ final class JobActions {
     _controller.changed();
   }
 
-  /// Stores the after photo under this hand-in's name, then hands the job in.
-  /// True once it has been.
+  /// Hands the job in — with the after photo, stored under this hand-in's
+  /// name first, when one was taken (home-care ADR-0008). True once it has
+  /// been.
   Future<bool> handIn() {
     final job = _controller.currentJob;
     final photo = _afterPhoto;
-    if (job == null || photo == null) return Future.value(false);
+    if (job == null) return Future.value(false);
     return _busy(() async {
       if (!job.areAllStepsDone) {
         throw const HomeCareFailure(HomeCareProblem.stepsNotDone);
       }
       final photoId = job.nextAfterPhotoId;
-      await _photos.upload(
-        householdId: _householdId,
-        jobId: job.id,
-        photoId: photoId,
-        uploaderUid: viewerUid,
-        photo: photo,
-      );
+      if (photo != null) {
+        await _photos.upload(
+          householdId: _householdId,
+          jobId: job.id,
+          photoId: photoId,
+          uploaderUid: viewerUid,
+          photo: photo,
+        );
+      }
       await _jobs.handIn(
         householdId: _householdId,
         job: job,
-        afterPhoto: photo.named(photoId),
+        afterPhoto: photo?.named(photoId),
         by: memberId,
       );
       _afterPhoto = null;

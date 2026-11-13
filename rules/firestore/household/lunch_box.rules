@@ -125,8 +125,9 @@ function isLunchAllergens(value) {
 }
 
 // `recipeId` names the catalogue recipe an item was made from (recipes
-// ADR-0001), `householdRecipeId` the household's own (recipes ADR-0002) — one
-// or neither. The update rule's `onlyChanged` leaves both out, so neither
+// ADR-0001), `householdRecipeId` an AI recipe of the household's (recipes
+// ADR-0002) — one or neither, and never an own recipe, which can be deleted
+// (ADR-0007 §7). The update rule's `onlyChanged` leaves both out, so neither
 // changes once set.
 function isLunchItem(data) {
   return data.keys().hasOnly(
@@ -142,7 +143,9 @@ function isLunchItem(data) {
     && (data.get('seedKey', null) == null || isLunchText(data.get('seedKey', null), 60))
     && (!('recipeId' in data) || isLunchText(data.recipeId, 60))
     && (!('householdRecipeId' in data)
-          || (isLunchText(data.householdRecipeId, 60) && !('recipeId' in data)));
+          || (data.householdRecipeId is string
+                && data.householdRecipeId.matches('ai-[0-9a-f]{20}')
+                && !('recipeId' in data)));
 }
 
 // An item linked to a household recipe carries at least every allergen code

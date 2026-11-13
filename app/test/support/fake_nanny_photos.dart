@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:nestprep/features/nanny_hub/data/photo_picker.dart';
@@ -11,6 +12,7 @@ final class FakePhotoStore implements PhotoStore {
   final removed = <String>[];
   AppFailure? failReadsWith;
   AppFailure? failUploadsWith;
+  Completer<void>? holdUploads;
   var _next = 0;
 
   @override
@@ -23,6 +25,7 @@ final class FakePhotoStore implements PhotoStore {
     required String uploaderUid,
     required Uint8List jpeg,
   }) async {
+    await holdUploads?.future;
     final failure = failUploadsWith;
     if (failure != null) throw failure;
     objects[photoId] = jpeg;
@@ -55,11 +58,13 @@ final class FakePhotoStore implements PhotoStore {
 final class FakePhotoPicker implements PhotoPicker {
   Uint8List? next;
   AppFailure? failWith;
+  Completer<void>? holdPicks;
   final asked = <PhotoSource>[];
 
   @override
   Future<Uint8List?> pick(PhotoSource source) async {
     asked.add(source);
+    await holdPicks?.future;
     final failure = failWith;
     if (failure != null) throw failure;
     return next;

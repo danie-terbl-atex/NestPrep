@@ -1,6 +1,10 @@
 import type { Firestore } from 'firebase-admin/firestore';
 
-import { applicationDefaultTokens } from './access_token';
+import {
+  applicationDefaultTokens,
+  developerGcloudTokens,
+  type AccessTokenSource,
+} from './access_token';
 import {
   aiDecisionModel,
   aiImageLocation,
@@ -60,12 +64,17 @@ function isEmulated(): boolean {
 
 /** Vertex in the cloud; the canned model under the emulator, which bills nothing. */
 function modelFor(store: Firestore): GenerativeModel {
-  if (isEmulated()) return new EmulatorModel(store);
+  return isEmulated()
+    ? new EmulatorModel(store, () => vertexModel(developerGcloudTokens))
+    : vertexModel(applicationDefaultTokens);
+}
+
+function vertexModel(tokens: AccessTokenSource): GenerativeModel {
   return new VertexModel({
     project: currentProject(),
     location: aiLocation.value(),
     model: aiModel.value(),
-    tokens: applicationDefaultTokens,
+    tokens,
   });
 }
 

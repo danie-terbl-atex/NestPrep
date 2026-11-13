@@ -25,6 +25,14 @@ final class RecipeCatalogue {
           if (recipes.any(facet.matches)) facet,
       ];
 
+  factory RecipeCatalogue.merged(List<Recipe> published, List<Recipe> own) =>
+      RecipeCatalogue(
+        own.isEmpty ? published : ([...published, ...own]..sort(_byName)),
+      );
+
+  static int _byName(Recipe a, Recipe b) =>
+      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+
   /// In name order, as the repository reads them.
   final List<Recipe> recipes;
   final Map<String, Recipe> byId;

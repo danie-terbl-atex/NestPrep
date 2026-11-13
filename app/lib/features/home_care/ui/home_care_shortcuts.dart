@@ -8,12 +8,14 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../state/helper_language_controller.dart';
+import '../state/helper_shifts_controller.dart';
 import '../state/home_care_controller.dart';
+import 'shift_clock_card.dart';
 
 /// The ways into home care's V2 parts, above the jobs (home-care ADR-0004 to
-/// ADR-0006): a big card for a helper's rooms today, and a chip each for the
-/// routines, the stock and the languages — each only while its switch is on
-/// (foundation ADR-0014).
+/// ADR-0007): a helper's clock, a big card for her rooms today, and a chip
+/// each for the routines, the shifts, the stock and the languages — each only
+/// while its switch is on (foundation ADR-0014).
 class HomeCareShortcuts extends StatelessWidget {
   const HomeCareShortcuts({super.key});
 
@@ -27,7 +29,9 @@ class HomeCareShortcuts extends StatelessWidget {
     final hasRoutines = flags.isOn(FeatureFlag.homeCareRoutines);
     final hasStock = flags.isOn(FeatureFlag.homeCareStock);
     final hasLanguage = language.isAvailable;
-    if (!hasRoutines && !hasStock && !hasLanguage) {
+    final shifts = context.watch<HelperShiftsController>();
+    final hasShifts = shifts.isAvailable;
+    if (!hasRoutines && !hasStock && !hasLanguage && !hasShifts) {
       return const SizedBox.shrink();
     }
     void open(String path) => context.push(path);
@@ -36,6 +40,10 @@ class HomeCareShortcuts extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (shifts.clocksIn) ...[
+            const ShiftClockCard(),
+            const SizedBox(height: NestSpace.md),
+          ],
           if (hasRoutines && !canManage) ...[
             _TodayCard(
               onTap: () => open(HomeCareRoute.todayPathFor(householdId)),
@@ -51,6 +59,12 @@ class HomeCareShortcuts extends StatelessWidget {
                   label: HomeCareRoutineCopy.routines,
                   icon: LucideIcons.calendarSync,
                   onTap: () => open(HomeCareRoute.routinesPathFor(householdId)),
+                ),
+              if (hasShifts)
+                NestChip(
+                  label: HomeCareShiftCopy.shifts,
+                  icon: LucideIcons.clock,
+                  onTap: () => open(HomeCareRoute.shiftsPathFor(householdId)),
                 ),
               if (hasStock)
                 NestChip(

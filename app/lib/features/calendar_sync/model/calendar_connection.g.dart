@@ -44,6 +44,7 @@ Map<String, dynamic> _$CalendarConnectionToJson(_CalendarConnection instance) =>
     };
 
 const _$CalendarProviderEnumMap = {
+  CalendarProvider.apple: 'apple',
   CalendarProvider.google: 'google',
   CalendarProvider.microsoft: 'microsoft',
   CalendarProvider.ics: 'ics',

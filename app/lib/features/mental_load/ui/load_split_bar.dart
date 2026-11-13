@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/week_load.dart';
 
 /// The week as one bar, a stretch per adult in their own colour, with a
@@ -59,9 +60,8 @@ class LoadSplitBar extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    NestAvatar(
-                      name: adult.member.displayName,
-                      color: adult.member.color,
+                    MemberAvatar(
+                      member: adult.member,
                       size: NestSize.avatarSmall,
                     ),
                     const SizedBox(width: NestSpace.xs),

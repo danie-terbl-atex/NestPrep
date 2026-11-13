@@ -65,6 +65,7 @@ import 'add_to_checkers_providers.dart';
 import 'add_to_pnp_providers.dart';
 import 'add_to_woolworths_providers.dart';
 import 'assistants_providers.dart';
+import 'avatar_providers.dart';
 import 'calendar_v2_providers.dart';
 import 'chore_points_providers.dart';
 import 'document_tools_providers.dart';
@@ -263,6 +264,7 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...recipeProviders(),
   // photo frames on the wall (photo-frames ADR-0001).
   ...photoFrameProviders(),
+  ...avatarProviders(),
   ChangeNotifierProvider<SessionController>(
     create: (context) => SessionController(
       authGateway: context.read<AuthGateway>(),

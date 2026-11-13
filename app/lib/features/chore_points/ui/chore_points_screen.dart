@@ -6,6 +6,8 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/points_copy.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../../shared/ui/back_leading.dart';
+import '../../avatars/ui/avatar_creations_switch.dart';
+import '../../avatars/ui/avatar_shop_switch.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member.dart';
 import '../model/points_board.dart';
@@ -120,6 +122,8 @@ class _Board extends StatelessWidget {
           onAdd: () => _editReward(context, null),
           onEdit: (reward) => _editReward(context, reward),
         ),
+        const AvatarShopSwitch(),
+        const AvatarCreationsSwitch(),
       ],
     );
   }

@@ -143,7 +143,14 @@ void main() {
     );
     expect(titleField, findsOneWidget);
     await tester.enterText(titleField, 'Civvies day, bring R10');
-    await tap(tester, AppCopy.householdSave);
+    // A focused field scrolls itself back into view on the next frame.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final save = find.text(AppCopy.householdSave).last;
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    await tester.pumpAndSettle();
     expect(find.text('Civvies day, bring R10'), findsOneWidget);
     expect(find.text('Civvies day'), findsNothing);
     expect(calendar.savedEvents, isEmpty, reason: 'changed, not added');

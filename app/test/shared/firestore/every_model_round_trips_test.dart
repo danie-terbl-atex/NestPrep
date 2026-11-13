@@ -42,7 +42,7 @@ void main() {
     // pantry's grocery line (lunch-box ADR-0006 to ADR-0008); consent one
     // (accounts ADR-0005); groceries phase 2 one (groceries ADR-0002); home
     // care V2 three (home-care ADR-0004, ADR-0006).
-    expect(fixtures.map((fixture) => fixture.label).toSet().length, 73);
+    expect(fixtures.map((fixture) => fixture.label).toSet().length, 74);
   });
 
   for (final fixture in fixtures) {

@@ -67,6 +67,72 @@ async function givenTheParkers(): Promise<void> {
   });
 }
 
+const OWN = 'own-0123456789abcdef0123';
+
+const fromOwnRecipe = {
+  name: 'Gran’s bobotie',
+  nameKey: 'gran’s bobotie',
+  addedBy: SAM_MEMBER,
+  createdAt: serverTimestamp(),
+  ingredients: LINES,
+  householdRecipeId: OWN,
+};
+
+describe('meals/{mealId} made from a household’s own recipe (recipes ADR-0007 §6)', () => {
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+  });
+
+  const ownMeal = `${MEALS}/recipe-${OWN}`;
+
+  it('is created at recipe-<ownId>, naming it', async () => {
+    await assertSucceeds(setDoc(doc(await asUser(SAM), ownMeal), fromOwnRecipe));
+  });
+
+  it('is refused under a stranger, anywhere else, or with a malformed id', async () => {
+    await assertFails(setDoc(doc(await asUser('uid-stranger'), ownMeal), fromOwnRecipe));
+    const db = await asUser(SAM);
+    await assertFails(setDoc(doc(db, `${MEALS}/bobotie`), fromOwnRecipe));
+    for (const householdRecipeId of [
+      'ai-0123456789abcdef0123',
+      'own-0123',
+      'own-0123456789ABCDEF0123',
+      7,
+    ]) {
+      await assertFails(
+        setDoc(doc(db, `${MEALS}/recipe-${String(householdRecipeId)}`), {
+          ...fromOwnRecipe,
+          householdRecipeId,
+        }),
+      );
+    }
+  });
+
+  it('never carries both links', async () => {
+    await assertFails(
+      setDoc(doc(await asUser(SAM), ownMeal), { ...fromOwnRecipe, recipeId: 'bobotie' }),
+    );
+  });
+
+  it('refuses an own recipe through `recipeId`, which a catalogue lookup would miss', async () => {
+    await assertFails(setDoc(doc(await asUser(SAM), ownMeal), { ...fromRecipe, recipeId: OWN }));
+  });
+
+  it('never changes, gains or loses the link from a client', async () => {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, ownMeal), { ...fromOwnRecipe, createdAt: new Date() });
+    });
+    const db = await asUser(SAM);
+    await assertFails(
+      updateDoc(doc(db, ownMeal), { householdRecipeId: 'own-ffffffffffffffffffff' }),
+    );
+    await assertFails(updateDoc(doc(db, ownMeal), { householdRecipeId: deleteField() }));
+    await assertFails(updateDoc(doc(db, `${MEALS}/spaghetti`), { householdRecipeId: OWN }));
+    await assertSucceeds(updateDoc(doc(db, ownMeal), { ingredients: LINES }));
+  });
+});
+
 describe('meals/{mealId} made from a recipe', () => {
   beforeEach(async () => {
     await clearData();

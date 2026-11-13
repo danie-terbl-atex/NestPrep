@@ -5,6 +5,7 @@ import 'recipe_tag.dart';
 /// (recipes ADR-0003 §2, ADR-0006). In the order they are offered — the ones
 /// a family reaches for first.
 enum RecipeFacet {
+  ours(),
   braai(tag: RecipeTag.braai),
   quick(tag: RecipeTag.quick),
   healthy(tag: RecipeTag.healthy),
@@ -31,6 +32,7 @@ enum RecipeFacet {
   final String? _diet;
 
   bool matches(Recipe recipe) => switch ((_tag, _diet)) {
+    _ when this == ours => recipe.isOwn,
     (final tag?, _) => recipe.tags.contains(tag),
     (_, Recipe.vegetarianTag) => recipe.isVegetarian,
     (_, final diet?) => recipe.dietTags.contains(diet),

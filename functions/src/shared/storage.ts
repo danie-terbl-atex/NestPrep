@@ -43,7 +43,10 @@ export interface ObjectStore {
     contents: string | Uint8Array,
     contentType: string,
     cacheControl?: string,
+    customMetadata?: Readonly<Record<string, string>>,
   ): Promise<void>;
+  /** The bytes, or null when nothing of [contentType] and at most [maxBytes] is at the path. */
+  read(path: string, contentType: string, maxBytes: number): Promise<Buffer | null>;
   /** Objects under the prefix created before the instant, up to `limit`. */
   listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]>;
   deleteObjects(paths: readonly string[]): Promise<void>;
@@ -64,12 +67,26 @@ export function objectStore(): ObjectStore {
       contents: string | Uint8Array,
       contentType: string,
       cacheControl?: string,
+      customMetadata?: Readonly<Record<string, string>>,
     ): Promise<void> {
       await bucket.file(path).save(contents, {
         contentType,
         resumable: false,
-        ...(cacheControl === undefined ? {} : { metadata: { cacheControl } }),
+        metadata: {
+          ...(cacheControl === undefined ? {} : { cacheControl }),
+          ...(customMetadata === undefined ? {} : { metadata: { ...customMetadata } }),
+        },
       });
+    },
+    async read(path: string, contentType: string, maxBytes: number): Promise<Buffer | null> {
+      const file = bucket.file(path);
+      const [found] = await file.exists();
+      if (!found) return null;
+      const [metadata] = await file.getMetadata();
+      const size = Number(metadata.size ?? 0);
+      if (metadata.contentType !== contentType || size <= 0 || size > maxBytes) return null;
+      const [bytes] = await file.download();
+      return bytes;
     },
     async listCreatedBefore(prefix: string, before: Date, limit: number): Promise<string[]> {
       const [files] = await bucket.getFiles({ prefix, maxResults: limit });

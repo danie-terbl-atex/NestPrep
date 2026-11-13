@@ -3,6 +3,6 @@
 /// `version:` of its document — `legal_versions_test.dart` fails until both
 /// agree — and every signed-in account is asked again on its next open.
 abstract final class LegalVersions {
-  static const int terms = 2;
-  static const int privacy = 4;
+  static const int terms = 4;
+  static const int privacy = 6;
 }

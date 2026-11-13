@@ -8,6 +8,7 @@ import 'package:nestprep/app/home_care_routes.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/home_care/data/cleaning_job_repository.dart';
 import 'package:nestprep/features/home_care/data/helper_profile_repository.dart';
+import 'package:nestprep/features/home_care/data/helper_shift_repository.dart';
 import 'package:nestprep/features/home_care/data/home_care_library_repository.dart';
 import 'package:nestprep/features/home_care/data/job_photo_store.dart';
 import 'package:nestprep/features/home_care/data/read_aloud.dart';
@@ -20,6 +21,7 @@ import 'package:nestprep/features/home_care/model/language/helper_language.dart'
 import 'package:nestprep/features/home_care/model/language/helper_profile.dart';
 import 'package:nestprep/features/home_care/model/routine/room_routine.dart';
 import 'package:nestprep/features/home_care/model/routine/routine_tick.dart';
+import 'package:nestprep/features/home_care/model/shift/helper_shift.dart';
 import 'package:nestprep/features/home_care/state/photo_intake.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
@@ -45,6 +47,7 @@ final class HomeCareHarness {
   final jobs = FakeCleaningJobRepository();
   final routines = FakeRoutineRepository();
   final profiles = FakeHelperProfileRepository();
+  final shifts = FakeHelperShiftRepository();
   final translations = FakeTranslationRepository();
   final voice = FakeReadAloud();
   final flags = FakeFeatureFlagSource();
@@ -72,6 +75,7 @@ final class HomeCareHarness {
     await library.close();
     await routines.close();
     await profiles.close();
+    await shifts.close();
     await flags.close();
   }
 
@@ -105,6 +109,7 @@ final class HomeCareHarness {
         Provider<PhotoIntake>.value(value: fakePhotoIntake(camera)),
         Provider<RoutineRepository>.value(value: routines),
         Provider<HelperProfileRepository>.value(value: profiles),
+        Provider<HelperShiftRepository>.value(value: shifts),
         Provider<TranslationRepository>.value(value: translations),
         Provider<ReadAloud>.value(value: voice),
         ChangeNotifierProvider<FeatureFlagsController>(
@@ -185,6 +190,15 @@ final class HomeCareHarness {
       for (final MapEntry(key: memberId, value: language) in languages.entries)
         HelperProfile(id: memberId, language: language, updatedBy: memberId),
     ]);
+    await tester.pumpAndSettle();
+  }
+
+  /// The shifts answering (home-care ADR-0007).
+  Future<void> emitShifts(
+    WidgetTester tester,
+    List<HelperShift> shiftList,
+  ) async {
+    shifts.emitShifts(shiftList);
     await tester.pumpAndSettle();
   }
 

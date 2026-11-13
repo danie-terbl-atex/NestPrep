@@ -31,6 +31,8 @@ _Household _$HouseholdFromJson(Map<String, dynamic> json) => _Household(
   pendingSetupStep: json['pendingSetupStep'] as String?,
   createdBy: json['createdBy'] as String?,
   createdAt: const ServerTimestampConverter().fromJson(json['createdAt']),
+  avatarShop: json['avatarShop'] as bool? ?? true,
+  avatarCreationsOn: json['avatarCreationsOn'] as bool? ?? true,
 );
 
 Map<String, dynamic> _$HouseholdToJson(_Household instance) =>

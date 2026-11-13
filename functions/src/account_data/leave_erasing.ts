@@ -1,6 +1,8 @@
-import { FieldPath, type Firestore } from 'firebase-admin/firestore';
+import { FieldPath, FieldValue, type Firestore } from 'firebase-admin/firestore';
 
 import { deleteActivityOf, deleteGrantsOf } from '../assistants/connections/delete_grants';
+import { forgetAvatarRecords } from '../avatars/avatar_keepsakes';
+import { avatarObjectPrefix } from '../avatars/avatar_refs';
 import { removeCalendarConnection } from '../calendar_sync/remove_connection';
 import { CALENDAR_CONNECTIONS, PROVIDERS, type Provider } from '../calendar_sync/sync_documents';
 import { VAULT_OPENINGS, grantRef, vaultRef } from '../documents/vault_refs';
@@ -66,8 +68,9 @@ export async function leaveErasing(
     if (claimed === null) return null;
     // The profile stays, unclaimed, so the household's records still read;
     // the one thing on it that is the person's own and not the household's
-    // naming of them is their birthday (birthdays ADR-0001).
-    transaction.update(claimed, { birthday: null });
+    // naming of them is their birthday (birthdays ADR-0001) and their look,
+    // whose pictures go with them (avatars ADR-0001).
+    transaction.update(claimed, { birthday: null, look: FieldValue.delete() });
     for (const detail of personalRefs(store, householdId, claimed.id)) {
       transaction.delete(detail);
     }
@@ -78,6 +81,8 @@ export async function leaveErasing(
     await store.recursiveDelete(vaultRef(store, householdId, memberId));
     await forgetWhereTheyWere(store, householdId, memberId);
     await objects.deletePrefix(vaultObjectPrefix(householdId, memberId));
+    await forgetAvatarRecords(store, householdId, memberId);
+    await objects.deletePrefix(avatarObjectPrefix(householdId, memberId));
     await deleteActivityOf(store, householdId, memberId);
   }
   await deleteOpeningTickets(store, householdId, uid);

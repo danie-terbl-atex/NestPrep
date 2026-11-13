@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/vault_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 
 /// One line of the view log: what was opened, by whom, in whose vault, and
@@ -47,7 +48,7 @@ class VaultViewRow extends StatelessWidget {
               size: NestSize.avatarMedium,
               iconSize: NestSize.iconMedium,
             )
-          : NestAvatar(name: who.displayName, color: who.color),
+          : MemberAvatar(member: who),
     );
   }
 }

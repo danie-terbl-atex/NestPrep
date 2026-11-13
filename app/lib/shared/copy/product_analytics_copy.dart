@@ -56,6 +56,9 @@ final class ProductAnalyticsCopy {
     PremiumFeature.recipeShopping => 'Recipe shopping',
     PremiumFeature.familyLocation => 'Family location',
     PremiumFeature.listScan => 'Snap a list',
+    PremiumFeature.ownRecipes => 'Our recipes',
+    PremiumFeature.avatarCreate => 'AI pictures',
+    PremiumFeature.avatarPortrait => 'Nest portrait',
     PremiumFeature.direct => 'Plan and billing',
   };
   String triggerRate({required int bought, required int shown, int? percent}) =>

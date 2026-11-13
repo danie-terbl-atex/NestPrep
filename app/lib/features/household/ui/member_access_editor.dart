@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../kid_accounts/model/kid_areas.dart';
 import '../model/access_defaults.dart';
 import '../model/access_grant.dart';
@@ -43,11 +44,7 @@ class MemberAccessEditor extends StatelessWidget {
             variant: NestCardVariant.tinted,
             child: Row(
               children: [
-                NestAvatar(
-                  name: member.displayName,
-                  color: member.color,
-                  size: NestSize.avatarLarge,
-                ),
+                MemberAvatar(member: member, size: NestSize.avatarLarge),
                 const SizedBox(width: NestSpace.lg),
                 Expanded(
                   child: Column(

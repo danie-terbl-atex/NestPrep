@@ -24,9 +24,11 @@ import 'recipe_tonight_card.dart';
 /// can change it, never instead of them. Where a recipe opens is the
 /// screen's to decide (`FE-17`).
 class RecipeDiscoveryView extends StatelessWidget {
-  const RecipeDiscoveryView({required this.onOpen, super.key});
+  const RecipeDiscoveryView({required this.onOpen, this.addEntry, super.key});
 
   final RecipeOpened onOpen;
+
+  final Widget? addEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class RecipeDiscoveryView extends StatelessWidget {
         discovery: discovery,
         controller: controller,
         onOpen: onOpen,
+        addEntry: addEntry,
       ),
       AsyncData() => const RecipeDiscoverySkeleton(),
     };
@@ -61,12 +64,14 @@ class _Discovery extends StatelessWidget {
     required this.discovery,
     required this.controller,
     required this.onOpen,
+    required this.addEntry,
   });
 
   final RecipeCatalogue catalogue;
   final RecipeDiscovery discovery;
   final RecipeCatalogueController controller;
   final RecipeOpened onOpen;
+  final Widget? addEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +79,7 @@ class _Discovery extends StatelessWidget {
     final filter = discovery.filter;
     final results = discovery.results;
     final tonight = discovery.tonight;
+    final entry = addEntry;
     final columns = RecipeGridRow.columnsFor(context);
     final rows = (results.length / columns).ceil();
     return CustomScrollView(
@@ -90,6 +96,23 @@ class _Discovery extends StatelessWidget {
             onFacet: controller.toggleFacet,
           ),
         ),
+        if (controller.ownFailure != null)
+          SliverPadding(
+            padding: const EdgeInsets.only(top: NestSpace.lg),
+            sliver: SliverToBoxAdapter(
+              child: NestBanner(
+                message: OwnRecipeCopy.unreadable,
+                tone: NestBannerTone.warning,
+                actionLabel: AppCopy.retry,
+                onAction: controller.retryOwnRecipes,
+              ),
+            ),
+          ),
+        if (entry != null && !filter.isActive)
+          SliverPadding(
+            padding: const EdgeInsets.only(top: NestSpace.xl),
+            sliver: SliverToBoxAdapter(child: entry),
+          ),
         if (tonight != null)
           SliverPadding(
             padding: const EdgeInsets.only(top: NestSpace.xxl),

@@ -20,6 +20,7 @@ _Member _$MemberFromJson(Map<String, dynamic> json) => _Member(
       : GuardianConsent.fromJson(
           json['guardianConsent'] as Map<String, dynamic>,
         ),
+  look: const MemberLookConverter().fromJson(json['look']),
 );
 
 Map<String, dynamic> _$MemberToJson(_Member instance) => <String, dynamic>{

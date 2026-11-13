@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_store_finder.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_web_client.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/photo_frames/data/photo_frame_directory.dart';
+import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart';
 import 'package:nestprep/features/photo_frames/state/frame_photos_controller.dart';
 import 'package:nestprep/features/photo_frames/state/photo_frames_controller.dart';
 import 'package:nestprep/features/photo_frames/ui/frame_scanner.dart';
@@ -10,7 +16,10 @@ import 'package:nestprep/features/photo_frames/ui/photo_frames_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
+import '../../../support/fake_checkers.dart';
+import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_photo_frames.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
@@ -41,7 +50,10 @@ void main() {
     await repository.close();
   });
 
-  Future<void> openSheet(WidgetTester tester) async {
+  Future<void> openSheet(
+    WidgetTester tester, {
+    List<SingleChildWidget> extra = const [],
+  }) async {
     tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -54,7 +66,16 @@ void main() {
           create: (_) => FramePhotoFixtures.controller(),
         ),
         Provider<PhotoFrameDirectory>.value(value: directory),
+        Provider<PhotoFrameRepository>.value(value: repository),
         Provider<FrameScanner>.value(value: scanner),
+        Provider<WoolworthsStoreFinder>(
+          create: (_) => WoolworthsStoreFinder(WoolworthsWebClient()),
+        ),
+        Provider<CheckersAreaPreference>.value(
+          value: FakeCheckersAreaPreference(),
+        ),
+        Provider<RetailerPreference>.value(value: FakeRetailerPreference()),
+        ...extra,
       ],
     );
     repository.emit(const []);
@@ -69,6 +90,8 @@ void main() {
   }
 
   Future<void> link(WidgetTester tester) async {
+    await tester.ensureVisible(find.text(PhotoFrameCopy.linkAction));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(PhotoFrameCopy.linkAction));
     await tester.pumpAndSettle();
   }
@@ -285,5 +308,35 @@ void main() {
       find.text(PhotoFrameCopy.problem(PhotoFrameProblem.frameCodeNotFound)),
       findsNothing,
     );
+  });
+
+  testWidgets('groceries can be switched on before the frame is linked', (
+    tester,
+  ) async {
+    await openSheet(tester);
+    await scan(tester, 'nestprep://frame/ABC234');
+    final groceries = find.text(PhotoFrameCopy.groceries);
+    await tester.ensureVisible(groceries);
+    await tester.tap(groceries);
+    await tester.pumpAndSettle();
+    expect(find.text(PhotoFrameCopy.groceriesShop), findsOneWidget);
+
+    await link(tester);
+
+    expect(directory.claimed, hasLength(1));
+    expect(repository.groceriesSet.single.frameId, 'frame-1');
+    expect(
+      repository.groceriesSet.single.groceries?.shop,
+      ProductRetailer.checkers,
+    );
+    expect(find.text(PhotoFrameCopy.linked), findsOneWidget);
+  });
+
+  testWidgets('no shop switched on, no groceries offered while linking', (
+    tester,
+  ) async {
+    await openSheet(tester, extra: [featureFlagsProvider(defaultOn: false)]);
+    await scan(tester, 'nestprep://frame/ABC234');
+    expect(find.text(PhotoFrameCopy.groceries), findsNothing);
   });
 }

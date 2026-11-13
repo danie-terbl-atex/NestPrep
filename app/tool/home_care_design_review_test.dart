@@ -9,12 +9,14 @@ import 'package:nestprep/features/home_care/model/job_event.dart';
 import 'package:nestprep/features/home_care/model/job_photo.dart';
 import 'package:nestprep/features/home_care/model/job_status.dart';
 import 'package:nestprep/features/home_care/model/language/helper_language.dart';
+import 'package:nestprep/features/home_care/model/shift/helper_shift.dart';
 import 'package:nestprep/features/home_care/state/home_care_controller.dart';
 import 'package:nestprep/features/home_care/state/job_actions.dart';
 import 'package:nestprep/features/home_care/state/job_controller.dart';
 import 'package:nestprep/features/home_care/ui/home_care_screen.dart';
 import 'package:nestprep/features/home_care/ui/job_screen.dart';
 import 'package:nestprep/features/home_care/ui/review_screen.dart';
+import 'package:nestprep/features/home_care/ui/shifts_screen.dart';
 import 'package:nestprep/features/home_care/ui/step_through_screen.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +97,7 @@ void main() {
     required CleaningJob job,
     HouseholdView? view,
     HelperLanguage language = HelperLanguage.english,
+    List<HelperShift> clocked = const [],
   }) async {
     final jobRepository = FakeCleaningJobRepository();
     final library = FakeHomeCareLibraryRepository();
@@ -161,6 +164,7 @@ void main() {
           JobEvent(id: '1', status: JobStatus.inProgress, by: 'm-thandi'),
         ]);
         v2.speak(language);
+        v2.clock(clocked);
         await tester.pump();
         v2.listen();
         one.followBoard(home.board);
@@ -176,7 +180,82 @@ void main() {
     );
   }
 
+  HelperShift shift(String id, int day, {int? hours, String via = 'app'}) {
+    final startedAt = DateTime.utc(2026, 11, day, 5, 32);
+    return HelperShift(
+      id: id,
+      helperId: Fixtures.thandiMemberId,
+      startedBy: Fixtures.thandiMemberId,
+      startedAt: startedAt,
+      startedVia: via,
+      endedAt: hours == null
+          ? null
+          : startedAt.add(Duration(hours: hours, minutes: 26)),
+      endedBy: hours == null ? null : Fixtures.thandiMemberId,
+      endedVia: hours == null ? null : via,
+      status: hours == null ? HelperShift.open : HelperShift.ended,
+    );
+  }
+
+  final shifts = [
+    shift('today', 13),
+    shift('thursday', 12, hours: 8, via: HelperShift.frame),
+    shift('wednesday', 11, hours: 7),
+    shift('tuesday', 10, hours: 8),
+  ];
+
   for (final brightness in Brightness.values) {
+    testWidgets('the helper’s clock, ready — ${brightness.name}', (
+      tester,
+    ) async {
+      await press(
+        tester,
+        'home-care-clock-ready-${brightness.name}',
+        screen: const HomeCareScreen(pile: JobPile.toDo),
+        brightness: brightness,
+        job: jobs.first,
+        view: HomeCareFixtures.helperView(),
+        clocked: shifts.skip(1).toList(),
+      );
+    });
+
+    testWidgets('the helper’s clock, on shift — ${brightness.name}', (
+      tester,
+    ) async {
+      await press(
+        tester,
+        'home-care-clock-on-${brightness.name}',
+        screen: const HomeCareScreen(pile: JobPile.toDo),
+        brightness: brightness,
+        job: jobs.first,
+        view: HomeCareFixtures.helperView(),
+        clocked: shifts,
+      );
+    });
+
+    testWidgets('the shifts, as a parent — ${brightness.name}', (tester) async {
+      await press(
+        tester,
+        'home-care-shifts-${brightness.name}',
+        screen: const ShiftsScreen(),
+        brightness: brightness,
+        job: jobs.first,
+        clocked: shifts,
+      );
+    });
+
+    testWidgets('the review, no after photo — ${brightness.name}', (
+      tester,
+    ) async {
+      await press(
+        tester,
+        'home-care-review-no-photo-${brightness.name}',
+        screen: const ReviewScreen(),
+        brightness: brightness,
+        job: HomeCareFixtures.handedIn().copyWith(afterPhoto: null),
+      );
+    });
+
     testWidgets('home care — ${brightness.name}', (tester) async {
       await press(
         tester,

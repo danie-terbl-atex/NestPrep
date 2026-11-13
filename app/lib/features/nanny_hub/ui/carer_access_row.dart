@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../../household/model/member.dart';
 
 /// One carer on the booked-shifts screen, and whether they are kept to their
@@ -30,7 +31,7 @@ class CarerAccessRow extends StatelessWidget {
       variant: NestCardVariant.flat,
       padding: EdgeInsets.zero,
       child: NestListRow(
-        leading: NestAvatar(name: carer.displayName, color: carer.color),
+        leading: MemberAvatar(member: carer),
         title: carer.displayName,
         subtitle: [
           isShiftOnly

@@ -161,6 +161,68 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // ==== rules/storage/paths/avatars.rules ====
+    // ---- avatars: a member's pictures (avatars ADR-0001) ----
+    //
+    // Authorised live from Firestore, because a kid device holds no household
+    // claim and a look is as public as a name: anybody in the household sees
+    // them. A picture is content-addressed and never replaced; family puts one up
+    // for anyone, a member for themselves. Keepsakes and every delete are the
+    // Functions' alone.
+    function avatarsHousehold(householdId) {
+      return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
+    }
+
+    function avatarsIsInHousehold(householdId) {
+      let household = avatarsHousehold(householdId);
+      return request.auth != null
+        && (household.members.get(request.auth.uid, '') != ''
+            || household.get('kids', {}).get(request.auth.uid, '') != '');
+    }
+
+    function avatarsActsFor(householdId, memberId) {
+      let household = avatarsHousehold(householdId);
+      return request.auth != null
+        && (household.members.get(request.auth.uid, '') in ['admin', 'parent', 'member']
+            || household.get('profiles', {}).get(request.auth.uid, '') == memberId
+            || household.get('kids', {}).get(request.auth.uid, '') == memberId);
+    }
+
+    function avatarsIsUpload(maxBytes) {
+      return request.resource.contentType == 'image/jpeg'
+        && request.resource.size <= maxBytes
+        && isStampedWithTheCaller();
+    }
+
+    match /households/{householdId}/avatars/{memberId}/{fileName} {
+      allow get: if avatarsIsInHousehold(householdId);
+      allow list: if false;
+
+      allow create: if resource == null
+        && fileName.matches('[0-9a-f]{32}[.]jpg')
+        && avatarsIsUpload(512 * 1024)
+        && avatarsActsFor(householdId, memberId);
+
+      allow update, delete: if false;
+    }
+
+    match /households/{householdId}/avatars/{memberId}/inbox/{fileName} {
+      allow get: if avatarsIsInHousehold(householdId);
+      allow list: if false;
+
+      allow create: if resource == null
+        && fileName.matches('[A-Za-z0-9_-]{8,64}[.]jpg')
+        && avatarsIsUpload(2 * 1024 * 1024)
+        && avatarsActsFor(householdId, memberId);
+
+      allow update, delete: if false;
+    }
+
+    match /households/{householdId}/avatars/{memberId}/keepsakes/{fileName} {
+      allow get: if avatarsIsInHousehold(householdId);
+      allow list, write: if false;
+    }
+
     // ==== rules/storage/paths/document_vaults.rules ====
     // ---- personal vaults (documents ADR-0002, ADR-0003) ----
     //
@@ -338,6 +400,64 @@ service firebase.storage {
       allow delete: if request.auth != null
         && homeCareLevel() == 'edit'
         && isOnShiftIfShiftOnly(householdId);
+    }
+
+    // ==== rules/storage/paths/household_recipes.rules ====
+    // ---- a household's own recipe photos (recipes ADR-0007) ----
+    // Authorised live from Firestore: `meals` is not on the token. Premium is the
+    // callable's check, because an entitlement read would be a third cross-service
+    // read and refuse a shift-only carer.
+    match /households/{householdId}/recipePhotos/{recipeId}/{fileName} {
+      function householdRecipePhotosHousehold() {
+        return firestore.get(/databases/(default)/documents/households/$(householdId)).data;
+      }
+
+      function householdRecipePhotosMemberLevel() {
+        let household = householdRecipePhotosHousehold();
+        let role = household.members.get(request.auth.uid, '');
+        let grant = household.get('access', {}).get(request.auth.uid, null);
+        return role in ['admin', 'parent', 'member'] ? 'edit'
+          : role == '' ? 'none'
+          : grant != null ? grant.get('meals', 'none')
+          : (role == 'helper' ? 'edit' : 'none');
+      }
+
+      function householdRecipePhotosKidLevel() {
+        let memberId = householdRecipePhotosHousehold().get('kids', {}).get(request.auth.uid, '');
+        let profile = memberId == ''
+          ? null
+          : firestore.get(/databases/(default)/documents/households/$(householdId)/members/$(memberId)).data;
+        return profile != null && profile.role == 'kid'
+          ? profile.get('access', {}).get('meals', 'none')
+          : 'none';
+      }
+
+      function isAHouseholdRecipePhoto() {
+        return recipeId.matches('own-[0-9a-f]{20}')
+          && fileName.matches('[A-Za-z0-9_-]{8,64}-(card|hero)[.]jpg')
+          && request.resource.contentType == 'image/jpeg'
+          && request.resource.size <= 2 * 1024 * 1024
+          && isStampedWithTheCaller();
+      }
+
+      allow get: if request.auth != null
+        && isOnShiftIfShiftOnly(householdId)
+        && (householdRecipePhotosMemberLevel() in ['view', 'edit']
+              || householdRecipePhotosKidLevel() in ['view', 'edit']);
+
+      allow list: if false;
+
+      allow create: if request.auth != null
+        && resource == null
+        && isOnShiftIfShiftOnly(householdId)
+        && isAHouseholdRecipePhoto()
+        && householdRecipePhotosMemberLevel() == 'edit';
+
+      allow update: if false;
+
+      allow delete: if request.auth != null
+        && isOnShiftIfShiftOnly(householdId)
+        && householdRecipePhotosMemberLevel() == 'edit';
     }
 
     // ==== rules/storage/paths/lunch_photos.rules ====

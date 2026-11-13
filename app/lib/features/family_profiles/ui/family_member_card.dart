@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/family_entry.dart';
 import 'allergy_names.dart';
 import 'severity_look.dart';
@@ -60,11 +61,7 @@ class FamilyMemberCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              NestAvatar(
-                name: member.displayName,
-                color: member.color,
-                size: NestSize.avatarLarge,
-              ),
+              MemberAvatar(member: member, size: NestSize.avatarLarge),
               const SizedBox(width: NestSpace.md),
               Expanded(
                 child: Column(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../avatars/ui/member_avatar.dart';
 import '../model/child_in_care.dart';
 import 'nanny_photo.dart';
 
@@ -35,11 +36,7 @@ class ChildHeader extends StatelessWidget {
         SizedBox.square(
           dimension: NestSize.mark,
           child: photoId == null
-              ? NestAvatar(
-                  name: member.displayName,
-                  color: member.color,
-                  size: NestSize.mark,
-                )
+              ? MemberAvatar(member: member, size: NestSize.mark)
               : ClipOval(
                   child: NannyPhoto(
                     photoId: photoId,

@@ -44,6 +44,8 @@ abstract class Household with _$Household {
     @JsonKey(includeToJson: false) String? pendingSetupStep,
     String? createdBy,
     @ServerTimestampConverter() DateTime? createdAt,
+    @JsonKey(includeToJson: false) @Default(true) bool avatarShop,
+    @JsonKey(includeToJson: false) @Default(true) bool avatarCreationsOn,
   }) = _Household;
 
   const Household._();

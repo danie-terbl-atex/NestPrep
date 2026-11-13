@@ -111,6 +111,10 @@ final class SessionController extends ChangeNotifier {
 
   Future<void> signInWithGoogle() => _attemptSignIn(_auth.signInWithGoogle);
 
+  Future<void> signInWithApple() => _attemptSignIn(_auth.signInWithApple);
+
+  Future<void> revokeAppleSignIn() => _auth.revokeAppleSignIn();
+
   Future<bool> signInWithEmail({
     required String email,
     required String password,
