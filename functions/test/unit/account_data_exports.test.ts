@@ -239,6 +239,7 @@ describe('the inventory of what is a person’s', () => {
     'rewardRequests.memberId',
     'homeCareProducts.stockChangedBy',
     'homeCareRoutineTicks.updatedBy',
+    'kidRoutineTicks.updatedBy',
     'lunchPacked.by',
     'nannyShifts.byMemberId',
     'homeCareShifts.startedBy',

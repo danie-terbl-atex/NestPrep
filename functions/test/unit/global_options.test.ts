@@ -160,8 +160,10 @@ describe('every function — callable, trigger or schedule', () => {
     // and a member's picture for the frame (C-0023 rev 18); two more, a
     // creation and a keepsake taken off the shelf (avatars ADR-0003, ADR-0005),
     // and the hourly sweep of creations a dead run left behind.
+    // Kid routines: the trigger that awards a finished routine's stars
+    // (kid-routines ADR-0001).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(143);
+    expect(endpoints()).toHaveLength(144);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {

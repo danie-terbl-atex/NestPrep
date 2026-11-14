@@ -19,7 +19,10 @@ import { NO_STREAK, nextStreak } from './streak';
  * every member a transaction will touch before [stageLine] is called for any.
  */
 
-export type EntryKind = 'chore' | 'choreUndone' | 'reward' | 'rewardReturned' | 'accessory';
+export type EntryKind =
+  'chore' | 'choreUndone' | 'routine' | 'routineUndone' | 'reward' | 'rewardReturned' | 'accessory';
+
+const EARNED: readonly EntryKind[] = ['chore', 'choreUndone', 'routine', 'routineUndone'];
 
 const SPENT: readonly EntryKind[] = ['reward', 'rewardReturned', 'accessory'];
 
@@ -59,7 +62,7 @@ export async function readBalance(
 
 /** What a line does to a balance. Pure, so the arithmetic is tested alone. */
 export function applyLine(balance: StoredBalance, line: LedgerLine): StoredBalance {
-  const earnedDelta = line.kind === 'chore' || line.kind === 'choreUndone' ? line.delta : 0;
+  const earnedDelta = EARNED.includes(line.kind) ? line.delta : 0;
   const spentDelta = SPENT.includes(line.kind) ? -line.delta : 0;
   // Only the three streak fields are taken from it: `nextStreak` hands back
   // what it was given when nothing moves, which here is the whole balance.

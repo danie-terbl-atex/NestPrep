@@ -16,11 +16,16 @@ class TodoChoresView extends StatelessWidget {
   const TodoChoresView({
     required this.board,
     required this.onCompleted,
+    this.onOpenRoutines,
     super.key,
   });
 
   final TodoBoard board;
   final ValueChanged<TaskOccurrence> onCompleted;
+
+  /// The way to the children's routines, for whoever may set them up
+  /// (kid-routines ADR-0001); null hides it.
+  final VoidCallback? onOpenRoutines;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +33,24 @@ class TodoChoresView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
       children: [
+        if (onOpenRoutines != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: NestSpace.xl),
+            child: NestListRow(
+              key: const ValueKey('todos-kid-routines'),
+              title: KidRoutineCopy.wayInTitle,
+              subtitle: KidRoutineCopy.wayInBody,
+              leading: const Icon(
+                LucideIcons.sunrise,
+                size: NestSize.iconMedium,
+              ),
+              trailing: const Icon(
+                LucideIcons.chevronRight,
+                size: NestSize.iconMedium,
+              ),
+              onTap: onOpenRoutines,
+            ),
+          ),
         for (final section in board.chores)
           if (view.memberById(section.kidId) case final kid?)
             Padding(

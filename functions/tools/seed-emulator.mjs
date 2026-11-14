@@ -26,7 +26,7 @@ import { createRequire } from 'node:module';
 
 import { cannedLunchIdeasReply, cannedLunchWeekReply } from './canned-plan-week.mjs';
 import { earnStars, seedLooks } from './cloud-demo/avatars.mjs';
-import { HOUSEHOLD_ID, PEOPLE, seedDemoHousehold } from './demo-household.mjs';
+import { HOUSEHOLD_ID, PEOPLE, seedDemoHousehold, upsert } from './demo-household.mjs';
 
 const PROJECT = process.env.NESTPREP_EMULATOR_PROJECT ?? 'nestprep-643b7';
 const PASSWORD = 'nestprep';
@@ -189,11 +189,42 @@ async function seedCannedReplies(store) {
   return 'canned school-letter, plan-my-week, shopping-list, recipe-import and avatar replies for the emulator model';
 }
 
+/**
+ * One school-morning routine for both children (kid-routines ADR-0001), worth
+ * three stars, in the shape the client writes.
+ */
+async function seedMorningRoutine(store) {
+  const step = (id, title, picture, parts = []) => ({ id, title, picture, parts });
+  await upsert(store.doc(`households/${HOUSEHOLD_ID}/kidRoutines/demo-morning`), {
+    name: 'Morning',
+    slot: 'morning',
+    kidIds: ['mia', 'leo'],
+    firstDate: '2026-11-01',
+    recurrence: { frequency: 'weekly', interval: 1, weekdays: [1, 2, 3, 4, 5], until: null },
+    finishBy: 7 * 60 + 15,
+    points: 3,
+    steps: [
+      step('s1', 'Get dressed', 'get-dressed'),
+      step('s2', 'Eat breakfast', 'eat-breakfast'),
+      step('s3', 'Brush teeth', 'brush-teeth'),
+      step('s4', 'Pack school bag', 'pack-school-bag', [
+        { id: 'p1', text: 'Lunchbox', picture: 'pack-lunchbox', weekdays: [] },
+        { id: 'p2', text: 'Water bottle', picture: 'fill-water-bottle', weekdays: [] },
+        { id: 'p3', text: 'Swimming kit', weekdays: [3] },
+      ]),
+      step('s5', 'Shoes on', 'put-on-shoes'),
+    ],
+    createdBy: 'sam',
+  });
+  return 'a morning routine for Mia and Leo';
+}
+
 const lines = [];
 for (const person of PEOPLE) lines.push(await seedUser(person));
 lines.push(await seedDemoHousehold(db()));
 lines.push(await seedCannedReplies(db()));
 lines.push(await seedEmulatorLooks(db()));
+lines.push(await seedMorningRoutine(db()));
 const catalogue = await publishCatalogue(db(), objectStore(), { write: true });
 lines.push(
   `recipe photos: ${catalogue.photos.uploaded} uploaded, ${catalogue.photos.present} already there`,

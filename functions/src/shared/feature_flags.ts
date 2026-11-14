@@ -61,6 +61,8 @@ export const FEATURE_FLAGS = [
   // ---- avatars: Nestlings, the Wardrobe and moments (avatars ADR-0001 to ADR-0004), then made ones ----
   'avatars',
   'avatarCreations',
+  // ---- kid routines: morning, afternoon and bedtime checklists that earn stars (kid-routines ADR-0001) ----
+  'kidRoutines',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

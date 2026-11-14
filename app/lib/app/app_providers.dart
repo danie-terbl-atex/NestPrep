@@ -74,6 +74,7 @@ import 'feature_flag_providers.dart';
 import 'firebase_bootstrap.dart';
 import 'home_care_providers.dart';
 import 'home_layout_providers.dart';
+import 'kid_routines_providers.dart';
 import 'list_scan_route.dart';
 import 'live_location_providers.dart';
 import 'lunch_planning_providers.dart';
@@ -236,6 +237,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   ...documentVaultProviders(),
   // todos phase 2: chores that earn kids stars (todos ADR-0003).
   ...chorePointsProviders(),
+  // children's routines (kid-routines ADR-0001).
+  ...kidRoutinesProviders(),
   // home-care (home-care ADR-0001 to ADR-0003).
   ...homeCareProviders(),
   // subscriptions — the store, premium and the free tier's one child

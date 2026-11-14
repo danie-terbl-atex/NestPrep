@@ -36,4 +36,6 @@ const _$EntryKindEnumMap = {
   EntryKind.reward: 'reward',
   EntryKind.rewardReturned: 'rewardReturned',
   EntryKind.accessory: 'accessory',
+  EntryKind.routine: 'routine',
+  EntryKind.routineUndone: 'routineUndone',
 };

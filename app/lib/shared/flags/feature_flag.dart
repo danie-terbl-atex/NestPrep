@@ -126,7 +126,11 @@ enum FeatureFlag {
 
   avatars('avatars'),
 
-  avatarCreations('avatarCreations');
+  avatarCreations('avatarCreations'),
+
+  /// Children's routines: a morning, afternoon and bedtime run of picture
+  /// steps per child (kid-routines ADR-0001).
+  kidRoutines('kidRoutines');
 
   const FeatureFlag(this.field);
 

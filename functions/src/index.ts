@@ -56,6 +56,8 @@ export { awardChorePoints } from './chore_points/award_chore_points';
 export { reserveRewardPoints } from './chore_points/reserve_reward_points';
 export { reviewChore } from './chore_points/review_chore';
 export { settleReward } from './chore_points/settle_reward';
+// ---- kid routines: a finished morning, afternoon or bedtime earns stars (kid-routines ADR-0001) ----
+export { awardRoutineStars } from './kid_routines/award_routine_stars';
 // ---- avatars: a member's look mirrored from their choice, the Wardrobe, creations and keepsakes (avatars ADR-0001 to ADR-0006) ----
 export { onMemberAvatarWritten } from './avatars/on_member_avatar_written';
 export { onAvatarPurchase } from './avatars/on_avatar_purchase';

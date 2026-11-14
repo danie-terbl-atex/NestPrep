@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 
 import '../../../app/chore_points_route.dart';
 import '../../../app/household_shell.dart';
+import '../../../app/kid_routines_route.dart';
 import '../../../app/lists_switch.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/points_copy.dart';
+import '../../../shared/flags/feature_flag.dart';
+import '../../../shared/flags/feature_flags_controller.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../model/task_occurrence.dart';
@@ -81,6 +85,9 @@ class _TodoScreenState extends State<TodoScreen> {
     };
     final showsChores = !controller.isOwnOnly && (board?.hasKids ?? false);
     final lens = _picked == _Lens.chores && !showsChores ? _Lens.mine : _picked;
+    final showsRoutines =
+        view.permissions.canEdit(HouseholdArea.todos) &&
+        context.watch<FeatureFlagsController>().isOn(FeatureFlag.kidRoutines);
 
     return NestScaffold(
       title: ListsSwitch.titleFor(view.permissions, AppCopy.todosTitle),
@@ -191,6 +198,11 @@ class _TodoScreenState extends State<TodoScreen> {
                 _Lens.chores => TodoChoresView(
                   board: board,
                   onCompleted: _offerUndo,
+                  onOpenRoutines: showsRoutines
+                      ? () => context.push(
+                          KidRoutinesRoute.pathFor(view.household.id),
+                        )
+                      : null,
                 ),
               },
             ),

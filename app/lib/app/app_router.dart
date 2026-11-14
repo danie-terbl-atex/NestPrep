@@ -49,6 +49,7 @@ import 'household_route.dart';
 import 'household_shell.dart';
 import 'household_tab_navigation.dart';
 import 'kid_routes.dart';
+import 'kid_routines_route.dart';
 import 'list_scan_route.dart';
 import 'live_location_routes.dart';
 import 'lunch_routes.dart';
@@ -197,6 +198,8 @@ GoRouter createAppRouter(
         ...liveLocationRoutes(),
         // todos phase 2: a parent's stars and rewards (todos ADR-0003).
         chorePointsRoute(),
+        // children's routines, for a parent (kid-routines ADR-0001).
+        kidRoutinesRoute(),
         // The week, and calendar sync's connected calendars (calendar
         // ADR-0001, ADR-0003).
         ...calendarRoutes(session),

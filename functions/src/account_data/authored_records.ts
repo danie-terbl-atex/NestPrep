@@ -37,6 +37,7 @@ export const AUTHORED_RECORDS: readonly { collection: string; authorField: strin
   { collection: 'assistantSettings', authorField: 'updatedBy' },
   { collection: 'avatarPurchases', authorField: 'requestedBy' },
   { collection: 'avatarCreations', authorField: 'requestedBy' },
+  { collection: 'kidRoutines', authorField: 'createdBy' },
 ];
 
 /** The most records of one kind an export lists; past it, the export says so (`BE-08`). */

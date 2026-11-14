@@ -1,0 +1,106 @@
+// ---- kid routines (kid-routines ADR-0001) ----
+
+// A morning, afternoon or bedtime checklist for the children it names. `own`
+// reads only the routines naming the caller's profile and asks for exactly
+// those (`array-contains`), because a rule is not a filter (household
+// ADR-0003). What finishing one is worth is family's alone to set.
+match /kidRoutines/{routineId} {
+  allow read: if canView(householdId, 'todos')
+    || (hasOwnOnly(householdId, 'todos')
+          && ownMemberId(householdId) in resource.data.kidIds);
+
+  allow create: if canEdit(householdId, 'todos')
+    && request.resource.data.keys().hasOnly(
+         ['name', 'slot', 'kidIds', 'firstDate', 'recurrence', 'finishBy',
+          'points', 'steps', 'createdBy', 'createdAt'])
+    && kidRoutineIsRoutine(request.resource.data)
+    && (isFamily(householdId) || request.resource.data.points == 0)
+    && isOwnMember(householdId, request.resource.data.createdBy)
+    && isServerTime('createdAt');
+
+  allow update: if canEdit(householdId, 'todos')
+    && onlyChanged(
+         ['name', 'slot', 'kidIds', 'firstDate', 'recurrence', 'finishBy',
+          'points', 'steps'])
+    && kidRoutineIsRoutine(request.resource.data)
+    && (isFamily(householdId)
+          || request.resource.data.points == resource.data.points);
+
+  allow delete: if canEdit(householdId, 'todos');
+}
+
+// One child's steps done on one day of one routine. The id is
+// `{routineId}_{kidId}_{YYYY-MM-DD}`, so ticking the same day twice is the
+// same write, and the child must be one the routine names — read, not
+// trusted. It carries no stars: the trigger reads the routine (todos
+// ADR-0003).
+match /kidRoutineTicks/{tickId} {
+  allow read: if canView(householdId, 'todos')
+    || (hasOwnOnly(householdId, 'todos')
+          && resource.data.kidId == ownMemberId(householdId));
+
+  allow create, update: if request.resource.data.keys().hasOnly(
+         ['routineId', 'kidId', 'occurrenceDate', 'doneStepIds', 'updatedBy',
+          'updatedAt'])
+    && request.resource.data.occurrenceDate is string
+    && request.resource.data.occurrenceDate.matches(
+         '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+    && tickId == request.resource.data.routineId + '_'
+         + request.resource.data.kidId + '_'
+         + request.resource.data.occurrenceDate
+    && isOwnMember(householdId, request.resource.data.updatedBy)
+    && isServerTime('updatedAt')
+    && kidRoutineMayTick(
+         householdId,
+         kidRoutineData(householdId, request.resource.data.routineId),
+         request.resource.data);
+
+  allow delete: if isFamily(householdId);
+
+  // Family ticks for any child the routine names; a child only for itself.
+  // The done list names no more steps than the routine has.
+  function kidRoutineMayTick(householdId, routine, tick) {
+    return tick.kidId in routine.kidIds
+      && tick.doneStepIds is list
+      && tick.doneStepIds.size() <= routine.steps.size()
+      && (isFamily(householdId)
+            || ((canView(householdId, 'todos') || hasOwnOnly(householdId, 'todos'))
+                  && tick.kidId == ownMemberId(householdId)));
+  }
+}
+
+// The stars a finished routine gave, keyed like its tick. Written by
+// `awardRoutineStars` and by nothing else.
+match /kidRoutineAwards/{tickId} {
+  allow read: if choreStarsReadable(householdId, resource.data.memberId);
+  allow write: if false;
+}
+
+function kidRoutineData(householdId, routineId) {
+  return get(
+    /databases/$(database)/documents/households/$(householdId)/kidRoutines/$(routineId)
+  ).data;
+}
+
+// Rules cannot loop, so a step's own shape is the client's to keep and the
+// trigger's to parse; here it is a list of one to twelve.
+function kidRoutineIsRoutine(routine) {
+  return routine.name is string
+    && routine.name.size() > 0
+    && routine.name.size() <= 40
+    && routine.slot in ['morning', 'afternoon', 'bedtime']
+    && routine.kidIds is list
+    && routine.kidIds.size() > 0
+    && routine.kidIds.size() <= 12
+    && routine.firstDate is string
+    && routine.firstDate.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+    && (routine.recurrence == null || routine.recurrence is map)
+    && (routine.finishBy == null
+          || (routine.finishBy is int && routine.finishBy >= 0 && routine.finishBy <= 1439))
+    && routine.points is int
+    && routine.points >= 0
+    && routine.points <= 20
+    && routine.steps is list
+    && routine.steps.size() > 0
+    && routine.steps.size() <= 12;
+}

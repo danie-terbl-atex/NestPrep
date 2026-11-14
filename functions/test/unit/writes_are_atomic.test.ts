@@ -177,6 +177,10 @@ describe('every callable declares what it may cost', () => {
         'reserveRewardPoints',
         'reviewChore',
         'settleReward',
+        // Kid routines: a finished routine's award, its ledger line and the
+        // balance together, decided from the tick as it stands (kid-routines
+        // ADR-0001).
+        'awardRoutineStars',
         // Avatars: what a member owns and the look mirrored onto them are the
         // Functions' alone, checked against a catalogue no rule holds; an
         // accessory bought with stars moves the ledger, the balance and what

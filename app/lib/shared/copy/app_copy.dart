@@ -26,6 +26,7 @@ export 'fill_week_copy.dart';
 export 'home_board_copy.dart';
 // home-care: its words live in their own file (home-care ADR-0001).
 export 'home_care_copy.dart';
+export 'kid_routine_copy.dart';
 // legal and consent (accounts ADR-0005): their words live in their own file.
 export 'legal_copy.dart';
 export 'list_scan_copy.dart';
