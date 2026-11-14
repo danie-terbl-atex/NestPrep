@@ -27,6 +27,7 @@ class KidDayView extends StatelessWidget {
     required this.day,
     required this.onToggle,
     this.stars,
+    this.routines,
     this.shelf,
     this.lunchPicks,
     this.wardrobe,
@@ -38,6 +39,9 @@ class KidDayView extends StatelessWidget {
   final KidDay day;
   final void Function(int index) onToggle;
   final Widget? stars;
+
+  /// Today's routines, above the jobs (kid-routines ADR-0001).
+  final Widget? routines;
   final Widget? shelf;
 
   /// Lunch to choose, when a grown-up offered some (lunch-box ADR-0008).
@@ -61,6 +65,7 @@ class KidDayView extends StatelessWidget {
           const SizedBox(height: NestSpace.lg),
           NestRiseIn(index: 1, child: stars),
         ],
+        if (routines case final routines? when day.areas.chores) routines,
         if (day.areas.chores) ...[
           const SizedBox(height: NestSpace.xxl),
           const NestSectionHeader(title: KidCopy.choresTitle),

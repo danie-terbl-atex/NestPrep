@@ -81,6 +81,9 @@ abstract final class NestSize {
   static const double stickerLarge = 80;
   static const double stickerHero = 96;
 
+  /// The one step on a child's routine player: the picture is the page.
+  static const double stickerStage = 176;
+
   /// A satellite on the welcome's orbit (`NestDot`).
   static const double dot = 12;
   static const double wordmarkSignature = 18;

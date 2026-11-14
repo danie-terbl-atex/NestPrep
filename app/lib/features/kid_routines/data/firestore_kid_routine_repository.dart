@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../shared/failure/firebase_failure_mapper.dart';
 import '../../../shared/firestore/typed_collection.dart';
+import '../../../shared/time/calendar_date.dart';
 import '../model/kid_routine.dart';
+import '../model/kid_routine_tick.dart';
 import 'kid_routine_repository.dart';
 
 final class FirestoreKidRoutineRepository implements KidRoutineRepository {
@@ -10,6 +12,7 @@ final class FirestoreKidRoutineRepository implements KidRoutineRepository {
 
   static const householdsPath = 'households';
   static const routinesPath = 'kidRoutines';
+  static const ticksPath = 'kidRoutineTicks';
 
   final FirebaseFirestore _firestore;
 
@@ -33,6 +36,50 @@ final class FirestoreKidRoutineRepository implements KidRoutineRepository {
           .snapshots()
           .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
           .handleError((Object error) => throw failureFromFirebase(error));
+
+  CollectionReference<KidRoutineTick> _ticks(String householdId) =>
+      typedCollection(
+        _firestore
+            .collection(householdsPath)
+            .doc(householdId)
+            .collection(ticksPath),
+        fromJson: KidRoutineTick.fromJson,
+        toJson: (tick) => tick.toJson(),
+      );
+
+  @override
+  Stream<List<KidRoutine>> watchRoutinesFor({
+    required String householdId,
+    required String kidId,
+  }) =>
+      _routines(householdId)
+          .where('kidIds', arrayContains: kidId)
+          .limit(KidRoutineRepository.routineLimit)
+          .snapshots()
+          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+          .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
+  Stream<List<KidRoutineTick>> watchTicks({
+    required String householdId,
+    required String kidId,
+    required CalendarDate date,
+  }) =>
+      _ticks(householdId)
+          .where('kidId', isEqualTo: kidId)
+          .where('occurrenceDate', isEqualTo: date.iso)
+          .limit(KidRoutineRepository.routineLimit)
+          .snapshots()
+          .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+          .handleError((Object error) => throw failureFromFirebase(error));
+
+  @override
+  Future<void> saveTick({
+    required String householdId,
+    required KidRoutineTick tick,
+  }) => _guarded(
+    () => _ticks(householdId).doc(tick.id).set(tick.copyWith(updatedAt: null)),
+  );
 
   @override
   Future<void> saveRoutine({

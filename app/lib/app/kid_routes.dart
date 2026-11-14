@@ -20,6 +20,8 @@ import '../features/kid_accounts/state/kid_sign_in_controller.dart';
 import '../features/kid_accounts/ui/kid_code_screen.dart';
 import '../features/kid_accounts/ui/kid_home_screen.dart';
 import '../features/kid_accounts/ui/kid_sign_in_screen.dart';
+import '../features/kid_routines/data/kid_routine_repository.dart';
+import '../features/kid_routines/state/kid_routine_day_controller.dart';
 import '../features/lunch_box/data/lunch_choices_repository.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/state/lunch_choose_controller.dart';
@@ -114,6 +116,29 @@ List<RouteBase> kidRoutes(SessionController session) => [
             ),
             update: (context, home, stars) =>
                 stars!..follow(home.areas, home.today),
+          ),
+          // Today's routines (kid-routines ADR-0001): open once the home
+          // knows today, only when the grant shows jobs and the switch is on.
+          ChangeNotifierProxyProvider<
+            KidHomeController,
+            KidRoutineDayController
+          >(
+            create: (context) => KidRoutineDayController(
+              repository: context.read<KidRoutineRepository>(),
+              householdId: kid.householdId,
+              kidId: kid.memberId,
+            ),
+            update: (context, home, routines) => routines!
+              ..follow(
+                today: home.today,
+                canTick: home.areas?.canTick ?? false,
+                show:
+                    (home.areas?.chores ?? false) &&
+                    (context.read<FeatureFlagsController?>()?.isOn(
+                          FeatureFlag.kidRoutines,
+                        ) ??
+                        false),
+              ),
           ),
           // Lunch to choose (lunch-box ADR-0008): opens once the home knows
           // today, only when the grant shows lunch and the switch is on.

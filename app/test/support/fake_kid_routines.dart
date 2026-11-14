@@ -4,6 +4,7 @@ import 'package:nestprep/features/kid_routines/data/kid_routine_repository.dart'
 import 'package:nestprep/features/kid_routines/model/kid_routine.dart';
 import 'package:nestprep/features/kid_routines/model/kid_routine_slot.dart';
 import 'package:nestprep/features/kid_routines/model/kid_routine_step.dart';
+import 'package:nestprep/features/kid_routines/model/kid_routine_tick.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/recurrence/recurrence_rule.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
@@ -14,17 +15,55 @@ import 'household_fixtures.dart';
 final class FakeKidRoutineRepository implements KidRoutineRepository {
   final _routines = StreamController<List<KidRoutine>>.broadcast();
 
+  final _ticks = StreamController<List<KidRoutineTick>>.broadcast();
+
   final saved = <KidRoutine>[];
+  final savedTicks = <KidRoutineTick>[];
+  final watchedKids = <String>[];
+  AppFailure? tickFailure;
   final deleted = <String>[];
   AppFailure? saveFailure;
 
   void emit(List<KidRoutine> routines) => _routines.add(routines);
   void failWith(Object error) => _routines.addError(error);
-  Future<void> close() => _routines.close();
+  void emitTicks(List<KidRoutineTick> ticks) => _ticks.add(ticks);
+
+  Future<void> close() async {
+    await _routines.close();
+    await _ticks.close();
+  }
 
   @override
   Stream<List<KidRoutine>> watchRoutines(String householdId) =>
       _routines.stream;
+
+  @override
+  Stream<List<KidRoutine>> watchRoutinesFor({
+    required String householdId,
+    required String kidId,
+  }) {
+    watchedKids.add(kidId);
+    return _routines.stream;
+  }
+
+  @override
+  Stream<List<KidRoutineTick>> watchTicks({
+    required String householdId,
+    required String kidId,
+    required CalendarDate date,
+  }) => _ticks.stream;
+
+  /// Saved, then echoed back the way a live listener would.
+  @override
+  Future<void> saveTick({
+    required String householdId,
+    required KidRoutineTick tick,
+  }) async {
+    final failure = tickFailure;
+    if (failure != null) throw failure;
+    savedTicks.add(tick);
+    _ticks.add([tick]);
+  }
 
   @override
   Future<void> saveRoutine({

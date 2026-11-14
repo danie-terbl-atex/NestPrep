@@ -112,6 +112,30 @@ abstract final class KidRoutineCopy {
       ? everyDay
       : (weekdays.toList()..sort()).map(AppCopy.weekdayName).join(', ');
 
+  // ---- the child's side ----
+
+  static const kidTitle = 'Routines';
+  static const kidStart = 'Start';
+  static const kidKeepGoing = 'Keep going';
+  static const kidAllDone = 'All done';
+  static const kidLook = 'Have a look';
+  static const kidStepDone = 'Done!';
+  static const kidStepIsDone = 'Done';
+  static const kidStepUndo = 'Not done yet';
+  static const kidRemember = 'Remember';
+  static const kidClose = 'Close';
+  static const kidGoneTitle = 'This routine is not on today';
+  static const kidGoneBody = 'Go back to see what is.';
+
+  static String kidProgress(int done, int total) => '$done of $total done';
+
+  static String kidStepOf(int number, int total) => 'Step $number of $total';
+
+  static String kidNext(String title) => 'Next: $title';
+
+  static String kidStepLabel(String title, {required bool isDone}) =>
+      isDone ? '$title, done' : title;
+
   static const switchedOffTitle = 'Routines are not switched on yet';
   static const switchedOffBody = 'Nothing is lost. Check back soon.';
 

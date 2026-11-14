@@ -16,11 +16,15 @@ Everything ticked is built and tested in the tree. **Live since 2026-11-14** (ru
 - [ ] Daniel looks at it on the emulator: To do → Chores → Routines
 - [ ] Repository integration test against the emulator suite (needs a device)
 - [x] Deployed rules, `awardRoutineStars` and `exportAccountData`; `kidRoutines: true` in `appConfig/flags` (2026-11-14)
-- [ ] Commit
+- [x] Committed `70f8cd7` on master, not pushed
 
 ### Phase 2 — kid home card and the player
-- [ ] `watchRoutines` for a kid (`kidIds array-contains`), the ticks read and write, and the `kidRoutineTicks (kidId, occurrenceDate)` index with it
-- [ ] The routine card on the kid home; the one-step-at-a-time player; `NestCelebration` at the end
+- [x] `watchRoutinesFor` a kid (`kidIds array-contains`), `watchTicks` and `saveTick`. No index: the ticks read is two equalities (`kidId`, `occurrenceDate`), which Firestore answers from the single-field indexes
+- [x] `KidRoutineDayController`, following the home's today, grant and the flag
+- [x] The routine card on the kid home, above the jobs; the one-step-at-a-time player with things to remember, the path, untick, a star burst per step and `NestCelebration` at the end
+- [x] Tests: run model 9, card and player 11, kid home 2; pictures `kid-card-*` and `player-*`
+- [ ] On a kid device against the cloud: a tick lands, `awardRoutineStars` gives the stars
+- [ ] Parents see today's progress per child on the Chores lens (not built)
 
 ### Phase 3 — the frame
 - [ ] photo-frames ADR, C-0023 rev 21, `getFrameDay` routines, `tickFrameItem` kind `kidRoutine`

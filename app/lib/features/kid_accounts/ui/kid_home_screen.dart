@@ -19,6 +19,8 @@ import '../../chore_points/model/reward.dart';
 import '../../chore_points/state/kid_points_controller.dart';
 import '../../chore_points/ui/kid_reward_shelf.dart';
 import '../../chore_points/ui/kid_stars_section.dart';
+import '../../kid_routines/state/kid_routine_day_controller.dart';
+import '../../kid_routines/ui/kid_routines_today.dart';
 import '../../live_location/ui/kid_location_sheet.dart';
 import '../../notifications/ui/kid_notifications_button.dart';
 import '../../todos/model/kid_chores.dart';
@@ -41,6 +43,7 @@ class KidHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<KidHomeController>();
     final stars = context.watch<KidPointsController>();
+    final routines = context.watch<KidRoutineDayController?>();
     final session = context.read<SessionController>();
     final failure = controller.actionFailure ?? stars.actionFailure;
     final points = stars.points;
@@ -131,6 +134,12 @@ class KidHomeScreen extends StatelessWidget {
                   stars: points == null
                       ? null
                       : KidStarsSection(points: points, onRetry: stars.retry),
+                  routines: routines == null
+                      ? null
+                      : KidRoutinesToday(
+                          controller: routines,
+                          kidName: value.me.displayName,
+                        ),
                   shelf: loaded == null
                       ? null
                       : KidRewardShelf(
