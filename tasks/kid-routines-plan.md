@@ -29,9 +29,10 @@ Everything ticked is built and tested in the tree. **Live since 2026-11-14** (ru
 ### Phase 3 — the frame
 - [x] photo-frames ADR-0021, C-0023 rev 21: `getFrameDay` top-level `routines`, `tickFrameItem` kind `kidRoutine`; unit 8, emulator 2; **deployed 2026-11-14**
 - [x] NestPrep-Home: routine rows in each child's Chores column, the full-screen player (things to remember, path, untick, celebration), the routine line on Home's kid row; sideloaded on the Frame Pro
-- [ ] A tick sent from a real frame (none sent: the frame is on the real household)
-- [ ] Commit both repos; NestPrep-Home release 0.14.0 for the other frames
-- [ ] Larger stickers for the player (192 px drawn at 360 dp is soft)
+- [x] Ticked through on the Frame Pro by Daniel 2026-11-14: both routines done, two awards in the cloud
+- [x] Committed: NestPrep `e25d70b7`, NestPrep-Home `2647ef6` (neither pushed)
+- [ ] NestPrep-Home release 0.14.0 for the other frames (the APK grew from 4.3 MB to 9.1 MB)
+- [x] The player draws the 384 px sticker set (`assets/chore-pictures-large`, `ChorePictures.large`)
 - [ ] Not built: two children side by side, the finish-by countdown ring, a per-step sticker flying to the path
 
 Changed from the proposal below: `finishBy` is minutes since midnight, not `HH:mm`; the ticks index waits for phase 2's query.
