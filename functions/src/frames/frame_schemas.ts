@@ -85,13 +85,13 @@ export type GetFramePhotoInput = z.infer<typeof getFramePhotoInput>;
 
 export const tickFrameItemInput = z.object({
   secret,
-  kind: z.enum(['task', 'routine', 'job']),
+  kind: z.enum(['task', 'routine', 'job', 'kidRoutine']),
   id,
   date: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
   done: z.boolean(),
   /** A first name as the day prints it; needed only when more than one person could have done it. */
   by: z.string().trim().min(1).max(60).nullable().optional(),
-  /** One routine step; absent ticks or unticks every step. */
+  /** One routine step; absent ticks or unticks every step. A kid routine's `by` is its child. */
   step: id.nullable().optional(),
 });
 export type TickFrameItemInput = z.infer<typeof tickFrameItemInput>;

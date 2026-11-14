@@ -22,6 +22,7 @@ describe('what a frame may tick', () => {
     const body = { secret: SECRET, kind: 'task', id: 'dishes', date: '2026-10-25', done: true };
     expect(parseInput(tickFrameItemInput, body)).toEqual(body);
     expect(parseInput(tickFrameItemInput, { ...body, kind: 'job' }).kind).toBe('job');
+    expect(parseInput(tickFrameItemInput, { ...body, kind: 'kidRoutine' }).kind).toBe('kidRoutine');
     for (const bad of [
       { ...body, kind: 'event' },
       { ...body, date: '2026-13-01' },

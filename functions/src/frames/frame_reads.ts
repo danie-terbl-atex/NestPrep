@@ -23,6 +23,7 @@ import {
   routinesDueOn,
 } from './frame_day';
 import { readFlag } from '../shared/feature_flags';
+import { readKidRoutines } from './frame_kid_routines';
 import { type FrameGroceries, parsed } from './frame_documents';
 import { HOME_CARE_JOBS, HOME_CARE_SHIFTS, frameMarks, hasFramePhoto } from './frame_jobs';
 import { calendarEditors } from './frame_events';
@@ -110,6 +111,7 @@ type Sources = Pick<
   | 'meals'
   | 'homeCare'
   | 'lunch'
+  | 'kidRoutines'
   | 'lunchPhotos'
   | 'groceries'
   | 'people'
@@ -125,7 +127,7 @@ export async function readFrameSources(
   const helperId = panels.helperMemberId;
   const premium =
     panels.lunch || panels.people ? readFramePremium(store, home) : Promise.resolve(false);
-  const [members, events, chores, meals, homeCare, lunch, groceryItems, whereabouts] =
+  const [members, events, chores, meals, homeCare, lunch, groceryItems, whereabouts, kidRoutines] =
     await Promise.all([
       addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home),
       panels.calendar ? readEventWindow(home, today, addDays(today, FRAME_DAY_AHEAD)) : undefined,
@@ -137,6 +139,7 @@ export async function readFrameSources(
       panels.lunch ? readFrameLunch(store, home, today, premium) : undefined,
       groceries === null ? undefined : readGroceryItems(home),
       panels.people ? readPeople(home, premium) : undefined,
+      panels.todos ? readKidRoutines(store, home, today) : undefined,
     ]);
   const { groceryEditors, ...people } = { groceryEditors: [], ...members };
   return {
@@ -150,6 +153,7 @@ export async function readFrameSources(
       ? {}
       : { groceries: { shop: groceries.shop, editors: groceryEditors, items: groceryItems } }),
     ...(whereabouts === undefined ? {} : { people: whereabouts }),
+    ...(kidRoutines === undefined ? {} : { kidRoutines }),
   };
 }
 

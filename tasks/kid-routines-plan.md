@@ -13,7 +13,7 @@ Everything ticked is built and tested in the tree. **Live since 2026-11-14** (ru
 - [x] `awardRoutineStars` + ledger kinds `routine` / `routineUndone`; unit and 8 emulator tests
 - [x] App: model, repository, controller, Routines screen, routine sheet, step sheet, ready-made starts, the way in from Chores; 35 tests; pictures in `app/design-review/kid-routines/`
 - [x] A demo routine in the emulator seed (not run against a suite)
-- [ ] Daniel looks at it on the emulator: To do → Chores → Routines
+- [x] Daniel set up routines on his phone (seen on the frame 2026-11-14)
 - [ ] Repository integration test against the emulator suite (needs a device)
 - [x] Deployed rules, `awardRoutineStars` and `exportAccountData`; `kidRoutines: true` in `appConfig/flags` (2026-11-14)
 - [x] Committed `70f8cd7` on master, not pushed
@@ -27,8 +27,12 @@ Everything ticked is built and tested in the tree. **Live since 2026-11-14** (ru
 - [ ] Parents see today's progress per child on the Chores lens (not built)
 
 ### Phase 3 — the frame
-- [ ] photo-frames ADR, C-0023 rev 21, `getFrameDay` routines, `tickFrameItem` kind `kidRoutine`
-- [ ] NestPrep-Home: the player, Home and Chores entry points, larger stickers
+- [x] photo-frames ADR-0021, C-0023 rev 21: `getFrameDay` top-level `routines`, `tickFrameItem` kind `kidRoutine`; unit 8, emulator 2; **deployed 2026-11-14**
+- [x] NestPrep-Home: routine rows in each child's Chores column, the full-screen player (things to remember, path, untick, celebration), the routine line on Home's kid row; sideloaded on the Frame Pro
+- [ ] A tick sent from a real frame (none sent: the frame is on the real household)
+- [ ] Commit both repos; NestPrep-Home release 0.14.0 for the other frames
+- [ ] Larger stickers for the player (192 px drawn at 360 dp is soft)
+- [ ] Not built: two children side by side, the finish-by countdown ring, a per-step sticker flying to the path
 
 Changed from the proposal below: `finishBy` is minutes since midnight, not `HH:mm`; the ticks index waits for phase 2's query.
 

@@ -5,6 +5,7 @@ import { isOccurrence } from '../chore_points/occurrence_check';
 import { storedRoutine, storedTask } from '../chore_points/point_documents';
 import { completionRef, routineRef, taskRef } from '../chore_points/point_refs';
 import { parseInput } from '../household/parse_input';
+import { KID_ROUTINES, KID_ROUTINE_TICKS } from '../kid_routines/routine_refs';
 import { choreOccurrencesOn } from '../notifications/day_occurrences';
 import { completionKey } from '../notifications/digest_reads';
 import { db } from '../shared/firestore';
@@ -19,6 +20,7 @@ import {
   frameJobShape,
   handInFields,
 } from './frame_jobs';
+import { frameKidRoutineShape, frameKidRoutineTickShape } from './frame_kid_routines';
 import { FRAME_DEVICE_OPTIONS, FRAME_TICK_PER_CREDENTIAL } from './frame_policy';
 import { homeCareRoutineShape, homeCareTickShape, readMembers } from './frame_reads';
 import { tickFrameItemInput, type TickFrameItemInput } from './frame_schemas';
@@ -43,7 +45,12 @@ export const tickFrameItem = onCall(
     if (linked === null) return UNLINKED;
     if (!inTickReach(input.date, linked.clock.date)) throw refuseFrame('itemOutOfReach');
 
-    const tick = { task: tickTask, routine: tickRoutine, job: handInJob }[input.kind];
+    const tick = {
+      task: tickTask,
+      routine: tickRoutine,
+      job: handInJob,
+      kidRoutine: tickKidRoutine,
+    }[input.kind];
     return { status: 'linked', done: await tick(store, linked, input) };
   },
 );
@@ -175,5 +182,52 @@ async function tickRoutine(
       updatedAt: FieldValue.serverTimestamp(),
     });
     return itemIds.length > 0 && doneItemIds.length === itemIds.length;
+  });
+}
+
+/**
+ * Ticks a child's routine step, or all of them, by writing the tick the app
+ * writes (photo-frames ADR-0021, kid-routines ADR-0001), so `awardRoutineStars`
+ * gives the stars without knowing a frame did it. `by` is the child: a routine
+ * for one child needs none.
+ */
+async function tickKidRoutine(
+  store: Firestore,
+  { frame, home }: LinkedFrame,
+  input: TickFrameItemInput,
+): Promise<boolean> {
+  const routine = parsed(
+    frameKidRoutineShape,
+    (await home.collection(KID_ROUTINES).doc(input.id).get()).data(),
+  );
+  const step = input.step ?? null;
+  const stepIds = routine?.steps.map((each) => each.id) ?? [];
+  if (
+    routine === null ||
+    !frame.panels.todos ||
+    stepIds.length === 0 ||
+    !isOccurrence(routine.firstDate, routine.recurrence, input.date) ||
+    (step !== null && !stepIds.includes(step))
+  ) {
+    throw refuseFrame('itemNotFound');
+  }
+  const { names, kids = [] } = await readMembers(home);
+  const eligible = routine.kidIds.filter((id) => kids.includes(id) && names[id] !== undefined);
+  const kidId = creditFor(eligible, names, input.by ?? null);
+  if (kidId === null) throw refuseFrame('whoNeeded');
+
+  const ref = home.collection(KID_ROUTINE_TICKS).doc(`${input.id}_${kidId}_${input.date}`);
+  return store.runTransaction(async (transaction) => {
+    const ticked = parsed(frameKidRoutineTickShape, (await transaction.get(ref)).data());
+    const doneStepIds = nextTicks(stepIds, ticked?.doneStepIds ?? [], step, input.done);
+    transaction.set(ref, {
+      routineId: input.id,
+      kidId,
+      occurrenceDate: input.date,
+      doneStepIds,
+      updatedBy: kidId,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    return doneStepIds.length === stepIds.length;
   });
 }

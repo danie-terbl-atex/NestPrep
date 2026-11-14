@@ -66,6 +66,13 @@ interface Day {
   lunch?: { boxes: { name: string; photo?: string }[] };
   groceries?: { shop: string; by: string[]; toBuy: Record<string, unknown>[] };
   people?: { home?: Record<string, unknown>; people: Record<string, unknown>[] };
+  routines?: {
+    id: string;
+    who: string;
+    done: boolean;
+    stars?: number;
+    steps: { id: string; done: boolean }[];
+  }[];
 }
 
 const PANELS = { calendar: true, todos: true, meals: false, helperMemberId: null };
@@ -2066,5 +2073,94 @@ describe('a frame adds groceries (photo-frames ADR-0012)', () => {
       'badRequest',
     );
     expect(await items(h)).toEqual([]);
+  });
+});
+
+describe('a frame runs a child’s routine (photo-frames ADR-0021)', () => {
+  async function given(h: Household): Promise<{ mia: string; leo: string }> {
+    const mia = await addProfile(h.householdId, 'Mia Parker', 'kid');
+    const leo = await addProfile(h.householdId, 'Leo Parker', 'kid');
+    await household(h.householdId)
+      .collection('kidRoutines')
+      .doc('morning')
+      .set({
+        name: 'Morning',
+        slot: 'morning',
+        kidIds: [mia, leo],
+        firstDate: addDays(today(), -30),
+        recurrence: { frequency: 'daily', interval: 1, weekdays: [], until: null },
+        finishBy: null,
+        points: 3,
+        steps: [
+          { id: 's1', title: 'Get dressed', picture: 'get-dressed', parts: [] },
+          { id: 's2', title: 'Brush teeth', picture: 'brush-teeth', parts: [] },
+        ],
+        createdBy: h.samMemberId,
+      });
+    return { mia, leo };
+  }
+
+  it('shows it per child, ticks a step for the child named, and the last one earns the stars', async () => {
+    const h = await samsHousehold();
+    const { mia } = await given(h);
+    const { secret } = await linkedFrame(h, { ...PANELS, calendar: false });
+
+    expect((await dayOf(secret)).routines?.map((each) => [each.who, each.done])).toEqual([
+      ['Leo', false],
+      ['Mia', false],
+    ]);
+    const body = { kind: 'kidRoutine', id: 'morning', date: today() };
+    await expectRefusal(tick(secret, { ...body, done: true, step: 's1' }), 'whoNeeded');
+    await expectRefusal(
+      tick(secret, { ...body, done: true, step: 'nope', by: 'Mia' }),
+      'itemNotFound',
+    );
+
+    expect(await tick(secret, { ...body, done: true, step: 's1', by: 'Mia' })).toEqual({
+      status: 'linked',
+      done: false,
+    });
+    expect(await tick(secret, { ...body, done: true, step: 's2', by: 'Mia' })).toEqual({
+      status: 'linked',
+      done: true,
+    });
+    const tickId = `morning_${mia}_${today()}`;
+    const written = await household(h.householdId).collection('kidRoutineTicks').doc(tickId).get();
+    expect(written.data()).toMatchObject({
+      routineId: 'morning',
+      kidId: mia,
+      occurrenceDate: today(),
+      doneStepIds: ['s1', 's2'],
+      updatedBy: mia,
+    });
+    const award = await eventually(
+      async () =>
+        (await household(h.householdId).collection('kidRoutineAwards').doc(tickId).get()).data(),
+      (value) => value?.['status'] === 'awarded',
+    );
+    expect(award).toMatchObject({ memberId: mia, points: 3 });
+    const day = await dayOf(secret);
+    expect(day.routines?.map((each) => [each.who, each.done])).toEqual([
+      ['Leo', false],
+      ['Mia', true],
+    ]);
+
+    await tick(secret, { ...body, done: false, step: 's2', by: 'Mia' });
+    await eventually(
+      async () =>
+        (await household(h.householdId).collection('kidRoutineAwards').doc(tickId).get()).data(),
+      (value) => value?.['status'] === 'withdrawn',
+    );
+  });
+
+  it('shows none and ticks none with chores off', async () => {
+    const h = await samsHousehold();
+    await given(h);
+    const { secret } = await linkedFrame(h, { ...PANELS, todos: false });
+    expect(await dayOf(secret)).not.toHaveProperty('routines');
+    await expectRefusal(
+      tick(secret, { kind: 'kidRoutine', id: 'morning', date: today(), done: true, by: 'Mia' }),
+      'itemNotFound',
+    );
   });
 });

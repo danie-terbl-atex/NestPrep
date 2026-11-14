@@ -26,6 +26,11 @@ import {
 import { hemisphereOf } from '../avatars/avatar_moments';
 import { type FrameAvatar, frameAvatarOf } from './frame_avatar';
 import type { FrameShift } from './frame_jobs';
+import {
+  type FrameKidRoutine,
+  type KidRoutineSources,
+  kidRoutinesPanel,
+} from './frame_kid_routines';
 import { memberColorHex } from './member_colors';
 import {
   type FrameNamedMember,
@@ -140,6 +145,8 @@ export interface FrameDaySources {
   /** The list and who may add to it, read only while the frame adds groceries (ADR-0012). */
   readonly groceries?: FrameGroceriesSources;
   readonly people?: FramePeopleSources;
+  /** The children's routines, read only while the frame shows chores (rev 21). */
+  readonly kidRoutines?: KidRoutineSources;
 }
 
 export interface FrameEvent {
@@ -224,6 +231,11 @@ export interface FrameDay {
   /** The frame's shop, who may say they are adding, and what is still to buy (ADR-0012). */
   readonly groceries?: FrameGroceriesDay;
   readonly people?: FramePeople;
+  /**
+   * Today's routines per child, beside `todos` rather than inside it, so a
+   * frame that predates them draws nothing instead of an odd chore (rev 21).
+   */
+  readonly routines?: FrameKidRoutine[];
 }
 
 export function assembleFrameDay(sources: FrameDaySources): FrameDay {
@@ -258,6 +270,9 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
       : { groceries: groceriesPanel(sources.groceries, sources.names) }),
     ...(panels.people && sources.people !== undefined
       ? { people: peoplePanel(named, sources.people) }
+      : {}),
+    ...(panels.todos && sources.kidRoutines !== undefined
+      ? { routines: kidRoutinesOf(sources, sources.kidRoutines) }
       : {}),
   };
 }
@@ -311,6 +326,13 @@ function membersOf(named: readonly FrameNamedMember[], sources: FrameDaySources)
       ...(avatar === undefined ? {} : { avatar }),
     };
   });
+}
+
+function kidRoutinesOf(sources: FrameDaySources, routines: KidRoutineSources): FrameKidRoutine[] {
+  const kidNames = Object.fromEntries(
+    (sources.kids ?? []).map((id) => [id, firstName(sources.names[id] ?? '')] as const),
+  );
+  return kidRoutinesPanel(routines, sources.today, kidNames, clockTime);
 }
 
 function addersOf(sources: FrameDaySources): string[] {
