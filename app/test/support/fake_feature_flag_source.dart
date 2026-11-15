@@ -34,6 +34,7 @@ SingleChildWidget featureFlagsProvider({
   FakeFeatureFlagSource? source,
 }) => ChangeNotifierProvider<FeatureFlagsController>(
   create: (_) => FeatureFlagsController(
+    holdsBackWaiting: false,
     source: source ?? FakeFeatureFlagSource(),
     defaultOn: defaultOn,
   ),
@@ -61,6 +62,7 @@ final class FixedFeatureFlagSource implements FeatureFlagSource {
 /// screens it pumps.
 FeatureFlagsController testFlagsController(FeatureFlags flags) =>
     FeatureFlagsController(
+      holdsBackWaiting: false,
       source: FixedFeatureFlagSource(flags),
       defaultOn: flags.defaultOn,
     );

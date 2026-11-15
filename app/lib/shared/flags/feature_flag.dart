@@ -146,6 +146,12 @@ enum FeatureFlag {
 
   const FeatureFlag(this.field);
 
+  /// Whether this switch stays off until the document turns it on (shops
+  /// ADR-0002). Every other switch is on until the document says `false`; a
+  /// shop waiting to go live must not show for the moment before the
+  /// document has loaded, or for as long as it cannot be read.
+  bool get waitsToGoLive => this == checkersShop || this == woolworthsShop;
+
   /// The boolean field in `appConfig/flags` that switches it.
   final String field;
 }

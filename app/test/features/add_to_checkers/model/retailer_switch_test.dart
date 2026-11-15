@@ -40,4 +40,25 @@ void main() {
     ]);
     expect(switchOf(ProductRetailer.woolworths), FeatureFlag.woolworthsShop);
   });
+
+  test('before the document has loaded, a waiting shop is not offered', () {
+    const loading = FeatureFlags.defaults(
+      defaultOn: true,
+      holdsBackWaiting: true,
+    );
+    expect(shopsOn(loading.isOn), [ProductRetailer.pickNPay]);
+    expect(loading.isOn(FeatureFlag.lunchPantry), isTrue);
+  });
+
+  test('and the document can turn it on', () {
+    final flags = FeatureFlags.fromFields(
+      {'checkersShop': true},
+      defaultOn: true,
+      holdsBackWaiting: true,
+    );
+    expect(shopsOn(flags.isOn), [
+      ProductRetailer.checkers,
+      ProductRetailer.pickNPay,
+    ]);
+  });
 }

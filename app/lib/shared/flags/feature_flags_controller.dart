@@ -19,7 +19,11 @@ final class FeatureFlagsController extends ChangeNotifier {
   FeatureFlagsController({
     required FeatureFlagSource source,
     bool defaultOn = true,
-  }) : _flags = FeatureFlags.defaults(defaultOn: defaultOn) {
+    bool holdsBackWaiting = true,
+  }) : _flags = FeatureFlags.defaults(
+         defaultOn: defaultOn,
+         holdsBackWaiting: holdsBackWaiting,
+       ) {
     _subscription = source
         .watch(defaultOn: defaultOn)
         .listen(_onFlags, onError: _onError);

@@ -177,6 +177,7 @@ void main() {
       extra: [
         ChangeNotifierProvider<FeatureFlagsController>(
           create: (_) => FeatureFlagsController(
+            holdsBackWaiting: false,
             source: FixedFeatureFlagSource(
               FeatureFlags.fromFields(const {
                 'woolworthsShop': false,

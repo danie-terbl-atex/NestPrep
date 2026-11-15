@@ -27,6 +27,7 @@ final class FirestoreFeatureFlagSource implements FeatureFlagSource {
         (snapshot) => FeatureFlags.fromFields(
           snapshot.data() ?? const {},
           defaultOn: defaultOn,
+          holdsBackWaiting: true,
         ),
       );
 }
