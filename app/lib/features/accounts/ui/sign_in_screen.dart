@@ -24,8 +24,9 @@ import 'sign_in_welcome.dart';
 /// ([SeededSignIn], foundation ADR-0019), and is a different widget on purpose
 /// — a throwaway password list must never become the production form.
 ///
-/// The welcome arrives once and stops (`FE-15`). A failure banner is not part
-/// of the arrival: it appears at once.
+/// The welcome arrives once and stops (`FE-15`); behind it the frame's brand
+/// waves roll in and sway (design-system ADR-0023). A failure banner is not
+/// part of the arrival: it appears at once.
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
 
@@ -40,6 +41,7 @@ class SignInScreen extends StatelessWidget {
     final hasInvite = context.watch<PendingInvite?>()?.code != null;
     final seeded = SeededSignIn.forBuild(BackendTarget.fromEnvironment());
     return NestScaffold(
+      backdrop: const NestWaves(),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

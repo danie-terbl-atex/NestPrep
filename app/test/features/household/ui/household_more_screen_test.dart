@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/appearance/model/appearance.dart';
+import 'package:nestprep/features/appearance/state/appearance_controller.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
@@ -9,7 +11,9 @@ import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/points_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
+import 'package:provider/provider.dart';
 
+import '../../../support/fake_appearance_store.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/premium_entitlement.dart';
@@ -31,11 +35,16 @@ void main() {
     double scale = 1,
     FakeFeatureFlagSource? flags,
     bool isPremium = false,
+    AppearanceController? appearance,
   }) async {
     await pumpScreen(
       tester,
       HouseholdMoreScreen(onSelectTab: (_) {}),
       providers: [
+        ChangeNotifierProvider<AppearanceController>.value(
+          value:
+              appearance ?? AppearanceController(store: FakeAppearanceStore()),
+        ),
         if (flags != null) featureFlagsProvider(source: flags),
         if (isPremium) premiumEntitlementProvider(),
       ],
@@ -275,8 +284,28 @@ void main() {
     expect(tester.takeException(), isNull);
     // Scrolled through to the last section, so every tile has been laid out
     // at this size, not only the ones that fit on the first screen.
-    await scrollTo(tester, SubscriptionCopy.openFromHousehold);
+    await scrollTo(tester, AppearanceCopy.hint);
     expect(tester.takeException(), isNull);
-    expect(find.text(SubscriptionCopy.openFromHousehold), findsOneWidget);
+    // The names, not the glyphs, get the room at large text.
+    expect(find.byIcon(LucideIcons.moon), findsNothing);
+    expect(find.text(AppearanceCopy.night), findsOneWidget);
+  });
+
+  testWidgets('last, day or night for this phone, chosen with one tap', (
+    tester,
+  ) async {
+    final store = FakeAppearanceStore();
+    final appearance = AppearanceController(store: store);
+    addTearDown(appearance.dispose);
+    await pump(tester, appearance: appearance);
+
+    await scrollTo(tester, AppearanceCopy.hint);
+    await tester.ensureVisible(find.text(AppearanceCopy.night));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppearanceCopy.night));
+    await tester.pumpAndSettle();
+
+    expect(appearance.appearance, Appearance.night);
+    expect(store.kept, Appearance.night);
   });
 }

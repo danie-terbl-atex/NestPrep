@@ -233,15 +233,38 @@ describe('checkFrameUpdate', () => {
       frame: { householdId: h.householdId, frameId: frame.frameId },
       frameName: 'Kitchen',
       householdName: 'The Parkers',
+      lastLinked: { frameName: 'Kitchen', householdName: 'The Parkers' },
     });
 
     const unlinked = await check(secret);
     expect(unlinked.window.end - unlinked.window.start).toBe(6 * HOUR);
-    expect(await deviceOf(secret)).toMatchObject({
+    const kept = await deviceOf(secret);
+    expect(kept).toMatchObject({
       frame: null,
       frameName: null,
       householdName: null,
+      lastLinked: { frameName: 'Kitchen', householdName: 'The Parkers' },
     });
+    expect((kept['lastLinked'] as { at: unknown }).at).toBeInstanceOf(Timestamp);
+  });
+
+  it('leaves what staff recorded about a frame alone', async () => {
+    const secret = newSecret();
+    await check(secret);
+    const staffRecord = {
+      label: 'Gift 3',
+      notes: 'For the school raffle',
+      holder: { kind: 'gift', name: 'Parkview Primary', orderId: null },
+      shippedAt: Timestamp.fromMillis(1_800_000_000_000),
+      retiredAt: null,
+    };
+    await deviceDoc(secret).update(staffRecord);
+
+    const answer = await check(secret);
+    expect(answer.adb).toBeNull();
+    const stored = await deviceOf(secret);
+    expect(stored).toMatchObject(staffRecord);
+    expect(stored['lastLinked']).toBeUndefined();
   });
 
   it('treats a frame secret that opens nothing as no frame', async () => {

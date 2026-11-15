@@ -126,7 +126,10 @@ void main() {
     await pump(tester, done: ['s1']);
     await open(tester);
     expect(find.text('Brush teeth'), findsOneWidget);
-    expect(find.text(KidRoutineCopy.kidStepOf(2, 3).toUpperCase()), findsOneWidget);
+    expect(
+      find.text(KidRoutineCopy.kidStepOf(2, 3).toUpperCase()),
+      findsOneWidget,
+    );
     expect(
       find.text(KidRoutineCopy.kidNext('Pack school bag')),
       findsOneWidget,
@@ -142,7 +145,10 @@ void main() {
     expect(saved.id, 'morning_${kid}_2026-11-04');
     expect(saved.doneStepIds, ['s1']);
     expect(saved.updatedBy, kid);
-    expect(find.text(KidRoutineCopy.kidStepOf(2, 3).toUpperCase()), findsOneWidget);
+    expect(
+      find.text(KidRoutineCopy.kidStepOf(2, 3).toUpperCase()),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a step shows its note and today’s things to remember, which '

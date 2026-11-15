@@ -64,6 +64,7 @@ import 'account_routes.dart';
 import 'add_to_checkers_providers.dart';
 import 'add_to_pnp_providers.dart';
 import 'add_to_woolworths_providers.dart';
+import 'appearance_providers.dart';
 import 'assistants_providers.dart';
 import 'avatar_providers.dart';
 import 'calendar_v2_providers.dart';
@@ -282,4 +283,5 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   // follows (notifications ADR-0001).
   ...notificationsProviders(),
   ...homeLayoutProviders(),
+  ...appearanceProviders(),
 ];

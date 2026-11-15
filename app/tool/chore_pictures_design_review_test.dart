@@ -17,6 +17,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
 import '../test/support/kid_home_fixture.dart';
+import '../test/support/todo_add_menu.dart';
 import 'review_press.dart';
 
 /// Not a test — chore pictures' half of the screenshot press (todos
@@ -83,8 +84,7 @@ void main() {
   }
 
   Future<void> openSheet(WidgetTester tester, String title) async {
-    await tester.tap(find.text(AppCopy.todosAddTask));
-    await tester.pumpAndSettle();
+    await addFromMenu(tester);
     await tester.enterText(find.byType(TextField).first, title);
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();

@@ -12,6 +12,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/household_fixtures.dart';
+import '../test/support/todo_add_menu.dart';
 import 'review_press.dart';
 
 /// Not a test — where a task with a kid in it shows (todos ADR-0006): the
@@ -84,8 +85,7 @@ void main() {
           brightness: brightness,
           emit: () => emit(parts.repository),
           act: () async {
-            await tester.tap(find.text(AppCopy.todosAddTask));
-            await tester.pumpAndSettle();
+            await addFromMenu(tester);
             await tester.enterText(find.byType(TextField).first, 'Tidy up');
             FocusManager.instance.primaryFocus?.unfocus();
             await tester.pumpAndSettle();

@@ -18,6 +18,7 @@ import '../../../support/fake_todo_repository.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/outside_the_bar.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/todo_add_menu.dart';
 
 void main() {
   setUpAll(tz_data.initializeTimeZones);
@@ -152,8 +153,7 @@ void main() {
   ) async {
     await pump(tester);
     await emit(tester);
-    await tester.tap(find.text(AppCopy.todosAddTask));
-    await tester.pumpAndSettle();
+    await addFromMenu(tester);
 
     Future<void> pick(String name) async {
       final chip = find.descendant(
@@ -174,6 +174,64 @@ void main() {
     await pick('Sam Parent');
     expect(find.text(AppCopy.todosShowsOnChores), findsNothing);
     expect(find.text(AppCopy.todosShowsOnTodoAndChores), findsOneWidget);
+  });
+
+  testWidgets('the + opens a task and a chore, and a tap elsewhere closes it', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(tester);
+    expect(addChoice(AppCopy.todosAddTask), findsNothing);
+
+    await tapAdd(tester);
+    expect(addChoice(AppCopy.todosAddTask), findsOneWidget);
+    expect(addChoice(AppCopy.todosAddChore), findsOneWidget);
+    expect(find.byTooltip(AppCopy.todosAddClose), findsOneWidget);
+
+    await tester.tapAt(const Offset(200, 300));
+    await tester.pumpAndSettle();
+    expect(addChoice(AppCopy.todosAddChore), findsNothing);
+    expect(addButton, findsOneWidget);
+  });
+
+  testWidgets('a chore offers only the kids, and is saved only for one', (
+    tester,
+  ) async {
+    await pump(tester);
+    await emit(tester);
+    await addFromMenu(tester, AppCopy.todosAddChore);
+
+    final picker = find.byType(MemberPicker);
+    expect(find.text(AppCopy.todosAddChore), findsOneWidget);
+    expect(
+      find.descendant(of: picker, matching: find.text(AppCopy.todosAnyone)),
+      findsNothing,
+    );
+    expect(
+      find.descendant(of: picker, matching: find.text('Sam Parent')),
+      findsNothing,
+    );
+
+    await tester.enterText(find.byType(TextField).first, 'Feed the fish');
+    await tester.pump();
+    final save = find.widgetWithText(NestButton, AppCopy.householdSave);
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    expect(tester.widget<NestButton>(save).onPressed, isNull);
+
+    final kid = find.descendant(
+      of: picker,
+      matching: find.text(Fixtures.kid.displayName),
+    );
+    await tester.ensureVisible(kid);
+    await tester.tap(kid);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(save);
+    await tester.tap(save);
+    await tester.pumpAndSettle();
+
+    expect(repository.savedTasks.single.title, 'Feed the fish');
+    expect(repository.savedTasks.single.assigneeIds, [Fixtures.kidMemberId]);
   });
 
   testWidgets('a kid with nothing today still has a section that says so', (

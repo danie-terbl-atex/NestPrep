@@ -232,6 +232,9 @@ void main() {
     // only cancels listeners and opens new ones, whose failures go to their
     // own onError and onto the stars' state.
     '_reopen(show: show))',
+    // A child's routines following the kid home the same way (kid-routines
+    // ADR-0001): listeners cancelled and reopened, failures on their onError.
+    '_reopen());',
     // Family profiles re-reading when a changed grant moves which profiles
     // the viewer may read (family-profiles ADR-0002). `retry` puts any
     // failure on the roster the screen renders.

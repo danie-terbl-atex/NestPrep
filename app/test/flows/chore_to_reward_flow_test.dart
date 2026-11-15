@@ -25,6 +25,7 @@ import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
 import '../support/kid_home_fixture.dart';
 import '../support/pump_screen.dart';
+import '../support/todo_add_menu.dart';
 
 /// Todos phase 2's definition of done, driven through the screens (todos
 /// ADR-0003): a parent puts stars on a chore that a parent checks; the child
@@ -96,8 +97,7 @@ void main() {
       ..emitCompletions(const []);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(AppCopy.todosAddTask));
-    await tester.pumpAndSettle();
+    await tapAdd(tester);
     await tester.enterText(find.byType(TextField).first, 'Tidy your room');
     await tester.pumpAndSettle();
     await tapInSheet(

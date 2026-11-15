@@ -42,6 +42,7 @@ void main() {
         'secondarySoft': colors.secondarySoft,
         for (final (index, wash) in colors.canvasWash.indexed)
           'wash$index': wash,
+        for (final (index, wave) in colors.waves.indexed) 'wave$index': wave,
       };
       final inks = {
         'ink': colors.ink,

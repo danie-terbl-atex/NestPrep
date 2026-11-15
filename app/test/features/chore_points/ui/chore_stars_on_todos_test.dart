@@ -15,6 +15,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../../support/fake_todo_repository.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/todo_add_menu.dart';
 
 /// Stars on the to-dos tab (todos ADR-0003): a parent sets what a chore is
 /// worth and whether they check it first; a starred chore names who earns it;
@@ -71,8 +72,7 @@ void main() {
   }
 
   Future<void> openNewTask(WidgetTester tester) async {
-    await tester.tap(find.text(AppCopy.todosAddTask));
-    await tester.pumpAndSettle();
+    await tapAdd(tester);
     await tester.enterText(find.byType(TextField).first, 'Feed the cat');
     await tester.pump();
   }

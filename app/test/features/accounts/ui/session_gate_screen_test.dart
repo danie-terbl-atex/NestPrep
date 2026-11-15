@@ -53,6 +53,19 @@ void main() {
       findsOneWidget,
       reason: 'the words go with something that moves, not instead of it',
     );
+    expect(
+      find.byType(NestWaves),
+      findsOneWidget,
+      reason: 'the same waves as the sign-in it hands over to',
+    );
+  });
+
+  testWidgets('the waves stay behind a stalled start', (tester) async {
+    await pump(tester);
+    await tester.pump(SessionGateScreen.stallAfter);
+
+    expect(find.text(AppCopy.retry), findsOneWidget);
+    expect(find.byType(NestWaves), findsOneWidget);
   });
 
   testWidgets('a failed session read says so, and offers a retry', (

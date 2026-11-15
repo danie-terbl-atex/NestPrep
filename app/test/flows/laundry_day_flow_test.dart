@@ -17,6 +17,7 @@ import '../support/fake_todo_repository.dart';
 import '../support/household_fixtures.dart';
 import '../support/outside_the_bar.dart';
 import '../support/pump_screen.dart';
+import '../support/todo_add_menu.dart';
 
 /// The one thing todos phase 1 still owed: the routine flow driven through the
 /// screens, not through the controller.
@@ -209,8 +210,7 @@ void main() {
         ],
       );
 
-      await tester.tap(find.text(AppCopy.todosAddTask));
-      await tester.pumpAndSettle();
+      await tapAdd(tester);
       await tester.enterText(
         _fieldLabelled(AppCopy.todosTitleLabel),
         'Sort the whites',

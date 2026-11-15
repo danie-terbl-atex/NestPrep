@@ -89,6 +89,14 @@
       ]
     },
     {
+      "collectionGroup": "kidRoutineTicks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "kidId", "order": "ASCENDING" },
+        { "fieldPath": "occurrenceDate", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "homeCareRoutineTicks",
       "queryScope": "COLLECTION",
       "fields": [

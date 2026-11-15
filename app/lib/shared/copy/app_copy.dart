@@ -12,6 +12,8 @@ export 'account_data_copy.dart';
 // calendar V2 — AI, snap a school letter, the mental-load view: their words
 // live in their own files, reached through this one.
 export 'ai_copy.dart';
+// day or night on this phone (design-system ADR-0024).
+export 'appearance_copy.dart';
 // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
 export 'assistants_copy.dart';
 export 'avatar_copy.dart';
@@ -191,7 +193,10 @@ abstract final class AppCopy {
   static const todosMine = 'Mine';
   static const todosEveryone = 'Everyone';
   static const todosRoutines = 'Routines';
+  static const todosAdd = 'Add';
   static const todosAddTask = 'Add a task';
+  static const todosAddChore = 'Add a chore';
+  static const todosAddClose = 'Close';
   static const todosEditTask = 'Edit task';
   static const todosAddRoutine = 'Add a routine';
   static const todosEditRoutine = 'Edit routine';

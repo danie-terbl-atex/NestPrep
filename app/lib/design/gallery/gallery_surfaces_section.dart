@@ -25,6 +25,7 @@ class GallerySurfacesSection extends StatelessWidget {
                 NestBrandMark(),
               ],
             ),
+            AspectRatio(aspectRatio: 2, child: NestWaves()),
           ],
         ),
         GalleryGroup(

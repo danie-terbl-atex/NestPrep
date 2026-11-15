@@ -12,6 +12,7 @@ class NestColors {
   const NestColors({
     required this.canvas,
     required this.canvasWash,
+    required this.waves,
     required this.surface,
     required this.surfaceTint,
     required this.surfaceGlass,
@@ -50,6 +51,11 @@ class NestColors {
 
   final Color canvas;
   final List<Color> canvasWash;
+
+  /// The sign-in backdrop's waves, from the frame's boot screen: Guava, a
+  /// softer Guava and Butter. Every ink stays AA on each, because the way-in
+  /// scrolls its captions over them (design-system ADR-0023).
+  final List<Color> waves;
   final Color surface;
   final Color surfaceTint;
   final Color surfaceGlass;
@@ -123,6 +129,7 @@ class NestColors {
   static const light = NestColors(
     canvas: oat,
     canvasWash: [oat, oat, oat],
+    waves: [Color(0xFFFCD8DF), Color(0xFFFDE7EB), Color(0xFFF6E0A0)],
     surface: Color(0xFFF5E9D7),
     surfaceTint: Color(0xFFEFE1CC),
     surfaceGlass: Color(0xF2FFF8ED),
@@ -162,6 +169,7 @@ class NestColors {
   static const dark = NestColors(
     canvas: night,
     canvasWash: [night, night, night],
+    waves: [Color(0xFF5C2F3C), Color(0xFF4E2C37), Color(0xFF493F26)],
     surface: Color(0xFF2E252C),
     surfaceTint: Color(0xFF3A2F37),
     surfaceGlass: Color(0xF22E252C),

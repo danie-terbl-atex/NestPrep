@@ -108,11 +108,23 @@ class _TodoScreenState extends State<TodoScreen> {
         onSelect: widget.onSelectTab,
       ),
       floatingAction: controller.canEdit
-          ? NestButton(
-              label: AppCopy.todosAddTask,
-              icon: LucideIcons.plus,
-              isExpanded: false,
-              onPressed: () => _addTask(context, controller, view),
+          ? NestActionMenu(
+              label: AppCopy.todosAdd,
+              closeLabel: AppCopy.todosAddClose,
+              items: [
+                NestActionMenuItem(
+                  label: AppCopy.todosAddTask,
+                  icon: LucideIcons.listTodo,
+                  onPressed: () => _addTask(context, controller, view),
+                ),
+                if (showsChores)
+                  NestActionMenuItem(
+                    label: AppCopy.todosAddChore,
+                    icon: LucideIcons.star,
+                    onPressed: () =>
+                        _addTask(context, controller, view, isChore: true),
+                  ),
+              ],
             )
           : null,
       body: Column(
@@ -215,8 +227,9 @@ class _TodoScreenState extends State<TodoScreen> {
   Future<void> _addTask(
     BuildContext context,
     TodoController controller,
-    HouseholdView view,
-  ) async {
+    HouseholdView view, {
+    bool isChore = false,
+  }) async {
     final draft = await showTaskSheet(
       context: context,
       members: view.members,
@@ -226,6 +239,7 @@ class _TodoScreenState extends State<TodoScreen> {
       },
       today: controller.today,
       canSetStars: view.permissions.isFamily,
+      isChore: isChore,
     );
     if (draft is! TaskSaved) return;
     await controller.saveTask(

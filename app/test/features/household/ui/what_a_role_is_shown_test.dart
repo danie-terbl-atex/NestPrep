@@ -212,7 +212,7 @@ void main() {
 
       expect(find.text('Homework'), findsOneWidget);
       expect(find.text(AppCopy.todosEveryone), findsNothing);
-      expect(find.text(AppCopy.todosAddTask), findsNothing);
+      expect(find.byTooltip(AppCopy.todosAdd), findsNothing);
     });
   });
 

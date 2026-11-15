@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -20,6 +21,7 @@ class NestScaffold extends StatelessWidget {
     this.floatingAction,
     this.bodyPadding = const EdgeInsets.symmetric(horizontal: NestSpace.gutter),
     this.isUnderStatusBar = false,
+    this.backdrop,
     super.key,
   });
 
@@ -38,49 +40,67 @@ class NestScaffold extends StatelessWidget {
   /// controls clear of the system's (`NestPhotoHero`).
   final bool isUnderStatusBar;
 
+  /// Painted edge to edge between the page and the body, under the status
+  /// bar too — the kit's own art only (`NestWaves`), never a screen's.
+  final Widget? backdrop;
+
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final hasHeader = title != null || leading != null || trailing.isNotEmpty;
-    return Scaffold(
-      backgroundColor: nest.colors.canvas,
-      extendBody: true,
-      body: ColoredBox(
-        color: nest.colors.canvas,
-        child: SafeArea(
-          top: !isUnderStatusBar,
-          bottom: false,
-          child: Column(
+    // The status bar follows the app's theme, not the phone's, which differ
+    // when somebody picks Day or Night (design-system ADR-0024).
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: nest.isDark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: nest.colors.canvas,
+        extendBody: true,
+        body: ColoredBox(
+          color: nest.colors.canvas,
+          child: Stack(
+            fit: StackFit.expand,
             children: [
-              if (hasHeader)
-                _NestHeader(
-                  title: title,
-                  eyebrow: eyebrow,
-                  subtitle: subtitle,
-                  leading: leading,
-                  trailing: trailing,
-                ),
-              Expanded(
-                child: Padding(
-                  // A floating action floats *over* the body, so the body
-                  // reserves room for it — otherwise an empty state's message
-                  // ends up underneath it (`FE-14`).
-                  padding: bodyPadding.add(
-                    EdgeInsets.only(
-                      bottom: floatingAction == null
-                          ? 0
-                          : NestSize.controlLarge + NestSpace.lg,
+              if (backdrop case final backdrop?)
+                Positioned.fill(child: backdrop),
+              SafeArea(
+                top: !isUnderStatusBar,
+                bottom: false,
+                child: Column(
+                  children: [
+                    if (hasHeader)
+                      _NestHeader(
+                        title: title,
+                        eyebrow: eyebrow,
+                        subtitle: subtitle,
+                        leading: leading,
+                        trailing: trailing,
+                      ),
+                    Expanded(
+                      child: Padding(
+                        // A floating action floats *over* the body, so the body
+                        // reserves room for it — otherwise an empty state's message
+                        // ends up underneath it (`FE-14`).
+                        padding: bodyPadding.add(
+                          EdgeInsets.only(
+                            bottom: floatingAction == null
+                                ? 0
+                                : NestSize.controlLarge + NestSpace.lg,
+                          ),
+                        ),
+                        child: body,
+                      ),
                     ),
-                  ),
-                  child: body,
+                  ],
                 ),
               ),
             ],
           ),
         ),
+        floatingActionButton: floatingAction,
+        bottomNavigationBar: bottomBar,
       ),
-      floatingActionButton: floatingAction,
-      bottomNavigationBar: bottomBar,
     );
   }
 }

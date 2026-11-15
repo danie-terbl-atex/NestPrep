@@ -17,6 +17,7 @@ class MemberPicker extends StatelessWidget {
     required this.selectedIds,
     required this.onChanged,
     this.anyoneLabel = AppCopy.todosAnyone,
+    this.offersAnyone = true,
     super.key,
   });
 
@@ -24,6 +25,7 @@ class MemberPicker extends StatelessWidget {
   final List<String> selectedIds;
   final ValueChanged<List<String>> onChanged;
   final String anyoneLabel;
+  final bool offersAnyone;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +34,12 @@ class MemberPicker extends StatelessWidget {
       spacing: NestSpace.sm,
       runSpacing: NestSpace.sm,
       children: [
-        NestChip(
-          label: anyoneLabel,
-          isSelected: selectedIds.isEmpty,
-          onTap: () => onChanged(const []),
-        ),
+        if (offersAnyone)
+          NestChip(
+            label: anyoneLabel,
+            isSelected: selectedIds.isEmpty,
+            onTap: () => onChanged(const []),
+          ),
         for (final member in members)
           _MemberChip(
             member: member,

@@ -17,6 +17,8 @@ class NestMotion {
     required this.sheen,
     required this._revolution,
     required this._wobble,
+    required this._swell,
+    required this._sway,
     required this.isReduced,
   });
 
@@ -32,6 +34,8 @@ class NestMotion {
     sheen: Duration(milliseconds: 1400),
     revolution: Duration(seconds: 60),
     wobble: Duration(milliseconds: 1800),
+    swell: Duration(milliseconds: 1100),
+    sway: Duration(seconds: 5),
     isReduced: false,
   );
 
@@ -47,6 +51,8 @@ class NestMotion {
     sheen: Duration.zero,
     revolution: Duration.zero,
     wobble: Duration.zero,
+    swell: Duration.zero,
+    sway: Duration.zero,
     isReduced: true,
   );
 
@@ -85,10 +91,22 @@ class NestMotion {
   Duration get wobble => debugHoldStill ? Duration.zero : _wobble;
   final Duration _wobble;
 
+  /// How long one point of a sign-in wave takes to roll in from its edge
+  /// (design-system ADR-0023). Zero under reduce-motion and in the widget
+  /// suite, so the waves are drawn where they settle.
+  Duration get swell => debugHoldStill ? Duration.zero : _swell;
+  final Duration _swell;
+
+  /// One whole sway of the settled waves, back to where it began. Zero under
+  /// reduce-motion and in the widget suite, like [revolution].
+  Duration get sway => debugHoldStill ? Duration.zero : _sway;
+  final Duration _sway;
+
   final bool isReduced;
 
-  /// Stops the orbit turning so `pumpAndSettle` can settle. Set for the whole
-  /// suite by `test/flutter_test_config.dart`; never set in the app.
+  /// Stops the orbit turning and the waves swaying so `pumpAndSettle` can
+  /// settle. Set for the whole suite by `test/flutter_test_config.dart`; never
+  /// set in the app.
   static bool debugHoldStill = false;
 
   static const undoWindow = Duration(seconds: 5);

@@ -5,6 +5,8 @@ import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../appearance/state/appearance_controller.dart';
+import '../../appearance/ui/appearance_card.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../../subscriptions/state/household_entitlement.dart';
 import '../../subscriptions/ui/premium_membership_card.dart';
@@ -15,7 +17,8 @@ import 'household_people_card.dart';
 import 'household_places.dart';
 
 /// The More tab: the household's people and every place it has beyond the
-/// four tabs in the bar, one tap from anywhere (design-system ADR-0005).
+/// four tabs in the bar, one tap from anywhere (design-system ADR-0005), and
+/// last, day or night for this phone (ADR-0024).
 ///
 /// It reads the household the shell has already loaded, so it has no async
 /// state of its own to wait on — the shell rendered the four states (`FE-08`).
@@ -47,6 +50,10 @@ class HouseholdMoreScreen extends StatelessWidget {
             child: HouseholdPeopleCard(view: view),
           ),
           HouseholdPlaces(view: view),
+          if (context.watch<AppearanceController?>() != null) ...[
+            const SizedBox(height: NestSpace.xxl),
+            const AppearanceCard(),
+          ],
           // Clear of the floating bar, so the last tile can be scrolled into
           // reach (`FE-14`).
           const SizedBox(height: NestSize.bottomBarHeight + NestSpace.huge),

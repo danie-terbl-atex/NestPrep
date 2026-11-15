@@ -62,15 +62,21 @@ Future<TaskDraft?> showTaskSheet({
   required CalendarDate today,
   Task? existing,
   bool canSetStars = false,
+  bool isChore = false,
 }) => showNestSheet<TaskDraft>(
   context: context,
-  title: existing == null ? AppCopy.todosAddTask : AppCopy.todosEditTask,
+  title: switch ((existing, isChore)) {
+    (null, true) => AppCopy.todosAddChore,
+    (null, false) => AppCopy.todosAddTask,
+    _ => AppCopy.todosEditTask,
+  },
   builder: (sheetContext) => _TaskSheetBody(
     members: members,
     routines: routines,
     today: today,
     existing: existing,
     canSetStars: canSetStars,
+    isChore: isChore,
   ),
 );
 
@@ -81,6 +87,7 @@ class _TaskSheetBody extends StatefulWidget {
     required this.today,
     required this.existing,
     required this.canSetStars,
+    required this.isChore,
   });
 
   final List<Member> members;
@@ -90,6 +97,10 @@ class _TaskSheetBody extends StatefulWidget {
 
   /// Family only: stars are a parent's to give (todos ADR-0003).
   final bool canSetStars;
+
+  /// A chore is a task for a kid (todos ADR-0004), so only the kids are
+  /// offered, and one must be picked or it would not be a chore.
+  final bool isChore;
 
   @override
   State<_TaskSheetBody> createState() => _TaskSheetBodyState();
@@ -135,7 +146,7 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
     // not (todos ADR-0003).
     final canSave =
         _title.text.trim().isNotEmpty &&
-        (_points == 0 || _assigneeIds.isNotEmpty);
+        ((_points == 0 && !widget.isChore) || _assigneeIds.isNotEmpty);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -206,7 +217,13 @@ class _TaskSheetBodyState extends State<_TaskSheetBody> {
           ),
           const SizedBox(height: NestSpace.sm),
           MemberPicker(
-            members: widget.members,
+            members: widget.isChore
+                ? [
+                    for (final member in widget.members)
+                      if (member.role == MemberRole.kid) member,
+                  ]
+                : widget.members,
+            offersAnyone: !widget.isChore,
             selectedIds: _assigneeIds,
             onChanged: (ids) => setState(() => _assigneeIds = ids),
           ),

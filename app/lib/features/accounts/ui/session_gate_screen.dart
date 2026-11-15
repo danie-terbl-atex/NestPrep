@@ -70,6 +70,7 @@ class _SessionGateScreenState extends State<SessionGateScreen> {
       onSecondary: controller.signOut,
     );
     return NestScaffold(
+      backdrop: const NestWaves(),
       body: Center(
         child: switch (controller.session) {
           AsyncFailure(:final failure) => failed(AppCopy.failure(failure)),

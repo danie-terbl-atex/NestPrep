@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/accounts/ui/session_gate_screen.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/calendar/model/calendar_view.dart';
 import 'package:nestprep/features/calendar/model/household_event.dart';
@@ -100,6 +101,16 @@ void main() {
         'sign-in-${brightness.name}',
         // It reads the session `pumpScreen` already provides, and nothing else.
         screen: const SignInScreen(),
+        providers: const [],
+        brightness: brightness,
+        emit: () async {},
+      );
+
+  Future<void> sessionGate(WidgetTester tester, Brightness brightness) =>
+      captureScreen(
+        tester,
+        'session-gate-${brightness.name}',
+        screen: heldStill(const SessionGateScreen()),
         providers: const [],
         brightness: brightness,
         emit: () async {},
@@ -415,6 +426,10 @@ void main() {
           await tester.tap(find.text(AppCopy.todosEveryone));
         },
       );
+    });
+
+    testWidgets('getting things ready — ${brightness.name}', (tester) async {
+      await sessionGate(tester, brightness);
     });
 
     testWidgets('sign in — ${brightness.name}', (tester) async {

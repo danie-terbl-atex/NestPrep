@@ -15,6 +15,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../../support/fake_todo_repository.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/todo_add_menu.dart';
 
 /// Pictures on the to-dos tab (todos ADR-0005): the sheet suggests from the
 /// title and never sets one itself; a parent picks, changes or removes it;
@@ -95,8 +96,7 @@ void main() {
   }
 
   Future<void> openNewTask(WidgetTester tester) async {
-    await tester.tap(find.text(AppCopy.todosAddTask));
-    await tester.pumpAndSettle();
+    await tapAdd(tester);
   }
 
   testWidgets('suggests from the title as it is typed, and sets nothing', (

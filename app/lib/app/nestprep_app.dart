@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/appearance/state/appearance_controller.dart';
 import '../features/household/state/pending_invite.dart';
 import '../shared/copy/app_copy.dart';
 import 'app_providers.dart';
@@ -53,6 +54,9 @@ class _NestPrepRouterHostState extends State<_NestPrepRouterHost> {
       title: AppCopy.appName,
       theme: nestThemeData(NestTheme.light()),
       darkTheme: nestThemeData(NestTheme.dark()),
+      themeMode:
+          context.watch<AppearanceController?>()?.appearance.themeMode ??
+          ThemeMode.system,
       routerConfig: _router,
       // Where a push meets the running app (notifications ADR-0001).
       builder: (context, child) =>

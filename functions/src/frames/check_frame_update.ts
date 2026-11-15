@@ -128,6 +128,15 @@ async function recordCheck(
     frame: linked === null ? null : { householdId: linked.home.id, frameId: linked.frameId },
     frameName: linked?.frame.name ?? null,
     householdName: linked?.householdName ?? null,
+    ...(linked === null
+      ? {}
+      : {
+          lastLinked: {
+            frameName: linked.frame.name,
+            householdName: linked.householdName,
+            at: FieldValue.serverTimestamp(),
+          },
+        }),
     ...(input.adb === null ? {} : { adbReported: input.adb }),
     ...(input.serial === null ? {} : { serial: input.serial }),
   };
