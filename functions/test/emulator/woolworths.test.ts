@@ -68,13 +68,29 @@ async function anItem(
     });
 }
 
+async function premium(householdId: string): Promise<void> {
+  await adminDb()
+    .doc(`households/${householdId}/entitlement/current`)
+    .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
+}
+
+async function aPremiumHousehold(): Promise<{ sam: TestUser; householdId: string }> {
+  const { sam, householdId } = await householdOfTwo();
+  await premium(householdId);
+  return { sam, householdId };
+}
+
+async function aPremiumMember(): Promise<TestUser> {
+  return (await aPremiumHousehold()).sam;
+}
+
 beforeEach(async () => {
   await clearFirestore();
 });
 
 describe('linking a Woolworths account', () => {
   it('hands the phone the Cognito client, then links with only the refresh token, sealed', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     expect(await callAs<Status>(sam, 'woolworthsLinkStatus', {})).toEqual({ linked: false });
     const client = await callAs<{ clientId: string; region: string }>(
       sam,
@@ -97,7 +113,7 @@ describe('linking a Woolworths account', () => {
   });
 
   it('refuses a refresh token Cognito will not take', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await expectRefusal(
       callAs(sam, 'woolworthsCompleteLink', { refreshToken: 'not-a-real-token' }),
       'woolworths-link-rejected',
@@ -106,7 +122,7 @@ describe('linking a Woolworths account', () => {
   });
 
   it('refuses while the switch is off, and still answers status and unlink', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await link(sam);
     await adminDb().doc('appConfig/flags').set({ addToWoolworths: false });
     await expectRefusal(callAs(sam, 'woolworthsStartLink', {}), 'woolworths-switched-off');
@@ -119,11 +135,23 @@ describe('linking a Woolworths account', () => {
   it('refuses somebody who is not signed in', async () => {
     await expect(callAs(null, 'woolworthsLinkStatus', {})).rejects.toThrow(/UNAUTHENTICATED/);
   });
+
+  it('links only for a member of a Premium household, and a lapsed one still unlinks', async () => {
+    await expectRefusal(callAs(await signUp(), 'woolworthsStartLink', {}), 'premiumRequired');
+    const free = await householdOfTwo();
+    await expectRefusal(callAs(free.sam, 'woolworthsStartLink', {}), 'premiumRequired');
+    await expectRefusal(link(free.sam), 'premiumRequired');
+    const { sam, householdId } = await aPremiumHousehold();
+    await link(sam);
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    expect((await callAs<Status>(sam, 'woolworthsLinkStatus', {})).linked).toBe(true);
+    expect(await callAs(sam, 'woolworthsUnlink', {})).toEqual({});
+  });
 });
 
 describe('filling the Dash cart', () => {
   it('adds the asked packs, skips the rest, and a second push changes nothing', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam);
     await anItem(householdId, 'milk', MILK);
     await anItem(householdId, 'typed', null);
@@ -146,7 +174,7 @@ describe('filling the Dash cart', () => {
   });
 
   it('a product out of stock, short, or unknown is that item’s skip', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam);
     await anItem(householdId, 'gone', '00010000111');
     await anItem(householdId, 'short', '00020000222');
@@ -165,15 +193,26 @@ describe('filling the Dash cart', () => {
   });
 
   it('refuses a member with no link, a stranger, and a switched-off feature', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await anItem(householdId, 'milk', MILK);
     const body = { householdId, itemIds: ['milk'] };
     await expectRefusal(callAs(sam, 'woolworthsPushToCart', body), 'woolworths-not-linked');
-    const stranger = await signUp();
+    const stranger = await aPremiumMember();
     await link(stranger);
     await expectRefusal(callAs(stranger, 'woolworthsPushToCart', body), 'not-a-member');
     await adminDb().doc('appConfig/flags').set({ addToWoolworths: false });
     await expectRefusal(callAs(sam, 'woolworthsPushToCart', body), 'woolworths-switched-off');
+  });
+
+  it('refuses a free household', async () => {
+    const { sam, householdId } = await aPremiumHousehold();
+    await link(sam);
+    await anItem(householdId, 'milk', MILK);
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    await expectRefusal(
+      callAs(sam, 'woolworthsPushToCart', { householdId, itemIds: ['milk'] }),
+      'premiumRequired',
+    );
   });
 });
 

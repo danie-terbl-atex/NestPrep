@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { knownZoneOr } from '../../calendar_sync/zoned_time';
 import { shiftRef } from '../../nanny_hub/nanny_refs';
 import { readFlag } from '../../shared/feature_flags';
+import { entitlementRef, isPremiumAt } from '../../subscriptions/subscription_documents';
 import { stillMayShare } from './share_caller';
 import { type ShareVerdict, verdictFor } from './share_policy';
 import { shareRef, sharedDocumentRef, tokenRef, type SharedDocumentAddress } from './share_refs';
@@ -34,9 +35,9 @@ export type LookedUp =
 /**
  * Resolves a link's token to a live share, or says why not (documents
  * ADR-0006). Every check runs on every request: the share's status and
- * expiry, its shift, the switch, whether its creator could still share it,
- * and whether the document is still there. A token that matches nothing is
- * `notFound`, which says nothing about why.
+ * expiry, its shift, the switch, the household's Premium, whether its creator
+ * could still share it, and whether the document is still there. A token that
+ * matches nothing is `notFound`, which says nothing about why.
  */
 export async function lookUpShare(store: Firestore, token: string, now: Date): Promise<LookedUp> {
   if (!isShareTokenShape(token)) return { kind: 'notFound' };
@@ -54,11 +55,12 @@ export async function lookUpShare(store: Firestore, token: string, now: Date): P
     ownerMemberId: share.data.ownerMemberId,
     documentId: share.data.documentId,
   };
-  const [creator, document, shiftIsOpen, featureIsOn] = await Promise.all([
+  const [creator, document, shiftIsOpen, featureIsOn, entitlement] = await Promise.all([
     stillMayShare(store, address, share.data.createdByUid),
     sharedDocumentRef(store, address).get(),
     shiftStillOpen(store, householdId, share.data.shiftId),
     readFlag(store, 'documentShareLinks'),
+    entitlementRef(store, householdId).get(),
   ]);
   const metadata = documentShape.safeParse(document.data());
   const verdict = verdictFor(
@@ -67,6 +69,7 @@ export async function lookUpShare(store: Firestore, token: string, now: Date): P
       expiresAt: share.data.expiresAt.toDate(),
       shiftIsOpen,
       featureIsOn,
+      householdHasPremium: isPremiumAt(entitlement.get('premiumUntil'), now),
       creatorMayShare: creator.allowed,
       documentExists: metadata.success,
     },

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/lunch_route.dart';
 import 'package:nestprep/app/meals_route.dart';
+import 'package:nestprep/app/subscription_route.dart';
 import 'package:nestprep/app/two_homes_route.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
@@ -29,9 +31,11 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/data/invite_sharer.dart';
+import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/state/pending_invite.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/household/ui/household_size_lock.dart';
 import 'package:nestprep/features/household/ui/join_invite_screen.dart';
 import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
@@ -57,6 +61,9 @@ import 'package:nestprep/features/recipes/model/recipe.dart';
 import 'package:nestprep/features/recipes/ui/recipe_builder_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_picker_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_screen.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/ui/plan_screen.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -166,7 +173,19 @@ void main() {
 
   late GoRouter router;
 
-  Future<void> pumpApp(WidgetTester tester) async {
+  Entitlement premium() => Entitlement(
+    premiumUntil: DateTime.now().add(const Duration(days: 30)),
+    status: EntitlementStatus.active,
+    willRenew: true,
+  );
+
+  /// A Premium household unless [subscriptions] says otherwise, so every
+  /// route builds its own screen rather than its locked one (subscriptions
+  /// ADR-0009).
+  Future<void> pumpApp(
+    WidgetTester tester, {
+    SubscriptionHarness? subscriptions,
+  }) async {
     router = createAppRouter(session, pendingInvite);
     addTearDown(router.dispose);
     await tester.pumpWidget(
@@ -213,7 +232,8 @@ void main() {
           // (subscriptions ADR-0001); the fake answers for both.
           Provider<ChildProfileDirectory>.value(value: familyProfiles),
           // The store, premium and the shell's entitlement listener.
-          ...SubscriptionHarness().providers,
+          ...(subscriptions ?? SubscriptionHarness(entitlement: premium()))
+              .providers,
           // V2 switches, as in a debug build (foundation ADR-0014).
           featureFlagsProvider(),
           // co-parenting (household ADR-0004): the week reads the linked
@@ -267,6 +287,94 @@ void main() {
     await settle(tester);
 
     expect(find.byType(SignInScreen), findsOneWidget);
+  });
+
+  testWidgets('a page pushed over a tab leaves by the iPhone edge swipe', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    try {
+      await pumpApp(tester);
+      await signInWithAHousehold(tester);
+      router.go(
+        HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
+      );
+      await settle(tester);
+      unawaited(
+        router.push(HouseholdRoute.householdPathFor(Fixtures.householdId)),
+      );
+      await settle(tester);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(HouseholdScreen), findsOneWidget);
+
+      final gesture = await tester.startGesture(const Offset(4, 300));
+      await gesture.moveBy(const Offset(200, 0));
+      await tester.pump();
+      await gesture.moveBy(const Offset(300, 0));
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(HouseholdScreen), findsNothing);
+      expect(find.byType(HouseholdMoreScreen), findsOneWidget);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  testWidgets(
+    'on an iPhone People still switches at once, and back slides away',
+    (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      try {
+        await pumpApp(tester);
+        await signInWithAHousehold(tester);
+        router.go(
+          HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more),
+        );
+        await settle(tester);
+        unawaited(
+          router.push(HouseholdRoute.householdPathFor(Fixtures.householdId)),
+        );
+        await settle(tester);
+
+        await tester.tap(find.text(MoreCopy.peopleProfiles));
+        await settle(tester);
+        expect(find.byType(FamilyScreen), findsOneWidget);
+        expect(find.byType(HouseholdScreen), findsNothing);
+
+        router.pop();
+        await settle(tester);
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump();
+        expect(find.byType(HouseholdMoreScreen), findsOneWidget);
+        expect(find.byType(FamilyScreen), findsNothing);
+      } finally {
+        debugDefaultTargetPlatformOverride = null;
+      }
+    },
+  );
+
+  testWidgets('on Android the same pushed page has no edge swipe, as before', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    await signInWithAHousehold(tester);
+    router.go(HouseholdRoute.pathFor(Fixtures.householdId, HouseholdTab.more));
+    await settle(tester);
+    unawaited(
+      router.push(HouseholdRoute.householdPathFor(Fixtures.householdId)),
+    );
+    await settle(tester);
+
+    final gesture = await tester.startGesture(const Offset(4, 300));
+    await gesture.moveBy(const Offset(500, 0));
+    await tester.pump();
+    await gesture.up();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(HouseholdScreen), findsOneWidget);
   });
 
   group('every tab builds, with the controller it asks for', () {
@@ -650,5 +758,114 @@ void main() {
 
     await signInWithAHousehold(tester);
     expect(find.byType(JoinInviteScreen), findsOneWidget);
+  });
+
+  group('a free household over four people (subscriptions ADR-0008)', () {
+    const id = Fixtures.householdId;
+    final home = HouseholdRoute.homeFor(id);
+    final five = [
+      Fixtures.sam,
+      Fixtures.thandi,
+      Fixtures.kid,
+      Fixtures.kid.copyWith(id: 'm-lulu', displayName: 'Lulu'),
+      Fixtures.kid.copyWith(id: 'm-gogo', displayName: 'Gogo'),
+    ];
+
+    Future<void> openWith(WidgetTester tester, List<Member> members) async {
+      await signInWithAHousehold(tester);
+      households.emitMembers(members);
+      await settle(tester);
+    }
+
+    testWidgets('is stopped on Today and on every tab', (tester) async {
+      await pumpApp(tester, subscriptions: SubscriptionHarness());
+      await openWith(tester, five);
+
+      expect(router.state.uri.path, home);
+      expect(find.byType(HouseholdOverLimitScreen), findsOneWidget);
+      expect(find.byType(TodayScreen), findsNothing);
+      expect(find.text(AccessCopy.overLimitBody(5)), findsOneWidget);
+
+      for (final tab in [
+        HouseholdTab.week,
+        HouseholdTab.todos,
+        HouseholdTab.more,
+      ]) {
+        router.go(HouseholdRoute.pathFor(id, tab));
+        await settle(tester);
+        expect(tester.takeException(), isNull, reason: tab.name);
+        expect(find.byType(HouseholdOverLimitScreen), findsOneWidget);
+      }
+    });
+
+    testWidgets('still reaches the people screen and the plan', (tester) async {
+      await pumpApp(tester, subscriptions: SubscriptionHarness());
+      await openWith(tester, five);
+
+      router.go(HouseholdRoute.householdPathFor(id));
+      await settle(tester);
+      expect(find.byType(HouseholdScreen), findsOneWidget);
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+
+      router.go(SubscriptionRoute.pathFor(id));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(PlanScreen), findsOneWidget);
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+    });
+
+    testWidgets('Manage household opens the people screen, and back from it '
+        'is the stop again', (tester) async {
+      await pumpApp(tester, subscriptions: SubscriptionHarness());
+      await openWith(tester, five);
+
+      await tester.tap(find.text(AccessCopy.overLimitManage));
+      await settle(tester);
+      expect(find.byType(HouseholdScreen), findsOneWidget);
+
+      router.pop();
+      await settle(tester);
+      expect(find.byType(HouseholdOverLimitScreen), findsOneWidget);
+    });
+
+    testWidgets('carries on by itself the moment somebody is removed', (
+      tester,
+    ) async {
+      await pumpApp(tester, subscriptions: SubscriptionHarness());
+      await openWith(tester, five);
+      expect(find.byType(HouseholdOverLimitScreen), findsOneWidget);
+
+      households.emitMembers(five.sublist(0, 4));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+      expect(find.byType(TodayScreen), findsOneWidget);
+    });
+
+    testWidgets('and the moment Premium starts', (tester) async {
+      final subscriptions = SubscriptionHarness();
+      await pumpApp(tester, subscriptions: subscriptions);
+      await openWith(tester, five);
+      expect(find.byType(HouseholdOverLimitScreen), findsOneWidget);
+
+      subscriptions.entitlements.emit(premium());
+      await settle(tester);
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+      expect(find.byType(TodayScreen), findsOneWidget);
+    });
+
+    testWidgets('a Premium household of five is never stopped', (tester) async {
+      await pumpApp(tester);
+      await openWith(tester, five);
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+      expect(find.byType(TodayScreen), findsOneWidget);
+    });
+
+    testWidgets('a free household of four is not either', (tester) async {
+      await pumpApp(tester, subscriptions: SubscriptionHarness());
+      await openWith(tester, five.sublist(0, 4));
+      expect(find.byType(HouseholdOverLimitScreen), findsNothing);
+      expect(find.byType(TodayScreen), findsOneWidget);
+    });
   });
 }

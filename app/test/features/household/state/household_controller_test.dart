@@ -7,7 +7,6 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
-import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
@@ -298,7 +297,6 @@ void main() {
           guardianConsent: true,
         );
         expect(markings().single.$2, {'memberId': 'm-new-1', 'isChild': true});
-        expect(controller.childAwaitingPremium, isNull);
       });
 
       test('adding a grown-up marks nobody', () async {
@@ -338,54 +336,36 @@ void main() {
         );
       });
 
-      test(
-        'a second child on the free tier is still added, and waits on premium',
-        () async {
-          await settle();
-          children.failWritesWith = const PremiumRequiredFailure(
-            PremiumFeature.additionalChild,
-          );
+      test('a second kid is marked like the first', () async {
+        await settle();
+        for (final name in ['Lulu', 'Zinhle']) {
           await controller.addMember(
-            displayName: 'Lulu',
+            displayName: name,
             color: MemberColor.teal,
             role: MemberRole.kid,
             guardianConsent: true,
           );
-
-          expect(repository.added.single.displayName, 'Lulu');
-          expect(
-            controller.actionFailure,
-            isNull,
-            reason: 'the answer is the paywall, not a banner',
-          );
-          expect(
-            controller.childAwaitingPremium,
-            PremiumFeature.additionalChild,
-          );
-
-          await controller.markChildAfterUpgrade();
-          expect(markings().single.$2['memberId'], 'm-new-1');
-          expect(controller.childAwaitingPremium, isNull);
-        },
-      );
-
-      test('declining the paywall leaves the profile unmarked', () async {
-        await settle();
-        children.failWritesWith = const PremiumRequiredFailure(
-          PremiumFeature.additionalChild,
-        );
-        await controller.addMember(
-          displayName: 'Lulu',
-          color: MemberColor.teal,
-          role: MemberRole.kid,
-          guardianConsent: true,
-        );
-        controller.forgetChildAwaitingPremium();
-        await controller.markChildAfterUpgrade();
-        expect(markings(), isEmpty);
+        }
+        expect(markings().map((write) => write.$2['memberId']), [
+          'm-new-1',
+          'm-new-2',
+        ]);
+        expect(controller.actionFailure, isNull);
       });
     },
   );
+
+  test('a profile the rules refuse is a refusal like any other — the screen, '
+      'which knows the plan, decides whether Premium answers it', () async {
+    await settle();
+    repository.failWritesWith = const PermissionDeniedFailure();
+    await controller.addMember(
+      displayName: 'Gogo',
+      color: MemberColor.teal,
+      role: MemberRole.parent,
+    );
+    expect(controller.actionFailure, isA<PermissionDeniedFailure>());
+  });
 
   group('removing somebody shows it happening', () {
     test('the profile is marked removing until the server answers', () async {

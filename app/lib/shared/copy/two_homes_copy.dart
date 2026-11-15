@@ -30,6 +30,10 @@ abstract final class TwoHomesCopy {
   static const adminStartsNote =
       'An admin of this household links homes. Ask them to start.';
   static const linkedChildren = 'Linked children';
+  static const lockedLinksBody =
+      'Nothing new is shared between these homes without Premium. An admin '
+      'can still end a link.';
+  static String lockedLinkFor(String child) => 'Linked for $child';
   static const pastLinks = 'Past links';
   static String withToday(String child, String home) =>
       '$child is with $home today';

@@ -9,9 +9,6 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/flags/feature_flags.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../household/model/household_view.dart';
-import '../../subscriptions/model/premium_feature.dart';
-import '../../subscriptions/state/household_entitlement.dart';
-import '../../subscriptions/ui/premium_gate.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/lunch_tool.dart';
@@ -19,10 +16,9 @@ import 'lunch_flows.dart';
 
 /// The places lunch-box keeps beside the board, last on it and as one grid of
 /// named tiles (lunch-box ADR-0022, the kit's place tiles from design-system
-/// ADR-0005): the Sunday prep list (premium, asked first — ADR-0009), the
-/// library and sharing (for somebody who may change lunches — ADR-0004,
-/// ADR-0005), and the V2 tools, each only while its switch is on (foundation
-/// ADR-0014): the pantry, budget mode (premium, and says so — ADR-0007) and
+/// ADR-0005): the Sunday prep list, the library and sharing (for somebody
+/// who may change lunches — ADR-0004, ADR-0005), and the V2 tools, each only
+/// while its switch is on (foundation ADR-0014): the pantry, budget mode and
 /// kid picks (for an editor) — as [LunchTool] decides for the welcome tour
 /// too (welcome-tour ADR-0001). Every tile pushes; what each place may do is
 /// still that place's and the rules' to say (`FE-04`).
@@ -40,7 +36,6 @@ class LunchToolGrid extends StatelessWidget {
           context.watch<FeatureFlagsController?>()?.flags ??
           const FeatureFlags.defaults(defaultOn: false),
     );
-    final isPremium = context.watch<HouseholdEntitlement>().isPremium;
     final householdId = context.read<HouseholdView>().household.id;
     void open(String path) => context.push(path);
     return NestPlaceGrid(
@@ -86,13 +81,11 @@ class LunchToolGrid extends StatelessWidget {
           TourAnchor(
             target: TourTarget.lunchBudget,
             child: NestPlaceTile(
-              icon: isPremium ? LucideIcons.piggyBank : LucideIcons.award,
+              icon: LucideIcons.piggyBank,
               tint: NestTileTint.guava,
               title: LunchPlanningCopy.openBudget,
-              subtitle: isPremium
-                  ? LunchPlanningCopy.budgetBody
-                  : LunchPlanningCopy.premiumHint,
-              onTap: () => _openBudget(context, householdId),
+              subtitle: LunchPlanningCopy.budgetBody,
+              onTap: () => open(LunchPlanningRoute.budgetPathFor(householdId)),
             ),
           ),
         if (tools.contains(LunchTool.kidPicks))
@@ -105,17 +98,5 @@ class LunchToolGrid extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  /// Premium first, then the screen (subscriptions ADR-0001).
-  static Future<void> _openBudget(
-    BuildContext context,
-    String householdId,
-  ) async {
-    final router = GoRouter.of(context);
-    if (!await ensurePremium(context, feature: PremiumFeature.budgetMode)) {
-      return;
-    }
-    await router.push<void>(LunchPlanningRoute.budgetPathFor(householdId));
   }
 }

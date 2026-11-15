@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { householdRef, memberRef } from '../household/documents';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
+import { premiumRequired } from '../subscriptions/errors';
+import { householdHasPremium } from '../subscriptions/subscription_documents';
 import { refuseNanny, type NannyRefusal } from './errors';
 import { setCarerShiftOnlyInput } from './schemas';
 
@@ -62,6 +64,14 @@ export const setCarerShiftOnly = onCall(async (request) => {
       member.exists ? member.data() : undefined,
     );
     if (refusal !== null) throw refuseNanny(refusal);
+    // Lifting the mark stays free: a lapsed household can book no shift, so
+    // a carer left shift-only could never be let back in.
+    if (
+      input.shiftOnly &&
+      !(await householdHasPremium(transaction, store, input.householdId, new Date()))
+    ) {
+      throw premiumRequired('nannyHub');
+    }
 
     transaction.update(householdRef(store, input.householdId), {
       [`shiftOnly.${input.memberId}`]: input.shiftOnly ? true : FieldValue.delete(),

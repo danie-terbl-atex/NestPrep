@@ -73,6 +73,7 @@ export interface ShareState {
   /** Whether the shift this link is bound to is still open; true when unbound. */
   readonly shiftIsOpen: boolean;
   readonly featureIsOn: boolean;
+  readonly householdHasPremium: boolean;
   /** Whether whoever made it could still make it now. */
   readonly creatorMayShare: boolean;
   readonly documentExists: boolean;
@@ -89,6 +90,7 @@ export function verdictFor(share: ShareState, now: Date): ShareVerdict {
   if (share.status !== 'active') return 'ended';
   if (share.expiresAt.getTime() <= now.getTime()) return 'expired';
   if (!share.featureIsOn || !share.shiftIsOpen) return 'ended';
+  if (!share.householdHasPremium) return 'ended';
   if (!share.creatorMayShare || !share.documentExists) return 'ended';
   return 'open';
 }

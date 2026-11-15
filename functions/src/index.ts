@@ -16,6 +16,8 @@ export { closeHousehold } from './household/close_household';
 export { setMemberRole } from './household/set_member_role';
 // household phase 2 — what each role may see (household ADR-0003)
 export { setMemberAccess } from './household/set_member_access';
+// how many people a household holds, for the free tier's four (subscriptions ADR-0008)
+export { keepHouseholdSize } from './household/keep_household_size';
 export { syncDocumentAccess } from './documents/sync_document_access';
 export { deleteDocumentFolder } from './documents/delete_document_folder';
 

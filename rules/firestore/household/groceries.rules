@@ -24,7 +24,7 @@ match /groceryItems/{itemId} {
     // has none. `GrocerySource` in the app spells the same list.
     && request.resource.data.get('source', 'lunch') in ['lunch', 'pantry']
     && (request.resource.data.get('productMatch', null) == null
-          || groceriesIsProductMatch(householdId, request.resource.data.productMatch))
+          || groceriesMayPick(householdId, request.resource.data.productMatch))
     && isNonEmptyString(request.resource.data.name)
     && isOwnMember(householdId, request.resource.data.addedBy)
     && isServerTime('addedAt')
@@ -79,7 +79,7 @@ match /groceryItems/{itemId} {
   function groceriesIsProductPick(householdId) {
     return onlyChanged(['productMatch'])
       && (request.resource.data.get('productMatch', null) == null
-            || groceriesIsProductMatch(householdId, request.resource.data.productMatch));
+            || groceriesMayPick(householdId, request.resource.data.productMatch));
   }
 
   // The plans bring an unbought planned item's amount and reasons up to
@@ -114,6 +114,13 @@ function groceriesSourceIsValid(data) {
 
 function groceriesIsSourceNote(value) {
   return value is string && value.size() <= 200;
+}
+
+// A shop's product on an item is Premium (subscriptions ADR-0008): setting
+// one needs it, while a typed item, a pick left as it was and clearing a pick
+// stay free, so a lapsed household keeps and tidies what it matched.
+function groceriesMayPick(householdId, pick) {
+  return hasPremium(householdId) && groceriesIsProductMatch(householdId, pick);
 }
 
 // The shape of a pick (the Checkers build contract; groceries ADR-0007). The

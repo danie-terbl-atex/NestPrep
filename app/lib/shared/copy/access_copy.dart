@@ -11,6 +11,18 @@ import 'app_copy.dart';
 /// this too, and `one_home_for_copy_test.dart` holds it to the same rules
 /// (`FE-19`).
 abstract final class AccessCopy {
+  // ---- the free plan's four people (subscriptions ADR-0008) ----
+  static const overLimitTitle = 'This household has outgrown the free plan';
+  static String overLimitBody(int people) =>
+      'The free plan has room for four people. This household has $people. '
+      'To carry on, remove people until there are four, or move to Premium, '
+      'which has room for everybody. Nothing has been deleted.';
+  static const overLimitManage = 'Manage household';
+  static const overLimitAskParent =
+      'Ask a parent to open NestPrep and sort this out. You can also leave '
+      'this household from its people screen.';
+  static const overLimitSeeHousehold = 'See the household';
+
   static String roleName(MemberRole role) => switch (role) {
     MemberRole.admin => 'Admin',
     MemberRole.parent => 'Parent',

@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../household/model/household_view.dart';
+import '../../subscriptions/ui/premium_area.dart';
 import '../data/two_homes_repository.dart';
 import '../model/two_homes_access.dart';
 import '../state/custody_calendar.dart';
 
 /// Puts the linked children's days under the household's week (household
-/// ADR-0004) — when the `coParenting` flag is on and the viewer reads the
-/// calendar. Otherwise it adds nothing, and the week draws no bands: turning
+/// ADR-0004) — when the `coParenting` flag is on, the household has Premium
+/// and the viewer reads the calendar. Otherwise it adds nothing, and the week draws no bands: turning
 /// the flag off hides them without touching a document.
 class CustodyCalendarScope extends StatelessWidget {
   const CustodyCalendarScope({
@@ -29,7 +30,7 @@ class CustodyCalendarScope extends StatelessWidget {
     );
     final canSee = TwoHomesAccess.of(context.watch<HouseholdView>())
         .canSeeSchedule;
-    if (!isOn || !canSee) return child;
+    if (!isOn || !canSee || !hasPremiumIn(context)) return child;
     return ChangeNotifierProvider(
       create: (context) => CustodyCalendar(
         twoHomesRepository: context.read<TwoHomesRepository>(),

@@ -9,6 +9,10 @@ import '../features/home_care/ui/routines_screen.dart';
 import '../features/home_care/ui/shifts_screen.dart';
 import '../features/home_care/ui/stock_screen.dart';
 import '../features/home_care/ui/today_rooms_screen.dart';
+import '../shared/copy/home_care_language_copy.dart';
+import '../shared/copy/home_care_routine_copy.dart';
+import '../shared/copy/home_care_shift_copy.dart';
+import '../shared/copy/home_care_stock_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'home_care_route.dart';
 import 'household_route.dart';
@@ -20,15 +24,24 @@ import 'household_route.dart';
 List<RouteBase> homeCareV2Routes() => [
   GoRoute(
     path: HomeCareRoute.stockPath,
-    builder: (context, state) => const StockScreen(),
+    builder: (context, state) => homeCareArea(
+      title: HomeCareStockCopy.stock,
+      child: const StockScreen(),
+    ),
   ),
   GoRoute(
     path: HomeCareRoute.languagesPath,
-    builder: (context, state) => const LanguagesScreen(),
+    builder: (context, state) => homeCareArea(
+      title: HomeCareLanguageCopy.languages,
+      child: const LanguagesScreen(),
+    ),
   ),
   GoRoute(
     path: HomeCareRoute.shiftsPath,
-    builder: (context, state) => const ShiftsScreen(),
+    builder: (context, state) => homeCareArea(
+      title: HomeCareShiftCopy.shifts,
+      child: const ShiftsScreen(),
+    ),
   ),
   ShellRoute(
     builder: (context, state, child) =>
@@ -46,11 +59,17 @@ List<RouteBase> homeCareV2Routes() => [
     routes: [
       GoRoute(
         path: HomeCareRoute.routinesPath,
-        builder: (context, state) => const RoutinesScreen(),
+        builder: (context, state) => homeCareArea(
+          title: HomeCareRoutineCopy.routines,
+          child: const RoutinesScreen(),
+        ),
       ),
       GoRoute(
         path: HomeCareRoute.todayPath,
-        builder: (context, state) => const TodayRoomsScreen(),
+        builder: (context, state) => homeCareArea(
+          title: HomeCareRoutineCopy.today,
+          child: const TodayRoomsScreen(),
+        ),
       ),
     ],
   ),

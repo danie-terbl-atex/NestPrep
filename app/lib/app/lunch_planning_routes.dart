@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -16,12 +17,16 @@ import '../features/lunch_box/state/lunch_choices_controller.dart';
 import '../features/lunch_box/state/lunch_choose_controller.dart';
 import '../features/lunch_box/state/lunch_pantry_controller.dart';
 import '../features/lunch_box/state/lunch_pantry_groceries.dart';
+import '../features/lunch_box/ui/kid_lunch_premium.dart';
 import '../features/lunch_box/ui/lunch_budget_screen.dart';
 import '../features/lunch_box/ui/lunch_choose_screen.dart';
 import '../features/lunch_box/ui/lunch_kid_picks_screen.dart';
 import '../features/lunch_box/ui/lunch_pantry_screen.dart';
 import '../features/lunch_box/ui/lunch_prices_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
 import '../shared/async/async_state.dart';
+import '../shared/copy/app_copy.dart';
 import '../shared/time/calendar_date.dart';
 import '../shared/time/household_clock.dart';
 import 'household_route.dart';
@@ -70,47 +75,69 @@ List<SingleChildWidget> lunchPlanningShellProviders(GoRouterState state) => [
 List<RouteBase> lunchPlanningRoutes() => [
   GoRoute(
     path: LunchPlanningRoute.pantryPath,
-    builder: (context, state) => const LunchPantryScreen(),
+    builder: (context, state) => const PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: LunchPantryCopy.title,
+      child: LunchPantryScreen(),
+    ),
   ),
   GoRoute(
     path: LunchPlanningRoute.budgetPath,
-    builder: (context, state) => const LunchBudgetScreen(),
+    builder: (context, state) => const PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: LunchBudgetCopy.title,
+      child: LunchBudgetScreen(),
+    ),
   ),
   GoRoute(
     path: LunchPlanningRoute.pricesPath,
-    builder: (context, state) => const LunchPricesScreen(),
+    builder: (context, state) => const PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: LunchBudgetCopy.pricesTitle,
+      child: LunchPricesScreen(),
+    ),
   ),
   GoRoute(
     path: LunchPlanningRoute.picksPath,
-    builder: (context, state) => const LunchKidPicksScreen(),
+    builder: (context, state) => const PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: LunchKidPicksCopy.title,
+      child: LunchKidPicksScreen(),
+    ),
   ),
   GoRoute(
     path: LunchPlanningRoute.choosePath,
-    builder: (context, state) {
-      final childId =
-          state.pathParameters[LunchPlanningRoute.childParameter] ?? '';
-      final lunch = context.read<LunchBoardController>();
-      final child = switch (lunch.board) {
-        AsyncData(:final value) => value.childWeek(childId)?.child,
-        _ => null,
-      };
-      return ChangeNotifierProvider(
-        create: (context) =>
-            LunchChooseController(
-              lunchRepository: context.read<LunchRepository>(),
-              choicesRepository: context.read<LunchChoicesRepository>(),
-              householdId: HouseholdRoute.idFrom(state),
-              childId: childId,
-            )..follow(
-              today: context.read<HouseholdClock>().today,
-              week: lunch.week,
+    builder: (context, state) => PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: LunchKidPicksCopy.chooserTitle,
+      child: Builder(
+        builder: (context) {
+          final childId =
+              state.pathParameters[LunchPlanningRoute.childParameter] ?? '';
+          final lunch = context.read<LunchBoardController>();
+          final child = switch (lunch.board) {
+            AsyncData(:final value) => value.childWeek(childId)?.child,
+            _ => null,
+          };
+          return ChangeNotifierProvider(
+            create: (context) =>
+                LunchChooseController(
+                  lunchRepository: context.read<LunchRepository>(),
+                  choicesRepository: context.read<LunchChoicesRepository>(),
+                  householdId: HouseholdRoute.idFrom(state),
+                  childId: childId,
+                )..follow(
+                  today: context.read<HouseholdClock>().today,
+                  week: lunch.week,
+                ),
+            child: LunchChooseScreen(
+              childName: child?.member.displayName,
+              onDone: () => context.pop(),
             ),
-        child: LunchChooseScreen(
-          childName: child?.member.displayName,
-          onDone: () => context.pop(),
-        ),
-      );
-    },
+          );
+        },
+      ),
+    ),
   ),
 ];
 
@@ -123,22 +150,25 @@ GoRoute kidLunchChooseRoute(KidIdentity? Function() kidOf) => GoRoute(
     final kid = kidOf();
     // The moment between a sign-out and the redirect that follows it.
     if (kid == null) return const SessionGateScreen();
-    return ChangeNotifierProvider(
-      create: (context) => LunchChooseController(
-        lunchRepository: context.read<LunchRepository>(),
-        choicesRepository: context.read<LunchChoicesRepository>(),
-        householdId: kid.householdId,
-        childId: kid.memberId,
-        todays: context
-            .read<HouseholdRepository>()
-            .watchHousehold(kid.householdId)
-            .expand<CalendarDate>(
-              (household) => household == null
-                  ? const []
-                  : [HouseholdClock(household.timeZone).today],
-            ),
+    return KidLunchPremium(
+      householdId: kid.householdId,
+      child: ChangeNotifierProvider(
+        create: (context) => LunchChooseController(
+          lunchRepository: context.read<LunchRepository>(),
+          choicesRepository: context.read<LunchChoicesRepository>(),
+          householdId: kid.householdId,
+          childId: kid.memberId,
+          todays: context
+              .read<HouseholdRepository>()
+              .watchHousehold(kid.householdId)
+              .expand<CalendarDate>(
+                (household) => household == null
+                    ? const []
+                    : [HouseholdClock(household.timeZone).today],
+              ),
+        ),
+        child: const LunchChooseScreen(),
       ),
-      child: const LunchChooseScreen(),
     );
   },
 );

@@ -8,6 +8,7 @@ import '../features/nanny_hub/data/shift_repository.dart';
 import '../features/nanny_hub/state/photo_feed_controller.dart';
 import '../features/nanny_hub/state/photo_library.dart';
 import '../features/nanny_hub/ui/photo_feed_screen.dart';
+import '../shared/copy/nanny_photo_copy.dart';
 import 'household_route.dart';
 import 'nanny_hub_route.dart';
 
@@ -36,6 +37,8 @@ Widget withPhotoFeed(GoRouterState state, {required Widget child}) =>
 /// The parents' live feed of one shift's photos.
 GoRoute photoFeedRoute() => GoRoute(
   path: NannyHubRoute.photosPath,
-  builder: (context, state) =>
-      withPhotoFeed(state, child: const PhotoFeedScreen()),
+  builder: (context, state) => nannyHubArea(
+    title: NannyPhotoCopy.feedTitle,
+    child: withPhotoFeed(state, child: const PhotoFeedScreen()),
+  ),
 );

@@ -32,6 +32,7 @@ import 'package:nestprep/features/nanny_hub/ui/carer_scope.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import 'fake_documents.dart';
 import 'fake_family_profiles.dart';
@@ -42,6 +43,7 @@ import 'fake_nanny_hub.dart';
 import 'fake_nanny_pickups.dart';
 import 'household_fixtures.dart';
 import 'nanny_fixtures.dart';
+import 'premium_entitlement.dart';
 import 'pump_screen.dart';
 
 /// Every fake behind the nanny hub, in one place a test can reach into.
@@ -114,7 +116,9 @@ final class NannyFakes {
 
 /// The hub's real routes under a household, with the fakes behind them — so
 /// a test drives the same shell, controllers and screens the app does, and a
-/// tap that navigates lands on the real next screen (`FE-17`).
+/// tap that navigates lands on the real next screen (`FE-17`). The household
+/// has Premium, which the hub needs (subscriptions ADR-0008), unless a test
+/// says it is [premium] no longer; [also] goes above the routes last.
 Future<void> pumpNannyHub(
   WidgetTester tester,
   NannyFakes fakes, {
@@ -123,6 +127,35 @@ Future<void> pumpNannyHub(
   Brightness brightness = Brightness.light,
   double textScale = 1,
   FeatureFlags flags = TestFlags.on,
+  bool premium = true,
+  List<SingleChildWidget> also = const [],
+}) async {
+  await _pumpNannyRoutes(
+    tester,
+    fakes,
+    location: location,
+    view: view,
+    brightness: brightness,
+    textScale: textScale,
+    flags: flags,
+    premium: premium,
+    also: also,
+  );
+  // The entitlement answers a moment after the route first asks for it; the
+  // screen and its listeners are there from the frame after.
+  if (premium) await tester.pump();
+}
+
+Future<void> _pumpNannyRoutes(
+  WidgetTester tester,
+  NannyFakes fakes, {
+  required String? location,
+  required HouseholdView? view,
+  required Brightness brightness,
+  required double textScale,
+  required FeatureFlags flags,
+  required bool premium,
+  required List<SingleChildWidget> also,
 }) => pumpRouter(
   tester,
   router: GoRouter(
@@ -178,6 +211,8 @@ Future<void> pumpNannyHub(
         now: DateTime.now,
       ),
     ),
+    if (premium) premiumEntitlementProvider(),
+    ...also,
   ],
   view: view ?? NannyFixtures.parentView(),
   brightness: brightness,

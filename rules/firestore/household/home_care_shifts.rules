@@ -21,11 +21,14 @@ match /homeCareShifts/{shiftId} {
     && request.resource.data.endedBy == null
     && request.resource.data.endedVia == null
     && isServerTime('startedAt')
+    && hasPremium(householdId)
     && isOwnMember(householdId, request.resource.data.startedBy)
     && homeCareShiftIsTheirs(householdId, request.resource.data.helperId,
          request.resource.data.startedBy)
     && exists(/databases/$(database)/documents/households/$(householdId)/members/$(request.resource.data.helperId));
 
+  // Clocking out is never Premium: a household that lapses must still be able
+  // to close the shift it left open (subscriptions ADR-0009).
   allow update: if resource.data.status == 'open'
     && onlyChanged(['status', 'endedAt', 'endedBy', 'endedVia'])
     && request.resource.data.status == 'ended'

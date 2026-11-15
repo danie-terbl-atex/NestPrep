@@ -25,9 +25,13 @@ interface Translated {
   translations: { text: string; translated: string }[];
 }
 
-/** Sam the admin and Thandi a helper on the helper defaults — home care `own`. */
-function aHomeWithAHelper(): Promise<Home> {
-  return householdOfTwo('helper');
+/** Sam the admin and Thandi a helper on the helper defaults — home care `own` — with Premium. */
+async function aHomeWithAHelper(): Promise<Home> {
+  const home = await householdOfTwo('helper');
+  await adminDb()
+    .doc(`households/${home.householdId}/entitlement/current`)
+    .set({ premiumUntil: Timestamp.fromMillis(Date.now() + 86_400_000) });
+  return home;
 }
 
 const household = (home: Home): FirebaseFirestore.DocumentReference =>
@@ -86,28 +90,26 @@ describe('translateHomeCareTexts', () => {
     await household(home)
       .collection('homeCareTranslationUsage')
       .doc(monthKey(new Date()))
-      .set({ characters: 19_995 });
+      .set({ characters: 199_995 });
     await expectRefusal(
       translate(home.thandi, home, ['Scrub the bath']),
       'translationLimitReached',
     );
-    expect(await usage(home)).toBe(19_995);
+    expect(await usage(home)).toBe(199_995);
     const cached = await translate(home.thandi, home, ['Open a window']);
     expect(cached.translations[0]?.translated).toBe('[zu] Open a window');
   });
 
-  it('gives a premium household ten times the characters', async () => {
+  it('refuses a free household and a lapsed one before anything is read or spent', async () => {
     const home = await aHomeWithAHelper();
-    await household(home)
-      .collection('homeCareTranslationUsage')
-      .doc(monthKey(new Date()))
-      .set({ characters: 19_995 });
-    await household(home)
-      .collection('entitlement')
-      .doc('current')
-      .set({ premiumUntil: Timestamp.fromMillis(Date.now() + 86_400_000) });
-    await translate(home.thandi, home, ['Scrub the bath']);
-    expect(await usage(home)).toBe(19_995 + 'Scrub the bath'.length);
+    await translate(home.sam, home, ['Open a window']);
+    const spent = await usage(home);
+    const entitlement = household(home).collection('entitlement').doc('current');
+    await entitlement.set({ premiumUntil: Timestamp.fromMillis(Date.now() - 86_400_000) });
+    await expectRefusal(translate(home.thandi, home, ['Open a window']), 'premiumRequired');
+    await entitlement.delete();
+    await expectRefusal(translate(home.sam, home, ['Scrub the bath']), 'premiumRequired');
+    expect(await usage(home)).toBe(spent);
   });
 
   it('refuses when the switch is off', async () => {

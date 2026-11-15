@@ -89,6 +89,14 @@
       ]
     },
     {
+      "collectionGroup": "homeCareShifts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "helperId", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "kidRoutineTicks",
       "queryScope": "COLLECTION",
       "fields": [

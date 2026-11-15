@@ -143,7 +143,7 @@ void main() {
   testWidgets('with every shop switched off the field has no logo', (
     tester,
   ) async {
-    await open(tester, off: {FeatureFlag.addToCheckers, FeatureFlag.addToPnp});
+    await open(tester, off: {FeatureFlag.checkersShop, FeatureFlag.addToPnp});
 
     expect(
       find.byTooltip(CheckersCopy.matchingAsYouType(ProductRetailer.checkers)),

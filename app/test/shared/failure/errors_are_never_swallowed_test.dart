@@ -140,6 +140,13 @@ void main() {
     // shop's row, and coming back from a link screen only reads it again.
     '_load(shop)',
     'controller.refresh(shop)',
+    // Unlinking a shop from *Your shops*: the controller catches its own
+    // `AppFailure` and puts it on that shop's row.
+    'controller.unlink(shop)',
+    // Stopping a share because Premium ended (subscriptions ADR-0009): both
+    // run through `bestEffort`, which reports and returns the failure.
+    '_stopWindow(reporter',
+    'always.stopForLapse(',
     '_openLink(context controller)',
     // A shared link's import opening over the shell. The screen keeps its own
     // failures, and a new share must not wait for the member to leave it.
@@ -177,6 +184,9 @@ void main() {
     // `bestEffort`, which logs a refusal and never throws; leaving the tour
     // must not wait on a write that offline completes only on reconnect.
     '_record(uid)',
+    // A new household's examples (household ADR-0010), through `bestEffort`
+    // too: the household exists whether or not they land.
+    '_seedExamples(created zone)',
     // `signOut` catches its own AppFailure.
     '_failSession(error is AppFailure ? error : UnknownFailure(error))',
     // Controllers that keep a refusal instead of throwing it.

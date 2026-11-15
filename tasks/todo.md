@@ -1,3 +1,25 @@
+# The Premium paywall as a full page (subscriptions ADR-0010, design-system ADR-0025, proposed)
+
+Daniel 2026-11-15: the paywall "looks pretty lame"; the sign-in waves, more colour, great images, most of what Premium gives. He chose a full-screen page and pictures reused plus generated. Plan: `~/.claude/plans/temporal-imagining-floyd.md`. Client only; nothing to deploy.
+
+- [x] Photos: `app/assets/premium/` (bobotie from the catalogue; shops, where we are, nanny hub, home care, two homes, documents generated with Gemini, each looked at; the hallway one redone because the backpack carried a badge)
+- [x] `PremiumHighlight` (the twelve areas of ADR-0008) with copy and look; the plan screen's rows read it
+- [x] `PaywallPage`: waves, gallery opened on the area reached for, coloured area cards, plans and Start Premium in a dock, the offer in the scroll above 130% text; welcome with one celebration
+- [x] Kit: `NestDock`, `NestCard.tint`, both in the gallery
+- [x] Free-plan card: *Room for four people* in place of *One child's profile*
+- [x] Tests: `paywall_page_test.dart` (15), `referral_navigation_test.dart` adapted, 23 files renamed from `PaywallSheet`
+- [x] Pictures: `app/design-review/paywall-*.png` (light, dark, nanny hub, scrolled, welcome, dark at 200%)
+- [x] Godfather: both ADRs, both overviews
+- [x] Release build with the demo logins installed in place on Daniel's iPhone (21:06)
+- [x] Fix (Daniel, on the phone): with Premium not in the store the dock filled the screen and hid the close button. `NestDock` now is only as tall as its content; the failed-load state is a message over a full-width *Try again*; five tests measure the dock and tap the way out. Reinstalled.
+- [ ] Daniel: look at it again on the phone
+- [ ] Daniel: accept or change ADR-0010 and ADR-0025; retake the App Store paywall screenshot
+
+## Review
+
+- `flutter analyze --fatal-infos`: 0 diagnostics. Subscriptions, design, referral and one-thing-per-file suites: 567 pass. Whole suite: 6531 pass, 22 fail on the first full run; 3 were this change and are fixed, the other 19 are in files this change does not touch (app router, app version, store readiness, pantry, mental load, beta numbers, referral contract, handover, the copy, package, swallowed-error and flag guards).
+- The copy of `PremiumFeature.additionalChild` still says the free plan keeps one child. Nothing opens the paywall on it; left because the name is the server's.
+
 # Avatars — Nestlings, photos, Wardrobe, moments, AI creations, keepsakes, Nest portrait (avatars ADR-0001…0006, proposed)
 
 Daniel 2026-11-12: every idea approved; this feature's decisions are the standard where earlier ones disagree. Premium 12 creations/month, free 1 ever; no parent approval; art from our own pipeline. Plan: `~/.claude/plans/fizzy-snacking-pearl.md`. Godfather: `avatars` feature node.
@@ -567,3 +589,22 @@ Daniel 2026-11-13: nothing in the app shows a household is on Premium; come up w
 - Pictures checked in light, dark and dark at 200%: `app/design-review/premium-*.png`.
 - Release build with demo logins installed in place and launched on Daniel's iPhone (2), 2026-11-13 07:32. Not seen on the phone by me.
 - Not committed. ADR-0007 stays proposed until Daniel has looked. Not built: the kid device's home, a one-time welcome to Premium.
+
+# A new household starts with examples (household ADR-0010)
+
+Daniel 2026-11-15: mock data on first registration that shows what each place is for and teaches the app; discovery agents first, then build, then his iPhone.
+
+- [x] Discovery (5 agents): creation path, to-do/calendar/grocery shapes and gestures, every other area, Godfather constraints, starter-content practice
+- [x] ADR-0010 (proposed): the app writes 4 to-dos, 4 events, 6 groceries and a planned dinner as the creator, in one unawaited batch through the rules, under fixed `starter-` ids; repeats end within four weeks; flag `starterContent`
+- [x] `features/starter_content` (model, repository, `StarterExamplesBanner`), `StarterCopy`, `HouseholdDirectory.createHousehold` returns the member id, the gate controller seeds through `bestEffort`
+- [x] The notice on To do, Calendar, Groceries and the Meals week, for an admin, clearing every example at once
+- [x] Tests: content against the rules partials' key lists (5), notice (7), gate controller (+4), integration through the emulator's rules (1)
+- [x] Release build with demo logins installed in place on Daniel's iPhone (2)
+- [x] Godfather: ADR, household overview, work index synonyms, lint, session log
+
+## Review
+
+- `flutter analyze --fatal-infos` clean. Full suite 6528 pass, 20 fail; none are this change (app_router, errors_are_never_swallowed, feature_flags, declared_packages, one_home_for_copy and a temp picker test, all from other in-flight work). The guard no longer names the seed.
+- `integration_test/starter_content_repository_test.dart` passed on the iPhone 17 Simulator against an in-memory suite (firestore, auth, functions): every example accepted, cleared by the admin, a real to-do left alone.
+- Not seen on a screen by me: the sign-up flow was not driven by hand. The demo logins open the existing demo household, which has no examples; only a newly created household gets them.
+- Not committed. Nothing to deploy. ADR-0010 stays proposed until Daniel has looked.

@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
-version: 6
-updated: 2026-11-12
+version: 7
+updated: 2026-11-15
 ---
 NestPrep helps one household run its week: school lunches planned per child, the family calendar, the grocery list, to-dos and chores, the papers you keep needing, and what a nanny or helper needs for a shift. To do that it has to hold information about you and the people you live with, including your children. This policy says what we hold, why, where it is kept, who else touches it, how long we keep it, and what you can do about it.
 
@@ -122,7 +122,7 @@ When you share, we collect:
 
 **Who sees it.** Family members (admins and parents) see the household map. Children in the household see it too, unless a parent turns it off for them. Helpers and carers see it only if a parent grants them the location area; a new helper or carer does not see it. A helper who joined before NestPrep let parents choose area by area keeps seeing everything, the map included, until a parent chooses for them. Anybody who can see the map can see everybody's history in the household.
 
-**What else is involved.** The map is drawn by Google Maps on your phone, which sends Google the area of the map being shown. Street names for a position are worked out by your phone's own system service (Apple on iPhone, Google on Android). We never use location for advertising, never sell it, and never share it outside your household except with the service providers named in section 6.
+**What else is involved.** The map is drawn by Google Maps on your phone, which sends Google the area of the map being shown. Street names for a position are worked out by your phone's own system service (Apple on iPhone, Google on Android). We never use location for advertising, never sell it, and never share it outside your household except with the service providers named in section 6. A shop you search through NestPrep is sent only a rough position, as described under Shops you link below.
 
 ### The nanny hub and home care
 
@@ -167,9 +167,33 @@ A household can ask our AI to make an avatar: a child's drawing turned into a to
 - **A Nest portrait** is drawn from each member's NestPrep character or AI creation. A photo avatar is never used; that member appears as a NestPrep character instead.
 - **Photo avatars are never sent to any AI.**
 - **We keep what was made, and what it was made from.** Unlike our other AI features, a creation is kept in the household as a keepsake: the finished picture beside the original drawing or photo, or for a Build-a-Buddy the words chosen. Everybody in the household can see the keepsakes, and they stay until the family deletes them. If a request is refused or does not work, the drawing or photo you gave it is deleted. A Nest portrait is also added to the household's photo album for its NestPrep Home frames, where the family can delete it like any other photo.
-- **Limits.** A free household can make one creation in all, and a premium household 12 a month. We count them per household, with no content, like the other AI requests.
+- **Limits.** Making a creation is part of Premium: a Premium household can make 12 a month. We count them per household, with no content, like the other AI requests.
 
 A new creation becomes a member's avatar only when they choose to use it.
+
+### Shops you link: Checkers, Pick n Pay and Woolworths
+
+NestPrep can find the things on your grocery list at Checkers Sixty60, Pick n Pay and Woolworths, and put them in **your own cart** at that shop. NestPrep never checks out and never pays; you do that in the shop's own app. NestPrep is not affiliated with these shops. They are not our service providers, and what they receive is handled under their own privacy policies and terms.
+
+- **Looking for products.** Your phone asks the shop directly, without an account. It sends the words of the grocery item or lunch idea, and a rough position so the shop can choose a nearby store and its prices: the centre of the area you chose, or your phone's own position only if you have already allowed NestPrep to use location. Pick n Pay is also sent that area's town and postal code. Woolworths' search is run by its search provider, Constructor.io, which is also sent a random identifier for the search. We do not keep the position. We keep only the product you pick, on the grocery item. When a NestPrep Home frame looks for a product, our servers ask the shop instead of a phone.
+- **Linking your Checkers account.** The mobile number and the one-time SMS code you type are passed through our servers to Checkers. We keep a masked form of the number and the session Checkers gives us, encrypted, for the hour it lasts.
+- **Linking your Pick n Pay account.** You sign in on Pick n Pay's own page inside the app, so we never see your password. We keep the permission Pick n Pay gives us, encrypted, on our servers.
+- **Linking your Woolworths account.** You type your Woolworths email address and password in NestPrep, and your phone sends them straight to Woolworths' own sign-in service, which runs on Amazon Web Services. They never reach our servers and we never store them. We keep a masked form of the email address and the permission Woolworths gives us, encrypted, on our servers.
+- **Filling your cart.** Only when you tap to add to your cart, our servers send the shop the products and quantities you picked, using that link.
+
+Linking a shop is your choice and only links your own account; nobody else in your household can use it. You can unlink a shop at any time under Account, then Your shops, which deletes what we hold for it. Deleting your account does the same.
+
+### AI assistants you connect (Claude and ChatGPT)
+
+An admin or parent can connect **Claude** (made by Anthropic) or **ChatGPT** (made by OpenAI) to one household, and then ask it to read and change the household's calendar and grocery list. No assistant is connected unless you connect it, on a NestPrep page that shows what it will be allowed to do.
+
+- **What a connected assistant can reach**, within what you allowed: the household's name and time zone, its members' first names and whether each is an adult or a child, the events in the household calendar, and the grocery list. It can add, change and delete events, and add, tick, change and remove grocery items.
+- **What it can never reach**: allergies, medication, birthdays, documents and vaults, location, the nanny hub, home care, and events copied from a connected Google or Outlook calendar.
+- **Where that goes.** What the assistant reads is sent to Anthropic or OpenAI, in the United States, and is handled under that company's own terms and privacy policy and the settings of your account with them. They are not our service providers.
+- **Photos stay with the assistant.** If you give an assistant a photo, such as an invitation, it reads the photo itself. NestPrep never receives it.
+- **What we keep**: the connection (who made it, for which household, which assistant, what it may do, and when it was made and last used) and, for 90 days, a record of each change the assistant made. An event or grocery item an assistant added is marked as added through it. The keys the assistant uses are stored only in scrambled form.
+
+You can see and disconnect every assistant under More, then Connected assistants, and family members can switch assistants off for the whole household. Disconnecting stops access straight away. Leaving the household stops your connections working, and deleting your account removes them.
 
 ### Product numbers, crash reports and security checks
 
@@ -186,7 +210,7 @@ Our website sets **no cookies**, uses no analytics and loads nothing from other 
 POPIA allows us to process personal information only when there is a lawful reason. Ours are:
 
 - **To provide the service you signed up for** (performance of our agreement with you): your account, your household, and everything the app does for it.
-- **Your consent**, and for children, the consent of a parent or guardian: children's information, health information such as allergies and medication, live location, connecting outside calendars, notifications, and AI features, avatar creations included. You can withdraw consent at any time by turning the feature off, deleting the information, or deleting your account. Withdrawing does not make earlier processing unlawful.
+- **Your consent**, and for children, the consent of a parent or guardian: children's information, health information such as allergies and medication, live location, connecting outside calendars, linking a shop account, connecting an AI assistant, notifications, and AI features, avatar creations included. You can withdraw consent at any time by turning the feature off, deleting the information, or deleting your account. Withdrawing does not make earlier processing unlawful.
 - **Our legitimate interests**, balanced against yours: keeping the service secure (App Check, rate limits, logs without personal details), fixing crashes, and counting the product numbers described above without identifying anybody.
 - **Legal obligations**: keeping records the law requires, such as records of purchases, and responding to lawful requests.
 
@@ -217,6 +241,11 @@ Our service providers are:
 - **Apple and Google Play**: in-app purchases, subscription management, app integrity checks and push notification delivery.
 - **Google and Microsoft**, only if you connect your Google or Outlook calendar, to read your events.
 
+Some companies receive information only because you chose to use them through NestPrep. They are not our service providers, and they handle what they receive under their own terms and privacy policies:
+
+- **Shoprite Checkers, Pick n Pay and Woolworths**, when NestPrep looks for products at that shop, and when you link your own account there or add to your cart. Woolworths uses Constructor.io for its product search and Amazon Web Services for its sign-in.
+- **Anthropic and OpenAI**, only if you connect Claude or ChatGPT to a household.
+
 Nobody at NestPrep looks at your household's content unless you ask us to help with something and give us permission, or the law requires it.
 
 ## 7. Where your information is kept, and transfers outside South Africa
@@ -228,15 +257,17 @@ Some processing happens outside South Africa:
 - AI features run in the **European Union** (Vertex AI in the Netherlands), apart from lunch-box pictures, drawn on Google's global infrastructure, and product choices, made by TypeSafe in the **United States**. Neither is sent anything about a person.
 - **Avatar creations** are checked in the European Union first. The picture is then drawn by Google's Gemini image model on Google's global infrastructure, so it may be processed outside South Africa and the European Union. That model is sent only a drawing of a creature or an object, a photo of a toy or a pet, NestPrep characters and earlier creations, or a few words, never a photo of a person or a drawing of one.
 - Sign-in, crash reports, app integrity checks and push notifications are run by Google, Apple and Microsoft on their global infrastructure, which may include the United States and Europe.
+- If you connect an **AI assistant**, what it reads from your household is sent to Anthropic or OpenAI in the **United States**.
+- If you use **Woolworths** through NestPrep, its product search and sign-in are run by its own providers, which may process them outside South Africa.
 
-POPIA (section 72) allows these transfers because the recipients are bound by law or by binding agreements that give protection substantially similar to POPIA's, including the European Union's General Data Protection Regulation and Google Cloud's data processing terms, and because they are necessary to provide the service you asked for. Where an avatar picture is drawn outside South Africa and the European Union, Google Cloud's data processing terms bind Google to that protection wherever it processes it, and each creation is one your household chose to make.
+POPIA (section 72) allows these transfers because the recipients are bound by law or by binding agreements that give protection substantially similar to POPIA's, including the European Union's General Data Protection Regulation and Google Cloud's data processing terms, and because they are necessary to provide the service you asked for. What goes to a shop you use or an assistant you connect is sent at your request and with your consent, each time you use it. Where an avatar picture is drawn outside South Africa and the European Union, Google Cloud's data processing terms bind Google to that protection wherever it processes it, and each creation is one your household chose to make.
 
 ## 8. How we keep it safe
 
 - Everything is encrypted in transit and at rest by Google Cloud.
 - Every read and write is checked against your household's roles and grants on our servers, not only in the app, and each of those checks is tested.
 - Vault documents open only behind your phone's own lock, every opening is logged by the server first, and a helper sees no identity document unless granted it.
-- Credentials for connected calendars, purchase records and share-link secrets are held only on our servers, and links and PINs are stored scrambled.
+- Credentials for connected calendars and linked shops, purchase records and share-link secrets are held only on our servers, and links, PINs and the keys of connected assistants are stored scrambled.
 - Our logs record what happened, not who you are: no names, email addresses, tokens or content.
 - App Check and rate limits protect us from automated abuse.
 
@@ -245,7 +276,7 @@ No system is perfectly secure. If a breach affects your personal information, we
 ## 9. How long we keep it
 
 - **While your account exists**, we keep your account and the information in your households so the app can work.
-- **Things you delete** are removed from the live service straight away. A shared position is deleted when you stop sharing or the window ends; a position from a phone that stopped sharing all the time without being paused is treated as not sharing after a day and deleted automatically. Location history and arrivals are deleted automatically after 30 days, or straight away when you delete them. When you leave a household or are removed from it, your position, your history and the arrival notifications that name you are deleted from that household. A photo avatar is deleted when it is changed or removed. Deleting an avatar keepsake deletes both the creation and its original. When a member is removed from a household, or deletes their account, their avatar photos, creations and keepsakes are deleted with them. If you only leave a household, your profile stays there with its avatar until the family removes it. A Nest portrait in the household's photo album belongs to the household and stays until the family deletes it. Invite and kid pairing codes expire and are removed. Document share links stop working when they expire and are then cleared.
+- **Things you delete** are removed from the live service straight away. A shared position is deleted when you stop sharing or the window ends; a position from a phone that stopped sharing all the time without being paused is treated as not sharing after a day and deleted automatically. Location history and arrivals are deleted automatically after 30 days, or straight away when you delete them. When you leave a household or are removed from it, your position, your history and the arrival notifications that name you are deleted from that household. A photo avatar is deleted when it is changed or removed. Deleting an avatar keepsake deletes both the creation and its original. When a member is removed from a household, or deletes their account, their avatar photos, creations and keepsakes are deleted with them. If you only leave a household, your profile stays there with its avatar until the family removes it. A Nest portrait in the household's photo album belongs to the household and stays until the family deletes it. Invite and kid pairing codes expire and are removed. Document share links stop working when they expire and are then cleared. What we hold for a linked shop is deleted when you unlink it, and a Checkers session after its hour. An assistant's connection is deleted when you disconnect it, and the record of what it changed after 90 days.
 - **When you delete your account**, we delete your account, your sign-in, your private vault and its files, your personal details and avatar pictures in each household, and your push tokens. If you were the last adult in a household, the whole household and everything in it is deleted, including its files and kid devices. If other adults remain, the household continues: shared records such as events and lists stay with the household, but your personal details and vault are removed and your profile is no longer linked to you. Deletion from the live service is immediate; copies in Google's backups are overwritten within 30 days.
 - **A data export** you download is available through a link that expires one hour after it is made, and only your own signed-in account can open it; the file is deleted from our servers within two hours, or sooner if you make a new one.
 - **Purchase records** are kept for as long as the law requires for financial records, five years, even after the account is deleted, without the household's content.

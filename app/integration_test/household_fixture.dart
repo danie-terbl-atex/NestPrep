@@ -39,7 +39,7 @@ final class TestHousehold {
   /// Another household, for the next test. The emulator is not cleared between
   /// tests, so a shared household makes one test's leftovers another's mystery.
   Future<TestHousehold> freshHousehold() async {
-    final householdId = await directory.createHousehold(
+    final (:householdId, memberId: _) = await directory.createHousehold(
       name: 'Integration',
       timeZone: 'Africa/Johannesburg',
       adminDisplayName: 'Tester',
@@ -89,7 +89,7 @@ Future<TestHousehold> signInAndCreateAHousehold() async {
     ),
   );
 
-  final householdId = await directory.createHousehold(
+  final (:householdId, memberId: _) = await directory.createHousehold(
     name: 'Integration',
     timeZone: 'Africa/Johannesburg',
     adminDisplayName: 'Tester',

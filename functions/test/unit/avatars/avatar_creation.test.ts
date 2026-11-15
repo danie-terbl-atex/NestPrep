@@ -77,21 +77,24 @@ describe('whether a creation may be drawn', () => {
     expect(gateCreation({ ...open, recipe: 'portrait' })).toBe('notAllowed');
   });
 
-  it('sends a free household to the paywall for a portrait or once its one creation is made', () => {
+  it('sends a free household to the paywall for every recipe, whatever allowance the settings give it', () => {
     const free = { tier: 'free' as const, left: 1, attemptsLeft: 9 };
-    expect(gateCreation({ ...open, standing: free })).toBeNull();
+    expect(gateCreation({ ...open, standing: free })).toBe('premiumRequired');
+    expect(gateCreation({ ...open, recipe: 'buddy', buddyKnown: true, standing: free })).toBe(
+      'premiumRequired',
+    );
+    expect(gateCreation({ ...open, recipe: 'pet', standing: free })).toBe('premiumRequired');
     expect(
       gateCreation({ ...open, recipe: 'portrait', requesterIsFamily: true, standing: free }),
     ).toBe('premiumRequired');
     expect(gateCreation({ ...open, standing: { ...free, left: 0 } })).toBe('premiumRequired');
-    expect(gateCreation({ ...open, standing: { ...open.standing, left: 0 } })).toBe('limitReached');
   });
 
-  it('closes for the month once too many tries were started to finish one more', () => {
-    const free = { tier: 'free' as const, left: 1, attemptsLeft: 3 };
-    expect(gateCreation({ ...open, standing: free })).toBeNull();
-    expect(gateCreation({ ...open, standing: { ...free, attemptsLeft: 2 } })).toBe('limitReached');
-    expect(gateCreation({ ...open, standing: { ...open.standing, attemptsLeft: 0 } })).toBe(
+  it('closes for the month once the allowance is made, or too many tries were started to finish one more', () => {
+    const premium = { tier: 'premium' as const, left: 3, attemptsLeft: 9 };
+    expect(gateCreation({ ...open, standing: { ...premium, left: 0 } })).toBe('limitReached');
+    expect(gateCreation({ ...open, standing: { ...premium, attemptsLeft: 3 } })).toBeNull();
+    expect(gateCreation({ ...open, standing: { ...premium, attemptsLeft: 2 } })).toBe(
       'limitReached',
     );
   });

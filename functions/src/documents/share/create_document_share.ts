@@ -7,6 +7,7 @@ import { parseInput, requireUid } from '../../household/parse_input';
 import { readFlag } from '../../shared/feature_flags';
 import { db } from '../../shared/firestore';
 import { shiftRef } from '../../nanny_hub/nanny_refs';
+import { requirePremium } from '../../subscriptions/premium_gate';
 import { refuseDocument } from '../errors';
 import { sharerIn } from './share_caller';
 import {
@@ -48,6 +49,7 @@ export const createDocumentShare = onCall(async (request) => {
     logger.info('document share refused', { householdId: input.householdId, scope });
     throw refuseDocument('notAllowedToShare');
   }
+  await requirePremium(store, input.householdId, 'documents');
 
   const now = new Date();
   const lifetime = lifetimeOf(input);

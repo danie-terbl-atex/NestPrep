@@ -8,6 +8,8 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/invite_step_controller.dart';
 import 'package:nestprep/features/household/ui/invite_step_screen.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
@@ -17,7 +19,6 @@ import 'package:provider/provider.dart';
 import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/fake_invite_sharer.dart';
-import '../../../support/fake_subscriptions.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/pump_subscriptions.dart';
@@ -273,56 +274,208 @@ void main() {
         });
         expect(sharer.sent.single.text, contains('ABCD2345'));
       });
-
-      testWidgets('a second child on the free tier is invited, then offered '
-          'premium, and marked once it is bought', (tester) async {
-        tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
-        tester.view.devicePixelRatio = 3;
-        addTearDown(tester.view.reset);
-        final premium = SubscriptionHarness();
-        children.failWritesWith = const PremiumRequiredFailure(
-          PremiumFeature.additionalChild,
-        );
-        await pumpRouter(
-          tester,
-          router: GoRouter(
-            routes: [
-              GoRoute(
-                path: '/',
-                builder: (context, state) => const InviteStepScreen(),
-              ),
-            ],
-          ),
-          providers: [
-            ChangeNotifierProvider<InviteStepController>.value(
-              value: controller,
-            ),
-            ...premium.providers,
-          ],
-          view: owingTheStep(),
-        );
-        await tester.pumpAndSettle();
-
-        await inviteAKid(tester);
-
-        expect(find.text('ABCD2345'), findsOneWidget);
-        expect(
-          find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
-          findsOneWidget,
-        );
-
-        await tester.tap(find.text(SubscriptionCopy.subscribe));
-        await tester.pump();
-        premium.store.report([purchased()]);
-        await tester.pumpAndSettle();
-        await tester.tap(find.text(SubscriptionCopy.done).last);
-        await tester.pumpAndSettle();
-
-        expect(children.writes.single.$2, {
-          'memberId': 'm-new-1',
-          'isChild': true,
-        });
-      });
     },
   );
+
+  group('the free plan’s four people (subscriptions ADR-0008)', () {
+    HouseholdView ofFour() => Fixtures.view(
+      members: [
+        Fixtures.sam,
+        Fixtures.thandi,
+        Fixtures.kid,
+        Fixtures.kid.copyWith(id: 'm-gogo', displayName: 'Gogo'),
+      ],
+    );
+
+    late ValueNotifier<HouseholdView> household;
+    final paywall = find.text(
+      SubscriptionCopy.headline(PremiumFeature.householdSize),
+    );
+    final refusal = find.text(AppCopy.failure(const PermissionDeniedFailure()));
+    final activePremium = Entitlement(
+      premiumUntil: DateTime.now().add(const Duration(days: 30)),
+      status: EntitlementStatus.active,
+      willRenew: true,
+    );
+
+    Future<SubscriptionHarness> pumpWithPremiumOnSale(
+      WidgetTester tester, {
+      required HouseholdView view,
+      Entitlement entitlement = Entitlement.free,
+      Brightness brightness = Brightness.light,
+      double scale = 1,
+    }) async {
+      final premium = SubscriptionHarness(entitlement: entitlement);
+      household = ValueNotifier(view);
+      addTearDown(household.dispose);
+      await pumpRouter(
+        tester,
+        router: GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => ValueListenableBuilder(
+                valueListenable: household,
+                builder: (context, view, _) => Provider<HouseholdView>.value(
+                  value: view,
+                  child: const InviteStepScreen(),
+                ),
+              ),
+            ),
+          ],
+        ),
+        providers: [
+          ChangeNotifierProvider<InviteStepController>.value(value: controller),
+          ...premium.providers,
+        ],
+        view: view,
+        brightness: brightness,
+        textScale: scale,
+      );
+      await tester.pumpAndSettle();
+      return premium;
+    }
+
+    testWidgets('at four every option stays, locked, and opens Premium '
+        'instead of the form', (tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      final premium = await pumpWithPremiumOnSale(tester, view: ofFour());
+
+      expect(find.text(AccessCopy.setupHelper), findsOneWidget);
+      expect(find.byIcon(LucideIcons.circlePlus), findsNothing);
+      final locks = tester.widgetList<Icon>(find.byIcon(LucideIcons.lock));
+      expect(locks, hasLength(5));
+      expect(
+        locks.map((lock) => lock.semanticLabel),
+        everyElement(SubscriptionCopy.lockedHint),
+      );
+
+      await tester.tap(find.text(AccessCopy.setupHelper));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TextField), findsNothing);
+      expect(
+        find.text(SubscriptionCopy.headline(PremiumFeature.householdSize)),
+        findsOneWidget,
+      );
+      expect(
+        premium.paywallOpens.opened.single.trigger,
+        PremiumFeature.householdSize,
+      );
+      expect(repository.added, isEmpty);
+    });
+
+    testWidgets('with three there is no lock', (tester) async {
+      await pumpWithPremiumOnSale(tester, view: Fixtures.view());
+      expect(find.byIcon(LucideIcons.lock), findsNothing);
+      expect(find.byIcon(LucideIcons.circlePlus), findsNWidgets(5));
+    });
+
+    testWidgets('a Premium household of four invites a fifth', (tester) async {
+      await pumpWithPremiumOnSale(
+        tester,
+        view: ofFour(),
+        entitlement: Entitlement(
+          premiumUntil: DateTime.now().add(const Duration(days: 30)),
+          status: EntitlementStatus.active,
+          willRenew: true,
+        ),
+      );
+      expect(find.byIcon(LucideIcons.lock), findsNothing);
+
+      await inviteSomebody(
+        tester,
+        option: AccessCopy.setupHelper,
+        name: 'Nomsa',
+      );
+      expect(repository.added.single.displayName, 'Nomsa');
+    });
+
+    testWidgets('a fifth the rules refuse, because somebody else added the '
+        'fourth while the form was open, is answered with Premium, and '
+        'nobody is invited', (tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      final premium = await pumpWithPremiumOnSale(
+        tester,
+        view: Fixtures.view(),
+      );
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await tester.tap(find.text(AccessCopy.setupHelper));
+      await tester.pumpAndSettle();
+      household.value = ofFour();
+      await tester.enterText(find.byType(TextField), 'Nomsa');
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(NestButton, AccessCopy.inviteSend));
+      await tester.pumpAndSettle();
+
+      expect(paywall, findsOneWidget);
+      expect(
+        premium.paywallOpens.opened.single.trigger,
+        PremiumFeature.householdSize,
+      );
+      expect(controller.actionFailure, isNull);
+      expect(sharer.sent, isEmpty);
+    });
+
+    testWidgets('with room left, a refusal is the ordinary one — the plan is '
+        'not why', (tester) async {
+      final premium = await pumpWithPremiumOnSale(
+        tester,
+        view: Fixtures.view(),
+      );
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await inviteSomebody(
+        tester,
+        option: AccessCopy.setupHelper,
+        name: 'Nomsa',
+      );
+
+      expect(refusal, findsOneWidget);
+      expect(paywall, findsNothing);
+      expect(premium.paywallOpens.opened, isEmpty);
+    });
+
+    testWidgets('a Premium household that is refused is told so, in the '
+        'ordinary words, and is never sold the plan it has', (tester) async {
+      final premium = await pumpWithPremiumOnSale(
+        tester,
+        view: ofFour(),
+        entitlement: activePremium,
+      );
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await inviteSomebody(
+        tester,
+        option: AccessCopy.setupHelper,
+        name: 'Nomsa',
+      );
+
+      expect(refusal, findsOneWidget);
+      expect(paywall, findsNothing);
+      expect(premium.paywallOpens.opened, isEmpty);
+      expect(controller.actionFailure, isA<PermissionDeniedFailure>());
+    });
+
+    testWidgets('the locked options hold at phone width in dark at 200% text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pumpWithPremiumOnSale(
+        tester,
+        view: ofFour(),
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await tester.scrollUntilVisible(find.text(AccessCopy.setupChild), 200);
+      expect(tester.takeException(), isNull);
+    });
+  });
 }

@@ -757,6 +757,8 @@ service cloud.firestore {
 
       // `current.allowed: false` stops every assistant in this household on its
       // next call. Absent means allowed. Family sets it, stamped with who and when.
+      // Switching it on needs Premium (subscriptions ADR-0009); switching it off
+      // never does, so a lapsed household can still say no.
       match /assistantSettings/{settingsId} {
         allow read: if isInHousehold(householdId);
         allow create, update: if isFamily(householdId)
@@ -764,6 +766,7 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(['allowed', 'updatedBy', 'updatedAt'])
           && request.resource.data.keys().hasAll(['allowed', 'updatedBy', 'updatedAt'])
           && request.resource.data.allowed is bool
+          && (request.resource.data.allowed == false || hasPremium(householdId))
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt');
         allow delete: if false;
@@ -816,6 +819,29 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
       }
 
+      function avatarsChoiceNow(memberId) {
+        return resource != null && 'choice' in resource.data
+          ? resource.data.choice
+          : get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))
+              .data.get('look', {});
+      }
+
+      // Free: a Nestling, the initial or a photo, which the Functions put on. What
+      // is worn, and a made picture as the base, change only with Premium; a choice
+      // that carries both over as they are stored is free (subscriptions ADR-0008).
+      // Taking something off is free too: a face accessory cannot follow its wearer
+      // from a Nestling to the initial or a photo, and the Functions revert a choice
+      // that carries it there. Putting it back on is a change, so it needs Premium.
+      function avatarsKeepsPremiumParts(memberId) {
+        let now = avatarsChoiceNow(memberId);
+        let next = request.resource.data.choice;
+        let baseNow = now.get('base', null) == null ? 'initial' : now.base;
+        let worn = next.wear.diff(now.get('wear', {}));
+        return worn.addedKeys().size() == 0
+          && worn.changedKeys().size() == 0
+          && (next.base == baseNow || !next.base.matches('^image:.*'));
+      }
+
       match /memberAvatars/{memberId} {
         allow read: if isInHousehold(householdId);
 
@@ -824,6 +850,7 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(['choice', 'pendingPhoto', 'updatedBy', 'updatedAt'])
           && request.resource.data.keys().hasAll(['choice', 'updatedBy', 'updatedAt'])
           && avatarsIsChoice(request.resource.data.choice)
+          && (avatarsKeepsPremiumParts(memberId) || hasPremium(householdId))
           && (!('pendingPhoto' in request.resource.data)
               || avatarsIsHash(request.resource.data.pendingPhoto))
           && isOwnMember(householdId, request.resource.data.updatedBy)
@@ -834,6 +861,7 @@ service cloud.firestore {
                .hasOnly(['choice', 'pendingPhoto', 'owned', 'updatedBy', 'updatedAt'])
           && !changedKeys().hasAny(['owned'])
           && avatarsIsChoice(request.resource.data.choice)
+          && (avatarsKeepsPremiumParts(memberId) || hasPremium(householdId))
           && (!('pendingPhoto' in request.resource.data)
               || avatarsIsHash(request.resource.data.pendingPhoto))
           && isOwnMember(householdId, request.resource.data.updatedBy)
@@ -849,6 +877,7 @@ service cloud.firestore {
         allow read: if isInHousehold(householdId);
 
         allow create: if avatarsActsFor(request.resource.data.memberId)
+          && hasPremium(householdId)
           && request.resource.data.keys()
                .hasOnly(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
           && request.resource.data.keys()
@@ -894,6 +923,7 @@ service cloud.firestore {
         allow read: if isInHousehold(householdId);
 
         allow create: if avatarsActsFor(request.resource.data.memberId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['memberId', 'recipe', 'style', 'buddy', 'extra', 'inboxId', 'requestedBy',
                 'requestedAt'])
@@ -1221,6 +1251,7 @@ service cloud.firestore {
           allow read: if mayManageVault() || isGrantedVault();
 
           allow create: if mayManageVault()
+            && hasPremium(householdId)
             && request.resource.data.keys().hasOnly(
                  ['name', 'contentType', 'sizeBytes', 'uploadedBy', 'uploadedAt',
                   'tags', 'expiresOn'])
@@ -1232,6 +1263,7 @@ service cloud.firestore {
             && isServerTime('uploadedAt');
 
           allow update: if mayManageVault()
+            && hasPremium(householdId)
             && onlyChanged(['name', 'tags', 'expiresOn'])
             && isDocumentName(request.resource.data.name)
             && hasDocumentDetails();
@@ -1248,6 +1280,7 @@ service cloud.firestore {
             || (isMember(householdId) && uid() == granteeUid);
 
           allow create: if mayManageVault()
+            && hasPremium(householdId)
             && request.resource.data.keys().hasOnly(['memberId', 'grantedBy', 'grantedAt'])
             && request.resource.data.memberId != ownerMemberId
             && granteeUid in householdData(householdId).members
@@ -1283,6 +1316,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'documents');
 
         allow create: if isAdmin(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'createdBy', 'createdAt'])
           && isDocumentName(request.resource.data.name)
@@ -1290,6 +1324,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if isAdmin(householdId)
+          && hasPremium(householdId)
           && onlyChanged(['name'])
           && isDocumentName(request.resource.data.name);
 
@@ -1307,6 +1342,7 @@ service cloud.firestore {
         // `tags` and `expiresOn` are optional and additive (documents
         // ADR-0005): rows written before them have neither (BE-10).
         allow create: if canEdit(householdId, 'documents')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
                 'uploadedAt', 'tags', 'expiresOn'])
@@ -1321,6 +1357,7 @@ service cloud.firestore {
         // Renaming, moving between folders, tagging and dating; the bytes never
         // change, so neither does anything describing them.
         allow update: if canEdit(householdId, 'documents')
+          && hasPremium(householdId)
           && onlyChanged(['name', 'folderId', 'tags', 'expiresOn'])
           && isDocumentName(request.resource.data.name)
           && isNonEmptyString(request.resource.data.folderId)
@@ -1371,6 +1408,10 @@ service cloud.firestore {
       // member (a kid device's own is the profile it is bound to, accounts
       // ADR-0004). A person with their own login always reads and writes their own
       // profile and medication, whatever the grant: it is about them.
+      //
+      // Recording allergies and medication is Premium (subscriptions ADR-0008): a
+      // free household writes every other field of a profile, and what a lapsed
+      // household recorded stays, readable by these rules and unchanged.
 
       match /familyProfiles/{memberId} {
         // Allergies live here rather than behind `medical`: whoever the household
@@ -1384,16 +1425,19 @@ service cloud.firestore {
           && memberExists(householdId, memberId)
           && isFamilyProfile(request.resource.data)
           && !request.resource.data.get('isChild', false)
+          && (familyProfileRecordsNoAllergy(request.resource.data) || hasPremium(householdId))
           && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
 
-        // Who is a child is what the free tier counts, and rules cannot count:
-        // `isChild` is written only by `setChildProfile`, which counts in a
-        // transaction (subscriptions ADR-0001). A client write leaves it as it is.
+        // `isChild` is written only by `setChildProfile`, with the parent's consent
+        // in the same transaction (accounts ADR-0005). A client write leaves it as
+        // it is.
         // The school is checked only when it moves: a school deleted after a
         // child pointed at it must not lock the rest of that child's profile.
         allow update: if mayEditProfile(householdId, memberId)
           && isFamilyProfile(request.resource.data)
           && request.resource.data.get('isChild', false) == resource.data.get('isChild', false)
+          && (familyProfileKeepsAllergies(request.resource.data, resource.data)
+              || hasPremium(householdId))
           && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
               || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
 
@@ -1406,10 +1450,12 @@ service cloud.firestore {
 
         allow create: if mayEditProfile(householdId, memberId)
           && memberExists(householdId, memberId)
-          && isMemberHealth(request.resource.data);
+          && isMemberHealth(request.resource.data)
+          && hasPremium(householdId);
 
         allow update: if mayEditProfile(householdId, memberId)
-          && isMemberHealth(request.resource.data);
+          && isMemberHealth(request.resource.data)
+          && hasPremium(householdId);
 
         allow delete: if false;
       }
@@ -1456,6 +1502,17 @@ service cloud.firestore {
         return canView(householdId, 'medical')
           || (hasOwnOnly(householdId, 'medical') && memberId == ownMemberId(householdId))
           || hasClaimed(householdId, memberId);
+      }
+
+      // The two allergy fields, compared whole: a free household's rewrite of a
+      // profile that carries them over as they are stored changes nothing here.
+      function familyProfileRecordsNoAllergy(data) {
+        return data.get('allergies', {}) == {} && data.get('otherAllergies', {}) == {};
+      }
+
+      function familyProfileKeepsAllergies(after, before) {
+        return after.get('allergies', {}) == before.get('allergies', {})
+          && after.get('otherAllergies', {}) == before.get('otherAllergies', {});
       }
 
       function memberExists(householdId, memberId) {
@@ -1566,7 +1623,7 @@ service cloud.firestore {
           // has none. `GrocerySource` in the app spells the same list.
           && request.resource.data.get('source', 'lunch') in ['lunch', 'pantry']
           && (request.resource.data.get('productMatch', null) == null
-                || groceriesIsProductMatch(householdId, request.resource.data.productMatch))
+                || groceriesMayPick(householdId, request.resource.data.productMatch))
           && isNonEmptyString(request.resource.data.name)
           && isOwnMember(householdId, request.resource.data.addedBy)
           && isServerTime('addedAt')
@@ -1621,7 +1678,7 @@ service cloud.firestore {
         function groceriesIsProductPick(householdId) {
           return onlyChanged(['productMatch'])
             && (request.resource.data.get('productMatch', null) == null
-                  || groceriesIsProductMatch(householdId, request.resource.data.productMatch));
+                  || groceriesMayPick(householdId, request.resource.data.productMatch));
         }
 
         // The plans bring an unbought planned item's amount and reasons up to
@@ -1656,6 +1713,13 @@ service cloud.firestore {
 
       function groceriesIsSourceNote(value) {
         return value is string && value.size() <= 200;
+      }
+
+      // A shop's product on an item is Premium (subscriptions ADR-0008): setting
+      // one needs it, while a typed item, a pick left as it was and clearing a pick
+      // stay free, so a lapsed household keeps and tidies what it matched.
+      function groceriesMayPick(householdId, pick) {
+        return hasPremium(householdId) && groceriesIsProductMatch(householdId, pick);
       }
 
       // The shape of a pick (the Checkers build contract; groceries ADR-0007). The
@@ -1750,6 +1814,7 @@ service cloud.firestore {
           || hasOwnOnly(householdId, 'homeCare');
 
         allow create: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'kind', 'createdBy', 'createdAt'])
           && homeCareIsName(request.resource.data.name, 60)
@@ -1758,6 +1823,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && onlyChanged(['name', 'kind'])
           && homeCareIsName(request.resource.data.name, 60)
           && homeCareIsRoomKind(request.resource.data.kind);
@@ -1770,6 +1836,7 @@ service cloud.firestore {
           || hasOwnOnly(householdId, 'homeCare');
 
         allow create: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'kind', 'whereKept', 'note', 'keepFromChildren',
                 'keepFromPets', 'createdBy', 'createdAt'])
@@ -1778,6 +1845,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && onlyChanged(
                ['name', 'kind', 'whereKept', 'note', 'keepFromChildren', 'keepFromPets'])
           && homeCareIsProduct(request.resource.data);
@@ -1787,6 +1855,7 @@ service cloud.firestore {
         // into low puts the product on the grocery list (home-care ADR-0005).
         allow update: if (canView(householdId, 'homeCare')
                             || hasOwnOnly(householdId, 'homeCare'))
+          && hasPremium(householdId)
           && onlyChanged(['stock', 'stockChangedBy', 'stockChangedAt'])
           && request.resource.data.stock in ['full', 'half', 'low', 'out']
           && isOwnMember(householdId, request.resource.data.stockChangedBy)
@@ -1807,6 +1876,7 @@ service cloud.firestore {
         allow read: if homeCareCanSeeJob(householdId, resource.data);
 
         allow create: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['title', 'roomId', 'helperId', 'dueDate', 'note', 'productIds',
                 'steps', 'doneStepIds', 'beforePhoto', 'marks', 'afterPhoto',
@@ -1830,6 +1900,7 @@ service cloud.firestore {
         // change is then only a question about the fields — the rules stop at a
         // thousand expressions, and asking for the grant four times reaches it.
         allow update: if isServerTime('updatedAt')
+          && hasPremium(householdId)
           && homeCareMayChangeJob(householdId, jobId, resource.data,
                request.resource.data, changedKeys());
 
@@ -1917,6 +1988,7 @@ service cloud.firestore {
         allow create: if request.resource.data.keys().hasOnly(['status', 'by', 'note', 'at'])
           && isOwnMember(householdId, request.resource.data.by)
           && isServerTime('at')
+          && hasPremium(householdId)
           && homeCareMatchesTheJobAfter(householdId, jobId, eventId);
 
         allow update: if false;
@@ -2025,6 +2097,7 @@ service cloud.firestore {
                ['en', 'af', 'zu', 'xh', 'st', 'tn', 'nso', 'ts', 'sn', 'ny']
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt')
+          && hasPremium(householdId)
           && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))
           && (canEdit(householdId, 'homeCare')
                 || (isOwnMember(householdId, memberId)
@@ -2059,6 +2132,7 @@ service cloud.firestore {
         allow read: if homeCareCanSeeRoutine(householdId, resource.data);
 
         allow create: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
                 'recurrence', 'createdBy', 'createdAt'])
@@ -2067,6 +2141,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'homeCare')
+          && hasPremium(householdId)
           && onlyChanged(
                ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
                 'recurrence'])
@@ -2095,6 +2170,7 @@ service cloud.firestore {
                + request.resource.data.occurrenceDate
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt')
+          && hasPremium(householdId)
           && homeCareMayTickRoutine(
                householdId,
                homeCareRoutineData(householdId, request.resource.data.routineId),
@@ -2165,11 +2241,14 @@ service cloud.firestore {
           && request.resource.data.endedBy == null
           && request.resource.data.endedVia == null
           && isServerTime('startedAt')
+          && hasPremium(householdId)
           && isOwnMember(householdId, request.resource.data.startedBy)
           && homeCareShiftIsTheirs(householdId, request.resource.data.helperId,
                request.resource.data.startedBy)
           && exists(/databases/$(database)/documents/households/$(householdId)/members/$(request.resource.data.helperId));
 
+        // Clocking out is never Premium: a household that lapses must still be able
+        // to close the shift it left open (subscriptions ADR-0009).
         allow update: if resource.data.status == 'open'
           && onlyChanged(['status', 'endedAt', 'endedBy', 'endedVia'])
           && request.resource.data.status == 'ended'
@@ -2257,6 +2336,18 @@ service cloud.firestore {
               || request.resource.data.get('guardianConsent', null) != null);
       }
 
+      // The free plan has room for four people, everybody counted (subscriptions
+      // ADR-0008). `keepHouseholdSize` writes the count a moment after each
+      // profile, so two made at once can both pass at three: the app's over-the-
+      // limit lock is what answers that fifth. A household from before the count
+      // has no document until its next profile or the backfill, and passes once.
+      function hasRoomForAnotherMember() {
+        let size = /databases/$(database)/documents/households/$(householdId)/entitlement/size;
+        return hasPremium(householdId)
+          || !exists(size)
+          || get(size).data.get('count', 0) < 4;
+      }
+
       match /members/{memberId} {
         // A kid device reads its own profile and nobody else's — not the list
         // (accounts ADR-0003).
@@ -2275,7 +2366,8 @@ service cloud.firestore {
           && isGrant(request.resource.data.get('access', null))
           && request.resource.data.claimedBy == null
           && isServerTime('createdAt')
-          && hasMemberGuardianConsentForRole();
+          && hasMemberGuardianConsentForRole()
+          && hasRoomForAnotherMember();
 
         // A claimed member's role also lives in the household's uid→role map,
         // and one write cannot touch two documents — so changing it is
@@ -2440,7 +2532,9 @@ service cloud.firestore {
       //
       // The document id is the member id, so `isOwnMember` on the path is the whole
       // authorisation story: nobody can write somebody else's position, and an
-      // admin's only power is delete.
+      // admin's only power is delete. Sharing is premium whatever the mode
+      // (subscriptions ADR-0008); deleting never is, so a lapsed household can
+      // always take its pins down.
       match /memberLocations/{memberId} {
         // No expiry check here: Firestore fails a whole listener when one document
         // in it is denied, and a listener's bounds are fixed when it opens. The
@@ -2448,6 +2542,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'location');
 
         allow create, update: if isOwnMember(householdId, memberId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil', 'mode',
                 'batteryPercent', 'charging', 'motion'])
@@ -2456,7 +2551,7 @@ service cloud.firestore {
           && request.resource.data.accuracyMetres >= 0
           && isServerTime('reportedAt')
           && isLiveLocationDevice(request.resource.data)
-          && isLiveLocationLease(householdId, request.resource.data)
+          && isLiveLocationLease(request.resource.data)
           && isLiveLocationPaced();
 
         allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
@@ -2471,19 +2566,18 @@ service cloud.firestore {
         }
 
         // A window share ends within four hours, mirrored in
-        // `LiveLocationRepository.longestShare`. Continuous sharing is premium and a
-        // lease the device renews on every write, so a phone that dies stops
-        // reading as anywhere within a day (live-location ADR-0003). Installed
-        // phase-1 apps write no `mode`, which is a window.
-        function isLiveLocationLease(householdId, data) {
+        // `LiveLocationRepository.longestShare`. Continuous sharing is a lease the
+        // device renews on every write, so a phone that dies stops reading as
+        // anywhere within a day (live-location ADR-0003). Installed phase-1 apps
+        // write no `mode`, which is a window.
+        function isLiveLocationLease(data) {
           let until = data.sharingUntil;
           let mode = data.get('mode', 'window');
           return until is timestamp
             && until > request.time
             && ((mode == 'window' && until < request.time + duration.value(4, 'h'))
                 || (mode == 'continuous'
-                    && until < request.time + duration.value(25, 'h')
-                    && hasPremium(householdId)));
+                    && until < request.time + duration.value(25, 'h')));
         }
 
         // Ten seconds between writes caps a runaway client's bill. Switching
@@ -2570,11 +2664,9 @@ service cloud.firestore {
       // allergen codes, because rules cannot look an item up per slot; the
       // library is where those codes are kept honest.
       //
-      // Free and premium (lunch-box ADR-0009, subscriptions ADR-0001): a free
-      // household plans one child's week — the child `entitlement/freeChild` names
-      // — and marks nothing eaten and ticks no prep list. Premium plans every
-      // child, learns from what came home and keeps the Sunday prep list. Only
-      // writes are gated: a household that lapses reads everything it made.
+      // Premium (subscriptions ADR-0008, ADR-0009): every create and update here
+      // needs `hasPremium`. Reads and deletes do not: a household that lapses
+      // reads everything it made.
 
       // The household's library. Never deleted — put away instead — because past
       // weeks' eaten-or-not history names its items.
@@ -2582,6 +2674,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'lunch');
 
         allow create: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && isLunchItem(request.resource.data)
           && request.resource.data.get('archived', false) == false
           && isOwnMember(householdId, request.resource.data.addedBy)
@@ -2591,6 +2684,7 @@ service cloud.firestore {
         // Its slot never moves: boxes hold it under that slot's key. Neither
         // recipe link is in the list, so a link is set once and never changes.
         allow update: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && onlyChanged(['name', 'nameKey', 'allergens', 'prepAhead', 'prepNote', 'archived'])
           && isLunchItem(request.resource.data)
           && lunchItemHoldsItsRecipe(householdId, request.resource.data);
@@ -2609,10 +2703,9 @@ service cloud.firestore {
         // an update not for the create's (the 1000-expression limit, ADR-0010).
         allow create: if resource == null
           && canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && isLunchPlan(planId, request.resource.data)
           && isLunchChild(householdId, request.resource.data.childId)
-          && lunchPlansFor(householdId, request.resource.data.childId)
-          && (request.resource.data.get('feedback', {}).size() == 0 || hasPremium(householdId))
           && lunchSlotsAreSafe(householdId, request.resource.data.childId,
                request.resource.data.get('slots', {}),
                request.resource.data.get('slots', {}).keys())
@@ -2621,11 +2714,9 @@ service cloud.firestore {
 
         allow update: if resource != null
           && canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && onlyChanged(['slots', 'feedback'])
           && isLunchPlan(planId, request.resource.data)
-          && lunchPlansFor(householdId, resource.data.childId)
-          && (request.resource.data.get('feedback', {}) == resource.data.get('feedback', {})
-                || hasPremium(householdId))
           && lunchSlotsAreSafe(householdId, resource.data.childId,
                request.resource.data.get('slots', {}),
                request.resource.data.get('slots', {}).diff(resource.data.get('slots', {})).affectedKeys())
@@ -2641,6 +2732,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'lunch');
 
         allow create: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(['childId', 'name', 'picks', 'createdBy', 'createdAt'])
           && isLunchChild(householdId, request.resource.data.childId)
           && isLunchText(request.resource.data.name, 40)
@@ -2649,6 +2741,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && onlyChanged(['name', 'picks'])
           && isLunchText(request.resource.data.name, 40)
           && isLunchFavouritePicks(request.resource.data.picks);
@@ -2656,7 +2749,7 @@ service cloud.firestore {
         allow delete: if canEdit(householdId, 'lunch');
       }
 
-      // A week's Sunday prep ticks, one document per household week. Premium.
+      // A week's Sunday prep ticks, one document per household week.
       match /lunchPrep/{week} {
         allow read: if canView(householdId, 'lunch');
 
@@ -2759,17 +2852,6 @@ service cloud.firestore {
                '5_main', '5_fruit', '5_veg', '5_snack', '5_treat'])
           && data.get('feedback', {}) is map
           && data.get('feedback', {}).keys().hasOnly(['1', '2', '3', '4', '5']);
-      }
-
-      // Whether this household's plan may be written for this child: every child
-      // with premium; without it, the one child `setChildProfile` recorded. A
-      // household with no record has not marked a child since the record began,
-      // so it is not held to one it never had.
-      function lunchPlansFor(householdId, childId) {
-        let freeChild = /databases/$(database)/documents/households/$(householdId)/entitlement/freeChild;
-        return hasPremium(householdId)
-          || !exists(freeChild)
-          || get(freeChild).data.get('memberId', '') == childId;
       }
 
       // Lunches are planned for children: a member family profiles marks as one.
@@ -2968,6 +3050,7 @@ service cloud.firestore {
 
         allow create: if resource == null
           && canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && isLunchChoices(choiceId, request.resource.data)
           && request.resource.data.get('chosen', {}).size() == 0
           && request.resource.data.get('options', {}).keys()
@@ -2982,6 +3065,7 @@ service cloud.firestore {
 
         allow update: if resource != null
           && canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && onlyChanged(['options', 'chosen', 'editedDay', 'updatedBy', 'updatedAt'])
           && isLunchChoices(choiceId, request.resource.data)
           && request.resource.data.get('options', {})
@@ -3000,6 +3084,7 @@ service cloud.firestore {
 
         // The child says which slot they chose, and what — nothing else.
         allow update: if lunchKidOwnsWeek(householdId, choiceId)
+          && hasPremium(householdId)
           && onlyChanged(['chosen', 'chosenKey'])
           && isLunchSlotKey(request.resource.data.chosenKey)
           && request.resource.data.get('chosen', {})
@@ -3011,21 +3096,21 @@ service cloud.firestore {
 
       // The child's choice, into their own plan — in the same batch as the
       // choices document naming the slot, which is read after the batch. A choice
-      // is a plan write, held to the free tier like a parent's (`lunchPlansFor`,
-      // lunch-box ADR-0009).
+      // is a plan write, and needs `hasPremium` like a parent's (subscriptions
+      // ADR-0009).
       match /lunchPlans/{planId} {
         allow create: if resource == null
           && lunchKidOwnsWeek(householdId, planId)
           && isLunchKidPlan(planId, request.resource.data)
           && isLunchChild(householdId, request.resource.data.childId)
-          && lunchPlansFor(householdId, request.resource.data.childId)
+          && hasPremium(householdId)
           && lunchKidChoiceIsApproved(householdId, planId, request.resource.data.childId,
                request.resource.data.slots, request.resource.data.slots.keys());
 
         allow update: if resource != null
           && lunchKidOwnsWeek(householdId, planId)
           && onlyChanged(['slots'])
-          && lunchPlansFor(householdId, resource.data.childId)
+          && hasPremium(householdId)
           && lunchKidChoiceIsApproved(householdId, planId, resource.data.childId,
                request.resource.data.get('slots', {}),
                request.resource.data.get('slots', {})
@@ -3151,12 +3236,14 @@ service cloud.firestore {
       // record of each box marked packed — which is what takes its portions out of
       // the pantry, in the same batch, once. Everything is the `lunch` grant:
       // `edit` stocks and packs, `view` reads, `own` and `none` see nothing.
+      // Stocking and packing need `hasPremium` too (subscriptions ADR-0009).
 
       // One entry per library item: the document id is the item's.
       match /lunchPantry/{itemId} {
         allow read: if canView(householdId, 'lunch');
 
         allow create, update: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && isLunchPantryEntry(request.resource.data)
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt')
@@ -3172,6 +3259,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'lunch');
 
         allow create: if canEdit(householdId, 'lunch')
+          && hasPremium(householdId)
           && isLunchPackedDay(packedId, request.resource.data)
           && isLunchChild(householdId, request.resource.data.childId)
           && isOwnMember(householdId, request.resource.data.by)
@@ -3318,12 +3406,14 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && nannyMemberExists(householdId, memberId)
           && isNannyChildCard(request.resource.data)
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt');
 
         allow update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && isNannyChildCard(request.resource.data)
           && isOwnMember(householdId, request.resource.data.updatedBy)
           && isServerTime('updatedAt');
@@ -3338,6 +3428,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'kind', 'phone', 'note', 'createdBy', 'createdAt'])
           && isNannyContact(request.resource.data)
@@ -3345,6 +3436,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && onlyChanged(['name', 'kind', 'phone', 'note'])
           && isNannyContact(request.resource.data);
 
@@ -3357,6 +3449,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create, update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && sheetId == 'sheet'
           && request.resource.data.keys().hasOnly(
                ['address', 'medicalAidScheme', 'medicalAidPlan', 'medicalAidNumber',
@@ -3377,6 +3470,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['title', 'note', 'photoId', 'createdBy', 'createdAt'])
           && isNannyGuideSpot(request.resource.data)
@@ -3384,6 +3478,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && onlyChanged(['title', 'note', 'photoId'])
           && isNannyGuideSpot(request.resource.data);
 
@@ -3394,12 +3489,14 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(['text', 'createdBy', 'createdAt'])
           && isNannyText(request.resource.data.text, 300)
           && isOwnMember(householdId, request.resource.data.createdBy)
           && isServerTime('createdAt');
 
         allow update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && onlyChanged(['text'])
           && isNannyText(request.resource.data.text, 300);
 
@@ -3413,6 +3510,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create, update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && moment in ['arrival', 'afterSchool', 'dinner', 'bedtime', 'beforeLeaving']
           && request.resource.data.keys().hasOnly(['items', 'updatedBy', 'updatedAt'])
           && request.resource.data.items is list
@@ -3431,6 +3529,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['carerMemberId', 'startedBy', 'startedAt', 'endedAt', 'endedBy',
                 'status', 'ticks'])
@@ -3445,6 +3544,7 @@ service cloud.firestore {
           && isServerTime('startedAt');
 
         allow update: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && resource.data.status == 'open'
           && onlyChanged(['ticks'])
           && request.resource.data.ticks is map
@@ -3458,6 +3558,7 @@ service cloud.firestore {
           allow read: if canView(householdId, 'nannyHub');
 
           allow create: if canEdit(householdId, 'nannyHub')
+            && hasPremium(householdId)
             && isNannyShiftOpen(householdId, shiftId)
             && request.resource.data.keys().hasOnly(
                  ['kind', 'note', 'mood', 'childIds', 'photoId', 'at', 'byMemberId',
@@ -3467,6 +3568,7 @@ service cloud.firestore {
             && isServerTime('createdAt');
 
           allow update: if canEdit(householdId, 'nannyHub')
+            && hasPremium(householdId)
             && isNannyShiftOpen(householdId, shiftId)
             && isOwnMember(householdId, resource.data.byMemberId)
             && onlyChanged(['kind', 'note', 'mood', 'childIds', 'photoId', 'at'])
@@ -3568,6 +3670,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if canEdit(householdId, 'nannyHub')
+          && hasPremium(householdId)
           && isNannyShiftOpen(householdId, shiftId)
           && request.resource.data.keys().hasOnly(
                ['photoId', 'caption', 'childIds', 'byMemberId', 'createdAt', 'delivery'])
@@ -3609,6 +3712,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create: if isFamily(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['name', 'relationship', 'idNote', 'phone', 'photoId', 'childIds',
                 'createdBy', 'createdAt'])
@@ -3617,6 +3721,7 @@ service cloud.firestore {
           && isServerTime('createdAt');
 
         allow update: if isFamily(householdId)
+          && hasPremium(householdId)
           && onlyChanged(['name', 'relationship', 'idNote', 'phone', 'photoId', 'childIds'])
           && isNannyPickupPerson(request.resource.data);
 
@@ -3628,6 +3733,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create, update: if isFamily(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['childId', 'weekday', 'personId', 'memberId', 'atMinute', 'place',
                 'updatedBy', 'updatedAt'])
@@ -3650,6 +3756,7 @@ service cloud.firestore {
         allow read: if canView(householdId, 'nannyHub');
 
         allow create, update: if isFamily(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['childId', 'date', 'personId', 'memberId', 'atMinute', 'note',
                 'updatedBy', 'updatedAt'])
@@ -3713,6 +3820,7 @@ service cloud.firestore {
                 && resource.data.carerMemberId == ownMemberId(householdId));
 
         allow create: if isFamily(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(
                ['carerMemberId', 'startsAt', 'endsAt', 'note', 'createdBy', 'createdAt'])
           && isNannyBooking(request.resource.data)
@@ -3742,6 +3850,8 @@ service cloud.firestore {
       match /nannyShiftPasses/{memberId} {
         allow read: if hasClaimed(householdId, memberId) || isFamily(householdId);
 
+        // Not Premium: the pass is how a shift-only carer gets into the household
+        // at all, free places included, for a shift already booked.
         allow create, update: if hasClaimed(householdId, memberId)
           && request.resource.data.keys().hasOnly(['bookingId', 'startsAt', 'endsAt', 'updatedAt'])
           && request.resource.data.bookingId is string
@@ -3759,12 +3869,14 @@ service cloud.firestore {
           || (canView(householdId, 'nannyHub') && isNannySecretWindowOpen(householdId));
 
         allow create: if isFamily(householdId)
+          && hasPremium(householdId)
           && request.resource.data.keys().hasOnly(['label', 'value', 'note', 'createdBy', 'createdAt'])
           && isNannySecret(request.resource.data)
           && isOwnMember(householdId, request.resource.data.createdBy)
           && isServerTime('createdAt');
 
         allow update: if isFamily(householdId)
+          && hasPremium(householdId)
           && onlyChanged(['label', 'value', 'note'])
           && isNannySecret(request.resource.data);
 

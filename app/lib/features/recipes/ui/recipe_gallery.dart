@@ -36,6 +36,7 @@ class _RecipeGalleryState extends State<RecipeGallery> {
             ),
           ),
         ),
+        const NestBackSwipeEdge(),
         PositionedDirectional(
           end: NestSpace.lg,
           bottom: NestRadius.xxl + NestSpace.sm,

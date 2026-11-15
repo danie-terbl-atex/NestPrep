@@ -2,6 +2,7 @@ import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags.dart';
 import '../../family_profiles/model/family_access.dart';
 import '../../nanny_hub/model/nanny_access.dart';
+import '../../subscriptions/model/premium_feature.dart';
 import '../../two_homes/model/two_homes_access.dart';
 import 'household_area.dart';
 import 'household_view.dart';
@@ -76,6 +77,23 @@ enum HouseholdPlace {
         permissions.isMember && flags.isOn(FeatureFlag.assistants),
     };
   }
+
+  /// What the paywall opens on when a household without Premium reaches this
+  /// place, or null for a free one (subscriptions ADR-0009).
+  PremiumFeature? get premiumFeature => switch (this) {
+    HouseholdPlace.whereWeAre => PremiumFeature.familyLocation,
+    HouseholdPlace.twoHomes => PremiumFeature.twoHomes,
+    HouseholdPlace.nannyHub => PremiumFeature.nannyHub,
+    HouseholdPlace.homeCare => PremiumFeature.homeCare,
+    HouseholdPlace.documents => PremiumFeature.documents,
+    HouseholdPlace.assistants => PremiumFeature.assistants,
+    HouseholdPlace.stars ||
+    HouseholdPlace.sharedWeek ||
+    HouseholdPlace.familyProfiles ||
+    HouseholdPlace.photoFrames ||
+    HouseholdPlace.plan ||
+    HouseholdPlace.referrals => null,
+  };
 
   /// The places [view]'s viewer is offered, in this enum's order.
   static Set<HouseholdPlace> openTo(HouseholdView view, FeatureFlags flags) => {

@@ -233,6 +233,7 @@ describe('whether an accessory can be bought', () => {
   const cap = ACCESSORIES.find((a) => a.id === 'acc-cap');
   const facts = {
     accessory: crown,
+    hasPremium: true,
     shopOn: true,
     memberRole: 'kid',
     owned: NO_OWNED,
@@ -247,11 +248,17 @@ describe('whether an accessory can be bought', () => {
     expect(decidePurchase({ ...facts, accessory: undefined, shopOn: false })).toBe(
       'unknownAccessory',
     );
+    expect(decidePurchase({ ...facts, hasPremium: false, shopOn: false })).toBe('premiumRequired');
     expect(decidePurchase({ ...facts, shopOn: false, memberRole: 'parent' })).toBe('shopOff');
     expect(decidePurchase({ ...facts, memberRole: 'parent' })).toBe('notAKid');
     expect(decidePurchase({ ...facts, memberRole: undefined })).toBe('notAKid');
     expect(decidePurchase({ ...facts, owned: OWNS, balance: 0 })).toBe('alreadyOwned');
     expect(decidePurchase({ ...facts, balance: 19 })).toBe('notEnoughStars');
+  });
+
+  it('sells nothing to a household without Premium', () => {
+    expect(decidePurchase({ ...facts, hasPremium: false })).toBe('premiumRequired');
+    expect(decidePurchase({ ...facts, hasPremium: false, accessory: cap })).toBe('premiumRequired');
   });
 
   it('never sells what is free: everybody has it already', () => {

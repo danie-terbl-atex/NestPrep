@@ -53,11 +53,13 @@ final class StudioRig {
     this.viewerMemberId = Fixtures.samMemberId,
     Uint8List? photo,
     this.creations = true,
-    Entitlement entitlement = Entitlement.free,
+    Entitlement? entitlement,
     Duration creationWait = const Duration(seconds: 120),
   }) : avatars = FakeAvatarRepository(record),
        picker = FakeAvatarPhotoPicker(photo),
-       subscriptions = SubscriptionHarness(entitlement: entitlement) {
+       subscriptions = SubscriptionHarness(
+         entitlement: entitlement ?? premium,
+       ) {
     controller = AvatarStudioController(
       householdRepository: households,
       avatarRepository: avatars,
@@ -97,6 +99,8 @@ final class StudioRig {
   late final AvatarStudioController controller;
   late final AvatarCreationController creation;
   late final AvatarKeepsakesController keepsakes;
+
+  static final premium = Entitlement(premiumUntil: DateTime.utc(2100));
 
   static final place = AvatarPlace(
     householdId: Fixtures.householdId,
@@ -146,12 +150,16 @@ final class StudioRig {
     bool shopIsOpen = true,
     bool creationsOn = true,
     bool asFamily = true,
+    bool onKidDevice = false,
     PointBalance? balance,
   }) async {
     await pumpScreen(
       tester,
       AvatarStudioScreen(initialTab: tab),
-      providers: providers,
+      providers: [
+        ...providers,
+        if (onKidDevice) Provider<HouseholdView?>.value(value: null),
+      ],
       view: viewFor(asFamily: asFamily, creationsOn: creationsOn),
       brightness: brightness,
       textScale: textScale,

@@ -11,11 +11,9 @@
 // allergen codes, because rules cannot look an item up per slot; the
 // library is where those codes are kept honest.
 //
-// Free and premium (lunch-box ADR-0009, subscriptions ADR-0001): a free
-// household plans one child's week — the child `entitlement/freeChild` names
-// — and marks nothing eaten and ticks no prep list. Premium plans every
-// child, learns from what came home and keeps the Sunday prep list. Only
-// writes are gated: a household that lapses reads everything it made.
+// Premium (subscriptions ADR-0008, ADR-0009): every create and update here
+// needs `hasPremium`. Reads and deletes do not: a household that lapses
+// reads everything it made.
 
 // The household's library. Never deleted — put away instead — because past
 // weeks' eaten-or-not history names its items.
@@ -23,6 +21,7 @@ match /lunchItems/{itemId} {
   allow read: if canView(householdId, 'lunch');
 
   allow create: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && isLunchItem(request.resource.data)
     && request.resource.data.get('archived', false) == false
     && isOwnMember(householdId, request.resource.data.addedBy)
@@ -32,6 +31,7 @@ match /lunchItems/{itemId} {
   // Its slot never moves: boxes hold it under that slot's key. Neither
   // recipe link is in the list, so a link is set once and never changes.
   allow update: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && onlyChanged(['name', 'nameKey', 'allergens', 'prepAhead', 'prepNote', 'archived'])
     && isLunchItem(request.resource.data)
     && lunchItemHoldsItsRecipe(householdId, request.resource.data);
@@ -50,10 +50,9 @@ match /lunchPlans/{planId} {
   // an update not for the create's (the 1000-expression limit, ADR-0010).
   allow create: if resource == null
     && canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && isLunchPlan(planId, request.resource.data)
     && isLunchChild(householdId, request.resource.data.childId)
-    && lunchPlansFor(householdId, request.resource.data.childId)
-    && (request.resource.data.get('feedback', {}).size() == 0 || hasPremium(householdId))
     && lunchSlotsAreSafe(householdId, request.resource.data.childId,
          request.resource.data.get('slots', {}),
          request.resource.data.get('slots', {}).keys())
@@ -62,11 +61,9 @@ match /lunchPlans/{planId} {
 
   allow update: if resource != null
     && canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && onlyChanged(['slots', 'feedback'])
     && isLunchPlan(planId, request.resource.data)
-    && lunchPlansFor(householdId, resource.data.childId)
-    && (request.resource.data.get('feedback', {}) == resource.data.get('feedback', {})
-          || hasPremium(householdId))
     && lunchSlotsAreSafe(householdId, resource.data.childId,
          request.resource.data.get('slots', {}),
          request.resource.data.get('slots', {}).diff(resource.data.get('slots', {})).affectedKeys())
@@ -82,6 +79,7 @@ match /lunchFavourites/{favouriteId} {
   allow read: if canView(householdId, 'lunch');
 
   allow create: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(['childId', 'name', 'picks', 'createdBy', 'createdAt'])
     && isLunchChild(householdId, request.resource.data.childId)
     && isLunchText(request.resource.data.name, 40)
@@ -90,6 +88,7 @@ match /lunchFavourites/{favouriteId} {
     && isServerTime('createdAt');
 
   allow update: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && onlyChanged(['name', 'picks'])
     && isLunchText(request.resource.data.name, 40)
     && isLunchFavouritePicks(request.resource.data.picks);
@@ -97,7 +96,7 @@ match /lunchFavourites/{favouriteId} {
   allow delete: if canEdit(householdId, 'lunch');
 }
 
-// A week's Sunday prep ticks, one document per household week. Premium.
+// A week's Sunday prep ticks, one document per household week.
 match /lunchPrep/{week} {
   allow read: if canView(householdId, 'lunch');
 
@@ -200,17 +199,6 @@ function isLunchPlan(planId, data) {
          '5_main', '5_fruit', '5_veg', '5_snack', '5_treat'])
     && data.get('feedback', {}) is map
     && data.get('feedback', {}).keys().hasOnly(['1', '2', '3', '4', '5']);
-}
-
-// Whether this household's plan may be written for this child: every child
-// with premium; without it, the one child `setChildProfile` recorded. A
-// household with no record has not marked a child since the record began,
-// so it is not held to one it never had.
-function lunchPlansFor(householdId, childId) {
-  let freeChild = /databases/$(database)/documents/households/$(householdId)/entitlement/freeChild;
-  return hasPremium(householdId)
-    || !exists(freeChild)
-    || get(freeChild).data.get('memberId', '') == childId;
 }
 
 // Lunches are planned for children: a member family profiles marks as one.

@@ -9,11 +9,10 @@ abstract final class AvatarCreationCopy {
   static const menuTitle = 'Make something new';
   static const menuBody =
       'Pick one and our AI turns it into a brand-new picture.';
-  static const tryOnceFree = 'Try it once, free';
   static String picturesLeft(int count) => count == 1
       ? '1 picture left this month'
       : '$count pictures left this month';
-  static const freeTryUsed = 'Your free try is used. Premium makes 12 a month.';
+  static const needsPremium = 'Making pictures is part of Premium.';
   static String noneLeft(String from) =>
       'No more pictures this month. You can make more from $from!';
 
@@ -169,8 +168,8 @@ abstract final class AvatarCreationCopy {
     CreationRefusal.limitReached => noneLeft(nextMonth),
     CreationRefusal.premiumRequired =>
       canBuy
-          ? freeTryUsed
-          : 'Your free try is used. Ask a grown-up about Premium for more.',
+          ? needsPremium
+          : 'Making pictures is part of Premium. Ask a parent about it.',
     CreationRefusal.unavailable =>
       'The picture maker is having a rest. Try again in a little while.',
   };

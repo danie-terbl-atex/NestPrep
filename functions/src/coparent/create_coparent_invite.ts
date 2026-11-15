@@ -6,7 +6,7 @@ import { INVITE_LIFETIME_MS, generateInviteCode } from '../household/invite_code
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { isAlreadyLinked, readKidProfile, sharedChildName } from './child_profiles';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { coParentInviteRef } from './coparent_refs';
 import { refuseCoParent } from './errors';
 import { createCoParentInviteInput } from './schemas';
@@ -31,6 +31,7 @@ export const createCoParentInvite = onCall(async (request) => {
 
   await store.runTransaction(async (transaction) => {
     await requireRole(transaction, store, input.householdId, uid, 'admin');
+    await requireTwoHomesPremium(transaction, store, input.householdId);
     const displayName = await readKidProfile(
       transaction,
       store,

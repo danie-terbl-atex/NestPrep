@@ -15,12 +15,14 @@ match /nannyChildCards/{memberId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && nannyMemberExists(householdId, memberId)
     && isNannyChildCard(request.resource.data)
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt');
 
   allow update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && isNannyChildCard(request.resource.data)
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt');
@@ -35,6 +37,7 @@ match /nannyContacts/{contactId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['name', 'kind', 'phone', 'note', 'createdBy', 'createdAt'])
     && isNannyContact(request.resource.data)
@@ -42,6 +45,7 @@ match /nannyContacts/{contactId} {
     && isServerTime('createdAt');
 
   allow update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && onlyChanged(['name', 'kind', 'phone', 'note'])
     && isNannyContact(request.resource.data);
 
@@ -54,6 +58,7 @@ match /nannyHome/{sheetId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create, update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && sheetId == 'sheet'
     && request.resource.data.keys().hasOnly(
          ['address', 'medicalAidScheme', 'medicalAidPlan', 'medicalAidNumber',
@@ -74,6 +79,7 @@ match /nannyGuide/{spotId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['title', 'note', 'photoId', 'createdBy', 'createdAt'])
     && isNannyGuideSpot(request.resource.data)
@@ -81,6 +87,7 @@ match /nannyGuide/{spotId} {
     && isServerTime('createdAt');
 
   allow update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && onlyChanged(['title', 'note', 'photoId'])
     && isNannyGuideSpot(request.resource.data);
 
@@ -91,12 +98,14 @@ match /nannyRules/{ruleId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(['text', 'createdBy', 'createdAt'])
     && isNannyText(request.resource.data.text, 300)
     && isOwnMember(householdId, request.resource.data.createdBy)
     && isServerTime('createdAt');
 
   allow update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && onlyChanged(['text'])
     && isNannyText(request.resource.data.text, 300);
 
@@ -110,6 +119,7 @@ match /nannyChecklists/{moment} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create, update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && moment in ['arrival', 'afterSchool', 'dinner', 'bedtime', 'beforeLeaving']
     && request.resource.data.keys().hasOnly(['items', 'updatedBy', 'updatedAt'])
     && request.resource.data.items is list
@@ -128,6 +138,7 @@ match /nannyShifts/{shiftId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['carerMemberId', 'startedBy', 'startedAt', 'endedAt', 'endedBy',
           'status', 'ticks'])
@@ -142,6 +153,7 @@ match /nannyShifts/{shiftId} {
     && isServerTime('startedAt');
 
   allow update: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && resource.data.status == 'open'
     && onlyChanged(['ticks'])
     && request.resource.data.ticks is map
@@ -155,6 +167,7 @@ match /nannyShifts/{shiftId} {
     allow read: if canView(householdId, 'nannyHub');
 
     allow create: if canEdit(householdId, 'nannyHub')
+      && hasPremium(householdId)
       && isNannyShiftOpen(householdId, shiftId)
       && request.resource.data.keys().hasOnly(
            ['kind', 'note', 'mood', 'childIds', 'photoId', 'at', 'byMemberId',
@@ -164,6 +177,7 @@ match /nannyShifts/{shiftId} {
       && isServerTime('createdAt');
 
     allow update: if canEdit(householdId, 'nannyHub')
+      && hasPremium(householdId)
       && isNannyShiftOpen(householdId, shiftId)
       && isOwnMember(householdId, resource.data.byMemberId)
       && onlyChanged(['kind', 'note', 'mood', 'childIds', 'photoId', 'at'])

@@ -5,27 +5,17 @@ void main() {
   List<LunchPlanWay> offered({
     bool hasTwig = true,
     bool hasPantry = true,
-    bool isPremium = false,
     bool isFull = false,
   }) => LunchPlanWay.offered(
     hasTwig: hasTwig,
     hasPantry: hasPantry,
-    isPremium: isPremium,
     isFull: isFull,
   );
 
-  test('Twig leads for a Premium household', () {
-    expect(offered(isPremium: true), [
-      LunchPlanWay.twig,
-      LunchPlanWay.boxes,
-      LunchPlanWay.pantry,
-    ]);
-  });
-
-  test('a free household sees its own boxes first, then Twig', () {
+  test('Twig leads', () {
     expect(offered(), [
-      LunchPlanWay.boxes,
       LunchPlanWay.twig,
+      LunchPlanWay.boxes,
       LunchPlanWay.pantry,
     ]);
   });

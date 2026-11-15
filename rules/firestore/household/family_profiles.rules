@@ -15,6 +15,10 @@
 // member (a kid device's own is the profile it is bound to, accounts
 // ADR-0004). A person with their own login always reads and writes their own
 // profile and medication, whatever the grant: it is about them.
+//
+// Recording allergies and medication is Premium (subscriptions ADR-0008): a
+// free household writes every other field of a profile, and what a lapsed
+// household recorded stays, readable by these rules and unchanged.
 
 match /familyProfiles/{memberId} {
   // Allergies live here rather than behind `medical`: whoever the household
@@ -28,16 +32,19 @@ match /familyProfiles/{memberId} {
     && memberExists(householdId, memberId)
     && isFamilyProfile(request.resource.data)
     && !request.resource.data.get('isChild', false)
+    && (familyProfileRecordsNoAllergy(request.resource.data) || hasPremium(householdId))
     && isKnownSchool(householdId, request.resource.data.get('schoolId', null));
 
-  // Who is a child is what the free tier counts, and rules cannot count:
-  // `isChild` is written only by `setChildProfile`, which counts in a
-  // transaction (subscriptions ADR-0001). A client write leaves it as it is.
+  // `isChild` is written only by `setChildProfile`, with the parent's consent
+  // in the same transaction (accounts ADR-0005). A client write leaves it as
+  // it is.
   // The school is checked only when it moves: a school deleted after a
   // child pointed at it must not lock the rest of that child's profile.
   allow update: if mayEditProfile(householdId, memberId)
     && isFamilyProfile(request.resource.data)
     && request.resource.data.get('isChild', false) == resource.data.get('isChild', false)
+    && (familyProfileKeepsAllergies(request.resource.data, resource.data)
+        || hasPremium(householdId))
     && (request.resource.data.get('schoolId', null) == resource.data.get('schoolId', null)
         || isKnownSchool(householdId, request.resource.data.get('schoolId', null)));
 
@@ -50,10 +57,12 @@ match /memberHealth/{memberId} {
 
   allow create: if mayEditProfile(householdId, memberId)
     && memberExists(householdId, memberId)
-    && isMemberHealth(request.resource.data);
+    && isMemberHealth(request.resource.data)
+    && hasPremium(householdId);
 
   allow update: if mayEditProfile(householdId, memberId)
-    && isMemberHealth(request.resource.data);
+    && isMemberHealth(request.resource.data)
+    && hasPremium(householdId);
 
   allow delete: if false;
 }
@@ -100,6 +109,17 @@ function mayReadHealth(householdId, memberId) {
   return canView(householdId, 'medical')
     || (hasOwnOnly(householdId, 'medical') && memberId == ownMemberId(householdId))
     || hasClaimed(householdId, memberId);
+}
+
+// The two allergy fields, compared whole: a free household's rewrite of a
+// profile that carries them over as they are stored changes nothing here.
+function familyProfileRecordsNoAllergy(data) {
+  return data.get('allergies', {}) == {} && data.get('otherAllergies', {}) == {};
+}
+
+function familyProfileKeepsAllergies(after, before) {
+  return after.get('allergies', {}) == before.get('allergies', {})
+    && after.get('otherAllergies', {}) == before.get('otherAllergies', {});
 }
 
 function memberExists(householdId, memberId) {

@@ -17,6 +17,7 @@ import '../features/home_care/ui/products_screen.dart';
 import '../features/home_care/ui/review_screen.dart';
 import '../features/home_care/ui/rooms_screen.dart';
 import '../features/home_care/ui/step_through_screen.dart';
+import '../shared/copy/home_care_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'home_care_route.dart';
 import 'home_care_scope.dart';
@@ -37,31 +38,42 @@ ShellRoute homeCareRoutes(SessionController session) => ShellRoute(
     ...homeCareV2Routes(),
     GoRoute(
       path: HomeCareRoute.path,
-      builder: (context, state) =>
-          HomeCareScreen(pile: HomeCareRoute.pileFrom(state)),
+      builder: (context, state) => homeCareArea(
+        title: HomeCareCopy.title,
+        child: HomeCareScreen(pile: HomeCareRoute.pileFrom(state)),
+      ),
     ),
     GoRoute(
       path: HomeCareRoute.newJobPath,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => JobComposerController(
-          jobRepository: context.read<CleaningJobRepository>(),
-          photoStore: context.read<JobPhotoStore>(),
-          photoIntake: context.read<PhotoIntake>(),
-          householdId: HouseholdRoute.idFrom(state),
-          memberId: viewerMemberIdOf(context),
-          viewerUid: session.uidOrEmpty,
-          today: context.read<HouseholdClock>().today,
+      builder: (context, state) => homeCareArea(
+        title: HomeCareCopy.newJob,
+        child: ChangeNotifierProvider(
+          create: (context) => JobComposerController(
+            jobRepository: context.read<CleaningJobRepository>(),
+            photoStore: context.read<JobPhotoStore>(),
+            photoIntake: context.read<PhotoIntake>(),
+            householdId: HouseholdRoute.idFrom(state),
+            memberId: viewerMemberIdOf(context),
+            viewerUid: session.uidOrEmpty,
+            today: context.read<HouseholdClock>().today,
+          ),
+          child: const JobComposeScreen(),
         ),
-        child: const JobComposeScreen(),
       ),
     ),
     GoRoute(
       path: HomeCareRoute.roomsPath,
-      builder: (context, state) => const RoomsScreen(),
+      builder: (context, state) => homeCareArea(
+        title: HomeCareLibraryCopy.rooms,
+        child: const RoomsScreen(),
+      ),
     ),
     GoRoute(
       path: HomeCareRoute.productsPath,
-      builder: (context, state) => const ProductsScreen(),
+      builder: (context, state) => homeCareArea(
+        title: HomeCareLibraryCopy.products,
+        child: const ProductsScreen(),
+      ),
     ),
     ShellRoute(
       builder: (context, state, child) =>
@@ -69,15 +81,24 @@ ShellRoute homeCareRoutes(SessionController session) => ShellRoute(
       routes: [
         GoRoute(
           path: HomeCareRoute.jobPath,
-          builder: (context, state) => const JobScreen(),
+          builder: (context, state) => homeCareArea(
+            title: HomeCareCopy.jobTitleScreen,
+            child: const JobScreen(),
+          ),
         ),
         GoRoute(
           path: HomeCareRoute.stepsPath,
-          builder: (context, state) => const StepThroughScreen(),
+          builder: (context, state) => homeCareArea(
+            title: HomeCareCopy.stepThroughTitle,
+            child: const StepThroughScreen(),
+          ),
         ),
         GoRoute(
           path: HomeCareRoute.reviewPath,
-          builder: (context, state) => const ReviewScreen(),
+          builder: (context, state) => homeCareArea(
+            title: HomeCareCopy.reviewTitle,
+            child: const ReviewScreen(),
+          ),
         ),
       ],
     ),

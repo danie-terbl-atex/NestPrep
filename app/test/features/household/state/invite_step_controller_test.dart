@@ -6,7 +6,6 @@ import 'package:nestprep/features/household/data/invite_sharer.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/member_role.dart';
 import 'package:nestprep/features/household/state/invite_step_controller.dart';
-import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
 import '../../../support/fake_family_profiles.dart';
@@ -165,27 +164,20 @@ void main() {
       expect(children.writes, isEmpty);
     });
 
-    test(
-      'a second child on the free tier is still invited, and waits on premium',
-      () async {
-        children.failWritesWith = const PremiumRequiredFailure(
-          PremiumFeature.additionalChild,
-        );
-        final invited = await controller.invite(
-          displayName: 'Lulu',
+    test('a second kid is invited and marked like the first', () async {
+      for (final name in ['Lulu', 'Zinhle']) {
+        await controller.invite(
+          displayName: name,
           role: MemberRole.kid,
           guardianConsent: true,
         );
-
-        expect(invited, isTrue);
-        expect(directory.invitesMade.single.memberId, 'm-new-1');
-        expect(controller.actionFailure, isNull);
-        expect(controller.childAwaitingPremium, PremiumFeature.additionalChild);
-
-        await controller.markChildAfterUpgrade();
-        expect(children.writes.single.$2['memberId'], 'm-new-1');
-      },
-    );
+      }
+      expect(children.writes.map((write) => write.$2['memberId']), [
+        'm-new-1',
+        'm-new-2',
+      ]);
+      expect(controller.actionFailure, isNull);
+    });
 
     test('a marking that fails for another reason is said, and the invite '
         'stands', () async {

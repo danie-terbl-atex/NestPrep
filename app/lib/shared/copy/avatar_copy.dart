@@ -113,6 +113,9 @@ abstract final class AvatarCopy {
   static const shopClosed =
       'The star shop is closed. A grown-up can open it again under Stars.';
 
+  static const premiumAskParent =
+      'This is part of Premium. Ask a parent about it.';
+
   // ---- the kid home ----
   static const kidShelfTitle = 'Your Nestling';
   static const kidShelfBody = 'Hats, badges and frames to spend your stars on.';

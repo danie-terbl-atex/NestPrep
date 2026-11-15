@@ -25,6 +25,7 @@ import 'package:nestprep/features/nanny_hub/data/shift_repository.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import 'fake_auth.dart';
 import 'fake_document_tools.dart';
@@ -34,6 +35,7 @@ import 'fake_link_opener.dart';
 import 'fake_nanny_shifts.dart';
 import 'fake_vault.dart';
 import 'household_fixtures.dart';
+import 'premium_entitlement.dart';
 import 'pump_screen.dart';
 
 /// Every fake behind the Documents shell, in one place a test can reach into.
@@ -69,10 +71,12 @@ final class DocumentsFakes {
 }
 
 /// Pumps the real Documents shell — its route table, its controllers, its
-/// vault lock — over fakes, at [location]. What a person sees there is what
+/// vault lock — over fakes, at [location], in a household with Premium unless
+/// [premium] says otherwise. What a person sees there is what
 /// the app would show: the gate, the redirects between screens, back.
 Future<void> pumpDocuments(
   WidgetTester tester, {
+  List<RouteBase> outside = const [],
   required DocumentsFakes fakes,
   required String location,
   HouseholdView? view,
@@ -80,6 +84,8 @@ Future<void> pumpDocuments(
   Brightness brightness = Brightness.light,
   double textScale = 1,
   bool flagsDefaultOn = true,
+  bool premium = true,
+  List<SingleChildWidget> also = const [],
 }) async {
   final auth = FakeAuthGateway();
   final accounts = FakeAccountRepository();
@@ -111,12 +117,13 @@ Future<void> pumpDocuments(
     tester,
     router: GoRouter(
       initialLocation: location,
-      routes: [documentsShellRoute(session)],
+      routes: [...outside, documentsShellRoute(session)],
     ),
     view: view,
     brightness: brightness,
     textScale: textScale,
     providers: [
+      if (premium) premiumEntitlementProvider(),
       Provider<DocumentRepository>.value(value: fakes.documents),
       Provider<DocumentStore>.value(value: fakes.store),
       Provider<DocumentDirectory>.value(value: fakes.directory),
@@ -140,8 +147,12 @@ Future<void> pumpDocuments(
       Provider<OfflineAccessCheck>.value(value: fakes.offlineCheck),
       Provider<InviteSharer>.value(value: fakes.sharer),
       Provider<ShiftRepository>.value(value: fakes.shifts),
+      ...also,
     ],
   );
+  // The entitlement answers a frame later, and only then does the shell build
+  // its controllers: a fake answered before that would be heard by nobody.
+  await tester.pump();
 }
 
 /// The household's folders and documents, answered, so the library is not

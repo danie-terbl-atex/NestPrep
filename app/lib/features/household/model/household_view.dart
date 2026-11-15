@@ -24,6 +24,14 @@ class HouseholdView {
     viewerUid,
   );
 
+  /// How many people the free plan has room for, everybody counted
+  /// (subscriptions ADR-0008). The rules hold the same number.
+  static const freePlanPeople = 4;
+
+  bool get fillsFreePlan => members.length >= freePlanPeople;
+
+  bool get exceedsFreePlan => members.length > freePlanPeople;
+
   MemberRole? get viewerRole => household.roleOf(viewerUid);
 
   bool get viewerIsAdmin => household.isAdmin(viewerUid);

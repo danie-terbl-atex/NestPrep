@@ -6,6 +6,7 @@ import { MEMBERS } from '../household/documents';
 import { parseInput } from '../household/parse_input';
 import { readFlag } from '../shared/feature_flags';
 import { db } from '../shared/firestore';
+import { householdHasPremium } from '../subscriptions/subscription_documents';
 import { readLinkedFrame } from './frame_access';
 import { frameShiftSince } from './frame_day';
 import { refuseFrame } from './frame_errors';
@@ -49,6 +50,11 @@ export const setFrameShift = onCall(
               ? wallClockOf(startedAt.toDate(), knownZoneOr(timeZone ?? undefined))
               : clock,
           );
+        }
+        // Clocking in is Premium; a free household's wall is told what it is
+        // told when shifts are off. Clocking out below never asks.
+        if (!(await householdHasPremium(transaction, store, home.id, new Date()))) {
+          throw refuseFrame('shiftsOff');
         }
         transaction.set(home.collection(HOME_CARE_SHIFTS).doc(), {
           helperId,

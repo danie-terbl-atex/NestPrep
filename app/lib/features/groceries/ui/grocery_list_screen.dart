@@ -20,12 +20,14 @@ import '../../add_to_checkers/ui/find_at_checkers_button.dart';
 import '../../add_to_checkers/ui/match_as_you_type_button.dart';
 import '../../add_to_checkers/ui/product_type_ahead_card.dart';
 import '../../add_to_checkers/ui/shop_carts_bar.dart';
+import '../../add_to_checkers/ui/shops_lock.dart';
 import '../../add_to_checkers/ui/shops_on_list.dart';
 import '../../basket_compare/ui/compare_shops_entry.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../list_scan/ui/snap_list_button.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../starter_content/ui/starter_examples_banner.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/grocery_item.dart';
@@ -96,6 +98,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       HouseholdArea.groceries,
     );
     if (!canEdit ||
+        !shopsUnlocked(context, listen: false) ||
         !choice.matchesAsYouType ||
         shopsOnList(context, listen: false).isEmpty) {
       typeAhead.clear();
@@ -136,7 +139,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final typeAhead =
         Provider.of<ProductTypeAheadController?>(context, listen: false) ==
                 null ||
-            !canEdit
+            !canEdit ||
+            !shopsUnlocked(context)
         ? null
         : ProductTypeAheadCard(
             isAdding: _isAddingPick,
@@ -181,6 +185,15 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ListsSwitch(current: HouseholdTab.groceries, onSelect: onSelectTab),
+          StarterExamplesBanner(
+            shownIds: switch (controller.list) {
+              AsyncData(:final value) => [
+                for (final item in [...value.toBuy, ...value.justBought])
+                  item.id,
+              ],
+              _ => const [],
+            },
+          ),
           if (failure != null)
             Padding(
               padding: const EdgeInsets.only(bottom: NestSpace.md),
@@ -282,7 +295,11 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   /// add up — its matches are looked for at the chosen shop (the Checkers
   /// build contract, add-to-pnp ADR-0007).
   void _matchAfterAdding(BuildContext context, GroceryItem? added) {
-    if (added == null || shopsOnList(context, listen: false).isEmpty) return;
+    if (added == null ||
+        !shopsUnlocked(context, listen: false) ||
+        shopsOnList(context, listen: false).isEmpty) {
+      return;
+    }
     context.read<ProductMatchController>().lookFor(
       added,
       at: context.read<RetailerChoiceController>().chosen,
@@ -395,7 +412,10 @@ class _GroceryListRow extends StatelessWidget {
   Widget build(BuildContext context) => GroceryItemRow(
     item: item,
     trailing:
-        checkersOn && canEdit && !item.isBought && item.productMatch == null
+        checkersOn &&
+            canEdit &&
+            !item.isBought &&
+            shownMatchOf(context, item) == null
         ? FindAtCheckersButton(item: item)
         : null,
     footer: checkersOn

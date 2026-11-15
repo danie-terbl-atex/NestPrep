@@ -8,9 +8,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../household/model/household_view.dart';
 import '../../subscriptions/model/premium_feature.dart';
-import '../../subscriptions/state/household_entitlement.dart';
-import '../../subscriptions/ui/paywall_sheet.dart';
-import '../../subscriptions/ui/premium_gate.dart';
+import '../../subscriptions/ui/paywall_page.dart';
 import '../model/avatar_creation.dart';
 import '../model/avatar_studio.dart';
 import '../model/creation_allowance.dart';
@@ -56,14 +54,8 @@ class _CreateTabState extends State<CreateTab> {
 
   Future<void> _pick(
     AvatarCreationController creation,
-    CreationRecipe recipe, {
-    required bool askPremium,
-  }) async {
-    if (askPremium &&
-        !await ensurePremium(context, feature: CreateTab.featureOf(recipe))) {
-      return;
-    }
-    if (!mounted) return;
+    CreationRecipe recipe,
+  ) async {
     if (recipe == CreationRecipe.portrait) {
       await creation.makePortrait();
       return;
@@ -97,12 +89,9 @@ class _CreateTabState extends State<CreateTab> {
     final nest = NestTheme.of(context);
     final creation = context.watch<AvatarCreationController>();
     final view = context.watch<HouseholdView?>();
-    final entitlement = context.watch<HouseholdEntitlement?>();
     final studio = widget.studio;
     final canBuy = view != null;
     final isFamily = view?.permissions.isFamily ?? false;
-    final knowsTier = entitlement?.isKnown ?? false;
-    final isPremium = entitlement?.isPremium ?? false;
     final step = creation.step;
     _offerPaywall(step, canBuy: canBuy);
     final failure = creation.actionFailure;
@@ -140,30 +129,15 @@ class _CreateTabState extends State<CreateTab> {
     }
     final clock = HouseholdClock(studio.timeZone, now: widget.now);
     final today = clock.today;
-    final allowance = CreationAllowance.from(
-      creation.recent,
-      clock: clock,
-      isPremium: isPremium,
-    );
-    final freeTryUsed =
-        knowsTier && allowance.freeTryUsed(isPremium: isPremium);
-    final left = allowance.left;
-    final isSpent = knowsTier && isPremium && left == 0;
-    final note = !knowsTier
-        ? null
-        : isPremium
-        ? switch (left) {
-            0 => AvatarCreationCopy.noneLeft(
-              CreationRefusedView.nextMonthFrom(today),
-            ),
-            final count? when count > 0 => AvatarCreationCopy.picturesLeft(
-              count,
-            ),
-            _ => null,
-          }
-        : freeTryUsed
-        ? AvatarCreationCopy.freeTryUsed
-        : null;
+    final left = CreationAllowance.from(creation.recent, clock: clock).left;
+    final isSpent = left == 0;
+    final note = switch (left) {
+      0 => AvatarCreationCopy.noneLeft(
+        CreationRefusedView.nextMonthFrom(today),
+      ),
+      final count? when count > 0 => AvatarCreationCopy.picturesLeft(count),
+      _ => null,
+    };
     final body = switch (step) {
       CreationSending() ||
       CreationWaiting() => CreationHatching(studio: studio, step: step),
@@ -219,19 +193,9 @@ class _CreateTabState extends State<CreateTab> {
           ),
         _ => CreationMenu(
           note: note,
-          isFreeTry: knowsTier && allowance.freeTryUnused(isPremium: isPremium),
           isSpent: isSpent,
           offersPortrait: isFamily && widget.isSelf,
-          portraitNeedsPremium: knowsTier && !isPremium,
-          onPick: (recipe) => _pick(
-            creation,
-            recipe,
-            askPremium:
-                canBuy &&
-                knowsTier &&
-                !isPremium &&
-                (recipe == CreationRecipe.portrait || freeTryUsed),
-          ),
+          onPick: (recipe) => _pick(creation, recipe),
         ),
       },
     };

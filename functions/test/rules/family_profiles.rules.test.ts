@@ -6,6 +6,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  type DocumentReference,
 } from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
@@ -31,6 +32,7 @@ import {
   THANDI,
   THANDI_MEMBER,
   aFullProfile,
+  givenFamilyPremium,
   givenTheKidsDetails,
   givenTheParkers,
   merge,
@@ -55,6 +57,7 @@ describe('familyProfiles/{memberId}', () => {
   beforeEach(async () => {
     await clearData();
     await givenTheParkers();
+    await givenFamilyPremium();
   });
 
   describe('who may read', () => {
@@ -274,6 +277,7 @@ describe('memberHealth/{memberId}', () => {
   beforeEach(async () => {
     await clearData();
     await givenTheParkers();
+    await givenFamilyPremium();
   });
 
   describe('who may read', () => {
@@ -441,5 +445,216 @@ describe('schools/{schoolId}', () => {
 
   it('denies a member who is not an admin deleting one', async () => {
     await assertFails(deleteDoc(doc(await asUser(MIA), `${SCHOOLS}/oakwood`)));
+  });
+});
+
+describe('allergies and medication are Premium (subscriptions ADR-0008)', () => {
+  const aMedicine = { name: 'Antihistamine', dose: '5 ml', times: [480], note: null };
+  const kidAs = async (uid: string): Promise<DocumentReference> =>
+    doc(await asUser(uid), `${PROFILES}/${KID}`);
+
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+  });
+
+  describe('a free household', () => {
+    it('creates a profile with everything but an allergy', async () => {
+      await assertSucceeds(
+        setDoc(
+          await kidAs(SAM),
+          {
+            likes: ['Pasta'],
+            dislikes: ['Mushrooms'],
+            diet: ['nutFree', 'halal'],
+            schoolId: 'oakwood',
+            grade: 'Grade 3',
+            clothingSize: '7-8',
+            shoeSize: 'UK 13',
+          },
+          merge,
+        ),
+      );
+    });
+
+    it('creates one that says, in so many words, that there are no allergies', async () => {
+      await assertSucceeds(
+        setDoc(await kidAs(SAM), { likes: ['Pasta'], allergies: {}, otherAllergies: {} }),
+      );
+    });
+
+    it('is denied a first profile that records an allergy, of either kind', async () => {
+      await assertFails(
+        setDoc(
+          await kidAs(SAM),
+          { allergies: { peanut: { severity: 'severe', note: null } } },
+          merge,
+        ),
+      );
+      await assertFails(
+        setDoc(
+          await kidAs(SAM),
+          { otherAllergies: { k1: { name: 'Kiwi', severity: 'mild', note: null } } },
+          merge,
+        ),
+      );
+    });
+
+    it('edits every other field of a profile that already holds allergies', async () => {
+      await givenTheKidsDetails();
+      await assertSucceeds(
+        setDoc(
+          await kidAs(SAM),
+          {
+            likes: ['Pears'],
+            dislikes: [],
+            diet: ['vegetarian'],
+            grade: 'Grade 4',
+            shoeSize: 'UK 1',
+          },
+          merge,
+        ),
+      );
+      await assertSucceeds(updateDoc(await kidAs(SAM), { clothingSize: deleteField() }));
+    });
+
+    it('rewrites the whole document when the allergies are carried over as stored', async () => {
+      await givenTheKidsDetails();
+      await assertSucceeds(setDoc(await kidAs(SAM), { ...aFullProfile(), grade: 'Grade 4' }));
+    });
+
+    it('is denied adding, changing or removing an allergy', async () => {
+      await givenTheKidsDetails();
+      await assertFails(
+        setDoc(await kidAs(SAM), { allergies: { egg: { severity: 'mild', note: null } } }, merge),
+      );
+      await assertFails(
+        setDoc(await kidAs(SAM), { allergies: { peanut: { severity: 'mild' } } }, merge),
+      );
+      await assertFails(setDoc(await kidAs(SAM), { allergies: { milk: deleteField() } }, merge));
+      await assertFails(updateDoc(await kidAs(SAM), { otherAllergies: {} }));
+      await assertFails(
+        setDoc(
+          await kidAs(SAM),
+          { otherAllergies: { k2: { name: 'Latex', severity: 'mild', note: null } } },
+          merge,
+        ),
+      );
+    });
+
+    it('is denied a rewrite that drops the allergies along the way', async () => {
+      await givenTheKidsDetails();
+      await assertFails(setDoc(await kidAs(SAM), { isChild: true, likes: ['Pears'] }));
+    });
+
+    it('is denied medication: a first one, a change, and an empty document', async () => {
+      await assertFails(
+        setDoc(
+          doc(await asUser(SAM), `${HEALTH}/${KID}`),
+          { medications: { a1: aMedicine } },
+          merge,
+        ),
+      );
+      await assertFails(
+        setDoc(doc(await asUser(THANDI), `${HEALTH}/${THANDI_MEMBER}`), { medications: {} }, merge),
+      );
+      await givenTheKidsDetails();
+      await assertFails(
+        setDoc(
+          doc(await asUser(SAM), `${HEALTH}/${KID}`),
+          { medications: { a1: aMedicine } },
+          merge,
+        ),
+      );
+      await assertFails(
+        updateDoc(doc(await asUser(SAM), `${HEALTH}/${KID}`), {
+          'medications.ritalin': deleteField(),
+        }),
+      );
+    });
+
+    it('still reads what it recorded', async () => {
+      await givenTheKidsDetails();
+      await assertSucceeds(getDoc(await kidAs(SAM)));
+      await assertSucceeds(getDoc(doc(await asUser(SAM), `${HEALTH}/${KID}`)));
+    });
+  });
+
+  describe('a household whose Premium has lapsed', () => {
+    beforeEach(async () => {
+      await givenFamilyPremium('lapsed');
+      await givenTheKidsDetails();
+    });
+
+    it('keeps and reads its allergies and medication, and edits the rest', async () => {
+      await assertSucceeds(getDoc(await kidAs(SAM)));
+      await assertSucceeds(getDoc(doc(await asUser(SAM), `${HEALTH}/${KID}`)));
+      await assertSucceeds(setDoc(await kidAs(SAM), { grade: 'Grade 4' }, merge));
+    });
+
+    it('is denied changing either', async () => {
+      await assertFails(
+        setDoc(await kidAs(SAM), { allergies: { egg: { severity: 'mild', note: null } } }, merge),
+      );
+      await assertFails(
+        setDoc(
+          doc(await asUser(SAM), `${HEALTH}/${KID}`),
+          { medications: { a1: aMedicine } },
+          merge,
+        ),
+      );
+    });
+  });
+
+  describe('a Premium household', () => {
+    beforeEach(async () => {
+      await givenFamilyPremium();
+    });
+
+    it('records allergies on a new profile and changes them on an old one', async () => {
+      await assertSucceeds(
+        setDoc(
+          await kidAs(SAM),
+          { allergies: { peanut: { severity: 'severe', note: null } } },
+          merge,
+        ),
+      );
+      await assertSucceeds(
+        setDoc(
+          await kidAs(SAM),
+          {
+            allergies: { peanut: deleteField(), egg: { severity: 'mild', note: null } },
+            otherAllergies: { k1: { name: 'Kiwi', severity: 'mild', note: null } },
+          },
+          merge,
+        ),
+      );
+    });
+
+    it('records and changes medication', async () => {
+      await assertSucceeds(
+        setDoc(
+          doc(await asUser(SAM), `${HEALTH}/${KID}`),
+          { medications: { a1: aMedicine } },
+          merge,
+        ),
+      );
+      await assertSucceeds(
+        setDoc(
+          doc(await asUser(SAM), `${HEALTH}/${KID}`),
+          { medications: { a1: { ...aMedicine, dose: '10 ml' } } },
+          merge,
+        ),
+      );
+    });
+
+    it('is still held to who may edit a profile', async () => {
+      await assertFails(
+        setDoc(await kidAs(MIA), { allergies: { egg: { severity: 'mild', note: null } } }, merge),
+      );
+      await assertFails(
+        setDoc(doc(await asUser(THANDI), `${HEALTH}/${KID}`), { medications: {} }, merge),
+      );
+    });
   });
 });

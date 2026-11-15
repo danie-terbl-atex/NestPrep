@@ -1,4 +1,4 @@
-import { FieldValue, type DocumentReference } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp, type DocumentReference } from 'firebase-admin/firestore';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ASSISTANT_TOOLS } from '../../src/assistants/mcp/tools';
@@ -135,6 +135,30 @@ describe('checked live on every call', () => {
         tool.call(adminDb(), principalFor(SAM), VALID_ARGS[tool.name], NOW),
       ).rejects.toMatchObject({ kind: 'forbidden', reason: 'householdSwitchedOff' });
     }
+  });
+
+  it('a household without Premium is refused by every tool, in words the assistant can pass on', async () => {
+    await household()
+      .collection('entitlement')
+      .doc('current')
+      .set({ premiumUntil: Timestamp.fromMillis(NOW.getTime() - 1), status: 'expired' });
+    for (const tool of ASSISTANT_TOOLS) {
+      await expect(
+        tool.call(adminDb(), principalFor(SAM), VALID_ARGS[tool.name], NOW),
+      ).rejects.toMatchObject({
+        kind: 'forbidden',
+        reason: 'premiumRequired',
+        message: expect.stringContaining('Premium') as unknown,
+      });
+    }
+  });
+
+  it('a household that never had Premium is refused the same way', async () => {
+    await household().collection('entitlement').doc('current').delete();
+    await expect(getHousehold.run(adminDb(), principalFor(SAM), {}, NOW)).rejects.toMatchObject({
+      kind: 'forbidden',
+      reason: 'premiumRequired',
+    });
   });
 
   it('the switch back on lets them through again', async () => {

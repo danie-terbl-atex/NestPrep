@@ -2,6 +2,7 @@ import '../../features/family_profiles/model/allergen.dart';
 import '../../features/family_profiles/model/allergy_severity.dart';
 import '../../features/family_profiles/model/dietary_flag.dart';
 import '../../features/family_profiles/model/food_rules.dart';
+import 'subscription_copy.dart';
 
 /// Every word the family profiles screens say (`FE-19`). A file of its own,
 /// exported from `app_copy.dart`, so a feature this size does not grow the one
@@ -43,6 +44,9 @@ abstract final class FamilyCopy {
 
   static String editSection(String section) => 'Edit ${section.toLowerCase()}';
 
+  static String lockedAction(String action) =>
+      '$action. ${SubscriptionCopy.lockedHint}';
+
   static const save = 'Save';
   static const cancel = 'Cancel';
   static const remove = 'Remove';
@@ -52,6 +56,8 @@ abstract final class FamilyCopy {
   static const editAllergy = 'Edit allergy';
   static const removeAllergyConfirm = 'Remove this allergy?';
   static const noAllergies = 'No allergies recorded';
+  static const allergiesLocked =
+      'Record allergies with Premium. Anything already recorded is kept.';
   static const allergenLabel = 'Allergic to';
   static const allergenOther = 'Something else';
   static const otherAllergyName = 'What are they allergic to?';
@@ -134,6 +140,8 @@ abstract final class FamilyCopy {
 
   // Medication.
   static const noMedication = 'No medication recorded';
+  static const medicationLocked =
+      'Record medication with Premium. Anything already recorded is kept.';
   static const addMedication = 'Add a medicine';
   static const editMedication = 'Edit medicine';
   static const removeMedicationConfirm = 'Remove this medicine?';

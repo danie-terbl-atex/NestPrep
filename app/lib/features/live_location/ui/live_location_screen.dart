@@ -128,6 +128,7 @@ class _OnTheMap extends StatelessWidget {
             onMemberTap: (located) => openHistory(context, located),
           ),
         ),
+        const NestBackSwipeEdge(),
         DraggableScrollableSheet(
           initialChildSize: 0.38,
           minChildSize: 0.18,

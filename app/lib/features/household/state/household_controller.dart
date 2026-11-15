@@ -7,7 +7,6 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../family_profiles/data/child_profile_directory.dart';
-import '../../subscriptions/model/premium_feature.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../model/access_defaults.dart';
@@ -23,8 +22,7 @@ import 'new_child_marking.dart';
 /// the admin actions the screen offers. Created at the route, so its listeners
 /// end when the screen does (foundation ADR-0006).
 final class HouseholdController extends ChangeNotifier
-    with ActionFailureHolder
-    implements MakesChildren {
+    with ActionFailureHolder {
   HouseholdController({
     required HouseholdRepository householdRepository,
     required HouseholdDirectory householdDirectory,
@@ -62,15 +60,6 @@ final class HouseholdController extends ChangeNotifier
 
   /// The profile whose removal is on its way to the server.
   String? get removingMemberId => _removingMemberId;
-
-  @override
-  PremiumFeature? get childAwaitingPremium => _newChild.awaitingPremium;
-
-  @override
-  Future<void> markChildAfterUpgrade() => _run(_newChild.markAfterUpgrade);
-
-  @override
-  void forgetChildAwaitingPremium() => _newChild.forget();
 
   /// The code the last `createInvite` produced, for the sheet to show.
   InviteCode? get lastInvite => _lastInvite;

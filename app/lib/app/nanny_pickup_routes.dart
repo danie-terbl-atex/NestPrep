@@ -8,6 +8,7 @@ import '../features/nanny_hub/state/photo_library.dart';
 import '../features/nanny_hub/state/pickup_controller.dart';
 import '../features/nanny_hub/ui/pickup_check_screen.dart';
 import '../features/nanny_hub/ui/pickups_screen.dart';
+import '../shared/copy/nanny_pickup_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'nanny_hub_route.dart';
 
@@ -34,12 +35,21 @@ Widget withPickups({required String householdId, required Widget child}) =>
 List<GoRoute> pickupRoutes() => [
   GoRoute(
     path: NannyHubRoute.pickupsPath,
-    builder: (context, state) => const PickupsScreen(),
+    builder: (context, state) => nannyHubArea(
+      title: NannyPickupCopy.title,
+      child: const PickupsScreen(),
+    ),
   ),
   GoRoute(
     path: NannyHubRoute.pickupCheckPath,
-    builder: (context, state) => PickupCheckScreen(
-      childId: NannyHubRoute.parameterFrom(state, NannyHubRoute.childParameter),
+    builder: (context, state) => nannyHubArea(
+      title: NannyPickupCopy.checkTitle,
+      child: PickupCheckScreen(
+        childId: NannyHubRoute.parameterFrom(
+          state,
+          NannyHubRoute.childParameter,
+        ),
+      ),
     ),
   ),
 ];

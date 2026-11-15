@@ -132,6 +132,9 @@ describe('every callable declares what it may cost', () => {
         'setMemberAccess',
         'setMemberRole',
         'syncDocumentAccess',
+        // How many people a household holds, counted again when a profile is
+        // made or removed (subscriptions ADR-0008).
+        'keepHouseholdSize',
         // Documents phase 2: the one door to a vault document's bytes, which
         // writes the view log a client could skip, and the daily expiry sweep,
         // which no rule can schedule (documents ADR-0003, ADR-0005).

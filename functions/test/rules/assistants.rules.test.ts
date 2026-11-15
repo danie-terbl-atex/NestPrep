@@ -22,6 +22,7 @@ import {
   givenData,
   type Firestore,
 } from './rules_harness';
+import { givenFamilyPremium } from './family_fixture';
 import { ROLE_DEFAULTS } from '../../src/household/access';
 
 /**
@@ -75,6 +76,7 @@ const activity = (memberId: string): Record<string, unknown> => ({
 
 beforeEach(async () => {
   await clearData();
+  await givenFamilyPremium();
   await givenData(async (db: Firestore) => {
     await setDoc(doc(db, HOME), {
       name: 'The Parkers',
@@ -293,6 +295,56 @@ describe('assistantSettings/current — the household’s own switch', () => {
     await assertFails(deleteDoc(doc(sam, SETTINGS)));
   });
 });
+
+for (const state of ['free', 'lapsed'] as const) {
+  describe(`a household whose Premium is ${state} (subscriptions ADR-0009)`, () => {
+    const set = (allowed: boolean): Record<string, unknown> => ({
+      allowed,
+      updatedBy: 'm-sam',
+      updatedAt: serverTimestamp(),
+    });
+
+    beforeEach(async () => {
+      await (state === 'lapsed'
+        ? givenFamilyPremium('lapsed')
+        : givenData(async (db: Firestore) => {
+            await deleteDoc(doc(db, `${HOME}/entitlement/current`));
+          }));
+    });
+
+    it('still switches assistants off, whether or not the switch was ever set', async () => {
+      const sam = await asUser(SAM);
+      await assertSucceeds(updateDoc(doc(sam, SETTINGS), set(false)));
+      await givenData(async (db) => {
+        await deleteDoc(doc(db, SETTINGS));
+      });
+      await assertSucceeds(setDoc(doc(sam, SETTINGS), set(false)));
+    });
+
+    it('does not switch them on', async () => {
+      const sam = await asUser(SAM);
+      await givenData(async (db) => {
+        await setDoc(doc(db, SETTINGS), {
+          allowed: false,
+          updatedBy: 'm-sam',
+          updatedAt: new Date(),
+        });
+      });
+      await assertFails(updateDoc(doc(sam, SETTINGS), set(true)));
+      await assertFails(setDoc(doc(sam, SETTINGS), set(true)));
+      await givenData(async (db) => {
+        await deleteDoc(doc(db, SETTINGS));
+      });
+      await assertFails(setDoc(doc(sam, SETTINGS), set(true)));
+    });
+
+    it('still reads and disconnects its connections', async () => {
+      await assertSucceeds(getDoc(doc(await asUser(SAM), THANDI_GRANT)));
+      await assertSucceeds(deleteDoc(doc(await asUser(PAT), PAT_GRANT)));
+      await assertSucceeds(deleteDoc(doc(await asUser(SAM), THANDI_GRANT)));
+    });
+  });
+}
 
 describe('what an assistant wrote says so, and only an assistant can say it', () => {
   const EVENT = `${HOME}/events/by-claude`;

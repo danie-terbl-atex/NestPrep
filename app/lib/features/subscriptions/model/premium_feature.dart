@@ -44,6 +44,20 @@ enum PremiumFeature {
   /// The household's Nest portrait for the frame (avatars ADR-0006).
   avatarPortrait,
 
+  lunchBox,
+  recipes,
+  shops,
+  avatarWardrobe,
+  avatarKeepsakes,
+  twoHomes,
+  nannyHub,
+  homeCare,
+  documents,
+  assistants,
+  schoolLetter,
+  healthProfile,
+  householdSize,
+
   /// The plan screen, opened on purpose rather than by reaching a limit.
   direct,
 }

@@ -12,6 +12,7 @@ import { refuseCheckers } from './errors';
 import { FirestoreLinkStore } from './firestore_link_store';
 import { FirestoreGroceryLines } from '../cart_push/grocery_lines';
 import { checkersPushToCartInput } from './schemas';
+import { requireShopsPremium } from './shops_premium';
 
 /**
  * "Add to Checkers": the list's matched, unbought items into the caller's own
@@ -34,6 +35,7 @@ export const checkersPushToCart = onCall(
       throw refuseCheckers('not-a-member');
     }
     await requireAddToCheckers(store);
+    await requireShopsPremium(store, input.householdId);
     return pushToCheckersCart(
       {
         links: new FirestoreLinkStore(store),

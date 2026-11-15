@@ -31,7 +31,7 @@ import {
 describe('the kill switch', () => {
   it('is on with the default caps when nobody has written the document', () => {
     expect(readAiSettings(undefined)).toEqual(DEFAULT_AI_SETTINGS);
-    expect(DEFAULT_AI_SETTINGS.monthlyCalls).toEqual({ free: 10, premium: 100 });
+    expect(DEFAULT_AI_SETTINGS.monthlyCalls).toEqual({ free: 0, premium: 100 });
   });
 
   it('enabled: false stops every feature', () => {
@@ -58,24 +58,40 @@ describe('the kill switch', () => {
 });
 
 describe('the caps', () => {
-  it('take the stored numbers', () => {
-    expect(readAiSettings({ monthlyCalls: { free: 3, premium: 40 } }).monthlyCalls).toEqual({
-      free: 3,
+  it('take the stored premium number', () => {
+    expect(readAiSettings({ monthlyCalls: { premium: 40 } }).monthlyCalls).toEqual({
+      free: 0,
       premium: 40,
     });
   });
 
-  it('keep the default where a number is missing', () => {
-    expect(readAiSettings({ monthlyCalls: { free: 4 } }).monthlyCalls).toEqual({
-      free: 4,
-      premium: 100,
-    });
+  it('keep the default where the number is missing', () => {
+    expect(readAiSettings({ monthlyCalls: {} }).monthlyCalls).toEqual({ free: 0, premium: 100 });
   });
 
   it('ignore a number nobody means — negative, fractional or past the ceiling', () => {
-    for (const free of [-1, 2.5, MAX_MONTHLY_CALLS + 1, '10']) {
-      expect(readAiSettings({ monthlyCalls: { free } }).monthlyCalls.free, String(free)).toBe(10);
+    for (const premium of [-1, 2.5, MAX_MONTHLY_CALLS + 1, '10']) {
+      expect(
+        readAiSettings({ monthlyCalls: { premium } }).monthlyCalls.premium,
+        String(premium),
+      ).toBe(100);
     }
+  });
+
+  it('never give the free tier a call, whatever the console holds (subscriptions ADR-0008)', () => {
+    for (const free of [10, 1, MAX_MONTHLY_CALLS, '10']) {
+      expect(readAiSettings({ monthlyCalls: { free, premium: 40 } }).monthlyCalls).toEqual({
+        free: 0,
+        premium: 40,
+      });
+    }
+    expect(
+      readAiSettings({ features: { avatarCreate: { premiumMonthly: 20, freeLifetime: 5 } } })
+        .allowances.avatarCreate,
+    ).toEqual({ premiumMonthly: 20, freeLifetime: 0 });
+    expect(
+      decideClaim({ calls: 0, attempts: 0 }, capFor('free', DEFAULT_AI_SETTINGS.monthlyCalls)),
+    ).toEqual({ allowed: false });
   });
 
   it('are chosen by tier', () => {
@@ -159,23 +175,24 @@ describe('whether one more call fits', () => {
 
 describe('creations, outside the monthly call cap (avatars ADR-0003 amending foundation ADR-0015)', () => {
   const settings = readAiSettings(undefined);
-  const creation = chargeOf(settings, 'avatarCreate');
-  const check = chargeOf(settings, 'avatarCheck');
+  const ONE_FREE = { premiumMonthly: 12, freeLifetime: 1 };
+  const creation = { ...chargeOf(settings, 'avatarCreate'), allowance: ONE_FREE };
+  const check = { ...chargeOf(settings, 'avatarCheck'), allowance: ONE_FREE };
   const NONE = { month: 0, lifetime: 0, attempts: 0 };
 
-  it('are switched on, 12 a month premium and one ever free, unless the console says otherwise', () => {
+  it('are switched on, 12 a month premium and none free, unless the console says otherwise', () => {
     expect(isFeatureOn(settings, 'avatarCheck')).toBe(true);
     expect(isFeatureOn(settings, 'avatarCreate')).toBe(true);
     expect(isFeatureOn(settings, 'avatarPortrait')).toBe(true);
-    expect(settings.allowances.avatarCreate).toEqual({ premiumMonthly: 12, freeLifetime: 1 });
+    expect(settings.allowances.avatarCreate).toEqual({ premiumMonthly: 12, freeLifetime: 0 });
     expect(
       readAiSettings({ features: { avatarCreate: { premiumMonthly: 20 } } }).allowances
         .avatarCreate,
-    ).toEqual({ premiumMonthly: 20, freeLifetime: 1 });
+    ).toEqual({ premiumMonthly: 20, freeLifetime: 0 });
     expect(
       readAiSettings({ features: { avatarCreate: { premiumMonthly: -1, freeLifetime: 'x' } } })
         .allowances.avatarCreate,
-    ).toEqual({ premiumMonthly: 12, freeLifetime: 1 });
+    ).toEqual({ premiumMonthly: 12, freeLifetime: 0 });
   });
 
   it('keep their allowance object without switching the feature off, and false switches it off', () => {
@@ -187,17 +204,17 @@ describe('creations, outside the monthly call cap (avatars ADR-0003 amending fou
   });
 
   it('charge a portrait to the same allowance as a creation, the check to nothing, the rest to calls', () => {
-    expect(creation).toEqual({
+    expect(chargeOf(settings, 'avatarCreate')).toEqual({
       kind: 'allowance',
       name: 'avatarCreate',
       shares: ['avatarCreate', 'avatarPortrait'],
-      allowance: { premiumMonthly: 12, freeLifetime: 1 },
+      allowance: { premiumMonthly: 12, freeLifetime: 0 },
     });
-    expect(chargeOf(settings, 'avatarPortrait')).toEqual(creation);
-    expect(check).toEqual({
+    expect(chargeOf(settings, 'avatarPortrait')).toEqual(chargeOf(settings, 'avatarCreate'));
+    expect(chargeOf(settings, 'avatarCheck')).toEqual({
       kind: 'none',
       name: 'avatarCreate',
-      allowance: { premiumMonthly: 12, freeLifetime: 1 },
+      allowance: { premiumMonthly: 12, freeLifetime: 0 },
     });
     expect(chargeOf(settings, 'lunchPhoto')).toEqual({ kind: 'calls' });
   });

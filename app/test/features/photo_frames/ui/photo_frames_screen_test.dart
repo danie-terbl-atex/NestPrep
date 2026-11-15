@@ -578,9 +578,9 @@ void main() {
         tester,
         extra: [
           flags({
-            FeatureFlag.addToCheckers: false,
+            FeatureFlag.checkersShop: false,
             FeatureFlag.addToPnp: false,
-            FeatureFlag.addToWoolworths: false,
+            FeatureFlag.woolworthsShop: false,
           }),
         ],
       );
@@ -653,10 +653,7 @@ void main() {
       await pump(
         tester,
         extra: [
-          flags({
-            FeatureFlag.addToCheckers: false,
-            FeatureFlag.addToPnp: false,
-          }),
+          flags({FeatureFlag.checkersShop: false, FeatureFlag.addToPnp: false}),
         ],
       );
       await emit(tester, [FrameFixtures.frame()]);
@@ -721,7 +718,7 @@ void main() {
       await pump(
         tester,
         extra: [
-          flags({FeatureFlag.addToCheckers: false}),
+          flags({FeatureFlag.checkersShop: false}),
         ],
       );
       await emit(tester, [FrameFixtures.frame()]);
@@ -808,7 +805,7 @@ void main() {
       await pump(
         tester,
         extra: [
-          flags({FeatureFlag.addToCheckers: false}),
+          flags({FeatureFlag.checkersShop: false}),
         ],
       );
       await emit(tester, [

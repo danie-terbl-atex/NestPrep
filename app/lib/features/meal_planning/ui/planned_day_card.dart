@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/calendar_date.dart';
 import '../../household/model/household_area.dart';
@@ -10,6 +11,9 @@ import '../../household/model/household_view.dart';
 import '../../recipes/model/family_size.dart';
 import '../../recipes/model/recipe.dart';
 import '../../recipes/ui/planned_recipe_thumb.dart';
+import '../../subscriptions/model/premium_feature.dart';
+import '../../subscriptions/state/household_entitlement.dart';
+import '../../subscriptions/ui/premium_gate.dart';
 import '../model/meal.dart';
 import '../model/meal_week.dart';
 import '../model/week_plan.dart';
@@ -107,6 +111,7 @@ class _SlotRow extends StatelessWidget {
     final recipeId = planned?.recipeLink?.recipeId;
     final view = context.watch<HouseholdView>();
     final canEdit = view.permissions.canEdit(HouseholdArea.meals);
+    final hasPremium = context.watch<HouseholdEntitlement>().isPremium;
     final schoolNames = [
       for (final id in schoolLunchFor)
         ?view.memberById(id)?.displayName.split(' ').first,
@@ -115,6 +120,7 @@ class _SlotRow extends StatelessWidget {
       return _SchoolLunchRow(
         names: schoolNames,
         atHome: planned,
+        isLocked: !hasPremium,
         onOpenLunch: onOpenLunch,
         onPickAtHome: canEdit ? () => _pick(context) : null,
       );
@@ -127,7 +133,7 @@ class _SlotRow extends StatelessWidget {
         child: Row(
           children: [
             _SlotLabel(slot),
-            if (recipeId != null) ...[
+            if (recipeId != null && hasPremium) ...[
               PlannedRecipeThumb(recipeId: recipeId),
               const SizedBox(width: NestSpace.md),
             ],
@@ -153,7 +159,7 @@ class _SlotRow extends StatelessWidget {
                   if (recipeId != null)
                     NestButton(
                       label: RecipeCopy.howToMakeShort,
-                      icon: LucideIcons.chefHat,
+                      icon: hasPremium ? LucideIcons.chefHat : LucideIcons.lock,
                       variant: NestButtonVariant.link,
                       size: NestButtonSize.small,
                       isExpanded: false,
@@ -182,6 +188,7 @@ class _SlotRow extends StatelessWidget {
       today: controller.today,
       library: library,
       current: meal,
+      isRecipeLocked: !context.read<HouseholdEntitlement>().isPremium,
     );
     final slotKey = WeekPlan.slotKey(date.weekday, slot);
     switch (choice) {
@@ -202,6 +209,10 @@ class _SlotRow extends StatelessWidget {
       case SlotTyped(:final name):
         await controller.setSlotByName(slotKey, name);
       case SlotRecipe():
+        if (!context.mounted) return;
+        if (!await ensurePremium(context, feature: PremiumFeature.recipes)) {
+          return;
+        }
         if (!context.mounted) return;
         final familySize = familySizeOf(context.read<HouseholdView>());
         final recipe = await onPickRecipe(slot, date);
@@ -237,12 +248,14 @@ class _SchoolLunchRow extends StatelessWidget {
   const _SchoolLunchRow({
     required this.names,
     required this.atHome,
+    required this.isLocked,
     required this.onOpenLunch,
     required this.onPickAtHome,
   });
 
   final List<String> names;
   final Meal? atHome;
+  final bool isLocked;
   final VoidCallback onOpenLunch;
   final VoidCallback? onPickAtHome;
 
@@ -273,9 +286,12 @@ class _SchoolLunchRow extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        LucideIcons.chevronRight,
+                        isLocked ? LucideIcons.lock : LucideIcons.chevronRight,
                         size: NestSize.iconSmall,
                         color: nest.colors.inkTertiary,
+                        semanticLabel: isLocked
+                            ? SubscriptionCopy.lockedHint
+                            : null,
                       ),
                     ],
                   ),

@@ -5,6 +5,7 @@ import { HOUSEHOLDS, type HouseholdDocument } from '../household/documents';
 import { claimedMemberIdOf } from '../household/membership';
 import { levelNow } from '../household/shift_window';
 import { APP_CONFIG, readFlag } from '../shared/feature_flags';
+import { entitlementRef, isPremiumAt } from '../subscriptions/subscription_documents';
 import { SCOPE_NEEDS, type AssistantScope } from './assistant_scopes';
 import { AssistantRefusal, type AssistantPrincipal } from './principal';
 
@@ -29,9 +30,9 @@ const LEVEL_RANK: Record<Level, number> = { none: 0, own: 1, view: 2, edit: 3 };
  * (assistants ADR-0003). The Admin SDK skips Security Rules, so this is where
  * the rules' answer is given again, live, on every call: the scope the member
  * granted, both off switches, membership, a family role (v1), the household's
- * own switch, the area level the rules' `levelIn` would give right now
- * (shift-aware), and the profile the member claimed, which every write is
- * stamped with.
+ * own switch, its Premium, the area level the rules' `levelIn` would give
+ * right now (shift-aware), and the profile the member claimed, which every
+ * write is stamped with.
  */
 export async function requireAccess(
   store: Firestore,
@@ -50,9 +51,10 @@ export async function requireAccess(
   await requireSwitchedOn(store);
 
   const householdRef = store.collection(HOUSEHOLDS).doc(principal.householdId);
-  const [householdSnapshot, settingsSnapshot] = await Promise.all([
+  const [householdSnapshot, settingsSnapshot, entitlementSnapshot] = await Promise.all([
     householdRef.get(),
     householdRef.collection(ASSISTANT_SETTINGS).doc(CURRENT_SETTINGS).get(),
+    entitlementRef(store, principal.householdId).get(),
   ]);
   const household = householdSnapshot.data() as HouseholdDocument | undefined;
   if (household === undefined) {
@@ -78,6 +80,13 @@ export async function requireAccess(
       'forbidden',
       'householdSwitchedOff',
       'This household has switched assistants off in NestPrep.',
+    );
+  }
+  if (!isPremiumAt(entitlementSnapshot.get('premiumUntil'), now)) {
+    throw new AssistantRefusal(
+      'forbidden',
+      'premiumRequired',
+      'This household needs nestprep Premium to use an assistant. A parent can get it in the nestprep app.',
     );
   }
 

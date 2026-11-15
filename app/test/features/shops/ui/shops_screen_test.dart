@@ -24,9 +24,11 @@ import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/shops/state/shops_controller.dart';
 import 'package:nestprep/features/shops/ui/shops_screen.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
 import 'package:nestprep/shared/copy/shops_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
@@ -39,7 +41,9 @@ import '../../../support/fake_pnp.dart';
 import '../../../support/fake_woolworths.dart';
 import '../../../support/held_pnp_directory.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 void main() {
   late FakeCheckersDirectory checkers;
@@ -60,6 +64,7 @@ void main() {
     PnpDirectory? pnpDirectory,
     List<SingleChildWidget> extra = const [],
     bool opensFromHome = false,
+    bool isPremium = true,
     Brightness brightness = Brightness.light,
     double scale = 1,
   }) async {
@@ -87,6 +92,10 @@ void main() {
         Provider<WoolworthsDirectory>.value(value: woolworths),
         Provider<RetailerPreference>.value(value: preference),
         Provider<MatchAsYouTypePreference>.value(value: preference),
+        if (isPremium)
+          premiumEntitlementProvider()
+        else
+          ...SubscriptionHarness().providers,
         ...extra,
       ],
       view: view,
@@ -170,7 +179,7 @@ void main() {
           create: (_) => FeatureFlagsController(
             source: FixedFeatureFlagSource(
               FeatureFlags.fromFields(const {
-                'addToWoolworths': false,
+                'woolworthsShop': false,
               }, defaultOn: true),
             ),
           ),
@@ -326,6 +335,82 @@ void main() {
       find.text(CheckersCopy.retailerName(ProductRetailer.checkers)),
       findsNothing,
     );
+  });
+
+  group('a household without Premium', () {
+    final headline = SubscriptionCopy.headline(PremiumFeature.shops);
+
+    testWidgets('sees Link locked, and it opens the paywall, not the shop', (
+      tester,
+    ) async {
+      await pumpShops(tester, isPremium: false);
+      expect(find.text(ShopsCopy.premiumNote), findsOneWidget);
+      await bringIntoView(tester, linkRow(ProductRetailer.woolworths));
+      for (final shop in ProductRetailer.values) {
+        expect(inLinkRow(shop, find.text(ShopsCopy.link)), findsOneWidget);
+        expect(inLinkRow(shop, find.byIcon(LucideIcons.lock)), findsOneWidget);
+      }
+
+      await tester.tap(
+        inLinkRow(ProductRetailer.woolworths, find.text(ShopsCopy.link)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(headline), findsOneWidget);
+      expect(find.textContaining('page '), findsNothing);
+      expect(woolworths.starts, 0);
+    });
+
+    testWidgets('still unlinks a shop it linked, from this page', (
+      tester,
+    ) async {
+      woolworths.status = WoolworthsLinkStatus(
+        isLinked: true,
+        linkedAt: DateTime.utc(2026, 11, 2),
+        emailMasked: 'd***@a***.io',
+      );
+      await pumpShops(tester, isPremium: false);
+      await bringIntoView(tester, linkRow(ProductRetailer.woolworths));
+      expect(
+        inLinkRow(ProductRetailer.woolworths, find.text(ShopsCopy.manage)),
+        findsNothing,
+      );
+
+      await tester.tap(
+        inLinkRow(ProductRetailer.woolworths, find.text(ShopsCopy.unlink)),
+      );
+      await tester.pumpAndSettle();
+      expect(woolworths.unlinks, 1);
+      expect(find.text(headline), findsNothing);
+      expect(
+        inLinkRow(ProductRetailer.woolworths, find.text(ShopsCopy.notLinked)),
+        findsOneWidget,
+      );
+      expect(
+        inLinkRow(ProductRetailer.woolworths, find.text(ShopsCopy.link)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('survives dark at 200% text on a 360-wide phone', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      checkers.status = CheckersLinkStatus(
+        isLinked: true,
+        expiresAt: DateTime.now().add(const Duration(minutes: 30)),
+        mobileMasked: '082***4567',
+      );
+      await pumpShops(
+        tester,
+        isPremium: false,
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await bringIntoView(tester, linkRow(ProductRetailer.woolworths));
+      expect(tester.takeException(), isNull);
+    });
   });
 
   for (final failing in [false, true]) {

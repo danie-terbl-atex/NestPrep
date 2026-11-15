@@ -21,11 +21,16 @@ export const PROJECT = process.env.NESTPREP_PROJECT ?? 'nestprep-643b7';
 const BUCKET = `${PROJECT}.firebasestorage.app`;
 const LOGINS = resolve(import.meta.dirname, '../../../app/demo_logins.json');
 
+/** Refuses a cast whose household or accounts are not under [prefix]. */
+export function assertScope(cast, prefix) {
+  const ids = [cast.householdId, ...cast.people.map((person) => person.uid)];
+  const stray = ids.filter((id) => !id.startsWith(prefix));
+  if (stray.length > 0) throw new Error(`refusing: not a ${prefix} id: ${stray.join(', ')}`);
+}
+
 /** Refuses anything that is not the demo household and the demo accounts. */
 export function assertDemoScope() {
-  const ids = [CLOUD_CAST.householdId, ...CLOUD_CAST.people.map((person) => person.uid)];
-  const stray = ids.filter((id) => !id.startsWith('demo-'));
-  if (stray.length > 0) throw new Error(`refusing: not a demo id: ${stray.join(', ')}`);
+  assertScope(CLOUD_CAST, 'demo-');
 }
 
 export function connect() {

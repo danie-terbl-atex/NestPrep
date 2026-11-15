@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { CallFailed, adminDb, callAs, clearFirestore, signUp } from './emulator_harness';
 import {
   CARD_BYTES,
+  LAPSED,
   POLICY_BYTES,
+  PREMIUM_UNTIL,
   expire,
   fileQueryIn,
   givenSharingParkers,
@@ -14,6 +16,7 @@ import {
   tokenOf,
   type SharingParkers,
 } from './document_share_fixture';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * One document shared by an expiring link, end to end (documents ADR-0006):
@@ -103,6 +106,15 @@ describe('making a link', () => {
       });
     }
     expect(await refusal(share(parkers.sam, parkers.householdId))).toBe('tooManyShares');
+  });
+
+  it('is refused for a household without Premium, and nothing is written', async () => {
+    await givenPremiumUntil(parkers.householdId, LAPSED);
+    expect(await refusal(share(parkers.sam, parkers.householdId))).toBe('premiumRequired');
+    const shares = await adminDb()
+      .collection(`households/${parkers.householdId}/documentShares`)
+      .get();
+    expect(shares.size).toBe(0);
   });
 
   it('is refused when the switch is off', async () => {
@@ -218,6 +230,26 @@ describe('a link stops working', () => {
       .doc(`households/${parkers.householdId}/vaults/m-emma/vaultDocuments/card`)
       .delete();
     expect((await open(tokenOf(made.url), '&file=1')).status).toBe(410);
+  });
+
+  it('when the household’s Premium lapses, until it is back — and it can still be stopped', async () => {
+    const made = await share(parkers.sam, parkers.householdId);
+    await givenPremiumUntil(parkers.householdId, LAPSED);
+    const page = await open(tokenOf(made.url));
+    expect(page.status).toBe(410);
+    expect(await page.text()).toContain('This link no longer works');
+    expect((await open(tokenOf(made.url), '&file=1')).status).toBe(410);
+    expect(await vaultViews('m-emma')).toHaveLength(0);
+
+    await givenPremiumUntil(parkers.householdId, PREMIUM_UNTIL);
+    expect((await open(tokenOf(made.url))).status).toBe(200);
+
+    await givenPremiumUntil(parkers.householdId, LAPSED);
+    await callAs(parkers.sam, 'revokeDocumentShare', {
+      householdId: parkers.householdId,
+      shareId: made.shareId,
+    });
+    expect(await shareDoc(parkers.householdId, made.shareId)).toMatchObject({ status: 'revoked' });
   });
 
   it('when the switch is turned off, for links already sent', async () => {

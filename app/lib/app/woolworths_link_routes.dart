@@ -5,20 +5,28 @@ import '../features/add_to_woolworths/data/woolworths_account_sign_in.dart';
 import '../features/add_to_woolworths/data/woolworths_directory.dart';
 import '../features/add_to_woolworths/state/woolworths_link_controller.dart';
 import '../features/add_to_woolworths/ui/woolworths_link_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/woolworths_copy.dart';
 import 'woolworths_link_route.dart';
 
 /// Linking a Woolworths account (add-to-woolworths ADR-0001), in its own
 /// file so the route table gains one line.
 GoRoute woolworthsLinkRoute() => GoRoute(
   path: WoolworthsLinkRoute.path,
-  builder: (context, state) => ChangeNotifierProvider(
-    create: (context) => WoolworthsLinkController(
-      directory: context.read<WoolworthsDirectory>(),
-      signIn: context.read<WoolworthsAccountSignIn>(),
-    ),
-    child: WoolworthsLinkScreen(
-      returnWhenLinked:
-          state.uri.queryParameters[WoolworthsLinkRoute.returnParameter] == '1',
+  builder: (context, state) => PremiumArea(
+    feature: PremiumFeature.shops,
+    title: WoolworthsCopy.linkTitle,
+    child: ChangeNotifierProvider(
+      create: (context) => WoolworthsLinkController(
+        directory: context.read<WoolworthsDirectory>(),
+        signIn: context.read<WoolworthsAccountSignIn>(),
+      ),
+      child: WoolworthsLinkScreen(
+        returnWhenLinked:
+            state.uri.queryParameters[WoolworthsLinkRoute.returnParameter] ==
+            '1',
+      ),
     ),
   ),
 );

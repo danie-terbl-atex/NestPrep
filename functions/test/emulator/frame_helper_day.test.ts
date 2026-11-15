@@ -114,12 +114,63 @@ const tick = (secret: string, more: Record<string, unknown>): Promise<Record<str
 const clock = (secret: string, on: boolean): Promise<{ status: string; shift?: Shift }> =>
   callAs(null, 'setFrameShift', { secret, on });
 
+const entitlementOf = (h: Household): FirebaseFirestore.DocumentReference =>
+  household(h.householdId).collection('entitlement').doc('current');
+
 async function withThandi(): Promise<{ h: Household; thandi: string; secret: string }> {
   const h = await samsHousehold();
   const thandi = await addProfile(h.householdId, 'Thandi Mokoena', 'helper');
   const secret = await frameFor(h, thandi);
+  await entitlementOf(h).set({ premiumUntil: Timestamp.fromMillis(Date.now() + 86_400_000) });
   return { h, thandi, secret };
 }
+
+describe('home care on the frame of a household without Premium', () => {
+  it('answers a job’s photo as missing', async () => {
+    const { h, thandi, secret } = await withThandi();
+    await household(h.householdId).collection('homeCareJobs').doc(OVEN).set(jobData(thandi));
+    await putBefore(h.householdId, OVEN);
+    expect((await photoOf({ secret, id: OVEN })).status).toBe(200);
+
+    await entitlementOf(h).set({ premiumUntil: Timestamp.fromMillis(Date.now() - 86_400_000) });
+    expect((await photoOf({ secret, id: OVEN })).status).toBe(404);
+    await entitlementOf(h).delete();
+    expect((await photoOf({ secret, id: OVEN })).status).toBe(404);
+  });
+
+  it('clocks nobody in, as when shifts are off, and still clocks an open shift out', async () => {
+    const { h, thandi, secret } = await withThandi();
+    const shifts = household(h.householdId).collection('homeCareShifts');
+    await clock(secret, true);
+    await entitlementOf(h).delete();
+
+    expect((await clock(secret, true)).shift).toMatchObject({ on: true });
+    expect(await clock(secret, false)).toEqual({ status: 'linked', shift: { on: false } });
+    expect((await shifts.get()).docs[0]?.data()).toMatchObject({
+      status: 'ended',
+      endedBy: thandi,
+      endedVia: 'frame',
+    });
+
+    await expectRefusal(clock(secret, true), 'shiftsOff');
+    expect((await shifts.get()).size).toBe(1);
+  });
+
+  it('hands no job in, as when the job is not there, and leaves it as it was', async () => {
+    const { h, thandi, secret } = await withThandi();
+    const job = household(h.householdId).collection('homeCareJobs').doc(OVEN);
+    await job.set(jobData(thandi));
+    const before = (await job.get()).data();
+
+    await entitlementOf(h).set({ premiumUntil: Timestamp.fromMillis(Date.now() - 86_400_000) });
+    await expectRefusal(tick(secret, { done: true }), 'itemNotFound');
+    await entitlementOf(h).delete();
+    await expectRefusal(tick(secret, { done: true }), 'itemNotFound');
+
+    expect((await job.get()).data()).toEqual(before);
+    expect((await job.collection('events').get()).empty).toBe(true);
+  });
+});
 
 describe('a job’s photo on the helper’s day', () => {
   it('names the photo and its circles on the job, and streams it to that frame only', async () => {

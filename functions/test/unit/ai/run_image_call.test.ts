@@ -1,4 +1,3 @@
-import { Timestamp } from 'firebase-admin/firestore';
 import { describe, expect, it } from 'vitest';
 
 import { readAiSettings, type AiSettings } from '../../../src/ai/ai_settings';
@@ -12,6 +11,8 @@ import {
   FakeImageModel,
   HANG,
   InMemoryUsageLedger,
+  PREMIUM,
+  paywallOf,
   refusalOf,
   type ScriptedImage,
 } from './fakes';
@@ -46,6 +47,7 @@ interface World {
 function world(script: ScriptedImage[], settings: AiSettings = readAiSettings(undefined)): World {
   const model = new FakeImageModel(script);
   const ledger = new InMemoryUsageLedger();
+  ledger.entitlement = PREMIUM;
   const clock = new FakeClock();
   const deps: ImageDependencies = {
     model,
@@ -63,7 +65,7 @@ describe('a picture that works', () => {
     const { deps, ledger } = world(['image']);
     const result = await runImageCall(deps, call);
     expect(result.value.bytes).toEqual(FAKE_JPEG);
-    expect(result.callsLeft).toBe(9);
+    expect(result.callsLeft).toBe(99);
     expect(ledger.usage).toEqual({ calls: 1, attempts: 1 });
     expect(ledger.settlements[0]?.settlement).toEqual({
       ok: true,
@@ -97,7 +99,7 @@ describe('a picture that is switched off or over the cap', () => {
 
   it('when the month is spent, before the model is asked', async () => {
     const { deps, model, ledger } = world(['image']);
-    ledger.usage = { calls: 10, attempts: 10 };
+    ledger.usage = { calls: 100, attempts: 100 };
     expect(await refusalOf(() => runImageCall(deps, call))).toBe('aiLimitReached');
     expect(model.calls).toBe(0);
   });
@@ -180,21 +182,29 @@ describe('a creation, against its own allowance (avatars ADR-0003)', () => {
 
   it('spends a creation, not a monthly call, and says how many creations are left', async () => {
     const { deps, ledger } = world(['image']);
-    ledger.entitlement = { premiumUntil: Timestamp.fromDate(new Date('2027-01-01T00:00:00Z')) };
     const result = await runImageCall(deps, creation);
     expect(result.callsLeft).toBe(11);
     expect(ledger.usage).toEqual({ calls: 0, attempts: 0 });
     expect(ledger.created).toEqual({ month: 1, lifetime: 1, attempts: 1 });
   });
 
-  it('gives a free household one in all, then refuses before the model is asked', async () => {
+  it('gives a free household none: the paywall, before the model is asked', async () => {
     const { deps, ledger, model } = world(['image']);
-    expect((await runImageCall(deps, creation)).callsLeft).toBe(0);
+    ledger.entitlement = undefined;
+    expect(await paywallOf(() => runImageCall(deps, creation))).toBe('avatarCreate');
     expect(
-      await refusalOf(() => runImageCall(deps, { ...creation, feature: 'avatarPortrait' })),
-    ).toBe('aiLimitReached');
-    expect(model.calls).toBe(1);
-    expect(ledger.created.lifetime).toBe(1);
+      await paywallOf(() => runImageCall(deps, { ...creation, feature: 'avatarPortrait' })),
+    ).toBe('avatarPortrait');
+    expect(await paywallOf(() => runImageCall(deps, call))).toBe('lunchPhoto');
+    expect(model.calls).toBe(0);
+    expect(ledger.created).toEqual({ month: 0, lifetime: 0, attempts: 0 });
+  });
+
+  it('refuses a Premium household past its month of creations as a limit, not a paywall', async () => {
+    const { deps, ledger, model } = world(['image']);
+    ledger.created = { month: 12, lifetime: 12, attempts: 12 };
+    expect(await refusalOf(() => runImageCall(deps, creation))).toBe('aiLimitReached');
+    expect(model.calls).toBe(0);
   });
 
   it('gives the creation back when the picture is blocked', async () => {

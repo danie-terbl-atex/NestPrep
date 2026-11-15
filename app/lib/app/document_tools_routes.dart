@@ -15,6 +15,7 @@ import '../features/documents/state/offline_copies_controller.dart';
 import '../features/documents/state/offline_copy_source.dart';
 import '../features/documents/state/vault_lock_controller.dart';
 import '../features/documents/ui/document_shares_screen.dart';
+import '../features/documents/ui/documents_premium_area.dart';
 import '../features/documents/ui/offline_copies_screen.dart';
 import '../features/documents/ui/vault_gate.dart';
 import '../features/household/model/household_view.dart';
@@ -49,20 +50,23 @@ SingleChildWidget offlineCopiesProvider({
 List<RouteBase> documentToolRoutes({required String viewerUid}) => [
   GoRoute(
     path: DocumentsRoute.sharesPath,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => DocumentSharesController(
-        repository: context.read<DocumentShareRepository>(),
-        directory: context.read<DocumentShareDirectory>(),
-        householdId: HouseholdRoute.idFrom(state),
-        viewerUid: viewerUid,
-        isFamily: context.read<HouseholdView>().permissions.isFamily,
+    builder: (context, state) => DocumentsPremiumArea(
+      child: ChangeNotifierProvider(
+        create: (context) => DocumentSharesController(
+          repository: context.read<DocumentShareRepository>(),
+          directory: context.read<DocumentShareDirectory>(),
+          householdId: HouseholdRoute.idFrom(state),
+          viewerUid: viewerUid,
+          isFamily: context.read<HouseholdView>().permissions.isFamily,
+        ),
+        child: const DocumentSharesScreen(),
       ),
-      child: const DocumentSharesScreen(),
     ),
   ),
   GoRoute(
     path: DocumentsRoute.offlinePath,
-    builder: (context, state) =>
-        VaultGate(builder: (context) => const OfflineCopiesScreen()),
+    builder: (context, state) => DocumentsPremiumArea(
+      child: VaultGate(builder: (context) => const OfflineCopiesScreen()),
+    ),
   ),
 ];

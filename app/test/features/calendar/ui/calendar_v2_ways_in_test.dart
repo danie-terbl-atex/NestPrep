@@ -6,7 +6,11 @@ import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/ui/household_places.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
+import 'package:nestprep/features/subscriptions/ui/paywall_page.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +21,7 @@ import '../../../support/fake_calendar_sync.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 /// Calendar V2's two ways in (calendar ADR-0005, ADR-0006): each shows only
 /// while its switch is on, and only to somebody the household lets use it —
@@ -28,6 +33,7 @@ void main() {
   group('snap a school letter, from the week', () {
     late FakeCalendarRepository repository;
     late CalendarController controller;
+    late SubscriptionHarness subscriptions;
 
     setUp(() {
       repository = FakeCalendarRepository();
@@ -49,8 +55,16 @@ void main() {
     Future<void> pump(
       WidgetTester tester, {
       bool flagsOn = true,
+      bool isPremium = true,
       HouseholdView? view,
+      Brightness brightness = Brightness.light,
+      double scale = 1,
     }) async {
+      subscriptions = SubscriptionHarness(
+        entitlement: isPremium
+            ? Entitlement(premiumUntil: DateTime.utc(2100))
+            : Entitlement.free,
+      );
       final router = GoRouter(
         routes: [
           GoRoute(
@@ -68,7 +82,10 @@ void main() {
         tester,
         router: router,
         view: view,
+        brightness: brightness,
+        textScale: scale,
         providers: [
+          ...subscriptions.providers,
           ChangeNotifierProvider<CalendarController>.value(value: controller),
           featureFlagsProvider(defaultOn: flagsOn),
         ],
@@ -76,13 +93,62 @@ void main() {
       await tester.pump();
     }
 
+    const lock = ValueKey('snap-letter-lock');
+
     testWidgets('is offered to a parent, and opens the letter screen', (
       tester,
     ) async {
       await pump(tester);
+      expect(find.byKey(lock), findsNothing);
       await tester.tap(find.bySemanticsLabel(SchoolLetterCopy.openFromWeek));
       await tester.pumpAndSettle();
       expect(find.text('letter screen'), findsOneWidget);
+      expect(find.byType(PaywallPage), findsNothing);
+    });
+
+    testWidgets('is shown to a free household, locked, and opens the paywall '
+        'on the school letter instead of the screen', (tester) async {
+      await pump(tester, isPremium: false);
+
+      expect(
+        find.bySemanticsLabel(SchoolLetterCopy.openFromWeek),
+        findsOneWidget,
+      );
+      expect(find.byKey(lock), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(SubscriptionCopy.lockedHint),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.bySemanticsLabel(SchoolLetterCopy.openFromWeek));
+      // The week behind the sheet is still loading, so nothing ever settles.
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(PaywallPage), findsOneWidget);
+      expect(
+        subscriptions.paywallOpens.opened.single.trigger,
+        PremiumFeature.schoolLetter,
+      );
+      expect(find.text('letter screen'), findsNothing);
+    });
+
+    testWidgets('locked, it survives dark at 200% text on a 360-wide phone', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(
+        tester,
+        isPremium: false,
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(lock), findsOneWidget);
     });
 
     testWidgets('is not offered while its switch is off', (tester) async {

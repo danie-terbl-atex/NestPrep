@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/log/best_effort.dart';
 import '../model/device_position.dart';
 import 'live_location_repository.dart';
 import 'location_reporter.dart';
@@ -79,6 +80,10 @@ final class ForegroundLocationReporter implements LocationReporter {
   }
 
   @override
+  bool isReportingFor(String householdId, String memberId) =>
+      _share?.householdId == householdId && _share?.memberId == memberId;
+
+  @override
   Future<void> stop({
     required String householdId,
     required String memberId,
@@ -133,6 +138,21 @@ final class ForegroundLocationReporter implements LocationReporter {
         at: position.at,
         accuracyMetres: position.accuracyMetres,
         sharingUntil: share.until,
+      );
+    } on PermissionDeniedFailure catch (failure) {
+      // Premium ended, or the member left: every later write would be refused
+      // too, so the share ends here rather than retrying for hours.
+      _problems.add(failure);
+      await _stopReporting();
+      await bestEffort(
+        'refused share pin',
+        code: 'refused-share-pin-failed',
+        run: () => removePin(
+          () => _repository.stopSharing(
+            householdId: share.householdId,
+            memberId: share.memberId,
+          ),
+        ),
       );
     } on AppFailure catch (failure) {
       _problems.add(failure);

@@ -6,6 +6,7 @@ import '../../../shared/copy/checkers_copy.dart';
 import '../../groceries/model/product_match.dart';
 import '../state/retailer_choice_controller.dart';
 import 'retailer_logo.dart';
+import 'shops_lock.dart';
 import 'shops_on_list.dart';
 
 /// The chosen shop's logo at the start of the grocery add field
@@ -20,17 +21,28 @@ class MatchAsYouTypeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final choice = context.watch<RetailerChoiceController>();
     final shop = choice.chosen;
-    final isOn = choice.matchesAsYouType;
-    return RetailerLogo(
-      retailer: shop,
-      size: NestSize.logoMedium,
-      tone: isOn ? NestLogoTileTone.selected : NestLogoTileTone.idle,
-      label: isOn
-          ? CheckersCopy.matchingAsYouType(shop)
-          : CheckersCopy.notMatchingAsYouType,
-      onTap: () =>
-          _showSheet(context, choice, shopsOnList(context, listen: false)),
+    final isLocked = !shopsUnlocked(context);
+    final isOn = choice.matchesAsYouType && !isLocked;
+    return ShopLockBadge(
+      isLocked: isLocked,
+      child: RetailerLogo(
+        retailer: shop,
+        size: NestSize.logoMedium,
+        tone: isOn ? NestLogoTileTone.selected : NestLogoTileTone.idle,
+        label: isOn
+            ? CheckersCopy.matchingAsYouType(shop)
+            : CheckersCopy.notMatchingAsYouType,
+        onTap: () => _open(context, choice),
+      ),
     );
+  }
+
+  Future<void> _open(
+    BuildContext context,
+    RetailerChoiceController choice,
+  ) async {
+    if (!await ensureShops(context) || !context.mounted) return;
+    await _showSheet(context, choice, shopsOnList(context, listen: false));
   }
 
   Future<void> _showSheet(

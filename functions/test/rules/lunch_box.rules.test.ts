@@ -42,6 +42,7 @@ import { asUser, assertFails, assertSucceeds, clearData, givenData } from './rul
 beforeEach(async () => {
   await clearData();
   await givenTheLunchHousehold();
+  await givenLunchPremium();
 });
 
 const merge = { merge: true } as const;
@@ -219,9 +220,6 @@ describe('reading a week', () => {
 
 describe('what came home', () => {
   beforeEach(async () => {
-    // Learning from what came home is premium (lunch-box ADR-0009);
-    // `lunch_premium.rules.test.ts` holds the free side of it.
-    await givenLunchPremium();
     await givenData(async (db) => {
       await setDoc(doc(db, planPath(ZOLA)), planOf(ZOLA, { '2_main': WRAP }));
     });

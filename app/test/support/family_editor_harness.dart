@@ -5,17 +5,21 @@ import 'package:nestprep/features/family_profiles/model/member_health.dart';
 import 'package:nestprep/features/family_profiles/state/family_controller.dart';
 import 'package:nestprep/features/family_profiles/state/member_health_controller.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:provider/provider.dart';
 
 import 'fake_family_profiles.dart';
 import 'household_fixtures.dart';
 import 'pump_screen.dart';
+import 'pump_subscriptions.dart';
 
-/// A child's profile open in front of an admin, with the fakes behind it —
-/// what every editor test starts from, so the two editor files share one
-/// way of opening a sheet, typing and tapping rather than two (`ENG-01`).
+/// A child's profile open in front of an admin of a Premium household, which
+/// may record allergies and medication — or, with [isPremium] false, of a
+/// free one, which may not — with the fakes behind it: what every editor test
+/// starts from, so the editor files share one way of opening a sheet, typing
+/// and tapping (`ENG-01`).
 final class FamilyEditorHarness {
-  FamilyEditorHarness() {
+  FamilyEditorHarness({this.isPremium = true}) {
     family = FamilyController(
       familyProfileRepository: repository,
       childProfileDirectory: repository,
@@ -30,7 +34,9 @@ final class FamilyEditorHarness {
     );
   }
 
+  final bool isPremium;
   final repository = FakeFamilyProfileRepository();
+  late final SubscriptionHarness subscriptions;
   late final FamilyController family;
   late final MemberHealthController health;
 
@@ -46,10 +52,16 @@ final class FamilyEditorHarness {
     tester.view.physicalSize = const Size(420 * 3, 2000 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
+    subscriptions = SubscriptionHarness(
+      entitlement: isPremium
+          ? Entitlement(premiumUntil: DateTime.utc(2100))
+          : Entitlement.free,
+    );
     await pumpScreen(
       tester,
       const FamilyMemberScreen(memberId: Fixtures.kidMemberId),
       providers: [
+        ...subscriptions.providers,
         ChangeNotifierProvider<FamilyController>.value(value: family),
         ChangeNotifierProvider<MemberHealthController>.value(value: health),
       ],

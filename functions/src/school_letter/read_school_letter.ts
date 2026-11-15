@@ -7,6 +7,7 @@ import { callerIn } from '../calendar_sync/caller_access';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { readFlag } from '../shared/feature_flags';
+import { requirePremium } from '../subscriptions/premium_gate';
 import { readChildHints } from './child_hints';
 import { refuseLetter } from './errors';
 import { checkedLetter } from './letter_file';
@@ -28,7 +29,8 @@ export interface ReadSchoolLetterResult {
  * rules. The letter itself is never stored; it lives for this request.
  *
  * Who may: anybody the household's `calendar` grant lets add events — the
- * same `edit` the rules ask of an event write. The model is reached only
+ * same `edit` the rules ask of an event write — in a Premium household
+ * (subscriptions ADR-0008). The model is reached only
  * through `runAiCall`, which holds the kill switch, the monthly cap and the
  * usage ledger (foundation ADR-0015).
  *
@@ -45,6 +47,7 @@ export const readSchoolLetter = onCall(
 
     if (!(await readFlag(store, 'snapSchoolLetter'))) throw refuseLetter('letterFeatureOff');
     const caller = await callerIn(store, input.householdId, uid, 'edit');
+    await requirePremium(store, input.householdId, 'schoolLetter');
     const letter = checkedLetter(input.mimeType, input.data);
 
     const [children, deps] = await Promise.all([

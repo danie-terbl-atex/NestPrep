@@ -1,6 +1,7 @@
 import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
+import { givenFamilyPremium } from './family_fixture';
 import {
   asUser,
   assertFails,
@@ -32,6 +33,7 @@ const FOLDERS = `households/${HOUSEHOLD}/documentFolders`;
 const DOCUMENTS = `households/${HOUSEHOLD}/documents`;
 
 async function givenTheParkers(): Promise<void> {
+  await givenFamilyPremium();
   await givenData(async (db: Firestore) => {
     await setDoc(doc(db, `households/${HOUSEHOLD}`), {
       name: 'The Parkers',
@@ -327,3 +329,43 @@ describe('documents/{documentId}', () => {
     await assertFails(deleteDoc(doc(kim, `${DOCUMENTS}/letter`)));
   });
 });
+
+for (const state of ['free', 'lapsed'] as const) {
+  describe(`a household whose Premium is ${state} (subscriptions ADR-0009)`, () => {
+    beforeEach(async () => {
+      await clearData();
+      await givenTheParkers();
+      await (state === 'lapsed'
+        ? givenFamilyPremium('lapsed')
+        : givenData(async (db: Firestore) => {
+            await deleteDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`));
+          }));
+    });
+
+    it('still reads its folders and documents', async () => {
+      const db = await asUser(THANDI);
+      await assertSucceeds(getDoc(doc(db, `${FOLDERS}/school`)));
+      await assertSucceeds(getDoc(doc(db, `${DOCUMENTS}/letter`)));
+    });
+
+    it('makes and renames no folder', async () => {
+      const db = await asUser(SAM);
+      await assertFails(setDoc(doc(db, `${FOLDERS}/insurance`), newFolder));
+      await assertFails(updateDoc(doc(db, `${FOLDERS}/school`), { name: 'Schools' }));
+    });
+
+    it('adds and changes no document', async () => {
+      await assertFails(setDoc(doc(await asUser(THANDI), `${DOCUMENTS}/report`), newDocument));
+      await assertFails(
+        updateDoc(doc(await asUser(THANDI), `${DOCUMENTS}/letter`), { name: 'Term 3 letter' }),
+      );
+      await assertFails(
+        updateDoc(doc(await asUser(SAM), `${DOCUMENTS}/letter`), { name: 'Term 3 letter' }),
+      );
+    });
+
+    it('still deletes what it filed', async () => {
+      await assertSucceeds(deleteDoc(doc(await asUser(THANDI), `${DOCUMENTS}/letter`)));
+    });
+  });
+}

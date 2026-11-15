@@ -14,6 +14,7 @@ import 'allergy_section.dart';
 import 'family_profile_header.dart';
 import 'food_rules_summary.dart';
 import 'food_section.dart';
+import 'health_lock.dart';
 import 'medication_section.dart';
 import 'profile_edit_flows.dart';
 import 'school_section.dart';
@@ -22,7 +23,8 @@ import 'sizes_section.dart';
 /// The sections of one profile, in the order a carer needs them: who, what
 /// they must not eat, what they eat, medication, school, sizes. Every edit
 /// button is absent — not disabled — for a viewer the rules would refuse
-/// (`FE-04`).
+/// (`FE-04`). Allergies and medication are Premium: without it both sections
+/// are there, locked, and say nothing of what was recorded before.
 class FamilyMemberBody extends StatelessWidget {
   const FamilyMemberBody({
     required this.entry,
@@ -50,6 +52,8 @@ class FamilyMemberBody extends StatelessWidget {
     final canEdit = access.canEdit(entry.memberId);
     final canEditHealth = access.canEditHealth(entry.memberId);
     final profile = entry.profile;
+    final isLocked = isHealthLocked(context);
+    final rules = isLocked ? rulesWithoutAllergies(entry) : entry.foodRules;
     final flows = ProfileEditFlows(
       family: family,
       health: health,
@@ -57,8 +61,7 @@ class FamilyMemberBody extends StatelessWidget {
       roster: roster,
     );
     const gap = SizedBox(height: NestSpace.lg);
-    final showsRules =
-        entry.foodRules.hasSevereAllergy || entry.foodRules.isNutFree;
+    final showsRules = rules.hasSevereAllergy || rules.isNutFree;
     return ListView(
       children: [
         FamilyProfileHeader(
@@ -68,9 +71,10 @@ class FamilyMemberBody extends StatelessWidget {
           onChangePicture: avatarStudioOpener(context, entry.memberId),
         ),
         gap,
-        if (showsRules) ...[FoodRulesSummary(rules: entry.foodRules), gap],
+        if (showsRules) ...[FoodRulesSummary(rules: rules), gap],
         AllergySection(
-          allergies: entry.foodRules.allergies,
+          allergies: rules.allergies,
+          isLocked: isLocked,
           onAdd: canEdit ? () => flows.addAllergy(context) : null,
           onEdit: canEdit
               ? (allergy) => flows.editAllergy(context, allergy)
@@ -88,7 +92,8 @@ class FamilyMemberBody extends StatelessWidget {
           isVisible: health.isVisible,
           health: health.health,
           onRetry: health.retry,
-          onAdd: canEditHealth && _hasRoomForMedication
+          isLocked: isLocked,
+          onAdd: canEditHealth && (isLocked || _hasRoomForMedication)
               ? () => flows.addMedication(context)
               : null,
           onEdit: canEditHealth

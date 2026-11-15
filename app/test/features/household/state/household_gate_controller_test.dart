@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/household/state/household_gate_controller.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
+import 'package:nestprep/shared/time/household_clock.dart';
 
 import '../../../support/fake_household.dart';
+import '../../../support/fake_starter_content.dart';
 
 /// The screen somebody sees once, on the day they join: make a household, or
 /// type the code somebody sent them. Both are callables, so both need the
@@ -12,12 +14,18 @@ import '../../../support/fake_household.dart';
 /// touches, so a double tap here must not make two households.
 void main() {
   late FakeHouseholdDirectory directory;
+  late FakeStarterContentRepository starterContent;
   late HouseholdGateController controller;
+  var startsWithExamples = true;
 
   setUp(() {
     directory = FakeHouseholdDirectory();
+    starterContent = FakeStarterContentRepository();
+    startsWithExamples = true;
     controller = HouseholdGateController(
       householdDirectory: directory,
+      starterContent: starterContent,
+      startsWithExamples: () => startsWithExamples,
       suggestedName: 'Sam Parent',
       defaultTimeZone: 'Africa/Johannesburg',
     );
@@ -50,6 +58,45 @@ void main() {
       expect(controller.isBusy, isFalse);
     },
   );
+
+  test(
+    'a new household is given its examples, as the person who made it',
+    () async {
+      await controller.createHousehold(
+        householdName: 'The Parkers',
+        myName: 'Sam',
+      );
+
+      final seeded = starterContent.seeded.single;
+      expect(seeded.householdId, 'h-new');
+      expect(seeded.memberId, 'm-new');
+      expect(seeded.today, HouseholdClock('Africa/Johannesburg').today);
+    },
+  );
+
+  test('no examples while the switch is off', () async {
+    startsWithExamples = false;
+    await controller.createHousehold(
+      householdName: 'The Parkers',
+      myName: 'Sam',
+    );
+    expect(starterContent.seeded, isEmpty);
+  });
+
+  test('a household that was refused gets no examples', () async {
+    directory.failWith = const UnavailableFailure();
+    final made = await controller.createHousehold(
+      householdName: 'The Parkers',
+      myName: 'Sam',
+    );
+    expect(made, isFalse);
+    expect(starterContent.seeded, isEmpty);
+  });
+
+  test('joining with a code brings no examples', () async {
+    await controller.joinWithCode('ABC123');
+    expect(starterContent.seeded, isEmpty);
+  });
 
   test('a household can be started in another timezone', () async {
     await controller.createHousehold(

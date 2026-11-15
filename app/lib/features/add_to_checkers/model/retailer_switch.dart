@@ -2,12 +2,13 @@ import '../../../shared/flags/feature_flag.dart';
 import '../../groceries/model/product_match.dart';
 
 /// The switch each connected shop sits behind (foundation ADR-0014,
-/// add-to-pnp ADR-0007, add-to-woolworths ADR-0001). A shop with none is not
-/// connected and is never offered.
+/// add-to-pnp ADR-0007, shops ADR-0002). A shop with none is not connected
+/// and is never offered. Every list of shops, and so every shop's mark, is
+/// made from these.
 FeatureFlag? switchOf(ProductRetailer shop) => switch (shop) {
-  ProductRetailer.checkers => FeatureFlag.addToCheckers,
+  ProductRetailer.checkers => FeatureFlag.checkersShop,
   ProductRetailer.pickNPay => FeatureFlag.addToPnp,
-  ProductRetailer.woolworths => FeatureFlag.addToWoolworths,
+  ProductRetailer.woolworths => FeatureFlag.woolworthsShop,
 };
 
 /// The connected shops whose switch [isOn] says is on, in their order.

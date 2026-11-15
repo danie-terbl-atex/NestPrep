@@ -86,3 +86,24 @@ class AssistantConnectionsSection extends StatelessWidget {
     };
   }
 }
+
+/// Asks, then disconnects. Never needs Premium: stopping an assistant is
+/// always the member's to do.
+Future<void> confirmDisconnect(
+  BuildContext context,
+  ConnectedAssistantsController controller,
+  AssistantConnection connection,
+) async {
+  final confirmed = await showNestConfirm(
+    context: context,
+    title: AssistantsCopy.disconnectConfirm,
+    message: AssistantsCopy.disconnectBody(
+      AssistantConnectionCard.nameOf(connection),
+    ),
+    confirmLabel: AssistantsCopy.disconnect,
+    cancelLabel: AppCopy.householdCancel,
+    isDangerous: true,
+  );
+  if (confirmed != true) return;
+  await controller.disconnect(connection);
+}

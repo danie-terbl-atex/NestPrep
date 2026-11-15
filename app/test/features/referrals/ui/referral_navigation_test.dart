@@ -14,7 +14,7 @@ import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/invite_step_screen.dart';
 import 'package:nestprep/features/referrals/model/household_referral.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
-import 'package:nestprep/features/subscriptions/ui/paywall_sheet.dart';
+import 'package:nestprep/features/subscriptions/ui/paywall_page.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/links/external_link_opener.dart';
@@ -132,7 +132,7 @@ void main() {
     expect(find.text(ReferralCopy.heroTitle), findsOneWidget);
   });
 
-  testWidgets('the paywall mentions it, and the sheet closes onto it', (
+  testWidgets('the paywall mentions it, and the page closes onto it', (
     tester,
   ) async {
     await pumpHousehold(tester, viewerUid: Fixtures.samUid);
@@ -140,11 +140,8 @@ void main() {
     final answer = showPaywall(context, feature: PremiumFeature.prepList);
     await tester.pumpAndSettle();
     expect(premium.paywallOpens.opened.single.trigger, PremiumFeature.prepList);
-    await tester.scrollUntilVisible(
-      find.text(ReferralCopy.mentionBody),
-      200,
-      scrollable: find.byType(Scrollable).last,
-    );
+    await tester.ensureVisible(find.text(ReferralCopy.mentionBody));
+    await tester.pump();
     await tester.tap(find.text(ReferralCopy.mentionBody));
     await tester.pumpAndSettle();
     expect(await answer, isFalse);

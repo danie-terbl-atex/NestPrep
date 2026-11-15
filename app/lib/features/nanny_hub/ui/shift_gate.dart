@@ -54,14 +54,30 @@ class _ShiftGateState extends State<ShiftGate> {
   @override
   void initState() {
     super.initState();
-    if (widget.followsWindow) {
-      _pass = context.read<ShiftPassController>()..addListener(_onWindow);
-    }
-    if (widget.savesOnOpen && !widget.isShiftOnly) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(context.read<OfflineKeeper>().open());
-      });
-    }
+    _followWindow();
+    if (widget.savesOffline) _saveOnOpen();
+  }
+
+  /// Saving is switched on once the household's Premium is known, which is a
+  /// moment after this is first built.
+  @override
+  void didUpdateWidget(ShiftGate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _followWindow();
+    if (widget.savesOffline && !oldWidget.savesOffline) _saveOnOpen();
+  }
+
+  void _followWindow() {
+    if (!widget.followsWindow || _pass != null) return;
+    _pass = context.read<ShiftPassController>()..addListener(_onWindow);
+  }
+
+  void _saveOnOpen() {
+    final saves = widget.isShiftOnly ? (_wasOpen ?? false) : widget.savesOnOpen;
+    if (!saves) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(context.read<OfflineKeeper>().open());
+    });
   }
 
   /// The edges of a booked shift's window: opening saves everything fresh for

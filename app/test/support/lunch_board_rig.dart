@@ -17,7 +17,9 @@ import 'test_flags.dart';
 /// The lunch board with its V2 tools over fakes (lunch-box ADR-0006 to
 /// ADR-0008, ADR-0022), every place it opens answered by a line naming it —
 /// the one setup the board's planner, day actions and tool grid tests start
-/// from. [canEdit] false pumps somebody who may only look at lunches.
+/// from. [canEdit] false pumps somebody who may only look at lunches. The
+/// household has Premium, as every household that sees the board does
+/// (subscriptions ADR-0009).
 abstract final class LunchBoardRig {
   /// The board's places, as `opened <segment>`.
   static const places = [
@@ -34,7 +36,6 @@ abstract final class LunchBoardRig {
   static Future<LunchPlanningHarness> pump(
     WidgetTester tester, {
     FeatureFlags flags = TestFlags.on,
-    bool isPremium = false,
     bool canEdit = true,
   }) async {
     final harness = LunchPlanningHarness(flags: flags, canEdit: canEdit);
@@ -42,9 +43,7 @@ abstract final class LunchBoardRig {
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final premium = SubscriptionHarness(
-      entitlement: isPremium
-          ? Entitlement(premiumUntil: DateTime.utc(2100))
-          : Entitlement.free,
+      entitlement: Entitlement(premiumUntil: DateTime.utc(2100)),
     );
     await pumpRouter(
       tester,

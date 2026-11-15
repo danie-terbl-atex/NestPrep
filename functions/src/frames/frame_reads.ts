@@ -33,7 +33,7 @@ import {
   frameStoredGroceryItem,
   groceriesEditors,
 } from './frame_groceries';
-import { readFrameLunch, readFramePremium } from './frame_lunch_photos';
+import { readFrameLunch, readFramePremium, type FrameLunch } from './frame_lunch_photos';
 import { readFrameMeals } from './frame_meal_photos';
 import {
   FRAME_LOCATION_LIMIT,
@@ -136,7 +136,7 @@ export async function readFrameSources(
         : undefined,
       panels.meals ? readMeals(store, home, today) : undefined,
       helperId === null ? undefined : readHomeCare(store, home, helperId, today),
-      panels.lunch ? readFrameLunch(store, home, today, premium) : undefined,
+      panels.lunch ? readLunch(store, home, today, premium) : undefined,
       groceries === null ? undefined : readGroceryItems(home),
       panels.people ? readPeople(home, premium) : undefined,
       panels.todos ? readKidRoutines(store, home, today) : undefined,
@@ -155,6 +155,16 @@ export async function readFrameSources(
     ...(whereabouts === undefined ? {} : { people: whereabouts }),
     ...(kidRoutines === undefined ? {} : { kidRoutines }),
   };
+}
+
+async function readLunch(
+  store: Firestore,
+  home: DocumentReference,
+  today: string,
+  premium: Promise<boolean>,
+): Promise<FrameLunch | undefined> {
+  if (!(await premium)) return undefined;
+  return readFrameLunch(store, home, today, premium);
 }
 
 async function readPeople(

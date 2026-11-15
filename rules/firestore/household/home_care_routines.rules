@@ -7,6 +7,7 @@ match /homeCareRoutines/{routineId} {
   allow read: if homeCareCanSeeRoutine(householdId, resource.data);
 
   allow create: if canEdit(householdId, 'homeCare')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
           'recurrence', 'createdBy', 'createdAt'])
@@ -15,6 +16,7 @@ match /homeCareRoutines/{routineId} {
     && isServerTime('createdAt');
 
   allow update: if canEdit(householdId, 'homeCare')
+    && hasPremium(householdId)
     && onlyChanged(
          ['name', 'roomId', 'cadence', 'items', 'helperId', 'firstDate',
           'recurrence'])
@@ -43,6 +45,7 @@ match /homeCareRoutineTicks/{tickId} {
          + request.resource.data.occurrenceDate
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt')
+    && hasPremium(householdId)
     && homeCareMayTickRoutine(
          householdId,
          homeCareRoutineData(householdId, request.resource.data.routineId),

@@ -64,13 +64,29 @@ async function anItem(householdId: string, id: string, productId: string | null)
     });
 }
 
+async function premium(householdId: string): Promise<void> {
+  await adminDb()
+    .doc(`households/${householdId}/entitlement/current`)
+    .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
+}
+
+async function aPremiumHousehold(): Promise<{ sam: TestUser; householdId: string }> {
+  const { sam, householdId } = await householdOfTwo();
+  await premium(householdId);
+  return { sam, householdId };
+}
+
+async function aPremiumMember(): Promise<TestUser> {
+  return (await aPremiumHousehold()).sam;
+}
+
 beforeEach(async () => {
   await clearFirestore();
 });
 
 describe('linking a Pick n Pay account', () => {
   it('starts on PnP’s own page and completes with the caught code, holding only sealed tokens', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     expect(await callAs<Status>(sam, 'pnpLinkStatus', {})).toEqual({
       linked: false,
       linkedAt: null,
@@ -89,7 +105,7 @@ describe('linking a Pick n Pay account', () => {
   });
 
   it('refuses a forged state, a code PnP refuses, and a completion with nothing started', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await expectRefusal(
       callAs(sam, 'pnpCompleteLink', { code: 'emulator-code', state: 'nothing' }),
       'pnp-no-pending-link',
@@ -108,7 +124,7 @@ describe('linking a Pick n Pay account', () => {
   });
 
   it('refuses while the switch is off, and still answers status and unlink', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await link(sam);
     await adminDb().doc('appConfig/flags').set({ addToPnp: false });
     await expectRefusal(callAs(sam, 'pnpStartLink', {}), 'pnp-switched-off');
@@ -120,11 +136,30 @@ describe('linking a Pick n Pay account', () => {
   it('refuses somebody who is not signed in', async () => {
     await expect(callAs(null, 'pnpLinkStatus', {})).rejects.toThrow(/UNAUTHENTICATED/);
   });
+
+  it('links only for a member of a Premium household, and a lapsed one still unlinks', async () => {
+    await expectRefusal(callAs(await signUp(), 'pnpStartLink', {}), 'premiumRequired');
+    const free = await householdOfTwo();
+    await expectRefusal(callAs(free.sam, 'pnpStartLink', {}), 'premiumRequired');
+    const { sam, householdId } = await aPremiumHousehold();
+    const { authorizeUrl } = await callAs<{ authorizeUrl: string }>(sam, 'pnpStartLink', {});
+    const state = new URL(authorizeUrl).searchParams.get('state') ?? '';
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    await expectRefusal(
+      callAs(sam, 'pnpCompleteLink', { code: 'emulator-code', state }),
+      'premiumRequired',
+    );
+    await premium(householdId);
+    await link(sam);
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    expect((await callAs<Status>(sam, 'pnpLinkStatus', {})).linked).toBe(true);
+    expect(await callAs(sam, 'pnpUnlink', {})).toEqual({ linked: false });
+  });
 });
 
 describe('filling the PnP cart', () => {
   it('puts the asked packs in, skips the rest, and a second push changes nothing', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam);
     await anItem(householdId, 'chips', CHIPS);
     await anItem(householdId, 'typed', null);
@@ -147,7 +182,7 @@ describe('filling the PnP cart', () => {
   });
 
   it('a product PnP has too little of is skipped, and a raise stops at its order limit', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam);
     await anItem(householdId, 'scarce', '000300000000111111_EA');
     await anItem(householdId, 'limited', '000200000000222222_EA');
@@ -162,15 +197,26 @@ describe('filling the PnP cart', () => {
   });
 
   it('refuses a member with no link, a stranger, and a switched-off feature', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await anItem(householdId, 'chips', CHIPS);
     const body = { householdId, itemIds: ['chips'] };
     await expectRefusal(callAs(sam, 'pnpPushToCart', body), 'pnp-link-expired');
-    const stranger = await signUp();
+    const stranger = await aPremiumMember();
     await link(stranger);
     await expectRefusal(callAs(stranger, 'pnpPushToCart', body), 'not-a-member');
     await adminDb().doc('appConfig/flags').set({ addToPnp: false });
     await expectRefusal(callAs(sam, 'pnpPushToCart', body), 'pnp-switched-off');
+  });
+
+  it('refuses a free household', async () => {
+    const { sam, householdId } = await aPremiumHousehold();
+    await link(sam);
+    await anItem(householdId, 'milk', CHIPS);
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    await expectRefusal(
+      callAs(sam, 'pnpPushToCart', { householdId, itemIds: ['milk'] }),
+      'premiumRequired',
+    );
   });
 });
 

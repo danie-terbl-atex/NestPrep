@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { bearerAuthenticator } from '../../src/assistants/auth/bearer';
 import { AssistantRefusal } from '../../src/assistants/principal';
-import { addProfile, household, joinAs, samsHousehold } from './account_data_fixture';
+import { addProfile, household, joinAs } from './account_data_fixture';
 import {
   type ClientDocumentServer,
   allowLocalClientDocuments,
@@ -11,6 +11,7 @@ import {
   connectAs,
   eventually,
   grantsIn,
+  samsPremiumHousehold,
   serveClientDocument,
   tokensFor,
 } from './assistants_fixture';
@@ -56,11 +57,11 @@ async function grantOf(householdId: string, uid: string): Promise<string | null>
 }
 
 async function familyOfTwo(): Promise<{
-  h: Awaited<ReturnType<typeof samsHousehold>>;
+  h: Awaited<ReturnType<typeof samsPremiumHousehold>>;
   pat: Awaited<ReturnType<typeof joinAs>>;
   patMemberId: string;
 }> {
-  const h = await samsHousehold();
+  const h = await samsPremiumHousehold();
   const patMemberId = await addProfile(h.householdId, 'Pat', 'parent');
   const pat = await joinAs(h.sam, h.householdId, patMemberId);
   return { h, pat, patMemberId };
@@ -162,10 +163,10 @@ describe('a household that ends takes every connection, activity line, switch an
   }
 
   async function givenAConnectedHousehold(): Promise<{
-    h: Awaited<ReturnType<typeof samsHousehold>>;
+    h: Awaited<ReturnType<typeof samsPremiumHousehold>>;
     access: string;
   }> {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const tokens = await connectAs(claude.clientId, h.sam, h.householdId);
     await household(h.householdId)
       .collection('assistantSettings')

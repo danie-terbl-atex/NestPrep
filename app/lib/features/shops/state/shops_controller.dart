@@ -53,6 +53,28 @@ final class ShopsController extends ChangeNotifier {
     return _load(shop);
   }
 
+  /// Forgets the member's link at [shop], from this page: a household
+  /// without Premium cannot open the shop's own link screen, and must still
+  /// be able to take its account back.
+  Future<void> unlink(ProductRetailer shop) async {
+    AsyncState<ShopLink> unlinked = const AsyncData(ShopLink.unlinked());
+    try {
+      switch (shop) {
+        case ProductRetailer.checkers:
+          await _checkers.unlink();
+        case ProductRetailer.pickNPay:
+          await _pnp.unlink();
+        case ProductRetailer.woolworths:
+          await _woolworths.unlink();
+      }
+    } on AppFailure catch (failure) {
+      unlinked = AsyncFailure(failure);
+    }
+    if (_isDisposed) return;
+    _links[shop] = unlinked;
+    notifyListeners();
+  }
+
   void _followSwitches() {
     for (final shop in shops) {
       if (_links.containsKey(shop)) continue;

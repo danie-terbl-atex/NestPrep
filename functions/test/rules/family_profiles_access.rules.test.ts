@@ -9,6 +9,7 @@ import {
   NOMSA,
   PROFILES,
   SCHOOLS,
+  givenFamilyPremium,
   givenTheKidsDetails,
   givenTheParkers,
   merge,
@@ -30,6 +31,7 @@ const tablet = (): ReturnType<typeof asKid> =>
 beforeEach(async () => {
   await clearData();
   await givenTheParkers();
+  await givenFamilyPremium();
   await givenTheKidsDetails();
 });
 

@@ -12,13 +12,18 @@ import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/legal/model/legal_versions.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
+import 'package:nestprep/features/subscriptions/ui/paywall_page.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_family_profiles.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 /// One person's profile, read by an admin and by a helper — the two viewers the
 /// rules treat differently (family-profiles ADR-0001).
@@ -26,6 +31,7 @@ void main() {
   late FakeFamilyProfileRepository repository;
   late FamilyController family;
   late MemberHealthController health;
+  late SubscriptionHarness subscriptions;
 
   void build(HouseholdView view, {String memberId = Fixtures.kidMemberId}) {
     family = FamilyController(
@@ -57,19 +63,28 @@ void main() {
     WidgetTester tester, {
     HouseholdView? view,
     String memberId = Fixtures.kidMemberId,
+    bool isPremium = true,
     Brightness brightness = Brightness.light,
     double scale = 1,
-  }) => pumpScreen(
-    tester,
-    FamilyMemberScreen(memberId: memberId),
-    providers: [
-      ChangeNotifierProvider<FamilyController>.value(value: family),
-      ChangeNotifierProvider<MemberHealthController>.value(value: health),
-    ],
-    view: view,
-    brightness: brightness,
-    textScale: scale,
-  );
+  }) {
+    subscriptions = SubscriptionHarness(
+      entitlement: isPremium
+          ? Entitlement(premiumUntil: DateTime.utc(2100))
+          : Entitlement.free,
+    );
+    return pumpScreen(
+      tester,
+      FamilyMemberScreen(memberId: memberId),
+      providers: [
+        ...subscriptions.providers,
+        ChangeNotifierProvider<FamilyController>.value(value: family),
+        ChangeNotifierProvider<MemberHealthController>.value(value: health),
+      ],
+      view: view,
+      brightness: brightness,
+      textScale: scale,
+    );
+  }
 
   Future<void> loaded(WidgetTester tester) async {
     repository.emitProfiles([FamilyFixtures.kid]);
@@ -241,6 +256,135 @@ void main() {
       ]) {
         expect(find.bySemanticsLabel(label), findsNothing, reason: label);
       }
+    });
+  });
+
+  group('without Premium (subscriptions ADR-0008)', () {
+    final lockedAllergy = FamilyCopy.lockedAction(FamilyCopy.addAllergy);
+    final lockedMedicine = FamilyCopy.lockedAction(FamilyCopy.addMedication);
+
+    testWidgets('allergies and medication are there, locked, and say nothing '
+        'of what was recorded', (tester) async {
+      tallPhone(tester);
+      await pump(tester, isPremium: false);
+      await loaded(tester);
+
+      expect(find.text(FamilyCopy.sectionAllergies), findsOneWidget);
+      expect(find.text(FamilyCopy.sectionMedication), findsOneWidget);
+      expect(find.text(FamilyCopy.allergiesLocked), findsOneWidget);
+      expect(find.text(FamilyCopy.medicationLocked), findsOneWidget);
+      // A section is read as one: its title, the lock, then the sentence.
+      expect(
+        find.bySemanticsLabel(RegExp('\n${SubscriptionCopy.lockedHint}\n')),
+        findsNWidgets(2),
+      );
+      expect(find.bySemanticsLabel(lockedAllergy), findsOneWidget);
+      expect(find.bySemanticsLabel(lockedMedicine), findsOneWidget);
+
+      expect(find.text(FamilyCopy.severeWarning(['Peanuts'])), findsNothing);
+      expect(find.text('Peanuts'), findsNothing);
+      expect(find.text('Kiwi'), findsNothing);
+      expect(find.text('Adrenaline pen in her bag'), findsNothing);
+      expect(find.text('Inhaler'), findsNothing);
+      expect(find.text(FamilyCopy.noAllergies), findsNothing);
+      expect(find.text(FamilyCopy.noMedication), findsNothing);
+    });
+
+    testWidgets('the rest of the profile is as it ever was, the school"s '
+        'nut-free rule included', (tester) async {
+      tallPhone(tester);
+      await pump(tester, isPremium: false);
+      await loaded(tester);
+
+      expect(
+        find.text(FamilyCopy.nutFreeBecause([NutFreeReason.school])),
+        findsOneWidget,
+      );
+      expect(find.text('Pasta'), findsOneWidget);
+      expect(find.text('Halal'), findsOneWidget);
+      expect(find.text('Oakwood Primary · Grade 3'), findsOneWidget);
+      expect(find.text('UK 13'), findsOneWidget);
+
+      await tapLabelled(tester, FamilyCopy.editSection(FamilyCopy.sectionFood));
+      expect(find.byType(PaywallPage), findsNothing);
+      expect(find.text(FamilyCopy.save), findsOneWidget);
+    });
+
+    testWidgets('adding an allergy opens the paywall on recording health, '
+        'and no sheet', (tester) async {
+      tallPhone(tester);
+      await pump(tester, isPremium: false);
+      await loaded(tester);
+
+      await tapLabelled(tester, lockedAllergy);
+
+      expect(find.byType(PaywallPage), findsOneWidget);
+      expect(
+        subscriptions.paywallOpens.opened.single.trigger,
+        PremiumFeature.healthProfile,
+      );
+      expect(find.text(FamilyCopy.allergenLabel), findsNothing);
+      expect(repository.writes, isEmpty);
+    });
+
+    testWidgets('adding a medicine does the same', (tester) async {
+      tallPhone(tester);
+      await pump(tester, isPremium: false);
+      await loaded(tester);
+
+      await tapLabelled(tester, lockedMedicine);
+
+      expect(find.byType(PaywallPage), findsOneWidget);
+      expect(
+        subscriptions.paywallOpens.opened.single.trigger,
+        PremiumFeature.healthProfile,
+      );
+      expect(find.text(FamilyCopy.medicationName), findsNothing);
+      expect(repository.writes, isEmpty);
+    });
+
+    testWidgets('somebody who may not change the profile sees the lock and '
+        'no way in', (tester) async {
+      final helper = Fixtures.helperView(
+        AccessGrant.uniform(AccessLevel.none)
+            .withLevel(HouseholdArea.familyProfiles, AccessLevel.view),
+      );
+      family.dispose();
+      health.dispose();
+      build(helper);
+      tallPhone(tester);
+      await pump(tester, view: helper, isPremium: false);
+      await loaded(tester);
+
+      expect(find.text(FamilyCopy.allergiesLocked), findsOneWidget);
+      expect(find.text('Peanuts'), findsNothing);
+      expect(find.bySemanticsLabel(lockedAllergy), findsNothing);
+      // Who may see medication comes before Premium.
+      expect(find.text(FamilyCopy.medicationHiddenTitle), findsOneWidget);
+      expect(find.text(FamilyCopy.medicationLocked), findsNothing);
+      expect(find.bySemanticsLabel(lockedMedicine), findsNothing);
+    });
+
+    testWidgets('locked, it survives dark at 200% text on a 360-wide phone', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(
+        tester,
+        isPremium: false,
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await loaded(tester);
+      expect(tester.takeException(), isNull);
+      expect(find.text(FamilyCopy.allergiesLocked), findsOneWidget);
+
+      await tester.drag(find.byType(ListView), const Offset(0, -3000));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
     });
   });
 

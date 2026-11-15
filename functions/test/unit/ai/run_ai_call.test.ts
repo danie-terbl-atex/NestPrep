@@ -1,11 +1,19 @@
-import { Timestamp } from 'firebase-admin/firestore';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { readAiSettings, type AiSettings } from '../../../src/ai/ai_settings';
+import { Timestamp } from 'firebase-admin/firestore';
+import { readAiSettings, type AiFeature, type AiSettings } from '../../../src/ai/ai_settings';
 import { ModelCallError, type ModelRequest } from '../../../src/ai/generative_model';
 import { runAiCall, type AiCall, type AiDependencies } from '../../../src/ai/run_ai_call';
-import { FakeClock, FakeModel, InMemoryUsageLedger, refusalOf, type Scripted } from './fakes';
+import {
+  FakeClock,
+  FakeModel,
+  InMemoryUsageLedger,
+  PREMIUM,
+  paywallOf,
+  refusalOf,
+  type Scripted,
+} from './fakes';
 
 /**
  * The one door every AI feature goes through (foundation ADR-0015): switched
@@ -40,6 +48,7 @@ interface World {
 function world(script: Scripted[], settings: AiSettings = readAiSettings(undefined)): World {
   const model = new FakeModel(script);
   const ledger = new InMemoryUsageLedger();
+  ledger.entitlement = PREMIUM;
   const deps: AiDependencies = {
     model,
     ledger,
@@ -55,7 +64,7 @@ describe('a call that works', () => {
   it('returns the parsed answer and what is left this month', async () => {
     const { deps, ledger } = world(['{"answer":42}']);
     const result = await runAiCall(deps, call);
-    expect(result).toEqual({ value: { answer: 42 }, callsLeft: 9 });
+    expect(result).toEqual({ value: { answer: 42 }, callsLeft: 99 });
     expect(ledger.usage).toEqual({ calls: 1, attempts: 1 });
   });
 
@@ -70,13 +79,51 @@ describe('a call that works', () => {
     });
     expect(ledger.settlements[0]?.claim.feature).toBe('schoolLetter');
   });
+});
 
-  it('counts against the premium cap when the household has premium', async () => {
-    const { deps, ledger } = world(['{"answer":42}']);
-    ledger.entitlement = {
-      premiumUntil: Timestamp.fromDate(new Date('2027-01-01T00:00:00Z')),
-    };
-    expect((await runAiCall(deps, call)).callsLeft).toBe(99);
+describe('a free household (subscriptions ADR-0008)', () => {
+  it('is sent to the paywall on the feature it reached for, and the model is never asked', async () => {
+    const { deps, model, ledger } = world(['{"answer":42}']);
+    ledger.entitlement = undefined;
+    expect(await paywallOf(() => runAiCall(deps, call))).toBe('schoolLetter');
+    expect(model.calls).toBe(0);
+    expect(ledger.usage).toEqual({ calls: 0, attempts: 0 });
+    expect(ledger.settlements).toHaveLength(0);
+  });
+
+  it('is refused whichever feature the caller named', async () => {
+    const paywalls = {
+      schoolLetter: 'schoolLetter',
+      planMyWeek: 'aiPlanning',
+      listScan: 'listScan',
+      recipeImport: 'ownRecipes',
+      recipeDocument: 'ownRecipes',
+      avatarCheck: 'avatarCreate',
+    } as const;
+    for (const [feature, paywall] of Object.entries(paywalls)) {
+      const { deps, model, ledger } = world(['{"answer":42}']);
+      ledger.entitlement = undefined;
+      expect(
+        await paywallOf(() => runAiCall(deps, { ...call, feature: feature as AiFeature })),
+        feature,
+      ).toBe(paywall);
+      expect(model.calls, feature).toBe(0);
+    }
+  });
+
+  it('gets nothing from a number left in the console', async () => {
+    const settings = readAiSettings({ monthlyCalls: { free: 10 } });
+    const { deps, model, ledger } = world(['{"answer":42}'], settings);
+    ledger.entitlement = undefined;
+    expect(await paywallOf(() => runAiCall(deps, call))).toBe('schoolLetter');
+    expect(model.calls).toBe(0);
+  });
+
+  it('is free again the moment its Premium ends', async () => {
+    const { deps, model, ledger } = world(['{"answer":42}']);
+    ledger.entitlement = { premiumUntil: Timestamp.fromDate(deps.now()) };
+    expect(await paywallOf(() => runAiCall(deps, call))).toBe('schoolLetter');
+    expect(model.calls).toBe(0);
   });
 });
 
@@ -99,20 +146,20 @@ describe('a call that is switched off', () => {
 describe('a household that has spent its month', () => {
   it('is refused, and the model is never asked', async () => {
     const { deps, model, ledger } = world(['{"answer":42}']);
-    ledger.usage = { calls: 10, attempts: 10 };
+    ledger.usage = { calls: 100, attempts: 100 };
     expect(await refusalOf(() => runAiCall(deps, call))).toBe('aiLimitReached');
     expect(model.calls).toBe(0);
   });
 
   it('the tenth call of ten works, and the eleventh is refused', async () => {
     const script = Array.from({ length: 10 }, () => '{"answer":1}');
-    const { deps } = world(script);
+    const { deps } = world(script, readAiSettings({ monthlyCalls: { premium: 10 } }));
     for (let index = 0; index < 10; index += 1) await runAiCall(deps, call);
     expect(await refusalOf(() => runAiCall(deps, call))).toBe('aiLimitReached');
   });
 
   it('a lower cap set in the console bites at once', async () => {
-    const settings = readAiSettings({ monthlyCalls: { free: 1 } });
+    const settings = readAiSettings({ monthlyCalls: { premium: 1 } });
     const { deps } = world(['{"answer":1}', '{"answer":2}'], settings);
     await runAiCall(deps, call);
     expect(await refusalOf(() => runAiCall(deps, call))).toBe('aiLimitReached');
@@ -139,7 +186,7 @@ describe('a call that fails', () => {
   });
 
   it('failing forever cannot run up a bill: attempts close the month at three times the cap', async () => {
-    const settings = readAiSettings({ monthlyCalls: { free: 1 } });
+    const settings = readAiSettings({ monthlyCalls: { premium: 1 } });
     const blocked = (): ModelCallError => new ModelCallError('blocked', 'SAFETY');
     const { deps, model } = world([blocked(), blocked(), blocked(), blocked()], settings);
     for (let index = 0; index < 3; index += 1) {

@@ -8,7 +8,7 @@ import { looksLikeInviteCode } from '../household/invite_code';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { isAlreadyLinked, readKidProfile } from './child_profiles';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { authorityRef, coParentInviteRef, COPARENT_LINKS, mirrorRef } from './coparent_refs';
 import { refuseCoParent } from './errors';
 import { usableInvite } from './link_invite';
@@ -35,6 +35,7 @@ export const acceptCoParentInvite = onCall(async (request) => {
     const invite = usableInvite(inviteSnapshot.exists ? inviteSnapshot.data() : undefined);
     if (invite.householdId === input.householdId) throw refuseCoParent('sameHousehold');
     await requireRole(transaction, store, input.householdId, uid, 'admin');
+    await requireTwoHomesPremium(transaction, store, input.householdId);
 
     // The code's child must still be there, and still unlinked, on its side.
     await readKidProfile(transaction, store, invite.householdId, invite.childMemberId);

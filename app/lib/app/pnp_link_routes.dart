@@ -5,19 +5,26 @@ import '../features/add_to_pnp/data/pnp_directory.dart';
 import '../features/add_to_pnp/state/pnp_link_controller.dart';
 import '../features/add_to_pnp/ui/pnp_link_screen.dart';
 import '../features/add_to_pnp/ui/pnp_login_web_view.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/pnp_copy.dart';
 import 'pnp_link_route.dart';
 
 /// Linking a Pick n Pay account (add-to-pnp ADR-0003), in its own file so
 /// the route table gains one line.
 GoRoute pnpLinkRoute() => GoRoute(
   path: PnpLinkRoute.path,
-  builder: (context, state) => ChangeNotifierProvider(
-    create: (context) =>
-        PnpLinkController(directory: context.read<PnpDirectory>()),
-    child: PnpLinkScreen(
-      signInPage: PnpLoginWebView.build,
-      returnWhenLinked:
-          state.uri.queryParameters[PnpLinkRoute.returnParameter] == '1',
+  builder: (context, state) => PremiumArea(
+    feature: PremiumFeature.shops,
+    title: PnpCopy.linkTitle,
+    child: ChangeNotifierProvider(
+      create: (context) =>
+          PnpLinkController(directory: context.read<PnpDirectory>()),
+      child: PnpLinkScreen(
+        signInPage: PnpLoginWebView.build,
+        returnWhenLinked:
+            state.uri.queryParameters[PnpLinkRoute.returnParameter] == '1',
+      ),
     ),
   ),
 );

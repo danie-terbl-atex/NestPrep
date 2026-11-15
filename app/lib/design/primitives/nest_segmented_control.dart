@@ -8,11 +8,17 @@ import '../tokens/nest_theme.dart';
 /// glyph beside the name.
 @immutable
 class NestSegment<T> {
-  const NestSegment({required this.value, required this.label, this.icon});
+  const NestSegment({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.hint,
+  });
 
   final T value;
   final String label;
   final IconData? icon;
+  final String? hint;
 }
 
 /// Two or three views of one place, side by side in a pill track — the
@@ -86,6 +92,7 @@ class _Segment<T> extends StatelessWidget {
       selected: isSelected,
       inMutuallyExclusiveGroup: true,
       label: segment.label,
+      hint: segment.hint,
       onTap: onTap,
       excludeSemantics: true,
       child: AnimatedContainer(

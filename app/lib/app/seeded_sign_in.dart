@@ -60,8 +60,12 @@ class SeededSignIn {
 
   static const _demoAccounts = [
     SeededAccount(
-      label: AppCopy.signInAsParent,
+      label: AppCopy.signInAsPremiumParent,
       email: String.fromEnvironment('NESTPREP_DEMO_EMAIL_PARENT'),
+    ),
+    SeededAccount(
+      label: AppCopy.signInAsFreeParent,
+      email: String.fromEnvironment('NESTPREP_DEMO_EMAIL_FREE_PARENT'),
     ),
     SeededAccount(
       label: AppCopy.signInAsPartner,

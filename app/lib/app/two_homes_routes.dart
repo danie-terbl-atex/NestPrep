@@ -21,7 +21,9 @@ import '../features/two_homes/ui/link_screen.dart';
 import '../features/two_homes/ui/link_setup_screen.dart';
 import '../features/two_homes/ui/privacy_screen.dart';
 import '../features/two_homes/ui/schedule_request_screen.dart';
-import '../features/two_homes/ui/two_homes_screen.dart';
+import '../features/two_homes/ui/two_homes_entry_area.dart';
+import '../features/two_homes/ui/two_homes_premium_area.dart';
+import '../shared/copy/app_copy.dart';
 import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import '../shared/time/household_clock.dart';
@@ -38,78 +40,99 @@ List<GoRoute> twoHomesRoutes() => [
   GoRoute(
     path: TwoHomesRoute.path,
     redirect: _whenOff,
-    builder: (context, state) => ChangeNotifierProvider(
+    builder: (context, state) => TwoHomesEntryArea(
       create: (context) => TwoHomesController(
         twoHomesRepository: context.read<TwoHomesRepository>(),
         twoHomesDirectory: context.read<TwoHomesDirectory>(),
         householdId: HouseholdRoute.idFrom(state),
         today: context.read<HouseholdClock>().today,
       ),
-      child: const TwoHomesScreen(),
     ),
   ),
   GoRoute(
     path: TwoHomesRoute.setupPath,
     redirect: _whenOff,
-    builder: (context, state) {
-      final today = context.read<HouseholdClock>().today;
-      return ChangeNotifierProvider(
-        create: (context) => LinkSetupController(
-          twoHomesDirectory: context.read<TwoHomesDirectory>(),
-          inviteSharer: context.read<InviteSharer>(),
-          householdId: HouseholdRoute.idFrom(state),
-          kids: _kidsOf(context),
-          draft: ScheduleDraft(today: today),
-        ),
-        child: LinkSetupScreen(today: today),
-      );
-    },
+    builder: (context, state) => TwoHomesPremiumArea(
+      TwoHomesSetupCopy.setupTitle,
+      Builder(
+        builder: (context) {
+          final today = context.read<HouseholdClock>().today;
+          return ChangeNotifierProvider(
+            create: (context) => LinkSetupController(
+              twoHomesDirectory: context.read<TwoHomesDirectory>(),
+              inviteSharer: context.read<InviteSharer>(),
+              householdId: HouseholdRoute.idFrom(state),
+              kids: _kidsOf(context),
+              draft: ScheduleDraft(today: today),
+            ),
+            child: LinkSetupScreen(today: today),
+          );
+        },
+      ),
+    ),
   ),
   GoRoute(
     path: TwoHomesRoute.joinPath,
     redirect: _whenOff,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => JoinLinkController(
-        twoHomesDirectory: context.read<TwoHomesDirectory>(),
-        householdId: HouseholdRoute.idFrom(state),
-        kids: _kidsOf(context),
+    builder: (context, state) => TwoHomesPremiumArea(
+      TwoHomesSetupCopy.joinTitle,
+      ChangeNotifierProvider(
+        create: (context) => JoinLinkController(
+          twoHomesDirectory: context.read<TwoHomesDirectory>(),
+          householdId: HouseholdRoute.idFrom(state),
+          kids: _kidsOf(context),
+        ),
+        child: const JoinLinkScreen(),
       ),
-      child: const JoinLinkScreen(),
     ),
   ),
   GoRoute(
     path: TwoHomesRoute.privacyPath,
     redirect: _whenOff,
-    builder: (context, state) => const PrivacyScreen(),
+    builder: (context, state) => const TwoHomesPremiumArea(
+      TwoHomesSetupCopy.privacyTitle,
+      PrivacyScreen(),
+    ),
   ),
   GoRoute(
     path: TwoHomesRoute.linkPath,
     redirect: _whenOff,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => _linkController(context, state),
-      child: const LinkScreen(),
+    builder: (context, state) => TwoHomesPremiumArea(
+      TwoHomesCopy.title,
+      ChangeNotifierProvider(
+        create: (context) => _linkController(context, state),
+        child: const LinkScreen(),
+      ),
     ),
   ),
   GoRoute(
     path: TwoHomesRoute.schedulePath,
     redirect: _whenOff,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => _linkController(context, state),
-      child: const ScheduleRequestScreen(),
+    builder: (context, state) => TwoHomesPremiumArea(
+      TwoHomesCopy.scheduleRequestTitle,
+      ChangeNotifierProvider(
+        create: (context) => _linkController(context, state),
+        child: const ScheduleRequestScreen(),
+      ),
     ),
   ),
   GoRoute(
     path: TwoHomesRoute.handoverPath,
     redirect: _whenOff,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => HandoverController(
-        twoHomesRepository: context.read<TwoHomesRepository>(),
-        twoHomesDirectory: context.read<TwoHomesDirectory>(),
-        householdId: HouseholdRoute.idFrom(state),
-        linkId: TwoHomesRoute.linkIdFrom(state),
-        date: TwoHomesRoute.dateFrom(state),
+    builder: (context, state) => TwoHomesPremiumArea(
+      TwoHomesHandoverCopy.title,
+      Builder(
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) => HandoverController(
+            twoHomesRepository: context.read<TwoHomesRepository>(),
+            twoHomesDirectory: context.read<TwoHomesDirectory>(),
+            householdId: HouseholdRoute.idFrom(state),
+            linkId: TwoHomesRoute.linkIdFrom(state),
+            date: TwoHomesRoute.dateFrom(state),
+          ),
+          child: HandoverScreen(today: context.read<HouseholdClock>().today),
+        ),
       ),
-      child: HandoverScreen(today: context.read<HouseholdClock>().today),
     ),
   ),
 ];

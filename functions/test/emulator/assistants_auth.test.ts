@@ -25,7 +25,6 @@ import {
   household,
   joinAs,
   pairKidDevice,
-  samsHousehold,
   type Household,
 } from './account_data_fixture';
 import {
@@ -49,6 +48,7 @@ import {
   redeem,
   refresh,
   registerChatGpt,
+  samsPremiumHousehold,
   serveClientDocument,
   tokensFor,
   tokensOf,
@@ -148,7 +148,7 @@ describe('discovery', () => {
 
 describe('a member connects Claude through its client metadata document', () => {
   it('signs in, consents, gets tokens, and the token is that member in that household', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const pkce = newPkce();
     const authorized = await authorize({ clientId: claude.clientId, pkce, scope: '' });
     expect(authorized.status).toBe(302);
@@ -237,7 +237,7 @@ describe('a member connects Claude through its client metadata document', () => 
   });
 
   it('refreshes by rotation, and may narrow the scopes but never widen them', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const first = await connectAs(claude.clientId, h.sam, h.householdId, {
       scope: 'calendar:read lists:read',
     });
@@ -259,7 +259,7 @@ describe('a member connects Claude through its client metadata document', () => 
   });
 
   it('two sign-ins in one browser at once both finish', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const [first, second] = [newPkce(), newPkce()];
     const one = await authorize({ clientId: claude.clientId, pkce: first });
     const two = await authorize({ clientId: claude.clientId, pkce: second }, one.cookie ?? '');
@@ -272,7 +272,7 @@ describe('a member connects Claude through its client metadata document', () => 
   });
 
   it('a sign-in abandoned after consent leaves no connection in the app', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     await consent(await authorize({ clientId: claude.clientId }), h.sam, h.householdId);
     expect((await grantsIn(h.householdId)).size).toBe(0);
     expect((await adminDb().collection('assistantTokens').get()).size).toBe(0);
@@ -281,7 +281,7 @@ describe('a member connects Claude through its client metadata document', () => 
 
 describe('a member connects ChatGPT through dynamic registration', () => {
   it('registers, connects and is marked as ChatGPT', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const clientId = await registerChatGpt();
     expect(clientId).toMatch(/^npc_/);
     const tokens = await connectAs(clientId, h.sam, h.householdId, {
@@ -409,7 +409,7 @@ describe('consent — only for the browser that started it, and only for family'
   let h: Household;
 
   beforeEach(async () => {
-    h = await samsHousehold();
+    h = await samsPremiumHousehold();
   });
 
   it('is nothing to a browser without the cookie, or with another one', async () => {
@@ -540,6 +540,18 @@ describe('consent — only for the browser that started it, and only for family'
     expect(await decideAs(pat.idToken, h.householdId)).toEqual({ status: 403, error: 'noProfile' });
   });
 
+  it('refuses a household without Premium, and writes no grant', async () => {
+    await household(h.householdId)
+      .collection('entitlement')
+      .doc('current')
+      .set({ premiumUntil: new Date('2020-01-01T00:00:00Z'), status: 'expired' });
+    expect(await decideAs(h.sam.idToken, h.householdId)).toEqual({
+      status: 403,
+      error: 'premiumRequired',
+    });
+    expect((await grantsIn(h.householdId)).size).toBe(0);
+  });
+
   it('refuses while the flag is off, the kill switch is thrown, or the household said no', async () => {
     await adminDb().collection('appConfig').doc('flags').set({ assistants: false });
     expect(await decideAs(h.sam.idToken, h.householdId)).toEqual({
@@ -604,7 +616,7 @@ describe('the token endpoint', () => {
   let h: Household;
 
   beforeEach(async () => {
-    h = await samsHousehold();
+    h = await samsPremiumHousehold();
   });
 
   async function codeFor(): Promise<{ code: string; verifier: string }> {
@@ -844,7 +856,7 @@ describe('the token endpoint', () => {
 
 describe('revoke', () => {
   it('an access token ends alone; a refresh token disconnects; always 200', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const tokens = await connectAs(claude.clientId, h.sam, h.householdId);
     expect((await postForm('/oauth/revoke', { token: 'npa_unknown' })).status).toBe(200);
     expect(
@@ -865,7 +877,7 @@ describe('authenticateBearer', () => {
   let h: Household;
 
   beforeEach(async () => {
-    h = await samsHousehold();
+    h = await samsPremiumHousehold();
   });
 
   it('never accepts a Firebase ID token, a refresh token or anything malformed', async () => {

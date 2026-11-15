@@ -121,6 +121,8 @@ abstract final class AppCopy {
   static const signInEmulatorHint = 'Emulator build — sign in as a seeded user';
   static const signInDemoHint = 'Demo accounts — sign in as';
   static const signInAsParent = 'Parent';
+  static const signInAsPremiumParent = 'Parent (Premium)';
+  static const signInAsFreeParent = 'Parent (free)';
   static const signInAsPartner = 'Second parent';
   static const signInAsHelper = 'Helper';
   static const signInAsNanny = 'Nanny';

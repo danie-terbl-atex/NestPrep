@@ -25,6 +25,12 @@ async function shiftOnlyOf(householdId: string): Promise<unknown> {
   return household.data()?.['shiftOnly'];
 }
 
+async function givenPremium(householdId: string): Promise<void> {
+  await adminDb()
+    .doc(`households/${householdId}/entitlement/current`)
+    .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
+}
+
 beforeEach(async () => {
   await clearFirestore();
 });
@@ -32,6 +38,7 @@ beforeEach(async () => {
 describe('marking a carer shift-only', () => {
   it('lets the admin mark a carer, and lift it again', async () => {
     const { sam, thandi: nomsa, householdId } = await householdOfTwo('carer');
+    await givenPremium(householdId);
     const memberId = await memberOf(householdId, nomsa.uid);
 
     const marked = await callAs(sam, 'setCarerShiftOnly', {
@@ -42,6 +49,23 @@ describe('marking a carer shift-only', () => {
     expect(marked).toEqual({ householdId, memberId, shiftOnly: true });
     expect(await shiftOnlyOf(householdId)).toEqual({ [memberId]: true });
 
+    await callAs(sam, 'setCarerShiftOnly', { householdId, memberId, shiftOnly: false });
+    expect(await shiftOnlyOf(householdId)).toEqual({});
+  });
+
+  it('refuses marking in a free household, and still lifts a mark it already has', async () => {
+    const { sam, thandi: nomsa, householdId } = await householdOfTwo('carer');
+    const memberId = await memberOf(householdId, nomsa.uid);
+    await expectRefusal(
+      callAs(sam, 'setCarerShiftOnly', { householdId, memberId, shiftOnly: true }),
+      'premiumRequired',
+    );
+    expect(await shiftOnlyOf(householdId)).toBeUndefined();
+
+    await adminDb()
+      .collection('households')
+      .doc(householdId)
+      .update({ [`shiftOnly.${memberId}`]: true });
     await callAs(sam, 'setCarerShiftOnly', { householdId, memberId, shiftOnly: false });
     expect(await shiftOnlyOf(householdId)).toEqual({});
   });

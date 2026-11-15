@@ -1,4 +1,12 @@
-import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  Timestamp,
+  deleteDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
 import {
@@ -345,5 +353,90 @@ describe('households/{id}/members/{memberId} — the birthday (birthdays ADR-000
         nickname: 'Kiddo',
       }),
     );
+  });
+});
+
+describe('households/{id}/members/{memberId} — the free plan’s four people (subscriptions ADR-0008)', () => {
+  const SIZE = `households/${HOUSEHOLD}/entitlement/size`;
+  const ENTITLEMENT = `households/${HOUSEHOLD}/entitlement/current`;
+  const GRAN = `households/${HOUSEHOLD}/members/m-gran`;
+
+  async function givenSize(count: number): Promise<void> {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, SIZE), { count, updatedAt: new Date() });
+    });
+  }
+
+  async function givenPremiumUntil(daysFromNow: number): Promise<void> {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, ENTITLEMENT), {
+        premiumUntil: Timestamp.fromMillis(Date.now() + daysFromNow * 24 * 60 * 60 * 1000),
+        status: 'active',
+      });
+    });
+  }
+
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+  });
+
+  it('lets a free household of three add its fourth person', async () => {
+    await givenSize(3);
+    await assertSucceeds(setDoc(doc(await asUser(SAM), GRAN), newMember));
+  });
+
+  it('denies a free household of four a fifth, whatever the role', async () => {
+    await givenSize(4);
+    const db = await asUser(SAM);
+    await assertFails(setDoc(doc(db, GRAN), newMember));
+    await assertFails(setDoc(doc(db, GRAN), { ...newMember, role: 'helper' }));
+    await assertFails(setDoc(doc(db, GRAN), { ...newMember, role: 'carer' }));
+  });
+
+  it('denies a free household already over four, as one whose Premium lapsed is', async () => {
+    await givenSize(6);
+    await givenPremiumUntil(-1);
+    await assertFails(setDoc(doc(await asUser(SAM), GRAN), newMember));
+  });
+
+  it('lets a Premium household add a fifth person, and a ninth', async () => {
+    await givenPremiumUntil(30);
+    await givenSize(4);
+    await assertSucceeds(setDoc(doc(await asUser(SAM), GRAN), newMember));
+    await givenSize(8);
+    await assertSucceeds(
+      setDoc(doc(await asUser(SAM), `households/${HOUSEHOLD}/members/m-nomsa`), newMember),
+    );
+  });
+
+  it('lets a household from before the count add somebody, until the count is written', async () => {
+    await assertSucceeds(setDoc(doc(await asUser(SAM), GRAN), newMember));
+  });
+
+  it('still lets a full free household rename the people it has', async () => {
+    await givenSize(4);
+    await assertSucceeds(
+      updateDoc(doc(await asUser(SAM), `households/${HOUSEHOLD}/members/${KID_MEMBER}`), {
+        displayName: 'Kiddo',
+      }),
+    );
+  });
+
+  it('is read by everybody in the household and written by nobody', async () => {
+    await givenSize(4);
+    await assertSucceeds(getDoc(doc(await asUser(SAM), SIZE)));
+    await assertSucceeds(getDoc(doc(await asUser(THANDI), SIZE)));
+    await assertFails(getDoc(doc(await asUser(STRANGER), SIZE)));
+    for (const uid of [SAM, THANDI, STRANGER]) {
+      const db = await asUser(uid);
+      await assertFails(setDoc(doc(db, SIZE), { count: 1 }));
+      await assertFails(updateDoc(doc(db, SIZE), { count: 1 }));
+      await assertFails(deleteDoc(doc(db, SIZE)));
+    }
+  });
+
+  it('denies a client making the count where there is none', async () => {
+    await assertFails(setDoc(doc(await asUser(SAM), SIZE), { count: 0 }));
   });
 });

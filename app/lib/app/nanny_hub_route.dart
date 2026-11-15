@@ -1,6 +1,14 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/nanny_hub/ui/locked_nanny_hub_screen.dart';
 import 'household_route.dart';
+
+/// The hub is Premium in full (subscriptions ADR-0008): every one of its
+/// routes is this, so a household without it meets the same place, locked —
+/// and can still end a shift it left open (subscriptions ADR-0009).
+Widget nannyHubArea({required String title, required Widget child}) =>
+    NannyHubPremiumArea(title: title, child: child);
 
 /// Where the nanny hub lives in the route table: its home, and every screen
 /// under it sharing one shell so they share one controller (nanny-hub

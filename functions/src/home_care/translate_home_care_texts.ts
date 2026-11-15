@@ -7,6 +7,7 @@ import { parseInput, requireUid } from '../household/parse_input';
 import { fetchHttpClient } from '../shared/http_client';
 import { readFlag, runsInEmulator } from '../shared/feature_flags';
 import { db } from '../shared/firestore';
+import { requirePremium } from '../subscriptions/premium_gate';
 import { ApplicationDefaultTranslationToken, CloudTranslator } from './cloud_translator';
 import { EmulatorTranslator } from './emulator_translator';
 import { refuseHomeCare } from './errors';
@@ -89,6 +90,7 @@ export const translateHomeCareTexts = onCall(async (request) => {
   if (!(await readFlag(store, 'homeCareHelperLanguage'))) {
     throw refuseHomeCare('translationSwitchedOff');
   }
+  await requirePremium(store, input.householdId, 'homeCare');
 
   const found = await readCachedTranslations(store, input.householdId, input.texts, input.language);
   const missing = input.texts.filter((text) => !Object.hasOwn(found, text));

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/checkers_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
 import '../state/product_match_controller.dart';
@@ -10,6 +11,7 @@ import '../state/retailer_choice_controller.dart';
 import '../state/shop_carts.dart';
 import 'add_to_shop_cart_bar.dart';
 import 'list_cart_push.dart';
+import 'shops_lock.dart';
 
 /// The grocery screen's carts (add-to-pnp ADR-0007): an action for each shop
 /// switched on that has unbought items matched there — each sends only its
@@ -33,6 +35,7 @@ class ShopCartsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final carts = context.read<ShopCarts>();
+    final isLocked = !shopsUnlocked(context);
     final unmatched = [
       for (final item in toBuy)
         if (item.productMatch == null) item,
@@ -50,22 +53,37 @@ class ShopCartsBar extends StatelessWidget {
                   shop: shop,
                   matchedCount: items.length,
                   isPushing: carts.of(shop).isPushing,
-                  onAdd: () => pushListToCart(
-                    context,
-                    shop: shop,
-                    householdId: householdId,
-                    push: carts.of(shop),
-                    items: items,
-                  ),
+                  isLocked: isLocked,
+                  onAdd: () => _push(context, carts, shop, items),
                 ),
               ),
             ),
         if (unmatched.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(bottom: NestSpace.lg),
-            child: _Unmatched(first: unmatched.first, count: unmatched.length),
+            child: _Unmatched(
+              first: unmatched.first,
+              count: unmatched.length,
+              isLocked: isLocked,
+            ),
           ),
       ],
+    );
+  }
+
+  Future<void> _push(
+    BuildContext context,
+    ShopCarts carts,
+    ProductRetailer shop,
+    List<GroceryItem> items,
+  ) async {
+    if (!await ensureShops(context) || !context.mounted) return;
+    await pushListToCart(
+      context,
+      shop: shop,
+      householdId: householdId,
+      push: carts.of(shop),
+      items: items,
     );
   }
 
@@ -76,10 +94,15 @@ class ShopCartsBar extends StatelessWidget {
 }
 
 class _Unmatched extends StatelessWidget {
-  const _Unmatched({required this.first, required this.count});
+  const _Unmatched({
+    required this.first,
+    required this.count,
+    required this.isLocked,
+  });
 
   final GroceryItem first;
   final int count;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -93,16 +116,25 @@ class _Unmatched extends StatelessWidget {
           CheckersCopy.notMatched(count),
           style: nest.text.caption.copyWith(color: nest.colors.inkSecondary),
         ),
-        NestButton(
-          key: const ValueKey('find-unmatched'),
-          label: CheckersCopy.findAt(chosen),
-          variant: NestButtonVariant.ghost,
-          size: NestButtonSize.small,
-          isExpanded: false,
-          onPressed: () =>
-              context.read<ProductMatchController>().lookFor(first, at: chosen),
+        Semantics(
+          hint: isLocked ? SubscriptionCopy.lockedHint : null,
+          child: NestButton(
+            key: const ValueKey('find-unmatched'),
+            label: CheckersCopy.findAt(chosen),
+            icon: isLocked ? LucideIcons.lock : null,
+            variant: NestButtonVariant.ghost,
+            size: NestButtonSize.small,
+            isExpanded: false,
+            onPressed: () => _find(context, chosen),
+          ),
         ),
       ],
     );
+  }
+
+  Future<void> _find(BuildContext context, ProductRetailer chosen) async {
+    final controller = context.read<ProductMatchController>();
+    if (!await ensureShops(context)) return;
+    controller.lookFor(first, at: chosen);
   }
 }

@@ -8,6 +8,7 @@ import {
   signUp,
   type TestUser,
 } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * The Parkers, set up for shared links (documents ADR-0006): Sam the admin,
@@ -21,6 +22,9 @@ export interface SharingParkers {
   readonly alex: TestUser;
   readonly thandi: TestUser;
 }
+
+export const PREMIUM_UNTIL = new Date('2099-01-01T00:00:00Z');
+export const LAPSED = new Date('2020-01-01T00:00:00Z');
 
 export const CARD_BYTES = Buffer.from('%PDF-1.4 the medical aid card');
 export const POLICY_BYTES = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3, 4]);
@@ -78,6 +82,7 @@ export async function givenSharingParkers(): Promise<SharingParkers> {
     uploadedBy: 'm-sam',
     uploadedAt: new Date(),
   });
+  await givenPremiumUntil(household.id, PREMIUM_UNTIL);
   const h = `households/${household.id}`;
   await putObject(`${h}/vaults/m-emma/card`, CARD_BYTES, 'application/pdf');
   await putObject(`${h}/vaults/m-thandi/permit`, CARD_BYTES, 'application/pdf');

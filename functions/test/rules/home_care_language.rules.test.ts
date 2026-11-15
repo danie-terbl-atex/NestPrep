@@ -8,6 +8,7 @@ import {
   givenAHouseholdOfEveryRole,
   type Person,
 } from './access_fixture';
+import { givenHomeCarePremium } from './home_care_fixture';
 import {
   asKid,
   asUser,
@@ -41,6 +42,7 @@ function language(code: string, by: string): Record<string, unknown> {
 beforeEach(async () => {
   await clearData();
   await givenAHouseholdOfEveryRole();
+  await givenHomeCarePremium();
   await givenData(async (db) => {
     await setDoc(doc(db, profile('m-unclaimed')), {
       language: 'ny',

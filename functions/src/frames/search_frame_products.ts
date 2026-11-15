@@ -13,6 +13,7 @@ import { db } from '../shared/firestore';
 import { readLinkedFrame } from './frame_access';
 import { refuseFrame } from './frame_errors';
 import { type FrameProduct, frameProductsInOrder, searchableProducts } from './frame_groceries';
+import { readFramePremium } from './frame_lunch_photos';
 import {
   FRAME_DEVICE_OPTIONS,
   FRAME_SEARCH_PRODUCTS_PER_CREDENTIAL,
@@ -51,7 +52,11 @@ export const searchFrameProducts = onCall(
     if (linked === null) return UNLINKED;
     const { groceries } = linked.frame;
     if (groceries === null) throw refuseFrame('groceriesOff');
-    if (!(await readFlag(store, SHOP_FLAGS[groceries.shop]))) throw refuseFrame('shopUnavailable');
+    const [shopOn, isPremium] = await Promise.all([
+      readFlag(store, SHOP_FLAGS[groceries.shop]),
+      readFramePremium(store, linked.home),
+    ]);
+    if (!shopOn || !isPremium) throw refuseFrame('shopUnavailable');
 
     let found: FrameShopProduct[];
     try {

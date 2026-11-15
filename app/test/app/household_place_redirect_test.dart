@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/app/assistants_route.dart';
+import 'package:nestprep/app/avatar_routes.dart';
 import 'package:nestprep/app/basket_compare_route.dart';
 import 'package:nestprep/app/documents_route.dart';
 import 'package:nestprep/app/family_route.dart';
@@ -6,6 +8,9 @@ import 'package:nestprep/app/household_place_redirect.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
 import 'package:nestprep/app/lunch_route.dart';
+import 'package:nestprep/app/referral_route.dart';
+import 'package:nestprep/app/shops_route.dart';
+import 'package:nestprep/app/subscription_route.dart';
 import 'package:nestprep/features/household/model/access_defaults.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
@@ -280,6 +285,56 @@ void main() {
         ),
         isNull,
       );
+    });
+  });
+
+  group('what stays open to a free household over four people '
+      '(subscriptions ADR-0008)', () {
+    bool isOpen(String location) =>
+        isOpenOverTheFreePlan(location: location, householdId: id);
+
+    test('managing the household: the people, their access, closing, the '
+        'invite step', () {
+      for (final location in [
+        HouseholdRoute.householdPathFor(id),
+        HouseholdRoute.accessPathFor(id, Fixtures.thandiMemberId),
+        HouseholdRoute.closePathFor(id),
+        HouseholdRoute.setupPathFor(id),
+      ]) {
+        expect(isOpen(location), isTrue, reason: location);
+      }
+    });
+
+    test('a person’s picture, which is part of the people screen', () {
+      expect(isOpen(AvatarRoute.pathFor(id, Fixtures.thandiMemberId)), isTrue);
+    });
+
+    test('where what Premium started is ended: unlinking a shop, '
+        'disconnecting an assistant', () {
+      expect(isOpen(ShopsRoute.pathFor(id)), isTrue);
+      expect(isOpen(AssistantsRoute.pathFor(id)), isTrue);
+    });
+
+    test('the plan and referrals', () {
+      expect(isOpen(SubscriptionRoute.pathFor(id)), isTrue);
+      expect(isOpen(ReferralRoute.pathFor(id)), isTrue);
+    });
+
+    test('nothing else — no tab, no place under More, no other household', () {
+      for (final location in [
+        for (final tab in HouseholdTab.values) HouseholdRoute.pathFor(id, tab),
+        FamilyRoute.pathFor(id),
+        DocumentsRoute.pathFor(id),
+        LunchRoute.pathFor(id),
+        HouseholdRoute.wherePathFor(id),
+        '/households/$id/households',
+        '/households/$id/shopsmart',
+        '/households/$id/assistantsx',
+        '/households/$id/planner',
+        HouseholdRoute.householdPathFor('h-other'),
+      ]) {
+        expect(isOpen(location), isFalse, reason: location);
+      }
     });
   });
 }

@@ -314,10 +314,12 @@ deploy (foundation ADR-0014, ADR-0015), both set by hand in the console and unre
 - `appConfig/ai` — `enabled`, `features.schoolLetter`, `features.planMyWeek`, `features.lunchPhoto`,
   `features.listScan`, `features.recipeImport`, `features.productMatch` (Jev's grocery ranking, never counted),
   `features.avatarCheck` (never counted), `features.avatarCreate` and `features.avatarPortrait`,
-  `monthlyCalls.free` and `monthlyCalls.premium`. Absent means on, 10 calls a month free and 100
-  premium. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
-  costs anything. `features.avatarCreate` may instead be `{premiumMonthly, freeLifetime}` (default
-  12 and 1): creations and portraits share that allowance, counted in `aiUsage/{month}.byFeature`
+  and `monthlyCalls.premium`. Absent means on and 100 calls a month for a Premium household. **A
+  free household has no AI at all** (subscriptions ADR-0009): its allowance is zero, `monthlyCalls.free`
+  and `freeLifetime` in the document are ignored, and the ledger refuses its claim with
+  `premiumRequired` before any model is called. `enabled: false` (or any `enabled` that is not a boolean) stops every AI call before it
+  costs anything. `features.avatarCreate` may instead be `{premiumMonthly}` (default
+  12): creations and portraits share that allowance, counted in `aiUsage/{month}.byFeature`
   and `aiUsage/lifetime`, never against the monthly calls (avatars ADR-0003). Every call started
   for it, checks included, counts in `aiUsage/{month}.allowanceAttempts.avatarCreate` and never in
   `attempts`: nine a creation the tier may make (9 free, 108 premium a month), so refused photos

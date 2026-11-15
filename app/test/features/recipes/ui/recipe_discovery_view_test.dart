@@ -10,6 +10,7 @@ import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/recipe_fixtures.dart';
 import '../../../support/recipe_harness.dart';
@@ -55,7 +56,7 @@ void main() {
         heroTags.add(heroTag);
       },
     ),
-    providers: harness.providers,
+    providers: [...harness.providers, premiumEntitlementProvider()],
     brightness: brightness,
     textScale: scale,
   );

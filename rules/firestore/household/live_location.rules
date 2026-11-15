@@ -2,7 +2,9 @@
 //
 // The document id is the member id, so `isOwnMember` on the path is the whole
 // authorisation story: nobody can write somebody else's position, and an
-// admin's only power is delete.
+// admin's only power is delete. Sharing is premium whatever the mode
+// (subscriptions ADR-0008); deleting never is, so a lapsed household can
+// always take its pins down.
 match /memberLocations/{memberId} {
   // No expiry check here: Firestore fails a whole listener when one document
   // in it is denied, and a listener's bounds are fixed when it opens. The
@@ -10,6 +12,7 @@ match /memberLocations/{memberId} {
   allow read: if canView(householdId, 'location');
 
   allow create, update: if isOwnMember(householdId, memberId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['point', 'accuracyMetres', 'reportedAt', 'sharingUntil', 'mode',
           'batteryPercent', 'charging', 'motion'])
@@ -18,7 +21,7 @@ match /memberLocations/{memberId} {
     && request.resource.data.accuracyMetres >= 0
     && isServerTime('reportedAt')
     && isLiveLocationDevice(request.resource.data)
-    && isLiveLocationLease(householdId, request.resource.data)
+    && isLiveLocationLease(request.resource.data)
     && isLiveLocationPaced();
 
   allow delete: if isOwnMember(householdId, memberId) || isAdmin(householdId);
@@ -33,19 +36,18 @@ match /memberLocations/{memberId} {
   }
 
   // A window share ends within four hours, mirrored in
-  // `LiveLocationRepository.longestShare`. Continuous sharing is premium and a
-  // lease the device renews on every write, so a phone that dies stops
-  // reading as anywhere within a day (live-location ADR-0003). Installed
-  // phase-1 apps write no `mode`, which is a window.
-  function isLiveLocationLease(householdId, data) {
+  // `LiveLocationRepository.longestShare`. Continuous sharing is a lease the
+  // device renews on every write, so a phone that dies stops reading as
+  // anywhere within a day (live-location ADR-0003). Installed phase-1 apps
+  // write no `mode`, which is a window.
+  function isLiveLocationLease(data) {
     let until = data.sharingUntil;
     let mode = data.get('mode', 'window');
     return until is timestamp
       && until > request.time
       && ((mode == 'window' && until < request.time + duration.value(4, 'h'))
           || (mode == 'continuous'
-              && until < request.time + duration.value(25, 'h')
-              && hasPremium(householdId)));
+              && until < request.time + duration.value(25, 'h')));
   }
 
   // Ten seconds between writes caps a runaway client's bill. Switching

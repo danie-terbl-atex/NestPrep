@@ -30,7 +30,9 @@ import 'fake_pnp.dart';
 import 'fake_woolworths.dart';
 import 'grocery_list_harness.dart';
 import 'household_fixtures.dart';
+import 'premium_entitlement.dart';
 import 'pump_screen.dart';
+import 'pump_subscriptions.dart';
 
 /// A product somebody picked, as the list reads it back.
 const pickedMilk = ProductMatch(
@@ -140,10 +142,12 @@ final class CheckersGroceryHarness {
   final retailerPreference = FakeRetailerPreference();
   late final RetailerChoiceController retailers;
 
-  /// [isOn] every switch, less those in [off].
+  /// [isOn] every switch, less those in [off], for a Premium household
+  /// unless [isPremium] says it is a free one.
   Future<void> pump(
     WidgetTester tester, {
     bool isOn = true,
+    bool isPremium = true,
     Set<FeatureFlag> off = const {},
     Brightness brightness = Brightness.light,
     double scale = 1,
@@ -152,11 +156,17 @@ final class CheckersGroceryHarness {
       defaultOn: isOn,
       stored: {for (final flag in off) flag: false},
     );
-    return _pump(tester, brightness: brightness, scale: scale);
+    return _pump(
+      tester,
+      isPremium: isPremium,
+      brightness: brightness,
+      scale: scale,
+    );
   }
 
   Future<void> _pump(
     WidgetTester tester, {
+    required bool isPremium,
     required Brightness brightness,
     required double scale,
   }) => pumpRouter(
@@ -190,6 +200,10 @@ final class CheckersGroceryHarness {
       ChangeNotifierProvider<FeatureFlagsController>(
         create: (_) => testFlagsController(flags),
       ),
+      if (isPremium)
+        premiumEntitlementProvider()
+      else
+        ...SubscriptionHarness().providers,
     ],
     brightness: brightness,
     textScale: scale,

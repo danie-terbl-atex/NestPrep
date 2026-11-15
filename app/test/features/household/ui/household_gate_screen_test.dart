@@ -9,6 +9,7 @@ import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_household.dart';
+import '../../../support/fake_starter_content.dart';
 import '../../../support/pump_screen.dart';
 
 /// The screen somebody sees once, on the day they join: make a household, or
@@ -24,6 +25,8 @@ void main() {
     directory = FakeHouseholdDirectory();
     controller = HouseholdGateController(
       householdDirectory: directory,
+      starterContent: FakeStarterContentRepository(),
+      startsWithExamples: () => true,
       suggestedName: 'Sam Parent',
       defaultTimeZone: 'Africa/Johannesburg',
     );

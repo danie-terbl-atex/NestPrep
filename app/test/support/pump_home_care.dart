@@ -26,6 +26,7 @@ import 'package:nestprep/features/home_care/state/photo_intake.dart';
 import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import 'fake_auth.dart';
 import 'fake_feature_flag_source.dart';
@@ -33,6 +34,7 @@ import 'fake_home_care.dart';
 import 'fake_home_care_v2.dart';
 import 'home_care_fixtures.dart';
 import 'household_fixtures.dart';
+import 'premium_entitlement.dart';
 import 'pump_screen.dart';
 
 /// Home care as the running app wires it: the real route table under a
@@ -81,13 +83,17 @@ final class HomeCareHarness {
 
   /// Opens the app at [location] — a home-care path in the fixture
   /// household — with a route to the household screen behind it, so back
-  /// has somewhere to go.
+  /// has somewhere to go. The household has Premium, which home care needs
+  /// (subscriptions ADR-0008), unless a test says it is [premium] no longer;
+  /// [also] goes above the routes last.
   Future<void> pump(
     WidgetTester tester, {
     String? location,
     HouseholdView? view,
     Brightness brightness = Brightness.light,
     double textScale = 1,
+    bool premium = true,
+    List<SingleChildWidget> also = const [],
   }) {
     router = GoRouter(
       initialLocation: '/households/${Fixtures.householdId}/household',
@@ -116,6 +122,8 @@ final class HomeCareHarness {
           create: (_) =>
               FeatureFlagsController(source: flags, defaultOn: flagsDefaultOn),
         ),
+        if (premium) premiumEntitlementProvider(),
+        ...also,
       ],
       view: view,
       brightness: brightness,
@@ -126,6 +134,9 @@ final class HomeCareHarness {
         router.push(location ?? HomeCareRoute.pathFor(Fixtures.householdId)),
       );
       await tester.pump();
+      // The entitlement answers a moment after the route first asks for it;
+      // the screen and its listeners are there from the frame after.
+      if (premium) await tester.pump();
     });
   }
 

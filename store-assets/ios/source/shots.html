@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: Fraunces; src: url(assets/fonts/Fraunces-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-Regular.ttf); font-weight: 400; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-Medium.ttf); font-weight: 500; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-Bold.ttf); font-weight: 700; }
+:root {
+  --oat: #FFF8ED; --ink: #35252E; --guava: #F57B91; --butter: #F3D886; --lilac: #C9BCE8;
+  --basil: #465C48; --night: #211A20; --blush: #FCDDE2; --deep: #9E2F47; --sage: #C4D4BF;
+  --s: 0.7297; /* screen px per raw px */
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1206px; height: 2622px; overflow: hidden; background: #000; }
+.panel { position: absolute; inset: 0; width: 1206px; height: 2622px; overflow: hidden; display: none; background: var(--bg); color: var(--fg); }
+.panel.on { display: block; }
+.blob { position: absolute; border-radius: 50%; background: var(--c); }
+.copy { position: absolute; left: 84px; right: 84px; top: 150px; z-index: 5; }
+.eyebrow { font: 700 34px/1 "DM Sans"; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 34px; display: flex; align-items: center; gap: 18px; }
+.eyebrow::before { content: ""; width: 54px; height: 6px; border-radius: 3px; background: var(--accent); }
+h1 { font: 600 118px/1.03 Fraunces; letter-spacing: -0.022em; white-space: nowrap; }
+h1 em { font-style: normal; color: var(--accent); }
+.sub { font: 500 44px/1.3 "DM Sans"; margin-top: 34px; opacity: 0.86; max-width: 940px; }
+
+.stage { position: absolute; left: 0; right: 0; top: 0; bottom: 0; perspective: 3400px; perspective-origin: 50% 62%; }
+.rig { position: absolute; left: calc(50% - 440px); top: var(--top, 760px); width: 880px; height: 1913px; transform-style: preserve-3d; transform: rotateY(var(--ry, -9deg)) rotateX(var(--rx, 5deg)) rotateZ(var(--rz, 1.5deg)); }
+.phone { position: absolute; inset: -24px; border-radius: 158px; background: #17110F; box-shadow: 0 0 0 3px #4a3b40 inset, 0 0 0 9px #0b0808 inset, 0 90px 140px rgba(20, 8, 14, 0.42), 0 30px 50px rgba(20, 8, 14, 0.28); }
+.phone::after { content: ""; position: absolute; inset: 24px; border-radius: 134px; background: var(--img) top center / 100% auto no-repeat; }
+.pop { position: absolute; background-image: var(--img); background-repeat: no-repeat;
+  left: calc(var(--x) * 3px * var(--s)); top: calc(var(--y) * 3px * var(--s));
+  width: calc(var(--w) * 3px * var(--s)); height: calc(var(--h) * 3px * var(--s));
+  background-size: calc(1206px * var(--s)) auto;
+  background-position: calc(var(--x) * -3px * var(--s)) calc(var(--y) * -3px * var(--s));
+  border-radius: calc(var(--r, 24) * 3px * var(--s));
+  transform: translate3d(var(--dx, 0px), var(--dy, 0px), var(--z, 150px)) scale(var(--k, 1.16)) rotateZ(var(--tilt, 0deg));
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55), 0 50px 90px rgba(24, 10, 16, 0.42), 0 14px 26px rgba(24, 10, 16, 0.22); }
+.chip { position: absolute; width: var(--d, 170px); height: var(--d, 170px); border-radius: 44px; background: #fff; display: grid; place-items: center;
+  transform: translate3d(0, 0, var(--z, 260px)) rotateZ(var(--tilt, 0deg)); box-shadow: 0 40px 70px rgba(24, 10, 16, 0.4), 0 10px 20px rgba(24, 10, 16, 0.2); }
+.chip svg { width: 58%; height: 58%; }
+.sticker { position: absolute; width: var(--d, 200px); height: var(--d, 200px); border-radius: var(--rad, 50%); background: var(--c, #fff) var(--img) center / cover no-repeat;
+  transform: translate3d(0, 0, var(--z, 200px)) rotateZ(var(--tilt, 0deg)); box-shadow: 0 0 0 8px #fff, 0 36px 60px rgba(24, 10, 16, 0.36); }
+.badge { position: absolute; padding: 26px 40px; border-radius: 999px; background: var(--c, #fff); color: var(--ink); font: 700 40px/1 "DM Sans"; white-space: nowrap; display: flex; gap: 16px; align-items: center;
+  transform: translate3d(0, 0, var(--z, 280px)) rotateZ(var(--tilt, 0deg)); box-shadow: 0 34px 60px rgba(24, 10, 16, 0.36), 0 8px 16px rgba(24, 10, 16, 0.18); }
+.badge svg { width: 44px; height: 44px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · hero -->
+<section class="panel" id="p1" style="--bg: var(--guava); --fg: var(--ink); --accent: var(--oat);">
+  <div class="blob" style="--c:#F9A0B0; width:1500px; height:1500px; left:-700px; top:-620px;"></div>
+  <div class="blob" style="--c:var(--butter); width:1100px; height:1100px; right:-560px; top:1500px;"></div>
+  <div class="blob" style="--c:#EE6781; width:900px; height:900px; left:-420px; bottom:-380px;"></div>
+  <div class="copy"><div class="eyebrow">The family organiser</div><h1>Your whole family,<br><em>one calm place.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/home_cards.png); --top: 800px;">
+    <div class="phone"></div>
+    <div class="pop" style="--x:20; --y:140; --w:175; --h:132; --dx:-74px; --dy:14px; --k:1.14; --tilt:-3deg;"></div>
+    <div class="pop" style="--x:207; --y:428; --w:175; --h:174; --dx:84px; --dy:20px; --k:1.14; --tilt:3deg; --z:200px;"></div>
+    <div class="sticker" style="--img:url(assets/avatars/nestling-rosie-3.webp); --c:var(--lilac); left:-150px; top:1120px; --d:210px; --tilt:-8deg;"></div>
+    <div class="sticker" style="--img:url(assets/avatars/nestling-scout-3.webp); --c:#BFE3F5; left:770px; top:700px; --d:200px; --tilt:9deg; --z:300px;"></div>
+    <div class="sticker" style="--img:url(assets/avatars/nestling-mango-3.webp); --c:var(--butter); left:690px; top:-110px; --d:180px; --tilt:6deg; --z:260px;"></div>
+  </div></div>
+</section>
+
+<!-- 2 · calendar -->
+<section class="panel" id="p2" style="--bg: var(--ink); --fg: var(--oat); --accent: var(--guava);">
+  <div class="blob" style="--c:#44313B; width:1500px; height:1500px; right:-760px; top:-560px;"></div>
+  <div class="blob" style="--c:#4E2C37; width:1200px; height:1200px; left:-640px; top:1500px;"></div>
+  <div class="copy"><div class="eyebrow">Google · Outlook · Apple</div><h1>Every calendar,<br><em>one family week.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/cal_week.png); --top: 770px; --ry: 9deg; --rz: -1.5deg;">
+    <div class="phone"></div>
+    <div class="pop" style="--img:url(raw/cal_week.png); --x:20; --y:492; --w:362; --h:88; --dx:-56px; --dy:-70px; --k:1.14; --tilt:-2deg;"></div>
+    <div class="pop" style="--img:url(raw/cal_week2.png); --x:20; --y:487; --w:362; --h:88; --dx:44px; --dy:176px; --k:1.14; --tilt:1.5deg; --z:210px;"></div>
+    <div class="pop" style="--img:url(raw/cal_week2.png); --x:20; --y:589; --w:362; --h:88; --dx:-40px; --dy:190px; --k:1.14; --tilt:-1deg; --z:270px;"></div>
+    <div class="chip" style="left:640px; top:900px; --tilt:8deg; --z:330px; --d:150px;"><svg viewBox="0 0 24 24" fill="#000"><use href="#i-apple"/></svg></div>
+    <div class="chip" style="left:-120px; top:1330px; --tilt:-9deg; --z:340px; --d:150px;"><svg viewBox="0 0 24 24" fill="#4285F4"><use href="#i-google"/></svg></div>
+    <div class="chip" style="left:560px; top:1590px; --tilt:7deg; --z:380px; --d:150px;"><svg viewBox="0 0 24 24" fill="#0078D4"><use href="#i-outlook"/></svg></div>
+  </div></div>
+</section>
+
+<!-- 3 · shopping -->
+<section class="panel" id="p3" style="--bg: var(--butter); --fg: var(--ink); --accent: var(--deep);">
+  <div class="blob" style="--c:#F7E3A6; width:1500px; height:1500px; left:-720px; top:-600px;"></div>
+  <div class="blob" style="--c:#EBC65F; width:1200px; height:1200px; right:-600px; top:1450px;"></div>
+  <div class="copy"><div class="eyebrow">Shopping lists</div><h1>One shared list.<br><em>Everyone adds to it.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/groceries2.png); --top: 800px;">
+    <div class="phone"></div>
+    <div class="pop" style="--x:20; --y:319; --w:362; --h:66; --dx:-70px; --dy:-6px; --k:1.16; --tilt:-2deg;"></div>
+    <div class="pop" style="--x:20; --y:467; --w:362; --h:66; --dx:70px; --dy:6px; --k:1.16; --tilt:2deg; --z:220px;"></div>
+    <div class="pop" style="--x:20; --y:541; --w:362; --h:66; --dx:-50px; --dy:40px; --k:1.16; --tilt:-1deg; --z:280px;"></div>
+    <div class="sticker" style="--img:url(assets/avatars/nestling-rosie-3.webp); --c:var(--lilac); left:780px; top:150px; --d:170px; --tilt:8deg; --z:330px;"></div>
+    <div class="sticker" style="--img:url(assets/avatars/nestling-toffee-3.webp); --c:var(--blush); left:800px; top:1300px; --d:170px; --tilt:6deg; --z:400px;"></div>
+  </div></div>
+</section>
+
+<!-- 4 · chores -->
+<section class="panel" id="p4" style="--bg: var(--lilac); --fg: var(--ink); --accent: #5B3FA8;">
+  <div class="blob" style="--c:#D9CFF0; width:1500px; height:1500px; right:-740px; top:-620px;"></div>
+  <div class="blob" style="--c:#B4A3DF; width:1200px; height:1200px; left:-620px; top:1500px;"></div>
+  <div class="copy"><div class="eyebrow">Chores &amp; to-dos</div><h1>Chores the kids<br><em>want to tick off.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/chores.png); --top: 800px; --ry: 9deg; --rz: -1.5deg;">
+    <div class="phone"></div>
+    <div class="pop" style="--x:20; --y:364; --w:362; --h:110; --dx:-60px; --dy:-20px; --k:1.16; --tilt:-2deg;"></div>
+    <div class="pop" style="--x:20; --y:586; --w:362; --h:68; --dx:40px; --dy:30px; --k:1.16; --tilt:2deg; --z:240px;"></div>
+    <div class="sticker" style="--img:url(assets/chore_pictures/make-bed.webp); --rad:44px; left:770px; top:120px; --d:210px; --tilt:8deg; --z:300px;"></div>
+    <div class="sticker" style="--img:url(assets/chore_pictures/feed-dog.webp); --rad:44px; left:-170px; top:1150px; --d:200px; --tilt:-9deg; --z:320px;"></div>
+    <div class="sticker" style="--img:url(assets/chore_pictures/water-plants.webp); --rad:44px; left:640px; top:1560px; --d:200px; --tilt:6deg; --z:340px;"></div>
+  </div></div>
+</section>
+
+<!-- 5 · rewards -->
+<section class="panel" id="p5" style="--bg: var(--basil); --fg: var(--oat); --accent: var(--butter);">
+  <div class="blob" style="--c:#526B55; width:1500px; height:1500px; left:-740px; top:-600px;"></div>
+  <div class="blob" style="--c:#3A4D3C; width:1200px; height:1200px; right:-620px; top:1500px;"></div>
+  <div class="copy"><div class="eyebrow">Stars &amp; rewards</div><h1>Stars earned.<br><em>Rewards they choose.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/stars2.png); --top: 800px;">
+    <div class="phone"></div>
+    <div class="pop" style="--x:20; --y:224; --w:362; --h:188; --dx:-60px; --dy:-20px; --k:1.14; --tilt:-2deg;"></div>
+    <div class="pop" style="--img:url(raw/rewards_list.png); --x:20; --y:505; --w:362; --h:76; --dx:66px; --dy:160px; --k:1.14; --tilt:2deg; --z:240px;"></div>
+    <div class="pop" style="--img:url(raw/rewards_list.png); --x:20; --y:673; --w:362; --h:76; --dx:-40px; --dy:30px; --k:1.14; --tilt:-1.5deg; --z:300px;"></div>
+    <div class="badge" style="--c:var(--butter); left:560px; top:120px; --tilt:6deg; --z:360px;"><svg viewBox="0 0 24 24" fill="#35252E"><path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.4 6.7L12 17.4l-6.1 3.4 1.4-6.7-5-4.600 6.8-.8z"/></svg>5 days in a row</div>
+  </div></div>
+</section>
+
+<!-- 6 · helper -->
+<section class="panel" id="p6" style="--bg: var(--blush); --fg: var(--ink); --accent: var(--deep);">
+  <div class="blob" style="--c:#FEECEF; width:1500px; height:1500px; right:-740px; top:-620px;"></div>
+  <div class="blob" style="--c:#F9B6C2; width:1200px; height:1200px; left:-620px; top:1500px;"></div>
+  <div class="copy"><div class="eyebrow">Helper mode</div><h1>Today's rooms,<br><em>step by step.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/helper_rooms.png); --top: 800px; --ry: 9deg; --rz: -1.5deg;">
+    <div class="phone"></div>
+    <div class="pop" style="--x:40; --y:283; --w:324; --h:76; --dx:-70px; --dy:-16px; --k:1.18; --tilt:-2deg; --r:22;"></div>
+    <div class="pop" style="--x:40; --y:459; --w:324; --h:76; --dx:60px; --dy:20px; --k:1.18; --tilt:2deg; --z:240px; --r:22;"></div>
+    <div class="badge" style="--c:var(--sage); left:560px; top:230px; --tilt:6deg; --z:320px;">2 of 4 done</div>
+  </div></div>
+</section>
+
+<!-- 7 · nanny -->
+<section class="panel" id="p7" style="--bg: var(--deep); --fg: var(--oat); --accent: var(--butter);">
+  <div class="blob" style="--c:#B03A55; width:1500px; height:1500px; left:-740px; top:-600px;"></div>
+  <div class="blob" style="--c:#84243A; width:1200px; height:1200px; right:-620px; top:1500px;"></div>
+  <div class="copy"><div class="eyebrow">Nanny mode</div><h1>Every shift,<br><em>handed over.</em></h1></div>
+  <div class="stage"><div class="rig" style="--img:url(raw/nanny_shift.png); --top: 800px;">
+    <div class="phone"></div>
+    <div class="pop" style="--img:url(raw/nanny_hub.png); --x:20; --y:373; --w:362; --h:211; --dx:-60px; --dy:320px; --k:1.14; --tilt:-2deg; --z:240px;"></div>
+    <div class="pop" style="--x:20; --y:283; --w:176; --h:92; --dx:-90px; --dy:-30px; --k:1.2; --tilt:-3deg;"></div>
+    <div class="pop" style="--x:205; --y:283; --w:176; --h:92; --dx:90px; --dy:-10px; --k:1.2; --tilt:3deg; --z:200px;"></div>
+  </div></div>
+</section>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+    <symbol id="i-google" viewBox="0 0 24 24"><path d="M18.316 5.684H24v12.632h-5.684V5.684zM5.684 24h12.632v-5.684H5.684V24zM18.316 5.684V0H1.895A1.894 1.894 0 0 0 0 1.895v16.421h5.684V5.684h12.632zm-7.207 6.25v-.065c.272-.144.5-.349.687-.617s.279-.595.279-.982c0-.379-.099-.72-.3-1.025a2.05 2.05 0 0 0-.832-.714 2.703 2.703 0 0 0-1.197-.257c-.6 0-1.094.156-1.481.467-.386.311-.65.671-.793 1.078l1.085.452c.086-.249.224-.461.413-.633.189-.172.445-.257.767-.257.33 0 .602.088.816.264a.86.86 0 0 1 .322.703c0 .33-.12.589-.36.778-.24.19-.535.284-.886.284h-.567v1.085h.633c.407 0 .748.109 1.02.327.272.218.407.499.407.843 0 .336-.129.614-.387.832s-.565.327-.924.327c-.351 0-.651-.103-.897-.311-.248-.208-.422-.502-.521-.881l-1.096.452c.178.616.505 1.082.977 1.401.472.319.984.478 1.538.477a2.84 2.84 0 0 0 1.293-.291c.382-.193.684-.458.902-.794.218-.336.327-.72.327-1.149 0-.429-.115-.797-.344-1.105a2.067 2.067 0 0 0-.881-.689zm2.093-1.931l.602.913L15 10.045v5.744h1.187V8.446h-.827l-2.158 1.557zM22.105 0h-3.289v5.184H24V1.895A1.894 1.894 0 0 0 22.105 0zm-3.289 23.5l4.684-4.684h-4.684V23.5zM0 22.105C0 23.152.848 24 1.895 24h3.289v-5.184H0v3.289z"/></symbol>
+    <symbol id="i-outlook" viewBox="0 0 24 24"><path d="M7.88 12.04q0 .45-.11.87-.1.41-.33.74-.22.33-.58.52-.37.2-.87.2t-.85-.2q-.35-.21-.57-.55-.22-.33-.33-.75-.1-.42-.1-.86t.1-.87q.1-.43.34-.76.22-.34.59-.54.36-.2.87-.2t.86.2q.35.21.57.55.22.34.31.77.1.43.1.88zM24 12v9.38q0 .46-.33.8-.33.32-.8.32H7.13q-.46 0-.8-.33-.32-.33-.32-.8V18H1q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7Q.58 6 1 6h6.5V2.55q0-.44.3-.75.3-.3.75-.3h12.9q.44 0 .75.3.3.3.3.75V10.85l1.24.72h.01q.1.07.18.18.07.12.07.25zm-6-8.25v3h3v-3zm0 4.5v3h3v-3zm0 4.5v1.83l3.05-1.83zm-5.25-9v3h3.75v-3zm0 4.5v3h3.75v-3zm0 4.5v2.03l2.41 1.5 1.34-.8v-2.73zM9 3.75V6h2l.13.01.12.04v-2.3zM5.98 15.98q.9 0 1.6-.3.7-.32 1.19-.86.48-.55.73-1.28.25-.74.25-1.61 0-.83-.25-1.55-.24-.71-.71-1.24t-1.15-.83q-.68-.3-1.55-.3-.92 0-1.64.3-.71.3-1.2.85-.5.54-.75 1.3-.25.74-.25 1.63 0 .85.26 1.56.26.72.74 1.23.48.52 1.17.81.69.3 1.56.3zM7.5 21h12.39L12 16.08V17q0 .41-.3.7-.29.3-.7.3H7.5zm15-.13v-7.24l-5.9 3.54Z"/></symbol>
+  </defs>
+</svg>
+
+<script>
+  const p = new URLSearchParams(location.search).get('p') || '1';
+  document.getElementById('p' + p).classList.add('on');
+</script>
+</body>
+</html>

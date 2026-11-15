@@ -2,6 +2,14 @@
 /// shown as a particular lunch.
 abstract final class NestImagery {
   static const welcomeLunch = 'assets/brand/welcome_lunch.jpg';
+
+  static const premiumRecipes = 'assets/premium/recipes.jpg';
+  static const premiumShops = 'assets/premium/shops.jpg';
+  static const premiumWhereWeAre = 'assets/premium/where_we_are.jpg';
+  static const premiumNannyHub = 'assets/premium/nanny_hub.jpg';
+  static const premiumHomeCare = 'assets/premium/home_care.jpg';
+  static const premiumTwoHomes = 'assets/premium/two_homes.jpg';
+  static const premiumDocuments = 'assets/premium/documents.jpg';
 }
 
 /// Twig, NestPrep's AI mascot, in each of the five poses Daniel supplied

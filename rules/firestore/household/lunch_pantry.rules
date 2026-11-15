@@ -4,12 +4,14 @@
 // record of each box marked packed — which is what takes its portions out of
 // the pantry, in the same batch, once. Everything is the `lunch` grant:
 // `edit` stocks and packs, `view` reads, `own` and `none` see nothing.
+// Stocking and packing need `hasPremium` too (subscriptions ADR-0009).
 
 // One entry per library item: the document id is the item's.
 match /lunchPantry/{itemId} {
   allow read: if canView(householdId, 'lunch');
 
   allow create, update: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && isLunchPantryEntry(request.resource.data)
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt')
@@ -25,6 +27,7 @@ match /lunchPacked/{packedId} {
   allow read: if canView(householdId, 'lunch');
 
   allow create: if canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && isLunchPackedDay(packedId, request.resource.data)
     && isLunchChild(householdId, request.resource.data.childId)
     && isOwnMember(householdId, request.resource.data.by)

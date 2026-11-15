@@ -22,6 +22,9 @@ import '../features/lunch_box/ui/lunch_screen.dart';
 import '../features/lunch_box/ui/planner/pdf_lunch_planner_composer.dart';
 import '../features/lunch_box/ui/share/lunch_share_screen.dart';
 import '../features/plan_week/state/lunch_shop_choice.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/app_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'fill_week_routes.dart';
 import 'household_route.dart';
@@ -94,25 +97,39 @@ ShellRoute lunchRoutes() => ShellRoute(
     ),
     GoRoute(
       path: LunchRoute.prepPath,
-      builder: (context, state) => const LunchPrepScreen(),
+      builder: (context, state) => const PremiumArea(
+        feature: PremiumFeature.lunchBox,
+        title: LunchCopy.prepTitle,
+        child: LunchPrepScreen(),
+      ),
     ),
     GoRoute(
       path: LunchRoute.libraryPath,
-      builder: (context, state) => const LunchLibraryScreen(),
+      builder: (context, state) => const PremiumArea(
+        feature: PremiumFeature.lunchBox,
+        title: LunchCopy.libraryTitle,
+        child: LunchLibraryScreen(),
+      ),
     ),
     // Made fresh on every visit, so a first name is chosen each time and
     // never remembered (lunch-box ADR-0005).
     GoRoute(
       path: LunchRoute.sharePath,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => LunchShareController(
-          cardRenderer: const OffscreenLunchCardRenderer(),
-          cardSharer: PlatformLunchCardSharer(),
-          plannerComposer: PdfLunchPlannerComposer(),
-          initialChildId: context.read<LunchBoardController>().selectedChildId,
-          appLink: context.read<InviteSharer>().appLink,
+      builder: (context, state) => PremiumArea(
+        feature: PremiumFeature.lunchBox,
+        title: LunchShareCopy.title,
+        child: ChangeNotifierProvider(
+          create: (context) => LunchShareController(
+            cardRenderer: const OffscreenLunchCardRenderer(),
+            cardSharer: PlatformLunchCardSharer(),
+            plannerComposer: PdfLunchPlannerComposer(),
+            initialChildId: context
+                .read<LunchBoardController>()
+                .selectedChildId,
+            appLink: context.read<InviteSharer>().appLink,
+          ),
+          child: const LunchShareScreen(),
         ),
-        child: const LunchShareScreen(),
       ),
     ),
     ...lunchPlanningRoutes(),

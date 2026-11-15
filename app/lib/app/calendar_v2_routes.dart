@@ -16,7 +16,10 @@ import '../features/school_letter/data/letter_picker.dart';
 import '../features/school_letter/data/school_letter_reader.dart';
 import '../features/school_letter/state/school_letter_controller.dart';
 import '../features/school_letter/ui/school_letter_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
 import '../features/todos/data/todo_repository.dart';
+import '../shared/copy/school_letter_copy.dart';
 import '../shared/time/household_clock.dart';
 import 'calendar_v2_route.dart';
 import 'household_route.dart';
@@ -25,19 +28,24 @@ import 'viewer_member.dart';
 /// Snap a school letter and the shared week (calendar ADR-0005, ADR-0006).
 /// Each screen's way in is hidden when its flag is off; the routes stay, so a
 /// switched-off capability is unreachable rather than broken, and the server
-/// refuses the letter's callable on the same flag.
+/// refuses the letter's callable on the same flag. The letter is Premium: a
+/// free household meets it locked (subscriptions ADR-0009).
 List<GoRoute> calendarV2Routes() => [
   GoRoute(
     path: CalendarV2Route.letterPath,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => SchoolLetterController(
-        schoolLetterReader: context.read<SchoolLetterReader>(),
-        letterPicker: context.read<LetterPicker>(),
-        calendarRepository: context.read<CalendarRepository>(),
-        householdId: HouseholdRoute.idFrom(state),
-        memberId: viewerMemberIdOf(context),
+    builder: (context, state) => PremiumArea(
+      feature: PremiumFeature.schoolLetter,
+      title: SchoolLetterCopy.title,
+      child: ChangeNotifierProvider(
+        create: (context) => SchoolLetterController(
+          schoolLetterReader: context.read<SchoolLetterReader>(),
+          letterPicker: context.read<LetterPicker>(),
+          calendarRepository: context.read<CalendarRepository>(),
+          householdId: HouseholdRoute.idFrom(state),
+          memberId: viewerMemberIdOf(context),
+        ),
+        child: const SchoolLetterScreen(),
       ),
-      child: const SchoolLetterScreen(),
     ),
   ),
   GoRoute(

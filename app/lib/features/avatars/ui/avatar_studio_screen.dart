@@ -6,6 +6,7 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/ui/back_leading.dart';
 import '../../household/model/household_view.dart';
+import '../../subscriptions/state/household_entitlement.dart';
 import '../model/avatar_studio.dart';
 import '../state/avatar_creation_controller.dart';
 import '../state/avatar_keepsakes_controller.dart';
@@ -16,6 +17,7 @@ import 'keepsakes_tab.dart';
 import 'nestlings_tab.dart';
 import 'photo_tab.dart';
 import 'purchase_outcome_listener.dart';
+import 'studio_locked_tab.dart';
 import 'studio_preview.dart';
 import 'studio_tab_picker.dart';
 import 'wardrobe_tab.dart';
@@ -46,8 +48,10 @@ class _AvatarStudioScreenState extends State<AvatarStudioScreen> {
       AsyncData(:final value) => value,
       _ => null,
     };
-    final isFamily =
-        context.watch<HouseholdView?>()?.permissions.isFamily ?? false;
+    final view = context.watch<HouseholdView?>();
+    final isFamily = view?.permissions.isFamily ?? false;
+    final entitlement = context.watch<HouseholdEntitlement?>();
+    final isPremium = entitlement?.isPremium ?? false;
     final makes =
         context.watch<AvatarCreationController?>() != null &&
         ((studio?.creationsOn ?? true) || isFamily);
@@ -61,6 +65,11 @@ class _AvatarStudioScreenState extends State<AvatarStudioScreen> {
       if (keeps) AvatarStudioTab.keepsakes,
     ];
     final tab = tabs.contains(_tab) ? _tab : AvatarStudioTab.nestlings;
+    final locked = {
+      if (!isPremium)
+        for (final tab in tabs)
+          if (tab.premiumFeature != null) tab,
+    };
     return PurchaseOutcomeListener(
       controller: controller,
       child: NestScaffold(
@@ -108,44 +117,57 @@ class _AvatarStudioScreenState extends State<AvatarStudioScreen> {
                       onUseInitial: controller.useInitial,
                     ),
                     const SizedBox(height: NestSpace.xl),
-                    StudioTabPicker(tabs: tabs, selected: tab, onSelect: _show),
+                    StudioTabPicker(
+                      tabs: tabs,
+                      selected: tab,
+                      onSelect: _show,
+                      locked: locked,
+                    ),
                     const SizedBox(height: NestSpace.xl),
-                    switch (tab) {
-                      AvatarStudioTab.nestlings => NestlingsTab(
-                        studio: studio,
-                        isSelf: isSelf,
-                        onPick: controller.pickNestling,
-                        onStage: controller.pickStage,
-                      ),
-                      AvatarStudioTab.photo => PhotoTab(
-                        studio: studio,
-                        isSaving: controller.isSavingPhoto,
-                        onSave: controller.savePhoto,
-                      ),
-                      AvatarStudioTab.wardrobe => WardrobeTab(
-                        studio: studio,
-                        isSelf: isSelf,
-                        isBuying: controller.isBuying,
-                        onWear: controller.wear,
-                        onBuy: controller.buy,
-                      ),
-                      AvatarStudioTab.create => CreateTab(
-                        studio: studio,
-                        isSelf: isSelf,
-                        onUse: controller.useImage,
-                        onShelf: keeps
-                            ? () => _show(AvatarStudioTab.keepsakes)
-                            : null,
-                      ),
-                      AvatarStudioTab.keepsakes => KeepsakesTab(
-                        studio: studio,
-                        isSelf: isSelf,
-                        onUse: controller.useImage,
-                        onMake: tabs.contains(AvatarStudioTab.create)
-                            ? () => _show(AvatarStudioTab.create)
-                            : null,
-                      ),
-                    },
+                    if (locked.contains(tab))
+                      entitlement?.entitlement is AsyncLoading
+                          ? const NestLoadingView(rows: 2)
+                          : StudioLockedTab(
+                              feature: tab.premiumFeature!,
+                              canBuy: view != null,
+                            )
+                    else
+                      switch (tab) {
+                        AvatarStudioTab.nestlings => NestlingsTab(
+                          studio: studio,
+                          isSelf: isSelf,
+                          onPick: controller.pickNestling,
+                          onStage: controller.pickStage,
+                        ),
+                        AvatarStudioTab.photo => PhotoTab(
+                          studio: studio,
+                          isSaving: controller.isSavingPhoto,
+                          onSave: controller.savePhoto,
+                        ),
+                        AvatarStudioTab.wardrobe => WardrobeTab(
+                          studio: studio,
+                          isSelf: isSelf,
+                          isBuying: controller.isBuying,
+                          onWear: controller.wear,
+                          onBuy: controller.buy,
+                        ),
+                        AvatarStudioTab.create => CreateTab(
+                          studio: studio,
+                          isSelf: isSelf,
+                          onUse: controller.useImage,
+                          onShelf: keeps
+                              ? () => _show(AvatarStudioTab.keepsakes)
+                              : null,
+                        ),
+                        AvatarStudioTab.keepsakes => KeepsakesTab(
+                          studio: studio,
+                          isSelf: isSelf,
+                          onUse: controller.useImage,
+                          onMake: tabs.contains(AvatarStudioTab.create)
+                              ? () => _show(AvatarStudioTab.create)
+                              : null,
+                        ),
+                      },
                   ],
                 ),
               ),

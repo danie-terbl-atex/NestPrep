@@ -87,7 +87,7 @@ void main() {
       );
       expect(
         appConfig,
-        contains("configId == '${FirestoreFeatureFlagSource.document}'"),
+        contains("configId in ['${FirestoreFeatureFlagSource.document}'"),
       );
     });
   });

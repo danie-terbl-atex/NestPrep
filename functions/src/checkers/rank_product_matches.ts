@@ -12,6 +12,7 @@ import { readFlag, type FeatureFlag } from '../shared/feature_flags';
 import { refuseCheckers } from './errors';
 import { matchRequest, rankedFrom, type RankedMatch } from './match_decisions';
 import { rankProductMatchesInput } from './schemas';
+import { requireShopsPremium } from './shops_premium';
 
 const SHOP_SWITCHES: readonly FeatureFlag[] = ['addToCheckers', 'addToPnp', 'addToWoolworths'];
 
@@ -33,6 +34,7 @@ export const rankProductMatches = onCall(
     }
     const switches = await Promise.all(SHOP_SWITCHES.map((flag) => readFlag(store, flag)));
     if (!switches.some(Boolean)) throw refuseCheckers('checkers-switched-off');
+    await requireShopsPremium(store, input.householdId);
     const answers = await askDecisions(
       await decisionRuntime(store),
       'productMatch',

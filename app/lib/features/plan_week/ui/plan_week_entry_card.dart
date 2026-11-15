@@ -12,8 +12,6 @@ import '../../add_to_checkers/ui/retailer_logo.dart';
 import '../../groceries/model/product_match.dart';
 import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_board.dart';
-import '../../subscriptions/model/premium_feature.dart';
-import '../../subscriptions/ui/premium_gate.dart';
 import '../state/lunch_shop_choice.dart';
 
 /// Whether *Plan the week* offers Twig, and at which shop (lunch-box
@@ -31,29 +29,17 @@ abstract final class PlanWeekEntry {
         shops.firstOrNull;
   }
 
-  /// The paywall first; the server checks premium again (`FE-04`).
-  static Future<void> open(BuildContext context) async {
-    final router = GoRouter.of(context);
-    final householdId = context.read<HouseholdView>().household.id;
-    if (!await ensurePremium(context, feature: PremiumFeature.aiPlanning)) {
-      return;
-    }
-    await router.push<void>(PlanWeekRoute.pathFor(householdId));
-  }
+  static Future<void> open(BuildContext context) => context.push<void>(
+    PlanWeekRoute.pathFor(context.read<HouseholdView>().household.id),
+  );
 }
 
 /// Twig's way in *Plan the week*'s chooser, led by the chosen shop's logo
 /// (ADR-0024, ADR-0026) and naming Twig in words (design-system ADR-0014).
 class PlanWeekEntryCard extends StatelessWidget {
-  const PlanWeekEntryCard({
-    required this.shop,
-    required this.isPremium,
-    required this.onTap,
-    super.key,
-  });
+  const PlanWeekEntryCard({required this.shop, required this.onTap, super.key});
 
   final ProductRetailer shop;
-  final bool isPremium;
   final VoidCallback onTap;
 
   @override
@@ -69,13 +55,6 @@ class PlanWeekEntryCard extends StatelessWidget {
           retailer: shop,
           size: NestSize.logoMedium,
         ),
-        footer: isPremium
-            ? null
-            : const NestTag(
-                label: PlanWeekCopy.premiumTag,
-                tone: NestTagTone.accent,
-                icon: LucideIcons.award,
-              ),
         trailing: const Icon(LucideIcons.chevronRight),
         onTap: onTap,
       ),

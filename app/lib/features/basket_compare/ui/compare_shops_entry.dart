@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../../app/basket_compare_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/basket_compare_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../add_to_checkers/ui/retailer_logo.dart';
+import '../../add_to_checkers/ui/shops_lock.dart';
 import '../../groceries/model/product_match.dart';
 
 /// The grocery list's way into *Compare shops* (basket-compare ADR-0001):
@@ -22,13 +24,15 @@ class CompareShopsEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
+    final isLocked = !shopsUnlocked(context);
     return Semantics(
       button: true,
+      hint: isLocked ? SubscriptionCopy.lockedHint : null,
       child: NestCard(
         key: const ValueKey('compare-shops'),
         variant: NestCardVariant.flat,
         padding: const EdgeInsets.all(NestSpace.md),
-        onTap: () => context.push(BasketCompareRoute.pathFor(householdId)),
+        onTap: () => _open(context),
         child: Row(
           children: [
             for (final shop in shops) ...[
@@ -52,7 +56,7 @@ class CompareShopsEntry extends StatelessWidget {
             ),
             const SizedBox(width: NestSpace.sm),
             Icon(
-              LucideIcons.chevronRight,
+              isLocked ? LucideIcons.lock : LucideIcons.chevronRight,
               size: NestSize.iconSmall,
               color: nest.colors.inkTertiary,
             ),
@@ -60,5 +64,10 @@ class CompareShopsEntry extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _open(BuildContext context) async {
+    if (!await ensureShops(context) || !context.mounted) return;
+    await context.push<void>(BasketCompareRoute.pathFor(householdId));
   }
 }

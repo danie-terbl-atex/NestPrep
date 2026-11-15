@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { mayAnswer, statusAfter, storedSwapDays, withSwap } from './change_rules';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { requestRef } from './coparent_refs';
 import { refuseCoParent } from './errors';
 import { bothRefs, readLink, requireActive, updateBothMirrors } from './link_context';
@@ -45,6 +45,9 @@ export const answerCoParentChange = onCall(async (request) => {
 
   const status = await store.runTransaction(async (transaction) => {
     await requireRole(transaction, store, input.householdId, uid, 'family');
+    if (input.answer === 'accept') {
+      await requireTwoHomesPremium(transaction, store, input.householdId);
+    }
     const link = await readLink(transaction, store, input.linkId, input.householdId);
     requireActive(link);
     const snapshot = await transaction.get(

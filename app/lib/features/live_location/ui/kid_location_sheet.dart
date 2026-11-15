@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/log/app_log.dart';
+import '../../../shared/log/best_effort.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../accounts/model/kid_identity.dart';
 import '../../household/data/household_repository.dart';
@@ -46,7 +48,9 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
   Household? _home;
   MemberLocation? _own;
   List<FamilyPlace> _places = const [];
-  bool _premium = false;
+  Entitlement? _entitlement;
+  bool _entitlementFailed = false;
+  bool _stoppedForLapse = false;
   bool _loaded = false;
   bool _working = false;
   AppFailure? _failure;
@@ -62,9 +66,9 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
     );
     _listen(
       context.read<EntitlementRepository>().watchEntitlement(kid.householdId),
-      (Entitlement entitlement) =>
-          _premium = entitlement.isPremiumAt(DateTime.now()),
+      (Entitlement entitlement) => _entitlement = entitlement,
       'kid location entitlement',
+      onFailure: (_) => _entitlementFailed = true,
     );
     _listen(
       context.read<LiveLocationRepository>().watchLocations(kid.householdId),
@@ -75,7 +79,10 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
         _loaded = true;
       },
       'kid location own position',
-      onFailure: (failure) => _failure = failure,
+      onFailure: (failure) {
+        _loaded = true;
+        _failure = failure;
+      },
     );
     _listen(
       context.read<PlacesRepository>().watchPlaces(kid.householdId),
@@ -92,14 +99,18 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
   }) {
     _subscriptions.add(
       stream.listen(
-        (value) => setState(() => onValue(value)),
+        (value) {
+          setState(() => onValue(value));
+          _stopIfLapsed();
+        },
         onError: (Object error) {
           AppLog.failure(operation, code: 'kid-location-read', error: error);
           if (onFailure != null) {
-            setState(() {
-              _loaded = true;
-              onFailure(error is AppFailure ? error : UnknownFailure(error));
-            });
+            setState(
+              () => onFailure(
+                error is AppFailure ? error : UnknownFailure(error),
+              ),
+            );
           }
         },
       ),
@@ -112,6 +123,48 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
       unawaited(subscription.cancel());
     }
     super.dispose();
+  }
+
+  bool get _premium => _entitlement?.isPremiumAt(DateTime.now()) ?? false;
+
+  /// Premium ended while this phone was sharing: it stops, once, and the pin
+  /// comes down. An entitlement that could not be read stops nothing.
+  void _stopIfLapsed() {
+    if (_entitlement == null || _premium || _stoppedForLapse || !_loaded) {
+      return;
+    }
+    final kid = widget.kid;
+    final always = context.read<AlwaysSharing>();
+    final reporter = context.read<LocationReporter>();
+    final own = _own;
+    final inWindow =
+        reporter.isReportingFor(kid.householdId, kid.memberId) ||
+        (own != null &&
+            own.mode == ShareMode.window &&
+            own.isSharingAt(DateTime.now()));
+    final sharingAlways = always.isSharingFor(kid.householdId, kid.memberId);
+    if (!inWindow && !sharingAlways) return;
+    _stoppedForLapse = true;
+    if (sharingAlways) {
+      unawaited(
+        always.stopForLapse(
+          householdId: kid.householdId,
+          memberId: kid.memberId,
+        ),
+      );
+    }
+    if (inWindow) {
+      unawaited(
+        bestEffort(
+          'kid timed share lapse',
+          code: 'kid-window-lapse-stop-failed',
+          run: () => reporter.stop(
+            householdId: kid.householdId,
+            memberId: kid.memberId,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _run(Future<void> Function() action) async {
@@ -143,12 +196,13 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
         ? own.sharingUntil
         : null;
     final failure = _failure;
-    if (!_loaded) {
+    if (!_loaded || (_entitlement == null && !_entitlementFailed)) {
       return const Padding(
         padding: EdgeInsets.all(NestSpace.gutter),
         child: NestLoadingView(),
       );
     }
+    if (!_premium) return const _KidLocationLocked();
     return Padding(
       padding: const EdgeInsets.all(NestSpace.gutter),
       child: Column(
@@ -226,7 +280,7 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
                   ),
               ],
             ),
-            if (_premium && home != null) ...[
+            if (home != null) ...[
               const SizedBox(height: NestSpace.lg),
               NestButton(
                 label: LocationCopy.always,
@@ -246,6 +300,46 @@ class _KidLocationSheetState extends State<KidLocationSheet> {
               ),
             ],
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A kid phone buys nothing, so the lock says who to ask and offers no way to
+/// the paywall.
+class _KidLocationLocked extends StatelessWidget {
+  const _KidLocationLocked();
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(NestSpace.gutter),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                LucideIcons.lock,
+                color: nest.colors.accent,
+                size: 20,
+                semanticLabel: SubscriptionCopy.lockedHint,
+              ),
+              const SizedBox(width: NestSpace.sm),
+              Expanded(
+                child: Text(
+                  LocationCopy.kidLockedTitle,
+                  style: nest.text.title,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: NestSpace.sm),
+          Text(LocationCopy.kidLockedBody, style: nest.text.bodySecondary),
         ],
       ),
     );

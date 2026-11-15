@@ -16,15 +16,22 @@
  *
  *     npm run teardown:cloud-demo                (dry run: says what it would remove)
  *     npm run teardown:cloud-demo -- --confirm   (removes it)
+ *
+ * `--free` removes the free demo family of `seed-cloud-free-demo.mjs` instead,
+ * the same way, with every id checked to start with `free-`.
  */
 import { CLOUD_CAST } from './cloud-demo/cast.mjs';
-import { connect } from './cloud-demo/admin.mjs';
+import { assertScope, connect } from './cloud-demo/admin.mjs';
+import { FREE_CAST, FREE_PREFIX } from './cloud-demo/free-cast.mjs';
 
 const confirmed = process.argv.includes('--confirm');
+const free = process.argv.includes('--free');
+const cast = free ? FREE_CAST : CLOUD_CAST;
+assertScope(cast, free ? FREE_PREFIX : 'demo-');
 const { target, store, auth, bucket } = connect();
-const householdId = CLOUD_CAST.householdId;
+const householdId = cast.householdId;
 console.log(
-  `${confirmed ? 'removing' : 'dry run — would remove'} the demo family from ${target}\n`,
+  `${confirmed ? 'removing' : 'dry run — would remove'} the ${free ? 'free ' : ''}demo family from ${target}\n`,
 );
 
 /** Top-level collections whose rows about a household carry its id. */
@@ -48,7 +55,7 @@ if (confirmed) await store.recursiveDelete(household);
 
 const prefixes = [
   `households/${householdId}/`,
-  ...CLOUD_CAST.people.map((person) => `accountExports/${person.uid}/`),
+  ...cast.people.map((person) => `accountExports/${person.uid}/`),
 ];
 for (const prefix of prefixes) {
   const [files] = await bucket.getFiles({ prefix });
@@ -68,7 +75,7 @@ for (const name of DERIVED) {
   if (confirmed) for (const row of rows.docs) await row.ref.delete();
 }
 
-for (const { uid, email } of CLOUD_CAST.people) {
+for (const { uid, email } of cast.people) {
   const userDoc = store.collection('users').doc(uid);
   console.log(`users/${uid}: ${(await userDoc.get()).exists ? 'present' : 'absent'}`);
   if (confirmed) await store.recursiveDelete(userDoc);

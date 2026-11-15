@@ -18,7 +18,6 @@ import '../../../support/fake_plan_week.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/lunch_planning_harness.dart';
 import '../../../support/pump_screen.dart';
-import '../../../support/pump_subscriptions.dart';
 
 /// Twig's way in *Plan the week*'s chooser (lunch-box ADR-0033), led by the
 /// logo of the shop it plans at (ADR-0024, ADR-0026) — any shop switched on,
@@ -34,7 +33,6 @@ void main() {
     double width = 420,
     Brightness brightness = Brightness.light,
     double textScale = 1,
-    bool isPremium = true,
     LunchShopChoice? shopChoice,
   }) async {
     tester.view.physicalSize = Size(width, 1200) * 3;
@@ -50,11 +48,7 @@ void main() {
               builder: (context) {
                 final shop = PlanWeekEntry.shopFor(context, value);
                 if (shop == null) return const SizedBox.shrink();
-                return PlanWeekEntryCard(
-                  shop: shop,
-                  isPremium: isPremium,
-                  onTap: () {},
-                );
+                return PlanWeekEntryCard(shop: shop, onTap: () {});
               },
             ),
             _ => const SizedBox.shrink(),
@@ -64,7 +58,6 @@ void main() {
       providers: [
         ...harness.lunch.providers,
         ...harness.providers,
-        if (!isPremium) ...SubscriptionHarness().providers,
         if (shopChoice != null)
           ChangeNotifierProvider<LunchShopChoice>.value(value: shopChoice),
       ],
@@ -149,18 +142,11 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('the row with its logo and premium tag fits a 360-wide phone in '
-      'dark at 200% text', (tester) async {
-    await pump(
-      tester,
-      width: 360,
-      brightness: Brightness.dark,
-      textScale: 2,
-      isPremium: false,
-    );
+  testWidgets('the row with its logo fits a 360-wide phone in dark at 200% '
+      'text', (tester) async {
+    await pump(tester, width: 360, brightness: Brightness.dark, textScale: 2);
     expect(tester.takeException(), isNull);
     expect(find.text('Let Twig plan it'), findsOneWidget);
-    expect(find.text(PlanWeekCopy.premiumTag), findsOneWidget);
     expect(
       tester.getSize(find.byType(RetailerLogo)),
       const Size.square(NestSize.logoMedium),
@@ -221,7 +207,7 @@ void main() {
     testWidgets('a chosen shop switched off gives way to the first still on', (
       tester,
     ) async {
-      await switchedOff({FeatureFlag.addToCheckers, FeatureFlag.addToPnp});
+      await switchedOff({FeatureFlag.checkersShop, FeatureFlag.addToPnp});
       final choice = planWeekShopChoice(Fixtures.householdId)
         ..choose(ProductRetailer.pickNPay);
       addTearDown(choice.dispose);
@@ -233,9 +219,9 @@ void main() {
     testWidgets('with every shop off there is nothing to plan from, and no '
         'row', (tester) async {
       await switchedOff({
-        FeatureFlag.addToCheckers,
+        FeatureFlag.checkersShop,
         FeatureFlag.addToPnp,
-        FeatureFlag.addToWoolworths,
+        FeatureFlag.woolworthsShop,
       });
       await pump(tester);
       expect(find.byKey(const ValueKey('plan-week-open')), findsNothing);

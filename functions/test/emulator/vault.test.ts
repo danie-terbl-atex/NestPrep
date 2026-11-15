@@ -8,6 +8,7 @@ import {
   signUp,
   type TestUser,
 } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * `openVaultDocument`, driven the way the app drives it — over HTTP, with a real
@@ -57,6 +58,7 @@ async function givenTheParkers(): Promise<Parkers> {
       uploadedBy: 'm-sam',
       uploadedAt: new Date(),
     });
+  await givenPremiumUntil(household.id, new Date('2099-01-01T00:00:00Z'));
   return { householdId: household.id, sam, thandi, alex };
 }
 
@@ -112,6 +114,16 @@ describe('openVaultDocument', () => {
     const expiresAt = Date.parse(result.expiresAt);
     expect(expiresAt).toBeGreaterThan(before + 4 * 60_000);
     expect(expiresAt).toBeLessThanOrEqual(Date.now() + 5 * 60_000);
+  });
+
+  it('refuses a household without Premium, and writes neither a log line nor a ticket', async () => {
+    const { householdId, sam } = await givenTheParkers();
+    await givenPremiumUntil(householdId, new Date('2020-01-01T00:00:00Z'));
+
+    await expectRefusal(openPassport(sam, householdId), 'premiumRequired');
+
+    expect(await viewsOfEmma(householdId)).toHaveLength(0);
+    expect(await ticketOf(householdId, sam.uid)).toBeUndefined();
   });
 
   it('refuses a helper nobody granted the vault to, and writes nothing', async () => {

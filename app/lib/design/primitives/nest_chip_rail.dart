@@ -63,11 +63,14 @@ class _NestChipRailState<T> extends State<NestChipRail<T>> {
             padding: EdgeInsetsDirectional.only(
               start: index == 0 ? 0 : NestSpace.sm,
             ),
-            child: NestChip(
-              label: segment.label,
-              icon: segment.icon,
-              isSelected: segment.value == widget.selected,
-              onTap: () => widget.onSelect(segment.value),
+            child: Semantics(
+              hint: segment.hint,
+              child: NestChip(
+                label: segment.label,
+                icon: segment.icon,
+                isSelected: segment.value == widget.selected,
+                onTap: () => widget.onSelect(segment.value),
+              ),
             ),
           ),
       ],

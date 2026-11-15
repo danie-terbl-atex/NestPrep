@@ -17,7 +17,6 @@ import '../../../support/household_fixtures.dart';
 
 void main() {
   const hash = '0123456789abcdef0123456789abcdef';
-  final premium = Entitlement(premiumUntil: DateTime.utc(2100));
   const kept = AvatarKeepsake(
     id: 'k-buddy',
     memberId: Fixtures.kidMemberId,
@@ -63,10 +62,9 @@ void main() {
     expect(tester.takeException(), isNull);
   }
 
-  StudioRig kidRig({Entitlement entitlement = Entitlement.free}) => StudioRig(
+  StudioRig kidRig() => StudioRig(
     member: Fixtures.kid,
     viewerMemberId: Fixtures.kidMemberId,
-    entitlement: entitlement,
     photo: aPhoto(),
   );
 
@@ -83,8 +81,9 @@ void main() {
   }
 
   group('the menu', () {
-    testWidgets('a grown-up of a free household sees three ways in, the '
-        'free try, and the portrait behind premium', (tester) async {
+    testWidgets('a grown-up sees three ways in and the portrait', (
+      tester,
+    ) async {
       tall(tester);
       final rig = StudioRig(member: Fixtures.sam);
       addTearDown(rig.close);
@@ -92,8 +91,7 @@ void main() {
       for (final recipe in CreationRecipe.values) {
         expect(card(recipe), findsOneWidget, reason: recipe.name);
       }
-      expect(find.text(AvatarCreationCopy.tryOnceFree), findsOneWidget);
-      expect(find.text(SubscriptionCopy.premium), findsOneWidget);
+      expect(find.text(SubscriptionCopy.premium), findsNothing);
     });
 
     testWidgets('a child gets the three, never the portrait', (tester) async {
@@ -114,9 +112,9 @@ void main() {
       expect(card(CreationRecipe.portrait), findsNothing);
     });
 
-    testWidgets('premium says how many are left this month', (tester) async {
+    testWidgets('it says how many are left this month', (tester) async {
       tall(tester);
-      final rig = StudioRig(member: Fixtures.sam, entitlement: premium);
+      final rig = StudioRig(member: Fixtures.sam);
       addTearDown(rig.close);
       await rig.pump(tester, tab: AvatarStudioTab.create);
       rig.avatars.emitRecent([
@@ -131,38 +129,31 @@ void main() {
       ]);
       await tester.pumpAndSettle();
       expect(find.text(AvatarCreationCopy.picturesLeft(8)), findsOneWidget);
-      expect(find.text(AvatarCreationCopy.tryOnceFree), findsNothing);
-      expect(find.text(SubscriptionCopy.premium), findsNothing);
     });
 
-    testWidgets('a free household that used its try is offered premium '
-        'before it picks anything', (tester) async {
+    testWidgets('a free household finds Create locked, with no free try, and '
+        'the way to Premium', (tester) async {
       tall(tester);
-      final rig = StudioRig(member: Fixtures.sam);
+      final rig = StudioRig(
+        member: Fixtures.sam,
+        entitlement: Entitlement.free,
+      );
       addTearDown(rig.close);
       await rig.pump(tester, tab: AvatarStudioTab.create);
-      rig.avatars.emitRecent([
-        AvatarCreation(
-          id: 'c1',
-          memberId: Fixtures.samMemberId,
-          recipe: CreationRecipe.buddy,
-          status: CreationStatus.ready,
-          left: 0,
-          requestedAt: DateTime(2026, 3),
-        ),
-      ]);
-      await tester.pumpAndSettle();
-      expect(find.text(AvatarCreationCopy.freeTryUsed), findsOneWidget);
-      await tester.tap(card(CreationRecipe.buddy));
-      await tester.pumpAndSettle();
+      expect(find.text(AvatarCreationCopy.createTab), findsOneWidget);
+      for (final recipe in CreationRecipe.values) {
+        expect(card(recipe), findsNothing, reason: recipe.name);
+      }
       expect(
         find.text(SubscriptionCopy.headline(PremiumFeature.avatarCreate)),
         findsOneWidget,
       );
+      await tapIn(tester, find.text(SubscriptionCopy.seePremium));
       expect(
         rig.subscriptions.paywallOpens.opened.map((open) => open.trigger),
         [PremiumFeature.avatarCreate],
       );
+      expect(rig.avatars.requested, isEmpty);
     });
 
     testWidgets('with creations switched off, family sees why and the switch', (
@@ -385,7 +376,7 @@ void main() {
     );
   });
 
-  testWidgets('a free household’s second try opens the paywall on '
+  testWidgets('a request the server refuses for Premium opens the paywall on '
       'creations', (tester) async {
     tall(tester);
     final rig = StudioRig(member: Fixtures.sam);
@@ -414,7 +405,7 @@ void main() {
 
   testWidgets('a month’s twelve used says when more come', (tester) async {
     tall(tester);
-    final rig = StudioRig(member: Fixtures.sam, entitlement: premium);
+    final rig = StudioRig(member: Fixtures.sam);
     addTearDown(rig.close);
     await rig.pump(tester, tab: AvatarStudioTab.create);
     await tester.tap(card(CreationRecipe.buddy));
@@ -436,10 +427,10 @@ void main() {
     expect(find.textContaining('12'), findsNothing);
   });
 
-  testWidgets('family in a premium household make the Nest portrait, and '
-      'are told it is on the frame', (tester) async {
+  testWidgets('family make the Nest portrait, and are told it is on the '
+      'frame', (tester) async {
     tall(tester);
-    final rig = StudioRig(member: Fixtures.sam, entitlement: premium);
+    final rig = StudioRig(member: Fixtures.sam);
     addTearDown(rig.close);
     await rig.pump(tester, tab: AvatarStudioTab.create);
     await tapIn(tester, card(CreationRecipe.portrait));
@@ -464,20 +455,6 @@ void main() {
     expect(find.text(AvatarCreationCopy.useIt), findsNothing);
     await tapIn(tester, find.text(AvatarCreationCopy.done));
     expect(rig.avatars.chosen, isEmpty);
-  });
-
-  testWidgets('a free household’s portrait opens the paywall on the '
-      'portrait', (tester) async {
-    tall(tester);
-    final rig = StudioRig(member: Fixtures.sam);
-    addTearDown(rig.close);
-    await rig.pump(tester, tab: AvatarStudioTab.create);
-    await tapIn(tester, card(CreationRecipe.portrait));
-    expect(
-      find.text(SubscriptionCopy.headline(PremiumFeature.avatarPortrait)),
-      findsOneWidget,
-    );
-    expect(rig.avatars.requested, isEmpty);
   });
 
   testWidgets('a hatch that takes too long says it will land on the shelf', (
@@ -505,7 +482,7 @@ void main() {
   group('in dark at 200% text on a 360-wide phone', () {
     Future<StudioRig> open(WidgetTester tester) async {
       phone(tester);
-      final rig = kidRig(entitlement: premium);
+      final rig = kidRig();
       addTearDown(rig.close);
       await rig.pump(
         tester,

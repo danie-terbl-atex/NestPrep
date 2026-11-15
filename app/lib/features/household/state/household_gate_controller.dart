@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/failure/app_failure.dart';
+import '../../../shared/log/best_effort.dart';
+import '../../../shared/time/household_clock.dart';
+import '../../starter_content/data/starter_content_repository.dart';
 import '../data/household_directory.dart';
 
 /// The controller for someone who belongs to no household yet: create one, or
@@ -10,11 +15,15 @@ import '../data/household_directory.dart';
 final class HouseholdGateController extends ChangeNotifier {
   HouseholdGateController({
     required HouseholdDirectory householdDirectory,
+    required this._starterContent,
+    required this._startsWithExamples,
     required this.suggestedName,
     required this.defaultTimeZone,
   }) : _directory = householdDirectory;
 
   final HouseholdDirectory _directory;
+  final StarterContentRepository _starterContent;
+  final bool Function() _startsWithExamples;
 
   /// What to call the person's own profile before they change it — the name
   /// Google gave us.
@@ -39,14 +48,31 @@ final class HouseholdGateController extends ChangeNotifier {
     required String householdName,
     required String myName,
     String? timeZone,
-  }) => _run(
-    () => _directory.createHousehold(
+  }) => _run(() async {
+    final zone = timeZone ?? defaultTimeZone;
+    final created = await _directory.createHousehold(
       name: householdName,
-      timeZone: timeZone ?? defaultTimeZone,
+      timeZone: zone,
       adminDisplayName: myName,
       adminColorName: MemberColor.violet.name,
-    ),
-  );
+    );
+    if (!_startsWithExamples()) return created;
+    // Not awaited: the household exists whether or not its examples land, and
+    // a write to a backend that has gone quiet never completes.
+    unawaited(_seedExamples(created, zone));
+    return created;
+  });
+
+  Future<void> _seedExamples(CreatedHousehold created, String zone) =>
+      bestEffort(
+        'starter content',
+        code: 'seed',
+        run: () => _starterContent.seed(
+          householdId: created.householdId,
+          memberId: created.memberId,
+          today: HouseholdClock(zone).today,
+        ),
+      );
 
   Future<bool> joinWithCode(String code) =>
       _run(() => _directory.redeemInvite(code));

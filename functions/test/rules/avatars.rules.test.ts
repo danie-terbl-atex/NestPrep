@@ -1,4 +1,12 @@
-import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  Timestamp,
+  deleteDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
 import {
@@ -51,6 +59,9 @@ beforeEach(async () => {
   await clearData();
   await givenAHouseholdOfEveryRole();
   await givenData(async (db) => {
+    await setDoc(doc(db, `${HOME}/entitlement/current`), {
+      premiumUntil: Timestamp.fromMillis(Date.now() + 24 * 60 * 60 * 1000),
+    });
     await setDoc(doc(db, avatarOf(SAM)), {
       choice: { base: 'initial', wear: {} },
       owned: { accessories: ['acc-crown'], images: [HASH] },

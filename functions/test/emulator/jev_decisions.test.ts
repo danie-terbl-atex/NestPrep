@@ -19,6 +19,12 @@ const NEXT_WEEK = nextWeekIn(HOUSEHOLD_TIME_ZONE, new Date());
 const home = (householdId: string): DocumentReference =>
   adminDb().collection('households').doc(householdId);
 
+const premium = (householdId: string): Promise<unknown> =>
+  home(householdId)
+    .collection('entitlement')
+    .doc('current')
+    .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
+
 const canned = (label: string, data: Record<string, unknown>): Promise<unknown> =>
   adminDb().collection('aiEmulator').doc(label).set(data);
 
@@ -42,6 +48,7 @@ describe('ranking a grocery line’s Checkers matches', () => {
 
   it('puts Jev’s best first for a member, and charges the month nothing', async () => {
     const { sam, householdId } = await householdOfTwo();
+    await premium(householdId);
     await canned('productMatch', { answers: { p0: noul(0.04), p1: noul(0.93) } });
     expect(await rank(sam, householdId)).toEqual({
       ranked: [
@@ -52,6 +59,12 @@ describe('ranking a grocery line’s Checkers matches', () => {
     expect(await callsCharged(householdId)).toBeUndefined();
   });
 
+  it('refuses a free household, before Jev is asked', async () => {
+    const { sam, householdId } = await householdOfTwo();
+    await canned('productMatch', { failWith: 'transient' });
+    await expectRefusal(rank(sam, householdId), 'premiumRequired');
+  });
+
   it('refuses somebody outside the household', async () => {
     const { householdId } = await householdOfTwo();
     await expectRefusal(rank(await signUp(), householdId), 'not-a-member');
@@ -59,6 +72,7 @@ describe('ranking a grocery line’s Checkers matches', () => {
 
   it('ranks for any shop: refused only when every shop is switched off', async () => {
     const { sam, householdId } = await householdOfTwo();
+    await premium(householdId);
     const flags = adminDb().doc('appConfig/flags');
     await flags.set({ addToCheckers: false, addToPnp: true, addToWoolworths: false });
     expect(Array.isArray((await rank(sam, householdId)).ranked)).toBe(true);
@@ -71,6 +85,7 @@ describe('ranking a grocery line’s Checkers matches', () => {
 
   it('is refused when switched off, and when Jev is down', async () => {
     const { sam, householdId } = await householdOfTwo();
+    await premium(householdId);
     await adminDb()
       .doc('appConfig/ai')
       .set({ features: { productMatch: false } });

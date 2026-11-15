@@ -14,9 +14,9 @@ import '../../referrals/ui/referrals_offered.dart';
 import '../model/household_view.dart';
 import '../model/member_role.dart';
 import '../state/invite_step_controller.dart';
+import 'household_room.dart';
 import 'invite_option_list.dart';
 import 'invite_person_sheet.dart';
-import 'new_child_paywall.dart';
 import 'sent_invite_row.dart';
 
 /// "Who else keeps this house running?" — the step a new household opens
@@ -97,7 +97,9 @@ class InviteStepScreen extends StatelessWidget {
             const SizedBox(height: NestSpace.lg),
           ],
           InviteOptionList(
-            onChoose: (role) => unawaited(_invite(context, controller, role)),
+            isLocked: isFullOnFreePlan(context, view),
+            onChoose: (role) =>
+                unawaited(_invite(context, controller, view, role)),
           ),
           // Give a month, get a month: another family is the next person to
           // tell (subscriptions ADR-0002).
@@ -116,8 +118,11 @@ class InviteStepScreen extends StatelessWidget {
   static Future<void> _invite(
     BuildContext context,
     InviteStepController controller,
+    HouseholdView view,
     MemberRole suggested,
   ) async {
+    if (!await ensureRoomForAnother(context, view)) return;
+    if (!context.mounted) return;
     final draft = await showInvitePersonSheet(
       context: context,
       suggestedRole: suggested,
@@ -128,7 +133,12 @@ class InviteStepScreen extends StatelessWidget {
       role: draft.role,
       guardianConsent: draft.guardianConsent,
     );
-    if (context.mounted) await offerPremiumForNewChild(context, controller);
+    if (!context.mounted) return;
+    await offerRoomIfRefused(
+      context,
+      controller,
+      context.read<HouseholdView>(),
+    );
   }
 
   /// Done and skip are the same act: the step is closed, and the household

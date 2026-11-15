@@ -1,0 +1,82 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: Fraunces; src: url(assets/fonts/Fraunces-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "DM Sans"; src: url(assets/fonts/DMSans-Bold.ttf); font-weight: 700; }
+:root { --oat:#FFF8ED; --ink:#35252E; --guava:#F57B91; --butter:#F3D886; --lilac:#C9BCE8; --sage:#C4D4BF; --blush:#FCDDE2; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--guava); }
+.scene { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform: scale(var(--k)); }
+.blob { position: absolute; border-radius: 50%; background: var(--c); }
+.copy { position: absolute; left: -680px; top: -300px; width: 860px; color: var(--ink); }
+.eyebrow { font: 700 30px/1 "DM Sans"; letter-spacing: .18em; text-transform: uppercase; color: var(--oat); margin-bottom: 30px; display: flex; gap: 16px; align-items: center; }
+.eyebrow::before { content: ""; width: 48px; height: 6px; border-radius: 3px; background: var(--oat); }
+h1 { font: 600 132px/1.02 Fraunces; letter-spacing: -.022em; white-space: nowrap; }
+h1 em { font-style: normal; color: var(--oat); }
+.tags { margin-top: 44px; display: flex; gap: 14px; flex-wrap: wrap; width: 760px; }
+.tags span { font: 600 30px/1 "DM Sans"; padding: 18px 28px; border-radius: 999px; background: rgba(255,248,237,.92); color: var(--ink); }
+.stage { position: absolute; left: var(--px); top: var(--py); width: 0; height: 0; perspective: 3200px; }
+.rig { position: absolute; --s: calc(var(--pw) / 1206); left: calc(var(--pw) * -0.5px); top: calc(var(--pw) * -1.087px); width: calc(var(--pw) * 1px); height: calc(var(--pw) * 2.174px); transform-style: preserve-3d; transform: rotateY(var(--ry, -10deg)) rotateX(var(--rx, 5deg)) rotateZ(var(--rz, 2deg)); }
+.phone { position: absolute; inset: calc(var(--pw) * -0.027px); border-radius: calc(var(--pw) * 0.18px); background: #17110F; box-shadow: 0 0 0 2px #4a3b40 inset, 0 70px 110px rgba(20,8,14,.42), 0 24px 40px rgba(20,8,14,.26); }
+.phone::after { content: ""; position: absolute; inset: calc(var(--pw) * 0.027px); border-radius: calc(var(--pw) * 0.153px); background: var(--img) top center / 100% auto no-repeat; }
+.pop { position: absolute; background-image: var(--img); background-repeat: no-repeat;
+  left: calc(var(--x) * 3px * var(--s)); top: calc(var(--y) * 3px * var(--s)); width: calc(var(--w) * 3px * var(--s)); height: calc(var(--h) * 3px * var(--s));
+  background-size: calc(1206px * var(--s)) auto; background-position: calc(var(--x) * -3px * var(--s)) calc(var(--y) * -3px * var(--s));
+  border-radius: calc(var(--r, 24) * 3px * var(--s));
+  transform: translate3d(var(--dx, 0px), var(--dy, 0px), var(--z, 130px)) scale(var(--sc, 1.16)) rotateZ(var(--tilt, 0deg));
+  box-shadow: 0 0 0 2px rgba(255,255,255,.55), 0 40px 70px rgba(24,10,16,.42), 0 10px 20px rgba(24,10,16,.22); }
+.sticker { position: absolute; width: var(--d, 180px); height: var(--d, 180px); margin: calc(var(--d, 180px) / -2); border-radius: var(--rad, 50%); background: var(--c, #fff) var(--img) center / cover no-repeat; transform: rotate(var(--tilt, 0deg)); box-shadow: 0 0 0 7px #fff, 0 30px 50px rgba(24,10,16,.34); }
+</style></head><body>
+<div class="scene" id="scene">
+  <div class="blob" style="--c:#F9A0B0; width:2600px; height:2600px; left:-3300px; top:-2100px;"></div>
+  <div class="blob" style="--c:#EE6781; width:2200px; height:2200px; left:-1500px; top:500px;"></div>
+  <div class="blob" style="--c:var(--butter); width:2000px; height:2000px; left:900px; top:-2350px;"></div>
+  <div class="blob" style="--c:#F9A0B0; width:2400px; height:2400px; left:1500px; top:200px;"></div>
+  <div class="blob" style="--c:#EE6781; width:1500px; height:1500px; left:-3600px; top:300px;"></div>
+
+  <!-- aux phones, left -->
+  <div class="stage" style="--px:-1290px; --py:170px;"><div class="rig" style="--pw:640; --img:url(raw/chores.png); --ry:14deg; --rz:-3deg;"><div class="phone"></div>
+    <div class="pop" style="--x:20; --y:364; --w:362; --h:110; --dx:-40px; --tilt:-2deg;"></div></div></div>
+  <div class="stage" style="--px:-2100px; --py:-200px;"><div class="rig" style="--pw:640; --img:url(raw/stars2.png); --ry:16deg; --rz:-2deg;"><div class="phone"></div>
+    <div class="pop" style="--x:20; --y:224; --w:362; --h:188; --dx:-30px; --tilt:-2deg;"></div></div></div>
+  <div class="stage" style="--px:-2910px; --py:170px;"><div class="rig" style="--pw:640; --img:url(raw/groceries2.png); --ry:18deg; --rz:-3deg;"><div class="phone"></div>
+    <div class="pop" style="--x:20; --y:467; --w:362; --h:66; --dx:-30px; --tilt:-2deg;"></div></div></div>
+  <div class="stage" style="--px:-3720px; --py:-200px;"><div class="rig" style="--pw:640; --img:url(raw/helper_rooms.png); --ry:20deg; --rz:-2deg;"><div class="phone"></div></div></div>
+
+  <!-- aux phones, right -->
+  <div class="stage" style="--px:1310px; --py:170px;"><div class="rig" style="--pw:640; --img:url(raw/cal_week.png); --ry:-14deg; --rz:3deg;"><div class="phone"></div>
+    <div class="pop" style="--x:20; --y:492; --w:362; --h:88; --dx:30px; --tilt:2deg;"></div></div></div>
+  <div class="stage" style="--px:2120px; --py:-200px;"><div class="rig" style="--pw:640; --img:url(raw/nanny_shift.png); --ry:-16deg; --rz:2deg;"><div class="phone"></div>
+    <div class="pop" style="--img:url(raw/nanny_hub.png); --x:20; --y:373; --w:362; --h:211; --dx:30px; --dy:120px; --tilt:2deg;"></div></div></div>
+  <div class="stage" style="--px:2930px; --py:170px;"><div class="rig" style="--pw:640; --img:url(raw/today.png); --ry:-18deg; --rz:3deg;"><div class="phone"></div></div></div>
+  <div class="stage" style="--px:3740px; --py:-200px;"><div class="rig" style="--pw:640; --img:url(raw/rewards_list.png); --ry:-20deg; --rz:2deg;"><div class="phone"></div></div></div>
+
+  <div class="sticker" style="left:-1720px; top:-720px; --d:260px; --img:url(assets/chore_pictures/make-bed.webp); --c:#fff; --rad:56px; --tilt:-8deg;"></div>
+  <div class="sticker" style="left:1720px; top:760px; --d:260px; --img:url(assets/chore_pictures/feed-dog.webp); --c:#fff; --rad:56px; --tilt:-6deg;"></div>
+  <div class="sticker" style="left:820px; top:-900px; --d:250px; --img:url(assets/avatars/nestling-mango-3.webp); --c:var(--butter); --rad:50%; --tilt:8deg;"></div>
+  <div class="sticker" style="left:-840px; top:930px; --d:250px; --img:url(assets/avatars/nestling-pebble-3.webp); --c:var(--sage); --rad:50%; --tilt:6deg;"></div>
+  <div class="sticker" style="left:-2520px; top:-1010px; --d:260px; --img:url(assets/avatars/nestling-toffee-3.webp); --c:var(--blush); --rad:50%; --tilt:-6deg;"></div>
+  <div class="sticker" style="left:2520px; top:-1030px; --d:260px; --img:url(assets/chore_pictures/water-plants.webp); --c:#fff; --rad:56px; --tilt:7deg;"></div>
+  <div class="sticker" style="left:-2500px; top:1090px; --d:260px; --img:url(assets/chore_pictures/set-table.webp); --c:#fff; --rad:56px; --tilt:7deg;"></div>
+  <div class="sticker" style="left:2540px; top:1080px; --d:260px; --img:url(assets/avatars/nestling-ziggy-3.webp); --c:var(--lilac); --rad:50%; --tilt:-7deg;"></div>
+  <div class="sticker" style="left:-330px; top:-1080px; --d:230px; --img:url(assets/chore_pictures/brush-teeth.webp); --c:#fff; --rad:52px; --tilt:6deg;"></div>
+  <div class="sticker" style="left:300px; top:1100px; --d:230px; --img:url(assets/avatars/nestling-sunny-3.webp); --c:var(--butter); --rad:50%; --tilt:-6deg;"></div>
+  <div class="sticker" style="left:1500px; top:-1150px; --d:220px; --img:url(assets/avatars/nestling-nova-3.webp); --c:var(--sage); --rad:50%; --tilt:5deg;"></div>
+  <div class="sticker" style="left:-1480px; top:1180px; --d:220px; --img:url(assets/chore_pictures/do-homework.webp); --c:#fff; --rad:50px; --tilt:-5deg;"></div>
+<div class="core" style="position:absolute;left:0;top:0;transform:translateY(var(--oy,0px))">
+  <!-- core -->
+  <div class="copy"><div class="eyebrow">The family organiser</div><h1>Family life,<br><em>in one place.</em></h1>
+    <div class="tags"><span>Shared calendar</span><span>Lists</span><span>Chores</span><span>Rewards</span><span>Helper &amp; nanny</span></div></div>
+  <div class="stage" style="--px:455px; --py:0px;"><div class="rig" style="--pw:372; --img:url(raw/home_cards.png); --ry:-12deg; --rx:5deg; --rz:2deg;"><div class="phone"></div>
+    <div class="pop" style="--x:20; --y:140; --w:175; --h:132; --dx:-40px; --dy:6px; --tilt:-3deg; --sc:1.14;"></div>
+    <div class="pop" style="--x:207; --y:428; --w:175; --h:174; --dx:44px; --dy:10px; --tilt:3deg; --sc:1.14; --z:170px;"></div></div></div>
+
+  <div class="sticker" style="left:-40px; top:-390px; --d:140px; --img:url(assets/avatars/nestling-rosie-3.webp); --c:var(--lilac); --rad:50%; --tilt:-8deg;"></div>
+  <div class="sticker" style="left:690px; top:340px; --d:130px; --img:url(assets/avatars/nestling-scout-3.webp); --c:#BFE3F5; --rad:50%; --tilt:8deg;"></div>
+</div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const sc=document.getElementById('scene'); sc.style.setProperty('--k', q.get('k') || '1'); sc.style.setProperty('--oy', (q.get('oy')||'0')+'px');
+  if (q.get('safe')) { const [x,y,w,h] = q.get('safe').split(',').map(Number); const d = document.createElement('div'); d.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;outline:6px dashed #00e5ff;z-index:99`; document.body.appendChild(d); }
+</script>
+</body></html>

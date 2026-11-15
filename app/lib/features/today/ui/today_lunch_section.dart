@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../app/family_route.dart';
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../avatars/ui/member_avatar.dart';
 import '../../family_profiles/model/family_access.dart';
@@ -12,13 +14,34 @@ import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_board.dart';
 import '../../lunch_box/state/lunch_board_controller.dart';
 import '../../lunch_box/ui/art/lunch_photo.dart';
+import '../../subscriptions/model/premium_feature.dart';
+import '../../subscriptions/state/household_entitlement.dart';
+import '../../subscriptions/ui/paywall_page.dart';
 import 'today_async.dart';
 import 'today_section.dart';
 
 /// The next box that matters for each child, a row each, opening the lunch
-/// tab.
+/// tab — or, for a household without Premium, lunch boxes shown locked
+/// (subscriptions ADR-0009), which starts no lunch listener.
 class TodayLunchSection extends StatelessWidget {
   const TodayLunchSection({required this.onOpen, super.key});
+
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final entitlement = context.watch<HouseholdEntitlement>();
+    if (entitlement.isPremium) return _NextLunches(onOpen: onOpen);
+    if (entitlement.entitlement is AsyncLoading) return const SizedBox.shrink();
+    return const TodaySection(
+      eyebrow: TodayCopy.lunchEyebrow,
+      child: _LockedLunches(),
+    );
+  }
+}
+
+class _NextLunches extends StatelessWidget {
+  const _NextLunches({required this.onOpen});
 
   final VoidCallback onOpen;
 
@@ -43,6 +66,53 @@ class TodayLunchSection extends StatelessWidget {
                   onOpen: onOpen,
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LockedLunches extends StatelessWidget {
+  const _LockedLunches();
+
+  static const _feature = PremiumFeature.lunchBox;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final headline = SubscriptionCopy.headline(_feature);
+    return Semantics(
+      button: true,
+      label: '$headline. ${SubscriptionCopy.lockedHint}',
+      excludeSemantics: true,
+      child: NestCard(
+        variant: NestCardVariant.tinted,
+        onTap: () => showPaywall(context, feature: _feature),
+        padding: const EdgeInsets.all(NestSpace.md),
+        child: Row(
+          children: [
+            const NestIconTile(icon: LucideIcons.sandwich),
+            const SizedBox(width: NestSpace.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(headline, style: nest.text.bodyStrong),
+                  const SizedBox(height: NestSpace.xxs),
+                  Text(
+                    SubscriptionCopy.lockedHint,
+                    style: nest.text.bodySecondary,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: NestSpace.sm),
+            Icon(
+              LucideIcons.lock,
+              size: NestSize.iconMedium,
+              color: nest.colors.inkSecondary,
+            ),
           ],
         ),
       ),

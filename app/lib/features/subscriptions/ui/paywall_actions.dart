@@ -1,46 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/subscription_copy.dart';
+import '../../legal/ui/legal_document_screen.dart';
 import '../model/billing_store.dart';
 import '../model/purchase_progress.dart';
 
-/// The paywall's foot: the one button that buys, what is happening while it
-/// does, restoring an earlier purchase, and the terms in plain words. A
-/// failure is said in NestPrep's words, never the store's (`FE-09`), and the
-/// button cannot be pressed twice (`FE-10`).
-class PaywallActions extends StatelessWidget {
-  const PaywallActions({
+/// The one button that buys and what is happening while it does. A failure
+/// is said in NestPrep's words, never the store's (`FE-09`), and the button
+/// cannot be pressed twice (`FE-10`).
+class PaywallBuy extends StatelessWidget {
+  const PaywallBuy({
     required this.progress,
-    required this.store,
     required this.canSubscribe,
     required this.onSubscribe,
-    required this.onRestore,
     required this.onDismissFailure,
     super.key,
   });
 
   final PurchaseProgress progress;
-  final BillingStore? store;
 
   /// A plan is on sale and chosen.
   final bool canSubscribe;
   final VoidCallback onSubscribe;
-  final VoidCallback onRestore;
   final VoidCallback onDismissFailure;
 
   @override
   Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
     final progress = this.progress;
-    final isBusy = progress.isBusy;
     final isBuying = switch (progress) {
       PurchaseInStore() || PurchaseVerifying(isRestore: false) => true,
-      _ => false,
-    };
-    final isRestoring = switch (progress) {
-      PurchaseVerifying(isRestore: true) => true,
       _ => false,
     };
     return Column(
@@ -67,9 +58,38 @@ class PaywallActions extends StatelessWidget {
           },
           icon: LucideIcons.award,
           isLoading: isBuying,
-          onPressed: canSubscribe && !isBusy ? onSubscribe : null,
+          onPressed: canSubscribe && !progress.isBusy ? onSubscribe : null,
         ),
-        const SizedBox(height: NestSpace.sm),
+      ],
+    );
+  }
+}
+
+/// What sits under the offer: restoring an earlier purchase, the terms in
+/// plain words and the two documents themselves, which both stores want
+/// beside the price.
+class PaywallAfterword extends StatelessWidget {
+  const PaywallAfterword({
+    required this.progress,
+    required this.store,
+    required this.onRestore,
+    super.key,
+  });
+
+  final PurchaseProgress progress;
+  final BillingStore? store;
+  final VoidCallback onRestore;
+
+  @override
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final isRestoring = switch (progress) {
+      PurchaseVerifying(isRestore: true) => true,
+      _ => false,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         NestButton(
           label: isRestoring
               ? SubscriptionCopy.restoring
@@ -77,13 +97,33 @@ class PaywallActions extends StatelessWidget {
           variant: NestButtonVariant.ghost,
           size: NestButtonSize.medium,
           isLoading: isRestoring,
-          onPressed: isBusy ? null : onRestore,
+          onPressed: progress.isBusy ? null : onRestore,
         ),
         const SizedBox(height: NestSpace.sm),
         Text(
           SubscriptionCopy.smallPrint(store),
           style: nest.text.caption,
           textAlign: TextAlign.center,
+        ),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: NestSpace.lg,
+          children: [
+            NestButton(
+              label: LegalCopy.termsTitle,
+              variant: NestButtonVariant.link,
+              size: NestButtonSize.small,
+              isExpanded: false,
+              onPressed: () => context.push(LegalDocumentScreen.termsPath),
+            ),
+            NestButton(
+              label: LegalCopy.privacyTitle,
+              variant: NestButtonVariant.link,
+              size: NestButtonSize.small,
+              isExpanded: false,
+              onPressed: () => context.push(LegalDocumentScreen.privacyPath),
+            ),
+          ],
         ),
       ],
     );

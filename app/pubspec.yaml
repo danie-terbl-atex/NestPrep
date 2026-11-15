@@ -85,6 +85,7 @@ flutter:
     - assets/brand/twig/
     - assets/chore_pictures/
     - assets/legal/
+    - assets/premium/
     # The shops' own marks, shown as they are (add-to-checkers ADR-0006).
     - assets/retailers/
     # The fonts' own licences, shown on the Licences screen (accounts ADR-0005).

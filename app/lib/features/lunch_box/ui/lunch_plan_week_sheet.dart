@@ -14,23 +14,17 @@ Future<LunchPlanWay?> showLunchPlanWeekSheet({
   required String week,
   required List<LunchPlanWay> ways,
   required ProductRetailer? shop,
-  required bool isPremium,
 }) => showNestSheet<LunchPlanWay>(
   context: context,
   title: LunchCopy.planWeekSheetTitle(week),
-  builder: (context) => _Ways(ways: ways, shop: shop, isPremium: isPremium),
+  builder: (context) => _Ways(ways: ways, shop: shop),
 );
 
 class _Ways extends StatelessWidget {
-  const _Ways({
-    required this.ways,
-    required this.shop,
-    required this.isPremium,
-  });
+  const _Ways({required this.ways, required this.shop});
 
   final List<LunchPlanWay> ways;
   final ProductRetailer? shop;
-  final bool isPremium;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +38,7 @@ class _Ways extends StatelessWidget {
           const SizedBox(height: NestSpace.md),
           switch ((way, shop)) {
             (LunchPlanWay.twig, final ProductRetailer shop) =>
-              PlanWeekEntryCard(
-                shop: shop,
-                isPremium: isPremium,
-                onTap: () => choose(way),
-              ),
+              PlanWeekEntryCard(shop: shop, onTap: () => choose(way)),
             (LunchPlanWay.twig, null) => const SizedBox.shrink(),
             (LunchPlanWay.boxes, _) => _Way(
               key: const ValueKey('plan-week-boxes'),

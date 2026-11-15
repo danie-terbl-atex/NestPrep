@@ -9,10 +9,12 @@ import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/checkers_copy.dart';
 import '../../../shared/copy/shops_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/ui/back_leading.dart';
 import '../../add_to_checkers/state/retailer_choice_controller.dart';
 import '../../add_to_checkers/ui/retailer_logo.dart';
 import '../../add_to_checkers/ui/shop_cart_links.dart';
+import '../../add_to_checkers/ui/shops_lock.dart';
 import '../../groceries/model/product_match.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
@@ -93,6 +95,10 @@ class _ShopsList extends StatelessWidget {
         Text(ShopsCopy.linkingNote, style: nest.text.bodySecondary),
         const SizedBox(height: NestSpace.xs),
         Text(ShopsCopy.signInNote, style: nest.text.bodySecondary),
+        if (!shopsUnlocked(context)) ...[
+          const SizedBox(height: NestSpace.xs),
+          Text(ShopsCopy.premiumNote, style: nest.text.bodySecondary),
+        ],
         const SizedBox(height: NestSpace.sm),
         NestRiseIn(
           index: 1,
@@ -154,6 +160,7 @@ class _ShopLinkRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<ShopsController>();
+    final isLocked = !shopsUnlocked(context);
     final (subtitle, action) = switch (controller.linkAt(shop)) {
       AsyncLoading() => (ShopsCopy.checking, null),
       AsyncFailure(:final failure) => (
@@ -169,16 +176,23 @@ class _ShopLinkRow extends StatelessWidget {
         _ShopAction(
           shop: shop,
           label: ShopsCopy.link,
+          isLocked: isLocked,
           onPressed: () => unawaited(_openLink(context, controller)),
         ),
       ),
       AsyncData(value: ShopLink(:final account)) => (
         account == null ? ShopsCopy.linked : ShopsCopy.linkedTo(account),
-        _ShopAction(
-          shop: shop,
-          label: ShopsCopy.manage,
-          onPressed: () => unawaited(_openLink(context, controller)),
-        ),
+        isLocked
+            ? _ShopAction(
+                shop: shop,
+                label: ShopsCopy.unlink,
+                onPressed: () => unawaited(controller.unlink(shop)),
+              )
+            : _ShopAction(
+                shop: shop,
+                label: ShopsCopy.manage,
+                onPressed: () => unawaited(_openLink(context, controller)),
+              ),
       ),
     };
     return NestListRow(
@@ -195,6 +209,7 @@ class _ShopLinkRow extends StatelessWidget {
     BuildContext context,
     ShopsController controller,
   ) async {
+    if (!await ensureShops(context) || !context.mounted) return;
     await context.push<void>(cartLinkPathsFor(shop, householdId).manage);
     await controller.refresh(shop);
   }
@@ -205,19 +220,25 @@ class _ShopAction extends StatelessWidget {
     required this.shop,
     required this.label,
     required this.onPressed,
+    this.isLocked = false,
   });
 
   final ProductRetailer shop;
   final String label;
   final VoidCallback onPressed;
+  final bool isLocked;
 
   @override
-  Widget build(BuildContext context) => NestButton(
-    key: ValueKey('shops-action-${shop.code}'),
-    label: label,
-    variant: NestButtonVariant.tonal,
-    size: NestButtonSize.small,
-    isExpanded: false,
-    onPressed: onPressed,
+  Widget build(BuildContext context) => Semantics(
+    hint: isLocked ? SubscriptionCopy.lockedHint : null,
+    child: NestButton(
+      key: ValueKey('shops-action-${shop.code}'),
+      label: label,
+      icon: isLocked ? LucideIcons.lock : null,
+      variant: NestButtonVariant.tonal,
+      size: NestButtonSize.small,
+      isExpanded: false,
+      onPressed: onPressed,
+    ),
   );
 }

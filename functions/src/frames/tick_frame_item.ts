@@ -12,6 +12,7 @@ import { db } from '../shared/firestore';
 import { type LinkedFrame, readLinkedFrame } from './frame_access';
 import { parsed } from './frame_documents';
 import { refuseFrame } from './frame_errors';
+import { readFramePremium } from './frame_lunch_photos';
 import {
   HANDED_IN_STATUSES,
   HOME_CARE_JOBS,
@@ -120,6 +121,7 @@ async function handInJob(
   { frame, home }: LinkedFrame,
   input: TickFrameItemInput,
 ): Promise<boolean> {
+  if (!(await readFramePremium(store, home))) throw refuseFrame('itemNotFound');
   const ref = home.collection(HOME_CARE_JOBS).doc(input.id);
   return store.runTransaction(async (transaction) => {
     const job = parsed(frameJobShape, (await transaction.get(ref)).data());
@@ -154,6 +156,7 @@ async function tickRoutine(
   { frame, home }: LinkedFrame,
   input: TickFrameItemInput,
 ): Promise<boolean> {
+  if (!(await readFramePremium(store, home))) throw refuseFrame('itemNotFound');
   const routine = parsed(
     homeCareRoutineShape,
     (await home.collection('homeCareRoutines').doc(input.id).get()).data(),

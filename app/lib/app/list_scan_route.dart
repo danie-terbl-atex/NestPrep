@@ -12,6 +12,9 @@ import '../features/list_scan/state/list_scan_controller.dart';
 import '../features/list_scan/ui/list_scan_screen.dart';
 import '../features/plan_week/data/shop_week_groceries.dart';
 import '../features/recipes/data/recipe_groceries.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/list_scan_copy.dart';
 import 'household_route.dart';
 import 'household_shell.dart';
 import 'viewer_member.dart';
@@ -42,23 +45,27 @@ GoRoute listScanRoute() => GoRoute(
     final householdId = HouseholdRoute.idFrom(state);
     final memberId = viewerMemberIdOf(context);
     final groceries = context.read<GroceryRepository>();
-    return ChangeNotifierProvider(
-      create: (context) => ListScanController(
-        listScanReader: context.read<ListScanReader>(),
-        listPhotoPicker: context.read<ListPhotoPicker>(),
-        groceries: RecipeGroceries(
-          groceryRepository: groceries,
-          matched: ShopWeekGroceries(
+    return PremiumArea(
+      feature: PremiumFeature.listScan,
+      title: ListScanCopy.title,
+      child: ChangeNotifierProvider(
+        create: (context) => ListScanController(
+          listScanReader: context.read<ListScanReader>(),
+          listPhotoPicker: context.read<ListPhotoPicker>(),
+          groceries: RecipeGroceries(
             groceryRepository: groceries,
+            matched: ShopWeekGroceries(
+              groceryRepository: groceries,
+              householdId: householdId,
+              memberId: memberId,
+            ),
             householdId: householdId,
             memberId: memberId,
           ),
           householdId: householdId,
-          memberId: memberId,
         ),
-        householdId: householdId,
+        child: ListScanScreen(memberId: memberId),
       ),
-      child: ListScanScreen(memberId: memberId),
     );
   },
 );

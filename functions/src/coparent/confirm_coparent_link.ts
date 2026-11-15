@@ -4,7 +4,7 @@ import { onCall } from 'firebase-functions/v2/https';
 
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { authorityRef } from './coparent_refs';
 import { refuseCoParent } from './errors';
 import { readLink, updateBothMirrors } from './link_context';
@@ -24,6 +24,7 @@ export const confirmCoParentLink = onCall(async (request) => {
 
   const status = await store.runTransaction(async (transaction) => {
     await requireRole(transaction, store, input.householdId, uid, 'admin');
+    if (input.accept) await requireTwoHomesPremium(transaction, store, input.householdId);
     const link = await readLink(transaction, store, input.linkId, input.householdId);
     if (link.status !== 'pending') throw refuseCoParent('linkNotActive');
     if (link.awaitingSide !== link.side) throw refuseCoParent('notYourTurn');

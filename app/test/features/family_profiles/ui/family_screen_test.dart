@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../../support/fake_family_profiles.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_screen.dart';
 
 void main() {
@@ -42,6 +43,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     HouseholdView? view,
+    bool isPremium = true,
     Brightness brightness = Brightness.light,
     double scale = 1,
   }) => pumpRouter(
@@ -61,6 +63,7 @@ void main() {
       ],
     ),
     providers: [
+      if (isPremium) premiumEntitlementProvider(),
       ChangeNotifierProvider<FamilyController>.value(value: controller),
     ],
     view: view,
@@ -100,6 +103,18 @@ void main() {
     expect(find.text(FamilyCopy.nutFree), findsWidgets);
     expect(find.text('Sam Parent'), findsOneWidget);
     expect(find.text('Thandi Helper'), findsOneWidget);
+  });
+
+  testWidgets('without Premium a card names no allergy, and keeps the diet"s '
+      'and the school"s nut-free rule', (tester) async {
+    await pump(tester, isPremium: false);
+    await loaded(tester);
+
+    expect(find.text('Kid Parker'), findsOneWidget);
+    expect(find.text('Oakwood Primary · Grade 3'), findsOneWidget);
+    expect(find.text('Peanuts'), findsNothing);
+    expect(find.text('Kiwi'), findsNothing);
+    expect(find.text(FamilyCopy.nutFree), findsWidgets);
   });
 
   testWidgets('with no child marked yet, says how to mark one', (tester) async {

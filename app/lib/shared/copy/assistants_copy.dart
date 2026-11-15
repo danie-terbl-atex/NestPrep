@@ -27,6 +27,10 @@ abstract final class AssistantsCopy {
       'For now, parents connect assistants. Anything connected as you shows '
       'up here.';
 
+  static const lockedConnectionsBody =
+      'These can’t do anything here without Premium. You can still '
+      'disconnect them.';
+
   static const sectionConnect = 'Connect an assistant';
   static const connectInClaude =
       'In Claude: Settings → Connectors → Add custom connector';

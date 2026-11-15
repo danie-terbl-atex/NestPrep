@@ -2,6 +2,7 @@ import { onCall } from 'firebase-functions/v2/https';
 
 import { FirestoreGroceryLines } from '../cart_push/grocery_lines';
 import { mayReadGroceries } from '../cart_push/grocery_reader';
+import { requireShopsPremium } from '../checkers/shops_premium';
 import { householdRef } from '../household/documents';
 import { parseInput, requireUid } from '../household/parse_input';
 import { isOffShift } from '../household/shift_window';
@@ -34,6 +35,7 @@ export const pnpPushToCart = onCall(
       throw refusePnp('not-a-member');
     }
     await requireAddToPnp(store);
+    await requireShopsPremium(store, input.householdId);
     const pnp = pnpHere();
     return pushToPnpCart(
       {

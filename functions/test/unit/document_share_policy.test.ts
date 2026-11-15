@@ -77,6 +77,7 @@ describe('when a link stops working', () => {
     expiresAt: new Date(NOW.getTime() + HOUR),
     shiftIsOpen: true,
     featureIsOn: true,
+    householdHasPremium: true,
     creatorMayShare: true,
     documentExists: true,
   };
@@ -90,11 +91,12 @@ describe('when a link stops working', () => {
     expect(verdictFor({ ...live, expiresAt: new Date(NOW.getTime() - 1) }, NOW)).toBe('expired');
   });
 
-  it('says ended for every other reason: stopped, shift over, switched off, creator removed, document gone', () => {
+  it('says ended for every other reason: stopped, shift over, switched off, Premium lapsed, creator removed, document gone', () => {
     expect(verdictFor({ ...live, status: 'revoked' }, NOW)).toBe('ended');
     expect(verdictFor({ ...live, status: 'ended' }, NOW)).toBe('ended');
     expect(verdictFor({ ...live, shiftIsOpen: false }, NOW)).toBe('ended');
     expect(verdictFor({ ...live, featureIsOn: false }, NOW)).toBe('ended');
+    expect(verdictFor({ ...live, householdHasPremium: false }, NOW)).toBe('ended');
     expect(verdictFor({ ...live, creatorMayShare: false }, NOW)).toBe('ended');
     expect(verdictFor({ ...live, documentExists: false }, NOW)).toBe('ended');
   });

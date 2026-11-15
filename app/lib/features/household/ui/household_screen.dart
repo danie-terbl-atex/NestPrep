@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../../shared/ui/back_leading.dart';
@@ -10,8 +11,8 @@ import '../model/household_view.dart';
 import '../model/people_view.dart';
 import '../state/household_controller.dart';
 import 'household_body.dart';
+import 'household_room.dart';
 import 'member_sheet.dart';
-import 'new_child_paywall.dart';
 import 'people_view_switch.dart';
 
 /// People's Household tab (design-system ADR-0022): who is in the household,
@@ -73,10 +74,12 @@ class HouseholdScreen extends StatelessWidget {
     BuildContext context,
     HouseholdController controller,
   ) async {
-    final result = await showMemberSheet(
-      context: context,
-      today: context.read<HouseholdClock>().today,
-    );
+    final today = context.read<HouseholdClock>().today;
+    if (controller.view case AsyncData(value: final view)) {
+      if (!await ensureRoomForAnother(context, view)) return;
+    }
+    if (!context.mounted) return;
+    final result = await showMemberSheet(context: context, today: today);
     if (result == null) return;
     await controller.addMember(
       displayName: result.displayName,
@@ -85,6 +88,10 @@ class HouseholdScreen extends StatelessWidget {
       birthday: result.birthday,
       guardianConsent: result.guardianConsent,
     );
-    if (context.mounted) await offerPremiumForNewChild(context, controller);
+    if (!context.mounted) return;
+    await offerRoomIfRefused(context, controller, switch (controller.view) {
+      AsyncData(:final value) => value,
+      _ => null,
+    });
   }
 }

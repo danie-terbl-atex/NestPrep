@@ -20,6 +20,8 @@ import '../features/avatars/ui/seen_stage_marker.dart';
 import '../features/chore_points/data/points_repository.dart';
 import '../features/household/data/household_repository.dart';
 import '../features/household/model/household_view.dart';
+import '../features/subscriptions/data/entitlement_repository.dart';
+import '../features/subscriptions/state/household_entitlement.dart';
 import '../shared/async/async_state.dart';
 import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
@@ -114,6 +116,12 @@ GoRoute kidAvatarStudioRoute(SessionController session) => GoRoute(
         StreamProvider<AvatarPlace?>(
           initialData: null,
           create: (context) => _placeOf(context, kid),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HouseholdEntitlement(
+            entitlementRepository: context.read<EntitlementRepository>(),
+            householdId: kid.householdId,
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => AvatarStudioController(

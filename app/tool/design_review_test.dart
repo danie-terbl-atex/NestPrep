@@ -35,6 +35,7 @@ import '../test/support/fake_grocery_repository.dart';
 import '../test/support/fake_household.dart';
 import '../test/support/fake_meal_repository.dart';
 import '../test/support/fake_product_analytics.dart';
+import '../test/support/fake_starter_content.dart';
 import '../test/support/fake_todo_repository.dart';
 import '../test/support/grocery_plan_harness.dart';
 import '../test/support/household_fixtures.dart';
@@ -120,6 +121,8 @@ void main() {
     final directory = FakeHouseholdDirectory();
     final controller = HouseholdGateController(
       householdDirectory: directory,
+      starterContent: FakeStarterContentRepository(),
+      startsWithExamples: () => true,
       suggestedName: 'Sam Parent',
       defaultTimeZone: 'Africa/Johannesburg',
     );

@@ -7,6 +7,8 @@ import '../state/product_match_controller.dart';
 import '../state/retailer_choice_controller.dart';
 import 'product_match_line.dart';
 import 'product_match_panel.dart';
+import 'shops_lock.dart';
+import 'shops_on_list.dart';
 
 /// What a shop adds under one grocery item: the picked product and, when
 /// this item is the one being matched, the panel of products itself.
@@ -28,7 +30,7 @@ class CheckersItemFooter extends StatelessWidget {
     final isTarget = context.select<ProductMatchController, bool>(
       (controller) => controller.target?.itemId == item.id,
     );
-    final match = item.productMatch;
+    final match = shownMatchOf(context, item);
     if (match == null && !isTarget) return const SizedBox.shrink();
     final controller = context.read<ProductMatchController>();
     final canChange = canEdit && !item.isBought;
@@ -38,12 +40,7 @@ class CheckersItemFooter extends StatelessWidget {
         if (match != null)
           ProductMatchLine(
             match: match,
-            onChange: canChange
-                ? () => controller.lookFor(
-                    item,
-                    at: context.read<RetailerChoiceController>().chosen,
-                  )
-                : null,
+            onChange: canChange ? () => _change(context, controller) : null,
             onClear: canChange ? () => controller.clear(item) : null,
           ),
         if (isTarget) ...[
@@ -52,5 +49,14 @@ class CheckersItemFooter extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  Future<void> _change(
+    BuildContext context,
+    ProductMatchController controller,
+  ) async {
+    final shop = context.read<RetailerChoiceController>().chosen;
+    if (!await ensureShops(context)) return;
+    controller.lookFor(item, at: shop);
   }
 }

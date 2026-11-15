@@ -10,6 +10,9 @@ import '../features/basket_compare/state/basket_compare_controller.dart';
 import '../features/basket_compare/ui/basket_compare_screen.dart';
 import '../features/groceries/data/grocery_repository.dart';
 import '../features/live_location/data/location_source.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/basket_compare_copy.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import 'basket_compare_route.dart';
 import 'household_route.dart';
@@ -19,19 +22,23 @@ import 'viewer_member.dart';
 /// connected shops switched on.
 GoRoute basketCompareRoute() => GoRoute(
   path: BasketCompareRoute.path,
-  builder: (context, state) => ChangeNotifierProvider(
-    create: (context) => BasketCompareController(
-      catalogues: context.read<RetailerCatalogues>(),
-      placeResolver: CheckersPlaceResolver(
-        locationSource: context.read<LocationSource>(),
-        areaPreference: context.read<CheckersAreaPreference>(),
-      ),
-      groceryRepository: context.read<GroceryRepository>(),
-      householdId: HouseholdRoute.idFrom(state),
-      memberId: viewerMemberIdOf(context),
-      shops: shopsOn(context.read<FeatureFlagsController>().isOn),
-      ranker: context.read<ProductMatchRanker>(),
-    )..start(),
-    child: const BasketCompareScreen(),
+  builder: (context, state) => PremiumArea(
+    feature: PremiumFeature.shops,
+    title: BasketCompareCopy.title,
+    child: ChangeNotifierProvider(
+      create: (context) => BasketCompareController(
+        catalogues: context.read<RetailerCatalogues>(),
+        placeResolver: CheckersPlaceResolver(
+          locationSource: context.read<LocationSource>(),
+          areaPreference: context.read<CheckersAreaPreference>(),
+        ),
+        groceryRepository: context.read<GroceryRepository>(),
+        householdId: HouseholdRoute.idFrom(state),
+        memberId: viewerMemberIdOf(context),
+        shops: shopsOn(context.read<FeatureFlagsController>().isOn),
+        ranker: context.read<ProductMatchRanker>(),
+      )..start(),
+      child: const BasketCompareScreen(),
+    ),
   ),
 );

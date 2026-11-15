@@ -187,6 +187,66 @@ void main() {
       expect(problems, [isA<PermissionDeniedFailure>()]);
     });
 
+    test(
+      'a refusal ends the share, so a lapsed household stops asking',
+      () async {
+        final reporter = reporterFor();
+        await startAnHour(reporter);
+        expect(reporter.isReportingFor('h1', 'm-sam'), isTrue);
+
+        repository.failWritesWith = const PermissionDeniedFailure();
+        source.emitPosition(
+          const DevicePosition(at: somewhere, accuracyMetres: 12),
+        );
+        await settle();
+        expect(reporter.isReportingFor('h1', 'm-sam'), isFalse);
+
+        repository.failWritesWith = null;
+        clock = clock.add(const Duration(minutes: 5));
+        source.emitPosition(
+          const DevicePosition(at: elsewhere, accuracyMetres: 12),
+        );
+        await settle();
+        expect(repository.reported, isEmpty);
+      },
+    );
+
+    test(
+      'and takes the pin down, which a lapsed household may still do',
+      () async {
+        final reporter = reporterFor();
+        await startAnHour(reporter);
+
+        repository.failReportsWith = const PermissionDeniedFailure();
+        source.emitPosition(
+          const DevicePosition(at: somewhere, accuracyMetres: 12),
+        );
+        await settle();
+
+        expect(repository.stopped.single, (
+          householdId: 'h1',
+          memberId: 'm-sam',
+        ));
+      },
+    );
+
+    test(
+      'a write that only could not get through leaves the share open',
+      () async {
+        final reporter = reporterFor();
+        await startAnHour(reporter);
+
+        repository.failWritesWith = const UnavailableFailure();
+        source.emitPosition(
+          const DevicePosition(at: somewhere, accuracyMetres: 12),
+        );
+        await settle();
+
+        expect(reporter.isReportingFor('h1', 'm-sam'), isTrue);
+        expect(repository.stopped, isEmpty);
+      },
+    );
+
     test('the device giving up says so, and the share ends', () async {
       final reporter = reporterFor();
       await startAnHour(reporter);

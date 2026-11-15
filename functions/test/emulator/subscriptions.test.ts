@@ -213,7 +213,7 @@ describe('verifyAndLinkPurchase', () => {
   });
 });
 
-describe('markChild — the free tier’s one child', () => {
+describe('markChild — a household marks every child it has', () => {
   beforeEach(clearFirestore);
 
   // Every mark carries a parent's consent unless a test says otherwise
@@ -224,12 +224,7 @@ describe('markChild — the free tier’s one child', () => {
     memberId: string,
     isChild = true,
   ): Promise<void> =>
-    markChild(
-      adminDb(),
-      uid,
-      { householdId, memberId, isChild, guardianConsent: { version: 1 } },
-      NOW,
-    );
+    markChild(adminDb(), uid, { householdId, memberId, isChild, guardianConsent: { version: 1 } });
 
   it('lets a free household mark its first child', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
@@ -238,42 +233,41 @@ describe('markChild — the free tier’s one child', () => {
     expect(profile.get('isChild')).toBe(true);
   });
 
-  it('refuses a second child on the free tier, naming the feature for the paywall', async () => {
+  it('lets a free household mark a second child, and a third', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
     await givenAChild(home.id, 'm-emma');
-    expect(await refusal(mark(home.id, home.admin, 'm-leo'))).toBe('premiumRequired');
-    const profile = await adminDb().doc(`households/${home.id}/familyProfiles/m-leo`).get();
-    expect(profile.exists).toBe(false);
-  });
-
-  it('lets a premium household mark as many children as it has', async () => {
-    const home = await givenAHousehold({ admin: 'uid-sam' });
-    await givenAChild(home.id, 'm-emma');
-    await givenPremiumUntil(home.id, IN_A_MONTH);
     await mark(home.id, home.admin, 'm-leo');
-  });
-
-  it('refuses a household whose premium has lapsed — and keeps both children it already has', async () => {
-    const home = await givenAHousehold({ admin: 'uid-sam' });
-    await givenAChild(home.id, 'm-emma');
-    await givenAChild(home.id, 'm-leo');
-    await givenPremiumUntil(home.id, LAST_WEEK);
-
-    expect(await refusal(mark(home.id, home.admin, 'm-sam'))).toBe('premiumRequired');
+    await mark(home.id, home.admin, 'm-thandi');
     const children = await adminDb()
       .collection(`households/${home.id}/familyProfiles`)
       .where('isChild', '==', true)
       .get();
-    expect(children.size).toBe(2);
+    expect(children.docs.map((doc) => doc.id).sort()).toEqual(['m-emma', 'm-leo', 'm-thandi']);
   });
 
-  it('marking the same child again is not a second child', async () => {
+  it('lets a household whose premium has lapsed mark another child', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    await givenAChild(home.id, 'm-emma');
+    await givenPremiumUntil(home.id, LAST_WEEK);
+    await mark(home.id, home.admin, 'm-leo');
+    const profile = await adminDb().doc(`households/${home.id}/familyProfiles/m-leo`).get();
+    expect(profile.get('isChild')).toBe(true);
+  });
+
+  it('no longer keeps a free child on record', async () => {
+    const home = await givenAHousehold({ admin: 'uid-sam' });
+    await mark(home.id, home.admin, 'm-emma');
+    const record = await adminDb().doc(`households/${home.id}/entitlement/freeChild`).get();
+    expect(record.exists).toBe(false);
+  });
+
+  it('marks the same child again without complaint', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
     await givenAChild(home.id, 'm-emma');
     await mark(home.id, home.admin, 'm-emma');
   });
 
-  it('always lets a child be unmarked, which is how a free household makes room', async () => {
+  it('always lets a child be unmarked', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
     await givenAChild(home.id, 'm-emma');
     await mark(home.id, home.admin, 'm-emma', false);
@@ -287,12 +281,12 @@ describe('markChild — the free tier’s one child', () => {
 
   it('records the parent’s consent on the child, as the caller’s own profile', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
-    await markChild(
-      adminDb(),
-      home.admin,
-      { householdId: home.id, memberId: 'm-emma', isChild: true, guardianConsent: { version: 3 } },
-      NOW,
-    );
+    await markChild(adminDb(), home.admin, {
+      householdId: home.id,
+      memberId: 'm-emma',
+      isChild: true,
+      guardianConsent: { version: 3 },
+    });
     const consent = (await adminDb().doc(`households/${home.id}/members/m-emma`).get()).get(
       'guardianConsent',
     ) as Record<string, unknown>;
@@ -303,12 +297,11 @@ describe('markChild — the free tier’s one child', () => {
 
   it('refuses a child with no consent on record and none given, writing nothing', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
-    const without = markChild(
-      adminDb(),
-      home.admin,
-      { householdId: home.id, memberId: 'm-emma', isChild: true },
-      NOW,
-    );
+    const without = markChild(adminDb(), home.admin, {
+      householdId: home.id,
+      memberId: 'm-emma',
+      isChild: true,
+    });
     expect(await refusal(without)).toBe('guardianConsentRequired');
     const profile = await adminDb().doc(`households/${home.id}/familyProfiles/m-emma`).get();
     expect(profile.exists).toBe(false);
@@ -320,12 +313,11 @@ describe('markChild — the free tier’s one child', () => {
     const onRecord = { byMemberId: 'm-mia', version: 1, at: Timestamp.fromDate(NOW) };
     await emma.update({ guardianConsent: onRecord });
 
-    await markChild(
-      adminDb(),
-      home.admin,
-      { householdId: home.id, memberId: 'm-emma', isChild: true },
-      NOW,
-    );
+    await markChild(adminDb(), home.admin, {
+      householdId: home.id,
+      memberId: 'm-emma',
+      isChild: true,
+    });
     await mark(home.id, home.admin, 'm-emma');
     expect((await emma.get()).get('guardianConsent')).toEqual(onRecord);
   });
@@ -333,12 +325,11 @@ describe('markChild — the free tier’s one child', () => {
   it('unmarking asks for no consent', async () => {
     const home = await givenAHousehold({ admin: 'uid-sam' });
     await givenAChild(home.id, 'm-emma');
-    await markChild(
-      adminDb(),
-      home.admin,
-      { householdId: home.id, memberId: 'm-emma', isChild: false },
-      NOW,
-    );
+    await markChild(adminDb(), home.admin, {
+      householdId: home.id,
+      memberId: 'm-emma',
+      isChild: false,
+    });
   });
 
   it('refuses a member who is not there, and somebody outside the household', async () => {

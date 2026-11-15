@@ -12,6 +12,7 @@ match /documentFolders/{folderId} {
   allow read: if canView(householdId, 'documents');
 
   allow create: if isAdmin(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['name', 'createdBy', 'createdAt'])
     && isDocumentName(request.resource.data.name)
@@ -19,6 +20,7 @@ match /documentFolders/{folderId} {
     && isServerTime('createdAt');
 
   allow update: if isAdmin(householdId)
+    && hasPremium(householdId)
     && onlyChanged(['name'])
     && isDocumentName(request.resource.data.name);
 
@@ -36,6 +38,7 @@ match /documents/{documentId} {
   // `tags` and `expiresOn` are optional and additive (documents
   // ADR-0005): rows written before them have neither (BE-10).
   allow create: if canEdit(householdId, 'documents')
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['folderId', 'name', 'contentType', 'sizeBytes', 'uploadedBy',
           'uploadedAt', 'tags', 'expiresOn'])
@@ -50,6 +53,7 @@ match /documents/{documentId} {
   // Renaming, moving between folders, tagging and dating; the bytes never
   // change, so neither does anything describing them.
   allow update: if canEdit(householdId, 'documents')
+    && hasPremium(householdId)
     && onlyChanged(['name', 'folderId', 'tags', 'expiresOn'])
     && isDocumentName(request.resource.data.name)
     && isNonEmptyString(request.resource.data.folderId)

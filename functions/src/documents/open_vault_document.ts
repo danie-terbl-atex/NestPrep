@@ -6,6 +6,7 @@ import { db } from '../shared/firestore';
 import { householdRef, roleOf, type HouseholdDocument } from '../household/documents';
 import { isOffShift } from '../household/shift_window';
 import { parseInput, requireUid } from '../household/parse_input';
+import { requirePremium } from '../subscriptions/premium_gate';
 import { refuseDocument } from './errors';
 import { openVaultDocumentInput } from './schemas';
 import { TICKET_LIFETIME_MS, mayOpenVault } from './vault_access';
@@ -46,6 +47,7 @@ export const openVaultDocument = onCall(async (request) => {
     logger.info('vault open refused', { householdId: input.householdId, reason: 'vaultNotShared' });
     throw refuseDocument('vaultNotShared');
   }
+  await requirePremium(store, input.householdId, 'documents');
 
   const document = await vaultDocumentRef(
     store,

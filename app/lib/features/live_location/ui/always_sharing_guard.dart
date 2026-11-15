@@ -4,16 +4,18 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/log/app_log.dart';
+import '../../../shared/log/best_effort.dart';
 import '../../household/model/household_view.dart';
 import '../../subscriptions/state/household_entitlement.dart';
+import '../data/location_reporter.dart';
 import '../data/places_repository.dart';
 import '../model/family_place.dart';
 import '../state/always_sharing.dart';
 
-/// While a household is open: stop always-sharing once premium is known to
-/// have ended, and keep the phone's geofences in step with the household's
-/// places (live-location ADR-0005). The engine also re-reads places itself, so
-/// a kid phone or a closed app is covered without this.
+/// While a household is open: stop always-sharing and any timed share once
+/// premium is known to have ended, and keep the phone's geofences in step with
+/// the household's places (live-location ADR-0005). The engine also re-reads
+/// places itself, so a kid phone or a closed app is covered without this.
 class AlwaysSharingGuard extends StatefulWidget {
   const AlwaysSharingGuard({required this.child, super.key});
 
@@ -33,14 +35,22 @@ class _AlwaysSharingGuardState extends State<AlwaysSharingGuard> {
     final always = context.watch<AlwaysSharing?>();
     final view = context.read<HouseholdView>();
     final memberId = view.viewerMember?.id;
-    if (always == null || memberId == null) return;
+    if (memberId == null) return;
     final householdId = view.household.id;
-    final sharing = always.isSharingFor(householdId, memberId);
     final entitlement = context.watch<HouseholdEntitlement?>();
-    if (sharing &&
-        entitlement != null &&
-        entitlement.isKnown &&
-        !entitlement.isPremium) {
+    final lapsed =
+        entitlement != null && entitlement.isKnown && !entitlement.isPremium;
+    final reporter = context.read<LocationReporter?>();
+    if (lapsed &&
+        reporter != null &&
+        reporter.isReportingFor(householdId, memberId)) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => unawaited(_stopWindow(reporter, householdId, memberId)),
+      );
+    }
+    if (always == null) return;
+    final sharing = always.isSharingFor(householdId, memberId);
+    if (sharing && lapsed) {
       // Off the build: stopping notifies the listeners this build is one of.
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => unawaited(
@@ -49,6 +59,19 @@ class _AlwaysSharingGuardState extends State<AlwaysSharingGuard> {
       );
     }
     _watchPlaces(sharing ? householdId : null, always);
+  }
+
+  Future<void> _stopWindow(
+    LocationReporter reporter,
+    String householdId,
+    String memberId,
+  ) async {
+    if (!reporter.isReportingFor(householdId, memberId)) return;
+    await bestEffort(
+      'timed share lapse',
+      code: 'window-lapse-stop-failed',
+      run: () => reporter.stop(householdId: householdId, memberId: memberId),
+    );
   }
 
   void _watchPlaces(String? householdId, AlwaysSharing always) {

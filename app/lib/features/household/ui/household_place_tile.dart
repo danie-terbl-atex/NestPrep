@@ -13,6 +13,8 @@ import '../../../app/two_homes_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/points_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
+import '../../subscriptions/ui/premium_area.dart';
 import '../model/household_area.dart';
 import '../model/household_place.dart';
 import '../model/household_view.dart';
@@ -107,6 +109,9 @@ class HouseholdPlaceTile extends StatelessWidget {
       tint: tint,
       title: title,
       subtitle: subtitle,
+      lockedLabel: place.premiumFeature != null && isKnownFree(context)
+          ? SubscriptionCopy.lockedHint
+          : null,
       onTap: () => context.push(path),
     );
   }

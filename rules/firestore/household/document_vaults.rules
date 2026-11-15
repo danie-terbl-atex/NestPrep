@@ -55,6 +55,7 @@ match /vaults/{ownerMemberId} {
     allow read: if mayManageVault() || isGrantedVault();
 
     allow create: if mayManageVault()
+      && hasPremium(householdId)
       && request.resource.data.keys().hasOnly(
            ['name', 'contentType', 'sizeBytes', 'uploadedBy', 'uploadedAt',
             'tags', 'expiresOn'])
@@ -66,6 +67,7 @@ match /vaults/{ownerMemberId} {
       && isServerTime('uploadedAt');
 
     allow update: if mayManageVault()
+      && hasPremium(householdId)
       && onlyChanged(['name', 'tags', 'expiresOn'])
       && isDocumentName(request.resource.data.name)
       && hasDocumentDetails();
@@ -82,6 +84,7 @@ match /vaults/{ownerMemberId} {
       || (isMember(householdId) && uid() == granteeUid);
 
     allow create: if mayManageVault()
+      && hasPremium(householdId)
       && request.resource.data.keys().hasOnly(['memberId', 'grantedBy', 'grantedAt'])
       && request.resource.data.memberId != ownerMemberId
       && granteeUid in householdData(householdId).members

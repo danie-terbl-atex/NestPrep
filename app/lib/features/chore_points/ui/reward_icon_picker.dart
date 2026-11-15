@@ -7,8 +7,8 @@ import 'reward_icon_glyph.dart';
 
 /// The picture a reward wears, chosen from the fixed set (todos ADR-0003).
 /// Each is a labelled, selectable button of at least the touch target; the
-/// chosen one is outlined and said to be selected, never shown by colour
-/// alone (`FE-13`).
+/// chosen one is ringed in ink, carries a tick and is said to be selected,
+/// never shown by colour alone (`FE-13`).
 class RewardIconPicker extends StatelessWidget {
   const RewardIconPicker({
     required this.selected,
@@ -36,15 +36,47 @@ class RewardIconPicker extends StatelessWidget {
               key: ValueKey('reward-icon-${icon.name}'),
               borderRadius: BorderRadius.circular(NestRadius.md),
               onTap: () => onChanged(icon),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(NestRadius.md),
-                  border: Border.all(
-                    color: icon == selected ? c.accent : c.surface,
-                    width: NestStroke.focus,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(NestRadius.md),
+                      border: Border.all(
+                        color: icon == selected ? c.ink : Colors.transparent,
+                        width: NestStroke.focus,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(NestSpace.xxs),
+                      child: NestIconTile(icon: icon.glyph, tint: icon.tint),
+                    ),
                   ),
-                ),
-                child: NestIconTile(icon: icon.glyph, tint: icon.tint),
+                  if (icon == selected)
+                    PositionedDirectional(
+                      top: -NestSpace.xs,
+                      end: -NestSpace.xs,
+                      child: DecoratedBox(
+                        key: const ValueKey('reward-icon-chosen'),
+                        decoration: BoxDecoration(
+                          color: c.ink,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: c.surface,
+                            width: NestStroke.focus,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(NestSpace.xxs),
+                          child: Icon(
+                            LucideIcons.check,
+                            size: NestSize.iconBadge,
+                            color: c.surface,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/school_letter/data/school_letter_failure_mapper.dart';
 import 'package:nestprep/features/school_letter/model/letter_file.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 
@@ -58,6 +59,32 @@ void main() {
     expect(LetterFile.maxBytes, 4 * 1024 * 1024);
   });
 
+  test(
+    'the server asks for Premium under the feature the paywall opens on',
+    () {
+      final callable = File(
+        '../functions/src/school_letter/read_school_letter.ts',
+      ).readAsStringSync();
+      expect(
+        callable,
+        contains(
+          'requirePremium(store, input.householdId, '
+          "'${PremiumFeature.schoolLetter.name}')",
+        ),
+      );
+      expect(
+        callable.indexOf('requirePremium('),
+        lessThan(callable.indexOf('runAiCall(deps')),
+      );
+      final features = File('../functions/src/ai/ai_settings.ts')
+          .readAsStringSync();
+      expect(
+        features,
+        contains("schoolLetter: '${PremiumFeature.schoolLetter.name}'"),
+      );
+    },
+  );
+
   test('the server’s switch is one the app knows by the same name', () {
     expect(flags, contains("'${FeatureFlag.snapSchoolLetter.field}'"));
   });
@@ -92,6 +119,17 @@ void main() {
       expect(
         mapped('permission-denied', 'notAMember'),
         isA<HouseholdFailure>(),
+      );
+    });
+
+    test('sends a free household to the paywall on the school letter', () {
+      expect(
+        mapped('failed-precondition', 'premiumRequired'),
+        isA<PremiumRequiredFailure>().having(
+          (failure) => failure.feature,
+          'feature',
+          PremiumFeature.schoolLetter,
+        ),
       );
     });
 

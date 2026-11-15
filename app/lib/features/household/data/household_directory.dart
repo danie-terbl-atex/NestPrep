@@ -28,13 +28,15 @@ class InvitePreview {
   final DateTime expiresAt;
 }
 
+/// A household just made, and the admin profile its creator claimed in it.
+typedef CreatedHousehold = ({String householdId, String memberId});
+
 /// Everything that changes who is in a household. None of it is a client write:
 /// each one moves several documents at once, which Security Rules cannot do, so
 /// each is a Cloud Function (foundation ADR-0002, household ADR-0002).
 abstract interface class HouseholdDirectory {
   /// Creates a household with the caller as its first, already-claimed admin.
-  /// Returns the new household's id.
-  Future<String> createHousehold({
+  Future<CreatedHousehold> createHousehold({
     required String name,
     required String timeZone,
     required String adminDisplayName,

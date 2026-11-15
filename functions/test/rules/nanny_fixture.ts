@@ -1,4 +1,4 @@
-import { Timestamp, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { Timestamp, deleteDoc, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { HOME, PEOPLE, givenAHouseholdOfEveryRole } from './access_fixture';
 import { givenData, type Firestore } from './rules_harness';
@@ -84,8 +84,27 @@ export function entry(
   };
 }
 
+const DAY = 24 * 60 * 60 * 1000;
+
+/** The nanny hub is Premium (subscriptions ADR-0008): the entitlement its writes ask for. */
+export async function givenNannyPremium(
+  state: 'active' | 'lapsed' | 'free' = 'active',
+): Promise<void> {
+  await givenData(async (db: Firestore) => {
+    const entitlement = doc(db, `${HOME}/entitlement/current`);
+    if (state === 'free') {
+      await deleteDoc(entitlement);
+      return;
+    }
+    await setDoc(entitlement, {
+      premiumUntil: Timestamp.fromMillis(Date.now() + (state === 'active' ? 30 * DAY : -DAY)),
+    });
+  });
+}
+
 export async function givenAHubOfEveryRole(): Promise<void> {
   await givenAHouseholdOfEveryRole();
+  await givenNannyPremium();
   await givenData(async (db: Firestore) => {
     const by = PEOPLE.admin.member;
     const at = new Date();

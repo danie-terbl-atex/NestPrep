@@ -16,6 +16,7 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../starter_content/ui/starter_examples_banner.dart';
 import '../model/task_occurrence.dart';
 import '../model/todo_board.dart';
 import '../state/todo_controller.dart';
@@ -133,6 +134,16 @@ class _TodoScreenState extends State<TodoScreen> {
           ListsSwitch(
             current: HouseholdTab.todos,
             onSelect: widget.onSelectTab,
+          ),
+          StarterExamplesBanner(
+            shownIds: [
+              for (final occurrence in [
+                ...?board?.mine,
+                ...?board?.everyone,
+                ...?board?.justDone,
+              ])
+                occurrence.task.id,
+            ],
           ),
           if (failure != null)
             Padding(

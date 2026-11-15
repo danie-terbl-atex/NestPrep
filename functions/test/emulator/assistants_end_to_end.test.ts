@@ -20,7 +20,7 @@ import { z } from 'zod';
 
 import { EVENT_KEYS } from '../../src/assistants/mcp/event_documents';
 import { GROCERY_ITEM_KEYS } from '../../src/assistants/mcp/grocery_documents';
-import { addProfile, household, joinAs, samsHousehold } from './account_data_fixture';
+import { addProfile, household, joinAs } from './account_data_fixture';
 import {
   CLAUDE_CALLBACK,
   ISSUER,
@@ -28,6 +28,7 @@ import {
   type ClientDocumentServer,
   allowLocalClientDocuments,
   claudeDocument,
+  samsPremiumHousehold,
   serveClientDocument,
 } from './assistants_fixture';
 import {
@@ -207,7 +208,7 @@ afterAll(async () => {
 
 describe('a parent connects Claude, and Claude does what the parent asked', () => {
   it('discovers, signs in, consents, calls the tools, refreshes, and is disconnected by the app', async () => {
-    const h = await samsHousehold();
+    const h = await samsPremiumHousehold();
     const patMemberId = await addProfile(h.householdId, 'Pat Parker', 'parent');
     const emmaMemberId = await addProfile(h.householdId, 'Emma Parker', 'kid');
     const pat = await joinAs(h.sam, h.householdId, patMemberId);

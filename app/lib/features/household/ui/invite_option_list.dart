@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../model/member_role.dart';
 
 /// The people a household usually invites, each suggesting the role they
@@ -9,9 +10,17 @@ import '../model/member_role.dart';
 /// without managing it, and helpers and carers see what a parent chooses
 /// (household ADR-0003). The sheet that follows lets the role be changed.
 class InviteOptionList extends StatelessWidget {
-  const InviteOptionList({required this.onChoose, super.key});
+  const InviteOptionList({
+    required this.onChoose,
+    this.isLocked = false,
+    super.key,
+  });
 
   final ValueChanged<MemberRole> onChoose;
+
+  /// The free plan is full (subscriptions ADR-0008): every option stays, with
+  /// a lock, and choosing one is the caller's to answer with the paywall.
+  final bool isLocked;
 
   static const _options = [
     (
@@ -65,9 +74,12 @@ class InviteOptionList extends StatelessWidget {
                   title: label,
                   subtitle: AccessCopy.setupJoinsAs(role),
                   trailing: Icon(
-                    LucideIcons.circlePlus,
+                    isLocked ? LucideIcons.lock : LucideIcons.circlePlus,
                     size: NestSize.iconMedium,
                     color: nest.colors.accentInk,
+                    semanticLabel: isLocked
+                        ? SubscriptionCopy.lockedHint
+                        : null,
                   ),
                   onTap: () => onChoose(role),
                 ),

@@ -144,7 +144,7 @@ export function allowanceAttemptsLeft(
   return Math.max(0, allowanceAttemptCeiling(tier, allowance) - used.attempts);
 }
 
-/** What a tier may still make: premium by the month, free once in the household's life. */
+/** What a tier may still make: premium by the month, free by its lifetime number, which is zero. */
 export function allowanceLeft(tier: AiTier, used: AllowanceUsage, allowance: Allowance): number {
   return tier === 'premium'
     ? Math.max(0, allowance.premiumMonthly - used.month)

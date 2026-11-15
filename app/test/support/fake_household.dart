@@ -185,7 +185,7 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
   }
 
   @override
-  Future<String> createHousehold({
+  Future<CreatedHousehold> createHousehold({
     required String name,
     required String timeZone,
     required String adminDisplayName,
@@ -197,7 +197,7 @@ final class FakeHouseholdDirectory implements HouseholdDirectory {
       timeZone: timeZone,
       adminDisplayName: adminDisplayName,
     ));
-    return 'h-new';
+    return (householdId: 'h-new', memberId: 'm-new');
   }
 
   @override

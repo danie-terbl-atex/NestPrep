@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nestprep/app/assistants_route.dart';
 import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/app/shops_route.dart';
 import 'package:nestprep/features/household/model/access_grant.dart';
 import 'package:nestprep/features/household/model/access_level.dart';
 import 'package:nestprep/features/household/model/household.dart';
 import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
+import 'package:nestprep/features/live_location/data/location_reporter.dart';
 import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/product_analytics/state/activity_heartbeat.dart';
+import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import '../support/fake_family_profiles.dart';
 import '../support/fake_feature_flag_source.dart';
 import '../support/fake_household.dart';
+import '../support/fake_live_location.dart';
 import '../support/fake_notifications.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/household_fixtures.dart';
@@ -34,7 +40,12 @@ void main() {
     await repository.close();
   });
 
-  Future<void> openOnTheWeek(WidgetTester tester, {required String viewer}) {
+  Future<void> openOnTheWeek(
+    WidgetTester tester, {
+    required String viewer,
+    String place = 'week',
+    List<SingleChildWidget> also = const [],
+  }) {
     repository = FakeHouseholdRepository();
     controller = HouseholdController(
       householdRepository: repository,
@@ -46,7 +57,7 @@ void main() {
     return pumpRouter(
       tester,
       router: GoRouter(
-        initialLocation: '/households/${Fixtures.householdId}/week',
+        initialLocation: '/households/${Fixtures.householdId}/$place',
         routes: [
           ShellRoute(
             builder: (context, state, child) =>
@@ -82,6 +93,7 @@ void main() {
         // The shell reads the household's entitlement (subscriptions
         // ADR-0001).
         ...SubscriptionHarness().providers,
+        ...also,
       ],
     );
   }
@@ -128,5 +140,54 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('on week'), findsOneWidget);
+  });
+
+  group('a free household over four people (subscriptions ADR-0008)', () {
+    Future<void> emitFive(WidgetTester tester) async {
+      repository.emitHousehold(Fixtures.household());
+      repository.emitMembers([
+        Fixtures.sam,
+        Fixtures.thandi,
+        for (var index = 2; index < 5; index++)
+          Fixtures.kid.copyWith(id: 'm-kid-$index', displayName: 'Kid $index'),
+      ]);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('is stopped on the week, and a phone still sharing its '
+        'location there is told to stop all the same', (tester) async {
+      final reporter = FakeLocationReporter()
+        ..reporting = (
+          householdId: Fixtures.householdId,
+          memberId: Fixtures.samMemberId,
+        );
+      addTearDown(reporter.close);
+      await openOnTheWeek(
+        tester,
+        viewer: Fixtures.samUid,
+        also: [Provider<LocationReporter>.value(value: reporter)],
+      );
+      await emitFive(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.text('on week'), findsNothing);
+      expect(find.text(AccessCopy.overLimitTitle), findsOneWidget);
+      expect(reporter.stopped.single, (
+        householdId: Fixtures.householdId,
+        memberId: Fixtures.samMemberId,
+      ));
+    });
+
+    for (final place in [ShopsRoute.segment, AssistantsRoute.segment]) {
+      testWidgets('still opens $place, where what Premium started is ended', (
+        tester,
+      ) async {
+        await openOnTheWeek(tester, viewer: Fixtures.samUid, place: place);
+        await emitFive(tester);
+
+        expect(find.text('on $place'), findsOneWidget);
+        expect(find.text(AccessCopy.overLimitTitle), findsNothing);
+      });
+    }
   });
 }

@@ -104,6 +104,17 @@ class GallerySurfacesSection extends StatelessWidget {
               onTap: () {},
               child: const Text('A flat, tappable card.'),
             ),
+            NestCard(
+              variant: NestCardVariant.flat,
+              tint: NestTileTint.guava,
+              child: Text(
+                'A card filled in a brand accent, with Ink on it.',
+                style: nest.text.body.copyWith(color: nest.colors.ink),
+              ),
+            ),
+            NestDock(
+              child: NestButton(label: 'A docked action', onPressed: () {}),
+            ),
           ],
         ),
         GalleryGroup(

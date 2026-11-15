@@ -187,10 +187,10 @@ final class AvatarStudioController extends ChangeNotifier
   );
 
   Future<void> useImage(String hash) =>
-      _choose((studio) => studio.choice.copyWith(base: ImageBase(hash)));
+      _choose((studio) => studio.choice.onBase(ImageBase(hash)));
 
   Future<void> useInitial() =>
-      _choose((studio) => studio.choice.copyWith(base: const InitialBase()));
+      _choose((studio) => studio.choice.onBase(const InitialBase()));
 
   Future<void> wear(AvatarSlot slot, String? accessoryId) =>
       _choose((studio) => studio.choice.wearing(slot, accessoryId));

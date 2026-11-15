@@ -42,6 +42,10 @@ abstract final class LunchKidPicksCopy {
   static const nothingToChoose = 'Nothing to choose yet';
   static const nothingToChooseBody =
       'A grown-up picks some things first. Then come back and choose!';
+  static const kidLockedTitle = 'Lunch picks are resting';
+  static const kidLockedBody =
+      'Picking your lunch is part of NestPrep Premium. Ask a grown-up about '
+      'it.';
   static const handBack = 'All done — give the phone back';
   static String optionLabel(String item, bool isChosen) =>
       isChosen ? '$item, chosen' : 'Choose $item';

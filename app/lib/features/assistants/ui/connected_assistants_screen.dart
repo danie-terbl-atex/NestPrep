@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
-import '../model/assistant_connection.dart';
 import '../state/connected_assistants_controller.dart';
-import 'assistant_connection_card.dart';
 import 'assistant_connections_section.dart';
 import 'assistants_how_to_connect.dart';
 import 'assistants_switch_card.dart';
@@ -67,7 +65,7 @@ class ConnectedAssistantsScreen extends StatelessWidget {
             index: 1,
             child: AssistantConnectionsSection(
               onDisconnect: (connection) =>
-                  _disconnect(context, controller, connection),
+                  confirmDisconnect(context, controller, connection),
             ),
           ),
           // Connecting is for family in v1 (assistants ADR-0003); the
@@ -81,24 +79,5 @@ class ConnectedAssistantsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _disconnect(
-    BuildContext context,
-    ConnectedAssistantsController controller,
-    AssistantConnection connection,
-  ) async {
-    final confirmed = await showNestConfirm(
-      context: context,
-      title: AssistantsCopy.disconnectConfirm,
-      message: AssistantsCopy.disconnectBody(
-        AssistantConnectionCard.nameOf(connection),
-      ),
-      confirmLabel: AssistantsCopy.disconnect,
-      cancelLabel: AppCopy.householdCancel,
-      isDangerous: true,
-    );
-    if (confirmed != true) return;
-    await controller.disconnect(connection);
   }
 }

@@ -336,6 +336,7 @@ describe('a frame pairs, is claimed, and reads its day', () => {
 
   it('shows each child’s lunch box today by first name, names only', async () => {
     const h = await samsHousehold();
+    await setPremium(h, true);
     const mia = await addProfile(h.householdId, 'Mia Parker', 'kid');
     const date = today();
     const weekday = weekdayOf(date);
@@ -374,6 +375,9 @@ describe('a frame pairs, is claimed, and reads its day', () => {
             ],
     });
     expect(JSON.stringify(day)).not.toContain('milk');
+
+    await setPremium(h, false);
+    expect(await dayOf(secret)).not.toHaveProperty('lunch');
   });
 
   it('a secret nobody linked reads unlinked', async () => {
@@ -601,6 +605,7 @@ describe('a frame ticks off what it shows (photo-frames ADR-0007)', () => {
 
   it('ticks the helper’s routine a step at a time, or all at once, as the helper', async () => {
     const h = await samsHousehold();
+    await setPremium(h, true);
     const { thandi } = await given(h);
     const { secret } = await linkedFrame(h, {
       ...PANELS,
@@ -1184,7 +1189,7 @@ describe('a frame’s lunch-box pictures (photo-frames ADR-0009)', () => {
     const schoolDay = weekdayOf(today()) <= 5;
 
     await setPremium(h, false);
-    expect((await dayOf(secret)).lunch?.boxes[0]).not.toHaveProperty('photo');
+    expect(await dayOf(secret)).not.toHaveProperty('lunch');
     expect((await lunchPhotoOf({ secret, id: key })).status).toBe(404);
 
     await setPremium(h, true);
@@ -1222,7 +1227,7 @@ describe('a frame’s lunch-box pictures (photo-frames ADR-0009)', () => {
     await household(h.householdId).collection('lunchPhotos').doc(key).delete();
     await setPremium(h, true);
     const { secret } = await linkedFrame(h, { ...PANELS, calendar: false, lunch: true });
-    expect((await dayOf(secret)).lunch?.boxes[0]).not.toHaveProperty('photo');
+    expect((await dayOf(secret)).lunch?.boxes[0] ?? {}).not.toHaveProperty('photo');
     expect((await household(h.householdId).collection('lunchPhotos').get()).empty).toBe(true);
   });
 });
@@ -1879,6 +1884,7 @@ describe('a frame adds groceries (photo-frames ADR-0012)', () => {
 
   /** Sam, and Thandi, a helper who may edit the list; Leo's grant only views it. */
   async function given(h: Household): Promise<{ secret: string; frameId: string }> {
+    await setPremium(h, true);
     const thandi = await addProfile(h.householdId, 'Thandi', 'helper');
     await joinAs(h.sam, h.householdId, thandi);
     await addProfile(h.householdId, 'Leo', 'kid');
@@ -2073,6 +2079,29 @@ describe('a frame adds groceries (photo-frames ADR-0012)', () => {
       'badRequest',
     );
     expect(await items(h)).toEqual([]);
+  });
+
+  it('for a free household, adds the typed item without the pick and finds no shop', async () => {
+    const h = await samsHousehold();
+    const { secret } = await given(h);
+    const { products = [] } = await search(secret, 'milk');
+    const pick = pickOf(products[0]);
+    await setPremium(h, false);
+
+    await expectRefusal(search(secret, 'milk'), 'shopUnavailable');
+    expect(await add(secret, { product: pick, requestId: 'sheet-0003' })).toEqual({
+      status: 'linked',
+      added: true,
+    });
+    const [milk] = await items(h);
+    expect(milk).toMatchObject({ name: 'Milk', boughtBy: null });
+    expect(milk).not.toHaveProperty('productMatch');
+    expect(await add(secret, { name: 'milk', product: pick })).toEqual({
+      status: 'linked',
+      added: false,
+      alreadyOnList: true,
+    });
+    expect((await items(h))[0]).not.toHaveProperty('productMatch');
   });
 });
 

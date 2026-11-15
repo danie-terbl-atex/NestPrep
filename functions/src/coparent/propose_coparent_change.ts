@@ -5,7 +5,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { MAX_OPEN_REQUESTS, swapDays } from './change_rules';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { mirrorRef, REQUESTS, requestRef } from './coparent_refs';
 import { refuseCoParent } from './errors';
 import { bothRefs, readLink, requireActive } from './link_context';
@@ -24,6 +24,7 @@ export const proposeCoParentChange = onCall(async (request) => {
 
   const requestId = await store.runTransaction(async (transaction) => {
     await requireRole(transaction, store, input.householdId, uid, 'family');
+    await requireTwoHomesPremium(transaction, store, input.householdId);
     const link = await readLink(transaction, store, input.linkId, input.householdId);
     requireActive(link);
     const open = await transaction.get(

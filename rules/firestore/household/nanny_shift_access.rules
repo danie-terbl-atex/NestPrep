@@ -16,6 +16,7 @@ match /nannyBookings/{bookingId} {
           && resource.data.carerMemberId == ownMemberId(householdId));
 
   allow create: if isFamily(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['carerMemberId', 'startsAt', 'endsAt', 'note', 'createdBy', 'createdAt'])
     && isNannyBooking(request.resource.data)
@@ -45,6 +46,8 @@ function nannyPassLetGoOf(householdId, memberId, bookingId) {
 match /nannyShiftPasses/{memberId} {
   allow read: if hasClaimed(householdId, memberId) || isFamily(householdId);
 
+  // Not Premium: the pass is how a shift-only carer gets into the household
+  // at all, free places included, for a shift already booked.
   allow create, update: if hasClaimed(householdId, memberId)
     && request.resource.data.keys().hasOnly(['bookingId', 'startsAt', 'endsAt', 'updatedAt'])
     && request.resource.data.bookingId is string
@@ -62,12 +65,14 @@ match /nannySecrets/{secretId} {
     || (canView(householdId, 'nannyHub') && isNannySecretWindowOpen(householdId));
 
   allow create: if isFamily(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(['label', 'value', 'note', 'createdBy', 'createdAt'])
     && isNannySecret(request.resource.data)
     && isOwnMember(householdId, request.resource.data.createdBy)
     && isServerTime('createdAt');
 
   allow update: if isFamily(householdId)
+    && hasPremium(householdId)
     && onlyChanged(['label', 'value', 'note'])
     && isNannySecret(request.resource.data);
 

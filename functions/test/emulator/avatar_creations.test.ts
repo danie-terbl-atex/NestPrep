@@ -68,6 +68,7 @@ function reading(kind: string): string {
 beforeEach(async () => {
   await clearFirestore();
   family = await aFamily();
+  await premium();
   await REPLIES.doc('avatarDrawingCheck').set({ reply: reading('drawing-of-creature') });
   await REPLIES.doc('avatarPetCheck').set({ reply: reading('photo-of-pet') });
   await REPLIES.doc('avatarExtraCheck').set({ reply: JSON.stringify({ allowed: true }) });
@@ -79,6 +80,10 @@ async function premium(): Promise<void> {
     .collection('entitlement')
     .doc('current')
     .set({ premiumUntil: Timestamp.fromMillis(Date.now() + 86_400_000) });
+}
+
+async function free(): Promise<void> {
+  await household(family.householdId).collection('entitlement').doc('current').delete();
 }
 
 function prefix(memberId: string): string {
@@ -143,9 +148,9 @@ async function usage(): Promise<{
 }
 
 describe('a drawing made real', () => {
-  it('keeps the picture and its original, owned by the child, and spends the free household’s one', async () => {
+  it('keeps the picture and its original, owned by the child, and spends one of the month’s', async () => {
     const { id, outcome } = await aDrawing();
-    expect(outcome).toMatchObject({ status: 'ready', keepsakeId: id, left: 0 });
+    expect(outcome).toMatchObject({ status: 'ready', keepsakeId: id, left: 11 });
     const hash = String(outcome?.['imageHash']);
     expect(hash).toMatch(/^[0-9a-f]{32}$/);
 
@@ -175,16 +180,30 @@ describe('a drawing made real', () => {
     expect(lifetime).toMatchObject({ byFeature: { avatarCreate: 1 } });
   });
 
-  it('then sends a free household to the paywall, and still deletes the reference', async () => {
-    await aDrawing();
-    const { outcome } = await aDrawing();
-    expect(outcome).toMatchObject({ status: 'refused', reason: 'premiumRequired', left: 0 });
-    const inbox = await adminBucket().getFiles({ prefix: `${prefix(family.mia)}inbox/` });
-    expect(inbox[0]).toEqual([]);
+  it('sends a free household to the paywall with nothing drawn or spent, and still deletes the reference', async () => {
+    await free();
+    const { id, outcome } = await aDrawing();
+    expect(outcome).toMatchObject({ status: 'refused', reason: 'premiumRequired' });
+    expect(await read(family, 'avatarKeepsakes', id)).toBeUndefined();
+    expect((await adminBucket().getFiles({ prefix: prefix(family.mia) }))[0]).toEqual([]);
+    expect(await usage()).toEqual({ month: {}, lifetime: {} });
+  });
+
+  it('sends a free household to the paywall even when the settings give it an allowance', async () => {
+    await free();
+    await adminDb()
+      .collection('appConfig')
+      .doc('ai')
+      .set({ features: { avatarCreate: { premiumMonthly: 12, freeLifetime: 5 } } });
+    const buddy = { memberId: family.mia, recipe: 'buddy', buddy: BUDDY, requestedBy: family.mia };
+    expect((await ask(buddy)).outcome).toMatchObject({
+      status: 'refused',
+      reason: 'premiumRequired',
+    });
+    expect(await usage()).toEqual({ month: {}, lifetime: {} });
   });
 
   it('draws a person drawing as a Nestling from words, and counts premium by the month', async () => {
-    await premium();
     await REPLIES.doc('avatarDrawingCheck').set({ reply: reading('drawing-of-person') });
     const { outcome } = await aDrawing();
     expect(outcome).toMatchObject({ status: 'ready', left: 11 });
@@ -193,13 +212,17 @@ describe('a drawing made real', () => {
   it('refuses a photo of a person, charges nothing, and deletes it', async () => {
     await REPLIES.doc('avatarDrawingCheck').set({ reply: reading('photo-of-person') });
     const { id, outcome } = await aDrawing();
-    expect(outcome).toMatchObject({ status: 'refused', reason: 'notAllowed', left: 1 });
+    expect(outcome).toMatchObject({ status: 'refused', reason: 'notAllowed', left: 12 });
     expect(await read(family, 'avatarKeepsakes', id)).toBeUndefined();
     expect((await adminBucket().getFiles({ prefix: prefix(family.mia) }))[0]).toEqual([]);
     expect((await usage()).lifetime).toEqual({});
   });
 
   it('closes creations for the month after photo upon refused photo, and none of the household’s other AI', async () => {
+    await adminDb()
+      .collection('appConfig')
+      .doc('ai')
+      .set({ features: { avatarCreate: { premiumMonthly: 1 } } });
     await REPLIES.doc('avatarDrawingCheck').set({ reply: reading('photo-of-person') });
     for (let attempt = 0; attempt < 7; attempt += 1) {
       expect((await aDrawing()).outcome).toMatchObject({ status: 'refused', reason: 'notAllowed' });
@@ -218,7 +241,7 @@ describe('a drawing made real', () => {
   it('refuses a picture the check finds a face in, and gives the creation back', async () => {
     await REPLIES.doc('avatarResultCheck').set({ reply: JSON.stringify({ ...CLEAN, text: true }) });
     const { id, outcome } = await aDrawing();
-    expect(outcome).toMatchObject({ status: 'refused', reason: 'declined', left: 1 });
+    expect(outcome).toMatchObject({ status: 'refused', reason: 'declined', left: 12 });
     expect(await read(family, 'avatarKeepsakes', id)).toBeUndefined();
     expect((await adminBucket().getFiles({ prefix: prefix(family.mia) }))[0]).toEqual([]);
     const { month, lifetime } = await usage();
@@ -366,7 +389,6 @@ describe('a pet twin and a buddy', () => {
   });
 
   it('builds a buddy from the chips, refuses words the check will not take, and keeps the chips', async () => {
-    await premium();
     const buddy = { memberId: family.mia, recipe: 'buddy', buddy: BUDDY, requestedBy: family.mia };
     await REPLIES.doc('avatarExtraCheck').set({ reply: JSON.stringify({ allowed: false }) });
     expect((await ask({ ...buddy, extra: 'like Elsa' })).outcome).toMatchObject({
@@ -390,7 +412,6 @@ describe('a pet twin and a buddy', () => {
 
 describe('the Nest portrait', () => {
   it('puts one wide picture in the frame album, stamped as the parent who asked, and keeps it', async () => {
-    await premium();
     const { id, outcome } = await ask({
       memberId: family.samMember,
       recipe: 'portrait',
@@ -425,12 +446,13 @@ describe('the Nest portrait', () => {
   });
 
   it('is premium only', async () => {
+    await free();
     const { outcome } = await ask({
       memberId: family.samMember,
       recipe: 'portrait',
       requestedBy: family.samMember,
     });
-    expect(outcome).toMatchObject({ status: 'refused', reason: 'premiumRequired', left: 1 });
+    expect(outcome).toMatchObject({ status: 'refused', reason: 'premiumRequired' });
   });
 });
 
@@ -471,7 +493,6 @@ describe('keepsakes and photos', () => {
   });
 
   it('deletes a photo once it is not worn, and keeps a creation that is not', async () => {
-    await premium();
     const { outcome } = await aDrawing();
     const made = String(outcome?.['imageHash']);
     const photo = randomBytes(16).toString('hex');
@@ -515,7 +536,6 @@ describe('keepsakes and photos', () => {
   });
 
   it('go with a member who is removed, and with one who deletes their account', async () => {
-    await premium();
     const gran = await addProfile(family.householdId, 'Gran', 'parent');
     const made = await aDrawing(gran, { requestedBy: family.samMember });
     expect(made.outcome).toMatchObject({ status: 'ready' });

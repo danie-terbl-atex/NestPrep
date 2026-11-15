@@ -16,7 +16,7 @@ import {
   type DecisionDependencies,
 } from '../../../src/ai/run_decision_call';
 import { StructuredCallFailure } from '../../../src/ai/structured_call';
-import { InMemoryUsageLedger, refusalOf } from './fakes';
+import { InMemoryUsageLedger, PREMIUM, paywallOf, refusalOf } from './fakes';
 
 class FakeJev implements DecisionModel {
   readonly name = 'fake-jev';
@@ -62,9 +62,11 @@ function deps(
   model: DecisionModel,
   settings = readAiSettings(undefined),
 ): DecisionDependencies & { ledger: InMemoryUsageLedger } {
+  const ledger = new InMemoryUsageLedger();
+  ledger.entitlement = PREMIUM;
   return {
     model,
-    ledger: new InMemoryUsageLedger(),
+    ledger,
     settings,
     now: (): Date => new Date('2026-10-04T08:00:00Z'),
   };
@@ -125,6 +127,16 @@ describe('a charged decision', () => {
       'aiUnavailable',
     );
     expect(world.ledger.usage.calls).toBe(0);
+  });
+
+  it('sends a free household to the paywall, and Jev is never asked', async () => {
+    const jev = new FakeJev();
+    const world = deps(jev);
+    world.ledger.entitlement = undefined;
+    expect(await paywallOf(() => runDecisionCall(world, { ...spend, request: request(1) }))).toBe(
+      'aiPlanning',
+    );
+    expect(jev.asked).toHaveLength(0);
   });
 
   it('costs nothing when its feature is switched off', async () => {

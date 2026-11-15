@@ -47,6 +47,9 @@ const storedPick = { ...pick(), pickedAt: new Date('2026-09-30T08:00:00Z') };
 
 async function givenTheParkers(): Promise<void> {
   await givenData(async (db: Firestore) => {
+    await setDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`), {
+      premiumUntil: new Date(Date.now() + 86_400_000),
+    });
     await setDoc(doc(db, `households/${HOUSEHOLD}`), {
       name: 'The Parkers',
       timeZone: 'Africa/Johannesburg',

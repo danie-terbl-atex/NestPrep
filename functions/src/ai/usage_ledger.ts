@@ -43,7 +43,8 @@ export interface UsageLedger {
   /**
    * Counts one call against this month **before** the model is asked, in a
    * transaction, so two calls at once cannot both take the last one (BE-06).
-   * Throws the `aiLimitReached` refusal when the month is spent.
+   * Throws the `aiLimitReached` refusal when a Premium month is spent, and
+   * subscriptions' `premiumRequired` for a free household, which has none.
    */
   claim(request: ClaimRequest): Promise<AiClaim>;
 

@@ -1,8 +1,6 @@
-/// Who is a child — the one profile write a client may not make itself,
-/// because it is what the free tier counts: one child free, more with
-/// premium (subscriptions ADR-0001). Rules cannot count, so the
-/// `setChildProfile` Function does, in a transaction. A second child on a
-/// free household is refused with `PremiumRequiredFailure`.
+/// Who is a child — the one profile write a client may not make itself: the
+/// `setChildProfile` Function writes it with the parent's consent, in one
+/// transaction.
 ///
 /// Marking a child who has no parent's consent on record carries the version
 /// of the privacy policy the parent just agreed to; without it the Function

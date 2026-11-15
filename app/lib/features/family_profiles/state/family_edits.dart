@@ -25,10 +25,8 @@ final class FamilyEdits {
 
   final FamilyProfileRepository _repository;
 
-  /// Who is a child goes through a Function, because the free tier counts
-  /// it (subscriptions ADR-0001); a second child on a free household comes
-  /// back as `PremiumRequiredFailure`, which the screen answers with the
-  /// paywall rather than a banner.
+  /// Who is a child goes through a Function, which writes the parent's
+  /// consent with it (accounts ADR-0005).
   final ChildProfileDirectory _children;
   final String householdId;
   final Future<void> Function(Future<void> Function() action) _run;

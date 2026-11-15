@@ -2,15 +2,20 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
+import '../../subscriptions/model/premium_feature.dart';
 
 /// Translates `readSchoolLetter`'s refusal into an `AppFailure`, by the
-/// `reason` in its details (`BE-04`): the letter's own reasons, the shared AI
-/// ones (foundation ADR-0015), and calendar sync's membership and grant
-/// reasons, which the Function reuses because that is what they are about.
+/// `reason` in its details (`BE-04`): premium, the letter's own reasons, the
+/// shared AI ones (foundation ADR-0015), and calendar sync's membership and
+/// grant reasons, which the Function reuses because that is what they are
+/// about.
 AppFailure failureFromLetterCallable(FirebaseFunctionsException error) {
   AppLog.failure('school letter callable', code: error.code, error: error);
   final details = error.details;
   final reason = details is Map ? details['reason'] : null;
+  if (reason == 'premiumRequired') {
+    return const PremiumRequiredFailure(PremiumFeature.schoolLetter);
+  }
   if (reason is String) {
     if (_named(SchoolLetterProblem.values, reason) case final problem?) {
       return SchoolLetterFailure(problem);

@@ -18,6 +18,8 @@ match /assistantActivity/{activityId} {
 
 // `current.allowed: false` stops every assistant in this household on its
 // next call. Absent means allowed. Family sets it, stamped with who and when.
+// Switching it on needs Premium (subscriptions ADR-0009); switching it off
+// never does, so a lapsed household can still say no.
 match /assistantSettings/{settingsId} {
   allow read: if isInHousehold(householdId);
   allow create, update: if isFamily(householdId)
@@ -25,6 +27,7 @@ match /assistantSettings/{settingsId} {
     && request.resource.data.keys().hasOnly(['allowed', 'updatedBy', 'updatedAt'])
     && request.resource.data.keys().hasAll(['allowed', 'updatedBy', 'updatedAt'])
     && request.resource.data.allowed is bool
+    && (request.resource.data.allowed == false || hasPremium(householdId))
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt');
   allow delete: if false;

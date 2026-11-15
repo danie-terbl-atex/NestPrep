@@ -7,6 +7,7 @@ import { db } from '../shared/firestore';
 import { readLinkedFrame } from './frame_access';
 import { parsed } from './frame_documents';
 import { refuseFrame } from './frame_errors';
+import { readFramePremium } from './frame_lunch_photos';
 import {
   GROCERY_ITEMS,
   frameGroceryId,
@@ -56,7 +57,7 @@ export const addFrameGroceryItem = onCall(
     const { names, groceryEditors } = await readMembersWithGrants(linked.home);
     const addedBy = groceryAdderNamed(groceryEditors, names, input.by);
     const pick =
-      input.product === null
+      input.product === null || !(await readFramePremium(store, linked.home))
         ? null
         : { ...frameProductMatch(input.product, addedBy), pickedAt: FieldValue.serverTimestamp() };
 

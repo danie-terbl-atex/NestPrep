@@ -105,6 +105,35 @@ void main() {
     expect(avatars.chosen.last.choice.base, const InitialBase());
   });
 
+  test('glasses do not follow a Nestling to the initial or a picture: the '
+      'Functions revert a choice that carries them there', () async {
+    const dressed = AvatarChoice(
+      base: PresetBase('pip'),
+      wear: {AvatarSlot.top: 'acc-cap', AvatarSlot.face: 'acc-monocle'},
+    );
+    const hash = '0123456789abcdef0123456789abcdef';
+    avatars.record = const MemberAvatarRecord(
+      choice: dressed,
+      ownedImages: [hash],
+    );
+    final controller = await open(Fixtures.sam);
+
+    await controller.useInitial();
+    expect(avatars.chosen.last.choice.base, const InitialBase());
+    expect(avatars.chosen.last.choice.wear, {AvatarSlot.top: 'acc-cap'});
+
+    avatars.emit(avatars.record);
+    await Future<void>.delayed(Duration.zero);
+    await controller.useImage(hash);
+    expect(avatars.chosen.last.choice.base, const ImageBase(hash));
+    expect(avatars.chosen.last.choice.wear, {AvatarSlot.top: 'acc-cap'});
+
+    avatars.emit(avatars.record);
+    await Future<void>.delayed(Duration.zero);
+    await controller.pickNestling('bo');
+    expect(avatars.chosen.last.choice.wear, {AvatarSlot.top: 'acc-cap'});
+  });
+
   test('a refused write puts the choice back and says why', () async {
     final controller = await open(Fixtures.sam);
     avatars.failWritesWith = const PermissionDeniedFailure();

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ import '../features/documents/state/vault_view_log_controller.dart';
 import '../features/documents/ui/document_folder_screen.dart';
 import '../features/documents/ui/document_library_screen.dart';
 import '../features/documents/ui/document_search_screen.dart';
+import '../features/documents/ui/documents_premium_area.dart';
 import '../features/documents/ui/vault_gate.dart';
 import '../features/documents/ui/vault_home_screen.dart';
 import '../features/documents/ui/vault_person_screen.dart';
@@ -41,101 +43,111 @@ import 'household_route.dart';
 /// The fixed segments come before `:folderId`, which would otherwise match
 /// `vault` and `search` as folder ids.
 RouteBase documentsShellRoute(SessionController session) => ShellRoute(
-  builder: (context, state, child) {
-    final view = context.read<HouseholdView>();
-    final householdId = HouseholdRoute.idFrom(state);
-    final memberId = view.viewerMember?.id ?? '';
-    final scanIntake = ScanIntake(
-      scanner: context.read<DocumentScanner>(),
-      composer: context.read<ScanComposer>(),
-    );
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => DocumentLibraryController(
-            documentRepository: context.read<DocumentRepository>(),
-            documentStore: context.read<DocumentStore>(),
-            documentDirectory: context.read<DocumentDirectory>(),
-            documentPicker: context.read<DocumentPicker>(),
-            documentOpener: context.read<ExternalLinkOpener>(),
-            scanIntake: scanIntake,
+  builder: (context, state, child) => Builder(
+    builder: (context) {
+      final view = context.read<HouseholdView>();
+      final householdId = HouseholdRoute.idFrom(state);
+      final memberId = view.viewerMember?.id ?? '';
+      final scanIntake = ScanIntake(
+        scanner: context.read<DocumentScanner>(),
+        composer: context.read<ScanComposer>(),
+      );
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => DocumentLibraryController(
+              documentRepository: context.read<DocumentRepository>(),
+              documentStore: context.read<DocumentStore>(),
+              documentDirectory: context.read<DocumentDirectory>(),
+              documentPicker: context.read<DocumentPicker>(),
+              documentOpener: context.read<ExternalLinkOpener>(),
+              scanIntake: scanIntake,
+              householdId: householdId,
+              memberId: memberId,
+              viewerUid: session.uidOrEmpty,
+              isAdmin: view.viewerIsAdmin,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => VaultLockController(
+              deviceLock: context.read<DeviceLock>(),
+              reason: VaultCopy.unlockReason,
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => VaultController(
+              vaultRepository: context.read<VaultRepository>(),
+              vaultStore: context.read<VaultStore>(),
+              documentDirectory: context.read<DocumentDirectory>(),
+              documentPicker: context.read<DocumentPicker>(),
+              pdfPageRenderer: context.read<PdfPageRenderer>(),
+              scanIntake: scanIntake,
+              lock: context.read<VaultLockController>(),
+              householdId: householdId,
+              members: view.members,
+              memberId: memberId,
+              viewerUid: session.uidOrEmpty,
+              isFamily: view.permissions.isFamily,
+            ),
+          ),
+          // documents V2: offline copies follow the same lock (documents ADR-0007).
+          offlineCopiesProvider(
             householdId: householdId,
-            memberId: memberId,
-            viewerUid: session.uidOrEmpty,
-            isAdmin: view.viewerIsAdmin,
+            uid: session.uidOrEmpty,
           ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => VaultLockController(
-            deviceLock: context.read<DeviceLock>(),
-            reason: VaultCopy.unlockReason,
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => VaultController(
-            vaultRepository: context.read<VaultRepository>(),
-            vaultStore: context.read<VaultStore>(),
-            documentDirectory: context.read<DocumentDirectory>(),
-            documentPicker: context.read<DocumentPicker>(),
-            pdfPageRenderer: context.read<PdfPageRenderer>(),
-            scanIntake: scanIntake,
-            lock: context.read<VaultLockController>(),
-            householdId: householdId,
-            members: view.members,
-            memberId: memberId,
-            viewerUid: session.uidOrEmpty,
-            isFamily: view.permissions.isFamily,
-          ),
-        ),
-        // documents V2: offline copies follow the same lock (documents ADR-0007).
-        offlineCopiesProvider(
-          householdId: householdId,
-          uid: session.uidOrEmpty,
-        ),
-      ],
-      child: child,
-    );
-  },
+        ],
+        child: child,
+      );
+    },
+  ),
   routes: [
     GoRoute(
       path: DocumentsRoute.path,
-      builder: (context, state) => const DocumentLibraryScreen(),
+      builder: (context, state) =>
+          const DocumentsPremiumArea(child: DocumentLibraryScreen()),
     ),
     GoRoute(
       path: DocumentsRoute.searchPath,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) =>
-            DocumentSearchController(initial: _queryFrom(state)),
-        child: const DocumentSearchScreen(),
+      builder: (context, state) => DocumentsPremiumArea(
+        child: ChangeNotifierProvider(
+          create: (context) =>
+              DocumentSearchController(initial: _queryFrom(state)),
+          child: const DocumentSearchScreen(),
+        ),
       ),
     ),
     GoRoute(
       path: DocumentsRoute.vaultPath,
-      builder: (context, state) =>
-          VaultGate(builder: (context) => const VaultHomeScreen()),
+      builder: (context, state) => DocumentsPremiumArea(
+        child: VaultGate(builder: (context) => const VaultHomeScreen()),
+      ),
     ),
     GoRoute(
       path: DocumentsRoute.vaultPersonPath,
-      builder: (context, state) => VaultGate(
-        builder: (context) =>
-            VaultPersonScreen(memberId: DocumentsRoute.memberIdFrom(state)),
+      builder: (context, state) => DocumentsPremiumArea(
+        child: VaultGate(
+          builder: (context) =>
+              VaultPersonScreen(memberId: DocumentsRoute.memberIdFrom(state)),
+        ),
       ),
     ),
     GoRoute(
       path: DocumentsRoute.vaultLogPath,
-      builder: (context, state) => VaultGate(
-        builder: (context) => ChangeNotifierProvider(
-          create: (context) {
-            final view = context.read<HouseholdView>();
-            return VaultViewLogController(
-              vaultRepository: context.read<VaultRepository>(),
-              householdId: HouseholdRoute.idFrom(state),
-              members: view.members,
-              viewerMemberId: view.viewerMember?.id ?? '',
-              isFamily: view.permissions.isFamily,
-            );
-          },
-          child: const VaultViewLogScreen(),
+      builder: (context, state) => DocumentsPremiumArea(
+        child: VaultGate(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) {
+              final view = context.read<HouseholdView>();
+              return VaultViewLogController(
+                vaultRepository: context.read<VaultRepository>(),
+                householdId: HouseholdRoute.idFrom(state),
+                members: view.members,
+                viewerMemberId: view.viewerMember?.id ?? '',
+                isFamily: view.permissions.isFamily,
+              );
+            },
+            child: const VaultViewLogScreen(),
+          ),
         ),
       ),
     ),
@@ -143,8 +155,11 @@ RouteBase documentsShellRoute(SessionController session) => ShellRoute(
     ...documentToolRoutes(viewerUid: session.uidOrEmpty),
     GoRoute(
       path: DocumentsRoute.folderPath,
-      builder: (context, state) =>
-          DocumentFolderScreen(folderId: DocumentsRoute.folderIdFrom(state)),
+      builder: (context, state) => DocumentsPremiumArea(
+        child: DocumentFolderScreen(
+          folderId: DocumentsRoute.folderIdFrom(state),
+        ),
+      ),
     ),
   ],
 );

@@ -26,6 +26,9 @@ const { FREE } = require('../lib/subscriptions/entitlement.js');
 const { entitlementFields } = require('../lib/subscriptions/subscription_documents.js');
 const { FEATURE_FLAGS } = require('../lib/shared/feature_flags.js');
 
+// Daniel's own to switch, shop by shop (shops ADR-0002): a seed never turns one on.
+const SHOPS_AWAITING_GO_LIVE = ['checkersShop', 'woolworthsShop'];
+
 export const HOUSEHOLD_ID = 'demo-household';
 const HOUSEHOLD_NAME = 'The Oak Street Nest';
 const TIME_ZONE = 'Africa/Johannesburg';
@@ -127,8 +130,15 @@ export async function upsert(ref, data) {
  * Builds [cast]'s household. A person or child may carry a `profile` — the
  * family profile's fields apart from `isChild`, which only `markChild` (the
  * body of `setChildProfile`) writes, so the free child stays consistent.
+ *
+ * `premium: false` writes no entitlement, which every reader takes as free;
+ * `flags: false` leaves `appConfig/flags` as it is.
  */
-export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
+export async function seedDemoHousehold(
+  store,
+  cast = EMULATOR_CAST,
+  { premium = true, flags = true } = {},
+) {
   const { people, children, schools } = cast;
   const household = store.collection('households').doc(cast.householdId);
   const privacyVersion = legalVersion('privacy-policy');
@@ -187,22 +197,24 @@ export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
   // somebody would have to manage. Written before the children, because a
   // second child needs premium.
   const until = new Date('2099-12-31T00:00:00Z');
-  await household
-    .collection('entitlement')
-    .doc('current')
-    .set(
-      entitlementFields(
-        { ...FREE, isTest: true },
-        {
-          premiumUntil: until,
-          storeUntil: null,
-          referralUntil: until,
-          referralDaysWaiting: 0,
-          grantDaysWaiting: { referral: 0, frame: 0, code: 0 },
-          referralFrom: new Date(),
-        },
-      ),
-    );
+  if (premium) {
+    await household
+      .collection('entitlement')
+      .doc('current')
+      .set(
+        entitlementFields(
+          { ...FREE, isTest: true },
+          {
+            premiumUntil: until,
+            storeUntil: null,
+            referralUntil: until,
+            referralDaysWaiting: 0,
+            grantDaysWaiting: { referral: 0, frame: 0, code: 0 },
+            referralFrom: new Date(),
+          },
+        ),
+      );
+  }
 
   // Children: an unclaimed `kid` profile with a parent's consent on it
   // (accounts ADR-0005), marked a child by `markChild` — the body of
@@ -230,20 +242,29 @@ export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
       .collection('familyProfiles')
       .doc(child.memberId)
       .set(child.profile, { merge: true });
-    await markChild(
-      store,
-      admin.uid,
-      { householdId: cast.householdId, memberId: child.memberId, isChild: true },
-      new Date(),
-    );
+    await markChild(store, admin.uid, {
+      householdId: cast.householdId,
+      memberId: child.memberId,
+      isChild: true,
+    });
   }
 
   // Every V2 switch on, which is also the emulator's default when the
   // document is absent — written so a release build against the suite agrees.
-  await store
-    .collection('appConfig')
-    .doc('flags')
-    .set(Object.fromEntries(FEATURE_FLAGS.map((flag) => [flag, true])), { merge: true });
+  if (flags) {
+    await store
+      .collection('appConfig')
+      .doc('flags')
+      .set(
+        Object.fromEntries(
+          FEATURE_FLAGS.filter((flag) => !SHOPS_AWAITING_GO_LIVE.includes(flag)).map((flag) => [
+            flag,
+            true,
+          ]),
+        ),
+        { merge: true },
+      );
+  }
 
   // Each account: the household in its list and active, and the documents
   // this build ships already agreed to, so a seeded sign-in lands in the week.
@@ -261,5 +282,5 @@ export async function seedDemoHousehold(store, cast = EMULATOR_CAST) {
   // same projection `syncDocumentAccess` makes (documents ADR-0001).
   for (const person of people) await writeAccountClaims(store, person.uid);
 
-  return `${cast.name} (${cast.householdId}): ${String(people.length)} adults, ${String(children.length)} children, premium, every flag on`;
+  return `${cast.name} (${cast.householdId}): ${String(people.length)} adults, ${String(children.length)} children, ${premium ? 'premium' : 'free'}${flags ? ', every flag on' : ''}`;
 }

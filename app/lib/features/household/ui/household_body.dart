@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/time/household_clock.dart';
 import '../../avatars/ui/avatar_studio_opener.dart';
 import '../../kid_accounts/ui/kid_sign_in_link.dart';
@@ -16,12 +17,12 @@ import '../model/household_view.dart';
 import '../model/member.dart';
 import '../model/member_role.dart';
 import '../state/household_controller.dart';
+import 'household_room.dart';
 import 'household_screen.dart';
 import 'household_settings_sheet.dart';
 import 'invite_sheet.dart';
 import 'member_row.dart';
 import 'member_sheet.dart';
-import 'new_child_paywall.dart';
 import 'your_access_card.dart';
 
 /// Everything the household screen shows once the household has loaded: the
@@ -40,6 +41,7 @@ class HouseholdBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFull = isFullOnFreePlan(context, view);
     return ListView(
       children: [
         Row(
@@ -47,10 +49,17 @@ class HouseholdBody extends StatelessWidget {
             Expanded(
               child: NestSectionHeader(
                 title: view.household.name,
-                actionIcon: view.viewerIsAdmin ? LucideIcons.userPlus : null,
-                actionLabel: view.viewerIsAdmin
-                    ? AppCopy.householdAddMember
-                    : null,
+                actionIcon: !view.viewerIsAdmin
+                    ? null
+                    : isFull
+                    ? LucideIcons.lock
+                    : LucideIcons.userPlus,
+                actionLabel: !view.viewerIsAdmin
+                    ? null
+                    : isFull
+                    ? '${AppCopy.householdAddMember}. '
+                          '${SubscriptionCopy.lockedHint}'
+                    : AppCopy.householdAddMember,
                 onAction: view.viewerIsAdmin
                     ? () => HouseholdScreen.addMember(context, controller)
                     : null,
@@ -223,7 +232,6 @@ class HouseholdBody extends StatelessWidget {
       birthday: result.birthday,
       guardianConsent: result.guardianConsent,
     );
-    if (context.mounted) await offerPremiumForNewChild(context, controller);
   }
 
   Future<void> _invite(BuildContext context, Member member) async {

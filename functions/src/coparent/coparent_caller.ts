@@ -3,6 +3,8 @@ import { z } from 'zod';
 
 import { isFamilyRole } from '../household/access';
 import { householdRef, ROLES } from '../household/documents';
+import { premiumRequired } from '../subscriptions/errors';
+import { householdHasPremium } from '../subscriptions/subscription_documents';
 import { refuseCoParent } from './errors';
 
 /**
@@ -41,4 +43,14 @@ export async function requireRole(
   const snapshot = await transaction.get(householdRef(store, householdId));
   if (!snapshot.exists) throw refuseCoParent('notAMember');
   requireRoleFrom(snapshot.data(), uid, need);
+}
+
+export async function requireTwoHomesPremium(
+  transaction: Transaction,
+  store: Firestore,
+  householdId: string,
+): Promise<void> {
+  if (!(await householdHasPremium(transaction, store, householdId, new Date()))) {
+    throw premiumRequired('twoHomes');
+  }
 }

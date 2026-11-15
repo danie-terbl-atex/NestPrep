@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/checkers_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../groceries/model/product_match.dart';
 import 'retailer_logo.dart';
 
@@ -14,6 +15,7 @@ class AddToShopCartBar extends StatelessWidget {
     required this.matchedCount,
     required this.isPushing,
     required this.onAdd,
+    this.isLocked = false,
     super.key,
   });
 
@@ -21,6 +23,10 @@ class AddToShopCartBar extends StatelessWidget {
   final int matchedCount;
   final bool isPushing;
   final VoidCallback onAdd;
+
+  /// True for a household without Premium: the action shows a lock, and
+  /// [onAdd] is what opens the paywall.
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +49,19 @@ class AddToShopCartBar extends StatelessWidget {
                   style: nest.text.label,
                 ),
                 const SizedBox(height: NestSpace.sm),
-                NestButton(
-                  key: ValueKey('add-to-cart-${shop.code}'),
-                  label: CheckersCopy.addCountTo(shop, matchedCount),
-                  icon: LucideIcons.shoppingCart,
-                  size: NestButtonSize.small,
-                  isExpanded: false,
-                  isLoading: isPushing,
-                  onPressed: isPushing ? null : onAdd,
+                Semantics(
+                  hint: isLocked ? SubscriptionCopy.lockedHint : null,
+                  child: NestButton(
+                    key: ValueKey('add-to-cart-${shop.code}'),
+                    label: CheckersCopy.addCountTo(shop, matchedCount),
+                    icon: isLocked
+                        ? LucideIcons.lock
+                        : LucideIcons.shoppingCart,
+                    size: NestButtonSize.small,
+                    isExpanded: false,
+                    isLoading: isPushing,
+                    onPressed: isPushing ? null : onAdd,
+                  ),
                 ),
               ],
             ),

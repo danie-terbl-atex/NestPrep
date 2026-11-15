@@ -11,11 +11,12 @@ import {
   withSwap,
 } from '../../src/coparent/change_rules';
 import { sharedChildName } from '../../src/coparent/child_profiles';
-import { requireRoleFrom } from '../../src/coparent/coparent_caller';
+import { requireRoleFrom, requireTwoHomesPremium } from '../../src/coparent/coparent_caller';
 import { COPARENT_REFUSALS, refuseCoParent } from '../../src/coparent/errors';
 import { usableInvite } from '../../src/coparent/link_invite';
 import { otherSideOf } from '../../src/coparent/link_context';
 import { ALTERNATING } from '../coparent_fixtures';
+import { readingTransaction, storeOf } from './document_store_fake';
 
 /**
  * The decisions the co-parenting callables make, without an emulator
@@ -248,5 +249,49 @@ describe('every refusal', () => {
       expect(error.details).toEqual({ reason });
       expect(error.code).toBe(COPARENT_REFUSALS[reason][0]);
     }
+  });
+});
+
+describe('two homes is Premium in the caller’s own household', () => {
+  const entitlement = 'households/h1/entitlement/current';
+
+  async function refusalOf(store: ReturnType<typeof storeOf>): Promise<unknown> {
+    try {
+      await requireTwoHomesPremium(readingTransaction, store, 'h1');
+    } catch (error) {
+      if (error instanceof HttpsError) return error.details;
+      throw error;
+    }
+    return undefined;
+  }
+
+  it('lets a household with Premium through', async () => {
+    const store = storeOf({
+      [entitlement]: { premiumUntil: Timestamp.fromMillis(Date.now() + 60_000) },
+    });
+    expect(await refusalOf(store)).toBeUndefined();
+  });
+
+  it('refuses a household that never had it, naming the feature for the paywall', async () => {
+    expect(await refusalOf(storeOf({}))).toEqual({
+      reason: 'premiumRequired',
+      feature: 'twoHomes',
+    });
+  });
+
+  it('refuses a household whose Premium has lapsed', async () => {
+    const store = storeOf({
+      [entitlement]: { premiumUntil: Timestamp.fromMillis(Date.now() - 60_000) },
+    });
+    expect(await refusalOf(store)).toEqual({ reason: 'premiumRequired', feature: 'twoHomes' });
+  });
+
+  it('asks nothing of the other home', async () => {
+    const store = storeOf({
+      'households/h2/entitlement/current': {
+        premiumUntil: Timestamp.fromMillis(Date.now() + 60_000),
+      },
+    });
+    expect(await refusalOf(store)).toEqual({ reason: 'premiumRequired', feature: 'twoHomes' });
   });
 });

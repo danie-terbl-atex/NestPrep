@@ -63,13 +63,29 @@ async function anItem(householdId: string, id: string, productId: string | null)
     });
 }
 
+async function premium(householdId: string): Promise<void> {
+  await adminDb()
+    .doc(`households/${householdId}/entitlement/current`)
+    .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
+}
+
+async function aPremiumHousehold(): Promise<{ sam: TestUser; householdId: string }> {
+  const { sam, householdId } = await householdOfTwo();
+  await premium(householdId);
+  return { sam, householdId };
+}
+
+async function aPremiumMember(): Promise<TestUser> {
+  return (await aPremiumHousehold()).sam;
+}
+
 beforeEach(async () => {
   await clearFirestore();
 });
 
 describe('linking a Checkers account', () => {
   it('sends a code, verifies it, and reports the link with only four digits', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     expect(await callAs<Status>(sam, 'checkersLinkStatus', {})).toEqual({
       linked: false,
       expiresAt: null,
@@ -86,7 +102,7 @@ describe('linking a Checkers account', () => {
   });
 
   it('refuses a wrong code, a code nobody asked for, and a number that is not a mobile', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await expectRefusal(callAs(sam, 'checkersVerifyOtp', { code: '123456' }), 'no-pending-otp');
     await expectRefusal(
       callAs(sam, 'checkersRequestOtp', { mobile: '021 555 1234' }),
@@ -97,7 +113,7 @@ describe('linking a Checkers account', () => {
   });
 
   it('refuses a fourth code inside fifteen minutes', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     for (let sent = 0; sent < 3; sent += 1) {
       await callAs(sam, 'checkersRequestOtp', { mobile: '082 555 1234' });
     }
@@ -108,7 +124,7 @@ describe('linking a Checkers account', () => {
   });
 
   it('refuses while the switch is off, and still lets a member unlink', async () => {
-    const sam = await signUp();
+    const sam = await aPremiumMember();
     await link(sam);
     await adminDb().doc('appConfig/flags').set({ addToCheckers: false });
     await expectRefusal(
@@ -122,11 +138,32 @@ describe('linking a Checkers account', () => {
   it('refuses somebody who is not signed in', async () => {
     await expect(callAs(null, 'checkersLinkStatus', {})).rejects.toThrow(/UNAUTHENTICATED/);
   });
+
+  it('links only for a member of a Premium household, and a lapsed one still unlinks', async () => {
+    await expectRefusal(
+      callAs(await signUp(), 'checkersRequestOtp', { mobile: '082 555 1234' }),
+      'premiumRequired',
+    );
+    const free = await householdOfTwo();
+    await expectRefusal(
+      callAs(free.sam, 'checkersRequestOtp', { mobile: '082 555 1234' }),
+      'premiumRequired',
+    );
+    const { sam, householdId } = await aPremiumHousehold();
+    await callAs(sam, 'checkersRequestOtp', { mobile: '082 555 1234' });
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    await expectRefusal(callAs(sam, 'checkersVerifyOtp', { code: '123456' }), 'premiumRequired');
+    await premium(householdId);
+    expect((await callAs<Status>(sam, 'checkersVerifyOtp', { code: '123456' })).linked).toBe(true);
+    await adminDb().doc(`households/${householdId}/entitlement/current`).delete();
+    expect((await callAs<Status>(sam, 'checkersLinkStatus', {})).linked).toBe(true);
+    expect(await callAs(sam, 'checkersUnlink', {})).toEqual({ linked: false });
+  });
 });
 
 describe('filling the cart', () => {
   it('adds the matched items and skips the rest, reading the items itself', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam);
     await anItem(householdId, 'milk', MILK);
     await anItem(householdId, 'typed', null);
@@ -143,7 +180,7 @@ describe('filling the cart', () => {
   });
 
   it('puts the asked packs in, and a second push changes nothing', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await link(sam, '082 555 4321');
     await anItem(householdId, 'milk', MILK);
     await anItem(householdId, 'more', MILK);
@@ -159,12 +196,28 @@ describe('filling the cart', () => {
   });
 
   it('refuses a member with no link, and a stranger to the household', async () => {
-    const { sam, householdId } = await householdOfTwo();
+    const { sam, householdId } = await aPremiumHousehold();
     await anItem(householdId, 'milk', MILK);
     const body = { householdId, itemIds: ['milk'] };
     await expectRefusal(callAs(sam, 'checkersPushToCart', body), 'checkers-link-expired');
-    const stranger = await signUp();
+    const stranger = await aPremiumMember();
     await link(stranger, '083 555 9876');
     await expectRefusal(callAs(stranger, 'checkersPushToCart', body), 'not-a-member');
+  });
+
+  it('refuses a free household, whatever the member linked elsewhere', async () => {
+    const sam = await aPremiumMember();
+    await link(sam);
+    const { householdId } = await callAs<{ householdId: string }>(sam, 'createHousehold', {
+      name: 'The free ones',
+      timeZone: 'Africa/Johannesburg',
+      adminDisplayName: 'Sam Parent',
+      adminColor: 'violet',
+    });
+    await anItem(householdId, 'milk', MILK);
+    await expectRefusal(
+      callAs(sam, 'checkersPushToCart', { householdId, itemIds: ['milk'] }),
+      'premiumRequired',
+    );
   });
 });

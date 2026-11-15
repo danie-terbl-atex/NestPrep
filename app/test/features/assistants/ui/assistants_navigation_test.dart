@@ -9,11 +9,16 @@ import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
 import 'package:nestprep/features/assistants/data/assistant_repository.dart';
+import 'package:nestprep/features/assistants/ui/assistants_link.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
+import 'package:nestprep/features/subscriptions/ui/premium_area.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 import '../../../support/fake_assistants.dart';
 import '../../../support/fake_auth.dart';
@@ -21,7 +26,9 @@ import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 /// *Connected assistants* is reachable from More while its switch is on, and
 /// only then, and back comes back (`FE-17`, assistants ADR-0001) — a
@@ -34,6 +41,8 @@ void main() {
     WidgetTester tester, {
     String viewerUid = Fixtures.samUid,
     bool isOn = true,
+    bool premium = true,
+    List<SingleChildWidget> also = const [],
     Brightness brightness = Brightness.light,
   }) async {
     tester.view.physicalSize = const Size(420 * 3, 2400 * 3);
@@ -85,9 +94,11 @@ void main() {
       view: Fixtures.view(viewerUid: viewerUid),
       brightness: brightness,
       providers: [
+        if (premium) premiumEntitlementProvider(),
         ChangeNotifierProvider<HouseholdController>.value(value: controller),
         Provider<AssistantRepository>.value(value: assistants),
         featureFlagsProvider(source: flags),
+        ...also,
       ],
     );
     flags.emit({FeatureFlag.assistants.field: isOn});
@@ -135,6 +146,54 @@ void main() {
       expect(find.text(AssistantsCopy.sectionMore), findsNothing);
     });
   }
+
+  Finder lockMark() => find.descendant(
+    of: find.byType(AssistantsLink),
+    matching: find.byWidgetPredicate(
+      (widget) =>
+          widget is Icon &&
+          widget.icon == LucideIcons.lock &&
+          widget.semanticLabel == SubscriptionCopy.lockedHint,
+    ),
+  );
+
+  for (final brightness in Brightness.values) {
+    testWidgets('a household without Premium is still offered it, marked '
+        'locked, and lands on the locked place (${brightness.name})', (
+      tester,
+    ) async {
+      final subscriptions = SubscriptionHarness();
+      await pumpMore(
+        tester,
+        premium: false,
+        also: subscriptions.providers,
+        brightness: brightness,
+      );
+      expect(find.text(AssistantsCopy.title), findsOneWidget);
+      expect(lockMark(), findsOneWidget);
+
+      await tester.tap(find.text(AssistantsCopy.title));
+      await tester.pump();
+      assistants.emitConnections([]);
+      await tester.pumpAndSettle();
+      expect(find.byType(PremiumLockedView), findsOneWidget);
+      expect(
+        find.text(SubscriptionCopy.headline(PremiumFeature.assistants)),
+        findsOneWidget,
+      );
+      expect(find.text(AssistantsCopy.emptyTitle), findsNothing);
+
+      await tester.tap(find.byIcon(LucideIcons.arrowLeft));
+      await tester.pumpAndSettle();
+      expect(find.text(MoreCopy.subtitle), findsOneWidget);
+    });
+  }
+
+  testWidgets('with Premium its way in carries no lock', (tester) async {
+    await pumpMore(tester);
+    expect(find.text(AssistantsCopy.title), findsOneWidget);
+    expect(lockMark(), findsNothing);
+  });
 
   testWidgets('somebody who is not family is offered it, and reads only '
       'their own', (tester) async {

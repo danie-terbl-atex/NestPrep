@@ -16,7 +16,7 @@ import '../model/entitlement.dart';
 import '../model/premium_feature.dart';
 import '../state/plan_controller.dart';
 import 'free_plan_card.dart';
-import 'paywall_sheet.dart';
+import 'paywall_page.dart';
 import 'plan_actions.dart';
 import 'plan_status_card.dart';
 import 'premium_benefits.dart';

@@ -109,10 +109,8 @@ export function gateCreation(facts: CreationFacts): CreationRefusal | 'unavailab
     return 'notAllowed';
   }
   if (facts.recipe === 'buddy' && !facts.buddyKnown) return 'notAllowed';
-  if (facts.recipe === 'portrait' && facts.standing.tier === 'free') return 'premiumRequired';
-  if (facts.standing.left <= 0) {
-    return facts.standing.tier === 'free' ? 'premiumRequired' : 'limitReached';
-  }
+  if (facts.standing.tier === 'free') return 'premiumRequired';
+  if (facts.standing.left <= 0) return 'limitReached';
   if (facts.standing.attemptsLeft < CALLS_PER_CREATION) return 'limitReached';
   return null;
 }

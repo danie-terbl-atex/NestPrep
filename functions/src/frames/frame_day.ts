@@ -263,7 +263,7 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
         }
       : {}),
     ...(panels.meals ? { meals: mealsPanel(sources) } : {}),
-    ...(panels.lunch ? { lunch: lunchPanel(sources) } : {}),
+    ...(panels.lunch && sources.lunch !== undefined ? { lunch: lunchPanel(sources) } : {}),
     ...(panels.share ? { sharing: true as const } : {}),
     ...(sources.groceries === undefined
       ? {}

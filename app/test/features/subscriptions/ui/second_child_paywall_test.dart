@@ -8,30 +8,25 @@ import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/subscription_copy.dart';
-import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
 import '../../../support/fake_family_profiles.dart';
-import '../../../support/fake_subscriptions.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
 import '../../../support/pump_subscriptions.dart';
 
-/// The free tier's limit, met where a parent meets it: marking a second
-/// child (subscriptions ADR-0001). The server refuses it; the answer on
-/// screen is the paywall opened on that very thing — and once premium is
-/// bought, the child is marked after all.
+/// A free household marks every child it has (subscriptions ADR-0008): the
+/// second is marked like the first, and no paywall stands in the way.
 void main() {
-  late SubscriptionHarness premium;
-  late FakeFamilyProfileRepository repository;
-
-  Future<void> openProfile(WidgetTester tester) async {
+  testWidgets('a second child on the free plan is simply marked', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    premium = SubscriptionHarness();
-    repository = FakeFamilyProfileRepository();
+    final premium = SubscriptionHarness();
+    final repository = FakeFamilyProfileRepository();
     final family = FamilyController(
       familyProfileRepository: repository,
       childProfileDirectory: repository,
@@ -58,49 +53,18 @@ void main() {
         ...premium.providers,
       ],
     );
-    // Not a child yet: the household already has its one free child.
-    repository.emitProfiles([FamilyFixtures.kid.copyWith(isChild: false)]);
+    repository.emitProfiles([
+      FamilyFixtures.kid.copyWith(isChild: false),
+      FamilyFixtures.kid.copyWith(id: Fixtures.thandiMemberId, isChild: true),
+    ]);
     repository.emitSchools([FamilyFixtures.oakwood]);
     repository.emitHealth(const MemberHealth(id: Fixtures.kidMemberId));
     await tester.pumpAndSettle();
 
-    repository.failWritesWith = const PremiumRequiredFailure(
-      PremiumFeature.additionalChild,
-    );
     await tester.tap(find.bySemanticsLabel(FamilyCopy.markAsChild));
     await tester.pumpAndSettle();
-    // A parent's consent comes first (accounts ADR-0005).
+    // A parent's consent is still asked first (accounts ADR-0005).
     await tester.tap(find.text(LegalCopy.guardianConsentConfirm));
-    await tester.pumpAndSettle();
-  }
-
-  testWidgets('opens premium on it, and marks the child once it is bought', (
-    tester,
-  ) async {
-    await openProfile(tester);
-    expect(
-      find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
-      findsOneWidget,
-    );
-    // The refusal is answered, not apologised for.
-    expect(
-      find.text(
-        AppCopy.failure(
-          const PremiumRequiredFailure(PremiumFeature.additionalChild),
-        ),
-      ),
-      findsNothing,
-    );
-
-    await tester.tap(find.text(SubscriptionCopy.subscribe));
-    await tester.pump();
-    premium.store.report([purchased()]);
-    await tester.pumpAndSettle();
-    expect(
-      premium.server.verified.single.trigger,
-      PremiumFeature.additionalChild,
-    );
-    await tester.tap(find.text(SubscriptionCopy.done));
     await tester.pumpAndSettle();
 
     final (method, arguments) = repository.writes.single;
@@ -110,16 +74,12 @@ void main() {
       'isChild': true,
       'guardianConsentVersion': LegalVersions.privacy,
     });
-  });
-
-  testWidgets('closing premium leaves the profile as it was', (tester) async {
-    await openProfile(tester);
-    await tester.tapAt(const Offset(10, 10));
-    await tester.pumpAndSettle();
-    expect(repository.writes, isEmpty);
-    expect(
-      find.text(SubscriptionCopy.headline(PremiumFeature.additionalChild)),
-      findsNothing,
-    );
+    for (final feature in [
+      PremiumFeature.additionalChild,
+      PremiumFeature.householdSize,
+    ]) {
+      expect(find.text(SubscriptionCopy.headline(feature)), findsNothing);
+    }
+    expect(premium.server.verified, isEmpty);
   });
 }

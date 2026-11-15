@@ -161,9 +161,10 @@ describe('every function — callable, trigger or schedule', () => {
     // creation and a keepsake taken off the shelf (avatars ADR-0003, ADR-0005),
     // and the hourly sweep of creations a dead run left behind.
     // Kid routines: the trigger that awards a finished routine's stars
-    // (kid-routines ADR-0001).
+    // (kid-routines ADR-0001). Household size: the trigger that counts a
+    // household's people for the free tier's four (subscriptions ADR-0008).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(144);
+    expect(endpoints()).toHaveLength(145);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {

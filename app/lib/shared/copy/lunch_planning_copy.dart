@@ -10,7 +10,6 @@ abstract final class LunchPlanningCopy {
   static const pantryBody = 'What is in the house';
   static const budgetBody = 'What the week costs';
   static const kidPicksBody = 'They choose from options you approve';
-  static const premiumHint = 'Premium';
 
   static String problem(LunchPlanningProblem problem) => switch (problem) {
     LunchPlanningProblem.alreadyPacked =>

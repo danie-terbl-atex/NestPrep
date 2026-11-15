@@ -8,8 +8,12 @@ import 'package:nestprep/features/household/model/household_view.dart';
 import 'package:nestprep/features/household/model/member.dart';
 import 'package:nestprep/features/household/state/household_controller.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/kid_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +21,7 @@ import '../../../support/fake_family_profiles.dart';
 import '../../../support/fake_household.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 
 /// The screen an admin manages the household from — who is in it, who has
 /// joined, and the three things that cannot be undone: removing somebody,
@@ -528,6 +533,217 @@ void main() {
       // not there rather than not built yet.
       await tester.scrollUntilVisible(find.text(AppCopy.householdLeave), 200);
       expect(find.text(KidCopy.manageEntry), findsNothing);
+    });
+  });
+
+  group('the free plan’s four people (subscriptions ADR-0008)', () {
+    final gogo = Fixtures.kid.copyWith(id: 'm-gogo', displayName: 'Gogo');
+    final four = [Fixtures.sam, Fixtures.thandi, Fixtures.kid, gogo];
+    const locked =
+        '${AppCopy.householdAddMember}. ${SubscriptionCopy.lockedHint}';
+
+    Future<void> pumpWith(
+      WidgetTester tester,
+      SubscriptionHarness premium, {
+      Brightness brightness = Brightness.light,
+      double scale = 1,
+    }) {
+      controllerFor(Fixtures.samUid);
+      return pumpScreen(
+        tester,
+        const HouseholdScreen(),
+        providers: [
+          ChangeNotifierProvider<HouseholdController>.value(value: controller),
+          ...premium.providers,
+        ],
+        brightness: brightness,
+        textScale: scale,
+      );
+    }
+
+    testWidgets('with room left, adding somebody opens the form', (
+      tester,
+    ) async {
+      await pumpWith(tester, SubscriptionHarness());
+      await emit(tester);
+
+      expect(find.bySemanticsLabel(locked), findsNothing);
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdAddMember));
+      await tester.pumpAndSettle();
+      expect(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('at four the way to add stays, locked, and opens Premium '
+        'instead of the form', (tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      final premium = SubscriptionHarness();
+      await pumpWith(tester, premium);
+      await emit(tester, members: four);
+
+      expect(find.byIcon(LucideIcons.userPlus), findsNothing);
+      await tester.tap(find.bySemanticsLabel(locked));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+        findsNothing,
+      );
+      expect(
+        find.text(SubscriptionCopy.headline(PremiumFeature.householdSize)),
+        findsOneWidget,
+      );
+      expect(
+        premium.paywallOpens.opened.single.trigger,
+        PremiumFeature.householdSize,
+      );
+      expect(repository.added, isEmpty);
+    });
+
+    testWidgets('a Premium household of four adds a fifth as before', (
+      tester,
+    ) async {
+      final premium = SubscriptionHarness(
+        entitlement: Entitlement(
+          premiumUntil: DateTime.now().add(const Duration(days: 30)),
+          status: EntitlementStatus.active,
+          willRenew: true,
+        ),
+      );
+      await pumpWith(tester, premium);
+      await emit(tester, members: four);
+
+      expect(find.bySemanticsLabel(locked), findsNothing);
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdAddMember));
+      await tester.pumpAndSettle();
+      expect(
+        find.widgetWithText(NestButton, AppCopy.householdSave),
+        findsOneWidget,
+      );
+    });
+
+    final paywall = find.text(
+      SubscriptionCopy.headline(PremiumFeature.householdSize),
+    );
+    final refusal = find.text(AppCopy.failure(const PermissionDeniedFailure()));
+
+    Future<void> openTheForm(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(420 * 3, 1600 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdAddMember));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).first, 'Gogo');
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> save(WidgetTester tester) async {
+      await tester.tap(find.widgetWithText(NestButton, AppCopy.householdSave));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a fifth the rules refuse, because somebody else added the '
+        'fourth while the form was open, is answered with Premium and no '
+        'banner', (tester) async {
+      final premium = SubscriptionHarness();
+      await pumpWith(tester, premium);
+      await emit(tester);
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await openTheForm(tester);
+      repository.emitMembers(four);
+      await tester.pumpAndSettle();
+      await save(tester);
+
+      expect(paywall, findsOneWidget);
+      expect(
+        premium.paywallOpens.opened.single.trigger,
+        PremiumFeature.householdSize,
+      );
+      expect(controller.actionFailure, isNull);
+    });
+
+    testWidgets('with room left, a refusal is the ordinary one — the plan is '
+        'not why', (tester) async {
+      final premium = SubscriptionHarness();
+      await pumpWith(tester, premium);
+      await emit(tester);
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await openTheForm(tester);
+      await save(tester);
+
+      expect(refusal, findsOneWidget);
+      expect(paywall, findsNothing);
+      expect(premium.paywallOpens.opened, isEmpty);
+    });
+
+    testWidgets('a Premium household that is refused is told so, in the '
+        'ordinary words, and is never sold the plan it has', (tester) async {
+      final premium = SubscriptionHarness(
+        entitlement: Entitlement(
+          premiumUntil: DateTime.now().add(const Duration(days: 30)),
+          status: EntitlementStatus.active,
+          willRenew: true,
+        ),
+      );
+      await pumpWith(tester, premium);
+      await emit(tester, members: four);
+      repository.failWritesWith = const PermissionDeniedFailure();
+
+      await openTheForm(tester);
+      await save(tester);
+
+      expect(refusal, findsOneWidget);
+      expect(paywall, findsNothing);
+      expect(premium.paywallOpens.opened, isEmpty);
+      expect(controller.actionFailure, isA<PermissionDeniedFailure>());
+    });
+
+    testWidgets('a helper in a household over the plan is still offered the '
+        'way out', (tester) async {
+      controllerFor(Fixtures.thandiUid);
+      await pumpScreen(
+        tester,
+        const HouseholdScreen(),
+        providers: [
+          ChangeNotifierProvider<HouseholdController>.value(value: controller),
+          ...SubscriptionHarness().providers,
+        ],
+      );
+      await emit(
+        tester,
+        members: [
+          ...four,
+          Fixtures.kid.copyWith(id: 'm-fifth', displayName: 'Fifth'),
+        ],
+      );
+
+      final leave = find.widgetWithText(NestButton, AppCopy.householdLeave);
+      await tester.scrollUntilVisible(leave, 200);
+      expect(tester.widget<NestButton>(leave).onPressed, isNotNull);
+    });
+
+    testWidgets('the lock holds at phone width in dark at 200% text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      await pumpWith(
+        tester,
+        SubscriptionHarness(),
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await emit(tester, members: four);
+
+      expect(find.bySemanticsLabel(locked), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   });
 

@@ -12,6 +12,7 @@ match /nannyPickupPeople/{personId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if isFamily(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['name', 'relationship', 'idNote', 'phone', 'photoId', 'childIds',
           'createdBy', 'createdAt'])
@@ -20,6 +21,7 @@ match /nannyPickupPeople/{personId} {
     && isServerTime('createdAt');
 
   allow update: if isFamily(householdId)
+    && hasPremium(householdId)
     && onlyChanged(['name', 'relationship', 'idNote', 'phone', 'photoId', 'childIds'])
     && isNannyPickupPerson(request.resource.data);
 
@@ -31,6 +33,7 @@ match /nannySchoolRuns/{runId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create, update: if isFamily(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['childId', 'weekday', 'personId', 'memberId', 'atMinute', 'place',
           'updatedBy', 'updatedAt'])
@@ -53,6 +56,7 @@ match /nannyPickupChanges/{changeId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create, update: if isFamily(householdId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['childId', 'date', 'personId', 'memberId', 'atMinute', 'note',
           'updatedBy', 'updatedAt'])

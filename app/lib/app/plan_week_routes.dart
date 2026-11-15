@@ -22,6 +22,9 @@ import '../features/plan_week/state/lunch_shop_choice.dart';
 import '../features/plan_week/state/plan_week_controller.dart';
 import '../features/plan_week/state/shop_week_saver.dart';
 import '../features/plan_week/ui/plan_week_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/app_copy.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import 'household_route.dart';
 import 'plan_week_route.dart';
@@ -42,46 +45,50 @@ GoRoute planWeekRoute() => GoRoute(
     final householdId = HouseholdRoute.idFrom(state);
     final memberId = viewerMemberIdOf(context);
     final flags = context.read<FeatureFlagsController?>();
-    return MultiProvider(
-      providers: [
-        Provider<ShopCarts>(
-          create: (context) => shopCartsFor(context, householdId),
-          dispose: (context, carts) => carts.dispose(),
-        ),
-        ChangeNotifierProxyProvider<LunchBoardController, PlanWeekController>(
-          create: (context) => PlanWeekController(
-            drafter: context.read<LunchIdeaDrafter>(),
-            aisleSource: context.read<LunchAisleSource>(),
-            weekBuilder: context.read<LunchWeekBuilder>(),
-            catalogues: context.read<RetailerCatalogues>(),
-            shopChoice: context.read<LunchShopChoice>(),
-            shopsOn: () => flags == null ? const [] : shopsOn(flags.isOn),
-            placeResolver: CheckersPlaceResolver(
-              locationSource: context.read<LocationSource>(),
-              areaPreference: context.read<CheckersAreaPreference>(),
-            ),
-            saver: ShopWeekSaver(
-              lunchRepository: context.read<LunchRepository>(),
-              budgetRepository: context.read<LunchBudgetRepository>(),
-              recipeSaver: context.read<LunchRecipeSaver>(),
-              householdId: householdId,
-              memberId: memberId,
-            ),
-            groceries: ShopWeekGroceries(
-              groceryRepository: context.read<GroceryRepository>(),
-              householdId: householdId,
-              memberId: memberId,
-            ),
-            packingStore: context.read<PackingChoiceStore>(),
-            variety: context.read<LunchVarietyChoice>(),
-            householdId: householdId,
-            week: context.read<LunchBoardController>().week,
+    return PremiumArea(
+      feature: PremiumFeature.lunchBox,
+      title: PlanWeekCopy.title,
+      child: MultiProvider(
+        providers: [
+          Provider<ShopCarts>(
+            create: (context) => shopCartsFor(context, householdId),
+            dispose: (context, carts) => carts.dispose(),
           ),
-          update: (context, lunch, controller) =>
-              controller!..followBoard(lunch.board),
-        ),
-      ],
-      child: const PlanWeekScreen(),
+          ChangeNotifierProxyProvider<LunchBoardController, PlanWeekController>(
+            create: (context) => PlanWeekController(
+              drafter: context.read<LunchIdeaDrafter>(),
+              aisleSource: context.read<LunchAisleSource>(),
+              weekBuilder: context.read<LunchWeekBuilder>(),
+              catalogues: context.read<RetailerCatalogues>(),
+              shopChoice: context.read<LunchShopChoice>(),
+              shopsOn: () => flags == null ? const [] : shopsOn(flags.isOn),
+              placeResolver: CheckersPlaceResolver(
+                locationSource: context.read<LocationSource>(),
+                areaPreference: context.read<CheckersAreaPreference>(),
+              ),
+              saver: ShopWeekSaver(
+                lunchRepository: context.read<LunchRepository>(),
+                budgetRepository: context.read<LunchBudgetRepository>(),
+                recipeSaver: context.read<LunchRecipeSaver>(),
+                householdId: householdId,
+                memberId: memberId,
+              ),
+              groceries: ShopWeekGroceries(
+                groceryRepository: context.read<GroceryRepository>(),
+                householdId: householdId,
+                memberId: memberId,
+              ),
+              packingStore: context.read<PackingChoiceStore>(),
+              variety: context.read<LunchVarietyChoice>(),
+              householdId: householdId,
+              week: context.read<LunchBoardController>().week,
+            ),
+            update: (context, lunch, controller) =>
+                controller!..followBoard(lunch.board),
+          ),
+        ],
+        child: const PlanWeekScreen(),
+      ),
     );
   },
 );

@@ -123,72 +123,48 @@ void main() {
   });
 
   group('what is left to make', () {
-    test('a free household that never asked has its one try', () {
-      final allowance = CreationAllowance.from(
-        const [],
-        clock: clock,
-        isPremium: false,
-      );
-      expect(allowance.freeTryUnused(isPremium: false), isTrue);
-      expect(allowance.freeTryUsed(isPremium: false), isFalse);
+    test('a household that never asked is not told a count', () {
+      expect(CreationAllowance.from(const [], clock: clock).left, isNull);
     });
 
-    test('a free household whose last answer left nothing has used it', () {
-      final allowance = CreationAllowance.from(
-        [creation(left: 0)],
-        clock: clock,
-        isPremium: false,
-      );
-      expect(allowance.freeTryUsed(isPremium: false), isTrue);
-      expect(allowance.freeTryUnused(isPremium: false), isFalse);
-    });
-
-    test('a refused photo leaves the free try for next time', () {
-      final allowance = CreationAllowance.from(
-        [creation(left: 1)],
-        clock: clock,
-        isPremium: false,
-      );
-      expect(allowance.freeTryUnused(isPremium: false), isTrue);
-    });
-
-    test('premium counts this month, the newest answer first', () {
-      final allowance = CreationAllowance.from(
-        [creation(), creation(left: 8), creation(left: 9)],
-        clock: clock,
-        isPremium: true,
-      );
+    test('this month counts, the newest answer first', () {
+      final allowance = CreationAllowance.from([
+        creation(),
+        creation(left: 8),
+        creation(left: 9),
+      ], clock: clock);
       expect(allowance.left, 8);
-      expect(allowance.freeTryUnused(isPremium: true), isFalse);
+    });
+
+    test('a refusal for Premium says nothing about the month', () {
+      final allowance = CreationAllowance.from([
+        creation(left: 0, reason: CreationRefusal.premiumRequired),
+        creation(left: 8),
+      ], clock: clock);
+      expect(allowance.left, 8);
     });
 
     test('last month’s count says nothing about this month', () {
-      final allowance = CreationAllowance.from(
-        [creation(left: 0, at: DateTime.utc(2026, 10, 30))],
-        clock: clock,
-        isPremium: true,
-      );
+      final allowance = CreationAllowance.from([
+        creation(left: 0, at: DateTime.utc(2026, 10, 30)),
+      ], clock: clock);
       expect(allowance.left, isNull);
     });
 
     test('the month is the household’s, not the phone’s', () {
       final lastNight = DateTime.utc(2026, 11, 30, 5);
       final lateOnTheLast = DateTime.utc(2026, 11, 30, 23);
-      CreationAllowance where(String zone) => CreationAllowance.from(
-        [creation(left: 0, at: lastNight)],
-        clock: HouseholdClock(zone, now: () => lateOnTheLast),
-        isPremium: true,
-      );
+      CreationAllowance where(String zone) => CreationAllowance.from([
+        creation(left: 0, at: lastNight),
+      ], clock: HouseholdClock(zone, now: () => lateOnTheLast));
       expect(where('Africa/Johannesburg').left, isNull);
       expect(where('America/Sao_Paulo').left, 0);
     });
 
     test('tries used up this month leave nothing, whatever the count says', () {
-      final allowance = CreationAllowance.from(
-        [creation(left: 7, reason: CreationRefusal.limitReached)],
-        clock: clock,
-        isPremium: true,
-      );
+      final allowance = CreationAllowance.from([
+        creation(left: 7, reason: CreationRefusal.limitReached),
+      ], clock: clock);
       expect(allowance.left, 0);
     });
 

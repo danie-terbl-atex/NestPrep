@@ -22,6 +22,12 @@ final class FakeLiveLocationRepository implements LiveLocationRepository {
   /// Set to make the next write fail, the way a rules denial does.
   AppFailure? failWritesWith;
 
+  /// Set to refuse positions only, the way a household without Premium is:
+  /// it may still take a pin down.
+  AppFailure? failReportsWith;
+
+  int watched = 0;
+
   final reported =
       <
         ({
@@ -42,8 +48,10 @@ final class FakeLiveLocationRepository implements LiveLocationRepository {
   Future<void> close() => _locations.close();
 
   @override
-  Stream<List<MemberLocation>> watchLocations(String householdId) =>
-      _locations.stream;
+  Stream<List<MemberLocation>> watchLocations(String householdId) {
+    watched += 1;
+    return _locations.stream;
+  }
 
   @override
   Future<void> report({
@@ -54,6 +62,8 @@ final class FakeLiveLocationRepository implements LiveLocationRepository {
     required DateTime sharingUntil,
   }) async {
     _refuseIfAsked();
+    final refusal = failReportsWith;
+    if (refusal != null) throw refusal;
     reported.add((
       householdId: householdId,
       memberId: memberId,
@@ -152,6 +162,13 @@ final class FakeLocationReporter implements LocationReporter {
 
   final currentStops = <bool>[];
 
+  /// The window this phone is inside, as the test decides.
+  ({String householdId, String memberId})? reporting;
+
+  @override
+  bool isReportingFor(String householdId, String memberId) =>
+      reporting == (householdId: householdId, memberId: memberId);
+
   @override
   Future<void> stopCurrent({required bool removePin}) async =>
       currentStops.add(removePin);
@@ -162,6 +179,7 @@ final class FakePlacesRepository implements PlacesRepository {
   final saved = <FamilyPlace>[];
   final deleted = <String>[];
   AppFailure? failWritesWith;
+  int watched = 0;
 
   void emitPlaces(List<FamilyPlace> places) => _places.add(places);
 
@@ -170,7 +188,10 @@ final class FakePlacesRepository implements PlacesRepository {
   Future<void> close() => _places.close();
 
   @override
-  Stream<List<FamilyPlace>> watchPlaces(String householdId) => _places.stream;
+  Stream<List<FamilyPlace>> watchPlaces(String householdId) {
+    watched += 1;
+    return _places.stream;
+  }
 
   @override
   Future<void> save(String householdId, FamilyPlace place) async {

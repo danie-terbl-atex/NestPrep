@@ -56,6 +56,8 @@ import '../features/product_analytics/data/beta_numbers_repository.dart';
 import '../features/product_analytics/data/callable_activity_recorder.dart';
 import '../features/product_analytics/data/firestore_beta_numbers_repository.dart';
 import '../features/product_analytics/state/activity_heartbeat.dart';
+import '../features/starter_content/data/firestore_starter_content_repository.dart';
+import '../features/starter_content/data/starter_content_repository.dart';
 import '../features/todos/data/firestore_todo_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/links/external_link_opener.dart';
@@ -116,6 +118,10 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<HouseholdRepository>(
     create: (context) =>
         FirestoreHouseholdRepository(context.read<FirebaseFirestore>()),
+  ),
+  Provider<StarterContentRepository>(
+    create: (context) =>
+        FirestoreStarterContentRepository(context.read<FirebaseFirestore>()),
   ),
   Provider<HouseholdDirectory>(
     create: (context) =>

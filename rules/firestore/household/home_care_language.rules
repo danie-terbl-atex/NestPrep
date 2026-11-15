@@ -14,6 +14,7 @@ match /homeCareHelpers/{memberId} {
          ['en', 'af', 'zu', 'xh', 'st', 'tn', 'nso', 'ts', 'sn', 'ny']
     && isOwnMember(householdId, request.resource.data.updatedBy)
     && isServerTime('updatedAt')
+    && hasPremium(householdId)
     && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))
     && (canEdit(householdId, 'homeCare')
           || (isOwnMember(householdId, memberId)

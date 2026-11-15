@@ -8,6 +8,9 @@ import 'package:nestprep/features/nanny_hub/data/offline_shelf.dart';
 import 'package:nestprep/features/nanny_hub/data/photo_store.dart';
 import 'package:nestprep/features/nanny_hub/ui/carer_scope.dart';
 import 'package:nestprep/features/nanny_hub/ui/hub_clock.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
+import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -17,9 +20,11 @@ import '../../../support/fake_documents.dart';
 import '../../../support/fake_feature_flag_source.dart';
 import '../../../support/fake_nanny_access.dart';
 import '../../../support/fake_nanny_hub.dart';
+import '../../../support/fake_subscriptions.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/nanny_access_fixtures.dart';
 import '../../../support/nanny_fixtures.dart';
+import '../../../support/premium_entitlement.dart';
 import '../../../support/pump_nanny_hub.dart';
 import '../../../support/pump_screen.dart';
 
@@ -44,7 +49,11 @@ void main() {
   // Made after the pump, which is what loads the timezone data.
   HouseholdClock clock() => HouseholdClock('Africa/Johannesburg');
 
-  Future<void> open(WidgetTester tester, HouseholdView view) async {
+  Future<void> open(
+    WidgetTester tester,
+    HouseholdView view, {
+    bool premium = true,
+  }) async {
     await pumpScreen(
       tester,
       const CarerScope(child: Text(household)),
@@ -58,6 +67,7 @@ void main() {
         Provider<OfflineShelf>.value(value: shelf),
         Provider<PhotoStore>.value(value: FakePhotoStore()),
         Provider<DocumentDirectory>.value(value: FakeDocumentDirectory()),
+        if (premium) premiumEntitlementProvider(),
       ],
     );
     await tester.pump();
@@ -131,6 +141,83 @@ void main() {
     bookings.bookings.add([]);
     await tester.pumpAndSettle();
     expect(find.text(household), findsOneWidget);
+    expect(warmer.requests, hasLength(1));
+  });
+
+  testWidgets('without Premium nothing is saved for offline as the app opens', (
+    tester,
+  ) async {
+    await open(tester, NannyFixtures.carerView(), premium: false);
+    bookings.bookings.add([]);
+    await tester.pumpAndSettle();
+    expect(find.text(household), findsOneWidget);
+    expect(warmer.requests, isEmpty);
+  });
+
+  testWidgets('without Premium a carer kept to their shifts still gets in on '
+      'a booked one, pass and all, with nothing saved for offline', (
+    tester,
+  ) async {
+    await open(tester, AccessFixtures.shiftOnlyCarerView(), premium: false);
+    bookings.bookings.add([]);
+    await tester.pumpAndSettle();
+    expect(find.text(household), findsNothing);
+    final booking = AccessFixtures.booking(
+      now: DateTime.now(),
+      from: const Duration(minutes: -5),
+    );
+    bookings.bookings.add([booking]);
+    await tester.pumpAndSettle();
+    expect(find.text(household), findsOneWidget);
+    expect(bookings.passes, contains(booking.id));
+    expect(warmer.requests, isEmpty);
+  });
+
+  testWidgets('a window already open when Premium is known is saved then', (
+    tester,
+  ) async {
+    final entitlements = FakeEntitlementRepository();
+    addTearDown(entitlements.close);
+    await pumpScreen(
+      tester,
+      const CarerScope(child: Text(household)),
+      view: AccessFixtures.shiftOnlyCarerView(),
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => testFlagsController(TestFlags.on),
+        ),
+        Provider<BookingRepository>.value(value: bookings),
+        Provider<CacheWarmer>.value(value: warmer),
+        Provider<OfflineShelf>.value(value: shelf),
+        Provider<PhotoStore>.value(value: FakePhotoStore()),
+        Provider<DocumentDirectory>.value(value: FakeDocumentDirectory()),
+        ChangeNotifierProvider<HouseholdEntitlement>(
+          create: (_) => HouseholdEntitlement(
+            entitlementRepository: entitlements,
+            householdId: Fixtures.householdId,
+          ),
+        ),
+      ],
+    );
+    await tester.pump();
+    bookings.bookings.add([
+      AccessFixtures.booking(
+        now: DateTime.now(),
+        from: const Duration(minutes: -5),
+      ),
+    ]);
+    await tester.pumpAndSettle();
+    expect(find.text(household), findsOneWidget);
+    expect(warmer.requests, isEmpty);
+
+    entitlements.emit(
+      Entitlement(
+        premiumUntil: DateTime.now().add(const Duration(days: 30)),
+        status: EntitlementStatus.active,
+        willRenew: true,
+      ),
+    );
+    await tester.pumpAndSettle();
     expect(warmer.requests, hasLength(1));
   });
 

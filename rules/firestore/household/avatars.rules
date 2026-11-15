@@ -44,6 +44,29 @@ function avatarsIsAMember(memberId) {
     && exists(/databases/$(database)/documents/households/$(householdId)/members/$(memberId));
 }
 
+function avatarsChoiceNow(memberId) {
+  return resource != null && 'choice' in resource.data
+    ? resource.data.choice
+    : get(/databases/$(database)/documents/households/$(householdId)/members/$(memberId))
+        .data.get('look', {});
+}
+
+// Free: a Nestling, the initial or a photo, which the Functions put on. What
+// is worn, and a made picture as the base, change only with Premium; a choice
+// that carries both over as they are stored is free (subscriptions ADR-0008).
+// Taking something off is free too: a face accessory cannot follow its wearer
+// from a Nestling to the initial or a photo, and the Functions revert a choice
+// that carries it there. Putting it back on is a change, so it needs Premium.
+function avatarsKeepsPremiumParts(memberId) {
+  let now = avatarsChoiceNow(memberId);
+  let next = request.resource.data.choice;
+  let baseNow = now.get('base', null) == null ? 'initial' : now.base;
+  let worn = next.wear.diff(now.get('wear', {}));
+  return worn.addedKeys().size() == 0
+    && worn.changedKeys().size() == 0
+    && (next.base == baseNow || !next.base.matches('^image:.*'));
+}
+
 match /memberAvatars/{memberId} {
   allow read: if isInHousehold(householdId);
 
@@ -52,6 +75,7 @@ match /memberAvatars/{memberId} {
     && request.resource.data.keys().hasOnly(['choice', 'pendingPhoto', 'updatedBy', 'updatedAt'])
     && request.resource.data.keys().hasAll(['choice', 'updatedBy', 'updatedAt'])
     && avatarsIsChoice(request.resource.data.choice)
+    && (avatarsKeepsPremiumParts(memberId) || hasPremium(householdId))
     && (!('pendingPhoto' in request.resource.data)
         || avatarsIsHash(request.resource.data.pendingPhoto))
     && isOwnMember(householdId, request.resource.data.updatedBy)
@@ -62,6 +86,7 @@ match /memberAvatars/{memberId} {
          .hasOnly(['choice', 'pendingPhoto', 'owned', 'updatedBy', 'updatedAt'])
     && !changedKeys().hasAny(['owned'])
     && avatarsIsChoice(request.resource.data.choice)
+    && (avatarsKeepsPremiumParts(memberId) || hasPremium(householdId))
     && (!('pendingPhoto' in request.resource.data)
         || avatarsIsHash(request.resource.data.pendingPhoto))
     && isOwnMember(householdId, request.resource.data.updatedBy)
@@ -77,6 +102,7 @@ match /avatarPurchases/{purchaseId} {
   allow read: if isInHousehold(householdId);
 
   allow create: if avatarsActsFor(request.resource.data.memberId)
+    && hasPremium(householdId)
     && request.resource.data.keys()
          .hasOnly(['memberId', 'accessoryId', 'requestedBy', 'requestedAt'])
     && request.resource.data.keys()
@@ -122,6 +148,7 @@ match /avatarCreations/{creationId} {
   allow read: if isInHousehold(householdId);
 
   allow create: if avatarsActsFor(request.resource.data.memberId)
+    && hasPremium(householdId)
     && request.resource.data.keys().hasOnly(
          ['memberId', 'recipe', 'style', 'buddy', 'extra', 'inboxId', 'requestedBy',
           'requestedAt'])

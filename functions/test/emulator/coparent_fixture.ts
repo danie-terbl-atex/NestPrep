@@ -1,6 +1,7 @@
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { householdOfTwo, type HouseholdOfTwo } from './calendar_sync_fixture';
 import { adminDb, callAs } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * Two real households for the co-parenting callables (household ADR-0004),
@@ -28,9 +29,14 @@ export async function aKid(householdId: string, displayName: string): Promise<st
   return ref.id;
 }
 
+export const FAR_AHEAD = new Date('2099-01-01T00:00:00Z');
+export const LAPSED = new Date('2020-01-01T00:00:00Z');
+
 export async function twoHomes(): Promise<TwoHomes> {
   const mum = await householdOfTwo('parent');
   const dad = await householdOfTwo('carer');
+  await givenPremiumUntil(mum.householdId, FAR_AHEAD);
+  await givenPremiumUntil(dad.householdId, FAR_AHEAD);
   return {
     mum,
     dad,

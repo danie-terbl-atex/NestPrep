@@ -81,6 +81,9 @@ async function givenTheHousehold(): Promise<void> {
       });
     }
     await setDoc(doc(db, 'appConfig/flags'), { assistants: true });
+    await setDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`), {
+      premiumUntil: new Date('2099-01-01T00:00:00Z'),
+    });
   });
 }
 

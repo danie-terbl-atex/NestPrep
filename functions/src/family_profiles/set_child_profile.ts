@@ -11,48 +11,36 @@ import { householdRef, memberRef, readHousehold, roleOf } from '../household/doc
 import { findClaimedMember } from '../household/membership';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
-import { FREE_CHILD_PROFILES } from '../subscriptions/entitlement';
-import { premiumRequired, refuseSubscription } from '../subscriptions/errors';
+import { refuseSubscription } from '../subscriptions/errors';
 import { type SetChildProfileInput, setChildProfileInput } from '../subscriptions/schemas';
-import { freeChildRef, householdHasPremium } from '../subscriptions/subscription_documents';
 import { FAMILY_PROFILES } from './member_details';
 
 /**
  * Marks a member as a child, or not — the one write to `familyProfiles` a
- * client may not make itself, because it is what the free tier is counted
- * by: one child profile free, more with premium (subscriptions ADR-0001).
- * Rules cannot count, so the count is here, in the same transaction as the
- * write and the entitlement it is checked against (BE-06).
- *
- * It also keeps which child the free tier plans for (lunch-box ADR-0009):
- * the first child marked, until they are unmarked, when another child — if
- * there is one — takes the place. A premium household plans for every child;
- * the record says which one stays planned if premium lapses.
+ * client may not make itself, because marking a child needs a parent's
+ * consent written with it (accounts ADR-0005). A household marks as many
+ * children as it has (subscriptions ADR-0008).
  *
  * Who may do it is who may edit the profile: an admin, or the person
- * themselves (family-profiles ADR-0001's `mayEditProfile`). Unmarking is
- * always allowed, and a household that has lost premium keeps every child it
- * already has — it only stops adding.
+ * themselves (family-profiles ADR-0001's `mayEditProfile`).
  *
- * Marking a child needs a parent's consent on the member profile (accounts
- * ADR-0005): one already there, or one given with this call, which is written
- * in the same transaction as the caller's own profile having given it. It is
- * never replaced once given.
+ * The consent is one already on the member profile, or one given with this
+ * call, which is written in the same transaction as the caller's own profile
+ * having given it. It is never replaced once given.
  */
 export const setChildProfile = onCall(async (request) => {
   const uid = requireUid(request.auth);
   const input = parseInput(setChildProfileInput, request.data);
-  await markChild(db(), uid, input, new Date());
+  await markChild(db(), uid, input);
   logger.info('child profile set', { householdId: input.householdId, isChild: input.isChild });
   return { isChild: input.isChild };
 });
 
-/** The body, apart from its transport, so the emulator suite drives it with a chosen `now`. */
+/** The body, apart from its transport, so the emulator suite drives it directly. */
 export async function markChild(
   store: Firestore,
   uid: string,
   input: SetChildProfileInput,
-  now: Date,
 ): Promise<void> {
   await store.runTransaction(async (transaction) => {
     const household = await readHousehold(transaction, store, input.householdId, () =>
@@ -66,24 +54,6 @@ export async function markChild(
     const consentBy = await consentToRecord(transaction, store, { input, uid, member });
 
     const profiles = householdRef(store, input.householdId).collection(FAMILY_PROFILES);
-    const children = await transaction.get(
-      profiles.where('isChild', '==', true).limit(FREE_CHILD_PROFILES + 1),
-    );
-    const others = children.docs.filter((doc) => doc.id !== input.memberId).map((doc) => doc.id);
-    const freeChild = await transaction.get(freeChildRef(store, input.householdId));
-    const freeChildId = freeChildIdOf(freeChild.get('memberId'));
-    // The query above stops at two, so the free child's own profile says
-    // whether they are still a child — in a premium household with several.
-    const freeChildIsAChild =
-      freeChildId !== null &&
-      freeChildId !== input.memberId &&
-      (await transaction.get(profiles.doc(freeChildId))).get('isChild') === true;
-    if (input.isChild) {
-      const isPremium = await householdHasPremium(transaction, store, input.householdId, now);
-      if (others.length >= FREE_CHILD_PROFILES && !isPremium) {
-        throw premiumRequired('additionalChild');
-      }
-    }
     transaction.set(profiles.doc(input.memberId), { isChild: input.isChild }, { merge: true });
     if (consentBy !== null && input.guardianConsent !== undefined) {
       transaction.update(member.ref, {
@@ -94,40 +64,7 @@ export async function markChild(
         },
       });
     }
-    const nextFreeChild = freeChildAfter({
-      current: freeChildId,
-      currentIsAChild: freeChildIsAChild,
-      memberId: input.memberId,
-      isChild: input.isChild,
-      otherChildren: others,
-    });
-    if (nextFreeChild === freeChildId) return;
-    if (nextFreeChild === null) transaction.delete(freeChildRef(store, input.householdId));
-    else transaction.set(freeChildRef(store, input.householdId), { memberId: nextFreeChild });
   });
-}
-
-function freeChildIdOf(value: unknown): string | null {
-  return typeof value === 'string' && value.length > 0 ? value : null;
-}
-
-/**
- * Which child the free tier plans for once this marking is written: whoever
- * it already was, while they are still a child; otherwise the child just
- * marked, or another child the household already has; otherwise nobody.
- */
-export function freeChildAfter(marking: {
-  current: string | null;
-  currentIsAChild: boolean;
-  memberId: string;
-  isChild: boolean;
-  otherChildren: readonly string[];
-}): string | null {
-  const { current, currentIsAChild, memberId, isChild, otherChildren } = marking;
-  if (current !== null && current !== memberId && currentIsAChild) return current;
-  if (current === memberId && isChild) return current;
-  if (isChild) return otherChildren[0] ?? memberId;
-  return otherChildren[0] ?? null;
 }
 
 /**

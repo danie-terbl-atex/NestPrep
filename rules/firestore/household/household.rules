@@ -63,6 +63,18 @@ function keepsMemberGuardianConsent() {
         || request.resource.data.get('guardianConsent', null) != null);
 }
 
+// The free plan has room for four people, everybody counted (subscriptions
+// ADR-0008). `keepHouseholdSize` writes the count a moment after each
+// profile, so two made at once can both pass at three: the app's over-the-
+// limit lock is what answers that fifth. A household from before the count
+// has no document until its next profile or the backfill, and passes once.
+function hasRoomForAnotherMember() {
+  let size = /databases/$(database)/documents/households/$(householdId)/entitlement/size;
+  return hasPremium(householdId)
+    || !exists(size)
+    || get(size).data.get('count', 0) < 4;
+}
+
 match /members/{memberId} {
   // A kid device reads its own profile and nobody else's — not the list
   // (accounts ADR-0003).
@@ -81,7 +93,8 @@ match /members/{memberId} {
     && isGrant(request.resource.data.get('access', null))
     && request.resource.data.claimedBy == null
     && isServerTime('createdAt')
-    && hasMemberGuardianConsentForRole();
+    && hasMemberGuardianConsentForRole()
+    && hasRoomForAnotherMember();
 
   // A claimed member's role also lives in the household's uid→role map,
   // and one write cannot touch two documents — so changing it is

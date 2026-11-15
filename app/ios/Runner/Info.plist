@@ -65,7 +65,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>So the events in the calendars you choose on this iPhone appear in your family's week in NestPrep. NestPrep only reads them and never changes your calendars.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>To scan a document into your family's vault, to scan the code on a photo frame to link it to your household, to take photos for the nanny hub — where things are in the house, and moments from a shift — and to photograph a spot that needs cleaning or show that it is clean.</string>
+	<string>To scan a document into your family's vault, to scan the code on a photo frame to link it to your household, to photograph a shopping list, a school letter or a recipe so it can be read into your lists, calendar and recipes, to take a profile picture, to take photos for the nanny hub — where things are in the house, and moments from a shift — and to photograph a spot that needs cleaning or show that it is clean.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>The family vaults open with Face ID or your passcode, so a phone left on a table does not show anybody's passport.</string>
 	<key>NSLocalNetworkUsageDescription</key>
@@ -79,7 +79,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>So a picture you share from NestPrep — a lunchbox card, a scanned page — can be saved to your photos when you choose Save Image.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add photos from your library to the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
+	<string>To choose photos from your library: a profile picture, pictures to show on your photo frame, a photo of a shopping list, a school letter or a recipe to read in, photos for the nanny hub's house guide and handover log, or of a spot that needs cleaning and the job once it is done.</string>
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 	<key>UIApplicationSceneManifest</key>

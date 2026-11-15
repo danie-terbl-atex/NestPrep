@@ -23,6 +23,7 @@ match /lunchChoices/{choiceId} {
 
   allow create: if resource == null
     && canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && isLunchChoices(choiceId, request.resource.data)
     && request.resource.data.get('chosen', {}).size() == 0
     && request.resource.data.get('options', {}).keys()
@@ -37,6 +38,7 @@ match /lunchChoices/{choiceId} {
 
   allow update: if resource != null
     && canEdit(householdId, 'lunch')
+    && hasPremium(householdId)
     && onlyChanged(['options', 'chosen', 'editedDay', 'updatedBy', 'updatedAt'])
     && isLunchChoices(choiceId, request.resource.data)
     && request.resource.data.get('options', {})
@@ -55,6 +57,7 @@ match /lunchChoices/{choiceId} {
 
   // The child says which slot they chose, and what — nothing else.
   allow update: if lunchKidOwnsWeek(householdId, choiceId)
+    && hasPremium(householdId)
     && onlyChanged(['chosen', 'chosenKey'])
     && isLunchSlotKey(request.resource.data.chosenKey)
     && request.resource.data.get('chosen', {})
@@ -66,21 +69,21 @@ match /lunchChoices/{choiceId} {
 
 // The child's choice, into their own plan — in the same batch as the
 // choices document naming the slot, which is read after the batch. A choice
-// is a plan write, held to the free tier like a parent's (`lunchPlansFor`,
-// lunch-box ADR-0009).
+// is a plan write, and needs `hasPremium` like a parent's (subscriptions
+// ADR-0009).
 match /lunchPlans/{planId} {
   allow create: if resource == null
     && lunchKidOwnsWeek(householdId, planId)
     && isLunchKidPlan(planId, request.resource.data)
     && isLunchChild(householdId, request.resource.data.childId)
-    && lunchPlansFor(householdId, request.resource.data.childId)
+    && hasPremium(householdId)
     && lunchKidChoiceIsApproved(householdId, planId, request.resource.data.childId,
          request.resource.data.slots, request.resource.data.slots.keys());
 
   allow update: if resource != null
     && lunchKidOwnsWeek(householdId, planId)
     && onlyChanged(['slots'])
-    && lunchPlansFor(householdId, resource.data.childId)
+    && hasPremium(householdId)
     && lunchKidChoiceIsApproved(householdId, planId, resource.data.childId,
          request.resource.data.get('slots', {}),
          request.resource.data.get('slots', {})

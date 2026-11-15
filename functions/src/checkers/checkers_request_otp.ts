@@ -8,6 +8,7 @@ import { FirestoreLinkStore } from './firestore_link_store';
 import { requestLinkOtp } from './otp_link';
 import { allowCode } from './otp_rate_limit';
 import { checkersRequestOtpInput } from './schemas';
+import { requireShopsPremiumForMember } from './shops_premium';
 
 /**
  * Sends a Checkers login code by SMS to the number the member typed — only
@@ -20,6 +21,7 @@ export const checkersRequestOtp = onCall({ secrets: CHECKERS_SECRETS }, async (r
   const input = parseInput(checkersRequestOtpInput, request.data);
   const store = db();
   await requireAddToCheckers(store);
+  await requireShopsPremiumForMember(store, uid);
   return requestLinkOtp(
     {
       links: new FirestoreLinkStore(store),

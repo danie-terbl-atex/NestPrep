@@ -24,7 +24,6 @@ abstract final class PlanWeekCopy {
   static String entryBody(ProductRetailer shop) =>
       'Lunches for every child from what ${_name(shop)} sells, within your '
       'budget — you check each step.';
-  static const premiumTag = 'Premium';
 
   // ---- the steps ----
   static const title = 'Plan my week';

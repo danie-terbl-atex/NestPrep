@@ -7,6 +7,7 @@ import { checkersHere, requireAddToCheckers, sessionKeyHere } from './checkers_r
 import { FirestoreLinkStore } from './firestore_link_store';
 import { verifyLinkOtp } from './otp_link';
 import { checkersVerifyOtpInput } from './schemas';
+import { requireShopsPremiumForMember } from './shops_premium';
 
 /**
  * Verifies the SMS code and links the member's Checkers account for the hour
@@ -20,6 +21,7 @@ export const checkersVerifyOtp = onCall(
     const input = parseInput(checkersVerifyOtpInput, request.data);
     const store = db();
     await requireAddToCheckers(store);
+    await requireShopsPremiumForMember(store, uid);
     return verifyLinkOtp(
       {
         links: new FirestoreLinkStore(store),

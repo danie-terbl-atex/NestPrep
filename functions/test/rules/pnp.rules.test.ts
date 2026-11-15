@@ -42,6 +42,9 @@ function pnpPick(overrides: Record<string, unknown> = {}): Record<string, unknow
 
 async function givenTheParkers(): Promise<void> {
   await givenData(async (db: Firestore) => {
+    await setDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`), {
+      premiumUntil: new Date(Date.now() + 86_400_000),
+    });
     await setDoc(doc(db, `households/${HOUSEHOLD}`), {
       name: 'The Parkers',
       timeZone: 'Africa/Johannesburg',

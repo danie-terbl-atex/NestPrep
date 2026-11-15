@@ -21,6 +21,14 @@ abstract final class NannyShiftCopy {
       'this shift afterwards.';
   static const closingNote = 'A last word for the parents (optional)';
   static const closingNoteHint = 'Asleep by eight, a lovely evening.';
+  static const lockedOpenShifts = 'On shift now';
+  static const lockedOpenBody =
+      'The nanny hub is locked, but a shift that is still open can be ended '
+      'here.';
+  static String lockedEndForTitle(String name) => 'End $name’s shift?';
+  static const lockedEndBody =
+      'The parents get a summary of everything logged so far. Nothing can be '
+      'added to this shift afterwards.';
   static const shiftEndedTitle = 'This shift has ended';
   static const shiftEndedBody = 'Its summary is ready for the parents.';
   static const seeSummary = 'See the summary';

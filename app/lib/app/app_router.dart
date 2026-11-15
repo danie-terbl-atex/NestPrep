@@ -26,12 +26,16 @@ import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
 import '../features/household/ui/join_invite_screen.dart';
+import '../features/kid_accounts/ui/kid_home_screen.dart';
 import '../features/product_analytics/data/beta_numbers_repository.dart';
 import '../features/product_analytics/state/beta_numbers_controller.dart';
 import '../features/product_analytics/ui/beta_numbers_screen.dart';
+import '../features/starter_content/data/starter_content_repository.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../features/todos/state/todo_controller.dart';
 import '../features/todos/ui/todo_screen.dart';
+import '../shared/flags/feature_flag.dart';
+import '../shared/flags/feature_flags_controller.dart';
 import '../shared/time/household_clock.dart';
 import 'account_routes.dart';
 import 'assistants_routes.dart';
@@ -57,6 +61,7 @@ import 'meals_routes.dart';
 import 'nanny_hub_routes.dart';
 import 'notifications_routes.dart';
 import 'photo_frame_routes.dart';
+import 'platform_pages.dart';
 import 'pnp_link_routes.dart';
 import 'referral_routes.dart';
 import 'session_redirect.dart';
@@ -82,191 +87,205 @@ GoRouter createAppRouter(
     state.matchedLocation,
     pendingInviteCode: pendingInvite.code,
   ),
-  routes: [
-    GoRoute(
-      path: SessionGateScreen.path,
-      builder: (context, state) => const SessionGateScreen(),
-    ),
-    GoRoute(
-      path: SignInScreen.path,
-      builder: (context, state) => const SignInScreen(),
-    ),
-    GoRoute(
-      path: RegisterScreen.path,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) =>
-            RegisterController(authGateway: context.read<AuthGateway>()),
-        child: const RegisterScreen(),
+  routes: withPlatformPages(
+    landings: {
+      SessionGateScreen.path,
+      SignInScreen.path,
+      HouseholdGateScreen.path,
+      KidHomeScreen.path,
+      for (final tab in HouseholdTab.values)
+        '${HouseholdRoute.path}/${tab.segment}',
+    },
+    [
+      GoRoute(
+        path: SessionGateScreen.path,
+        builder: (context, state) => const SessionGateScreen(),
       ),
-    ),
-    GoRoute(
-      path: ForgotPasswordScreen.path,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) =>
-            PasswordResetController(authGateway: context.read<AuthGateway>()),
-        child: const ForgotPasswordScreen(),
+      GoRoute(
+        path: SignInScreen.path,
+        builder: (context, state) => const SignInScreen(),
       ),
-    ),
-    // Kid sign-in: the kid's way in and the kid's home (accounts ADR-0003).
-    ...kidRoutes(session),
-    // The account centre, download, delete and the legal pages (accounts
-    // ADR-0005, ADR-0006).
-    ...accountRoutes(),
-    GoRoute(
-      path: HouseholdGateScreen.path,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => HouseholdGateController(
-          householdDirectory: context.read<HouseholdDirectory>(),
-          suggestedName: session.suggestedDisplayName,
-          defaultTimeZone: Household.defaultTimeZone,
+      GoRoute(
+        path: RegisterScreen.path,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (context) =>
+              RegisterController(authGateway: context.read<AuthGateway>()),
+          child: const RegisterScreen(),
         ),
-        child: const HouseholdGateScreen(),
       ),
-    ),
-    GoRoute(
-      path: JoinInviteScreen.path,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => JoinInviteController(
-          householdDirectory: context.read<HouseholdDirectory>(),
-          pendingInvite: pendingInvite,
-        )..load(),
-        child: const JoinInviteScreen(),
-      ),
-    ),
-    ShellRoute(
-      builder: (context, state, child) => ChangeNotifierProvider(
-        create: (context) => HouseholdController(
-          householdRepository: context.read<HouseholdRepository>(),
-          householdDirectory: context.read<HouseholdDirectory>(),
-          childProfileDirectory: context.read<ChildProfileDirectory>(),
-          householdId: HouseholdRoute.idFrom(state),
-          viewerUid: session.uidOrEmpty,
+      GoRoute(
+        path: ForgotPasswordScreen.path,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (context) =>
+              PasswordResetController(authGateway: context.read<AuthGateway>()),
+          child: const ForgotPasswordScreen(),
         ),
-        child: HouseholdShell(location: state.uri.path, child: child),
       ),
-      routes: [
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
-          builder: (context, state) => const HouseholdScreen(),
+      // Kid sign-in: the kid's way in and the kid's home (accounts ADR-0003).
+      ...kidRoutes(session),
+      // The account centre, download, delete and the legal pages (accounts
+      // ADR-0005, ADR-0006).
+      ...accountRoutes(),
+      GoRoute(
+        path: HouseholdGateScreen.path,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (context) => HouseholdGateController(
+            householdDirectory: context.read<HouseholdDirectory>(),
+            starterContent: context.read<StarterContentRepository>(),
+            startsWithExamples: () => context
+                .read<FeatureFlagsController>()
+                .isOn(FeatureFlag.starterContent),
+            suggestedName: session.suggestedDisplayName,
+            defaultTimeZone: Household.defaultTimeZone,
+          ),
+          child: const HouseholdGateScreen(),
         ),
-        // household phase 2: the invite step and the access editor (household
-        // ADR-0003).
-        ...householdAccessRoutes(),
-        // Documents — folders, vaults, their log and search — in a shell of
-        // its own (documents ADR-0001, ADR-0003).
-        documentsShellRoute(session),
-        // The parent's kid sign-in screen (accounts ADR-0003).
-        kidSignInRoute(),
-        // family-profiles (family-profiles ADR-0001): the family and one
-        // person's profile.
-        familyRoutes(),
-        // nanny hub (nanny-hub ADR-0001 to ADR-0003): the hub, a child's card,
-        // the emergency sheet, the guide, rules, checklists, shift mode and
-        // a shift's summary.
-        nannyHubRoutes(),
-        // home-care (home-care ADR-0001): jobs, rooms, products.
-        homeCareRoutes(session),
-        // lunch-box (lunch-box ADR-0001, ADR-0004): the lunch tab, its prep
-        // list and its library.
-        lunchRoutes(),
-        // subscriptions: plan and billing (subscriptions ADR-0001).
-        subscriptionRoute(),
-        // co-parenting: a child in two homes (household ADR-0004).
-        ...twoHomesRoutes(),
-        // referrals: give a month, get a month (subscriptions ADR-0002).
-        referralRoute(),
-        // photo frames on the wall (photo-frames ADR-0001).
-        photoFrameRoute(),
-        // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
-        assistantsRoute(session),
-        // Linking a Checkers account, for Add to Checkers (the Checkers build
-        // contract).
-        checkersLinkRoute(),
-        // Compare shops, over the grocery list (basket-compare ADR-0001).
-        basketCompareRoute(),
-        // Linking a Pick n Pay account, for its cart (add-to-pnp ADR-0003).
-        pnpLinkRoute(),
-        // Linking a Woolworths account, for its cart (add-to-woolworths
-        // ADR-0001).
-        woolworthsLinkRoute(),
-        shopsRoute(),
-        // notifications: the inbox, its settings and one notification opened
-        // (notifications ADR-0001 to ADR-0003).
-        ...notificationsRoutes(),
-        // family location: the map, a member's day and the household's
-        // places (live-location ADR-0003 to ADR-0007).
-        ...liveLocationRoutes(),
-        // todos phase 2: a parent's stars and rewards (todos ADR-0003).
-        chorePointsRoute(),
-        // children's routines, for a parent (kid-routines ADR-0001).
-        kidRoutinesRoute(),
-        // The week, and calendar sync's connected calendars (calendar
-        // ADR-0001, ADR-0003).
-        ...calendarRoutes(session),
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
-          builder: (context, state) => ChangeNotifierProvider(
-            create: (context) => TodoController(
-              todoRepository: context.read<TodoRepository>(),
-              householdClock: context.read<HouseholdClock>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: viewerMemberIdOf(context),
-              isAdmin: context.read<HouseholdView>().viewerIsAdmin,
-              // household phase 2 (household ADR-0003).
-              isOwnOnly: context.read<HouseholdView>().permissions.hasOwnOnly(
-                HouseholdArea.todos,
+      ),
+      GoRoute(
+        path: JoinInviteScreen.path,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (context) => JoinInviteController(
+            householdDirectory: context.read<HouseholdDirectory>(),
+            pendingInvite: pendingInvite,
+          )..load(),
+          child: const JoinInviteScreen(),
+        ),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => ChangeNotifierProvider(
+          create: (context) => HouseholdController(
+            householdRepository: context.read<HouseholdRepository>(),
+            householdDirectory: context.read<HouseholdDirectory>(),
+            childProfileDirectory: context.read<ChildProfileDirectory>(),
+            householdId: HouseholdRoute.idFrom(state),
+            viewerUid: session.uidOrEmpty,
+          ),
+          child: HouseholdShell(location: state.uri.path, child: child),
+        ),
+        routes: [
+          GoRoute(
+            path: '${HouseholdRoute.path}/${HouseholdRoute.householdSegment}',
+            builder: (context, state) => const HouseholdScreen(),
+          ),
+          // household phase 2: the invite step and the access editor (household
+          // ADR-0003).
+          ...householdAccessRoutes(),
+          // Documents — folders, vaults, their log and search — in a shell of
+          // its own (documents ADR-0001, ADR-0003).
+          documentsShellRoute(session),
+          // The parent's kid sign-in screen (accounts ADR-0003).
+          kidSignInRoute(),
+          // family-profiles (family-profiles ADR-0001): the family and one
+          // person's profile.
+          familyRoutes(),
+          // nanny hub (nanny-hub ADR-0001 to ADR-0003): the hub, a child's card,
+          // the emergency sheet, the guide, rules, checklists, shift mode and
+          // a shift's summary.
+          nannyHubRoutes(),
+          // home-care (home-care ADR-0001): jobs, rooms, products.
+          homeCareRoutes(session),
+          // lunch-box (lunch-box ADR-0001, ADR-0004): the lunch tab, its prep
+          // list and its library.
+          lunchRoutes(),
+          // subscriptions: plan and billing (subscriptions ADR-0001).
+          subscriptionRoute(),
+          // co-parenting: a child in two homes (household ADR-0004).
+          ...twoHomesRoutes(),
+          // referrals: give a month, get a month (subscriptions ADR-0002).
+          referralRoute(),
+          // photo frames on the wall (photo-frames ADR-0001).
+          photoFrameRoute(),
+          // assistants: nestprep in Claude and ChatGPT (assistants ADR-0001).
+          assistantsRoute(session),
+          // Linking a Checkers account, for Add to Checkers (the Checkers build
+          // contract).
+          checkersLinkRoute(),
+          // Compare shops, over the grocery list (basket-compare ADR-0001).
+          basketCompareRoute(),
+          // Linking a Pick n Pay account, for its cart (add-to-pnp ADR-0003).
+          pnpLinkRoute(),
+          // Linking a Woolworths account, for its cart (add-to-woolworths
+          // ADR-0001).
+          woolworthsLinkRoute(),
+          shopsRoute(),
+          // notifications: the inbox, its settings and one notification opened
+          // (notifications ADR-0001 to ADR-0003).
+          ...notificationsRoutes(),
+          // family location: the map, a member's day and the household's
+          // places (live-location ADR-0003 to ADR-0007).
+          ...liveLocationRoutes(),
+          // todos phase 2: a parent's stars and rewards (todos ADR-0003).
+          chorePointsRoute(),
+          // children's routines, for a parent (kid-routines ADR-0001).
+          kidRoutinesRoute(),
+          // The week, and calendar sync's connected calendars (calendar
+          // ADR-0001, ADR-0003).
+          ...calendarRoutes(session),
+          GoRoute(
+            path: '${HouseholdRoute.path}/${HouseholdTab.todos.segment}',
+            builder: (context, state) => ChangeNotifierProvider(
+              create: (context) => TodoController(
+                todoRepository: context.read<TodoRepository>(),
+                householdClock: context.read<HouseholdClock>(),
+                householdId: HouseholdRoute.idFrom(state),
+                memberId: viewerMemberIdOf(context),
+                isAdmin: context.read<HouseholdView>().viewerIsAdmin,
+                // household phase 2 (household ADR-0003).
+                isOwnOnly: context.read<HouseholdView>().permissions.hasOwnOnly(
+                  HouseholdArea.todos,
+                ),
+                canEdit: context.read<HouseholdView>().permissions.canEdit(
+                  HouseholdArea.todos,
+                ),
+                kidIds: context.read<HouseholdView>().kidMemberIds,
               ),
-              canEdit: context.read<HouseholdView>().permissions.canEdit(
-                HouseholdArea.todos,
+              child: TodoScreen(
+                onSelectTab: (tab) => goToTab(context, state, tab),
               ),
-              kidIds: context.read<HouseholdView>().kidMemberIds,
             ),
-            child: TodoScreen(
+          ),
+          // Meals, under Food: recipes, a recipe's page and this week
+          // (design-system ADR-0015, ADR-0017, recipes ADR-0003).
+          mealsRoutes(),
+          // groceries phase 2: the list and the week's plans against it
+          // (groceries ADR-0002).
+          groceryRoute(),
+          // snap a shopping list, over the grocery list (list-scan ADR-0001).
+          listScanRoute(),
+          todayRoute(),
+          for (final group in const [HouseholdTab.lists, HouseholdTab.food])
+            GoRoute(
+              path: '${HouseholdRoute.path}/${group.segment}',
+              builder: (context, state) => const NestLoadingView(),
+            ),
+          // More: the people and every place beyond the bar (design-system
+          // ADR-0005).
+          GoRoute(
+            path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
+            builder: (context, state) => HouseholdMoreScreen(
               onSelectTab: (tab) => goToTab(context, state, tab),
             ),
           ),
-        ),
-        // Meals, under Food: recipes, a recipe's page and this week
-        // (design-system ADR-0015, ADR-0017, recipes ADR-0003).
-        mealsRoutes(),
-        // groceries phase 2: the list and the week's plans against it
-        // (groceries ADR-0002).
-        groceryRoute(),
-        // snap a shopping list, over the grocery list (list-scan ADR-0001).
-        listScanRoute(),
-        todayRoute(),
-        for (final group in const [HouseholdTab.lists, HouseholdTab.food])
-          GoRoute(
-            path: '${HouseholdRoute.path}/${group.segment}',
-            builder: (context, state) => const NestLoadingView(),
-          ),
-        // More: the people and every place beyond the bar (design-system
-        // ADR-0005).
-        GoRoute(
-          path: '${HouseholdRoute.path}/${HouseholdTab.more.segment}',
-          builder: (context, state) => HouseholdMoreScreen(
-            onSelectTab: (tab) => goToTab(context, state, tab),
-          ),
-        ),
-      ],
-    ),
-    // ---- product analytics (product-analytics ADR-0001) ----
-    // Outside the household shell: the numbers are about every family, never
-    // a view of this one. Offered from the account sheet to a reader only; the
-    // rules refuse the numbers to anybody else who finds the path.
-    GoRoute(
-      path: BetaNumbersScreen.path,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => BetaNumbersController(
-          betaNumbersRepository: context.read<BetaNumbersRepository>(),
-        ),
-        child: const BetaNumbersScreen(),
+        ],
       ),
-    ),
-    if (DesignGalleryAccess.isAvailable)
+      // ---- product analytics (product-analytics ADR-0001) ----
+      // Outside the household shell: the numbers are about every family, never
+      // a view of this one. Offered from the account sheet to a reader only; the
+      // rules refuse the numbers to anybody else who finds the path.
       GoRoute(
-        path: DesignGalleryScreen.path,
-        builder: (context, state) => const DesignGalleryScreen(),
+        path: BetaNumbersScreen.path,
+        builder: (context, state) => ChangeNotifierProvider(
+          create: (context) => BetaNumbersController(
+            betaNumbersRepository: context.read<BetaNumbersRepository>(),
+          ),
+          child: const BetaNumbersScreen(),
+        ),
       ),
-  ],
+      if (DesignGalleryAccess.isAvailable)
+        GoRoute(
+          path: DesignGalleryScreen.path,
+          builder: (context, state) => const DesignGalleryScreen(),
+        ),
+    ],
+  ),
 );

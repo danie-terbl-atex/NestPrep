@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
+import { givenFamilyPremium } from './family_fixture';
 import {
   asSignedOut,
   asUser,
@@ -39,6 +40,7 @@ const EMMA_VAULT = `${H}/vaults/m-emma`;
 const THANDI_VAULT = `${H}/vaults/m-thandi`;
 
 async function givenTheParkers(): Promise<void> {
+  await givenFamilyPremium();
   await givenData(async (db: Firestore) => {
     await setDoc(doc(db, H), {
       name: 'The Parkers',
@@ -430,3 +432,62 @@ describe('household documents gain tags and an expiry (documents ADR-0005)', () 
     );
   });
 });
+
+for (const state of ['free', 'lapsed'] as const) {
+  describe(`a household whose Premium is ${state} (subscriptions ADR-0009)`, () => {
+    beforeEach(async () => {
+      await (state === 'lapsed'
+        ? givenFamilyPremium('lapsed')
+        : givenData(async (db: Firestore) => {
+            await deleteDoc(doc(db, `${H}/entitlement/current`));
+          }));
+    });
+
+    it('still reads its vaults, their grants and their log', async () => {
+      const sam = await asUser(SAM);
+      await assertSucceeds(getDocs(collection(sam, `${EMMA_VAULT}/vaultDocuments`)));
+      await assertSucceeds(getDocs(collection(sam, `${EMMA_VAULT}/views`)));
+      await assertSucceeds(
+        getDoc(doc(await asUser(THANDI), `${THANDI_VAULT}/vaultDocuments/id-card`)),
+      );
+    });
+
+    it('adds to no vault and changes nothing in one', async () => {
+      await assertFails(
+        setDoc(doc(await asUser(SAM), `${EMMA_VAULT}/vaultDocuments/birth`), newRow('m-sam')),
+      );
+      await assertFails(
+        setDoc(
+          doc(await asUser(THANDI), `${THANDI_VAULT}/vaultDocuments/permit`),
+          newRow('m-thandi'),
+        ),
+      );
+      await assertFails(
+        updateDoc(doc(await asUser(THANDI), `${THANDI_VAULT}/vaultDocuments/id-card`), {
+          name: 'ID',
+        }),
+      );
+    });
+
+    it('shares no vault, but takes a grant away', async () => {
+      await assertFails(
+        setDoc(doc(await asUser(SAM), `${EMMA_VAULT}/grants/${THANDI}`), {
+          memberId: 'm-thandi',
+          grantedBy: 'm-sam',
+          grantedAt: serverTimestamp(),
+        }),
+      );
+      await givenAGrant(EMMA_VAULT, THANDI, 'm-thandi');
+      await assertSucceeds(deleteDoc(doc(await asUser(SAM), `${EMMA_VAULT}/grants/${THANDI}`)));
+    });
+
+    it('still deletes from a vault', async () => {
+      await assertSucceeds(
+        deleteDoc(doc(await asUser(THANDI), `${THANDI_VAULT}/vaultDocuments/id-card`)),
+      );
+      await assertSucceeds(
+        deleteDoc(doc(await asUser(SAM), `${EMMA_VAULT}/vaultDocuments/passport`)),
+      );
+    });
+  });
+}

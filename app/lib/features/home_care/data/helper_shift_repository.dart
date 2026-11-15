@@ -10,6 +10,17 @@ abstract interface class HelperShiftRepository {
   /// grant must ask for.
   Stream<List<HelperShift>> watchShifts(String householdId, {String? helperId});
 
+  /// More shifts left open than a household has helpers.
+  static const openShiftLimit = 20;
+
+  /// Only the shifts nobody has clocked out, scoped as [watchShifts] is: all
+  /// a locked home care still reads, so a shift left open when Premium ended
+  /// can be closed (subscriptions ADR-0009).
+  Stream<List<HelperShift>> watchOpenShifts(
+    String householdId, {
+    String? helperId,
+  });
+
   /// Clocks [helperId] in, in [by]'s name, at the server's time.
   Future<void> startShift({
     required String householdId,

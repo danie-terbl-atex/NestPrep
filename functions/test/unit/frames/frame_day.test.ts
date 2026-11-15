@@ -612,6 +612,11 @@ describe('the lunch panel', () => {
     expect(assembleFrameDay(sources({ lunch })).lunch).toBeUndefined();
   });
 
+  it('is absent for a household without Premium, whose lunches are never read', () => {
+    const day = assembleFrameDay(sources({ panels: { ...NONE, lunch: true } }));
+    expect(day).not.toHaveProperty('lunch');
+  });
+
   it('a frame stored before the switch existed has it off', () => {
     const stored = frameDocument.parse({
       name: 'Kitchen',

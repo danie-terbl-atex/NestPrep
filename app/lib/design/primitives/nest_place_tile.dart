@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../tokens/nest_spacing.dart';
 import '../tokens/nest_theme.dart';
@@ -19,6 +20,7 @@ class NestPlaceTile extends StatelessWidget {
     required this.onTap,
     this.subtitle,
     this.tint = NestTileTint.accent,
+    this.lockedLabel,
     super.key,
   });
 
@@ -26,6 +28,7 @@ class NestPlaceTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final NestTileTint tint;
+  final String? lockedLabel;
   final VoidCallback onTap;
 
   @override
@@ -42,11 +45,24 @@ class NestPlaceTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            NestIconTile(
-              icon: icon,
-              tint: tint,
-              size: NestSize.avatarMedium + NestSpace.xs,
-              iconSize: NestSize.iconMedium,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                NestIconTile(
+                  icon: icon,
+                  tint: tint,
+                  size: NestSize.avatarMedium + NestSpace.xs,
+                  iconSize: NestSize.iconMedium,
+                ),
+                const Spacer(),
+                if (lockedLabel != null)
+                  Icon(
+                    LucideIcons.lock,
+                    size: NestSize.iconSmall,
+                    color: nest.colors.inkSecondary,
+                    semanticLabel: lockedLabel,
+                  ),
+              ],
             ),
             const SizedBox(height: NestSpace.md),
             Text(title, style: nest.text.title),

@@ -95,9 +95,14 @@ enum FeatureFlag {
 
   // ---- groceries: Checkers (the Checkers build contract) ----
 
-  /// Product matches under a grocery item, linking a member's own Checkers
-  /// account, and pushing the list into their Sixty60 cart.
+  /// Checkers for builds up to 0.9.0 (14), which the testers still run, and
+  /// for the Functions and the frames. No screen in this build reads it:
+  /// [checkersShop] decides whether Checkers is offered (shops ADR-0002).
   addToCheckers('addToCheckers'),
+
+  /// Whether Checkers is offered at all: matches, the member's own link, the
+  /// cart and its mark, everywhere (shops ADR-0002).
+  checkersShop('checkersShop'),
 
   // ---- lunch box: Pick n Pay (add-to-pnp ADR-0001) ----
 
@@ -107,9 +112,13 @@ enum FeatureFlag {
 
   // ---- groceries: Woolworths (add-to-woolworths ADR-0001) ----
 
-  /// Matches at Woolworths, linking a member's own Woolworths account, and
-  /// pushing the list into their Woolies Dash cart.
+  /// Woolworths for builds up to 0.9.0 (14), the Functions and the frames,
+  /// as [addToCheckers] is. [woolworthsShop] decides in this build.
   addToWoolworths('addToWoolworths'),
+
+  /// Whether Woolworths is offered at all, as [checkersShop] is for Checkers
+  /// (shops ADR-0002).
+  woolworthsShop('woolworthsShop'),
 
   // ---- photo frames (photo-frames ADR-0001) ----
 
@@ -130,7 +139,10 @@ enum FeatureFlag {
 
   /// Children's routines: a morning, afternoon and bedtime run of picture
   /// steps per child (kid-routines ADR-0001).
-  kidRoutines('kidRoutines');
+  kidRoutines('kidRoutines'),
+
+  /// A new household starts with a few examples (household ADR-0010).
+  starterContent('starterContent');
 
   const FeatureFlag(this.field);
 

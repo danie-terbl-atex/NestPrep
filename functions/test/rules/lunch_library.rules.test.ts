@@ -33,6 +33,7 @@ import { asUser, assertFails, assertSucceeds, clearData, givenData } from './rul
 beforeEach(async () => {
   await clearData();
   await givenTheLunchHousehold();
+  await givenLunchPremium();
   await givenData(async (db) => {
     await setDoc(doc(db, `${ITEMS}/apple`), {
       name: 'Apple',
@@ -302,10 +303,6 @@ describe('lunchFavourites/{favouriteId}', () => {
 });
 
 describe('lunchPrep/{week}', () => {
-  // The prep list is premium (lunch-box ADR-0009); the free side of it is in
-  // `lunch_premium.rules.test.ts`.
-  beforeEach(() => givenLunchPremium());
-
   it('family ticks the week’s prep', async () => {
     const db = await asUser(SAM);
     await assertSucceeds(setDoc(doc(db, `${PREP}/${WEEK}`), { done: ['apple'] }));

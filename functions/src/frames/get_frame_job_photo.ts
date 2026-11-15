@@ -1,7 +1,9 @@
 import { addDays } from '../calendar_sync/zoned_time';
+import { db } from '../shared/firestore';
 import { frameJpegEndpoint } from './frame_jpeg';
 import { parsed } from './frame_documents';
 import { BEFORE_PHOTO, HOME_CARE_JOBS, frameJobPhotoShape } from './frame_jobs';
+import { readFramePremium } from './frame_lunch_photos';
 import { FRAME_JOB_PHOTO_PER_CREDENTIAL, FRAME_OVERDUE_DAYS } from './frame_policy';
 
 /**
@@ -14,6 +16,7 @@ export const getFrameJobPhoto = frameJpegEndpoint(
   async ({ frame, home, clock }, id) => {
     const helperId = frame.panels.helperMemberId;
     if (helperId === null) return null;
+    if (!(await readFramePremium(db(), home))) return null;
     const job = parsed(
       frameJobPhotoShape,
       (await home.collection(HOME_CARE_JOBS).doc(id).get()).data(),

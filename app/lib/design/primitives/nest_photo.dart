@@ -1,5 +1,6 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/cupertino.dart' show CupertinoRouteTransitionMixin;
 import 'package:flutter/material.dart';
 
 import '../tokens/nest_motion.dart';
@@ -278,17 +279,39 @@ abstract class _NestPhotoTransition<T> extends PageRoute<T> {
   @override
   bool get maintainState => true;
 
+  bool _isSwipedBack = false;
+
+  /// On iOS the page also answers the edge swipe: it follows the finger out
+  /// the way every other page does, and only then stops fading. The widgets
+  /// around [child] never change, so nothing under them loses its state.
   @override
   Widget buildTransitions(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) => FadeTransition(
-    opacity: CurvedAnimation(
-      parent: animation,
-      curve: const Interval(0.25, 1, curve: Curves.easeOut),
-    ),
-    child: child,
-  );
+  ) {
+    if (navigator?.userGestureInProgress ?? false) {
+      _isSwipedBack = true;
+    } else if (animation.isCompleted) {
+      _isSwipedBack = false;
+    }
+    final page = FadeTransition(
+      opacity: _isSwipedBack
+          ? kAlwaysCompleteAnimation
+          : CurvedAnimation(
+              parent: animation,
+              curve: const Interval(0.25, 1, curve: Curves.easeOut),
+            ),
+      child: child,
+    );
+    if (Theme.of(context).platform != TargetPlatform.iOS) return page;
+    return CupertinoRouteTransitionMixin.buildPageTransitions<T>(
+      this,
+      context,
+      _isSwipedBack ? animation : kAlwaysCompleteAnimation,
+      kAlwaysDismissedAnimation,
+      page,
+    );
+  }
 }

@@ -21,6 +21,11 @@ abstract final class LocationCopy {
   static const aloneBody =
       'Add the people who live here, and this is where you will see who is out.';
 
+  static const kidLockedTitle = 'Sharing where you are is part of Premium';
+  static const kidLockedBody =
+      'Ask a parent about NestPrep Premium. Until then this phone shares '
+      'nothing.';
+
   static const always = 'Always share';
   static const alwaysBody =
       'Keep sharing when NestPrep is closed, so your family sees you arrive.';

@@ -2,8 +2,17 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { TWO_TWO_THREE } from '../coparent_fixtures';
 import { expectRefusal } from './calendar_sync_fixture';
-import { aCode, accept, isoInDays, linkedHomes, mirrorOf, twoHomes } from './coparent_fixture';
+import {
+  LAPSED,
+  aCode,
+  accept,
+  isoInDays,
+  linkedHomes,
+  mirrorOf,
+  twoHomes,
+} from './coparent_fixture';
 import { adminDb, callAs, clearFirestore } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * Swaps, new schedules and handovers between two homes, over HTTP with real
@@ -296,5 +305,78 @@ describe('a handover', () => {
       }),
       'linkNotActive',
     );
+  });
+});
+
+describe('a home whose Premium has lapsed', () => {
+  const swap = { kind: 'swap', from: isoInDays(2), to: isoInDays(3), toSide: 'b' };
+
+  it('asks for no change and writes up no handover', async () => {
+    const homes = await linkedHomes();
+    await givenPremiumUntil(homes.dad.householdId, LAPSED);
+    await expectRefusal(
+      callAs(homes.dad.sam, 'proposeCoParentChange', {
+        householdId: homes.dad.householdId,
+        linkId: homes.linkId,
+        change: swap,
+        note: null,
+      }),
+      'premiumRequired',
+    );
+    await expectRefusal(
+      callAs(homes.dad.sam, 'saveCoParentHandover', {
+        householdId: homes.dad.householdId,
+        linkId: homes.linkId,
+        date: isoInDays(1),
+        items: [],
+        medicine: null,
+        homework: null,
+        clothes: null,
+        note: null,
+      }),
+      'premiumRequired',
+    );
+    expect(await requestsIn(homes.mum.householdId, homes.linkId)).toHaveLength(0);
+  });
+
+  it('accepts no request, but may still decline one', async () => {
+    const homes = await linkedHomes();
+    const { requestId } = await callAs<{ requestId: string }>(
+      homes.dad.sam,
+      'proposeCoParentChange',
+      { householdId: homes.dad.householdId, linkId: homes.linkId, change: swap, note: null },
+    );
+    await givenPremiumUntil(homes.mum.householdId, LAPSED);
+    const answer = (given: string): Promise<unknown> =>
+      callAs(homes.mum.sam, 'answerCoParentChange', {
+        householdId: homes.mum.householdId,
+        linkId: homes.linkId,
+        requestId,
+        answer: given,
+        note: null,
+      });
+    await expectRefusal(answer('accept'), 'premiumRequired');
+    await answer('decline');
+    const [request] = await requestsIn(homes.dad.householdId, homes.linkId);
+    expect(request).toMatchObject({ status: 'declined' });
+  });
+
+  it('and the home that asked may still withdraw', async () => {
+    const homes = await linkedHomes();
+    const { requestId } = await callAs<{ requestId: string }>(
+      homes.dad.sam,
+      'proposeCoParentChange',
+      { householdId: homes.dad.householdId, linkId: homes.linkId, change: swap, note: null },
+    );
+    await givenPremiumUntil(homes.dad.householdId, LAPSED);
+    await callAs(homes.dad.sam, 'answerCoParentChange', {
+      householdId: homes.dad.householdId,
+      linkId: homes.linkId,
+      requestId,
+      answer: 'withdraw',
+      note: null,
+    });
+    const [request] = await requestsIn(homes.mum.householdId, homes.linkId);
+    expect(request).toMatchObject({ status: 'withdrawn' });
   });
 });

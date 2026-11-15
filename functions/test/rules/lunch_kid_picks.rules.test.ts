@@ -19,6 +19,7 @@ import {
   WRAP,
   YOGHURT,
   ZOLA,
+  givenLunchPremium,
   givenTheLunchHousehold,
   kidsTablet,
   pick,
@@ -99,6 +100,7 @@ async function choose(
 beforeEach(async () => {
   await clearData();
   await givenTheLunchHousehold();
+  await givenLunchPremium();
 });
 
 describe('lunchChoices/{childId}_{week}: a parent approves the options', () => {

@@ -2,6 +2,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { DATE, HOME, PEOPLE } from './access_fixture';
 import { weeklyOn } from '../recurrence_shape';
+import { givenHomeCarePremium } from './home_care_fixture';
 import { givenData, type Firestore } from './rules_harness';
 
 /**
@@ -63,6 +64,7 @@ export function tickData(
 }
 
 export async function givenRoutines(): Promise<void> {
+  await givenHomeCarePremium();
   await givenData(async (db: Firestore) => {
     const helpers: Record<keyof typeof ROUTINES, string> = {
       cleaners: PEOPLE.cleaner.member,

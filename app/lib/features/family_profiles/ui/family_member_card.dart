@@ -5,11 +5,13 @@ import '../../../shared/copy/app_copy.dart';
 import '../../avatars/ui/member_avatar.dart';
 import '../model/family_entry.dart';
 import 'allergy_names.dart';
+import 'health_lock.dart';
 import 'severity_look.dart';
 
 /// One person on the family list: who they are, where they go to school, and
 /// — before anything else can be missed — their allergies in their severity's
-/// tone and whether they are nut-free.
+/// tone and whether they are nut-free. A household without Premium sees no
+/// allergy here, only the diet's and the school's nut-free rule.
 class FamilyMemberCard extends StatelessWidget {
   const FamilyMemberCard({
     required this.entry,
@@ -29,7 +31,9 @@ class FamilyMemberCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
     final member = entry.member;
-    final rules = entry.foodRules;
+    final rules = isHealthLocked(context)
+        ? rulesWithoutAllergies(entry)
+        : entry.foodRules;
     final years = age;
     final details = [
       if (years != null) FamilyCopy.age(years),

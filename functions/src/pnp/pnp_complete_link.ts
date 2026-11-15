@@ -1,5 +1,6 @@
 import { onCall } from 'firebase-functions/v2/https';
 
+import { requireShopsPremiumForMember } from '../checkers/shops_premium';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { FirestorePnpLinkStore } from './firestore_pnp_link_store';
@@ -20,6 +21,7 @@ export const pnpCompleteLink = onCall(
     const input = parseInput(pnpCompleteLinkInput, request.data);
     const store = db();
     await requireAddToPnp(store);
+    await requireShopsPremiumForMember(store, uid);
     return completePnpLink(
       {
         links: new FirestorePnpLinkStore(store),

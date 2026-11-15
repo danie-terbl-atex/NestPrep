@@ -6,7 +6,8 @@ enum MealsView {
   recipes,
   week;
 
-  /// The view a `view` query names; anything else is the recipes.
-  static MealsView fromQuery(String? value) =>
-      values.where((view) => view.name == value).firstOrNull ?? recipes;
+  /// The view a `view` query names; null when it names none, which leaves
+  /// the choice to the screen.
+  static MealsView? fromQuery(String? value) =>
+      values.where((view) => view.name == value).firstOrNull;
 }

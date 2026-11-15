@@ -4,7 +4,6 @@ import '../../../design/tokens/nest_member_palette.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/state/action_failure.dart';
 import '../../family_profiles/data/child_profile_directory.dart';
-import '../../subscriptions/model/premium_feature.dart';
 import '../data/household_directory.dart';
 import '../data/household_repository.dart';
 import '../data/invite_sharer.dart';
@@ -38,8 +37,7 @@ class SentInvite {
 /// own; a profile made without a code is still a profile the household can
 /// invite from the people screen, so nothing is left unreachable.
 final class InviteStepController extends ChangeNotifier
-    with ActionFailureHolder
-    implements MakesChildren {
+    with ActionFailureHolder {
   InviteStepController({
     required HouseholdRepository householdRepository,
     required HouseholdDirectory householdDirectory,
@@ -79,22 +77,12 @@ final class InviteStepController extends ChangeNotifier
   /// The last share sheet would not open; the screen says to copy instead.
   bool get shareUnavailable => _shareUnavailable;
 
-  @override
-  PremiumFeature? get childAwaitingPremium => _newChild.awaitingPremium;
-
-  @override
-  Future<void> markChildAfterUpgrade() => _run(_newChild.markAfterUpgrade);
-
-  @override
-  void forgetChildAwaitingPremium() => _newChild.forget();
-
   /// Makes the profile and its code, then opens the share sheet. Answers
   /// whether the invite exists — a dismissed sheet is still an invite.
   ///
   /// Inviting a kid records the consent the inviting adult gave (accounts
   /// ADR-0005); the rules refuse a kid profile without it. The kid is a
-  /// child — in lunches and the free tier's count — before they join
-  /// (household ADR-0009).
+  /// child before they join (household ADR-0009).
   Future<bool> invite({
     required String displayName,
     required MemberRole role,

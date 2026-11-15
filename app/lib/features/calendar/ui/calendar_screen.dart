@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/calendar_sync_route.dart';
-import '../../../app/calendar_v2_route.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/async/async_state.dart';
@@ -17,12 +16,15 @@ import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../school_letter/ui/snap_letter_button.dart';
+import '../../starter_content/ui/starter_examples_banner.dart';
 import '../../two_homes/ui/custody_day_bands.dart';
 import '../../two_homes/ui/custody_day_mark.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/calendar_view.dart';
 import '../model/calendar_week.dart';
+import '../model/day_entry.dart';
 import '../model/quick_add/quick_add_result.dart';
 import '../state/calendar_controller.dart';
 import 'calendar_month_grid.dart';
@@ -87,6 +89,16 @@ class CalendarScreen extends StatelessWidget {
                 onAction: controller.dismissActionFailure,
               ),
             ),
+          StarterExamplesBanner(
+            shownIds: switch (controller.week) {
+              AsyncData(:final value) => [
+                for (final entries in value.byDay.values)
+                  for (final entry in entries)
+                    if (entry is EventEntry) entry.occurrence.event.id,
+              ],
+              _ => const [],
+            },
+          ),
           TourAnchor(
             target: TourTarget.calendarViews,
             child: NestSegmentedControl<CalendarView>(
@@ -123,13 +135,7 @@ class CalendarScreen extends StatelessWidget {
                     FeatureFlag.snapSchoolLetter,
                   )) ...[
                 const SizedBox(width: NestSpace.sm),
-                NestIconButton(
-                  icon: LucideIcons.scanText,
-                  label: SchoolLetterCopy.openFromWeek,
-                  onPressed: () => context.push(
-                    CalendarV2Route.letterPathFor(controller.householdId),
-                  ),
-                ),
+                SnapLetterButton(householdId: controller.householdId),
               ],
               const SizedBox(width: NestSpace.sm),
               NestIconButton(

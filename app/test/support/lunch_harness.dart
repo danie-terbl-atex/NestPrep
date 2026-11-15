@@ -6,7 +6,6 @@ import 'package:nestprep/features/lunch_box/model/lunch_plan.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_prep.dart';
 import 'package:nestprep/features/lunch_box/state/lunch_board_controller.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
-import 'package:nestprep/features/subscriptions/model/free_child.dart';
 import 'package:nestprep/features/subscriptions/state/household_entitlement.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/time/household_clock.dart';
@@ -23,20 +22,14 @@ import 'pump_subscriptions.dart';
 /// with the two children of `LunchFixtures` — the one setup every lunch
 /// controller and screen test starts from.
 ///
-/// The household has premium unless a test says [isPremium] false: most of
-/// lunch-box is about the board, and the free tier's line has tests of its
-/// own (lunch-box ADR-0009). [freeChild] is the free tier's record, none by
-/// default.
+/// The household has Premium unless a test says [isPremium] false: lunch
+/// boxes are Premium's (subscriptions ADR-0009), and the locked places have
+/// tests of their own.
 final class LunchHarness {
-  LunchHarness({
-    bool canEdit = true,
-    bool isPremium = true,
-    FreeChild? freeChild,
-  }) : subscriptions = SubscriptionHarness(
-         entitlement: isPremium ? premium : Entitlement.free,
-       ) {
-    if (freeChild != null) subscriptions.entitlements.emitFreeChild(freeChild);
-
+  LunchHarness({bool canEdit = true, bool isPremium = true})
+    : subscriptions = SubscriptionHarness(
+        entitlement: isPremium ? premium : Entitlement.free,
+      ) {
     tz_data.initializeTimeZones();
     controller = LunchBoardController(
       lunchRepository: repository,

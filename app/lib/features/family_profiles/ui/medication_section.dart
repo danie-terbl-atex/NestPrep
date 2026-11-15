@@ -7,6 +7,7 @@ import '../model/medication.dart';
 import '../model/member_health.dart';
 import 'family_section_card.dart';
 import 'family_section_empty.dart';
+import 'health_lock.dart';
 import 'medication_row.dart';
 
 /// A person's medicines in the order of the day, or — for a viewer the rules
@@ -16,6 +17,10 @@ import 'medication_row.dart';
 /// It renders its own four states inside the card, because the rest of the
 /// profile has already loaded and must not wait on, or be replaced by, this
 /// one read (`FE-08`).
+///
+/// Locked, for a household without Premium, it shows no medicine at all and
+/// its corner is the way to the paywall (subscriptions ADR-0008). Who may see
+/// it comes first: somebody kept out is told that, not offered Premium.
 class MedicationSection extends StatelessWidget {
   const MedicationSection({
     required this.isVisible,
@@ -23,10 +28,12 @@ class MedicationSection extends StatelessWidget {
     required this.onRetry,
     required this.onAdd,
     required this.onEdit,
+    this.isLocked = false,
     super.key,
   });
 
   final bool isVisible;
+  final bool isLocked;
   final AsyncState<MemberHealth> health;
   final VoidCallback onRetry;
 
@@ -40,12 +47,16 @@ class MedicationSection extends StatelessWidget {
       icon: isVisible ? LucideIcons.pill : LucideIcons.lock,
       tint: NestTileTint.butter,
       title: FamilyCopy.sectionMedication,
-      actionIcon: LucideIcons.plus,
-      actionLabel: FamilyCopy.addMedication,
+      actionIcon: isLocked ? LucideIcons.lock : LucideIcons.plus,
+      actionLabel: isLocked
+          ? FamilyCopy.lockedAction(FamilyCopy.addMedication)
+          : FamilyCopy.addMedication,
       onAction: isVisible ? onAdd : null,
-      child: isVisible
-          ? _Medicines(health: health, onRetry: onRetry, onEdit: onEdit)
-          : const _Hidden(),
+      child: !isVisible
+          ? const _Hidden()
+          : isLocked
+          ? const HealthLockedNote(message: FamilyCopy.medicationLocked)
+          : _Medicines(health: health, onRetry: onRetry, onEdit: onEdit),
     );
   }
 }

@@ -9,6 +9,7 @@ import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../household/model/member_role.dart';
+import '../../subscriptions/ui/premium_area.dart';
 import '../data/booking_repository.dart';
 import '../data/cache_warmer.dart';
 import '../data/offline_shelf.dart';
@@ -28,6 +29,10 @@ import 'shift_gate.dart';
 ///
 /// Both are created once per household and viewer; family and a viewer the hub
 /// is not shared with get the window "always open" and nothing saved unasked.
+///
+/// The window follows the bookings whatever the plan: it keeps the pass a
+/// carer kept to their shifts needs to enter the household at all, free places
+/// included. Saving for offline is the hub's, and so is Premium's.
 class CarerScope extends StatelessWidget {
   const CarerScope({required this.child, super.key});
 
@@ -56,6 +61,7 @@ class CarerScope extends StatelessWidget {
         permissions.canView(HouseholdArea.nannyHub) || view.viewerIsShiftOnly;
     final savesOffline =
         readsHub &&
+        hasPremiumIn(context) &&
         context.watch<FeatureFlagsController>().isOn(FeatureFlag.nannyOffline);
     return KeyedSubtree(
       key: ValueKey((

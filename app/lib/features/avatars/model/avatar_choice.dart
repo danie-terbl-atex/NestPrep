@@ -44,14 +44,16 @@ abstract class AvatarChoice with _$AvatarChoice {
     },
   );
 
-  MemberLook lookFor({required int stage}) => MemberLook(
-    base: base,
-    stage: stage,
-    wear: base is PresetBase
-        ? wear
-        : {
-            for (final MapEntry(:key, :value) in wear.entries)
-              if (key != AvatarSlot.face) key: value,
-          },
-  );
+  AvatarChoice onBase(AvatarBase next) =>
+      copyWith(base: next, wear: _wornOn(next));
+
+  MemberLook lookFor({required int stage}) =>
+      MemberLook(base: base, stage: stage, wear: _wornOn(base));
+
+  Map<AvatarSlot, String> _wornOn(AvatarBase base) => base is PresetBase
+      ? wear
+      : {
+          for (final MapEntry(:key, :value) in wear.entries)
+            if (key != AvatarSlot.face) key: value,
+        };
 }

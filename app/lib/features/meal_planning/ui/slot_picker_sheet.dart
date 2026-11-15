@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/meal_ingredient_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/text/normalised_name.dart';
 import '../../../shared/time/calendar_date.dart';
@@ -49,20 +50,29 @@ Future<SlotChoice?> showSlotPickerSheet({
   required CalendarDate today,
   required List<Meal> library,
   Meal? current,
+  bool isRecipeLocked = false,
 }) => showNestSheet<SlotChoice>(
   context: context,
   title:
       '${AppCopy.mealSlotName(slot.name)} · '
       '${NestDates.relative(date, today)}',
-  builder: (sheetContext) =>
-      _SlotPickerBody(library: library, current: current),
+  builder: (sheetContext) => _SlotPickerBody(
+    library: library,
+    current: current,
+    isRecipeLocked: isRecipeLocked,
+  ),
 );
 
 class _SlotPickerBody extends StatefulWidget {
-  const _SlotPickerBody({required this.library, required this.current});
+  const _SlotPickerBody({
+    required this.library,
+    required this.current,
+    required this.isRecipeLocked,
+  });
 
   final List<Meal> library;
   final Meal? current;
+  final bool isRecipeLocked;
 
   @override
   State<_SlotPickerBody> createState() => _SlotPickerBodyState();
@@ -102,13 +112,15 @@ class _SlotPickerBodyState extends State<_SlotPickerBody> {
       children: [
         NestButton(
           label: MealsCopy.pickRecipe,
-          icon: LucideIcons.chefHat,
+          icon: widget.isRecipeLocked ? LucideIcons.lock : LucideIcons.chefHat,
           onPressed: () => Navigator.of(context).pop(const SlotRecipe()),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: NestSpace.md),
           child: Text(
-            MealsCopy.orTypeYourOwn,
+            widget.isRecipeLocked
+                ? '${SubscriptionCopy.lockedHint} · ${MealsCopy.orTypeYourOwn}'
+                : MealsCopy.orTypeYourOwn,
             textAlign: TextAlign.center,
             style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
           ),

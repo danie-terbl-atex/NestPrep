@@ -77,7 +77,8 @@ const DAY = 24 * 60 * 60 * 1000;
 
 /**
  * Premium for the Parkers, a month ahead — or lapsed a day ago — written the
- * way only the subscriptions Functions write it (lunch-box ADR-0009).
+ * way only the subscriptions Functions write it. Every lunch write needs it
+ * (subscriptions ADR-0009); `givenTheLunchHousehold` alone is a free household.
  */
 export async function givenLunchPremium(state: 'active' | 'lapsed' = 'active'): Promise<void> {
   const until = state === 'active' ? Date.now() + 30 * DAY : Date.now() - DAY;
@@ -85,12 +86,5 @@ export async function givenLunchPremium(state: 'active' | 'lapsed' = 'active'): 
     await setDoc(doc(db, 'households/h1/entitlement/current'), {
       premiumUntil: Timestamp.fromMillis(until),
     });
-  });
-}
-
-/** The child the free tier plans for, as `setChildProfile` records it. */
-export async function givenTheFreeChild(memberId: string): Promise<void> {
-  await givenData(async (db: Firestore) => {
-    await setDoc(doc(db, 'households/h1/entitlement/freeChild'), { memberId });
   });
 }

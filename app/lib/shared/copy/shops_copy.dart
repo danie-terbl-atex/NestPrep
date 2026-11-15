@@ -30,6 +30,10 @@ abstract final class ShopsCopy {
   static String linkedTo(String account) => 'Linked to $account';
   static const link = 'Link';
   static const manage = 'Manage';
+  static const unlink = 'Unlink';
+  static const premiumNote =
+      'Linking a shop is part of Premium. An account you already linked can '
+      'still be unlinked here.';
 
   static const noneOnTitle = 'No shops right now';
   static const noneOnBody =

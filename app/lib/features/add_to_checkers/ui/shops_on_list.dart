@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/flags/feature_flags_controller.dart';
+import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
 import '../model/retailer_switch.dart';
 import '../state/product_match_controller.dart';
@@ -18,4 +19,13 @@ List<ProductRetailer> shopsOnList(BuildContext context, {bool listen = true}) {
   }
   final flags = Provider.of<FeatureFlagsController>(context, listen: listen);
   return shopsOn(flags.isOn);
+}
+
+/// The product picked for [item], while its shop is one this build offers.
+/// A pick made at a shop that has since been switched off stays stored and
+/// is simply not shown, so the shop's name and mark go with its switch.
+ProductMatch? shownMatchOf(BuildContext context, GroceryItem item) {
+  final match = item.productMatch;
+  if (match == null) return null;
+  return shopsOnList(context).contains(match.retailer) ? match : null;
 }

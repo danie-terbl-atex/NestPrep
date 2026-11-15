@@ -21,6 +21,8 @@ import '../features/nanny_hub/ui/house_rules_screen.dart';
 import '../features/nanny_hub/ui/nanny_hub_screen.dart';
 import '../features/nanny_hub/ui/shift_screen.dart';
 import '../features/nanny_hub/ui/shift_summary_screen.dart';
+import '../shared/copy/nanny_copy.dart';
+import '../shared/copy/nanny_shift_copy.dart';
 import '../shared/links/external_link_opener.dart';
 import 'household_route.dart';
 import 'nanny_access_routes.dart';
@@ -69,49 +71,68 @@ ShellRoute nannyHubRoutes() => ShellRoute(
   routes: [
     GoRoute(
       path: NannyHubRoute.path,
-      builder: (context, state) => const NannyHubScreen(),
+      builder: (context, state) =>
+          nannyHubArea(title: NannyCopy.title, child: const NannyHubScreen()),
     ),
     GoRoute(
       path: NannyHubRoute.childPath,
-      builder: (context, state) => ChildCardScreen(
-        childId: NannyHubRoute.parameterFrom(
-          state,
-          NannyHubRoute.childParameter,
+      builder: (context, state) => nannyHubArea(
+        title: NannyCopy.title,
+        child: ChildCardScreen(
+          childId: NannyHubRoute.parameterFrom(
+            state,
+            NannyHubRoute.childParameter,
+          ),
         ),
       ),
     ),
     GoRoute(
       path: NannyHubRoute.emergencyPath,
-      builder: (context, state) => const EmergencyScreen(),
+      builder: (context, state) => nannyHubArea(
+        title: NannyCopy.emergencyTitle,
+        child: const EmergencyScreen(),
+      ),
     ),
     GoRoute(
       path: NannyHubRoute.guidePath,
-      builder: (context, state) => const HouseGuideScreen(),
+      builder: (context, state) => nannyHubArea(
+        title: NannyCopy.houseGuide,
+        child: const HouseGuideScreen(),
+      ),
     ),
     GoRoute(
       path: NannyHubRoute.rulesPath,
-      builder: (context, state) => const HouseRulesScreen(),
+      builder: (context, state) => nannyHubArea(
+        title: NannyCopy.houseRules,
+        child: const HouseRulesScreen(),
+      ),
     ),
     GoRoute(
       path: NannyHubRoute.checklistsPath,
-      builder: (context, state) => const ChecklistsScreen(),
+      builder: (context, state) => nannyHubArea(
+        title: NannyCopy.checklists,
+        child: const ChecklistsScreen(),
+      ),
     ),
     GoRoute(
       path: NannyHubRoute.shiftPath,
-      builder: (context, state) => ChangeNotifierProvider(
-        create: (context) => ShiftController(
-          shiftRepository: context.read<ShiftRepository>(),
-          shiftDirectory: context.read<ShiftDirectory>(),
-          photos: context.read<PhotoLibrary>(),
-          householdId: HouseholdRoute.idFrom(state),
-          shiftId: NannyHubRoute.parameterFrom(
-            state,
-            NannyHubRoute.shiftParameter,
+      builder: (context, state) => nannyHubArea(
+        title: NannyShiftCopy.shiftTitle,
+        child: ChangeNotifierProvider(
+          create: (context) => ShiftController(
+            shiftRepository: context.read<ShiftRepository>(),
+            shiftDirectory: context.read<ShiftDirectory>(),
+            photos: context.read<PhotoLibrary>(),
+            householdId: HouseholdRoute.idFrom(state),
+            shiftId: NannyHubRoute.parameterFrom(
+              state,
+              NannyHubRoute.shiftParameter,
+            ),
+            memberId: context.read<HouseholdView>().viewerMember?.id ?? '',
           ),
-          memberId: context.read<HouseholdView>().viewerMember?.id ?? '',
+          // Shift mode sends photo updates (nanny-hub ADR-0004).
+          child: withPhotoFeed(state, child: const ShiftScreen()),
         ),
-        // Shift mode sends photo updates (nanny-hub ADR-0004).
-        child: withPhotoFeed(state, child: const ShiftScreen()),
       ),
     ),
     // ---- pickups (nanny-hub ADR-0005) ----
@@ -122,10 +143,13 @@ ShellRoute nannyHubRoutes() => ShellRoute(
     ...nannyAccessRoutes(),
     GoRoute(
       path: NannyHubRoute.summaryPath,
-      builder: (context, state) => ShiftSummaryScreen(
-        shiftId: NannyHubRoute.parameterFrom(
-          state,
-          NannyHubRoute.shiftParameter,
+      builder: (context, state) => nannyHubArea(
+        title: NannyShiftCopy.summaryTitle,
+        child: ShiftSummaryScreen(
+          shiftId: NannyHubRoute.parameterFrom(
+            state,
+            NannyHubRoute.shiftParameter,
+          ),
         ),
       ),
     ),

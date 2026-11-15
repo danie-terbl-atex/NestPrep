@@ -27,9 +27,13 @@ interface Home {
 const home = (householdId: string): DocumentReference =>
   adminDb().collection('households').doc(householdId);
 
-/** Sam the admin, Thandi a helper on the defaults, and Mia in Grade 3 at Parkview. */
+const entitlementOf = (householdId: string): DocumentReference =>
+  home(householdId).collection('entitlement').doc('current');
+
+/** Sam the admin, Thandi a helper on the defaults, and Mia in Grade 3 at Parkview — on Premium. */
 async function aHousehold(): Promise<Home> {
   const { sam, thandi, householdId } = await householdOfTwo('helper');
+  await entitlementOf(householdId).set({ premiumUntil: new Date(Date.now() + 86_400_000) });
   const kid = home(householdId).collection('members').doc();
   await kid.set({ displayName: 'Mia', color: 'mint', role: 'kid', claimedBy: null });
   await home(householdId).collection('schools').doc('s1').set({ name: 'Parkview Primary' });
@@ -92,7 +96,7 @@ describe('a parent snapping a letter', () => {
       'readSchoolLetter',
       letterFor(householdId),
     );
-    expect(result.callsLeft).toBe(9);
+    expect(result.callsLeft).toBe(99);
     expect(result.proposals).toEqual([
       expect.objectContaining({
         title: 'Grade 3 zoo outing',
@@ -115,7 +119,7 @@ describe('a parent snapping a letter', () => {
     expect(lines.docs.map((line) => line.data())).toEqual([
       expect.objectContaining({
         feature: 'schoolLetter',
-        tier: 'free',
+        tier: 'premium',
         uid: sam.uid,
         status: 'succeeded',
         inputTokens: 10,
@@ -123,31 +127,52 @@ describe('a parent snapping a letter', () => {
     ]);
     expect(JSON.stringify(lines.docs[0]?.data())).not.toContain('Mia');
   });
+});
 
-  it('counts against the premium cap while the household has premium', async () => {
+describe('a free household (subscriptions ADR-0008)', () => {
+  it('is refused for Premium, and nothing is counted', async () => {
     const { sam, householdId } = await aHousehold();
+    await entitlementOf(householdId).delete();
     await modelAnswers({ events: [] });
-    await home(householdId)
-      .collection('entitlement')
-      .doc('current')
-      .set({ premiumUntil: new Date(Date.now() + 86_400_000) });
-    const result = await callAs<{ callsLeft: number }>(
-      sam,
-      'readSchoolLetter',
-      letterFor(householdId),
+    await expectRefusal(callAs(sam, 'readSchoolLetter', letterFor(householdId)), 'premiumRequired');
+    expect((await home(householdId).collection('aiUsage').doc(MONTH).get()).exists).toBe(false);
+  });
+
+  it('is refused once its Premium has lapsed, whatever the console says of free calls', async () => {
+    const { sam, householdId } = await aHousehold();
+    await entitlementOf(householdId).set({ premiumUntil: new Date(Date.now() - 1000) });
+    await adminDb()
+      .collection('appConfig')
+      .doc('ai')
+      .set({ monthlyCalls: { free: 10 } });
+    await modelAnswers({ events: [] });
+    await expectRefusal(callAs(sam, 'readSchoolLetter', letterFor(householdId)), 'premiumRequired');
+    expect((await home(householdId).collection('aiUsage').doc(MONTH).get()).exists).toBe(false);
+  });
+
+  it('still hears that the feature is off, or that it is not theirs, first', async () => {
+    const { sam, thandi, householdId } = await aHousehold();
+    await entitlementOf(householdId).delete();
+    await expectRefusal(
+      callAs(thandi, 'readSchoolLetter', letterFor(householdId)),
+      'calendarNotShared',
     );
-    expect(result.callsLeft).toBe(99);
+    await adminDb().collection('appConfig').doc('flags').set({ snapSchoolLetter: false });
+    await expectRefusal(
+      callAs(sam, 'readSchoolLetter', letterFor(householdId)),
+      'letterFeatureOff',
+    );
   });
 });
 
 describe('the monthly cap', () => {
   it('refuses once the month is spent, without asking the model', async () => {
     const { sam, householdId } = await aHousehold();
-    await home(householdId).collection('aiUsage').doc(MONTH).set({ calls: 10, attempts: 10 });
+    await home(householdId).collection('aiUsage').doc(MONTH).set({ calls: 100, attempts: 100 });
     await modelAnswers({ events: [] });
     await expectRefusal(callAs(sam, 'readSchoolLetter', letterFor(householdId)), 'aiLimitReached');
     const month = await home(householdId).collection('aiUsage').doc(MONTH).get();
-    expect(month.data()).toMatchObject({ calls: 10, attempts: 10 });
+    expect(month.data()).toMatchObject({ calls: 100, attempts: 100 });
   });
 
   it('follows a lower cap set in the console at once', async () => {
@@ -155,7 +180,7 @@ describe('the monthly cap', () => {
     await adminDb()
       .collection('appConfig')
       .doc('ai')
-      .set({ monthlyCalls: { free: 1 } });
+      .set({ monthlyCalls: { premium: 1 } });
     await modelAnswers({ events: [] });
     await callAs(sam, 'readSchoolLetter', letterFor(householdId));
     await expectRefusal(callAs(sam, 'readSchoolLetter', letterFor(householdId)), 'aiLimitReached');

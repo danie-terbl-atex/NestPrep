@@ -10,6 +10,7 @@ match /nannyShifts/{shiftId}/photoUpdates/{updateId} {
   allow read: if canView(householdId, 'nannyHub');
 
   allow create: if canEdit(householdId, 'nannyHub')
+    && hasPremium(householdId)
     && isNannyShiftOpen(householdId, shiftId)
     && request.resource.data.keys().hasOnly(
          ['photoId', 'caption', 'childIds', 'byMemberId', 'createdAt', 'delivery'])

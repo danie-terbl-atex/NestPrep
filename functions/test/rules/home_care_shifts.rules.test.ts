@@ -19,6 +19,7 @@ import {
   givenAHouseholdOfEveryRole,
   type Person,
 } from './access_fixture';
+import { givenHomeCarePremium } from './home_care_fixture';
 import {
   asKid,
   asUser,
@@ -68,6 +69,7 @@ function ended(by: string): Record<string, unknown> {
 beforeEach(async () => {
   await clearData();
   await givenAHouseholdOfEveryRole();
+  await givenHomeCarePremium();
   await givenData(async (db) => {
     const stored = (helperId: string): Record<string, unknown> => ({
       ...started(helperId),

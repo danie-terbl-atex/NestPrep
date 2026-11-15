@@ -26,6 +26,8 @@ import '../features/lunch_box/data/lunch_choices_repository.dart';
 import '../features/lunch_box/data/lunch_repository.dart';
 import '../features/lunch_box/state/lunch_choose_controller.dart';
 import '../features/meal_planning/data/meal_repository.dart';
+import '../features/subscriptions/data/entitlement_repository.dart';
+import '../features/subscriptions/model/entitlement.dart';
 import '../features/todos/data/todo_repository.dart';
 import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
@@ -140,17 +142,38 @@ List<RouteBase> kidRoutes(SessionController session) => [
                         false),
               ),
           ),
+          StreamProvider<Entitlement?>(
+            create: (context) => context
+                .read<EntitlementRepository>()
+                .watchEntitlement(kid.householdId),
+            initialData: null,
+            catchError: (_, _) => null,
+          ),
           // Lunch to choose (lunch-box ADR-0008): opens once the home knows
-          // today, only when the grant shows lunch and the switch is on.
-          ChangeNotifierProxyProvider<KidHomeController, LunchChooseController>(
-            create: (context) => LunchChooseController(
-              lunchRepository: context.read<LunchRepository>(),
-              choicesRepository: context.read<LunchChoicesRepository>(),
-              householdId: kid.householdId,
-              childId: kid.memberId,
-            ),
-            update: (context, home, choose) => choose!
-              ..follow(
+          // today, only when the grant shows lunch and the switch is on — and
+          // only for a household with Premium, since a kid device sits
+          // outside the shell and nothing else here knows the entitlement
+          // (subscriptions ADR-0009).
+          ChangeNotifierProxyProvider2<
+            KidHomeController,
+            Entitlement?,
+            LunchChooseController?
+          >(
+            create: (_) => null,
+            update: (context, home, entitlement, choose) {
+              // Returning null lets the provider dispose the one it held.
+              if (!(entitlement?.isPremiumAt(DateTime.now()) ?? false)) {
+                return null;
+              }
+              final controller =
+                  choose ??
+                  LunchChooseController(
+                    lunchRepository: context.read<LunchRepository>(),
+                    choicesRepository: context.read<LunchChoicesRepository>(),
+                    householdId: kid.householdId,
+                    childId: kid.memberId,
+                  );
+              return controller..follow(
                 today: home.today,
                 show:
                     (home.areas?.lunch ?? false) &&
@@ -158,7 +181,8 @@ List<RouteBase> kidRoutes(SessionController session) => [
                           FeatureFlag.lunchKidPicks,
                         ) ??
                         false),
-              ),
+              );
+            },
           ),
         ],
         child: const KidHomeScreen(),

@@ -14,6 +14,9 @@ import '../../family_profiles/model/family_access.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
+import '../../subscriptions/model/premium_feature.dart';
+import '../../subscriptions/state/household_entitlement.dart';
+import '../../subscriptions/ui/premium_area.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/lunch_board.dart';
@@ -21,11 +24,45 @@ import '../state/lunch_board_controller.dart';
 import 'lunch_board_body.dart';
 import 'lunch_week_bar.dart';
 
-/// Each child's school lunches for the week (lunch-box ADR-0001, ADR-0014). One controller joins the children, the
-/// library, the plans and the go-to boxes, so this screen has one loading
-/// state and reads offline from cached documents.
+/// Each child's school lunches for the week (lunch-box ADR-0001, ADR-0014),
+/// for a household with Premium; otherwise the Food tab's lunch side shown
+/// locked, tab bar and switch in place (subscriptions ADR-0009).
 class LunchScreen extends StatelessWidget {
   const LunchScreen({required this.onSelectTab, super.key});
+
+  final ValueChanged<HouseholdTab> onSelectTab;
+
+  @override
+  Widget build(BuildContext context) {
+    final entitlement = context.watch<HouseholdEntitlement>();
+    if (entitlement.isPremium) return _LunchBoardScreen(onSelectTab);
+    return NestScaffold(
+      title: LunchCopy.title,
+      trailing: const [NotificationBell(), AccountMenuButton()],
+      bottomBar: HouseholdTabBar(
+        current: HouseholdTab.lunch,
+        onSelect: onSelectTab,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          FoodSwitch(current: HouseholdTab.lunch, onSelect: onSelectTab),
+          Expanded(
+            child: entitlement.entitlement is AsyncLoading
+                ? const NestLoadingView()
+                : const PremiumLockedView(feature: PremiumFeature.lunchBox),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One controller joins the children, the library, the plans and the go-to
+/// boxes, so the board has one loading state and reads offline from cached
+/// documents.
+class _LunchBoardScreen extends StatelessWidget {
+  const _LunchBoardScreen(this.onSelectTab);
 
   final ValueChanged<HouseholdTab> onSelectTab;
 

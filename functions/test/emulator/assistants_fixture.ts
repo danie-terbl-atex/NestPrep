@@ -5,7 +5,9 @@ import type { AddressInfo } from 'node:net';
 import { expect } from 'vitest';
 
 import { HOSTING_REGION } from '../../src/shared/region';
+import { samsHousehold, type Household } from './account_data_fixture';
 import { PROJECT_ID, adminDb, httpFunctionUrl, type TestUser } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * An OAuth client for the assistants' authorization server (assistants
@@ -345,4 +347,12 @@ export function idTokenSignedInAgo(uid: string, minutesAgo: number): string {
     exp: now + 3600,
     firebase: { identities: {}, sign_in_provider: 'password' },
   })}.`;
+}
+
+export const PREMIUM_UNTIL = new Date('2099-01-01T00:00:00Z');
+
+export async function samsPremiumHousehold(): Promise<Household> {
+  const h = await samsHousehold();
+  await givenPremiumUntil(h.householdId, PREMIUM_UNTIL);
+  return h;
 }

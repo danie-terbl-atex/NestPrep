@@ -4,13 +4,19 @@ import 'package:provider/provider.dart';
 import '../../../app/food_switch.dart';
 import '../../../app/household_shell.dart';
 import '../../../design/nest_kit.dart';
+import '../../../shared/async/async_state.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/copy/subscription_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../notifications/ui/notification_bell.dart';
 import '../../recipes/ui/recipe_discovery_view.dart';
+import '../../starter_content/ui/starter_examples_banner.dart';
+import '../../subscriptions/model/premium_feature.dart';
+import '../../subscriptions/state/household_entitlement.dart';
+import '../../subscriptions/ui/premium_area.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/meals_view.dart';
@@ -20,10 +26,14 @@ import 'meal_week_view.dart';
 import 'planned_day_card.dart';
 
 /// Meals, under the Food tab (design-system ADR-0015, ADR-0017): one header, and under it the
-/// recipes to choose from — where it opens — or the week they go into,
-/// switched by a segmented control whose choice is the route's [view]
-/// (`FE-07`). Where a recipe opens and how the view changes are the route's
-/// to decide; this lays out the two and reports what was asked (`FE-17`).
+/// recipes to choose from or the week they go into, switched by a segmented
+/// control whose choice is the route's [view] (`FE-07`). Where a recipe opens
+/// and how the view changes are the route's to decide; this lays out the two
+/// and reports what was asked (`FE-17`).
+///
+/// Recipes are Premium and the week is free (subscriptions ADR-0008): a
+/// household without Premium opens on the week, and its recipes are shown
+/// locked, never hidden.
 class MealsScreen extends StatelessWidget {
   const MealsScreen({
     required this.view,
@@ -35,7 +45,8 @@ class MealsScreen extends StatelessWidget {
     super.key,
   });
 
-  final MealsView view;
+  /// Null when the route named none: the recipes with Premium, else the week.
+  final MealsView? view;
   final ValueChanged<MealsView> onSelectView;
   final ValueChanged<HouseholdTab> onSelectTab;
 
@@ -48,7 +59,12 @@ class MealsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isWeek = view == MealsView.week;
+    final entitlement = context.watch<HouseholdEntitlement>();
+    final hasRecipes = entitlement.isPremium;
+    final isChecking = entitlement.entitlement is AsyncLoading;
+    final shown =
+        view ?? (hasRecipes || isChecking ? MealsView.recipes : MealsView.week);
+    final isWeek = shown == MealsView.week;
     // The library is for somebody who may change meals (household
     // ADR-0003), and belongs beside the week it fills.
     final canEdit = context.watch<HouseholdView>().permissions.canEdit(
@@ -77,22 +93,36 @@ class MealsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FoodSwitch(current: HouseholdTab.meals, onSelect: onSelectTab),
+          if (isWeek)
+            StarterExamplesBanner(
+              shownIds: switch (context.watch<MealPlanController>().week) {
+                AsyncData(:final value) => [
+                  for (final meal in value.library) meal.id,
+                ],
+                _ => const [],
+              },
+            ),
           TourAnchor(
             target: TourTarget.mealsViews,
             child: NestSegmentedControl<MealsView>(
-              segments: const [
+              segments: [
                 NestSegment(
                   value: MealsView.recipes,
                   label: MealsCopy.recipes,
-                  icon: LucideIcons.bookOpenText,
+                  icon: hasRecipes || isChecking
+                      ? LucideIcons.bookOpenText
+                      : LucideIcons.lock,
+                  hint: hasRecipes || isChecking
+                      ? null
+                      : SubscriptionCopy.lockedHint,
                 ),
-                NestSegment(
+                const NestSegment(
                   value: MealsView.week,
                   label: MealsCopy.thisWeek,
                   icon: LucideIcons.calendarDays,
                 ),
               ],
-              selected: view,
+              selected: shown,
               onSelect: onSelectView,
             ),
           ),
@@ -104,11 +134,15 @@ class MealsScreen extends StatelessWidget {
                     onPickRecipe: onPickRecipe,
                     onOpenLunch: () => onSelectTab(HouseholdTab.lunch),
                   )
-                : RecipeDiscoveryView(
+                : hasRecipes
+                ? RecipeDiscoveryView(
                     addEntry: recipesEntry,
                     onOpen: (recipe, heroTag) =>
                         onOpenRecipe(recipe.id, heroTag: heroTag),
-                  ),
+                  )
+                : isChecking
+                ? const NestLoadingView()
+                : const PremiumLockedView(feature: PremiumFeature.recipes),
           ),
         ],
       ),

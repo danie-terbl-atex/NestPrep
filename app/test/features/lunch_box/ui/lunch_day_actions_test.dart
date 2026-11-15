@@ -77,7 +77,7 @@ void main() {
   });
 
   testWidgets('a go-to box is packed into the day on show', (tester) async {
-    harness = await LunchBoardRig.pump(tester, isPremium: true);
+    harness = await LunchBoardRig.pump(tester);
     await arrive(tester);
     await showDay(tester, 'Thursday');
     await tester.tap(find.text(LunchCopy.packFavourite));

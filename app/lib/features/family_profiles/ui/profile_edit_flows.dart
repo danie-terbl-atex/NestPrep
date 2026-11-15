@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../../shared/failure/app_failure.dart';
-import '../../subscriptions/ui/paywall_sheet.dart';
 import '../model/allergy.dart';
 import '../model/family_entry.dart';
 import '../model/family_roster.dart';
@@ -12,6 +10,7 @@ import '../state/family_controller.dart';
 import '../state/member_health_controller.dart';
 import 'allergy_sheet.dart';
 import 'food_sheet.dart';
+import 'health_lock.dart';
 import 'medication_sheet.dart';
 import 'school_flows.dart';
 import 'schooling_sheet.dart';
@@ -36,13 +35,9 @@ final class ProfileEditFlows {
 
   String get _memberId => entry.memberId;
 
-  /// Marks or unmarks a child. A second child on the free tier is refused by
-  /// the server, and the answer to that is premium, not an apology: the
-  /// paywall opens on it, and once premium is bought the child is marked
-  /// after all (subscriptions ADR-0001).
-  ///
-  /// Marking somebody a child asks the parent's consent first, unless it is
-  /// on record already (accounts ADR-0005); a no leaves them as they were.
+  /// Marks or unmarks a child. Marking somebody a child asks the parent's
+  /// consent first, unless it is on record already (accounts ADR-0005); a no
+  /// leaves them as they were.
   Future<void> toggleChild(BuildContext context) async {
     final isChild = !entry.isChild;
     final asksForConsent = isChild && !entry.member.hasGuardianConsent;
@@ -61,21 +56,12 @@ final class ProfileEditFlows {
       isChild: isChild,
       withGuardianConsent: asksForConsent,
     );
-    final failure = family.actionFailure;
-    if (failure is! PremiumRequiredFailure || !context.mounted) return;
-    family.dismissActionFailure();
-    final upgraded = await showPaywall(context, feature: failure.feature);
-    if (!upgraded) return;
-    await family.edit.setIsChild(
-      _memberId,
-      isChild: isChild,
-      withGuardianConsent: asksForConsent,
-    );
   }
 
   Future<void> addAllergy(BuildContext context) => editAllergy(context, null);
 
   Future<void> editAllergy(BuildContext context, Allergy? existing) async {
+    if (!await ensureHealthPremium(context) || !context.mounted) return;
     final outcome = await showAllergySheet(
       context: context,
       existing: existing,
@@ -150,6 +136,7 @@ final class ProfileEditFlows {
     String? medicationId,
     Medication? existing,
   ) async {
+    if (!await ensureHealthPremium(context) || !context.mounted) return;
     final outcome = await showMedicationSheet(
       context: context,
       existing: existing,

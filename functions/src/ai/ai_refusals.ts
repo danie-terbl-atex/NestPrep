@@ -1,5 +1,9 @@
 import { HttpsError, type FunctionsErrorCode } from 'firebase-functions/v2/https';
 
+import { premiumRequired } from '../subscriptions/errors';
+import { PREMIUM_FEATURE_OF, type AiFeature } from './ai_settings';
+import type { AiTier } from './usage_rules';
+
 /**
  * Every way an AI call can refuse, shared by every AI feature (foundation
  * ADR-0015).
@@ -28,4 +32,15 @@ export type AiRefusal = keyof typeof AI_REFUSALS;
 export function refuseAi(reason: AiRefusal): HttpsError {
   const [code, message] = AI_REFUSALS[reason];
   return new HttpsError(code, message, { reason });
+}
+
+/**
+ * A claim that did not fit. A free household has no AI at all, so it is sent
+ * to the paywall on the feature it reached for even when the caller made no
+ * Premium check of its own; only a Premium household can have spent a month.
+ */
+export function refuseClaim(tier: AiTier, feature: AiFeature): HttpsError {
+  return tier === 'free'
+    ? premiumRequired(PREMIUM_FEATURE_OF[feature])
+    : refuseAi('aiLimitReached');
 }

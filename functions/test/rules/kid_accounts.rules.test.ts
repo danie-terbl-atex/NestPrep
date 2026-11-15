@@ -27,7 +27,14 @@ import {
   miasTablet,
   task,
 } from './kid_fixture';
-import { asKid, asUser, assertFails, assertSucceeds } from './rules_harness';
+import {
+  asKid,
+  asUser,
+  assertFails,
+  assertSucceeds,
+  givenData,
+  type Firestore,
+} from './rules_harness';
 
 /**
  * What a kid device may do, and what it may not (accounts ADR-0003, ADR-0004).
@@ -206,6 +213,11 @@ describe('a kid device changes nothing else', () => {
   });
 
   it('its own position, because a kid phone can share (live-location ADR-0003)', async () => {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, `${HOME}/entitlement/current`), {
+        premiumUntil: new Date('2099-01-01T00:00:00Z'),
+      });
+    });
     await assertSucceeds(
       setDoc(doc(await miasTablet(), `${HOME}/memberLocations/${MIA}`), {
         point: new GeoPoint(-26.2, 28.04),

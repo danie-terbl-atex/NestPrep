@@ -240,4 +240,37 @@ void main() {
     switches.value++;
     expect(held.reads, 1);
   });
+
+  test('unlinking forgets the link at that shop alone', () async {
+    pnp.status = PnpLinkStatus(isLinked: true, linkedAt: now);
+    woolworths.status = WoolworthsLinkStatus(
+      isLinked: true,
+      linkedAt: now,
+      emailMasked: 'd***@a***.io',
+    );
+    final controller = controllerFor(ProductRetailer.values);
+    await settle();
+
+    await controller.unlink(ProductRetailer.woolworths);
+
+    expect(woolworths.unlinks, 1);
+    expect(pnp.unlinks, 0);
+    expect(checkers.unlinks, 0);
+    expect(
+      controller.linkAt(ProductRetailer.woolworths),
+      isA<AsyncData<ShopLink>>().having(
+        (state) => state.value,
+        'value',
+        const ShopLink.unlinked(),
+      ),
+    );
+    expect(
+      controller.linkAt(ProductRetailer.pickNPay),
+      isA<AsyncData<ShopLink>>().having(
+        (state) => state.value.isLinked,
+        'isLinked',
+        isTrue,
+      ),
+    );
+  });
 }

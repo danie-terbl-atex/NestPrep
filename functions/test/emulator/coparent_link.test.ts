@@ -2,8 +2,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ALTERNATING, DADS_HOME, MUMS_HOME } from '../coparent_fixtures';
 import { expectRefusal } from './calendar_sync_fixture';
-import { aCode, accept, aKid, linkedHomes, mirrorOf, twoHomes } from './coparent_fixture';
+import { LAPSED, aCode, accept, aKid, linkedHomes, mirrorOf, twoHomes } from './coparent_fixture';
 import { adminDb, callAs, clearFirestore } from './emulator_harness';
+import { givenPremiumUntil } from './subscriptions_fixture';
 
 /**
  * Making, accepting, confirming and ending a link between two homes, over
@@ -259,5 +260,51 @@ describe('confirming and ending', () => {
       'linkNotActive',
     );
     await expect(aCode(homes)).resolves.toMatch(/^[2-9A-HJ-NP-Z]{8}$/);
+  });
+});
+
+describe('two homes is Premium in the caller’s own household', () => {
+  it('a household without Premium makes no code', async () => {
+    const homes = await twoHomes();
+    await givenPremiumUntil(homes.mum.householdId, LAPSED);
+    await expectRefusal(aCode(homes), 'premiumRequired');
+  });
+
+  it('a household without Premium accepts no code, and the code stays unused', async () => {
+    const homes = await twoHomes();
+    const code = await aCode(homes);
+    await givenPremiumUntil(homes.dad.householdId, LAPSED);
+    await expectRefusal(accept(homes, code), 'premiumRequired');
+    expect((await adminDb().doc(`coParentInvites/${code}`).get()).get('redeemedBy')).toBeNull();
+  });
+
+  it('a lapsed home cannot confirm a link, but may still say no', async () => {
+    const homes = await twoHomes();
+    const linkId = await accept(homes, await aCode(homes));
+    await givenPremiumUntil(homes.mum.householdId, LAPSED);
+    await expectRefusal(
+      callAs(homes.mum.sam, 'confirmCoParentLink', {
+        householdId: homes.mum.householdId,
+        linkId,
+        accept: true,
+      }),
+      'premiumRequired',
+    );
+    await callAs(homes.mum.sam, 'confirmCoParentLink', {
+      householdId: homes.mum.householdId,
+      linkId,
+      accept: false,
+    });
+    expect((await mirrorOf(homes.dad.householdId, linkId))['status']).toBe('declined');
+  });
+
+  it('a lapsed home still ends its link, and the other home’s Premium is not asked', async () => {
+    const homes = await linkedHomes();
+    await givenPremiumUntil(homes.mum.householdId, LAPSED);
+    await callAs(homes.mum.sam, 'endCoParentLink', {
+      householdId: homes.mum.householdId,
+      linkId: homes.linkId,
+    });
+    expect((await mirrorOf(homes.dad.householdId, homes.linkId))['status']).toBe('ended');
   });
 });

@@ -1,7 +1,15 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/home_care/model/home_care_board.dart';
+import '../features/home_care/ui/locked_home_care_screen.dart';
 import 'household_route.dart';
+
+/// Home care is Premium in full (subscriptions ADR-0008): every one of its
+/// routes is this, so a household without it meets the same place, locked —
+/// and can still clock out a shift it left open (subscriptions ADR-0009).
+Widget homeCareArea({required String title, required Widget child}) =>
+    HomeCarePremiumArea(title: title, child: child);
 
 /// Where home care lives in the route table (home-care ADR-0001): the job
 /// list with its pile in the query, a new job, the rooms, the products, and

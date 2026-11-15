@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/meal_planning/model/meal.dart';
 import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/state/meal_plan_controller.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
 import 'package:nestprep/features/meal_planning/ui/planned_day_card.dart';
+import 'package:nestprep/features/meal_planning/ui/slot_picker_sheet.dart';
 import 'package:nestprep/features/recipes/model/recipe_link.dart';
+import 'package:nestprep/features/recipes/ui/recipe_discovery_view.dart';
+import 'package:nestprep/features/subscriptions/model/entitlement.dart';
+import 'package:nestprep/features/subscriptions/model/premium_feature.dart';
+import 'package:nestprep/features/subscriptions/ui/paywall_page.dart';
+import 'package:nestprep/features/subscriptions/ui/premium_area.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
+import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/time/calendar_date.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -15,6 +23,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../../../support/fake_recipe_photos.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
+import '../../../support/pump_subscriptions.dart';
 import '../../../support/recipe_fixtures.dart';
 import '../../../support/recipe_harness.dart';
 
@@ -29,6 +38,7 @@ void main() {
   late MealPlanController plan;
   late List<MealsView> views;
   late List<String> opened;
+  late SubscriptionHarness subscriptions;
 
   setUp(() {
     photos = FakeRecipePhotoSource();
@@ -50,26 +60,35 @@ void main() {
 
   Future<void> pump(
     WidgetTester tester,
-    MealsView view, {
+    MealsView? view, {
+    bool isPremium = true,
     Brightness brightness = Brightness.light,
     double scale = 1,
     RecipePicker? onPickRecipe,
-  }) => pumpScreen(
-    tester,
-    MealsScreen(
-      view: view,
-      onSelectView: views.add,
-      onSelectTab: (_) {},
-      onPickRecipe: onPickRecipe ?? (_, _) async => null,
-      onOpenRecipe: (id, {heroTag}) => opened.add(id),
-    ),
-    providers: [
-      ...harness.providers,
-      ChangeNotifierProvider<MealPlanController>.value(value: plan),
-    ],
-    brightness: brightness,
-    textScale: scale,
-  );
+  }) {
+    subscriptions = SubscriptionHarness(
+      entitlement: isPremium
+          ? Entitlement(premiumUntil: DateTime.utc(2100))
+          : Entitlement.free,
+    );
+    return pumpScreen(
+      tester,
+      MealsScreen(
+        view: view,
+        onSelectView: views.add,
+        onSelectTab: (_) {},
+        onPickRecipe: onPickRecipe ?? (_, _) async => null,
+        onOpenRecipe: (id, {heroTag}) => opened.add(id),
+      ),
+      providers: [
+        ...harness.providers,
+        ...subscriptions.providers,
+        ChangeNotifierProvider<MealPlanController>.value(value: plan),
+      ],
+      brightness: brightness,
+      textScale: scale,
+    );
+  }
 
   final fromRecipe = Meal.named(
     id: Meal.idForRecipe('bobotie'),
@@ -244,6 +263,170 @@ void main() {
 
     expect(harness.meals.recipeMeals, isEmpty);
     expect(harness.meals.writtenSlots, isEmpty);
+  });
+
+  group('without Premium (subscriptions ADR-0008)', () {
+    Future<void> emptyWeek(WidgetTester tester) async {
+      harness.meals
+        ..emitMeals([])
+        ..emitWeek(WeekPlan.empty(plan.weekStart));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('opens on the week when the route names no view', (
+      tester,
+    ) async {
+      await pump(tester, null, isPremium: false);
+      await emptyWeek(tester);
+
+      expect(find.text(AppCopy.mealsCopyLastWeek), findsOneWidget);
+      expect(find.byType(PremiumLockedView), findsNothing);
+    });
+
+    testWidgets('with Premium it opens on the recipes instead', (tester) async {
+      await pump(tester, null);
+      harness.recipes.emitCatalogue(RecipeFixtures.catalogue);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(RecipeDiscoveryView), findsOneWidget);
+    });
+
+    testWidgets('the recipes stay on the switch, locked, and the way in is '
+        'the paywall', (tester) async {
+      await pump(tester, MealsView.recipes, isPremium: false);
+      await tester.pumpAndSettle();
+
+      expect(find.text(MealsCopy.recipes), findsOneWidget);
+      expect(find.byIcon(LucideIcons.lock), findsWidgets);
+      expect(find.byType(RecipeDiscoveryView), findsNothing);
+      expect(
+        find.text(SubscriptionCopy.headline(PremiumFeature.recipes)),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text(SubscriptionCopy.seePremium));
+      await tester.pumpAndSettle();
+      expect(find.byType(PaywallPage), findsOneWidget);
+      expect(
+        subscriptions.paywallOpens.opened.single.trigger,
+        PremiumFeature.recipes,
+      );
+    });
+
+    testWidgets('a typed meal is planned as ever', (tester) async {
+      await pump(tester, MealsView.week, isPremium: false);
+      await emptyWeek(tester);
+
+      await tester.tap(find.text(AppCopy.mealsNothingPlanned).first);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Toast');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PaywallPage), findsNothing);
+      expect(harness.meals.writtenSlots, isNotEmpty);
+    });
+
+    testWidgets('picking a recipe for a slot is shown, locked, and asks for '
+        'Premium before any recipe is asked for', (tester) async {
+      final asked = <MealSlot>[];
+      await pump(
+        tester,
+        MealsView.week,
+        isPremium: false,
+        onPickRecipe: (slot, _) async {
+          asked.add(slot);
+          return RecipeFixtures.bobotie;
+        },
+      );
+      await emptyWeek(tester);
+
+      await tester.tap(find.text(AppCopy.mealsNothingPlanned).first);
+      await tester.pumpAndSettle();
+      expect(find.textContaining(SubscriptionCopy.lockedHint), findsOneWidget);
+      await tester.tap(find.text(MealsCopy.pickRecipe));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PaywallPage), findsOneWidget);
+      expect(
+        subscriptions.paywallOpens.opened.single.trigger,
+        PremiumFeature.recipes,
+      );
+      expect(asked, isEmpty);
+      expect(harness.meals.recipeMeals, isEmpty);
+      expect(harness.meals.writtenSlots, isEmpty);
+    });
+
+    testWidgets('a meal planned from a recipe before stays on the week by '
+        'name, and how to make it still leads to its page', (tester) async {
+      await pump(tester, MealsView.week, isPremium: false);
+      await planned(tester);
+      await tester.dragUntilVisible(
+        find.text('Bobotie'),
+        find.byType(Scrollable).last,
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Bobotie'), findsOneWidget);
+      expect(photos.asked, isEmpty);
+      await tester.tap(find.text(RecipeCopy.howToMakeShort));
+      expect(opened, ['bobotie']);
+    });
+
+    testWidgets('renders locked in dark and at 200% text on a 360-wide '
+        'phone', (tester) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(
+        tester,
+        MealsView.recipes,
+        isPremium: false,
+        brightness: Brightness.dark,
+        scale: 2,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(PremiumLockedView), findsOneWidget);
+    });
+
+    testWidgets('renders the locked slot picker in dark and at 200% text on '
+        'a 360-wide phone', (tester) async {
+      tester.view.physicalSize = const Size(360 * 3, 800 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pumpScreen(
+        tester,
+        Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showSlotPickerSheet(
+                context: context,
+                slot: MealSlot.dinner,
+                date: harness.clock.today,
+                today: harness.clock.today,
+                library: [typed],
+                isRecipeLocked: true,
+              ),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+        providers: const [],
+        brightness: Brightness.dark,
+        textScale: 2,
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining(SubscriptionCopy.lockedHint), findsOneWidget);
+      expect(find.text(MealsCopy.pickRecipe), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
   });
 
   testWidgets('renders the week in dark and at 200% text on a 360-wide phone', (

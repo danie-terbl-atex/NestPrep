@@ -71,6 +71,3 @@ function describe(purchase: LinkedPurchase, until: Date | null): Entitlement {
     isTest: purchase.state.isTest,
   };
 }
-
-/** The limits of the free tier (business plan, *How it makes money*). */
-export const FREE_CHILD_PROFILES = 1;

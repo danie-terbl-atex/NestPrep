@@ -4,8 +4,7 @@ import '../../subscriptions/data/subscription_failure_mapper.dart';
 import 'child_profile_directory.dart';
 
 /// `setChildProfile` over the Functions SDK. Its refusals are the
-/// subscriptions ones — the free tier's limit among them — so it maps them
-/// the same way (`BE-04`).
+/// subscriptions ones, so it maps them the same way (`BE-04`).
 final class CallableChildProfileDirectory implements ChildProfileDirectory {
   const CallableChildProfileDirectory(this._functions);
 

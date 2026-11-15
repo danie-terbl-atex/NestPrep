@@ -11,7 +11,7 @@ final class CallableHouseholdDirectory implements HouseholdDirectory {
   final FirebaseFunctions _functions;
 
   @override
-  Future<String> createHousehold({
+  Future<CreatedHousehold> createHousehold({
     required String name,
     required String timeZone,
     required String adminDisplayName,
@@ -23,7 +23,10 @@ final class CallableHouseholdDirectory implements HouseholdDirectory {
       'adminDisplayName': adminDisplayName,
       'adminColor': adminColorName,
     });
-    return _requireString(result, 'householdId');
+    return (
+      householdId: _requireString(result, 'householdId'),
+      memberId: _requireString(result, 'memberId'),
+    );
   }
 
   @override

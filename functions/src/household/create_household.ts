@@ -3,6 +3,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 
 import { db } from '../shared/firestore';
+import { householdSizeRef } from '../subscriptions/subscription_documents';
 import { householdRef, memberRef, userRef } from './documents';
 import { parseInput, requireUid } from './parse_input';
 import { createHouseholdInput } from './schemas';
@@ -42,6 +43,10 @@ export const createHousehold = onCall(async (request) => {
     role: 'admin',
     claimedBy: uid,
     createdAt: FieldValue.serverTimestamp(),
+  });
+  batch.set(householdSizeRef(store, household.id), {
+    count: 1,
+    updatedAt: FieldValue.serverTimestamp(),
   });
   batch.set(
     userRef(store, uid),

@@ -105,35 +105,27 @@ describe('verifyPurchase', () => {
 describe('setChildProfile', () => {
   beforeEach(clearFirestore);
 
-  it('marks the first child, and refuses the second on the free tier', async () => {
+  it('marks the first child and the second on the free tier', async () => {
     const sam = await signUp();
     const householdId = await householdOf(sam);
     await addKid(householdId, 'm-emma');
     await addKid(householdId, 'm-leo');
 
     const consent = { version: 1 };
-    await callAs(sam, 'setChildProfile', {
-      householdId,
-      memberId: 'm-emma',
-      isChild: true,
-      guardianConsent: consent,
-    });
-    expect(
-      await reasonOf(
-        callAs(sam, 'setChildProfile', {
-          householdId,
-          memberId: 'm-leo',
-          isChild: true,
-          guardianConsent: consent,
-        }),
-      ),
-    ).toBe('premiumRequired');
+    for (const memberId of ['m-emma', 'm-leo']) {
+      await callAs(sam, 'setChildProfile', {
+        householdId,
+        memberId,
+        isChild: true,
+        guardianConsent: consent,
+      });
+    }
 
     const children = await adminDb()
       .collection(`households/${householdId}/familyProfiles`)
       .where('isChild', '==', true)
       .get();
-    expect(children.docs.map((doc) => doc.id)).toEqual(['m-emma']);
+    expect(children.docs.map((doc) => doc.id).sort()).toEqual(['m-emma', 'm-leo']);
   });
 
   it('refuses a child without a parent’s consent, over the wire', async () => {

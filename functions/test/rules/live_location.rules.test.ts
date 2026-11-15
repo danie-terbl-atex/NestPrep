@@ -114,6 +114,7 @@ describe('memberLocations/{memberId}', () => {
   beforeEach(async () => {
     await clearData();
     await givenTheParkers();
+    await givenPremium(anHour);
   });
 
   describe('who may look', () => {
@@ -194,6 +195,7 @@ describe('memberLocations/{memberId}', () => {
       );
       await clearData();
       await givenTheParkers();
+      await givenPremium(anHour);
       await assertFails(
         setDoc(doc(db, `${LOCATIONS}/${THANDI_MEMBER}`), aPositionUntil(5 * anHour)),
       );
@@ -213,13 +215,14 @@ describe('memberLocations/{memberId}', () => {
       await assertFails(setDoc(doc(db, `${LOCATIONS}/${THANDI_MEMBER}`), withoutAWindow));
     });
 
-    it('is free', async () => {
-      await assertSucceeds(
-        setDoc(
-          doc(await asUser(THANDI), `${LOCATIONS}/${THANDI_MEMBER}`),
-          aPositionUntil(anHour, { mode: 'window' }),
-        ),
-      );
+    it('is premium, named or not', async () => {
+      const db = await asUser(THANDI);
+      const path = `${LOCATIONS}/${THANDI_MEMBER}`;
+      await assertSucceeds(setDoc(doc(db, path), aPositionUntil(anHour, { mode: 'window' })));
+      await clearData();
+      await givenTheParkers();
+      await assertFails(setDoc(doc(db, path), aPositionUntil(anHour, { mode: 'window' })));
+      await assertFails(setDoc(doc(db, path), aPositionUntil(anHour)));
     });
   });
 
@@ -232,6 +235,8 @@ describe('memberLocations/{memberId}', () => {
     });
 
     it('denies it to a free or lapsed household', async () => {
+      await clearData();
+      await givenTheParkers();
       const db = await asUser(THANDI);
       await assertFails(setDoc(doc(db, `${LOCATIONS}/${THANDI_MEMBER}`), continuous()));
       await givenPremium(-1000);
@@ -348,6 +353,40 @@ describe('memberLocations/{memberId}', () => {
       await givenSharing(SAM_MEMBER);
       await assertFails(deleteDoc(doc(await asUser(THANDI), `${LOCATIONS}/${SAM_MEMBER}`)));
       await assertFails(deleteDoc(doc(await asUser(STRANGER), `${LOCATIONS}/${SAM_MEMBER}`)));
+    });
+  });
+
+  describe('a household whose premium has ended', () => {
+    beforeEach(async () => {
+      await givenPremium(-1000);
+    });
+
+    it('denies starting a window and reporting inside one already open', async () => {
+      const db = await asUser(THANDI);
+      const path = `${LOCATIONS}/${THANDI_MEMBER}`;
+      await assertFails(setDoc(doc(db, path), aPositionUntil(anHour)));
+      await givenSharing(THANDI_MEMBER, { reportedAt: Timestamp.fromMillis(Date.now() - 11_000) });
+      await assertFails(setDoc(doc(db, path), aPositionUntil(anHour)));
+      await assertFails(
+        updateDoc(doc(db, path), {
+          point: new GeoPoint(-26.21, 28.05),
+          reportedAt: serverTimestamp(),
+        }),
+      );
+    });
+
+    it('still lets everybody who could look, look', async () => {
+      await givenSharing(THANDI_MEMBER);
+      await assertSucceeds(getDocs(collection(await asUser(SAM), LOCATIONS)));
+    });
+
+    it('still lets a member stop, and an admin clear somebody else"s', async () => {
+      await givenSharing(THANDI_MEMBER);
+      await assertSucceeds(deleteDoc(doc(await asUser(THANDI), `${LOCATIONS}/${THANDI_MEMBER}`)));
+      await givenSharing(THANDI_MEMBER, { mode: 'continuous' });
+      await assertSucceeds(deleteDoc(doc(await asUser(SAM), `${LOCATIONS}/${THANDI_MEMBER}`)));
+      await givenSharing(SAM_MEMBER);
+      await assertFails(deleteDoc(doc(await asUser(THANDI), `${LOCATIONS}/${SAM_MEMBER}`)));
     });
   });
 });

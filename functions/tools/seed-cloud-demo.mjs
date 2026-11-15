@@ -24,6 +24,7 @@
  * (ENG-18).
  */
 import { CLOUD_CAST } from './cloud-demo/cast.mjs';
+import { seedAccount } from './cloud-demo/accounts.mjs';
 import { connect, demoPassword } from './cloud-demo/admin.mjs';
 import { createContext } from './cloud-demo/context.mjs';
 import { seedAvatars } from './cloud-demo/avatars.mjs';
@@ -50,31 +51,9 @@ console.log(`seeding the demo family into ${target}\n`);
 
 const resetPassword = process.argv.includes('--reset-password');
 
-/**
- * Creates the account under its fixed uid or brings it back to the seed. An
- * address held by any other uid is somebody else's account: refused, never
- * deleted. An existing account keeps its password unless `--reset-password`
- * is passed, because setting one — even the same one — signs every phone
- * using the account out.
- */
-async function seedAccount({ uid, email, displayName }) {
-  const fields = { displayName, emailVerified: true, disabled: false };
-  const byEmail = await auth.getUserByEmail(email).catch((error) => {
-    if (error?.code === 'auth/user-not-found') return null;
-    throw error;
-  });
-  if (byEmail !== null && byEmail.uid !== uid) {
-    throw new Error(`${email} belongs to another account (${byEmail.uid}); not touching it`);
-  }
-  if (byEmail !== null) {
-    await auth.updateUser(uid, resetPassword ? { ...fields, password } : fields);
-    return `account ${email} (${uid}) refreshed${resetPassword ? ', password reset' : ''}`;
-  }
-  await auth.createUser({ uid, email, ...fields, password });
-  return `account ${email} (${uid}) created`;
+for (const person of CLOUD_CAST.people) {
+  console.log(await seedAccount(auth, person, { password, resetPassword }));
 }
-
-for (const person of CLOUD_CAST.people) console.log(await seedAccount(person));
 console.log(await seedDemoHousehold(store, CLOUD_CAST));
 
 const ctx = createContext({ store, bucket, cast: CLOUD_CAST });

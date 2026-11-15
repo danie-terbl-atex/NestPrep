@@ -139,7 +139,7 @@ void main() {
     testWidgets('is not offered with one shop on', (tester) async {
       await mixedList(
         tester,
-        off: {FeatureFlag.addToPnp, FeatureFlag.addToWoolworths},
+        off: {FeatureFlag.addToPnp, FeatureFlag.woolworthsShop},
       );
       expect(find.byKey(entry), findsNothing);
     });

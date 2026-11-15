@@ -31,7 +31,10 @@ final class FakeHelperShiftRepository
   void emitShifts(List<HelperShift> shifts) => _shifts.add(shifts);
   void failShiftsWith(Object error) => _shifts.addError(error);
 
-  Future<void> close() => _shifts.close();
+  Future<void> close() async {
+    await _shifts.close();
+    await _open.close();
+  }
 
   @override
   Stream<List<HelperShift>> watchShifts(
@@ -40,6 +43,23 @@ final class FakeHelperShiftRepository
   }) {
     shiftsAskedFor.add(helperId);
     return _shifts.stream;
+  }
+
+  final _open = StreamController<List<HelperShift>>.broadcast();
+
+  /// Each read of the open shifts alone, by the scope it asked for.
+  final openShiftsAskedFor = <String?>[];
+
+  void emitOpenShifts(List<HelperShift> shifts) => _open.add(shifts);
+  void failOpenShiftsWith(Object error) => _open.addError(error);
+
+  @override
+  Stream<List<HelperShift>> watchOpenShifts(
+    String householdId, {
+    String? helperId,
+  }) {
+    openShiftsAskedFor.add(helperId);
+    return _open.stream;
   }
 
   @override

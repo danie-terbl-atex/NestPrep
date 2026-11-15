@@ -25,6 +25,10 @@ import '../features/recipes/state/recipe_page_controller.dart';
 import '../features/recipes/ui/own_recipes_entry.dart';
 import '../features/recipes/ui/recipe_picker_screen.dart';
 import '../features/recipes/ui/recipe_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/state/household_entitlement.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/app_copy.dart';
 import '../shared/flags/feature_flag.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import '../shared/time/household_clock.dart';
@@ -42,20 +46,35 @@ import 'viewer_member.dart';
 /// recipe's page and the week's recipe-linked meals all read this one
 /// listener (foundation ADR-0006), and a recipe opened over the list comes
 /// back to it as it was left.
+///
+/// Recipes are Premium (subscriptions ADR-0008), so a free household has no
+/// catalogue here and nothing listens for one; a household whose Premium
+/// lapses while the tab is open loses the one it had.
 ShellRoute mealsRoutes() => ShellRoute(
-  builder: (context, state, child) => ChangeNotifierProvider(
-    create: (context) {
-      final view = context.read<HouseholdView>();
-      return RecipeCatalogueController(
-        recipeRepository: context.read<RecipeRepository>(),
-        householdClock: context.read<HouseholdClock>(),
-        ownRecipesOf: view.permissions.canView(HouseholdArea.meals)
-            ? view.household.id
-            : null,
-      );
-    },
-    child: child,
-  ),
+  builder: (context, state, child) =>
+      ChangeNotifierProxyProvider<
+        HouseholdEntitlement,
+        RecipeCatalogueController?
+      >(
+        create: (_) => null,
+        update: (context, entitlement, catalogue) {
+          // Returning null lets the provider dispose the one it held; an
+          // entitlement being read again is not a lapse.
+          if (!entitlement.isPremium) {
+            return entitlement.isKnown ? null : catalogue;
+          }
+          if (catalogue != null) return catalogue;
+          final view = context.read<HouseholdView>();
+          return RecipeCatalogueController(
+            recipeRepository: context.read<RecipeRepository>(),
+            householdClock: context.read<HouseholdClock>(),
+            ownRecipesOf: view.permissions.canView(HouseholdArea.meals)
+                ? view.household.id
+                : null,
+          );
+        },
+        child: child,
+      ),
   routes: [
     GoRoute(
       path: MealsRoute.path,
@@ -110,16 +129,20 @@ ShellRoute mealsRoutes() => ShellRoute(
           : null,
       builder: (context, state) {
         final householdId = HouseholdRoute.idFrom(state);
-        return RecipePickerScreen(
-          slot: MealsRoute.slotFrom(state)!,
-          day: MealsRoute.dayFrom(state)!,
-          today: context.read<HouseholdClock>().today,
-          onPick: (recipe) => context.pop(recipe),
-          onBack: () => context.canPop()
-              ? context.pop()
-              : context.go(
-                  MealsRoute.pathFor(householdId, view: MealsView.week),
-                ),
+        return PremiumArea(
+          feature: PremiumFeature.recipes,
+          title: MealsCopy.pickerTitle,
+          child: RecipePickerScreen(
+            slot: MealsRoute.slotFrom(state)!,
+            day: MealsRoute.dayFrom(state)!,
+            today: context.read<HouseholdClock>().today,
+            onPick: (recipe) => context.pop(recipe),
+            onBack: () => context.canPop()
+                ? context.pop()
+                : context.go(
+                    MealsRoute.pathFor(householdId, view: MealsView.week),
+                  ),
+          ),
         );
       },
     ),
@@ -132,60 +155,64 @@ ShellRoute mealsRoutes() => ShellRoute(
           final String tag => tag,
           _ => null,
         };
-        final page =
-            ChangeNotifierProxyProvider<
-              RecipeCatalogueController,
-              RecipePageController
-            >(
-              create: (context) => RecipePageController(
-                mealRepository: context.read<MealRepository>(),
-                householdId: householdId,
-                memberId: viewerMemberIdOf(context),
-                recipeId: MealsRoute.recipeIdFrom(state),
-                familySize: familySizeOf(context.read<HouseholdView>()),
-              ),
-              update: (context, catalogue, page) =>
-                  page!..followCatalogue(catalogue),
-              child:
-                  ChangeNotifierProxyProvider<
-                    FeatureFlagsController,
-                    FrameAvailability
-                  >(
-                    create: (context) => FrameAvailability(
-                      photoFrameRepository: context
-                          .read<PhotoFrameRepository>(),
-                      householdId: householdId,
-                      isFamily: context
-                          .read<HouseholdView>()
-                          .permissions
-                          .isFamily,
-                    ),
-                    update: (context, flags, availability) => availability!
-                      ..followFlag(
-                        framesOn: flags.isOn(FeatureFlag.photoFrames),
-                      ),
-                    child: ChangeNotifierProvider(
-                      create: (context) => OwnRecipeDeleter(
-                        ownRecipes: context.read<OwnRecipeRepository>(),
-                        photoSource: context.read<RecipePhotoSource>(),
+        final page = PremiumArea(
+          feature: PremiumFeature.recipes,
+          title: MealsCopy.recipes,
+          child:
+              ChangeNotifierProxyProvider<
+                RecipeCatalogueController,
+                RecipePageController
+              >(
+                create: (context) => RecipePageController(
+                  mealRepository: context.read<MealRepository>(),
+                  householdId: householdId,
+                  memberId: viewerMemberIdOf(context),
+                  recipeId: MealsRoute.recipeIdFrom(state),
+                  familySize: familySizeOf(context.read<HouseholdView>()),
+                ),
+                update: (context, catalogue, page) =>
+                    page!..followCatalogue(catalogue),
+                child:
+                    ChangeNotifierProxyProvider<
+                      FeatureFlagsController,
+                      FrameAvailability
+                    >(
+                      create: (context) => FrameAvailability(
+                        photoFrameRepository: context
+                            .read<PhotoFrameRepository>(),
                         householdId: householdId,
+                        isFamily: context
+                            .read<HouseholdView>()
+                            .permissions
+                            .isFamily,
                       ),
-                      child: RecipeScreen(
-                        heroTag: heroTag,
-                        // A link straight here has nothing under it: back is the
-                        // recipes, never out of the app.
-                        onBack: () => _leaveRecipe(context, householdId),
-                        onDeleted: () => _leaveRecipe(context, householdId),
-                        onEdit: () => context.push(
-                          MealsRoute.editRecipePathFor(
-                            householdId,
-                            MealsRoute.recipeIdFrom(state),
+                      update: (context, flags, availability) => availability!
+                        ..followFlag(
+                          framesOn: flags.isOn(FeatureFlag.photoFrames),
+                        ),
+                      child: ChangeNotifierProvider(
+                        create: (context) => OwnRecipeDeleter(
+                          ownRecipes: context.read<OwnRecipeRepository>(),
+                          photoSource: context.read<RecipePhotoSource>(),
+                          householdId: householdId,
+                        ),
+                        child: RecipeScreen(
+                          heroTag: heroTag,
+                          // A link straight here has nothing under it: back is the
+                          // recipes, never out of the app.
+                          onBack: () => _leaveRecipe(context, householdId),
+                          onDeleted: () => _leaveRecipe(context, householdId),
+                          onEdit: () => context.push(
+                            MealsRoute.editRecipePathFor(
+                              householdId,
+                              MealsRoute.recipeIdFrom(state),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-            );
+              ),
+        );
         // Opened from a card, the page fades in under the card's flying
         // photo, as a lunch does; any other way, it arrives as pages do.
         return heroTag == null

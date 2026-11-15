@@ -2,7 +2,7 @@ import { FieldValue, type DocumentReference, type Firestore } from 'firebase-adm
 
 import { householdRef } from '../household/documents';
 import { entitlementRef } from '../subscriptions/subscription_documents';
-import { refuseAi } from './ai_refusals';
+import { refuseClaim } from './ai_refusals';
 import type { AiClaim, ClaimRequest, Settlement, UsageLedger } from './usage_ledger';
 import { chargeOf, type AiFeature, type AiSettings } from './ai_settings';
 import {
@@ -73,7 +73,7 @@ export class FirestoreUsageLedger implements UsageLedger {
           attempts: charge.kind === 'calls' ? 0 : allowanceAttemptsOf(usage?.data(), charge.name),
         },
       );
-      if (!decision.allowed) throw refuseAi('aiLimitReached');
+      if (!decision.allowed) throw refuseClaim(tier, request.feature);
 
       const counted = { [request.feature]: FieldValue.increment(1) };
       transaction.set(

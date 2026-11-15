@@ -1,7 +1,7 @@
 ---
 title: Terms of Service
-version: 4
-updated: 2026-11-12
+version: 5
+updated: 2026-11-15
 ---
 These terms are the agreement between you and us when you use NestPrep. Please read them with our Privacy Policy, which explains what we do with your information. By creating an account and ticking that you agree, you accept these terms.
 
@@ -69,11 +69,11 @@ You may keep copies of identity and other important documents in NestPrep. Only 
 
 ## 10. Premium and payments
 
-- NestPrep is **free** for a household with one child profile. **Premium** unlocks more child profiles and premium features for the whole household.
+- NestPrep is **free** for a household of up to four people, with the family calendar, to-dos and chores, the grocery list and the week's meals. **Premium** unlocks everything else, and room for more people, for the whole household. The app shows which parts are Premium.
 - Premium is a subscription bought through the **Google Play Store or the Apple App Store**. The store takes payment, and its terms apply to the purchase. Prices are shown in the app and the store before you buy.
 - **Subscriptions renew automatically** at the end of each period unless you cancel at least 24 hours before it ends. You cancel in your Google Play or App Store account settings, not in NestPrep. **Deleting your account or your household does not cancel a subscription**; cancel it in the store too.
 - **Refunds** are handled by the store under its own refund policy. Nothing in these terms limits a refund you are entitled to by law.
-- If a subscription ends, the household keeps the children and information it already has but cannot add more child profiles or use premium features until it renews.
+- If a subscription ends, the household keeps the information it already has. The Premium parts of the app are locked until it renews, and a household of more than four people is asked to renew or to remove people before it carries on.
 - We may change prices for future periods. The store will tell you before a new price applies, and you can cancel before it does.
 
 ## 11. Availability and changes to NestPrep

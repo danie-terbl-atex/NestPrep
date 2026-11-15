@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { ConversionTrigger } from '../product_analytics/conversion_ledger';
+
 /**
  * The AI features, the switch that stops them all, and how many calls a
  * household gets a month (foundation ADR-0015).
@@ -28,6 +30,20 @@ export const AI_FEATURES = [
   'avatarPortrait',
 ] as const;
 export type AiFeature = (typeof AI_FEATURES)[number];
+
+/** The Premium feature a free household is sent to the paywall for (subscriptions ADR-0008). */
+export const PREMIUM_FEATURE_OF: Readonly<Record<AiFeature, ConversionTrigger>> = {
+  schoolLetter: 'schoolLetter',
+  planMyWeek: 'aiPlanning',
+  lunchPhoto: 'lunchPhoto',
+  productMatch: 'shops',
+  listScan: 'listScan',
+  recipeImport: 'ownRecipes',
+  recipeDocument: 'ownRecipes',
+  avatarCheck: 'avatarCreate',
+  avatarCreate: 'avatarCreate',
+  avatarPortrait: 'avatarPortrait',
+};
 
 /** The document an operator edits in the console to stop or loosen AI. */
 export const AI_SETTINGS_COLLECTION = 'appConfig';
@@ -66,10 +82,10 @@ export interface AiSettings {
 }
 
 /**
- * What applies when nobody has written the document. Ten a month on the free
- * tier is two school letters a week and a weekly plan; a hundred on premium
- * is more than any family needs and still a bounded bill (foundation ADR-0015,
- * verdict 003's *AI cost per active family*).
+ * What applies when nobody has written the document. The free tier has no AI
+ * at all (subscriptions ADR-0008); a hundred a month on premium is more than
+ * any family needs and still a bounded bill (foundation ADR-0015, verdict
+ * 003's *AI cost per active family*).
  */
 export const DEFAULT_AI_SETTINGS: AiSettings = {
   enabled: true,
@@ -85,8 +101,8 @@ export const DEFAULT_AI_SETTINGS: AiSettings = {
     avatarCreate: true,
     avatarPortrait: true,
   },
-  monthlyCalls: { free: 10, premium: 100 },
-  allowances: { avatarCreate: { premiumMonthly: 12, freeLifetime: 1 } },
+  monthlyCalls: { free: 0, premium: 100 },
+  allowances: { avatarCreate: { premiumMonthly: 12, freeLifetime: 0 } },
 };
 
 /** A cap nobody means; past it, a typo in the console is a bill. */
@@ -99,6 +115,8 @@ const cap = z.number().int().min(0).max(MAX_MONTHLY_CALLS);
  * `enabled` that is not a boolean reads as off** — somebody was reaching for
  * the kill switch, and a typo must not leave it open. A feature switch or cap
  * that does not parse keeps its default, because those only ever narrow.
+ * **A stored free number is never read**: the free tier's zero is the map, not
+ * a setting, so a document written before 2026-11-15 cannot hand it calls.
  */
 export function readAiSettings(stored: unknown): AiSettings {
   if (stored === undefined || stored === null) return DEFAULT_AI_SETTINGS;
@@ -114,13 +132,9 @@ export function readAiSettings(stored: unknown): AiSettings {
       if (storedFeatures.data[feature] === false) features[feature] = false;
     }
   }
-  const storedCalls = z
-    .object({ free: cap.optional(), premium: cap.optional() })
-    .safeParse(data['monthlyCalls']);
+  const storedCalls = z.object({ premium: cap.optional() }).safeParse(data['monthlyCalls']);
   const monthlyCalls = {
-    free:
-      (storedCalls.success ? storedCalls.data.free : undefined) ??
-      DEFAULT_AI_SETTINGS.monthlyCalls.free,
+    free: DEFAULT_AI_SETTINGS.monthlyCalls.free,
     premium:
       (storedCalls.success ? storedCalls.data.premium : undefined) ??
       DEFAULT_AI_SETTINGS.monthlyCalls.premium,
@@ -136,13 +150,11 @@ export function readAiSettings(stored: unknown): AiSettings {
 
 function readAllowance(stored: unknown, name: AllowanceName): Allowance {
   const fallback = DEFAULT_AI_SETTINGS.allowances[name];
-  const parsed = z
-    .object({ premiumMonthly: cap.optional(), freeLifetime: cap.optional() })
-    .safeParse(stored);
+  const parsed = z.object({ premiumMonthly: cap.optional() }).safeParse(stored);
   if (!parsed.success) return fallback;
   return {
     premiumMonthly: parsed.data.premiumMonthly ?? fallback.premiumMonthly,
-    freeLifetime: parsed.data.freeLifetime ?? fallback.freeLifetime,
+    freeLifetime: fallback.freeLifetime,
   };
 }
 

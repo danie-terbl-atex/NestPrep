@@ -1,4 +1,13 @@
-import { deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  Timestamp,
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { beforeEach, describe, it } from 'vitest';
 
 import {
@@ -225,5 +234,111 @@ describe('groceryItems/{itemId}', () => {
     await assertFails(setDoc(doc(db, `${ITEMS}/eggs`), newItem));
     await assertFails(updateDoc(doc(db, `${ITEMS}/milk`), { boughtAt: serverTimestamp() }));
     await assertFails(deleteDoc(doc(db, `${ITEMS}/milk`)));
+  });
+});
+
+/**
+ * A shop's product on an item is Premium (subscriptions ADR-0008, ADR-0009):
+ * a free household — or one whose Premium lapsed — sets none, and still
+ * types, ticks, renames and clears on a list that carries some.
+ */
+describe('groceryItems productMatch, by the household’s plan', () => {
+  const pick = {
+    retailer: 'checkers',
+    productId: '5f0c1a2b3c4d5e6f7a8b9c0d',
+    articleCode: '10136729EA',
+    unitOfMeasure: 'EA',
+    name: 'Clover Full Cream Milk 2L',
+    brand: 'Clover',
+    priceCents: 3599,
+    currency: 'ZAR',
+    imageId: null,
+    pickedBy: THANDI_MEMBER,
+    pickedAt: serverTimestamp(),
+  };
+
+  async function givenPremiumUntil(millis: number): Promise<void> {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`), {
+        premiumUntil: Timestamp.fromMillis(millis),
+      });
+    });
+  }
+
+  async function givenAMatchedItem(): Promise<void> {
+    await givenData(async (db: Firestore) => {
+      await setDoc(doc(db, `${ITEMS}/matched`), {
+        name: 'Milk',
+        quantity: null,
+        addedBy: THANDI_MEMBER,
+        addedAt: new Date(),
+        boughtAt: null,
+        boughtBy: null,
+        productMatch: { ...pick, pickedAt: new Date('2026-09-30T08:00:00Z') },
+      });
+    });
+  }
+
+  beforeEach(async () => {
+    await clearData();
+    await givenTheParkers();
+    await givenAMatchedItem();
+  });
+
+  it('lets a free household add a typed item, with no pick or a null one', async () => {
+    const db = await asUser(THANDI);
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/eggs`), newItem));
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/rolls`), { ...newItem, productMatch: null }));
+  });
+
+  it('denies a free household adding an item already picked, or picking for one', async () => {
+    const db = await asUser(THANDI);
+    await assertFails(setDoc(doc(db, `${ITEMS}/eggs`), { ...newItem, productMatch: pick }));
+    await assertFails(updateDoc(doc(db, `${ITEMS}/milk`), { productMatch: pick }));
+    await assertFails(
+      updateDoc(doc(db, `${ITEMS}/matched`), {
+        productMatch: { ...pick, productId: 'aaaaaaaaaaaaaaaaaaaaaaaa' },
+      }),
+    );
+  });
+
+  it('denies a household whose Premium lapsed', async () => {
+    await givenPremiumUntil(Date.now() - 86_400_000);
+    const db = await asUser(THANDI);
+    await assertFails(setDoc(doc(db, `${ITEMS}/eggs`), { ...newItem, productMatch: pick }));
+    await assertFails(updateDoc(doc(db, `${ITEMS}/milk`), { productMatch: pick }));
+  });
+
+  it('lets a free household tick, rename and clear an item that carries a pick', async () => {
+    const db = await asUser(THANDI);
+    await assertSucceeds(
+      updateDoc(doc(db, `${ITEMS}/matched`), {
+        boughtAt: serverTimestamp(),
+        boughtBy: THANDI_MEMBER,
+      }),
+    );
+    await assertSucceeds(
+      updateDoc(doc(db, `${ITEMS}/matched`), { boughtAt: null, boughtBy: null }),
+    );
+    await assertSucceeds(updateDoc(doc(db, `${ITEMS}/matched`), { name: 'Full cream milk' }));
+    await assertSucceeds(
+      updateDoc(doc(db, `${ITEMS}/matched`), { name: 'Milk', productMatch: deleteField() }),
+    );
+    await givenAMatchedItem();
+    await assertSucceeds(updateDoc(doc(db, `${ITEMS}/matched`), { productMatch: null }));
+    await givenAMatchedItem();
+    await assertSucceeds(deleteDoc(doc(db, `${ITEMS}/matched`)));
+  });
+
+  it('lets a Premium household add an item already picked, and pick for one', async () => {
+    await givenPremiumUntil(Date.now() + 30 * 86_400_000);
+    const db = await asUser(THANDI);
+    await assertSucceeds(setDoc(doc(db, `${ITEMS}/eggs`), { ...newItem, productMatch: pick }));
+    await assertSucceeds(updateDoc(doc(db, `${ITEMS}/milk`), { productMatch: pick }));
+    await assertSucceeds(
+      updateDoc(doc(db, `${ITEMS}/matched`), {
+        productMatch: { ...pick, productId: 'aaaaaaaaaaaaaaaaaaaaaaaa' },
+      }),
+    );
   });
 });

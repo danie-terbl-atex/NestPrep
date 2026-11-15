@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { Timestamp, deleteDoc, doc, setDoc } from 'firebase/firestore';
 
 import { DATE, HOME, PEOPLE } from './access_fixture';
 import { givenData, type Firestore } from './rules_harness';
@@ -55,9 +55,28 @@ export function jobData(
   };
 }
 
+const DAY = 24 * 60 * 60 * 1000;
+
+/** Home care is Premium (subscriptions ADR-0008): the entitlement its writes ask for. */
+export async function givenHomeCarePremium(
+  state: 'active' | 'lapsed' | 'free' = 'active',
+): Promise<void> {
+  await givenData(async (db: Firestore) => {
+    const entitlement = doc(db, `${HOME}/entitlement/current`);
+    if (state === 'free') {
+      await deleteDoc(entitlement);
+      return;
+    }
+    await setDoc(entitlement, {
+      premiumUntil: Timestamp.fromMillis(Date.now() + (state === 'active' ? 30 * DAY : -DAY)),
+    });
+  });
+}
+
 export async function givenHomeCareRecords(
   jobOverrides: Partial<Record<keyof typeof JOBS, Record<string, unknown>>> = {},
 ): Promise<void> {
+  await givenHomeCarePremium();
   await givenData(async (db: Firestore) => {
     const at = new Date();
     await setDoc(doc(db, ROOM), {

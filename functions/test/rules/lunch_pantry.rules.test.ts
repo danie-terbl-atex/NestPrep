@@ -11,7 +11,13 @@ import {
 import { beforeEach, describe, it } from 'vitest';
 
 import { CLEO, KID, MIA, NOMSA, SAM, STRANGER } from './family_fixture';
-import { WEEK, ZOLA, givenTheLunchHousehold, kidsTablet } from './lunch_box_fixture';
+import {
+  WEEK,
+  ZOLA,
+  givenLunchPremium,
+  givenTheLunchHousehold,
+  kidsTablet,
+} from './lunch_box_fixture';
 import { GROCERIES, PACKED, PANTRY, TUESDAY, givenTheLibrary } from './lunch_planning_fixture';
 import { asUser, assertFails, assertSucceeds, clearData, givenData } from './rules_harness';
 
@@ -25,6 +31,7 @@ import { asUser, assertFails, assertSucceeds, clearData, givenData } from './rul
 beforeEach(async () => {
   await clearData();
   await givenTheLunchHousehold();
+  await givenLunchPremium();
   await givenTheLibrary();
 });
 

@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase-admin/firestore';
 import { HttpsError } from 'firebase-functions/v2/https';
 import { expect } from 'vitest';
 
@@ -11,7 +12,7 @@ import type { ImageModel, ImageReply, ImageRequest } from '../../../src/ai/image
 import type { CallClock } from '../../../src/ai/structured_call';
 import type { AiClaim, ClaimRequest, Settlement, UsageLedger } from '../../../src/ai/usage_ledger';
 import { decideCharge, tierFrom, type MonthUsage } from '../../../src/ai/usage_rules';
-import { refuseAi } from '../../../src/ai/ai_refusals';
+import { refuseClaim } from '../../../src/ai/ai_refusals';
 
 /** A scripted attempt that never answers until it is aborted. */
 export const HANG = Symbol('hang');
@@ -132,7 +133,7 @@ export class InMemoryUsageLedger implements UsageLedger {
       tier,
       this.created,
     );
-    if (!decision.allowed) return Promise.reject(refuseAi('aiLimitReached'));
+    if (!decision.allowed) return Promise.reject(refuseClaim(tier, request.feature));
     if (request.charge.kind === 'calls') {
       this.usage = { calls: this.usage.calls + 1, attempts: this.usage.attempts + 1 };
     } else {
@@ -181,6 +182,21 @@ export async function refusalOf(action: () => Promise<unknown>): Promise<string>
     expect(error).toBeInstanceOf(HttpsError);
     const details = (error as HttpsError).details as { reason?: string } | undefined;
     return details?.reason ?? 'no reason';
+  }
+  throw new Error('expected a refusal, and the call succeeded');
+}
+
+export const PREMIUM = { premiumUntil: Timestamp.fromDate(new Date('2099-01-01T00:00:00Z')) };
+
+/** The paywall feature [action]'s `premiumRequired` refusal named. */
+export async function paywallOf(action: () => Promise<unknown>): Promise<string> {
+  try {
+    await action();
+  } catch (error) {
+    expect(error).toBeInstanceOf(HttpsError);
+    const details = (error as HttpsError).details as { reason?: string; feature?: string };
+    expect(details.reason).toBe('premiumRequired');
+    return details.feature ?? 'no feature';
   }
   throw new Error('expected a refusal, and the call succeeded');
 }

@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
+import { Timestamp, type DocumentReference } from 'firebase-admin/firestore';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 import {
@@ -227,7 +228,11 @@ describe('a look mirrored from a choice', () => {
 });
 
 describe('the Wardrobe', () => {
+  const entitlement = (): DocumentReference =>
+    household(family.householdId).collection('entitlement').doc('current');
+
   beforeEach(async () => {
+    await entitlement().set({ premiumUntil: Timestamp.fromMillis(Date.now() + 86_400_000) });
     await aChore(family, 'bed', { points: 25 });
     await tick(family, 'bed');
     await expectBalance(family, family.mia, 25);
@@ -279,6 +284,21 @@ describe('the Wardrobe', () => {
       reason: 'notAKid',
     });
     await expectBalance(family, family.mia, 5);
+  });
+
+  it('sells nothing to a household without Premium, and takes no stars', async () => {
+    await entitlement().delete();
+    expect(await buy('free-tier', 'acc-crown')).toMatchObject({
+      status: 'refused',
+      reason: 'premiumRequired',
+    });
+    await entitlement().set({ premiumUntil: Timestamp.fromMillis(Date.now() - 60_000) });
+    expect(await buy('lapsed', 'acc-crown')).toMatchObject({
+      status: 'refused',
+      reason: 'premiumRequired',
+    });
+    await expectBalance(family, family.mia, 25);
+    expect((await read(family, 'memberAvatars', family.mia))?.['owned']).toBeUndefined();
   });
 
   it('is shut while family has switched the shop off', async () => {

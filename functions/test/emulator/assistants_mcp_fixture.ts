@@ -89,6 +89,10 @@ export async function givenTheOakStreetNest(): Promise<void> {
     .doc(MIA)
     .set({ isChild: true, allergies: ['nuts'] });
   await store.collection('appConfig').doc('flags').set({ assistants: true });
+  await household
+    .collection('entitlement')
+    .doc('current')
+    .set({ premiumUntil: Timestamp.fromDate(new Date('2099-01-01T00:00:00Z')), status: 'active' });
 
   const other = store.collection('households').doc(OTHER_HOUSEHOLD);
   await other.set({

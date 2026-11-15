@@ -48,10 +48,16 @@ export const FEATURE_FLAGS = [
   'planMyWeek',
   // ---- add to Checkers: product matches and a member's own cart (the Checkers build contract) ----
   'addToCheckers',
+  // Read by the app from 0.9.0 (15) to decide whether Checkers is offered at
+  // all (shops ADR-0002). The Functions go on reading `addToCheckers`, so the
+  // builds testers already have keep working.
+  'checkersShop',
   // ---- lunch box at Pick n Pay: catalogue, a member's own link and cart (add-to-pnp ADR-0001) ----
   'addToPnp',
   // ---- add to Woolworths Dash: a member's own link and cart ----
   'addToWoolworths',
+  // As `checkersShop`, for Woolworths.
+  'woolworthsShop',
   // ---- photo frames: a wall frame showing the household's day (photo-frames ADR-0001) ----
   'photoFrames',
   // ---- NestPrep in Claude and ChatGPT (assistants ADR-0001) ----
@@ -63,6 +69,8 @@ export const FEATURE_FLAGS = [
   'avatarCreations',
   // ---- kid routines: morning, afternoon and bedtime checklists that earn stars (kid-routines ADR-0001) ----
   'kidRoutines',
+  // ---- a new household starts with a few examples (household ADR-0010) ----
+  'starterContent',
 ] as const;
 export type FeatureFlag = (typeof FEATURE_FLAGS)[number];
 

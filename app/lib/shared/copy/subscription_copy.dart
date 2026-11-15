@@ -1,5 +1,6 @@
 import '../../features/subscriptions/model/billing_store.dart';
 import '../../features/subscriptions/model/premium_feature.dart';
+import '../../features/subscriptions/model/premium_highlight.dart';
 import '../../features/subscriptions/model/subscription_plan.dart';
 import '../failure/app_failure.dart';
 import 'legal_copy.dart';
@@ -36,6 +37,20 @@ abstract final class SubscriptionCopy {
     PremiumFeature.ownRecipes => 'Your family’s recipes, all in one place',
     PremiumFeature.avatarCreate => 'A new buddy whenever they dream one up',
     PremiumFeature.avatarPortrait => 'Your whole nest in one picture',
+    PremiumFeature.lunchBox => 'Lunchboxes, sorted for the week',
+    PremiumFeature.recipes => 'Recipes for every night of the week',
+    PremiumFeature.shops => 'Your list, straight to your shop',
+    PremiumFeature.avatarWardrobe => 'A wardrobe for every nestling',
+    PremiumFeature.avatarKeepsakes => 'Every creation, kept',
+    PremiumFeature.twoHomes => 'One child, two homes, one plan',
+    PremiumFeature.nannyHub => 'Everything your nanny needs for the shift',
+    PremiumFeature.homeCare => 'The home, looked after',
+    PremiumFeature.documents => 'The family’s papers, safe in one place',
+    PremiumFeature.assistants => 'NestPrep in Claude and ChatGPT',
+    PremiumFeature.schoolLetter => 'Snap the school letter',
+    PremiumFeature.healthProfile =>
+      'Allergies and medication, where carers see them',
+    PremiumFeature.householdSize => 'Room for the whole household',
     PremiumFeature.aiPlanning || PremiumFeature.direct => 'NestPrep Premium',
   };
 
@@ -71,21 +86,101 @@ abstract final class SubscriptionCopy {
       'Everyone’s characters together in one picture for the season, '
           'straight onto your frame’s slideshow.',
     PremiumFeature.familyLocation =>
-      'Share all day without opening the app, see where everybody has been '
-          'for 30 days, and hear when they reach school or home.',
+      'See where everybody is on one map, share all day without opening '
+          'the app, and hear when they reach school or home.',
+    PremiumFeature.lunchBox =>
+      'Plan every child’s lunchboxes for the week, within their '
+          'allergies and school rules, and fill the week in a tap.',
+    PremiumFeature.recipes =>
+      'Browse the whole recipe book, save your own, and plan any of '
+          'them into your week.',
+    PremiumFeature.shops =>
+      'Find everything on your list at your shop, compare the basket, '
+          'and fill your own cart in a tap.',
+    PremiumFeature.avatarWardrobe =>
+      'Hats, glasses and more for each character, with a star shop '
+          'the children can save up for.',
+    PremiumFeature.avatarKeepsakes =>
+      'Every picture your family makes, kept beside the drawing it '
+          'came from.',
+    PremiumFeature.twoHomes =>
+      'Share the schedule, the handovers and what matters between '
+          'both homes.',
+    PremiumFeature.nannyHub =>
+      'Child cards, an emergency sheet, the house guide, shift logs '
+          'and photo updates for the people who care for your children.',
+    PremiumFeature.homeCare =>
+      'Cleaning jobs with photos, routines, stock and instructions in '
+          'your helper’s language.',
+    PremiumFeature.documents =>
+      'Shared folders for the household’s papers, and a private vault '
+          'for each person’s IDs behind your phone’s lock.',
+    PremiumFeature.assistants =>
+      'Ask your assistant to add an event or put something on the '
+          'list, and it lands in your household.',
+    PremiumFeature.schoolLetter =>
+      'Take a photo of a school letter and its dates land on your '
+          'calendar, ready to check.',
+    PremiumFeature.healthProfile =>
+      'Record each person’s allergies and medication, so lunches stay '
+          'safe and carers know what matters.',
+    PremiumFeature.householdSize =>
+      'The free plan has room for four people. Premium has room for '
+          'everybody.',
     PremiumFeature.aiPlanning || PremiumFeature.direct =>
       'Take more of the planning off the family’s plate.',
   };
 
   static const paywallLabel = 'Premium';
-  static const benefitChildren = 'Every child’s lunches and profile';
-  static const benefitChildrenBody = 'Allergies and likes for each of them';
-  static const benefitLearning = 'Learns what gets eaten';
-  static const benefitLearningBody = 'Suggestions lean on what came home empty';
-  static const benefitPrep = 'The Sunday prep list';
-  static const benefitPrepBody = 'The week’s lunch prep in one place';
-  static const benefitHousehold = 'One plan, the whole household';
-  static const benefitHouseholdBody = 'Everyone you share NestPrep with has it';
+  static const seePremium = 'See Premium';
+  static const lockedHint = 'Part of Premium';
+  static const close = 'Close';
+  static const everything = 'Everything in Premium';
+  static const reachedFor = 'You’re here for this';
+  static const wholeHousehold = 'One plan covers everyone in your household.';
+
+  static String highlightTitle(PremiumHighlight highlight) =>
+      switch (highlight) {
+        PremiumHighlight.lunches => 'Lunchboxes',
+        PremiumHighlight.recipes => 'Recipes',
+        PremiumHighlight.shops => 'Your shops',
+        PremiumHighlight.snaps => 'Snap it',
+        PremiumHighlight.whereWeAre => 'Where we are',
+        PremiumHighlight.nannyHub => 'Nanny hub',
+        PremiumHighlight.homeCare => 'Home care',
+        PremiumHighlight.twoHomes => 'Two homes',
+        PremiumHighlight.documents => 'Documents',
+        PremiumHighlight.keepsakes => 'Keepsakes',
+        PremiumHighlight.assistants => 'Assistants',
+        PremiumHighlight.household => 'Room for everyone',
+      };
+
+  static String highlightBody(
+    PremiumHighlight highlight,
+  ) => switch (highlight) {
+    PremiumHighlight.lunches =>
+      'A week of lunches for every child, within allergies and school '
+          'rules',
+    PremiumHighlight.recipes => 'The whole recipe book, plus your family’s own',
+    PremiumHighlight.shops =>
+      'Your list in your cart at Checkers, Pick n Pay or Woolworths',
+    PremiumHighlight.snaps =>
+      'A photo of a shopping list or a school letter, read for you',
+    PremiumHighlight.whereWeAre =>
+      'Everyone on one map, and a nudge when they arrive',
+    PremiumHighlight.nannyHub =>
+      'Child cards, the house guide, shift logs and photo updates',
+    PremiumHighlight.homeCare =>
+      'Cleaning jobs, routines and stock, in your helper’s language',
+    PremiumHighlight.twoHomes =>
+      'One schedule and calm handovers between both homes',
+    PremiumHighlight.documents => 'Shared folders, and a private vault for IDs',
+    PremiumHighlight.keepsakes =>
+      'Drawings and pets turned into characters, every one kept',
+    PremiumHighlight.assistants =>
+      'Add events and groceries from Claude or ChatGPT',
+    PremiumHighlight.household => 'More than four people in one household',
+  };
 
   static const choosePlan = 'Choose a plan';
   static String planName(SubscriptionPlan plan) => switch (plan) {
@@ -136,6 +231,7 @@ abstract final class SubscriptionCopy {
       'Waiting for approval. Premium unlocks as soon as the purchase goes '
       'through.';
 
+  static const welcomeCheer = 'Welcome to Premium';
   static const welcomeTitle = 'You’re on Premium';
   static const welcomeBody =
       'Thank you. Everyone in your household has it now.';
@@ -174,7 +270,7 @@ abstract final class SubscriptionCopy {
   static const whatYouHave = 'On the free plan';
   static const freeCalendar = 'The family calendar';
   static const freeLists = 'Shared lists, to-dos and meals';
-  static const freeOneChild = 'One child’s profile';
+  static const freeFourPeople = 'Room for four people';
   static const whatPremiumAdds = 'What Premium adds';
   static const upgrade = 'See Premium';
   static const manage = 'Manage subscription';
@@ -185,6 +281,8 @@ abstract final class SubscriptionCopy {
   static String premiumRequired(PremiumFeature feature) => switch (feature) {
     PremiumFeature.additionalChild =>
       'The free plan has room for one child. Premium adds the rest.',
+    PremiumFeature.householdSize =>
+      'The free plan has room for four people. Premium adds the rest.',
     _ => 'That is part of Premium.',
   };
 

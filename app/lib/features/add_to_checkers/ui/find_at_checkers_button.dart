@@ -7,6 +7,7 @@ import '../../groceries/model/product_match.dart';
 import '../state/product_match_controller.dart';
 import '../state/retailer_choice_controller.dart';
 import 'retailer_logo.dart';
+import 'shops_lock.dart';
 
 /// *Find at Checkers* beside an unbought item nobody has matched yet: the
 /// chosen shop's own logo, so the tap says where it will look.
@@ -29,11 +30,19 @@ class FindAtCheckersButton extends StatelessWidget {
     final retailer = context.select<RetailerChoiceController, ProductRetailer>(
       (choice) => choice.chosen,
     );
-    return RetailerLogo(
-      retailer: retailer,
-      label: CheckersCopy.findAt(retailer),
-      onTap: () =>
-          context.read<ProductMatchController>().lookFor(item, at: retailer),
+    return ShopLockBadge(
+      isLocked: !shopsUnlocked(context),
+      child: RetailerLogo(
+        retailer: retailer,
+        label: CheckersCopy.findAt(retailer),
+        onTap: () => _find(context, retailer),
+      ),
     );
+  }
+
+  Future<void> _find(BuildContext context, ProductRetailer retailer) async {
+    final controller = context.read<ProductMatchController>();
+    if (!await ensureShops(context)) return;
+    controller.lookFor(item, at: retailer);
   }
 }

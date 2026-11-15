@@ -33,6 +33,9 @@ abstract final class HomeCareShiftCopy {
     return minutes == 0 ? '$hours h' : '$hours h $minutes min';
   }
 
+  static const lockedOpenBody =
+      'Home care is locked, but a shift that is still open can be ended here.';
+
   static const emptyTitle = 'No shifts yet';
   static const emptyBody =
       'When a helper starts a shift, in the app or at a frame, it shows here.';

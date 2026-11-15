@@ -1,5 +1,6 @@
 import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
+import 'assistants_route.dart';
 import 'basket_compare_route.dart';
 import 'documents_route.dart';
 import 'family_route.dart';
@@ -9,6 +10,9 @@ import 'household_shell.dart';
 import 'lunch_route.dart';
 import 'meals_route.dart';
 import 'nanny_hub_route.dart';
+import 'referral_route.dart';
+import 'shops_route.dart';
+import 'subscription_route.dart';
 
 /// Where somebody belongs inside a household, given who they are there, or
 /// null to leave them where they are (household ADR-0003).
@@ -51,6 +55,23 @@ String? householdPlaceRedirect({
   if (area == null || view.permissions.canUse(area)) return null;
   return firstPlaceFor(view);
 }
+
+/// The places a free household holding more than four people may still open
+/// (subscriptions ADR-0008): the people screen with its access editor, closing
+/// and each person's picture, the invite step an admin may owe, the plan,
+/// referrals, and the two places where what Premium started is ended —
+/// unlinking a shop and disconnecting an assistant.
+bool isOpenOverTheFreePlan({
+  required String location,
+  required String householdId,
+}) => [
+  HouseholdRoute.householdPathFor(householdId),
+  HouseholdRoute.setupPathFor(householdId),
+  SubscriptionRoute.pathFor(householdId),
+  ReferralRoute.pathFor(householdId),
+  ShopsRoute.pathFor(householdId),
+  AssistantsRoute.pathFor(householdId),
+].any((open) => location == open || location.startsWith('$open/'));
 
 /// Today, which everybody may open and which shows only what their grant
 /// allows (design-system ADR-0009).

@@ -8,6 +8,9 @@ import '../features/lunch_box/state/lunch_board_controller.dart';
 import '../features/lunch_box/state/lunch_variety_choice.dart';
 import '../features/lunch_box/ui/fill_week_screen.dart';
 import '../features/recipes/data/recipe_repository.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
+import '../shared/copy/app_copy.dart';
 import 'household_route.dart';
 import 'lunch_route.dart';
 import 'viewer_member.dart';
@@ -18,19 +21,23 @@ import 'viewer_member.dart';
 /// the library the phone holds now.
 GoRoute fillWeekRoute() => GoRoute(
   path: LunchRoute.fillWeekPath,
-  builder: (context, state) =>
-      ChangeNotifierProxyProvider<LunchBoardController, FillWeekController>(
-        create: (context) => FillWeekController(
-          starterBoxes: context.read<LunchStarterBoxRepository>(),
-          recipes: context.read<RecipeRepository>(),
-          lunchRepository: context.read<LunchRepository>(),
-          variety: context.read<LunchVarietyChoice>(),
-          householdId: HouseholdRoute.idFrom(state),
-          memberId: viewerMemberIdOf(context),
-          childId: state.uri.queryParameters[LunchRoute.childQuery] ?? '',
+  builder: (context, state) => PremiumArea(
+    feature: PremiumFeature.lunchBox,
+    title: FillWeekCopy.title,
+    child:
+        ChangeNotifierProxyProvider<LunchBoardController, FillWeekController>(
+          create: (context) => FillWeekController(
+            starterBoxes: context.read<LunchStarterBoxRepository>(),
+            recipes: context.read<RecipeRepository>(),
+            lunchRepository: context.read<LunchRepository>(),
+            variety: context.read<LunchVarietyChoice>(),
+            householdId: HouseholdRoute.idFrom(state),
+            memberId: viewerMemberIdOf(context),
+            childId: state.uri.queryParameters[LunchRoute.childQuery] ?? '',
+          ),
+          update: (context, lunch, controller) =>
+              controller!..followBoard(lunch.board),
+          child: const FillWeekScreen(),
         ),
-        update: (context, lunch, controller) =>
-            controller!..followBoard(lunch.board),
-        child: const FillWeekScreen(),
-      ),
+  ),
 );

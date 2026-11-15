@@ -18,6 +18,8 @@ import '../features/live_location/ui/live_location_screen.dart';
 import '../features/live_location/ui/member_history_screen.dart';
 import '../features/live_location/ui/place_editor_screen.dart';
 import '../features/live_location/ui/places_screen.dart';
+import '../features/subscriptions/model/premium_feature.dart';
+import '../features/subscriptions/ui/premium_area.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/failure/app_failure.dart';
 import '../shared/time/household_clock.dart';
@@ -29,16 +31,20 @@ import 'viewer_member.dart';
 List<GoRoute> liveLocationRoutes() => [
   GoRoute(
     path: '${HouseholdRoute.path}/${HouseholdRoute.whereSegment}',
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (context) => LiveLocationController(
-        liveLocationRepository: context.read<LiveLocationRepository>(),
-        locationReporter: context.read<LocationReporter>(),
-        placesRepository: context.read<PlacesRepository>(),
-        householdId: HouseholdRoute.idFrom(state),
-        viewerMemberId: viewerMemberIdOf(context),
-        members: context.read<HouseholdView>().members,
+    builder: (context, state) => PremiumArea(
+      feature: PremiumFeature.familyLocation,
+      title: LocationCopy.title,
+      child: ChangeNotifierProvider(
+        create: (context) => LiveLocationController(
+          liveLocationRepository: context.read<LiveLocationRepository>(),
+          locationReporter: context.read<LocationReporter>(),
+          placesRepository: context.read<PlacesRepository>(),
+          householdId: HouseholdRoute.idFrom(state),
+          viewerMemberId: viewerMemberIdOf(context),
+          members: context.read<HouseholdView>().members,
+        ),
+        child: const LiveLocationScreen(),
       ),
-      child: const LiveLocationScreen(),
     ),
     routes: [
       GoRoute(
@@ -51,37 +57,54 @@ List<GoRoute> liveLocationRoutes() => [
               .where((member) => member.id == memberId)
               .firstOrNull;
           if (member == null) return const NestLoadingView();
-          return ChangeNotifierProvider(
-            create: (context) => HistoryController(
-              trailRepository: context.read<TrailRepository>(),
-              placesRepository: context.read<PlacesRepository>(),
-              householdId: HouseholdRoute.idFrom(state),
-              memberId: memberId,
-              clock: context.read<HouseholdClock>(),
-            ),
-            child: MemberHistoryScreen(
-              member: member,
-              isOwn: memberId == viewerMemberIdOf(context),
+          return PremiumArea(
+            feature: PremiumFeature.familyLocation,
+            title: LocationCopy.historyOf(member.displayName),
+            child: ChangeNotifierProvider(
+              create: (context) => HistoryController(
+                trailRepository: context.read<TrailRepository>(),
+                placesRepository: context.read<PlacesRepository>(),
+                householdId: HouseholdRoute.idFrom(state),
+                memberId: memberId,
+                clock: context.read<HouseholdClock>(),
+              ),
+              child: MemberHistoryScreen(
+                member: member,
+                isOwn: memberId == viewerMemberIdOf(context),
+              ),
             ),
           );
         },
       ),
       GoRoute(
         path: HouseholdRoute.placesSegment,
-        builder: (context, state) => ChangeNotifierProvider(
-          create: (context) => PlacesController(
-            placesRepository: context.read<PlacesRepository>(),
-            householdId: HouseholdRoute.idFrom(state),
+        builder: (context, state) => PremiumArea(
+          feature: PremiumFeature.familyLocation,
+          title: LocationCopy.places,
+          child: ChangeNotifierProvider(
+            create: (context) => PlacesController(
+              placesRepository: context.read<PlacesRepository>(),
+              householdId: HouseholdRoute.idFrom(state),
+            ),
+            child: const PlacesScreen(),
           ),
-          child: const PlacesScreen(),
         ),
         routes: [
           GoRoute(
             path: ':placeId',
-            builder: (context, state) => _PlaceEditorRoute(
-              householdId: HouseholdRoute.idFrom(state),
-              placeId: state.pathParameters['placeId'] ?? '',
-            ),
+            builder: (context, state) {
+              final placeId = state.pathParameters['placeId'] ?? '';
+              return PremiumArea(
+                feature: PremiumFeature.familyLocation,
+                title: placeId == HouseholdRoute.newPlaceId
+                    ? LocationCopy.addPlace
+                    : LocationCopy.editPlace,
+                child: _PlaceEditorRoute(
+                  householdId: HouseholdRoute.idFrom(state),
+                  placeId: placeId,
+                ),
+              );
+            },
           ),
         ],
       ),

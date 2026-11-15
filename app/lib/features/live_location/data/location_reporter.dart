@@ -28,6 +28,10 @@ abstract interface class LocationReporter {
     required DateTime until,
   });
 
+  /// Whether a window is being reported for [memberId] in [householdId] on
+  /// this phone right now.
+  bool isReportingFor(String householdId, String memberId);
+
   /// Stops now, and removes what the household can see.
   Future<void> stop({required String householdId, required String memberId});
 

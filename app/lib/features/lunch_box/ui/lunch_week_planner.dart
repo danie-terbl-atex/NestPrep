@@ -8,7 +8,6 @@ import '../../../shared/flags/feature_flags.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../groceries/model/product_match.dart';
 import '../../plan_week/ui/plan_week_entry_card.dart';
-import '../../subscriptions/state/household_entitlement.dart';
 import '../../welcome_tour/model/tour_target.dart';
 import '../../welcome_tour/ui/tour_anchor.dart';
 import '../model/lunch_board.dart';
@@ -49,16 +48,13 @@ class LunchWeekPlanner extends StatelessWidget {
       canEdit: true,
       flags: flags?.flags ?? const FeatureFlags.defaults(defaultOn: false),
     );
-    final isPremium = context.watch<HouseholdEntitlement>().isPremium;
-    final hasBudget =
-        (flags?.isOn(FeatureFlag.lunchBudget) ?? false) && isPremium;
+    final hasBudget = flags?.isOn(FeatureFlag.lunchBudget) ?? false;
     final shop = PlanWeekEntry.shopFor(context, board);
     final isFull = childWeek.filledDays == childWeek.days.length;
     final ways = LunchPlanWay.offered(
       hasTwig: shop != null,
       hasPantry:
           hasPantry && context.watch<LunchPantryController>().bias != null,
-      isPremium: isPremium,
       isFull: isFull,
     );
     return NestCard(
@@ -105,7 +101,6 @@ class LunchWeekPlanner extends StatelessWidget {
             week: LunchWeekName.ofBoard(board).inSentence,
             ways: ways,
             shop: shop,
-            isPremium: context.read<HouseholdEntitlement>().isPremium,
           );
     if (way == null || !context.mounted) return;
     switch (way) {

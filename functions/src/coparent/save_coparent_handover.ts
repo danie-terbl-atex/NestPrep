@@ -5,7 +5,7 @@ import { onCall } from 'firebase-functions/v2/https';
 import { parseInput, requireUid } from '../household/parse_input';
 import { db } from '../shared/firestore';
 import { requireHandoverDate } from './change_rules';
-import { requireRole } from './coparent_caller';
+import { requireRole, requireTwoHomesPremium } from './coparent_caller';
 import { handoverRef } from './coparent_refs';
 import { bothRefs, readLink, requireActive } from './link_context';
 import { saveCoParentHandoverInput } from './schemas';
@@ -25,6 +25,7 @@ export const saveCoParentHandover = onCall(async (request) => {
 
   await store.runTransaction(async (transaction) => {
     await requireRole(transaction, store, input.householdId, uid, 'family');
+    await requireTwoHomesPremium(transaction, store, input.householdId);
     const link = await readLink(transaction, store, input.linkId, input.householdId);
     requireActive(link);
     const record = {

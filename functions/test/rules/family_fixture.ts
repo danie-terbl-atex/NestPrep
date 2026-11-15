@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { Timestamp, doc, setDoc } from 'firebase/firestore';
 
 import { ROLE_DEFAULTS, type Grant } from '../../src/household/access';
 import { givenData, type Firestore } from './rules_harness';
@@ -86,6 +86,16 @@ export async function givenTheParkers(): Promise<void> {
       name: 'Oakwood Primary',
       nutFree: true,
       createdAt: new Date(),
+    });
+  });
+}
+
+/** The Parkers on Premium, or with a Premium that ended yesterday (subscriptions ADR-0008). */
+export async function givenFamilyPremium(state: 'active' | 'lapsed' = 'active'): Promise<void> {
+  const day = 24 * 60 * 60 * 1000;
+  await givenData(async (db: Firestore) => {
+    await setDoc(doc(db, `households/${HOUSEHOLD}/entitlement/current`), {
+      premiumUntil: Timestamp.fromMillis(Date.now() + (state === 'active' ? 30 * day : -day)),
     });
   });
 }

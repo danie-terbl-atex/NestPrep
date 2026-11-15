@@ -13,7 +13,7 @@ class FreePlanCard extends StatelessWidget {
   static const _included = [
     (LucideIcons.calendar, SubscriptionCopy.freeCalendar),
     (LucideIcons.shoppingBasket, SubscriptionCopy.freeLists),
-    (LucideIcons.baby, SubscriptionCopy.freeOneChild),
+    (LucideIcons.users, SubscriptionCopy.freeFourPeople),
   ];
 
   @override

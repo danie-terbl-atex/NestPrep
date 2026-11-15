@@ -44,6 +44,26 @@ final class FirestoreHelperShiftRepository implements HelperShiftRepository {
   }
 
   @override
+  Stream<List<HelperShift>> watchOpenShifts(
+    String householdId, {
+    String? helperId,
+  }) {
+    final open = typedCollection(
+      _shifts(householdId),
+      fromJson: HelperShift.fromJson,
+      toJson: _readOnly,
+    ).where('status', isEqualTo: HelperShift.open);
+    final asked = helperId == null
+        ? open
+        : open.where('helperId', isEqualTo: helperId);
+    return asked
+        .limit(HelperShiftRepository.openShiftLimit)
+        .snapshots()
+        .map((snapshot) => [for (final doc in snapshot.docs) doc.data()])
+        .handleError((Object error) => throw failureFromFirebase(error));
+  }
+
+  @override
   Future<void> startShift({
     required String householdId,
     required String helperId,

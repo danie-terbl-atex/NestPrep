@@ -10,6 +10,7 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_permissions.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
+import '../features/household/ui/household_size_lock.dart';
 import '../features/live_location/ui/always_sharing_guard.dart';
 import '../features/nanny_hub/ui/carer_scope.dart';
 import '../features/notifications/state/turn_on_notifications.dart';
@@ -150,25 +151,31 @@ class _HouseholdShellState extends State<HouseholdShell> {
               child: EntitlementScope(
                 householdId: view.household.id,
                 canBuy: view.permissions.isFamily,
-                child: WelcomeTourGate(
-                  location: widget.location,
-                  child: WelcomeTourLayer(
-                    location: widget.location,
-                    child: CarerScope(
-                      child: AlwaysSharingGuard(
-                        child: ShareToFrameHost(
-                          child: PremiumVoucherHost(
-                            child: DigestPromptHost(
-                              householdId: view.household.id,
-                              memberId: view.viewerMember?.id ?? '',
-                              location: widget.location,
-                              child: FirstOpenPushPrompt(
-                                owner: NotificationsOwner(
-                                  householdId: view.household.id,
-                                  memberId: view.viewerMember?.id ?? '',
-                                  isFamily: view.permissions.isFamily,
+                child: AlwaysSharingGuard(
+                  child: HouseholdSizeLock(
+                    isOpenHere: isOpenOverTheFreePlan(
+                      location: widget.location,
+                      householdId: view.household.id,
+                    ),
+                    child: WelcomeTourGate(
+                      location: widget.location,
+                      child: WelcomeTourLayer(
+                        location: widget.location,
+                        child: CarerScope(
+                          child: ShareToFrameHost(
+                            child: PremiumVoucherHost(
+                              child: DigestPromptHost(
+                                householdId: view.household.id,
+                                memberId: view.viewerMember?.id ?? '',
+                                location: widget.location,
+                                child: FirstOpenPushPrompt(
+                                  owner: NotificationsOwner(
+                                    householdId: view.household.id,
+                                    memberId: view.viewerMember?.id ?? '',
+                                    isFamily: view.permissions.isFamily,
+                                  ),
+                                  child: widget.child,
                                 ),
-                                child: widget.child,
                               ),
                             ),
                           ),
