@@ -31,6 +31,7 @@ import {
   type KidRoutineSources,
   kidRoutinesPanel,
 } from './frame_kid_routines';
+import { type FrameRewards, type RewardSources, rewardsPanel } from './frame_rewards';
 import { memberColorHex } from './member_colors';
 import {
   type FrameNamedMember,
@@ -147,6 +148,8 @@ export interface FrameDaySources {
   readonly people?: FramePeopleSources;
   /** The children's routines, read only while the frame shows chores (rev 21). */
   readonly kidRoutines?: KidRoutineSources;
+  /** The reward shelf and the kids' stars, read only while the frame shows chores (rev 22). */
+  readonly rewards?: RewardSources;
 }
 
 export interface FrameEvent {
@@ -236,6 +239,8 @@ export interface FrameDay {
    * frame that predates them draws nothing instead of an odd chore (rev 21).
    */
   readonly routines?: FrameKidRoutine[];
+  /** What stars buy and each child's stars, by first name, while the household has kids (rev 22). */
+  readonly rewards?: FrameRewards;
 }
 
 export function assembleFrameDay(sources: FrameDaySources): FrameDay {
@@ -273,6 +278,9 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
       : {}),
     ...(panels.todos && sources.kidRoutines !== undefined
       ? { routines: kidRoutinesOf(sources, sources.kidRoutines) }
+      : {}),
+    ...(panels.todos && sources.rewards !== undefined && (sources.kids ?? []).length > 0
+      ? { rewards: rewardsPanel(sources.rewards, namedKids(sources)) }
       : {}),
   };
 }
@@ -325,6 +333,13 @@ function membersOf(named: readonly FrameNamedMember[], sources: FrameDaySources)
       ...(kids.has(id) ? { kid: true as const } : {}),
       ...(avatar === undefined ? {} : { avatar }),
     };
+  });
+}
+
+function namedKids(sources: FrameDaySources): FrameNamedMember[] {
+  return (sources.kids ?? []).flatMap((id) => {
+    const name = firstName(sources.names[id] ?? '');
+    return name === '' ? [] : [{ id, name }];
   });
 }
 

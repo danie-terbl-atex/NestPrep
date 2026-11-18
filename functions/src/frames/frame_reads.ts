@@ -24,6 +24,8 @@ import {
 } from './frame_day';
 import { readFlag } from '../shared/feature_flags';
 import { readKidRoutines } from './frame_kid_routines';
+import { readFrameRewards } from './frame_rewards';
+import { logger } from 'firebase-functions/v2';
 import { type FrameGroceries, parsed } from './frame_documents';
 import { HOME_CARE_JOBS, HOME_CARE_SHIFTS, frameMarks, hasFramePhoto } from './frame_jobs';
 import { calendarEditors } from './frame_events';
@@ -112,6 +114,7 @@ type Sources = Pick<
   | 'homeCare'
   | 'lunch'
   | 'kidRoutines'
+  | 'rewards'
   | 'lunchPhotos'
   | 'groceries'
   | 'people'
@@ -127,20 +130,40 @@ export async function readFrameSources(
   const helperId = panels.helperMemberId;
   const premium =
     panels.lunch || panels.people ? readFramePremium(store, home) : Promise.resolve(false);
-  const [members, events, chores, meals, homeCare, lunch, groceryItems, whereabouts, kidRoutines] =
-    await Promise.all([
-      addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home),
-      panels.calendar ? readEventWindow(home, today, addDays(today, FRAME_DAY_AHEAD)) : undefined,
-      panels.todos || helperId !== null
-        ? readChoreRecords(home, today, addDays(today, -FRAME_OVERDUE_DAYS))
-        : undefined,
-      panels.meals ? readMeals(store, home, today) : undefined,
-      helperId === null ? undefined : readHomeCare(store, home, helperId, today),
-      panels.lunch ? readLunch(store, home, today, premium) : undefined,
-      groceries === null ? undefined : readGroceryItems(home),
-      panels.people ? readPeople(home, premium) : undefined,
-      panels.todos ? readKidRoutines(store, home, today) : undefined,
-    ]);
+  const memberRead =
+    addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home);
+  const [
+    members,
+    events,
+    chores,
+    meals,
+    homeCare,
+    lunch,
+    groceryItems,
+    whereabouts,
+    kidRoutines,
+    rewards,
+  ] = await Promise.all([
+    memberRead,
+    panels.calendar ? readEventWindow(home, today, addDays(today, FRAME_DAY_AHEAD)) : undefined,
+    panels.todos || helperId !== null
+      ? readChoreRecords(home, today, addDays(today, -FRAME_OVERDUE_DAYS))
+      : undefined,
+    panels.meals ? readMeals(store, home, today) : undefined,
+    helperId === null ? undefined : readHomeCare(store, home, helperId, today),
+    panels.lunch ? readLunch(store, home, today, premium) : undefined,
+    groceries === null ? undefined : readGroceryItems(home),
+    panels.people ? readPeople(home, premium) : undefined,
+    panels.todos ? readKidRoutines(store, home, today) : undefined,
+    panels.todos
+      ? memberRead
+          .then(({ kids }) => readFrameRewards(store, home, kids ?? []))
+          .catch((error: unknown) => {
+            logger.warn('frame rewards read failed', { error: String(error) });
+            return undefined;
+          })
+      : undefined,
+  ]);
   const { groceryEditors, ...people } = { groceryEditors: [], ...members };
   return {
     ...people,
@@ -154,6 +177,7 @@ export async function readFrameSources(
       : { groceries: { shop: groceries.shop, editors: groceryEditors, items: groceryItems } }),
     ...(whereabouts === undefined ? {} : { people: whereabouts }),
     ...(kidRoutines === undefined ? {} : { kidRoutines }),
+    ...(rewards === undefined ? {} : { rewards }),
   };
 }
 
