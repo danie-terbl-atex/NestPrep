@@ -106,16 +106,22 @@ void main() {
     });
   });
 
-  test('a free family meets the same tools, offered rather than hidden', () {
+  test('a free family is offered lunches on Today and never taken to the '
+      'board, which shows them only its lock', () {
     final stops = stopsFor(Fixtures.view());
-    expect(stops.length, stopsFor(Fixtures.view(), isPremium: true).length);
-    for (final target in [
-      TourTarget.lunchPlanMyWeek,
-      TourTarget.lunchPrep,
-      TourTarget.lunchBudget,
-    ]) {
-      expect(stopOf(stops, target).premium, TourPremium.offered);
-    }
+    expect(targetsOf(stops), [
+      TourTarget.tabBar,
+      TourTarget.todayLunch,
+      TourTarget.bell,
+      TourTarget.calendarViews,
+      TourTarget.mealsViews,
+      TourTarget.listsSwitch,
+      TourTarget.groceryPlans,
+      TourTarget.morePeople,
+      TourTarget.accountMenu,
+    ]);
+    expect(stopOf(stops, TourTarget.todayLunch).premium, TourPremium.offered);
+    expect(stops.where((stop) => stop.place == TourPlace.lunch), isEmpty);
   });
 
   test('a parent who is not the admin is shown who is here', () {
@@ -142,7 +148,7 @@ void main() {
 
   test('a carer looks at the lunches, buys nothing, and meets the children’s '
       'profiles to read', () {
-    final stops = stopsFor(viewAs(MemberRole.carer));
+    final stops = stopsFor(viewAs(MemberRole.carer), isPremium: true);
     final targets = targetsOf(stops);
     expect(stopOf(stops, TourTarget.lunchDay).isLookOnly, isTrue);
     expect(targets, contains(TourTarget.lunchTools));
@@ -185,7 +191,9 @@ void main() {
   });
 
   test('a capability switched off is not called out', () {
-    final targets = targetsOf(stopsFor(Fixtures.view(), flags: TestFlags.off));
+    final targets = targetsOf(
+      stopsFor(Fixtures.view(), isPremium: true, flags: TestFlags.off),
+    );
     for (final target in [TourTarget.lunchPlanMyWeek, TourTarget.lunchBudget]) {
       expect(targets, isNot(contains(target)), reason: '$target');
     }
@@ -195,13 +203,16 @@ void main() {
     );
   });
 
-  test('the way on from the last callout is lunch for whoever plans it', () {
-    bool endsOnLunch(HouseholdView view) => WelcomeTourPlan(
-      view: view,
-      flags: TestFlags.on,
-      isPremium: false,
-    ).endsOnLunch;
+  test('the way on from the last callout is lunch for whoever plans it, in '
+      'a household with Premium', () {
+    bool endsOnLunch(HouseholdView view, {bool isPremium = true}) =>
+        WelcomeTourPlan(
+          view: view,
+          flags: TestFlags.on,
+          isPremium: isPremium,
+        ).endsOnLunch;
     expect(endsOnLunch(Fixtures.view()), isTrue);
+    expect(endsOnLunch(Fixtures.view(), isPremium: false), isFalse);
     expect(endsOnLunch(viewAs(MemberRole.carer)), isFalse);
   });
 }

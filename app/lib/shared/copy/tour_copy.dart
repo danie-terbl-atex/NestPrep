@@ -58,6 +58,10 @@ abstract final class TourCopy {
     TourTarget.tabBar =>
       'Everything you can open lives in this bar. Today is home: your day '
           'at a glance.',
+    TourTarget.todayLunch when premium == TourPremium.offered => _premium(
+      premium,
+      'Each child’s school lunches, planned a week at a time.',
+    ),
     TourTarget.todayLunch =>
       'What each child is having today. Tap it to open their week.',
     TourTarget.bell =>

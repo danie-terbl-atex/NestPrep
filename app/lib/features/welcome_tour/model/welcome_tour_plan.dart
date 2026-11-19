@@ -43,33 +43,38 @@ final class WelcomeTourPlan {
   /// (family-profiles ADR-0002).
   bool get _seesLunches => _hasLunch && FamilyAccess.of(view).seesEveryProfile;
 
+  /// The lunch board itself is Premium's, and shows a household without it
+  /// nothing but its lock (subscriptions ADR-0009).
+  bool get _seesLunchBoard => _seesLunches && isPremium;
+
   /// Whether the last callout's way on is the lunch board — for somebody who
   /// may plan lunches — rather than Today.
-  bool get endsOnLunch => _hasLunch && _canEditLunch;
+  bool get endsOnLunch => _hasLunch && _canEditLunch && isPremium;
 
   /// The callouts, in order. Never empty: the bar and the account button are
   /// everybody's.
   List<TourStop> get stops => [
     const TourStop(TourTarget.tabBar, place: TourPlace.today),
     if (_seesLunches)
-      const TourStop(TourTarget.todayLunch, place: TourPlace.today),
+      TourStop(
+        TourTarget.todayLunch,
+        place: TourPlace.today,
+        premium: isPremium ? TourPremium.none : TourPremium.offered,
+      ),
     const TourStop(TourTarget.bell, place: TourPlace.today),
     if (HouseholdTab.week.isOpenTo(_permissions)) _calendar(),
-    if (_seesLunches) ..._lunch(),
+    if (_seesLunchBoard) ..._lunch(),
     if (HouseholdTab.meals.isOpenTo(_permissions)) _meals(),
     ..._lists(),
     ..._more(),
     const TourStop(TourTarget.accountMenu, place: TourPlace.today),
   ];
 
-  TourPremium _premiumOf(LunchTool tool) => !tool.isPremium
-      ? TourPremium.none
-      : isPremium
-      ? TourPremium.included
-      : TourPremium.offered;
-
-  TourStop _tool(TourTarget target, LunchTool tool) =>
-      TourStop(target, place: TourPlace.lunch, premium: _premiumOf(tool));
+  TourStop _tool(TourTarget target, LunchTool tool) => TourStop(
+    target,
+    place: TourPlace.lunch,
+    premium: tool.isPremium ? TourPremium.included : TourPremium.none,
+  );
 
   bool _offers(LunchTool tool) =>
       tool.isOpenTo(canEdit: _canEditLunch, flags: flags);
