@@ -5,13 +5,26 @@ import '../../../shared/money/money.dart';
 
 part 'product_match.freezed.dart';
 
+/// What one platform's switch in source says about a shop (shops ADR-0004,
+/// ADR-0005).
+enum ShopSwitch {
+  /// Never offered on this platform.
+  off,
+
+  /// Offered while its switch in `appConfig/flags` is on.
+  cloud,
+
+  /// Offered whatever `appConfig/flags` says.
+  always,
+}
+
 /// The shops a product match can be at, each behind its own switch
 /// (add-to-pnp ADR-0007, add-to-woolworths ADR-0001). *Plan my week* and the
 /// photo frames plan at Checkers and Pick n Pay only.
 enum ProductRetailer {
-  checkers('checkers', onAndroid: false, onIos: false),
-  pickNPay('pickNPay', onAndroid: false, onIos: false),
-  woolworths('woolworths', onAndroid: false, onIos: false);
+  checkers('checkers', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off),
+  pickNPay('pickNPay', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off),
+  woolworths('woolworths', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off);
 
   const ProductRetailer(
     this.code, {
@@ -25,13 +38,11 @@ enum ProductRetailer {
   /// This platform's own switch for the shop, which must stay in source and
   /// never become a define: a Shorebird patch can change source, but must
   /// carry its release's defines (foundation ADR-0025).
-  final bool onAndroid;
-  final bool onIos;
+  final ShopSwitch onAndroid;
+  final ShopSwitch onIos;
 
-  /// Whether NestPrep can search this shop on this phone. Only a connected
-  /// shop, and only while its switch in `appConfig/flags` is on too, can be
-  /// chosen, so a lookup never goes to a shop that cannot answer.
-  bool get isConnected {
+  /// The switch for this shop on this phone.
+  ShopSwitch get switchHere {
     final platform = defaultTargetPlatform;
     return debugSwitchOverride?.call(this, platform) ??
         switch (platform) {
@@ -40,8 +51,12 @@ enum ProductRetailer {
         };
   }
 
+  /// Whether NestPrep can search this shop on this phone at all; `shopsOn`
+  /// decides whether it is offered.
+  bool get isConnected => switchHere != ShopSwitch.off;
+
   @visibleForTesting
-  static bool Function(ProductRetailer shop, TargetPlatform platform)?
+  static ShopSwitch Function(ProductRetailer shop, TargetPlatform platform)?
   debugSwitchOverride;
 
   static ProductRetailer? fromCode(String code) =>

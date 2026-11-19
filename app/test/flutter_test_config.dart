@@ -9,13 +9,15 @@ import 'package:nestprep/features/groceries/model/product_match.dart';
 /// waits for a screen with nothing scheduled — so the suite holds it still.
 /// The one test of the turning itself clears this for its own body.
 ///
-/// Every shop is connected here whatever the source ships with (shops
-/// ADR-0004), so the shop features are tested while a store build holds them
-/// off; the tests of the switch itself set their own.
+/// Every shop follows its cloud switch here whatever the source ships with
+/// (shops ADR-0004, ADR-0005), so the shop features and their flags are tested
+/// however a store build holds them; the tests of the switch itself set their
+/// own.
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   NestMotion.debugHoldStill = true;
   ProductRetailer.debugSwitchOverride = everyShopConnected;
   await testMain();
 }
 
-bool everyShopConnected(ProductRetailer shop, TargetPlatform platform) => true;
+ShopSwitch everyShopConnected(ProductRetailer shop, TargetPlatform platform) =>
+    ShopSwitch.cloud;

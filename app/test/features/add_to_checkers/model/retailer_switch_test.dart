@@ -114,12 +114,17 @@ void main() {
       ProductRetailer.debugSwitchOverride = connected;
     });
 
-    const allOn = {'checkersShop': true, 'pnpShop': true, 'woolworthsShop': true};
+    const allOn = {
+      'checkersShop': true,
+      'pnpShop': true,
+      'woolworthsShop': true,
+    };
 
     test('is gone there and stays on the other', () {
       ProductRetailer.debugSwitchOverride = (shop, platform) =>
-          !(shop == ProductRetailer.woolworths &&
-              platform == TargetPlatform.iOS);
+          shop == ProductRetailer.woolworths && platform == TargetPlatform.iOS
+          ? ShopSwitch.off
+          : ShopSwitch.cloud;
 
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
       expect(offered(allOn), [
@@ -133,7 +138,7 @@ void main() {
 
     test('and its cloud switch on never brings it back', () {
       ProductRetailer.debugSwitchOverride = (shop, platform) =>
-          shop != ProductRetailer.checkers;
+          shop == ProductRetailer.checkers ? ShopSwitch.off : ShopSwitch.cloud;
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       expect(
         offered(const {
@@ -143,6 +148,34 @@ void main() {
         }),
         isEmpty,
       );
+    });
+  });
+
+  group('a shop held on in source', () {
+    tearDown(() {
+      debugDefaultTargetPlatformOverride = null;
+      ProductRetailer.debugSwitchOverride = connected;
+    });
+
+    test('is offered with its cloud switch off, and before the document '
+        'has loaded (shops ADR-0005)', () {
+      ProductRetailer.debugSwitchOverride = (shop, platform) =>
+          shop == ProductRetailer.woolworths
+          ? ShopSwitch.always
+          : ShopSwitch.cloud;
+      expect(
+        offered(const {
+          'checkersShop': false,
+          'pnpShop': true,
+          'woolworthsShop': false,
+        }),
+        [ProductRetailer.pickNPay, ProductRetailer.woolworths],
+      );
+      const loading = FeatureFlags.defaults(
+        defaultOn: true,
+        holdsBackWaiting: true,
+      );
+      expect(shopsOn(loading.isOn), [ProductRetailer.woolworths]);
     });
   });
 
@@ -160,15 +193,17 @@ void main() {
       test(platform.name, () {
         debugDefaultTargetPlatformOverride = platform;
         for (final shop in ProductRetailer.values) {
-          expect(shop.isConnected, ownSwitch(shop), reason: shop.code);
+          expect(shop.switchHere, ownSwitch(shop), reason: shop.code);
         }
         expect(
           offered(const {
-            'checkersShop': true,
-            'pnpShop': true,
-            'woolworthsShop': true,
+            'checkersShop': false,
+            'pnpShop': false,
+            'woolworthsShop': false,
           }),
-          ProductRetailer.values.where(ownSwitch),
+          ProductRetailer.values.where(
+            (shop) => ownSwitch(shop) == ShopSwitch.always,
+          ),
         );
       });
     }

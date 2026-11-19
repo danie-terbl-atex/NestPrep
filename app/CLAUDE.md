@@ -200,24 +200,24 @@ so the on-screen copy cannot tell you the backend was unreachable.
   promote it in console.shorebird.dev. A patch belongs to one release only and never carries over to
   the next store version. Native code, assets, plugins and the Flutter version need a store build.
   `shorebird` lives in `~/.shorebird/bin`. Never put its Flutter on PATH.
-- **Taking a broken shop off one platform** (shops ADR-0004). A shop is offered only while its
-  `appConfig/flags` switch (shared by both platforms, instant) **and** this platform's
-  `onAndroid`/`onIos` on `ProductRetailer` (`lib/features/groceries/model/product_match.dart`) are
-  both on. To take a shop off one platform, set its `onAndroid` or `onIos` to `false` and patch that
-  platform. **Patch every live release version** (a patch belongs to one release). A phone runs the
-  patch from the second launch after it's published, and installs from before the first Shorebird
-  release never get it. The platform switches stay in source and must never become a define, because
-  a patch must carry its release's defines. The source switch removes the shop **from the app on
-  that platform only**. The Functions (cart push, linking, frame search) follow `addToCheckers` /
-  `addToPnp` / `addToWoolworths`, so to stop the server reaching a shop, switch that flag off. That
-  also cuts the testers' builds.
-- **Version 1 (1.0.0+22, Shorebird release, 2026-11-19) ships with every shop's `onAndroid` and
-  `onIos` false.** To turn a shop on for it, patch 1.0.0+22 with that shop's switch `true`. The cloud
-  flag must say on as well: the store-build flags `checkersShop` / `pnpShop` / `woolworthsShop` are
-  false in production, and switching them on also shows the shops in 0.9.0 (15) and (16). Otherwise
-  the same patch can point `switchOf` at the `addTo*` flags (on in production, read by the
-  testers' builds), and then no cloud change is needed. The suite runs with every shop connected
-  (`test/flutter_test_config.dart`), whatever the source ships with.
+- **Taking a broken shop off one platform** (shops ADR-0004, ADR-0005). Each `ProductRetailer`
+  (`lib/features/groceries/model/product_match.dart`) carries a `ShopSwitch` per platform,
+  `onAndroid` and `onIos`: `off` (never offered there), `cloud` (offered while its `appConfig/flags`
+  switch is on, shared by both platforms, instant) or `always` (offered whatever the cloud says).
+  To take a shop off one platform, set its switch to `off` and patch that platform. **Patch every
+  live release version** (a patch belongs to one release). A phone runs the patch from the second
+  launch after it's published, and installs from before the first Shorebird release never get it.
+  The platform switches stay in source and must never become a define, because a patch must carry
+  its release's defines. The source switch reaches **the app on that platform only**. The Functions
+  (cart push, linking, frame search) follow `addToCheckers` / `addToPnp` / `addToWoolworths`, so to
+  stop the server reaching a shop, switch that flag off. That also cuts the testers' builds, and it
+  is the only cloud lever left over a shop held `always`.
+- **Version 1 on Android has every shop `always`** since patch 1 to 1.0.0+24 (2026-11-19, shops
+  ADR-0005): Checkers, Pick n Pay and Woolworths show on every Android phone on that release,
+  whatever `checkersShop` / `pnpShop` / `woolworthsShop` say (still false in production, which keeps
+  them hidden in 0.9.0 (15) and (16)). iOS is `off` for all three, and 1.0.0+22 was not patched.
+  The suite runs with every shop on `cloud` (`test/flutter_test_config.dart`), whatever the source
+  ships with.
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
   headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
   `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system

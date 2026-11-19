@@ -22,9 +22,16 @@ FeatureFlag? switchOf(ProductRetailer shop, {bool forTesters = testerShops}) =>
         forTesters ? FeatureFlag.addToWoolworths : FeatureFlag.woolworthsShop,
     };
 
-/// The connected shops whose switch [isOn] says is on, in their order.
+/// The shops offered on this phone, in their order: those its switch in
+/// source holds on whatever the cloud says, and those that follow the cloud
+/// while [isOn] says their switch is on (shops ADR-0005).
 List<ProductRetailer> shopsOn(bool Function(FeatureFlag flag) isOn) => [
   for (final shop in ProductRetailer.values)
-    if (switchOf(shop) case final flag? when shop.isConnected && isOn(flag))
+    if (switchOf(shop) case final flag?
+        when switch (shop.switchHere) {
+          ShopSwitch.off => false,
+          ShopSwitch.cloud => isOn(flag),
+          ShopSwitch.always => true,
+        })
       shop,
 ];

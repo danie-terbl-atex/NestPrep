@@ -33,7 +33,8 @@ void main() {
       tester,
     ) async {
       final connected = ProductRetailer.debugSwitchOverride;
-      ProductRetailer.debugSwitchOverride = (each, platform) => each != shop;
+      ProductRetailer.debugSwitchOverride = (each, platform) =>
+          each == shop ? ShopSwitch.off : ShopSwitch.cloud;
       addTearDown(() => ProductRetailer.debugSwitchOverride = connected);
       final flags = testFlagsController(TestFlags.on);
       addTearDown(flags.dispose);
