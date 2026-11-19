@@ -12,6 +12,13 @@ abstract final class PhotoFrameRoute {
   static String pathFor(String householdId) =>
       '/households/$householdId/$segment';
 
+  static const linkCodeParameter = 'code';
+
+  static String linkPathFor(String householdId, String code) => Uri(
+    path: pathFor(householdId),
+    queryParameters: {linkCodeParameter: code},
+  ).toString();
+
   static String photosPathFor(String householdId) =>
       '${pathFor(householdId)}/$photosSegment';
 }

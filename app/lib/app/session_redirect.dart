@@ -6,6 +6,7 @@ import '../features/accounts/ui/register_screen.dart';
 import '../features/accounts/ui/session_gate_screen.dart';
 import '../features/accounts/ui/sign_in_screen.dart';
 import '../features/household/ui/household_gate_screen.dart';
+import '../features/household/ui/invite_welcome_screen.dart';
 import '../features/household/ui/join_invite_screen.dart';
 import '../features/legal/ui/consent_screen.dart';
 import '../shared/async/async_state.dart';
@@ -36,6 +37,18 @@ String? redirectForSession(
     return location == SessionGateScreen.path ? null : SessionGateScreen.path;
   }
   if (state.value is SignedOut) {
+    // Holding an invite, the account is made on the invite's own first step
+    // (household ADR-0011), so sign-in and register lead there.
+    if (pendingInviteCode != null) {
+      const waysInWithInvite = [
+        InviteWelcomeScreen.path,
+        ForgotPasswordScreen.path,
+        KidRoute.codePath,
+      ];
+      return waysInWithInvite.contains(location)
+          ? null
+          : InviteWelcomeScreen.path;
+    }
     const waysIn = [
       SignInScreen.path,
       RegisterScreen.path,
@@ -78,6 +91,7 @@ String? redirectForSession(
     RegisterScreen.path,
     ForgotPasswordScreen.path,
     HouseholdGateScreen.path,
+    InviteWelcomeScreen.path,
     JoinInviteScreen.path,
     // Agreed, so the consent step is behind them (accounts ADR-0005).
     ConsentScreen.path,

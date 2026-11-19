@@ -145,6 +145,10 @@ Play Store links to — is Firebase Hosting, served from `hosting/public/`. That
     hosting/tools/build-site.mjs  renders the documents, fills the layout, copies the logo and fonts from app/assets
 
 Edit a source, then `npm --prefix functions run site:build` and commit it with `hosting/public/`.
+`firebase.json` sets `"appAssociation": "NONE"` so Hosting serves our own `assetlinks.json` and
+`apple-app-site-association` (from `hosting/src/well-known/`) instead of generating its own, which
+claimed every path for the iOS app; they claim only `/invite/*` and `/frame/*` (household ADR-0012).
+A signing key added in the Firebase console no longer reaches assetlinks by itself — add it there.
 `functions/test/unit/site_is_generated.test.ts` fails when the two differ, when a page loads
 anything from another origin or carries inline script, and when `site.css` drifts from
 `nest_colors.dart`. `/api/account-deletion-request` is rewritten to the `requestAccountDeletion`

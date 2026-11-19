@@ -34,6 +34,14 @@ void main() {
     expect(frameWith(woolworths.toJson()).groceries, woolworths);
   });
 
+  test('a phone with the shop switched off still reads the frame, so its '
+      'next save cannot delete what another phone set (shops ADR-0004)', () {
+    final connected = ProductRetailer.debugSwitchOverride;
+    ProductRetailer.debugSwitchOverride = (shop, platform) => false;
+    addTearDown(() => ProductRetailer.debugSwitchOverride = connected);
+    expect(frameWith(woolworths.toJson()).groceries, woolworths);
+  });
+
   test('writes the store and price list at Woolworths, and only there', () {
     expect(woolworths.toJson(), {
       'shop': 'woolworths',

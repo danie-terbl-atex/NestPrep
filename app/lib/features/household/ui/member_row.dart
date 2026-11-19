@@ -20,6 +20,7 @@ class MemberRow extends StatelessWidget {
     this.onAccess,
     this.onChangePicture,
     this.isRemoving = false,
+    this.isInviting = false,
     this.actionsEnabled = true,
     super.key,
   });
@@ -52,6 +53,10 @@ class MemberRow extends StatelessWidget {
   /// nothing until it is gone or refused.
   final bool isRemoving;
 
+  /// This profile's invite code is being made: the row says so where the
+  /// share button was, until the code arrives.
+  final bool isInviting;
+
   /// False while another change is running, so a second removal cannot be
   /// asked for and silently dropped.
   final bool actionsEnabled;
@@ -72,18 +77,12 @@ class MemberRow extends StatelessWidget {
             color: nest.colors.inkTertiary,
           ),
           subtitle: AppCopy.householdRemoving,
-          trailing: SizedBox.square(
-            dimension: NestSize.iconSmall,
-            child: CircularProgressIndicator(
-              strokeWidth: NestStroke.focus,
-              color: nest.colors.accent,
-            ),
-          ),
+          trailing: const _Working(),
         ),
       );
     }
     final changePicture = canManage ? null : onChangePicture;
-    return NestListRow(
+    final row = NestListRow(
       leading: changePicture == null
           ? MemberAvatar(member: member)
           : NestEditablePicture(
@@ -107,7 +106,9 @@ class MemberRow extends StatelessWidget {
                     variant: NestIconButtonVariant.plain,
                     onPressed: access,
                   ),
-                if (invite != null)
+                if (isInviting)
+                  const _Working()
+                else if (invite != null)
                   NestIconButton(
                     icon: LucideIcons.share,
                     label: AppCopy.householdInvite,
@@ -124,12 +125,14 @@ class MemberRow extends StatelessWidget {
               ],
             ),
     );
+    return isInviting ? Semantics(liveRegion: true, child: row) : row;
   }
 
   /// The role, who this is, and the birthday when there is one — this row is
   /// where a birthday is read and changed, so it says so rather than making
   /// somebody open the sheet to find out (birthdays ADR-0001).
   String get _subtitle {
+    if (isInviting) return AppCopy.householdMakingCode;
     final birthday = member.birthday;
     final parts = [
       AppCopy.roleName(member.roleName),
@@ -148,5 +151,20 @@ class MemberRow extends StatelessWidget {
     return summary == null
         ? parts.join(' · ')
         : '${parts.join(' · ')}\n$summary';
+  }
+}
+
+class _Working extends StatelessWidget {
+  const _Working();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: NestSize.iconSmall,
+      child: CircularProgressIndicator(
+        strokeWidth: NestStroke.focus,
+        color: NestTheme.of(context).colors.accent,
+      ),
+    );
   }
 }

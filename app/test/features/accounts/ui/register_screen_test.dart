@@ -41,6 +41,13 @@ void main() {
     brightness: brightness,
   );
 
+  Future<void> submit(WidgetTester tester) async {
+    final button = find.widgetWithText(NestButton, AppCopy.registerSubmit);
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    await tester.tap(button);
+  }
+
   Future<void> fillIn(
     WidgetTester tester, {
     String name = 'Sam Parent',
@@ -86,7 +93,7 @@ void main() {
     await pump(tester);
     await fillIn(tester);
 
-    await tester.tap(find.widgetWithText(NestButton, AppCopy.registerSubmit));
+    await submit(tester);
     await tester.pumpAndSettle();
 
     expect(auth.registrations, ['sam@nestprep.test']);
@@ -102,7 +109,7 @@ void main() {
     ]);
 
     await fillIn(tester);
-    await tester.tap(find.widgetWithText(NestButton, AppCopy.registerSubmit));
+    await submit(tester);
     await tester.pumpAndSettle();
 
     expect(
@@ -124,7 +131,7 @@ void main() {
     await pump(tester);
     await fillIn(tester);
 
-    await tester.tap(find.widgetWithText(NestButton, AppCopy.registerSubmit));
+    await submit(tester);
     await tester.pumpAndSettle();
 
     expect(find.byType(NestBanner), findsOneWidget);

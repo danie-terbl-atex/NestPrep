@@ -17,6 +17,7 @@ import 'frame_scanner.dart';
 Future<void> showFrameLinkSheet({
   required BuildContext context,
   required PhotoFramesController controller,
+  String? code,
 }) {
   final directory = context.read<PhotoFrameDirectory>();
   final repository = context.read<PhotoFrameRepository>();
@@ -32,6 +33,7 @@ Future<void> showFrameLinkSheet({
         woolworthsStoreFor: woolworthsStores.storeFor,
         householdId: controller.householdId,
         helpers: controller.helpers,
+        code: code,
       ),
       child: _LinkSheetBody(scanner: scanner),
     ),

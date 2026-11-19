@@ -94,9 +94,10 @@ void main() {
     Brightness brightness = Brightness.light,
     double scale = 1,
     List<SingleChildWidget> extra = const [],
+    String? linkCode,
   }) => pumpScreen(
     tester,
-    const PhotoFramesScreen(),
+    PhotoFramesScreen(linkCode: linkCode),
     providers: [
       ChangeNotifierProvider<PhotoFramesController>.value(value: controller),
       ChangeNotifierProvider<FramePhotosController>.value(value: photos),
@@ -125,6 +126,37 @@ void main() {
 
   Finder inSheet(Finder finder) =>
       find.descendant(of: find.byType(BottomSheet), matching: finder);
+
+  group('opened from a frame link (household ADR-0012)', () {
+    for (final (brightness, scale) in [
+      (Brightness.light, 1.0),
+      (Brightness.dark, 2.0),
+    ]) {
+      testWidgets('opens Link a frame on the code, $brightness at '
+          '${scale * 100}%', (tester) async {
+        await pump(
+          tester,
+          linkCode: 'K7MQ9Z',
+          brightness: brightness,
+          scale: scale,
+        );
+        await emit(tester, const []);
+
+        expect(
+          inSheet(find.text(PhotoFrameCopy.codeFound('K7MQ9Z'))),
+          findsOneWidget,
+        );
+        expect(find.text(PhotoFrameCopy.scanBody), findsNothing);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('without a code it opens on the list alone', (tester) async {
+      await pump(tester);
+      await emit(tester, const []);
+      expect(find.byType(BottomSheet), findsNothing);
+    });
+  });
 
   group('the four states', () {
     testWidgets('holds the layout while it loads', (tester) async {
@@ -579,7 +611,7 @@ void main() {
         extra: [
           flags({
             FeatureFlag.checkersShop: false,
-            FeatureFlag.addToPnp: false,
+            FeatureFlag.pnpShop: false,
             FeatureFlag.woolworthsShop: false,
           }),
         ],
@@ -653,7 +685,7 @@ void main() {
       await pump(
         tester,
         extra: [
-          flags({FeatureFlag.checkersShop: false, FeatureFlag.addToPnp: false}),
+          flags({FeatureFlag.checkersShop: false, FeatureFlag.pnpShop: false}),
         ],
       );
       await emit(tester, [FrameFixtures.frame()]);

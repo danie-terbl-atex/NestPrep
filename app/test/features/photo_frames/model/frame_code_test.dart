@@ -11,6 +11,16 @@ void main() {
       expect(FrameCode.fromScan('  NestPrep://Frame/abc234 \n'), 'ABC234');
     });
 
+    test('the https link on any of our hosts is read too', () {
+      for (final link in [
+        'https://app.nestprep.io/frame/ABC234',
+        'https://nestprep-643b7.web.app/frame/abc234/',
+        'https://nestprep-643b7.firebaseapp.com/frame/ABC234',
+      ]) {
+        expect(FrameCode.fromScan(link), 'ABC234', reason: link);
+      }
+    });
+
     test('a bare code is a code', () {
       expect(FrameCode.fromScan('k7mq9z'), 'K7MQ9Z');
     });
@@ -18,6 +28,10 @@ void main() {
     for (final raw in [
       'https://nestprep.app/frame/ABC234',
       'nestprep://kid/ABC234',
+      'nestprep://invite/ABC234',
+      'https://app.nestprep.io/invite/ABC234',
+      'http://app.nestprep.io/frame/ABC234',
+      'https://app.nestprep.io/frame/ABC234/more',
       'nestprep://frame/ABC234/extra',
       'nestprep://frame/ABC23',
       'nestprep://frame/ABC2345',

@@ -5,6 +5,7 @@ import {
   adminDb,
   callAs,
   clearFirestore,
+  httpFunctionUrl,
   signUp,
   type TestUser,
 } from './emulator_harness';
@@ -495,5 +496,53 @@ describe('previewInvite', () => {
     await callAs(await signUp(), 'redeemInvite', { code });
 
     await expectRefusal(callAs(await signUp(), 'previewInvite', { code }), 'inviteAlreadyUsed');
+  });
+
+  it('answers somebody who has not signed in yet, and spends nothing (household ADR-0011)', async () => {
+    const { householdId, code } = await anInvite();
+
+    const preview = await callAs<Record<string, unknown>>(null, 'previewInvite', { code });
+
+    expect(preview).toMatchObject({
+      householdName: 'The Parkers',
+      memberName: 'Thandi',
+      role: 'helper',
+      invitedBy: 'Sam Parent',
+    });
+    const invite = await adminDb().collection('invites').doc(code).get();
+    expect(invite.get('redeemedBy')).toBeNull();
+    const household = await adminDb().collection('households').doc(householdId).get();
+    expect(Object.keys(membersOf(household))).toHaveLength(1);
+  });
+
+  it('refuses a signed-out caller exactly as it refuses a signed-in one', async () => {
+    const { code } = await anInvite();
+
+    await expectRefusal(callAs(null, 'previewInvite', { code: 'ABCD2345' }), 'inviteNotFound');
+    await expectRefusal(callAs(null, 'previewInvite', { code: 'O0IL1234' }), 'inviteNotFound');
+    await callAs(await signUp(), 'redeemInvite', { code });
+    await expectRefusal(callAs(null, 'previewInvite', { code }), 'inviteAlreadyUsed');
+  });
+
+  it('refuses the twenty-first signed-out check from one address in ten minutes', async () => {
+    const attempt = async (address: string): Promise<string | undefined> => {
+      const response = await fetch(httpFunctionUrl('previewInvite'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': address },
+        body: JSON.stringify({ data: { code: 'ZZZZZZZZ' } }),
+      });
+      const body = (await response.json()) as { error?: { details?: { reason?: string } } };
+      return body.error?.details?.reason;
+    };
+    for (let i = 0; i < 20; i++) expect(await attempt('192.0.2.88')).toBe('inviteNotFound');
+    expect(await attempt('192.0.2.88')).toBe('tooManyAttempts');
+    expect(await attempt('192.0.2.89')).toBe('inviteNotFound');
+  });
+
+  it('does not count a signed-in caller', async () => {
+    const joiner = await signUp();
+    for (let i = 0; i < 21; i++) {
+      await expectRefusal(callAs(joiner, 'previewInvite', { code: 'ZZZZZZZZ' }), 'inviteNotFound');
+    }
   });
 });

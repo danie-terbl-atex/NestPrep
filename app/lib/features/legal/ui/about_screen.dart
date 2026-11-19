@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_patch.dart';
 import '../../../app/app_version.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
@@ -43,10 +44,17 @@ class AboutScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: NestSpace.xs),
-          Text(
-            LegalCopy.appVersion(AppVersion.name, AppVersion.build),
-            style: nest.text.caption,
-            textAlign: TextAlign.center,
+          FutureBuilder<int?>(
+            future: AppPatch.current,
+            builder: (context, patch) => Text(
+              LegalCopy.appVersion(
+                AppVersion.name,
+                AppVersion.build,
+                patch: patch.data,
+              ),
+              style: nest.text.caption,
+              textAlign: TextAlign.center,
+            ),
           ),
           const SizedBox(height: NestSpace.xl),
           NestRiseIn(

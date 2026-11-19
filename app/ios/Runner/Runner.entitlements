@@ -9,9 +9,10 @@
   Sign in with Apple (accounts ADR-0014) needs the apple.com provider on
   nestprep-643b7 configured with this bundle id and a Peak code-flow key.
 
-  The associated domain lets iOS offer to save a NestPrep password to the
-  Keychain, filed under app.nestprep.io, which serves the matching
-  apple-app-site-association file (accounts ADR-0013).
+  The associated domains let iOS offer to save a NestPrep password to the
+  Keychain, filed under app.nestprep.io (accounts ADR-0013), and open invite
+  and frame links on our three hosts in the app (household ADR-0012). Each
+  host serves the matching apple-app-site-association file.
 
   The app group is the one place the ShareToFrame extension can leave a shared
   PDF for the app to take (recipes ADR-0009).
@@ -27,6 +28,9 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>webcredentials:app.nestprep.io</string>
+		<string>applinks:app.nestprep.io</string>
+		<string>applinks:nestprep-643b7.web.app</string>
+		<string>applinks:nestprep-643b7.firebaseapp.com</string>
 	</array>
 	<key>com.apple.developer.applesignin</key>
 	<array>

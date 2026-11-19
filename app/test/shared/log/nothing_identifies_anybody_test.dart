@@ -96,13 +96,16 @@ void main() {
       }
     });
 
-    test('and no custom key carries anything at all', () {
+    test('and the one custom key is the patch the build runs', () {
+      final calls = callsTo('setCustomKey');
+      expect(calls, hasLength(1));
       expect(
-        callsTo('setCustomKey'),
-        isEmpty,
+        calls.single.argument,
+        startsWith("'shorebird_patch', await AppPatch.current"),
         reason:
-            'a custom key is a free-text field on every crash report; '
-            'there is no use for one here that ENG-22 would allow',
+            '${calls.single.where}: a custom key is a free-text field on every '
+            'crash report; the Shorebird patch number is the only one ENG-22 '
+            'allows (foundation ADR-0025)',
       );
     });
   });

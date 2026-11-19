@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Live location, always on (live-location ADR-0003, ADR-0005): a
          foreground service in its own process senses and writes Firestore
          itself. Background location makes the app subject to Play's
@@ -57,23 +58,27 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Invite links (household ADR-0005): app_links hands them to the
-                 app, so Flutter's own deep linking stays off. -->
+            <!-- Invite and frame links (household ADR-0005, ADR-0012): app_links
+                 hands them to the app, so Flutter's own deep linking stays off. -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"/>
+                <data android:host="app.nestprep.io"/>
                 <data android:host="nestprep-643b7.web.app"/>
                 <data android:host="nestprep-643b7.firebaseapp.com"/>
                 <data android:pathPrefix="/invite/"/>
+                <data android:pathPrefix="/frame/"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="nestprep" android:host="invite"/>
+                <data android:scheme="nestprep"/>
+                <data android:host="invite"/>
+                <data android:host="frame"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>

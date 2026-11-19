@@ -27,7 +27,7 @@ const { entitlementFields } = require('../lib/subscriptions/subscription_documen
 const { FEATURE_FLAGS } = require('../lib/shared/feature_flags.js');
 
 // Daniel's own to switch, shop by shop (shops ADR-0002): a seed never turns one on.
-const SHOPS_AWAITING_GO_LIVE = ['checkersShop', 'woolworthsShop'];
+const SHOPS_AWAITING_GO_LIVE = ['checkersShop', 'pnpShop', 'woolworthsShop'];
 
 export const HOUSEHOLD_ID = 'demo-household';
 const HOUSEHOLD_NAME = 'The Oak Street Nest';

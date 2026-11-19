@@ -11,12 +11,21 @@ import 'premium_highlight_look.dart';
 /// and opened on [first]. Decoration: the list under it says the same in
 /// words, so a screen reader skips it (`FE-13`).
 class PaywallGallery extends StatefulWidget {
-  const PaywallGallery({required this.first, super.key});
+  const PaywallGallery({
+    required this.first,
+    this.offered = PremiumHighlight.values,
+    super.key,
+  });
 
   final PremiumHighlight? first;
 
-  static final pictured = [
-    for (final highlight in PremiumHighlight.values)
+  /// The areas this build can deliver; one without a photo has no page.
+  final List<PremiumHighlight> offered;
+
+  static final pictured = picturedOf(PremiumHighlight.values);
+
+  static List<PremiumHighlight> picturedOf(List<PremiumHighlight> offered) => [
+    for (final highlight in offered)
       if (highlight.photo != null) highlight,
   ];
 
@@ -31,7 +40,8 @@ class _PaywallGalleryState extends State<PaywallGallery> {
 
   late int _page = math.max(
     0,
-    PaywallGallery.pictured.indexWhere((shown) => shown == widget.first),
+    PaywallGallery.picturedOf(widget.offered)
+        .indexWhere((shown) => shown == widget.first),
   );
   late final PageController _controller = PageController(
     initialPage: _page,
@@ -47,7 +57,7 @@ class _PaywallGalleryState extends State<PaywallGallery> {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    final pictured = PaywallGallery.pictured;
+    final pictured = PaywallGallery.picturedOf(widget.offered);
     return ExcludeSemantics(
       child: Column(
         children: [

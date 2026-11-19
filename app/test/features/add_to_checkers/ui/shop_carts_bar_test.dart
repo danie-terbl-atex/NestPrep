@@ -98,7 +98,7 @@ void main() {
   });
 
   testWidgets('a shop switched off has no action', (tester) async {
-    await mixedList(tester, off: {FeatureFlag.addToPnp});
+    await mixedList(tester, off: {FeatureFlag.pnpShop});
     expect(find.byKey(const ValueKey('add-to-cart-pickNPay')), findsNothing);
     expect(find.byKey(const ValueKey('add-to-cart-checkers')), findsOneWidget);
   });
@@ -139,7 +139,7 @@ void main() {
     testWidgets('is not offered with one shop on', (tester) async {
       await mixedList(
         tester,
-        off: {FeatureFlag.addToPnp, FeatureFlag.woolworthsShop},
+        off: {FeatureFlag.pnpShop, FeatureFlag.woolworthsShop},
       );
       expect(find.byKey(entry), findsNothing);
     });

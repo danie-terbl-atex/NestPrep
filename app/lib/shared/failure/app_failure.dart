@@ -148,6 +148,10 @@ enum HouseholdProblem {
   /// that, so this is the server agreeing with it.
   closeNotConfirmed,
 
+  /// Too many invite checks from one place before signing in (household
+  /// ADR-0011).
+  tooManyAttempts,
+
   /// The app sent something the Function would not accept — our bug.
   badRequest,
 

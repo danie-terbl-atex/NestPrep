@@ -68,11 +68,16 @@ final class InviteStepController extends ChangeNotifier
   final Set<MemberColor> _coloursInUse;
 
   final _sent = <SentInvite>[];
+  ({String displayName, MemberRole role})? _making;
   bool _isBusy = false;
   bool _shareUnavailable = false;
 
   List<SentInvite> get sent => List.unmodifiable(_sent);
   bool get isBusy => _isBusy;
+
+  /// Who is being invited while their profile and code are made, so the
+  /// screen can show them arriving before the code does.
+  ({String displayName, MemberRole role})? get making => _making;
 
   /// The last share sheet would not open; the screen says to copy instead.
   bool get shareUnavailable => _shareUnavailable;
@@ -88,6 +93,8 @@ final class InviteStepController extends ChangeNotifier
     required MemberRole role,
     bool guardianConsent = false,
   }) => _run(() async {
+    _making = (displayName: displayName, role: role);
+    notifyListeners();
     final colour = _nextColour();
     final byMemberId = viewerMemberId;
     final memberId = await _repository.addMember(
@@ -113,6 +120,7 @@ final class InviteStepController extends ChangeNotifier
       code: invite.code,
     );
     _sent.add(sent);
+    _making = null;
     notifyListeners();
     await _share(sent);
     await _newChild.markIfKid(memberId, role);
@@ -133,12 +141,7 @@ final class InviteStepController extends ChangeNotifier
     notifyListeners();
   }
 
-  /// A colour nobody in the household has yet, so a new face is told apart
-  /// at a glance; the palette's first once all ten are taken.
-  MemberColor _nextColour() => MemberColor.values.firstWhere(
-    (colour) => !_coloursInUse.contains(colour),
-    orElse: () => MemberColor.values.first,
-  );
+  MemberColor _nextColour() => MemberColor.firstUnused(_coloursInUse);
 
   Future<bool> _run(Future<void> Function() action) async {
     if (_isBusy) return false;
@@ -152,6 +155,7 @@ final class InviteStepController extends ChangeNotifier
       recordFailure(failure);
       return false;
     } finally {
+      _making = null;
       _isBusy = false;
       notifyListeners();
     }

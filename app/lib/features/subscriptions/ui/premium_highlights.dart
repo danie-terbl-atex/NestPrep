@@ -4,6 +4,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../model/premium_feature.dart';
 import '../model/premium_highlight.dart';
+import 'highlights_offered.dart';
 import 'premium_highlight_look.dart';
 
 /// Everything in Premium as cards, two to a row, the area [feature] belongs
@@ -17,9 +18,11 @@ class PremiumHighlights extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reached = PremiumHighlight.of(feature);
+    final offered = highlightsOffered(context);
+    final area = PremiumHighlight.of(feature);
+    final reached = offered.contains(area) ? area : null;
     final rest = [
-      for (final highlight in PremiumHighlight.values)
+      for (final highlight in offered)
         if (highlight != reached) highlight,
     ];
     final perRow = MediaQuery.textScalerOf(context).scale(1) > _wideTextScale

@@ -2,14 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/app/design_gallery_access.dart';
 import 'package:nestprep/app/household_route.dart';
 import 'package:nestprep/app/household_shell.dart';
+import 'package:nestprep/app/kid_routes.dart';
 import 'package:nestprep/app/session_redirect.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/model/legal_consent.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/accounts/ui/forgot_password_screen.dart';
+import 'package:nestprep/features/accounts/ui/register_screen.dart';
 import 'package:nestprep/features/accounts/ui/session_gate_screen.dart';
 import 'package:nestprep/features/accounts/ui/sign_in_screen.dart';
 import 'package:nestprep/features/household/ui/household_gate_screen.dart';
+import 'package:nestprep/features/household/ui/invite_welcome_screen.dart';
 import 'package:nestprep/features/household/ui/join_invite_screen.dart';
 import 'package:nestprep/features/legal/model/legal_versions.dart';
 import 'package:nestprep/features/legal/ui/about_screen.dart';
@@ -133,10 +137,36 @@ void main() {
   group('an invite link (household ADR-0005)', () {
     const code = 'ABCD2345';
 
-    test('signed out, it waits at the way in', () async {
+    test('signed out, it opens its own way in (household ADR-0011)', () async {
+      await signOut();
+      for (final location in [
+        somewhereInside,
+        SignInScreen.path,
+        RegisterScreen.path,
+      ]) {
+        expect(
+          redirectForSession(session, location, pendingInviteCode: code),
+          InviteWelcomeScreen.path,
+          reason: location,
+        );
+      }
+      for (final location in [
+        InviteWelcomeScreen.path,
+        ForgotPasswordScreen.path,
+        KidRoute.codePath,
+      ]) {
+        expect(
+          redirectForSession(session, location, pendingInviteCode: code),
+          isNull,
+          reason: location,
+        );
+      }
+    });
+
+    test('signed out with nothing held, its way in is closed', () async {
       await signOut();
       expect(
-        redirectForSession(session, somewhereInside, pendingInviteCode: code),
+        redirectForSession(session, InviteWelcomeScreen.path),
         SignInScreen.path,
       );
     });

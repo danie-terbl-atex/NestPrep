@@ -4,15 +4,20 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/ui/account_menu_button.dart';
+import '../../onboarding/model/onboarding_step.dart';
+import '../../onboarding/ui/onboarding_header.dart';
 import '../state/join_invite_controller.dart';
 
 /// Where a tapped invite link lands once the person is signed in (household
 /// ADR-0005): the household, the profile they would claim and who asked, then
-/// join or not now.
+/// join or not now. For an account with no household yet it is the last of
+/// the invite's three steps (household ADR-0011).
 class JoinInviteScreen extends StatelessWidget {
-  const JoinInviteScreen({super.key});
+  const JoinInviteScreen({this.isOnboarding = false, super.key});
 
   static const path = '/join';
+
+  final bool isOnboarding;
 
   @override
   Widget build(BuildContext context) {
@@ -20,32 +25,43 @@ class JoinInviteScreen extends StatelessWidget {
     final failure = controller.actionFailure;
     final preview = controller.preview;
     final nest = NestTheme.of(context);
+    final title = switch ((preview, failure)) {
+      (final preview?, _) => AccessCopy.inviteLinkTitle(preview.householdName),
+      (null, null) => AccessCopy.inviteLinkChecking,
+      (null, _) => AccessCopy.inviteLinkRefused,
+    };
+    final body = preview == null
+        ? null
+        : AccessCopy.inviteLinkBody(
+            memberName: preview.memberName,
+            role: preview.role,
+            invitedBy: preview.invitedBy,
+          );
     return NestScaffold(
+      backdrop: isOnboarding ? const NestWaves() : null,
       leading: const NestBrandLockup(semanticsLabel: AppCopy.appName),
       trailing: const [AccountMenuButton()],
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            NestRiseIn(
-              child: NestIntro(
-                eyebrow: AccessCopy.inviteLinkEyebrow,
-                title: switch ((preview, failure)) {
-                  (final preview?, _) => AccessCopy.inviteLinkTitle(
-                    preview.householdName,
-                  ),
-                  (null, null) => AccessCopy.inviteLinkChecking,
-                  (null, _) => AccessCopy.inviteLinkRefused,
-                },
-                body: preview == null
-                    ? null
-                    : AccessCopy.inviteLinkBody(
-                        memberName: preview.memberName,
-                        role: preview.role,
-                        invitedBy: preview.invitedBy,
-                      ),
+            if (isOnboarding)
+              OnboardingHeader(
+                step: InviteeStep.join,
+                title: title,
+                body: body,
+                twigPose: NestTwigPose.celebrate,
+                twigLine: OnboardingCopy.twigJoin,
+                twigAction: NestTwigAction.hop,
+              )
+            else
+              NestRiseIn(
+                child: NestIntro(
+                  eyebrow: AccessCopy.inviteLinkEyebrow,
+                  title: title,
+                  body: body,
+                ),
               ),
-            ),
             const SizedBox(height: NestSpace.xxl),
             if (failure != null) ...[
               NestBanner(

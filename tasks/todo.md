@@ -1,3 +1,96 @@
+# Deep links: a frame's QR opens Link a frame, invites are one tap and a QR (household ADR-0012, proposed)
+
+Daniel 2026-11-18: the frame QR scanned with the phone's camera opens NestPrep but not the linking screen; invites go out as "garbage text"; wants one-tap links and QR joining. Plan: `~/.claude/plans/crystalline-twirling-pizza.md`.
+
+- [x] Household ADR-0012 (proposed): app.nestprep.io links, Universal + App Links for `/invite/*` and `/frame/*`, invite QR, frame link → *Link a frame*; frame QR stays the scheme for now
+- [x] `AppLinkSite` (one list of hosts), `InviteLinks` and `FrameCode.fromLink` on it; `PendingFrameCode` + `FrameLinkHost` in the household shell; `/frames?code=` opens the sheet on details
+- [x] Invite message leads with `https://app.nestprep.io/invite/<CODE>`; `NestQrCode` kit primitive (`qr` made direct); QR in the invite sheet and on the invite step's sent row
+- [x] Android: `app.nestprep.io` + `/frame/` in the App Links filter, `nestprep://frame`; iOS: three `applinks:` entitlements (signed release build carries them)
+- [x] Hosting: own AASA (`/invite/*`, `/frame/*`, webcredentials kept), assetlinks + upload key + the Firebase-registered key, `/frame/<code>` page, **`appAssociation: NONE`** — Hosting had always served its own well-known files (lesson written)
+- [x] Tests: app photo_frames + household + QR 643 green; Functions unit 3012 green (site test +5)
+- [x] Driven on the Android AVD against the emulator suite: cold frame link signed out → sign in → *Link a frame · Frame K7MQ9Z*; the AVD frame's live code by link → linked (`framePairings/8889CE` linked); invite QR decodes to the link; share sheet text; cold invite link → *Join The Oak Street Nest*
+- [x] Godfather: ADR-0012, household overview + phase 2 next action, photo-frames overview, accounts overview (ADR-0013 was never live), package reference (`qr`), lesson; lint 0 errors
+- [x] Deployed Hosting (Daniel asked, 2026-11-18 23:10; live site matched this tree except these four files first). Live on all three hosts: own AASA (`/invite/*`, `/frame/*`, webcredentials) and assetlinks; `/frame/<code>` 200. Apple's CDN served the new AASA within minutes; Google's statement cache still held the old file for two hosts right after
+- [x] Release build 0.9.0+21 (demo logins, maps on, three `applinks:`) installed in place on Daniel's iPhone, reinstalled once Apple's CDN had the new AASA
+- [ ] Daniel: confirm `29:00:15:3E…` is Play's app-signing key (Play Console → App integrity)
+- [ ] Try on an iPhone and an Android phone: scan a frame with the camera; tap an invite link in Messages/WhatsApp
+- [ ] NestPrep-Home: move the frame's QR to `https://app.nestprep.io/frame/<CODE>` once this app is what phones run
+- [ ] Daniel: accept or change ADR-0012
+
+## Review
+
+- `declared_packages_test` reads the frozen vault's stack note (never written to since 2026-10-23), so it lists `qr` with the four packages it already flagged; the current list is the Godfather package reference. The test itself should move to read Godfather or be retired — not done here.
+- Not seen in dark on a device; the screen tests pump dark at 200% on 360.
+
+# Onboarding v2: five steps, a bar, a calendar step, animated Twig (onboarding ADR-0001, design-system ADR-0026)
+
+Daniel 2026-11-18: onboarding is "OKAY"; gather more (connect a calendar), make it nicer, Twig in and animated, progress bars. He chose Twig as the general mascot, code motion + a wing rig, a tight flow. Plan: `~/.claude/plans/vectorized-mapping-pizza.md`.
+
+- [x] Godfather: design-system ADR-0026 (supersedes ADR-0012), onboarding node + ADR-0001
+- [x] Twig rig layers from the 1254 px master (`tools/twig-rig/`): 5 WebPs, 50.8 KB, $0 spent (cut by colour and outline, no fal)
+- [x] `NestTwig` actions (arrive, hop, nod, wave, cheer) + rig painter + `NestMotion.twig*` tokens + tests
+- [x] `features/onboarding`: steps model, `OnboardingHeader` (+ kit `NestSaying`), `SetupFlowScreen` (family, calendar, ready)
+- [x] Shared `CalendarConnectList` extracted from the connected-calendars screen
+- [x] Register, consent, gate, invite-welcome, join re-headed; waves on the way in
+- [x] Push prompt held during setup
+- [x] Tests, analyze, design-review pictures, driven on the Android emulator, frame numbers (profile)
+- [x] Godfather: onboarding overview + index row, design-system/household/calendar docs, lint 0 errors, session log
+- [ ] Daniel: run the way in on the iPhone (needs a store-style build: new assets, not a Shorebird patch)
+- [ ] Daniel: commit when happy (nothing committed; other sessions' work shares this tree)
+
+## Review
+
+- `flutter analyze --fatal-infos` clean; `dart format` clean. Full suite 6619 pass / 22 fail; the 22 are the same test names that failed before this change (baseline 6591 / 22), none in onboarding files. New: Twig 25 → 38 (actions, rig budget), onboarding 11, push prompt +1; a looping-Twig mutation turned 11 red.
+- Driven on emulator-5554 against the suite: register → *Step 2 of 5* promises → *Step 3 of 5* household → *Step 4 of 5* family (Lulu added, no phone, real `setChildProfile`) → *Step 5 of 5* calendar (a calendar link synced 8 events through `connectCalendarLink`) → payoff → Today; the OS notification prompt appeared only after *Open my week*. My own AVD would not come online (stuck offline, cold boot too), so I installed side by side on the running Pixel_10_Pro_XL and handed NestPrep-Home back to the front.
+- Frames (profile, emulator, `integration_test/twig_frames_test.dart`): run 2 raster avg 2.5–4.2 ms, p90 3–9 ms per action; the rigged wave 0.45 ms build / 2.76 ms raster avg, 12.9 ms worst; one 215 ms first-ever frame (first texture upload / shader); no frames scheduled at rest. Run 1 had erratic 100 ms–2.5 s raster spikes on the cheapest actions that did not repeat: host contention with three emulators. Not yet measured on a phone.
+- Seen on the way: the gate's *What should we call you?* is prefilled from the email (`jordan.onboard.…`), not the name typed at registration — not fixed here.
+
+# The invited second parent gets a guided way in (household ADR-0011, proposed)
+
+Daniel 2026-11-16: a parent who types an invite code before having an account got "a stupid banner" and had to work out they still needed an account. He chose to name the household before sign-up (a signed-out `previewInvite`). Plan: `~/.claude/plans/melodic-greeting-sunrise.md`.
+
+- [x] Household ADR-0011 (proposed), narrowing ADR-0005 and ADR-0006
+- [x] `previewInvite` answers a signed-out caller, rate limited per address (20 / 10 min) and overall (1000 / h), `tooManyAttempts`; signed in unchanged
+- [x] `/invite`: step 1 of 3 names the household, refuses a dead code before sign-up, register or sign in in place, Google/Apple, *Not now*
+- [x] Router: signed out with a held code → `/invite`; consent is step 2 and `/join` step 3 for an invitee; the sign-in banner gone
+- [x] `RegisterForm` and `SignInOrDivider` shared with the register and sign-in screens
+- [x] Tests: emulator `membership.test.ts` +4 (47/47 with `kid_accounts`), unit 2978 green; app 11 + 8 new, router, redirect and consent cases
+- [x] Driven on the iOS Simulator against the emulator: refused code, step 1 (light, dark), account → step 2 → step 3 → Today as Jordan
+- [x] Godfather: household overview, phase 2 next action, accounts overview, lesson on the Simulator's idle sign-up, lint 0 errors
+- [x] Deployed `functions:previewInvite` alone (Daniel asked, 2026-11-16); live signed-out call answers `inviteNotFound` for a made-up code
+- [x] Build 0.9.0+18 (demo logins, maps on) installed on Daniel's iPhone with devicectl
+- [ ] Daniel: try the invite way in on the iPhone
+- [x] Making an invite code says so (Daniel: "no feedback… just seems to hang"): the invite step shows the person at once with *Making their code…* until the code and share sheet arrive; a profile row's share button becomes a spinner with the same words. Household tests 334 green; reinstalled on the iPhone
+- [ ] Daniel: accept or change ADR-0011
+- [ ] Try one sign-up on an iPhone against the cloud after a minute on the sign-in screen (the lesson's open question)
+
+## Review
+
+- App: `flutter analyze --fatal-infos` clean; full suite 6565 passed, 22 failed — the same 16 fail on a clean checkout of `c8e90abd`, and the other 6 come from work in flight in this tree (`referralRewards` waiting to go live, `declared_packages`), none in files this change touches.
+- On the Simulator, a sign-up after ~40 s signed out failed with *cannot reach the server* in a control run with no invite at all; written up as a lesson, cause unknown.
+
+# Branded welcome email through Resend (accounts ADR-0015, proposed)
+
+Daniel 2026-11-16: the registration email (Firebase's stock verify template from `noreply@nestprep-643b7.firebaseapp.com`) "looks shit"; a proper welcome through Resend and a real from address. He chose: everyone new gets a welcome, password accounts also get *Confirm my email*; deploy it. Plan: `~/.claude/plans/whimsical-forging-twilight.md`.
+
+- [x] `account_email.ts`: the shared shell; reset email moved onto it, byte-identical output
+- [x] `welcome_email.ts`, `welcome.ts`, `send_welcome_email.ts` (`sendWelcomeEmail`): once per account, confirm link only for an unverified password account
+- [x] `/verify-email` page + script, `firebase.json` headers, `site-pages.mjs`, `site:build`
+- [x] App: `sendEmailVerification` gone; `_welcome()` via `bestEffort` after registering and on a new Google/Apple sign-in
+- [x] Tests: unit `welcome.test.ts` (19), site test, guard counts; emulator `welcome_email.test.ts` (3) + `password_reset` (4)
+- [x] Deployed `functions:sendWelcomeEmail` and Hosting (live pages were identical to this tree first)
+- [x] Live: throwaway account → `sent: true` then `sent: false`; real code on the live page → *done*, `emailVerified` true
+- [x] Godfather: ADR-0015 (proposed), accounts overview rev 13, lesson on bare `getAuth()`
+- [ ] Daniel: register once in a build carrying the app change and look at the email in a real inbox
+- [ ] Daniel: register `admin@nestprep.io` with Apple's Private Email Relay (Hide my email)
+- [ ] Daniel (optional): Firebase console → Auth → Templates: sender name + nestprep.io domain, for builds ≤ 0.9.0+16
+- [ ] Daniel: accept or change ADR-0015
+
+## Review
+
+- Functions: 163 files / 3004 unit tests green, lint and prettier clean, `site:check` up to date. App: accounts + log suites (112) green, `flutter analyze` clean on the gateway. `errors_are_never_swallowed_test.dart` has 4 failures in files this change does not touch (notification_host, session_controller, firestore_account_repository and others).
+- First live deploy failed `app/no-app` (bare `getAuth()`); fixed with `shared/auth.ts` `auth()`, redeployed, re-checked live.
+
 # The Premium paywall as a full page (subscriptions ADR-0010, design-system ADR-0025, proposed)
 
 Daniel 2026-11-15: the paywall "looks pretty lame"; the sign-in waves, more colour, great images, most of what Premium gives. He chose a full-screen page and pictures reused plus generated. Plan: `~/.claude/plans/temporal-imagining-floyd.md`. Client only; nothing to deploy.

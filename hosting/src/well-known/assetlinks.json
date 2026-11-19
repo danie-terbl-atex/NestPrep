@@ -8,7 +8,9 @@
       "namespace": "android_app",
       "package_name": "io.nullstate.nestprep",
       "sha256_cert_fingerprints": [
-        "17:94:33:F2:F7:F2:E7:7E:2C:AE:98:80:F2:65:D8:FC:F2:4C:40:3D:0B:03:5D:E9:B4:BE:1F:00:E7:6C:83:92"
+        "17:94:33:F2:F7:F2:E7:7E:2C:AE:98:80:F2:65:D8:FC:F2:4C:40:3D:0B:03:5D:E9:B4:BE:1F:00:E7:6C:83:92",
+        "36:D0:15:DC:D5:2F:15:A1:6D:7C:C9:5B:23:B6:5A:D6:BD:D3:A7:37:E5:31:24:ED:A1:F0:3D:C6:A2:90:8C:99",
+        "29:00:15:3E:A4:36:EE:2E:7E:28:2A:E6:0C:9F:9C:AF:39:D7:42:36:8A:6C:0F:31:BC:8C:40:DB:BA:C4:8B:35"
       ]
     }
   }

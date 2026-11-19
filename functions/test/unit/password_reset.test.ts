@@ -9,11 +9,8 @@ import {
   sendPasswordResetInput,
   sendPasswordResetLink,
 } from '../../src/accounts/password_reset';
-import {
-  escapeHtml,
-  passwordResetMessage,
-  resetPageLink,
-} from '../../src/accounts/password_reset_email';
+import { escapeHtml } from '../../src/accounts/account_email';
+import { passwordResetMessage, resetPageLink } from '../../src/accounts/password_reset_email';
 import { parseInput } from '../../src/household/parse_input';
 import { EmailNotSent, type EmailMessage } from '../../src/shared/email_sender';
 import type { RateLimitRule } from '../../src/shared/rate_limit';

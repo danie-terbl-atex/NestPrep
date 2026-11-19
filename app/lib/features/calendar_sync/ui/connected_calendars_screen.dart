@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -7,16 +5,11 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
-import '../../../shared/failure/app_failure.dart';
 import '../../accounts/ui/account_menu_button.dart';
-import '../model/calendar_connection.dart';
-import '../model/calendar_provider.dart';
 import '../state/connected_calendars_controller.dart';
-import 'apple_calendar_picker_sheet.dart';
+import 'calendar_connect_list.dart';
 import 'calendar_connections_section.dart';
 import 'calendar_feed_card.dart';
-import 'calendar_link_sheet.dart';
-import 'provider_connect_row.dart';
 
 /// Connected calendars (calendar ADR-0003): bring Google, Outlook or Apple in,
 /// see how each connection is doing, and take the family week out as a feed.
@@ -29,7 +22,6 @@ class ConnectedCalendarsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<ConnectedCalendarsController>();
     final nest = NestTheme.of(context);
-    final failure = controller.actionFailure;
     return NestScaffold(
       title: CalendarSyncCopy.title,
       subtitle: CalendarSyncCopy.subtitle,
@@ -45,61 +37,13 @@ class ConnectedCalendarsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),
         children: [
-          if (failure != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: NestSpace.md),
-              child: NestBanner(
-                message: AppCopy.failure(failure),
-                tone: NestBannerTone.danger,
-                actionLabel: _needsSettings(failure)
-                    ? CalendarSyncCopy.openSettings
-                    : AppCopy.back,
-                onAction: _needsSettings(failure)
-                    ? () {
-                        controller.dismissActionFailure();
-                        unawaited(controller.openAppleSettings());
-                      }
-                    : controller.dismissActionFailure,
-              ),
-            )
-          else if (controller.appleAccessLost)
-            Padding(
-              padding: const EdgeInsets.only(bottom: NestSpace.md),
-              child: NestBanner(
-                message: CalendarSyncCopy.appleAccessLost,
-                tone: NestBannerTone.warning,
-                actionLabel: CalendarSyncCopy.openSettings,
-                onAction: controller.openAppleSettings,
-              ),
-            ),
-          if (controller.isAwaitingBrowser)
-            const Padding(
-              padding: EdgeInsets.only(bottom: NestSpace.md),
-              child: NestBanner(message: CalendarSyncCopy.browserOpened),
-            ),
+          const CalendarConnectBanners(),
           // Connecting brings a calendar into the family week: `edit` on the
           // calendar (household ADR-0003).
           if (controller.canConnect) ...[
             const NestSectionHeader(title: CalendarSyncCopy.sectionConnect),
             const SizedBox(height: NestSpace.sm),
-            NestRiseIn(
-              child: NestCard(
-                padding: const EdgeInsets.symmetric(vertical: NestSpace.xs),
-                child: Column(
-                  children: [
-                    for (final provider in controller.providersToConnect)
-                      ProviderConnectRow(
-                        key: ValueKey(provider),
-                        provider: provider,
-                        isAvailable: controller.isAvailable(provider),
-                        isBusy: controller.isConnecting,
-                        onConnect: () =>
-                            _connect(context, controller, provider),
-                      ),
-                  ],
-                ),
-              ),
-            ),
+            const NestRiseIn(child: CalendarConnectList()),
             const SizedBox(height: NestSpace.sm),
             Text(
               CalendarSyncCopy.privacyNote,
@@ -113,9 +57,9 @@ class ConnectedCalendarsScreen extends StatelessWidget {
             index: 1,
             child: CalendarConnectionsSection(
               onDisconnect: (connection) =>
-                  _disconnect(context, controller, connection),
+                  confirmDisconnect(context, controller, connection),
               onChooseCalendars: () =>
-                  _chooseAppleCalendars(context, controller),
+                  chooseAppleCalendars(context, controller),
             ),
           ),
           const SizedBox(height: NestSpace.xxl),
@@ -135,56 +79,6 @@ class ConnectedCalendarsScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _connect(
-    BuildContext context,
-    ConnectedCalendarsController controller,
-    CalendarProvider provider,
-  ) async {
-    if (provider.usesOAuth) return controller.connect(provider);
-    if (provider.readsFromPhone) {
-      return _chooseAppleCalendars(context, controller);
-    }
-    final link = await showCalendarLinkSheet(context);
-    if (link == null) return;
-    await controller.connectLink(link);
-  }
-
-  Future<void> _chooseAppleCalendars(
-    BuildContext context,
-    ConnectedCalendarsController controller,
-  ) async {
-    final calendars = await controller.appleCalendars();
-    if (calendars == null || !context.mounted) return;
-    final chosen = await showAppleCalendarPicker(
-      context,
-      calendars: calendars,
-      chosen: controller.appleCalendarIds,
-    );
-    if (chosen == null) return;
-    await controller.linkApple(chosen);
-  }
-
-  static bool _needsSettings(AppFailure failure) =>
-      failure is CalendarSyncFailure &&
-      failure.problem == CalendarSyncProblem.appleCalendarDenied;
-
-  Future<void> _disconnect(
-    BuildContext context,
-    ConnectedCalendarsController controller,
-    CalendarConnection connection,
-  ) async {
-    final confirmed = await showNestConfirm(
-      context: context,
-      title: CalendarSyncCopy.disconnectConfirm,
-      message: CalendarSyncCopy.disconnectBody,
-      confirmLabel: CalendarSyncCopy.disconnect,
-      cancelLabel: AppCopy.householdCancel,
-      isDangerous: true,
-    );
-    if (confirmed != true) return;
-    await controller.disconnect(connection);
   }
 
   Future<void> _resetFeed(

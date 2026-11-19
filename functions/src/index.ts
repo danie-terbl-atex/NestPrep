@@ -35,6 +35,8 @@ export { revokeKidDevice } from './accounts/revoke_kid_device';
 export { resetKidSignIn } from './accounts/reset_kid_sign_in';
 // Password reset, sent through Resend (accounts ADR-0012).
 export { sendPasswordReset } from './accounts/send_password_reset';
+// A new account's welcome, sent through Resend (accounts ADR-0015).
+export { sendWelcomeEmail } from './accounts/send_welcome_email';
 
 // ---- calendar sync (calendar ADR-0003) ----
 export { listCalendarProviders } from './calendar_sync/list_calendar_providers';

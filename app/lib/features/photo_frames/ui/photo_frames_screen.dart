@@ -15,8 +15,32 @@ import 'frame_edit_sheet.dart';
 import 'frame_link_sheet.dart';
 import 'photo_frame_card.dart';
 
-class PhotoFramesScreen extends StatelessWidget {
-  const PhotoFramesScreen({super.key});
+class PhotoFramesScreen extends StatefulWidget {
+  const PhotoFramesScreen({this.linkCode, super.key});
+
+  /// A frame's code that arrived as a link: *Link a frame* opens on it
+  /// (household ADR-0012).
+  final String? linkCode;
+
+  @override
+  State<PhotoFramesScreen> createState() => _PhotoFramesScreenState();
+}
+
+class _PhotoFramesScreenState extends State<PhotoFramesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final code = widget.linkCode;
+    if (code == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      showFrameLinkSheet(
+        context: context,
+        controller: context.read<PhotoFramesController>(),
+        code: code,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

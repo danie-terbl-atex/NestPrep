@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -154,6 +156,37 @@ void main() {
     expect(find.text('landed on today'), findsOneWidget);
   });
 
+  testWidgets('the person shows at once, saying their code is on its way', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.pumpAndSettle();
+    directory.gate = Completer<void>();
+
+    await tester.tap(find.text(AccessCopy.setupGrandparent));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Gogo');
+    await tester.pumpAndSettle();
+    final send = find.widgetWithText(NestButton, AccessCopy.inviteSend);
+    await tester.ensureVisible(send);
+    await tester.pumpAndSettle();
+    await tester.tap(send);
+    for (var frame = 0; frame < 20; frame++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+
+    expect(find.text('Gogo'), findsOneWidget);
+    expect(find.text(AppCopy.householdMakingCode), findsOneWidget);
+    expect(sharer.sent, isEmpty);
+
+    directory.gate?.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppCopy.householdMakingCode), findsNothing);
+    expect(find.text('ABCD2345'), findsOneWidget);
+    expect(sharer.sent, hasLength(1));
+  });
+
   testWidgets('a grandparent is suggested as a parent, and shared at once', (
     tester,
   ) async {
@@ -175,6 +208,28 @@ void main() {
       findsOneWidget,
       reason: 'once somebody is invited, the way out says Done',
     );
+  });
+
+  testWidgets('a sent invite shows its QR for somebody in the room', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.pumpAndSettle();
+    await inviteSomebody(
+      tester,
+      option: AccessCopy.setupGrandparent,
+      name: 'Gogo',
+    );
+
+    await tester.tap(find.bySemanticsLabel(AccessCopy.inviteShowQr));
+    await tester.pumpAndSettle();
+
+    expect(find.text(AccessCopy.inviteCodeFor('Gogo')), findsOneWidget);
+    expect(
+      tester.widget<NestQrCode>(find.byType(NestQrCode)).data,
+      'https://app.nestprep.io/invite/ABCD2345',
+    );
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('the role can be changed before anything is made', (

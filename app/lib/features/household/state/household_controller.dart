@@ -53,6 +53,7 @@ final class HouseholdController extends ChangeNotifier
   AsyncState<HouseholdView> _view = const AsyncLoading();
   bool _isBusy = false;
   String? _removingMemberId;
+  String? _invitingMemberId;
   InviteCode? _lastInvite;
 
   AsyncState<HouseholdView> get view => _view;
@@ -60,6 +61,9 @@ final class HouseholdController extends ChangeNotifier
 
   /// The profile whose removal is on its way to the server.
   String? get removingMemberId => _removingMemberId;
+
+  /// The profile whose invite code is being made.
+  String? get invitingMemberId => _invitingMemberId;
 
   /// The code the last `createInvite` produced, for the sheet to show.
   InviteCode? get lastInvite => _lastInvite;
@@ -85,7 +89,7 @@ final class HouseholdController extends ChangeNotifier
   /// A kid is made with the consent the adult adding them gave, which the
   /// rules require (accounts ADR-0005), and is a child from then on
   /// (household ADR-0009).
-  Future<void> addMember({
+  Future<bool> addMember({
     required String displayName,
     required MemberColor color,
     required MemberRole role,
@@ -179,12 +183,21 @@ final class HouseholdController extends ChangeNotifier
     }
   }
 
-  Future<void> createInvite(String memberId) => _run(() async {
-    _lastInvite = await _directory.createInvite(
-      householdId: householdId,
-      memberId: memberId,
-    );
-  });
+  Future<void> createInvite(String memberId) async {
+    if (_isBusy) return;
+    _invitingMemberId = memberId;
+    try {
+      await _run(() async {
+        _lastInvite = await _directory.createInvite(
+          householdId: householdId,
+          memberId: memberId,
+        );
+      });
+    } finally {
+      _invitingMemberId = null;
+      notifyListeners();
+    }
+  }
 
   Future<void> renameHousehold({
     required String name,

@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
+import '../../../shared/log/best_effort.dart';
 import '../model/auth_user.dart';
 import '../model/kid_identity.dart';
 import '../model/session_check.dart';
@@ -79,15 +80,20 @@ final class FirebaseAuthGateway implements AuthGateway {
         throw const SignInFailure(SignInProblem.noGoogleToken);
       }
       final credential = GoogleAuthProvider.credential(idToken: idToken);
-      return await _signIn(() => _auth.signInWithCredential(credential));
+      return await _signIn(
+        () => _auth.signInWithCredential(credential),
+        welcomeIfNew: true,
+      );
     } on GoogleSignInException catch (error) {
       throw failureFromGoogleSignIn(error);
     }
   }
 
   @override
-  Future<AuthUser> signInWithApple() =>
-      _signIn(() => _auth.signInWithProvider(_appleProvider()));
+  Future<AuthUser> signInWithApple() => _signIn(
+    () => _auth.signInWithProvider(_appleProvider()),
+    welcomeIfNew: true,
+  );
 
   @override
   Future<void> revokeAppleSignIn() async {
@@ -139,16 +145,15 @@ final class FirebaseAuthGateway implements AuthGateway {
     if (created == null) return user;
     try {
       await created.updateDisplayName(displayName.trim());
-      await created.sendEmailVerification();
       await created.reload();
     } on FirebaseAuthException catch (error) {
-      // The account exists and they are already signed in; only the name or the
-      // courtesy verification email did not land. Nothing waits on either
-      // (accounts ADR-0007), and failing the registration here would show an
-      // error over a session that is live — so this is logged and carried on
-      // from, not thrown (`ENG-10`: a decision, not a swallowed error).
+      // The account exists and they are already signed in; only the name did
+      // not land. Failing the registration here would show an error over a
+      // session that is live — so this is logged and carried on from, not
+      // thrown (`ENG-10`: a decision, not a swallowed error).
       AppLog.failure('register follow-up', code: error.code, error: error);
     }
+    _welcome();
     return _toAuthUser(_auth.currentUser) ?? user;
   }
 
@@ -211,13 +216,19 @@ final class FirebaseAuthGateway implements AuthGateway {
 
   /// Every way in goes through here, so the pending-credential link happens
   /// once rather than at four call sites (`ENG-01`).
-  Future<AuthUser> _signIn(Future<UserCredential> Function() attempt) async {
+  Future<AuthUser> _signIn(
+    Future<UserCredential> Function() attempt, {
+    bool welcomeIfNew = false,
+  }) async {
     try {
       final credential = await attempt();
       final user = credential.user;
       if (user == null) throw const SignInFailure(SignInProblem.cancelled);
       _acceptedUid = user.uid;
       await _linking.linkTo(user);
+      if (welcomeIfNew && (credential.additionalUserInfo?.isNewUser ?? false)) {
+        _welcome();
+      }
       return _toAuthUser(_auth.currentUser) ?? _fromUser(user);
     } on FirebaseAuthException catch (error) {
       // Only Google's refusal carries a credential to link. Registering a
@@ -230,6 +241,16 @@ final class FirebaseAuthGateway implements AuthGateway {
       throw failureFromFirebaseAuth(error);
     }
   }
+
+  /// Unawaited: nothing waits on the welcome, and the server sends it at most
+  /// once per account (accounts ADR-0015, ADR-0007).
+  void _welcome() => unawaited(
+    bestEffort(
+      'welcome email',
+      code: 'send-welcome-failed',
+      run: () => _functions.httpsCallable('sendWelcomeEmail').call<Object?>(),
+    ),
+  );
 
   AuthUser? _toAuthUser(User? user) => user == null ? null : _fromUser(user);
 

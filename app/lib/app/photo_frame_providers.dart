@@ -15,6 +15,7 @@ import '../features/photo_frames/data/image_picker_frame_photo_picker.dart';
 import '../features/photo_frames/data/photo_frame_directory.dart';
 import '../features/photo_frames/data/photo_frame_repository.dart';
 import '../features/photo_frames/data/storage_frame_photo_store.dart';
+import '../features/photo_frames/state/pending_frame_code.dart';
 import '../features/photo_frames/state/pending_share.dart';
 import '../features/photo_frames/ui/camera_frame_scanner.dart';
 import '../features/photo_frames/ui/frame_scanner.dart';
@@ -41,5 +42,9 @@ List<SingleChildWidget> photoFrameProviders() => [
   ChangeNotifierProvider<PendingShare>(
     lazy: false,
     create: (_) => PendingShare(links: AppLinks().uriLinkStream),
+  ),
+  ChangeNotifierProvider<PendingFrameCode>(
+    lazy: false,
+    create: (_) => PendingFrameCode(links: AppLinks().uriLinkStream),
   ),
 ];

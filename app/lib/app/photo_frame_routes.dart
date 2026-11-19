@@ -42,7 +42,9 @@ ShellRoute photoFrameRoute() => ShellRoute(
   routes: [
     GoRoute(
       path: PhotoFrameRoute.path,
-      builder: (context, state) => const PhotoFramesScreen(),
+      builder: (context, state) => PhotoFramesScreen(
+        linkCode: state.uri.queryParameters[PhotoFrameRoute.linkCodeParameter],
+      ),
     ),
     GoRoute(
       path: PhotoFrameRoute.photosPath,

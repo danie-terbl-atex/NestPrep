@@ -6,6 +6,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../avatars/ui/member_avatar.dart';
 import '../data/household_directory.dart';
 import '../model/member.dart';
+import 'invite_qr.dart';
 
 /// Shows a freshly made invite code so an admin can read it out or copy it. The
 /// code is single-use and expires in seven days (household ADR-0002), and the
@@ -46,50 +47,57 @@ class _InviteSheetBodyState extends State<_InviteSheetBody> {
   @override
   Widget build(BuildContext context) {
     final nest = NestTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        NestListRow(
-          leading: MemberAvatar(member: widget.member),
-          title: widget.member.displayName,
-          subtitle: AppCopy.householdUnclaimed,
-        ),
-        const SizedBox(height: NestSpace.xl),
-        NestCard(
-          variant: NestCardVariant.tinted,
-          padding: const EdgeInsets.symmetric(vertical: NestSpace.xl),
-          child: Text(
-            widget.invite.code,
-            textAlign: TextAlign.center,
-            style: nest.text.figure.copyWith(
-              color: nest.colors.accentInk,
-              letterSpacing: NestSpace.xs,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          NestListRow(
+            leading: MemberAvatar(member: widget.member),
+            title: widget.member.displayName,
+            subtitle: AppCopy.householdUnclaimed,
+          ),
+          const SizedBox(height: NestSpace.xl),
+          InviteQr(
+            displayName: widget.member.displayName,
+            code: widget.invite.code,
+          ),
+          const SizedBox(height: NestSpace.xl),
+          NestCard(
+            variant: NestCardVariant.tinted,
+            padding: const EdgeInsets.symmetric(vertical: NestSpace.xl),
+            child: Text(
+              widget.invite.code,
+              textAlign: TextAlign.center,
+              style: nest.text.figure.copyWith(
+                color: nest.colors.accentInk,
+                letterSpacing: NestSpace.xs,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: NestSpace.lg),
-        Text(
-          AppCopy.householdInviteBody,
-          textAlign: TextAlign.center,
-          style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
-        ),
-        const SizedBox(height: NestSpace.xl),
-        NestButton(
-          label: AccessCopy.inviteShare,
-          icon: LucideIcons.share,
-          onPressed: widget.onShare,
-        ),
-        const SizedBox(height: NestSpace.sm),
-        NestButton(
-          variant: NestButtonVariant.outline,
-          label: _hasCopied
-              ? AppCopy.householdCodeCopied
-              : AppCopy.householdCopyCode,
-          icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
-          onPressed: _copy,
-        ),
-      ],
+          const SizedBox(height: NestSpace.lg),
+          Text(
+            AppCopy.householdInviteBody,
+            textAlign: TextAlign.center,
+            style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
+          ),
+          const SizedBox(height: NestSpace.xl),
+          NestButton(
+            label: AccessCopy.inviteShare,
+            icon: LucideIcons.share,
+            onPressed: widget.onShare,
+          ),
+          const SizedBox(height: NestSpace.sm),
+          NestButton(
+            variant: NestButtonVariant.outline,
+            label: _hasCopied
+                ? AppCopy.householdCodeCopied
+                : AppCopy.householdCopyCode,
+            icon: _hasCopied ? LucideIcons.check : LucideIcons.copy,
+            onPressed: _copy,
+          ),
+        ],
+      ),
     );
   }
 

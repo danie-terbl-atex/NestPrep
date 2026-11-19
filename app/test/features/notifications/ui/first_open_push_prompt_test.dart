@@ -62,6 +62,49 @@ void main() {
     expect(repository.saved.single.digest.enabled, isTrue);
   });
 
+  testWidgets('waits while setup is open, then asks once it closes', (
+    tester,
+  ) async {
+    final (registrar, phone, _) = NotificationFixtures.registrar(
+      gateway: FakePushGateway(),
+    );
+    addTearDown(registrar.dispose);
+    addTearDown(phone.close);
+    final isHeld = ValueNotifier(true);
+    addTearDown(isHeld.dispose);
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<PushRegistrar>.value(value: registrar),
+          Provider<NotificationRepository>.value(value: repository),
+        ],
+        child: ValueListenableBuilder(
+          valueListenable: isHeld,
+          builder: (context, held, _) => FirstOpenPushPrompt(
+            owner: const NotificationsOwner(
+              householdId: Fixtures.householdId,
+              memberId: Fixtures.samMemberId,
+              isFamily: true,
+            ),
+            isHeld: held,
+            child: const SizedBox.shrink(),
+          ),
+        ),
+      ),
+    );
+    await registrar.start();
+    await tester.pumpAndSettle();
+    expect(
+      phone.prompts,
+      0,
+      reason: 'the question comes after the payoff (onboarding ADR-0001)',
+    );
+
+    isHeld.value = false;
+    await tester.pumpAndSettle();
+    expect(phone.prompts, 1);
+  });
+
   testWidgets('before the phone has answered, nothing is asked', (
     tester,
   ) async {

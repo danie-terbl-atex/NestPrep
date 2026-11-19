@@ -36,7 +36,7 @@ abstract class FrameGroceries with _$FrameGroceries {
     if (shop is! String || area is! String) return null;
     final retailer = ProductRetailer.fromCode(shop);
     final city = CheckersArea.fromCode(area);
-    if (retailer == null || !retailer.isConnected || city == null) return null;
+    if (retailer == null || city == null) return null;
     if (retailer != ProductRetailer.woolworths) {
       return FrameGroceries(shop: retailer, area: city);
     }

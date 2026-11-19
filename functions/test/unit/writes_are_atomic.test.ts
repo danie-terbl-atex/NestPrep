@@ -158,6 +158,9 @@ describe('every callable declares what it may cost', () => {
         // Password reset: an Admin SDK link and an email through Resend, for a
         // person who cannot sign in (accounts ADR-0012).
         'sendPasswordReset',
+        // A new account's welcome, with a confirm link for a password account
+        // (accounts ADR-0015).
+        'sendWelcomeEmail',
         // Calendar sync (calendar ADR-0003): a provider's token exchange and
         // refresh, a link fetched with an address check, a feed served by
         // token, and a schedule — none of which a rule can do.

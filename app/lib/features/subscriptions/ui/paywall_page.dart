@@ -17,6 +17,7 @@ import '../model/premium_highlight.dart';
 import '../model/purchase_progress.dart';
 import '../state/paywall_controller.dart';
 import '../state/purchase_coordinator.dart';
+import 'highlights_offered.dart';
 import 'paywall_actions.dart';
 import 'paywall_gallery.dart';
 import 'paywall_offer_bar.dart';
@@ -141,7 +142,12 @@ class _PaywallBody extends StatelessWidget {
         bottom: MediaQuery.paddingOf(context).bottom + NestSpace.xxl,
       ),
       children: [
-        NestRiseIn(child: PaywallGallery(first: PremiumHighlight.of(feature))),
+        NestRiseIn(
+          child: PaywallGallery(
+            first: PremiumHighlight.of(feature),
+            offered: highlightsOffered(context),
+          ),
+        ),
         const SizedBox(height: NestSpace.xl),
         Padding(
           padding: _gutter,

@@ -162,8 +162,7 @@ abstract final class SubscriptionCopy {
       'A week of lunches for every child, within allergies and school '
           'rules',
     PremiumHighlight.recipes => 'The whole recipe book, plus your family’s own',
-    PremiumHighlight.shops =>
-      'Your list in your cart at Checkers, Pick n Pay or Woolworths',
+    PremiumHighlight.shops => 'Your list, straight into your cart at your shop',
     PremiumHighlight.snaps =>
       'A photo of a shopping list or a school letter, read for you',
     PremiumHighlight.whereWeAre =>

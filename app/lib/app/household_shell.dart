@@ -17,6 +17,7 @@ import '../features/notifications/state/turn_on_notifications.dart';
 import '../features/notifications/ui/digest_prompt_host.dart';
 import '../features/notifications/ui/first_open_push_prompt.dart';
 import '../features/observability/crash_reporting.dart';
+import '../features/photo_frames/ui/frame_link_host.dart';
 import '../features/photo_frames/ui/share_to_frame_host.dart';
 import '../features/product_analytics/ui/household_activity_scope.dart';
 import '../features/subscriptions/state/household_entitlement.dart';
@@ -163,18 +164,22 @@ class _HouseholdShellState extends State<HouseholdShell> {
                         location: widget.location,
                         child: CarerScope(
                           child: ShareToFrameHost(
-                            child: PremiumVoucherHost(
-                              child: DigestPromptHost(
-                                householdId: view.household.id,
-                                memberId: view.viewerMember?.id ?? '',
-                                location: widget.location,
-                                child: FirstOpenPushPrompt(
-                                  owner: NotificationsOwner(
-                                    householdId: view.household.id,
-                                    memberId: view.viewerMember?.id ?? '',
-                                    isFamily: view.permissions.isFamily,
+                            child: FrameLinkHost(
+                              child: PremiumVoucherHost(
+                                child: DigestPromptHost(
+                                  householdId: view.household.id,
+                                  memberId: view.viewerMember?.id ?? '',
+                                  location: widget.location,
+                                  child: FirstOpenPushPrompt(
+                                    owner: NotificationsOwner(
+                                      householdId: view.household.id,
+                                      memberId: view.viewerMember?.id ?? '',
+                                      isFamily: view.permissions.isFamily,
+                                    ),
+                                    isHeld:
+                                        view.household.isWaitingOnInviteStep,
+                                    child: widget.child,
                                   ),
-                                  child: widget.child,
                                 ),
                               ),
                             ),

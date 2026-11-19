@@ -24,8 +24,10 @@ abstract final class LegalCopy {
       'planned per child, the family calendar, groceries, to-dos and chores, '
       'the papers you keep needing, and what a nanny or helper needs for a '
       'shift.';
-  static String appVersion(String name, int build) =>
-      'Version $name (build $build)';
+  static String appVersion(String name, int build, {int? patch}) =>
+      patch == null
+      ? 'Version $name (build $build)'
+      : 'Version $name (build $build, patch $patch)';
   static const aboutSupport = 'Questions or problems';
   static const aboutSupportAddress = 'admin@nestprep.io';
   static const aboutMadeIn = 'Made in South Africa';

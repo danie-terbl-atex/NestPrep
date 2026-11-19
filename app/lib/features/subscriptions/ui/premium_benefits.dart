@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/subscription_copy.dart';
-import '../model/premium_highlight.dart';
+import 'highlights_offered.dart';
 import 'premium_highlight_look.dart';
 
 /// What Premium adds, one row each, on the plan screen — the same areas in
@@ -16,7 +16,7 @@ class PremiumBenefits extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final highlight in PremiumHighlight.values)
+        for (final highlight in highlightsOffered(context))
           NestListRow(
             leading: NestIconTile(
               icon: highlight.icon,

@@ -134,7 +134,7 @@ final class PlanWeekController extends ChangeNotifier {
   /// ideas for what it lacks (lunch-box ADR-0013).
   Future<void> draftIdeas() async {
     final board = _latestBoard;
-    if (board == null || childIds.isEmpty) return;
+    if (board == null || childIds.isEmpty || retailer.choices.isEmpty) return;
     _step = PlanWeekStep.ideas;
     ideas.clear();
     retailer.begin();
@@ -167,7 +167,7 @@ final class PlanWeekController extends ChangeNotifier {
   /// of the household's week as this phone last heard it.
   Future<void> searchStore({LunchBudgetWeek? budgetWeek}) async {
     final active = ideas.active;
-    if (active.isEmpty) return;
+    if (active.isEmpty || !retailer.choices.contains(retailer.shop)) return;
     final place = await places.resolved();
     final kept = {for (final idea in active) idea.id};
     _budgetWeek = budgetWeek;

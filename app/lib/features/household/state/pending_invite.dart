@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../shared/links/app_link_site.dart';
 import '../../../shared/log/app_log.dart';
 import '../data/invite_links.dart';
 
@@ -32,7 +33,11 @@ final class PendingInvite extends ChangeNotifier {
   /// would be. False when it is not the shape of an invite code.
   bool offerCode(String typed) {
     final code = InviteLinks.codeFrom(
-      Uri(scheme: InviteLinks.scheme, host: 'invite', path: '/${typed.trim()}'),
+      Uri(
+        scheme: AppLinkSite.scheme,
+        host: InviteLinks.segment,
+        path: '/${typed.trim()}',
+      ),
     );
     if (code == null) return false;
     _hold(code);

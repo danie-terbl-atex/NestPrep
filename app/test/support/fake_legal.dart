@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/legal_routes.dart';
 import 'package:nestprep/features/accounts/data/account_repository.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/household/state/pending_invite.dart';
 import 'package:nestprep/features/legal/data/legal_document_source.dart';
 import 'package:nestprep/features/legal/model/legal_document.dart';
 import 'package:nestprep/features/legal/model/legal_document_parser.dart';
@@ -59,6 +60,7 @@ Future<void> pumpLegal(
   FakeLinkOpener? linkOpener,
   AccountRepository? accounts,
   SessionController? session,
+  PendingInvite? pendingInvite,
   Brightness brightness = Brightness.light,
   double textScale = 1,
 }) async {
@@ -78,6 +80,8 @@ Future<void> pumpLegal(
       ),
       if (session != null)
         ChangeNotifierProvider<SessionController>.value(value: session),
+      if (pendingInvite != null)
+        ChangeNotifierProvider<PendingInvite>.value(value: pendingInvite),
     ],
     brightness: brightness,
     textScale: textScale,

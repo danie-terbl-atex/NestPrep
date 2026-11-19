@@ -188,8 +188,29 @@ so the on-screen copy cannot tell you the backend was unreachable.
   to register it before `flutter build ios` can sign for it. The *NestPrep Maps (iOS)* key in
   `nestprep-643b7` allows only listed bundle IDs (both of the above, since 2026-11-06); a bundle ID
   it does not list gets a blank blue map with only the Google logo, and nothing in the logs.
-  Store builds use `~/development/flutter` (the `flutter` on PATH is too old):
-  `flutter build ipa --release --dart-define=NESTPREP_MAPS=on --build-number=<next>`.
+  Store builds are Shorebird releases (see *Store builds and patches* below), never `flutter build ipa`.
+- **Store builds and patches** (foundation ADR-0025). Both stores get
+  `../tools/shorebird.sh release android|ios`, which builds with Shorebird's own Flutter 3.47.6 and
+  `NESTPREP_MAPS=on` and reads the version from `pubspec.yaml`, so raise `+N` and `AppVersion.build`
+  first. Android's output is `build/app/outputs/bundle/release/app-release.aab` and iOS's
+  `build/ios/ipa/`. A build made any other way can never be patched. A Dart-only fix is
+  `../tools/shorebird.sh patch <platform> <release-version>` (for example `0.9.0+22`), which goes to
+  **staging**. Check it with `shorebird preview --release-version <v> --track staging`, restarting
+  the app twice (a patch applies on the launch after it downloads), until About reads *patch N*. Then
+  promote it in console.shorebird.dev. A patch belongs to one release only and never carries over to
+  the next store version. Native code, assets, plugins and the Flutter version need a store build.
+  `shorebird` lives in `~/.shorebird/bin`. Never put its Flutter on PATH.
+- **Taking a broken shop off one platform** (shops ADR-0004). A shop is offered only while its
+  `appConfig/flags` switch (shared by both platforms, instant) **and** this platform's
+  `onAndroid`/`onIos` on `ProductRetailer` (`lib/features/groceries/model/product_match.dart`) are
+  both on. To take a shop off one platform, set its `onAndroid` or `onIos` to `false` and patch that
+  platform. **Patch every live release version** (a patch belongs to one release). A phone runs the
+  patch from the second launch after it's published, and installs from before the first Shorebird
+  release never get it. The platform switches stay in source and must never become a define, because
+  a patch must carry its release's defines. The source switch removes the shop **from the app on
+  that platform only**. The Functions (cart push, linking, frame search) follow `addToCheckers` /
+  `addToPnp` / `addToWoolworths`, so to stop the server reaching a shop, switch that flag off. That
+  also cuts the testers' builds.
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
   headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
   `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system

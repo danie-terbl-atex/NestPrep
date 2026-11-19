@@ -19,6 +19,10 @@ class NestMotion {
     required this._wobble,
     required this._swell,
     required this._sway,
+    required this._twigHop,
+    required this._twigNod,
+    required this._twigWave,
+    required this._twigCheer,
     required this.isReduced,
   });
 
@@ -36,6 +40,10 @@ class NestMotion {
     wobble: Duration(milliseconds: 1800),
     swell: Duration(milliseconds: 1100),
     sway: Duration(seconds: 5),
+    twigHop: Duration(milliseconds: 620),
+    twigNod: Duration(milliseconds: 760),
+    twigWave: Duration(milliseconds: 1500),
+    twigCheer: Duration(milliseconds: 1200),
     isReduced: false,
   );
 
@@ -53,6 +61,10 @@ class NestMotion {
     wobble: Duration.zero,
     swell: Duration.zero,
     sway: Duration.zero,
+    twigHop: Duration.zero,
+    twigNod: Duration.zero,
+    twigWave: Duration.zero,
+    twigCheer: Duration.zero,
     isReduced: true,
   );
 
@@ -102,9 +114,21 @@ class NestMotion {
   Duration get sway => debugHoldStill ? Duration.zero : _sway;
   final Duration _sway;
 
+  /// Twig's one-shot actions (design-system ADR-0026): he plays one and
+  /// rests. Zero under reduce-motion, where he is his still pose.
+  /// Zero in the widget suite too, so a picture never catches him mid-hop.
+  Duration get twigHop => debugHoldStill ? Duration.zero : _twigHop;
+  final Duration _twigHop;
+  Duration get twigNod => debugHoldStill ? Duration.zero : _twigNod;
+  final Duration _twigNod;
+  Duration get twigWave => debugHoldStill ? Duration.zero : _twigWave;
+  final Duration _twigWave;
+  Duration get twigCheer => debugHoldStill ? Duration.zero : _twigCheer;
+  final Duration _twigCheer;
+
   final bool isReduced;
 
-  /// Stops the orbit turning and the waves swaying so `pumpAndSettle` can
+  /// Stops the orbit turning, the waves swaying and Twig acting so `pumpAndSettle` can
   /// settle. Set for the whole suite by `test/flutter_test_config.dart`; never
   /// set in the app.
   static bool debugHoldStill = false;

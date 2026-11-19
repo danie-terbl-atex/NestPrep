@@ -284,14 +284,24 @@ void main() {
 
       expect(find.text('ABCD2345'), findsOneWidget);
       expect(find.text(Fixtures.kid.displayName), findsOneWidget);
+      final qr = tester.widget<NestQrCode>(find.byType(NestQrCode));
+      expect(qr.data, 'https://app.nestprep.io/invite/ABCD2345');
+      expect(
+        find.bySemanticsLabel(AccessCopy.inviteQrFor(Fixtures.kid.displayName)),
+        findsOneWidget,
+      );
 
       // The share sheet is the first way out (household ADR-0003).
-      await tester.tap(find.widgetWithText(NestButton, AccessCopy.inviteShare));
+      final share = find.widgetWithText(NestButton, AccessCopy.inviteShare);
+      await tester.ensureVisible(share);
+      await tester.pumpAndSettle();
+      await tester.tap(share);
       expect(shared, 1);
 
-      await tester.tap(
-        find.widgetWithText(NestButton, AppCopy.householdCopyCode),
-      );
+      final copy = find.widgetWithText(NestButton, AppCopy.householdCopyCode);
+      await tester.ensureVisible(copy);
+      await tester.pumpAndSettle();
+      await tester.tap(copy);
       await tester.pumpAndSettle();
 
       expect(copied, ['ABCD2345']);

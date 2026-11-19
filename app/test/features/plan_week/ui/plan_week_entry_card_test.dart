@@ -207,7 +207,7 @@ void main() {
     testWidgets('a chosen shop switched off gives way to the first still on', (
       tester,
     ) async {
-      await switchedOff({FeatureFlag.checkersShop, FeatureFlag.addToPnp});
+      await switchedOff({FeatureFlag.checkersShop, FeatureFlag.pnpShop});
       final choice = planWeekShopChoice(Fixtures.householdId)
         ..choose(ProductRetailer.pickNPay);
       addTearDown(choice.dispose);
@@ -220,7 +220,7 @@ void main() {
         'row', (tester) async {
       await switchedOff({
         FeatureFlag.checkersShop,
-        FeatureFlag.addToPnp,
+        FeatureFlag.pnpShop,
         FeatureFlag.woolworthsShop,
       });
       await pump(tester);

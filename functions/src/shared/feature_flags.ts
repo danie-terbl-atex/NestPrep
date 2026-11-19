@@ -54,6 +54,8 @@ export const FEATURE_FLAGS = [
   'checkersShop',
   // ---- lunch box at Pick n Pay: catalogue, a member's own link and cart (add-to-pnp ADR-0001) ----
   'addToPnp',
+  // As `checkersShop`, for Pick n Pay (shops ADR-0003).
+  'pnpShop',
   // ---- add to Woolworths Dash: a member's own link and cart ----
   'addToWoolworths',
   // As `checkersShop`, for Woolworths.

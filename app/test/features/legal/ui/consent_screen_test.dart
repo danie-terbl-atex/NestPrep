@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
+import 'package:nestprep/features/household/state/pending_invite.dart';
 import 'package:nestprep/features/legal/ui/consent_screen.dart';
 import 'package:nestprep/features/legal/ui/legal_document_screen.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
@@ -49,6 +50,38 @@ void main() {
     await tester.tap(find.text(label));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('is step 2 of 5 starting a household, 2 of 3 joining one', (
+    tester,
+  ) async {
+    await pumpConsent(tester);
+    expect(
+      find.text(AppCopy.onboardingStep(2, 5, AppCopy.stepPromises)),
+      findsOneWidget,
+      reason: 'the account is the first step done (onboarding ADR-0001)',
+    );
+
+    final pending = PendingInvite(links: const Stream.empty());
+    addTearDown(pending.dispose);
+    pending.offerCode('ABCD2345');
+    await pumpLegal(
+      tester,
+      location: ConsentScreen.path,
+      accounts: accounts,
+      pendingInvite: pending,
+    );
+    expect(
+      find.text(AppCopy.onboardingStep(2, 3, AppCopy.stepPromises)),
+      findsOneWidget,
+      reason:
+          'an invited person made their account on step 1 (household '
+          'ADR-0011)',
+    );
+    expect(
+      find.text(AppCopy.onboardingStep(2, 5, AppCopy.stepPromises)),
+      findsNothing,
+    );
+  });
 
   testWidgets('says what NestPrep keeps before asking', (tester) async {
     await pumpConsent(tester);

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../app/app_patch.dart';
 import '../../app/backend_target.dart';
 import '../../shared/log/best_effort.dart';
 
@@ -52,6 +53,17 @@ abstract final class CrashReporting {
       _report(() => crashlytics.recordError(error, stack, fatal: true));
       return true;
     };
+
+    unawaited(
+      bestEffort(
+        'crashlytics patch',
+        code: 'set-patch-failed',
+        run: () async => crashlytics.setCustomKey(
+          'shorebird_patch',
+          await AppPatch.current ?? 0,
+        ),
+      ),
+    );
   }
 
   /// Reports without ever throwing.

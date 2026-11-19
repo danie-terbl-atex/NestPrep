@@ -37,6 +37,9 @@ abstract final class PhotoFrameCopy {
       'The camera isn’t free just now. Type the code instead.';
   static String codeFound(String code) => 'Frame $code';
   static const differentCode = 'Use a different code';
+  static const linkNeedsFamily =
+      'A parent in your household links frames. Ask one to scan the code on '
+      'the frame.';
 
   // ---- linking one: what it shows ----
   static const nameLabel = 'Name';

@@ -130,6 +130,8 @@ abstract final class FailureCopy {
       'Another parent has joined, so the household can carry on without you. '
           'Make them an admin and leave instead.',
     HouseholdProblem.closeNotConfirmed => 'Type CLOSE in the box to confirm.',
+    HouseholdProblem.tooManyAttempts =>
+      'That is a lot of tries. Wait a few minutes and try again.',
     HouseholdProblem.badRequest =>
       'NestPrep could not do that. Please try again.',
     HouseholdProblem.unrecognised => 'Something went wrong. Please try again.',

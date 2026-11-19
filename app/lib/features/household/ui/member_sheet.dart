@@ -40,6 +40,8 @@ Future<MemberDraft?> showMemberSheet({
   required CalendarDate today,
   Member? existing,
   VoidCallback? onChangePicture,
+  MemberRole initialRole = MemberRole.parent,
+  MemberColor initialColor = MemberColor.violet,
 }) => showNestSheet<MemberDraft>(
   context: context,
   title: existing == null
@@ -49,6 +51,8 @@ Future<MemberDraft?> showMemberSheet({
     existing: existing,
     today: today,
     onChangePicture: onChangePicture,
+    initialRole: initialRole,
+    initialColor: initialColor,
   ),
 );
 
@@ -56,10 +60,14 @@ class _MemberSheetBody extends StatefulWidget {
   const _MemberSheetBody({
     required this.existing,
     required this.today,
+    required this.initialRole,
+    required this.initialColor,
     this.onChangePicture,
   });
 
   final Member? existing;
+  final MemberRole initialRole;
+  final MemberColor initialColor;
   final VoidCallback? onChangePicture;
 
   /// Today where the household lives, which is what bounds the birthday picker
@@ -74,8 +82,8 @@ class _MemberSheetBodyState extends State<_MemberSheetBody> {
   late final TextEditingController _name = TextEditingController(
     text: widget.existing?.displayName ?? '',
   );
-  late MemberColor _color = widget.existing?.color ?? MemberColor.violet;
-  late MemberRole _role = widget.existing?.role ?? MemberRole.parent;
+  late MemberColor _color = widget.existing?.color ?? widget.initialColor;
+  late MemberRole _role = widget.existing?.role ?? widget.initialRole;
   late Birthday? _birthday = widget.existing?.birthday;
   bool _guardianConsent = false;
 

@@ -27,6 +27,7 @@ import '../features/subscriptions/ui/premium_area.dart';
 import '../shared/copy/app_copy.dart';
 import '../shared/flags/feature_flags_controller.dart';
 import 'household_route.dart';
+import 'lunch_route.dart';
 import 'plan_week_route.dart';
 import 'shop_carts_for.dart';
 import 'viewer_member.dart';
@@ -41,6 +42,14 @@ import 'viewer_member.dart';
 /// (add-to-pnp ADR-0004, ADR-0007).
 GoRoute planWeekRoute() => GoRoute(
   path: PlanWeekRoute.path,
+  redirect: (context, state) =>
+      switch (context.read<FeatureFlagsController?>()) {
+        final flags? when flags.hasAnswered && shopsOn(flags.isOn).isEmpty =>
+          LunchRoute.pathFor(
+          HouseholdRoute.idFrom(state),
+        ),
+        _ => null,
+      },
   builder: (context, state) {
     final householdId = HouseholdRoute.idFrom(state);
     final memberId = viewerMemberIdOf(context);

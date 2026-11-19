@@ -6,13 +6,13 @@ import '../../../app/backend_target.dart';
 import '../../../app/seeded_sign_in.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
-import '../../household/state/pending_invite.dart';
 import '../state/session_controller.dart';
 import 'code_way_in_sheet.dart';
 import 'email_sign_in_form.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 import 'seeded_account_picker.dart';
+import 'sign_in_or_divider.dart';
 import 'sign_in_providers.dart';
 import 'sign_in_welcome.dart';
 
@@ -38,7 +38,6 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = context.watch<SessionController>();
     final failure = session.signInFailure;
-    final hasInvite = context.watch<PendingInvite?>()?.code != null;
     final seeded = SeededSignIn.forBuild(BackendTarget.fromEnvironment());
     return NestScaffold(
       backdrop: const NestWaves(),
@@ -52,10 +51,6 @@ class SignInScreen extends StatelessWidget {
               children: [
                 const SignInWelcome(),
                 const SizedBox(height: NestSpace.xxl),
-                if (hasInvite) ...[
-                  const NestBanner(message: AccessCopy.inviteLinkSignInFirst),
-                  const SizedBox(height: NestSpace.lg),
-                ],
                 if (failure != null) ...[
                   NestBanner(
                     message: AppCopy.failure(failure),
@@ -73,7 +68,10 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: NestSpace.lg),
-                const NestRiseIn(index: _waysInStep + 1, child: _OrDivider()),
+                const NestRiseIn(
+                  index: _waysInStep + 1,
+                  child: SignInOrDivider(),
+                ),
                 const SizedBox(height: NestSpace.lg),
                 NestRiseIn(
                   index: _waysInStep + 2,
@@ -139,33 +137,6 @@ class SignInScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The line between the address form and the providers. A hairline and a word,
-/// so neither way in reads as the fallback for the other.
-class _OrDivider extends StatelessWidget {
-  const _OrDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final nest = NestTheme.of(context);
-    final line = Expanded(
-      child: Divider(color: nest.colors.outline, height: 1),
-    );
-    return Row(
-      children: [
-        line,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: NestSpace.md),
-          child: Text(
-            AppCopy.signInOr,
-            style: nest.text.caption.copyWith(color: nest.colors.inkTertiary),
-          ),
-        ),
-        line,
-      ],
     );
   }
 }

@@ -49,11 +49,14 @@ cloud because the client redirects every service.
 - `src/<feature>/` — one folder per feature (`ENG-04`); `src/index.ts` only re-exports and sets
   global options.
 - `src/shared/admin_app.ts` is the one lazily-initialised admin app; `firestore.ts` and `auth.ts`
-  are the two handles taken from it. `auth()` exists for two jobs: writing the `households` custom
+  are the two handles taken from it. `auth()` exists for three jobs: writing the `households` custom
   claim that Storage Security Rules read, because they cannot read Firestore (documents ADR-0001),
-  and opening and closing kid devices — their users, their `kidProfile` claim and the custom token
-  that signs them in (accounts ADR-0003). **`createCustomToken` on Cloud Functions needs the runtime
-  service account to hold Service Account Token Creator on itself**; without it `redeemKidPairing`
+  opening and closing kid devices — their users, their `kidProfile` claim and the custom token
+  that signs them in (accounts ADR-0003) — and a new account's welcome email with its confirm link
+  (accounts ADR-0015). **Never a bare `getAuth()`**: the cloud has no default app until something
+  initialises it, and the emulator always has one, so it passes every test and fails live.
+  **`createCustomToken` on Cloud Functions needs the runtime service account to hold Service Account
+  Token Creator on itself**; without it `redeemKidPairing`
   refuses with `signInUnavailable`. The emulator needs nothing.
 - A callable parses its input with a zod schema at the edge and never casts (`ENG-09`). Errors go
   through `household/errors.ts`: one `refuse('<reason>')` that puts the reason in the error's
@@ -126,9 +129,9 @@ cloud because the client redirects every service.
 | `ASSISTANTS_ALLOW_LOOPBACK`                                                     | string param, default `false`                                                                  | `assistantAuth` — `http://localhost:*/callback` redirects (Claude Code)                | only Claude's and ChatGPT's own callbacks are accepted                                                               |
 | `ASSISTANTS_TOKEN_KEY`                                                          | Secret Manager secret (32 bytes, base64)                                                       | `assistantAuth` — seals a refresh's pair for its one-minute retry window               | must exist to deploy; missing or malformed fails refreshes, logged                                                   |
 | `PREMIUM_EMAIL_PEPPER`                                                          | Secret Manager secret (long random string)                                                     | every Premium voucher Function and `seed:premium-codes`                                | must exist to deploy; missing refuses loudly (the emulator uses a fixed pepper); **never rotated without a re-hash** |
-| `RESEND_API_KEY`                                                                | Secret Manager secret                                                                          | `sendVoucherEmailCode`, `sendPasswordReset`                                            | must exist to deploy; `unset` makes every send fail `unavailable`, logged                                            |
+| `RESEND_API_KEY`                                                                | Secret Manager secret                                                                          | `sendVoucherEmailCode`, `sendPasswordReset`, `sendWelcomeEmail`                        | must exist to deploy; `unset` makes every send fail `unavailable`, logged                                            |
 | `PREMIUM_EMAIL_FROM`                                                            | string param, default empty                                                                    | `sendVoucherEmailCode` — the Resend sender, e.g. `NestPrep <hello@…>`                  | every send fails `unavailable`, logged                                                                               |
-| `ACCOUNT_EMAIL_FROM`                                                            | string param, default empty                                                                    | `sendPasswordReset` — the Resend sender for account emails                             | every reset fails `unavailable`, logged                                                                              |
+| `ACCOUNT_EMAIL_FROM`                                                            | string param, default empty                                                                    | `sendPasswordReset`, `sendWelcomeEmail` — the Resend sender for account emails         | every reset fails `unavailable`, logged                                                                              |
 | `STORE_INVOKER_SERVICE_ACCOUNT`                                                 | string param, default empty                                                                    | `issuePremiumVouchers`, `voidFrameVoucher` — the store's runtime service account email | every store call is refused 403, logged                                                                              |
 | `PREMIUM_TESTER_UIDS`                                                           | string param, comma-separated uids, default empty                                              | test-order vouchers                                                                    | nobody may see or claim a test voucher                                                                               |
 | `FRAME_SERVICE_WIFI_SSID`, `FRAME_SERVICE_WIFI_PSK`                             | string params, default empty                                                                   | `checkFrameUpdate` — the service Wi-Fi a frame is told                                 | the check answers `serviceWifi: null`; so does an SSID past 32 bytes or a PSK not 8 to 63 long                       |

@@ -3,6 +3,7 @@ import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.d
 import 'package:nestprep/features/add_to_checkers/model/checkers_area.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_shelf.dart';
 import 'package:nestprep/features/family_profiles/model/allergen.dart';
+import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_board.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_budget.dart';
 import 'package:nestprep/features/lunch_box/model/lunch_budget_week.dart';
@@ -50,6 +51,7 @@ void main() {
   late FakeCheckersAreaPreference areas;
   late FakePackingChoiceStore packingStore;
   late PlanWeekController controller;
+  late List<ProductRetailer> shopsNow;
 
   setUp(() async {
     harness = LunchPlanningHarness();
@@ -59,13 +61,14 @@ void main() {
     aisle = FakeLunchAisleSource();
     areas = FakeCheckersAreaPreference();
     packingStore = FakePackingChoiceStore();
+    shopsNow = [ProductRetailer.checkers];
     controller = PlanWeekController(
       drafter: drafter,
       aisleSource: aisle,
       weekBuilder: builder,
       catalogues: planWeekCatalogues(shop),
       shopChoice: planWeekShopChoice(Fixtures.householdId),
-      shopsOn: planWeekShopsOn(),
+      shopsOn: () => shopsNow,
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: areas,
@@ -192,6 +195,29 @@ void main() {
     );
     final ideas = wire['ideas']! as List<Object?>;
     expect([for (final i in ideas) (i! as Map)['fromAisle']], [true, false]);
+  });
+
+  test('with every shop switched off, the brief goes to no shop', () async {
+    shopsNow = [];
+    await controller.draftIdeas();
+    expect(controller.step, PlanWeekStep.brief);
+    expect(drafter.aisles, isEmpty);
+  });
+
+  test('a shop switched off during the run is never searched', () async {
+    drafter.reply = LunchIdeasReply(
+      ideas: [idea('idea-1', LunchSlot.veg, 'Baby carrots', [lwazi])],
+      budgetCents: null,
+      callsLeft: 9,
+    );
+    await controller.draftIdeas();
+    expect(controller.ideas.active, isNotEmpty);
+
+    shopsNow = [ProductRetailer.pickNPay];
+    await controller.searchStore();
+
+    expect(shop.queries, isEmpty);
+    expect(controller.step, PlanWeekStep.ideas);
   });
 
   test('without AI the aisle still leads, beside the usuals', () async {

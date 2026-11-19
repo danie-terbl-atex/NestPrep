@@ -43,6 +43,39 @@ void main() {
     await repository.close();
   });
 
+  test('a code brought by a link starts on the details', () {
+    final linked = FrameLinkController(
+      photoFrameDirectory: directory,
+      photoFrameRepository: repository,
+      woolworthsStoreFor: (_) async =>
+          const WoolworthsStore(id: '2008', priceZone: 'p30'),
+      householdId: Fixtures.householdId,
+      helpers: const [],
+      code: 'K7MQ9Z',
+    );
+    addTearDown(linked.dispose);
+    expect(linked.step, FrameLinkStep.details);
+    expect(linked.code, 'K7MQ9Z');
+
+    linked.differentCode();
+    expect(linked.step, FrameLinkStep.code);
+  });
+
+  test('a code that is not one starts on scanning', () {
+    final linked = FrameLinkController(
+      photoFrameDirectory: directory,
+      photoFrameRepository: repository,
+      woolworthsStoreFor: (_) async =>
+          const WoolworthsStore(id: '2008', priceZone: 'p30'),
+      householdId: Fixtures.householdId,
+      helpers: const [],
+      code: 'K7MQ9',
+    );
+    addTearDown(linked.dispose);
+    expect(linked.step, FrameLinkStep.code);
+    expect(linked.code, isNull);
+  });
+
   test('starts on the code, scanning', () {
     expect(link.step, FrameLinkStep.code);
     expect(link.isTyping, isFalse);

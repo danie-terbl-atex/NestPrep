@@ -13,6 +13,7 @@ import 'package:nestprep/app/meals_route.dart';
 import 'package:nestprep/app/subscription_route.dart';
 import 'package:nestprep/app/two_homes_route.dart';
 import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/accounts/data/auth_gateway.dart';
 import 'package:nestprep/features/accounts/model/account.dart';
 import 'package:nestprep/features/accounts/model/auth_user.dart';
 import 'package:nestprep/features/accounts/state/session_controller.dart';
@@ -36,6 +37,7 @@ import 'package:nestprep/features/household/state/pending_invite.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/household/ui/household_size_lock.dart';
+import 'package:nestprep/features/household/ui/invite_welcome_screen.dart';
 import 'package:nestprep/features/household/ui/join_invite_screen.dart';
 import 'package:nestprep/features/lunch_box/data/lunch_repository.dart';
 import 'package:nestprep/features/lunch_box/ui/lunch_library_screen.dart';
@@ -241,6 +243,7 @@ void main() {
           Provider<TwoHomesRepository>.value(value: twoHomes),
           Provider<TwoHomesDirectory>.value(value: FakeTwoHomesDirectory()),
           Provider<InviteSharer>.value(value: FakeInviteSharer()),
+          Provider<AuthGateway>.value(value: auth),
           ChangeNotifierProvider<SessionController>.value(value: session),
           ChangeNotifierProvider<PendingInvite>.value(value: pendingInvite),
         ],
@@ -715,7 +718,9 @@ void main() {
     expect(find.byType(JoinInviteScreen), findsNothing);
   });
 
-  testWidgets('signed out, the link waits for the way in and says so', (
+  // household ADR-0011: holding an invite while signed out is its own way
+  // in, which names the household and makes the account in place.
+  testWidgets('signed out, a link opens the invite on its first step', (
     tester,
   ) async {
     await pumpApp(tester);
@@ -724,14 +729,35 @@ void main() {
 
     links.add(Uri.parse('nestprep://invite/ABCD2345'));
     await settle(tester);
-    expect(find.byType(SignInScreen), findsOneWidget);
-    expect(find.text(AccessCopy.inviteLinkSignInFirst), findsOneWidget);
+    expect(find.byType(InviteWelcomeScreen), findsOneWidget);
+    expect(directory.previewed, ['ABCD2345']);
+    expect(
+      find.text(AccessCopy.inviteLinkTitle('The Parkers')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(AppCopy.onboardingStep(1, 3, AppCopy.stepAccount)),
+      findsOneWidget,
+    );
+
+    router.go(SignInScreen.path);
+    await settle(tester);
+    expect(
+      find.byType(InviteWelcomeScreen),
+      findsOneWidget,
+      reason: 'the sign-in screen is not where an invited person starts',
+    );
 
     await signInWithAHousehold(tester);
     expect(find.byType(JoinInviteScreen), findsOneWidget);
+    expect(
+      find.text(AppCopy.onboardingStep(3, 3, AppCopy.stepJoin)),
+      findsNothing,
+      reason: 'somebody already in a household is not onboarding',
+    );
   });
 
-  testWidgets('signed out, a typed invite code waits for the way in too', (
+  testWidgets('signed out, a typed invite code opens the same first step', (
     tester,
   ) async {
     await pumpApp(tester);
@@ -753,11 +779,60 @@ void main() {
     await settle(tester);
 
     expect(pendingInvite.code, 'ABCD2345');
-    expect(find.text(AccessCopy.inviteLinkSignInFirst), findsOneWidget);
     expect(find.byType(CodeWayInSheet), findsNothing);
+    expect(find.byType(InviteWelcomeScreen), findsOneWidget);
+  });
 
-    await signInWithAHousehold(tester);
+  testWidgets('an account made on the first step lands on joining, step 3', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    auth.emit(null);
+    await settle(tester);
+    links.add(Uri.parse('nestprep://invite/ABCD2345'));
+    await settle(tester);
+
+    final fields = find.descendant(
+      of: find.byType(InviteWelcomeScreen),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(fields.at(0), 'Thandi');
+    await tester.enterText(fields.at(1), 'thandi@nestprep.test');
+    await tester.enterText(fields.at(2), 'nestprep-8');
+    await tester.pump();
+    final create = find.widgetWithText(NestButton, AppCopy.registerSubmit);
+    await tester.ensureVisible(create);
+    await tester.tap(create);
+    await settle(tester);
+    expect(auth.registrations, ['thandi@nestprep.test']);
+
+    accounts.emit(
+      const Account(id: 'uid-thandi@nestprep.test', displayName: 'Thandi'),
+    );
+    await settle(tester);
     expect(find.byType(JoinInviteScreen), findsOneWidget);
+    expect(
+      find.text(AppCopy.onboardingStep(3, 3, AppCopy.stepJoin)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('not now on the first step drops the invite for sign-in', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+    auth.emit(null);
+    await settle(tester);
+    links.add(Uri.parse('nestprep://invite/ABCD2345'));
+    await settle(tester);
+
+    final notNow = find.widgetWithText(NestButton, AccessCopy.inviteLinkNotNow);
+    await tester.ensureVisible(notNow);
+    await tester.tap(notNow);
+    await settle(tester);
+
+    expect(pendingInvite.code, isNull);
+    expect(find.byType(SignInScreen), findsOneWidget);
   });
 
   group('a free household over four people (subscriptions ADR-0008)', () {

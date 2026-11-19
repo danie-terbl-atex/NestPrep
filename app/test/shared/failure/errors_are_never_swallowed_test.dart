@@ -158,10 +158,11 @@ void main() {
     'controller.receive(shared.token)',
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
-    // Decoding Twig's poses ahead of time (design-system ADR-0012).
-    // `precacheImage` reports a failed decode to FlutterError itself and its
-    // future always completes, so there is nothing to escape into the zone.
-    'precacheImage(AssetImage(pose.asset) context)',
+    // Decoding Twig's poses and rig layers ahead of time (design-system
+    // ADR-0026). `precacheImage` reports a failed decode to FlutterError
+    // itself and its future always completes, so there is nothing to escape
+    // into the zone.
+    'precacheImage(AssetImage(asset) context)',
     // The same, for the listener sets documents phase 2 keeps apart from its
     // controllers — and for a vault listener closed because its grant was
     // revoked, whose documents have already left the screen (documents
@@ -222,7 +223,7 @@ void main() {
     // their runners, and the share sheet turns a PlatformException into
     // `InviteShareOutcome.unavailable`, which the screen says in words.
     'controller.save()',
-    '_invite(context controller role)',
+    'invite(context controller view role)',
     'controller.shareAgain(invite)',
     'context.read<InviteSharer>().shareCode(',
     // Which calendars this deployment can connect (calendar ADR-0003). It

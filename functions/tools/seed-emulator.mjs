@@ -225,7 +225,7 @@ lines.push(await seedDemoHousehold(db()));
 await db()
   .collection('appConfig')
   .doc('flags')
-  .set({ checkersShop: true, woolworthsShop: true }, { merge: true });
+  .set({ checkersShop: true, pnpShop: true, woolworthsShop: true }, { merge: true });
 lines.push(await seedCannedReplies(db()));
 lines.push(await seedEmulatorLooks(db()));
 lines.push(await seedMorningRoutine(db()));

@@ -97,7 +97,7 @@ void main() {
   });
 
   testWidgets('a shop switched off is not offered at all', (tester) async {
-    final h = await open(tester, off: {FeatureFlag.addToPnp});
+    final h = await open(tester, off: {FeatureFlag.pnpShop});
     await openSheet(tester, ProductRetailer.checkers);
 
     expect(find.byKey(const ValueKey(ProductRetailer.pickNPay)), findsNothing);
@@ -143,7 +143,7 @@ void main() {
   testWidgets('with every shop switched off the field has no logo', (
     tester,
   ) async {
-    await open(tester, off: {FeatureFlag.checkersShop, FeatureFlag.addToPnp});
+    await open(tester, off: {FeatureFlag.checkersShop, FeatureFlag.pnpShop});
 
     expect(
       find.byTooltip(CheckersCopy.matchingAsYouType(ProductRetailer.checkers)),

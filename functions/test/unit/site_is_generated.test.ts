@@ -38,18 +38,21 @@ describe('the public site is generated', () => {
     ).not.toThrow();
   });
 
-  it('with the landing page, both legal documents, the deletion, invite, connect, Premium, redeem and reset-password pages and a 404', () => {
+  it('with the landing page, both legal documents, the deletion, support, invite, frame, connect, Premium, redeem, reset-password and verify-email pages and a 404', () => {
     expect(pages.map((page) => page.path).sort()).toEqual([
       '404.html',
       'connect/index.html',
       'delete-account/index.html',
+      'frame/index.html',
       'index.html',
       'invite/index.html',
       'premium/index.html',
       'privacy/index.html',
       'redeem/index.html',
       'reset-password/index.html',
+      'support/index.html',
       'terms/index.html',
+      'verify-email/index.html',
     ]);
   });
 
@@ -253,6 +256,39 @@ describe('a password reset email opens a page that sets the password', () => {
   });
 });
 
+describe('a welcome email opens a page that confirms the address (accounts ADR-0015)', () => {
+  const page = read('hosting/src/pages/verify-email.html');
+  const script = read('hosting/src/verify-email.js');
+  const firebase = JSON.parse(read('firebase.json')) as {
+    hosting: { headers: { source: string; headers: { key: string; value: string }[] }[] };
+  };
+
+  it('has words in the page for every state the script can show', () => {
+    const states = [...script.matchAll(/return '([a-zA-Z]+)';|show\('([a-zA-Z]+)'\)/g)].map(
+      (match) => match[1] ?? match[2],
+    );
+    expect(states.length).toBeGreaterThan(4);
+    for (const state of states) expect(page, state).toContain(`data-state="${String(state)}"`);
+  });
+
+  it('is the page the email links to', () => {
+    expect(read('functions/src/accounts/welcome_email.ts')).toContain('/verify-email?oobCode=');
+    expect(script).toContain("get('oobCode')");
+    expect(script).toContain('applyActionCode(oobCode)');
+  });
+
+  it('may reach Identity Toolkit, keeps the code out of the referrer and is never cached', () => {
+    const headers = firebase.hosting.headers
+      .filter((block) => block.source === '{/verify-email,/verify-email/**}')
+      .flatMap((block) => block.headers);
+    expect(headers.find((header) => header.key === 'Content-Security-Policy')?.value).toContain(
+      "connect-src 'self' https://identitytoolkit.googleapis.com;",
+    );
+    expect(headers).toContainEqual({ key: 'Referrer-Policy', value: 'no-referrer' });
+    expect(headers).toContainEqual({ key: 'Cache-Control', value: 'no-store' });
+  });
+});
+
 describe('an invite link opens the app or says how to join (household ADR-0005)', () => {
   const page = read('hosting/src/pages/invite.html');
   const script = read('hosting/src/invite.js');
@@ -301,6 +337,87 @@ describe('an invite link opens the app or says how to join (household ADR-0005)'
   });
 });
 
+describe('invite and frame links open the app on every host it claims (household ADR-0012)', () => {
+  const firebase = JSON.parse(read('firebase.json')) as { hosting: { rewrites: object[] } };
+  const manifest = read('app/android/app/src/main/AndroidManifest.xml');
+  const entitlements = read('app/ios/Runner/Runner.entitlements');
+  const page = read('hosting/src/pages/frame.html');
+  const script = read('hosting/src/frame.js');
+  const hosts = [
+    ...(
+      /hosts = \{([^}]+)\}/.exec(read('app/lib/shared/links/app_link_site.dart'))?.[1] ?? ''
+    ).matchAll(/'([^']+)'/g),
+  ].map((match) => String(match[1]));
+  const runner =
+    /DEVELOPMENT_TEAM = (\w+);[\s\S]*?PRODUCT_BUNDLE_IDENTIFIER = (io\.nullstate\.nestprep\.app);/.exec(
+      read('app/ios/Runner.xcodeproj/project.pbxproj'),
+    );
+
+  it("serves the site's own well-known files, never the ones Hosting makes up", () => {
+    const hosting = (JSON.parse(read('firebase.json')) as { hosting: { appAssociation?: string } })
+      .hosting;
+    expect(hosting.appAssociation).toBe('NONE');
+    const links = JSON.parse(String(site.get('well-known/assetlinks.json'))) as {
+      target: { sha256_cert_fingerprints: string[] };
+    }[];
+    expect(links[0]?.target.sha256_cert_fingerprints).toContain(
+      '29:00:15:3E:A4:36:EE:2E:7E:28:2A:E6:0C:9F:9C:AF:39:D7:42:36:8A:6C:0F:31:BC:8C:40:DB:BA:C4:8B:35',
+    );
+  });
+
+  it('claims app.nestprep.io and both Firebase hosts on both platforms', () => {
+    expect(hosts).toEqual(
+      expect.arrayContaining([
+        'app.nestprep.io',
+        'nestprep-643b7.web.app',
+        'nestprep-643b7.firebaseapp.com',
+      ]),
+    );
+    for (const host of hosts) {
+      expect(manifest, host).toContain(`android:host="${host}"`);
+      expect(entitlements, host).toContain(`<string>applinks:${host}</string>`);
+    }
+    for (const segment of ['invite', 'frame']) {
+      expect(manifest).toContain(`android:pathPrefix="/${segment}/"`);
+      expect(manifest).toContain(`android:host="${segment}"`);
+    }
+  });
+
+  it('vouches on iOS for the Runner app, for invites and frames only', () => {
+    const association = JSON.parse(
+      String(site.get('well-known/apple-app-site-association.json')),
+    ) as { applinks: { details: { appIDs: string[]; components: { '/': string }[] }[] } };
+    const [details] = association.applinks.details;
+    expect(details?.appIDs).toEqual([`${String(runner?.[1])}.${String(runner?.[2])}`]);
+    expect(details?.components.map((component) => component['/'])).toEqual([
+      '/invite/*',
+      '/frame/*',
+    ]);
+  });
+
+  it('serves every /frame/<code> from one page that opens the app on it', () => {
+    expect(firebase.hosting.rewrites).toContainEqual({
+      source: '/frame/**',
+      destination: '/frame/index.html',
+    });
+    expect(script).toContain('nestprep://frame/');
+    const states = [...script.matchAll(/show\('([a-zA-Z]+)'\)/g)].map((match) => match[1]);
+    expect(states.length).toBeGreaterThan(1);
+    for (const state of states) expect(page, state).toContain(`data-state="${String(state)}"`);
+  });
+
+  it("checks a frame code against the server's letters and length", () => {
+    const alphabet = /READABLE_ALPHABET = '([A-Z0-9]+)'/.exec(
+      read('functions/src/shared/readable_code.ts'),
+    )?.[1];
+    const length = /FRAME_CODE_LENGTH = (\d+);/.exec(
+      read('functions/src/frames/frame_policy.ts'),
+    )?.[1];
+    expect(script).toContain(`'${String(alphabet)}'`);
+    expect(script).toContain(`code.length !== ${String(length)}`);
+  });
+});
+
 describe('a saved password is the same login in the app and on the site (accounts ADR-0013)', () => {
   const firebase = JSON.parse(read('firebase.json')) as { hosting: { rewrites: object[] } };
   const pbxproj = read('app/ios/Runner.xcodeproj/project.pbxproj');
@@ -325,7 +442,7 @@ describe('a saved password is the same login in the app and on the site (account
       `${String(runner?.[1])}.${String(runner?.[2])}`,
     ]);
     const origin = /PUBLIC_SITE_ORIGIN = 'https:\/\/([^']+)'/.exec(
-      read('functions/src/accounts/password_reset_email.ts'),
+      read('functions/src/accounts/account_email.ts'),
     )?.[1];
     expect(read('app/ios/Runner/Runner.entitlements')).toContain(
       `webcredentials:${String(origin)}`,

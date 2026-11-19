@@ -27,6 +27,8 @@ export const HOUSEHOLD_REFUSALS = {
   // with another adult in it, they take it over instead (household ADR-0007).
   otherAdultsRemain: ['failed-precondition', 'Another adult can still run this household.'],
   closeNotConfirmed: ['invalid-argument', 'Closing a household needs the typed confirmation.'],
+  // Only a signed-out invite preview is counted (household ADR-0011).
+  tooManyAttempts: ['resource-exhausted', 'Too many invite checks. Try again in a few minutes.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type HouseholdRefusal = keyof typeof HOUSEHOLD_REFUSALS;

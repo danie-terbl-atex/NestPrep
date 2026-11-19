@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../shared/money/money.dart';
@@ -8,19 +9,40 @@ part 'product_match.freezed.dart';
 /// (add-to-pnp ADR-0007, add-to-woolworths ADR-0001). *Plan my week* and the
 /// photo frames plan at Checkers and Pick n Pay only.
 enum ProductRetailer {
-  checkers('checkers', isConnected: true),
-  pickNPay('pickNPay', isConnected: true),
-  woolworths('woolworths', isConnected: true);
+  checkers('checkers', onAndroid: false, onIos: false),
+  pickNPay('pickNPay', onAndroid: false, onIos: false),
+  woolworths('woolworths', onAndroid: false, onIos: false);
 
-  const ProductRetailer(this.code, {required this.isConnected});
+  const ProductRetailer(
+    this.code, {
+    required this.onAndroid,
+    required this.onIos,
+  });
 
   /// As stored in `productMatch.retailer`.
   final String code;
 
-  /// Whether NestPrep can search this shop. Only a connected shop — and only
-  /// while its switch is on — can be chosen, so a lookup never goes to a shop
-  /// that cannot answer.
-  final bool isConnected;
+  /// This platform's own switch for the shop, which must stay in source and
+  /// never become a define: a Shorebird patch can change source, but must
+  /// carry its release's defines (foundation ADR-0025).
+  final bool onAndroid;
+  final bool onIos;
+
+  /// Whether NestPrep can search this shop on this phone. Only a connected
+  /// shop, and only while its switch in `appConfig/flags` is on too, can be
+  /// chosen, so a lookup never goes to a shop that cannot answer.
+  bool get isConnected {
+    final platform = defaultTargetPlatform;
+    return debugSwitchOverride?.call(this, platform) ??
+        switch (platform) {
+          TargetPlatform.iOS => onIos,
+          _ => onAndroid,
+        };
+  }
+
+  @visibleForTesting
+  static bool Function(ProductRetailer shop, TargetPlatform platform)?
+  debugSwitchOverride;
 
   static ProductRetailer? fromCode(String code) =>
       values.where((retailer) => retailer.code == code).firstOrNull;

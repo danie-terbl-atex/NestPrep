@@ -194,6 +194,26 @@ void main() {
       );
     });
 
+    testWidgets('making a code says so on the row until the code arrives', (
+      tester,
+    ) async {
+      await pump(tester);
+      await emit(tester);
+      directory.gate = Completer<void>();
+
+      await tester.tap(find.bySemanticsLabel(AppCopy.householdInvite));
+      await tester.pump();
+
+      expect(find.text(AppCopy.householdMakingCode), findsOneWidget);
+      expect(find.bySemanticsLabel(AppCopy.householdInvite), findsNothing);
+
+      directory.gate?.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text(AppCopy.householdMakingCode), findsNothing);
+      expect(find.text('ABCD2345'), findsOneWidget);
+    });
+
     testWidgets('you are never offered the button that removes you', (
       tester,
     ) async {

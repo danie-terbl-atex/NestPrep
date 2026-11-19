@@ -174,25 +174,48 @@ abstract final class AccessCopy {
   static String inviteSubject(String householdName) =>
       'Join $householdName on NestPrep';
 
-  /// What the share sheet sends. No link until the invite page is live
-  /// (household ADR-0006): the code is typed on the sign-in screen.
+  /// What the share sheet sends: the link that opens the app on the invite,
+  /// and the code for anybody who would rather type it (household ADR-0012).
   static String inviteMessage({
     required String householdName,
     required String code,
+    required Uri link,
   }) =>
-      'You are invited to $householdName on NestPrep.\n\n'
-      'Get NestPrep, tap "${AppCopy.codeWayIn}" on the sign-in screen and type '
-      '$code. The code works once and lasts seven days.';
+      'You are invited to $householdName on NestPrep. Tap to join:\n'
+      '$link\n\n'
+      'Or open NestPrep, tap "${AppCopy.codeWayIn}" and type $code. '
+      'It works once and lasts seven days.';
+
+  static const inviteScanHint =
+      'They can scan this with their phone camera to join.';
 
   static String inviteCodeFor(String name) => 'Code for $name';
+  static String inviteQrFor(String name) => 'QR code to invite $name';
+  static const inviteShowQr = 'Show QR code';
 
   static const inviteLinkEyebrow = 'You are invited';
   static const inviteLinkChecking = 'Checking your invite';
   static const inviteLinkNotNow = 'Not now';
   static const inviteLinkRefused = 'This invite cannot be used';
   static const inviteLinkClose = 'Close';
-  static const inviteLinkSignInFirst =
-      'Sign in or create an account to accept your household invite.';
+
+  // ---- the invite way in, before an account exists (household ADR-0011) ----
+  static const inviteWelcomeGeneralTitle = 'You have an invite';
+  static const inviteWelcomeRefusedTitle = 'This invite cannot be used';
+  static const inviteWelcomeNext =
+      'First, make your NestPrep account. Your invite is saved, and you join '
+      'right after.';
+  static const inviteWelcomeNew = 'New to NestPrep';
+  static const inviteWelcomeExisting = 'I have an account';
+  static const inviteWelcomeOtherCode = 'Use a different code';
+
+  static String inviteWelcomeInvitedBy({
+    required String memberName,
+    required MemberRole role,
+    required String? invitedBy,
+  }) =>
+      '${inviteLinkBody(memberName: memberName, role: role, invitedBy: invitedBy)} '
+      '$inviteWelcomeNext';
 
   static String inviteLinkTitle(String householdName) => 'Join $householdName';
 

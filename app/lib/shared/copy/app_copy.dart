@@ -61,6 +61,7 @@ export 'nanny_pickup_copy.dart';
 export 'nanny_shift_copy.dart';
 // documents V2: shared links and offline copies (documents ADR-0006, ADR-0007).
 export 'offline_copies_copy.dart';
+export 'onboarding_copy.dart';
 export 'own_recipe_copy.dart';
 // photo frames on the wall (photo-frames ADR-0001).
 export 'photo_frame_copy.dart';
@@ -423,11 +424,14 @@ abstract final class AppCopy {
     _ => '$count documents',
   };
 
-  static String onboardingStep(int step, String what) =>
-      'Step $step of 3 · $what';
+  static String onboardingStep(int step, int total, String what) =>
+      'Step $step of $total · $what';
   static const stepPromises = 'A few promises';
   static const stepHousehold = 'Your household';
-  static const stepPeople = 'Your people';
+  static const stepFamily = 'Your family';
+  static const stepCalendar = 'Your calendar';
+  static const stepAccount = 'Your account';
+  static const stepJoin = 'Join your family';
   static const householdGateTitle = 'Start a household';
   static const householdGateBody =
       'Make a home for your family\'s week, or join one you were invited to.';
@@ -460,6 +464,7 @@ abstract final class AppCopy {
   static const householdRemove = 'Remove';
   static const householdRemoveConfirm = 'Remove from household?';
   static const householdRemoving = 'Removing…';
+  static const householdMakingCode = 'Making their code…';
   static String householdRemoved(String name) =>
       '$name was removed from the household';
   static const householdLeave = 'Leave household';

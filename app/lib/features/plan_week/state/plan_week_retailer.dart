@@ -26,8 +26,8 @@ final class PlanWeekRetailer {
   /// The brief's choice as it may be used now: the chosen shop while it is
   /// switched on, else the first that is.
   ProductRetailer get chosen =>
-      // Reached by link with every shop switched off: the first shop, as
-      // before shops had switches here.
+      // Only when every shop is switched off while the screen is open: the
+      // route turns away anybody who arrives with none on.
       _choice.shopFor(choices) ?? ProductRetailer.values.first;
 
   /// Whether the brief offers a choice at all.

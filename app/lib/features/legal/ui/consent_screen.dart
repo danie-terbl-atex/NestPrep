@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../accounts/state/session_controller.dart';
+import '../../household/state/pending_invite.dart';
+import '../../onboarding/model/onboarding_step.dart';
+import '../../onboarding/ui/onboarding_header.dart';
 import '../state/consent_controller.dart';
 import 'consent_summary.dart';
 import 'legal_document_screen.dart';
@@ -25,22 +28,28 @@ class ConsentScreen extends StatelessWidget {
     final controller = context.watch<ConsentController>();
     final failure = controller.failure;
     final isBusy = controller.isSubmitting;
+    final isJoining =
+        !controller.isUpdate && context.watch<PendingInvite?>()?.code != null;
     return NestScaffold(
+      backdrop: controller.isUpdate ? null : const NestWaves(),
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),
         children: [
           const SizedBox(height: NestSpace.lg),
-          NestIntro(
-            eyebrow: controller.isUpdate
-                ? null
-                : AppCopy.onboardingStep(1, AppCopy.stepPromises),
-            title: controller.isUpdate
-                ? LegalCopy.consentUpdatedTitle
-                : LegalCopy.consentTitle,
-            body: controller.isUpdate
-                ? LegalCopy.consentUpdatedIntro
-                : LegalCopy.consentIntro,
-          ),
+          if (controller.isUpdate)
+            const NestIntro(
+              title: LegalCopy.consentUpdatedTitle,
+              body: LegalCopy.consentUpdatedIntro,
+            )
+          else
+            OnboardingHeader(
+              step: isJoining ? InviteeStep.promises : CreatorStep.promises,
+              title: LegalCopy.consentTitle,
+              body: LegalCopy.consentIntro,
+              twigPose: NestTwigPose.welcome,
+              twigLine: OnboardingCopy.twigPromises,
+              twigAction: NestTwigAction.nod,
+            ),
           const SizedBox(height: NestSpace.lg),
           const NestRiseIn(child: ConsentSummary()),
           const SizedBox(height: NestSpace.lg),

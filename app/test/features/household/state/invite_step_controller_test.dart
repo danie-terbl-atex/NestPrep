@@ -58,8 +58,8 @@ void main() {
     expect(sharer.sent.single.text, contains('ABCD2345'));
     expect(
       sharer.sent.single.text,
-      isNot(contains('https://')),
-      reason: 'no link until the invite page is live (household ADR-0006)',
+      contains('https://app.nestprep.io/invite/ABCD2345'),
+      reason: 'one tap opens the app on the invite (household ADR-0012)',
     );
   });
 

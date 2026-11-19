@@ -122,6 +122,9 @@ abstract final class NestSize {
 
   /// A vault document's pages, taller than a preview so print can be read.
   static const double pagesHeight = 420;
+
+  /// A QR another phone's camera reads off this one's screen at arm's length.
+  static const double qrCode = 208;
 }
 
 /// Stroke widths for hairlines and focus rings.

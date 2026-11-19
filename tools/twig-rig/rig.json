@@ -1,0 +1,59 @@
+{
+  "canvas": [
+    512,
+    512
+  ],
+  "source": "twig-welcome.png scaled 1254 to 512; every layer is drawn at the canvas origin",
+  "rotation": "degrees, positive is clockwise on screen (Flutter Transform.rotate), about pivot in canvas px",
+  "layers": [
+    {
+      "name": "tail",
+      "file": "assets/brand/twig/rig/tail.webp",
+      "order": 0,
+      "pivot": [
+        351.9,
+        404.2
+      ],
+      "rotationDegrees": [
+        -8.0,
+        8.0
+      ]
+    },
+    {
+      "name": "wing",
+      "file": "assets/brand/twig/rig/wing.webp",
+      "order": 1,
+      "pivot": [
+        196.8,
+        318.5
+      ],
+      "rotationDegrees": [
+        -20.0,
+        20.0
+      ]
+    },
+    {
+      "name": "body",
+      "file": "assets/brand/twig/rig/body.webp",
+      "order": 2
+    },
+    {
+      "name": "crest",
+      "file": "assets/brand/twig/rig/crest.webp",
+      "order": 3,
+      "pivot": [
+        283.8,
+        108.6
+      ],
+      "rotationDegrees": [
+        -8.0,
+        8.0
+      ]
+    },
+    {
+      "name": "eyes_closed",
+      "file": "assets/brand/twig/rig/eyes_closed.webp",
+      "order": 4
+    }
+  ]
+}

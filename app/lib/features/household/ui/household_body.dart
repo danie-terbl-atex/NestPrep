@@ -94,6 +94,7 @@ class HouseholdBody extends StatelessWidget {
                   canManage: view.viewerIsAdmin,
                   accessSummary: _accessSummaryOf(member),
                   isRemoving: controller.removingMemberId == member.id,
+                  isInviting: controller.invitingMemberId == member.id,
                   actionsEnabled: !controller.isBusy,
                   onAccess: view.viewerIsAdmin && member.role.isRestricted
                       ? () => context.push(

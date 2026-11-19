@@ -19,10 +19,10 @@ import 'invite_option_list.dart';
 import 'invite_person_sheet.dart';
 import 'sent_invite_row.dart';
 
-/// "Who else keeps this house running?" — the step a new household opens
-/// with, so inviting a second adult is part of setting up rather than
-/// something found later (household ADR-0003). The same screen is how an
-/// admin invites anybody afterwards, from the people screen.
+/// "Who else keeps this house running?" — how an admin invites anybody from
+/// the people screen (household ADR-0003). While a new household's setup step
+/// is open, the same route shows the setup flow instead, whose family step
+/// invites through [invite] (onboarding ADR-0001).
 ///
 /// Every control is usable the moment it starts to arrive (design-system
 /// ADR-0002), and *Skip for now* is always there: the step is an invitation,
@@ -36,6 +36,7 @@ class InviteStepScreen extends StatelessWidget {
     final view = context.watch<HouseholdView>();
     final failure = controller.actionFailure;
     final hasInvited = controller.sent.isNotEmpty;
+    final making = controller.making;
 
     return NestScaffold(
       leading: backLeading(context),
@@ -46,19 +47,18 @@ class InviteStepScreen extends StatelessWidget {
             : NestButtonVariant.outline,
         icon: hasInvited ? LucideIcons.check : null,
         isExpanded: false,
-        isLoading: controller.isBusy && !hasInvited,
+        isLoading: controller.isBusy && !hasInvited && making == null,
         onPressed: controller.isBusy ? null : () => _leave(context, view),
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),
         children: [
-          NestRiseIn(
+          const NestRiseIn(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: NestSpace.lg),
+                SizedBox(height: NestSpace.lg),
                 NestIntro(
-                  eyebrow: AppCopy.onboardingStep(3, AppCopy.stepPeople),
                   title: AccessCopy.setupTitle,
                   body: AccessCopy.setupBody,
                 ),
@@ -82,7 +82,7 @@ class InviteStepScreen extends StatelessWidget {
             ),
             const SizedBox(height: NestSpace.md),
           ],
-          if (hasInvited) ...[
+          if (hasInvited || making != null) ...[
             const NestSectionHeader(title: AccessCopy.setupInvited),
             const SizedBox(height: NestSpace.sm),
             for (final invite in controller.sent)
@@ -94,12 +94,20 @@ class InviteStepScreen extends StatelessWidget {
                   onShare: () => unawaited(controller.shareAgain(invite)),
                 ),
               ),
+            if (making != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: NestSpace.sm),
+                child: SentInviteRow.making(
+                  displayName: making.displayName,
+                  role: making.role,
+                ),
+              ),
             const SizedBox(height: NestSpace.lg),
           ],
           InviteOptionList(
             isLocked: isFullOnFreePlan(context, view),
             onChoose: (role) =>
-                unawaited(_invite(context, controller, view, role)),
+                unawaited(invite(context, controller, view, role)),
           ),
           // Give a month, get a month: another family is the next person to
           // tell (subscriptions ADR-0002).
@@ -115,30 +123,33 @@ class InviteStepScreen extends StatelessWidget {
     );
   }
 
-  static Future<void> _invite(
+  /// The room check, the sheet, the profile and code, and the paywall if the
+  /// free plan refused it. Answers whether somebody was invited.
+  static Future<bool> invite(
     BuildContext context,
     InviteStepController controller,
     HouseholdView view,
     MemberRole suggested,
   ) async {
-    if (!await ensureRoomForAnother(context, view)) return;
-    if (!context.mounted) return;
+    if (!await ensureRoomForAnother(context, view)) return false;
+    if (!context.mounted) return false;
     final draft = await showInvitePersonSheet(
       context: context,
       suggestedRole: suggested,
     );
-    if (draft == null) return;
-    await controller.invite(
+    if (draft == null) return false;
+    final invited = await controller.invite(
       displayName: draft.displayName,
       role: draft.role,
       guardianConsent: draft.guardianConsent,
     );
-    if (!context.mounted) return;
+    if (!context.mounted) return invited;
     await offerRoomIfRefused(
       context,
       controller,
       context.read<HouseholdView>(),
     );
+    return invited;
   }
 
   /// Done and skip are the same act: the step is closed, and the household

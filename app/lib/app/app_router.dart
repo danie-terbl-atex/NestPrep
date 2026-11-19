@@ -20,11 +20,13 @@ import '../features/household/model/household_area.dart';
 import '../features/household/model/household_view.dart';
 import '../features/household/state/household_controller.dart';
 import '../features/household/state/household_gate_controller.dart';
+import '../features/household/state/invite_welcome_controller.dart';
 import '../features/household/state/join_invite_controller.dart';
 import '../features/household/state/pending_invite.dart';
 import '../features/household/ui/household_gate_screen.dart';
 import '../features/household/ui/household_more_screen.dart';
 import '../features/household/ui/household_screen.dart';
+import '../features/household/ui/invite_welcome_screen.dart';
 import '../features/household/ui/join_invite_screen.dart';
 import '../features/kid_accounts/ui/kid_home_screen.dart';
 import '../features/product_analytics/data/beta_numbers_repository.dart';
@@ -142,13 +144,33 @@ GoRouter createAppRouter(
         ),
       ),
       GoRoute(
+        path: InviteWelcomeScreen.path,
+        builder: (context, state) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (context) => InviteWelcomeController(
+                householdDirectory: context.read<HouseholdDirectory>(),
+                pendingInvite: pendingInvite,
+              )..load(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) =>
+                  RegisterController(authGateway: context.read<AuthGateway>()),
+            ),
+          ],
+          child: const InviteWelcomeScreen(),
+        ),
+      ),
+      GoRoute(
         path: JoinInviteScreen.path,
         builder: (context, state) => ChangeNotifierProvider(
           create: (context) => JoinInviteController(
             householdDirectory: context.read<HouseholdDirectory>(),
             pendingInvite: pendingInvite,
           )..load(),
-          child: const JoinInviteScreen(),
+          child: JoinInviteScreen(
+            isOnboarding: session.activeHouseholdId == null,
+          ),
         ),
       ),
       ShellRoute(

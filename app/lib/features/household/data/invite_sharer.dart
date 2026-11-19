@@ -1,4 +1,5 @@
 import '../../../shared/copy/app_copy.dart';
+import 'invite_links.dart';
 
 /// How an invite leaves the app: the platform's own share sheet, so a parent
 /// sends it the way they send everything else (household ADR-0003).
@@ -33,6 +34,10 @@ extension ShareInviteCode on InviteSharer {
     required String code,
   }) => share(
     subject: AccessCopy.inviteSubject(householdName),
-    text: AccessCopy.inviteMessage(householdName: householdName, code: code),
+    text: AccessCopy.inviteMessage(
+      householdName: householdName,
+      code: code,
+      link: InviteLinks.linkFor(code),
+    ),
   );
 }

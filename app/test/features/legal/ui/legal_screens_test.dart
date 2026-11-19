@@ -96,6 +96,10 @@ void main() {
         findsOneWidget,
       );
       expect(find.text(LegalCopy.aboutSupportAddress), findsOneWidget);
+      expect(
+        LegalCopy.appVersion('0.9.0', 21, patch: 3),
+        'Version 0.9.0 (build 21, patch 3)',
+      );
 
       await tester.tap(find.text(LegalCopy.termsTitle));
       await tester.pumpAndSettle();

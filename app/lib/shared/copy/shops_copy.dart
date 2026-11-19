@@ -1,3 +1,6 @@
+import '../../features/groceries/model/product_match.dart';
+import 'checkers_copy.dart';
+
 /// Every word *Your shops* says (`FE-19`). Shops are named through
 /// `CheckersCopy.retailerName`.
 abstract final class ShopsCopy {
@@ -19,10 +22,20 @@ abstract final class ShopsCopy {
   static const linkingNote =
       'Linking your own account lets NestPrep put the grocery list into your '
       'cart. Nothing is bought: you finish and pay in the shop’s app.';
-  static const signInNote =
-      'You sign in to Pick n Pay and Woolworths with them, and NestPrep never '
-      'sees your password. Checkers sends an SMS code, and its link lasts an '
-      'hour.';
+  static String signInNote(List<ProductRetailer> shops) {
+    final signIns = [
+      for (final shop in shops)
+        if (shop != ProductRetailer.checkers) CheckersCopy.retailerName(shop),
+    ];
+    return [
+      if (signIns.isNotEmpty)
+        'You sign in to ${signIns.join(' and ')} with '
+            '${signIns.length == 1 ? 'it' : 'them'}, and NestPrep never sees '
+            'your password.',
+      if (shops.contains(ProductRetailer.checkers))
+        'Checkers sends an SMS code, and its link lasts an hour.',
+    ].join(' ');
+  }
 
   static const checking = 'Checking…';
   static const notLinked = 'Not linked';

@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 
 import '../tokens/nest_imagery.dart';
 
-/// Decodes Twig's poses ahead of the screen that will show them, so a loader
-/// or a celebration that swaps in half-way through a flow has its picture
-/// ready on its first frame rather than popping in a frame later
-/// (design-system ADR-0012, `FE-18`).
+/// Decodes Twig's poses, and the layers of any rigged pose, ahead of the
+/// screen that will show them, so a loader or a celebration that swaps in
+/// half-way through a flow has its picture ready on its first frame rather
+/// than popping in a frame later (design-system ADR-0026, `FE-18`).
 ///
 /// Wrap a flow's body in it once; it draws nothing of its own.
 class NestTwigWarmUp extends StatefulWidget {
@@ -35,7 +35,9 @@ class _NestTwigWarmUpState extends State<NestTwigWarmUp> {
     for (final pose in widget.poses) {
       // A pose that fails to decode is reported by precacheImage itself, and
       // the image draws nothing in its held box: nothing here to add.
-      unawaited(precacheImage(AssetImage(pose.asset), context));
+      for (final asset in [pose.asset, for (final l in pose.rig) l.asset]) {
+        unawaited(precacheImage(AssetImage(asset), context));
+      }
     }
   }
 

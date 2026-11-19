@@ -1,4 +1,23 @@
 {
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "UY92F2EKT8.io.nullstate.nestprep.app"
+        ],
+        "components": [
+          {
+            "/": "/invite/*",
+            "comment": "An invite (household ADR-0005, ADR-0012)"
+          },
+          {
+            "/": "/frame/*",
+            "comment": "A frame's code (household ADR-0012)"
+          }
+        ]
+      }
+    ]
+  },
   "webcredentials": {
     "apps": [
       "UY92F2EKT8.io.nullstate.nestprep.app"

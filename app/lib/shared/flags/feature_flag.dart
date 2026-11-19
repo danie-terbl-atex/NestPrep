@@ -110,6 +110,11 @@ enum FeatureFlag {
   /// account, and pushing the week's basket into their own cart.
   addToPnp('addToPnp'),
 
+  /// Whether Pick n Pay is offered at all in a store build, as [checkersShop]
+  /// is for Checkers (shops ADR-0003). [addToPnp] goes on deciding for the
+  /// testers' builds, the Functions and the frames.
+  pnpShop('pnpShop'),
+
   // ---- groceries: Woolworths (add-to-woolworths ADR-0001) ----
 
   /// Woolworths for builds up to 0.9.0 (14), the Functions and the frames,
@@ -148,9 +153,14 @@ enum FeatureFlag {
 
   /// Whether this switch stays off until the document turns it on (shops
   /// ADR-0002). Every other switch is on until the document says `false`; a
-  /// shop waiting to go live must not show for the moment before the
-  /// document has loaded, or for as long as it cannot be read.
-  bool get waitsToGoLive => this == checkersShop || this == woolworthsShop;
+  /// shop waiting to go live, or referral codes held back from a store
+  /// review, must not show for the moment before the document has loaded, or
+  /// for as long as it cannot be read.
+  bool get waitsToGoLive =>
+      this == checkersShop ||
+      this == pnpShop ||
+      this == woolworthsShop ||
+      this == referralRewards;
 
   /// The boolean field in `appConfig/flags` that switches it.
   final String field;

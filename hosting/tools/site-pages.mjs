@@ -28,10 +28,12 @@ export const COPIED_ASSETS = [
   ['hosting/src/site.css', 'assets/site.css'],
   ['hosting/src/delete-account.js', 'assets/delete-account.js'],
   ['hosting/src/invite.js', 'assets/invite.js'],
+  ['hosting/src/frame.js', 'assets/frame.js'],
   ['hosting/src/connect.js', 'assets/connect.js'],
   ['hosting/src/premium.js', 'assets/premium.js'],
   ['hosting/src/redeem.js', 'assets/redeem.js'],
   ['hosting/src/reset-password.js', 'assets/reset-password.js'],
+  ['hosting/src/verify-email.js', 'assets/verify-email.js'],
   ['hosting/src/connect-config.json', 'assets/connect-config.json'],
   ['hosting/src/well-known/assetlinks.json', 'well-known/assetlinks.json'],
   [
@@ -82,6 +84,13 @@ const PAGES = [
     head: '    <script src="/assets/delete-account.js" defer></script>',
   },
   {
+    source: 'hosting/src/pages/support.html',
+    output: 'support/index.html',
+    title: 'Support — NestPrep',
+    description: 'How to reach NestPrep for help with the app, your account or your subscription.',
+    nav: '',
+  },
+  {
     source: 'hosting/src/pages/invite.html',
     output: 'invite/index.html',
     title: 'Your invite — NestPrep',
@@ -89,6 +98,15 @@ const PAGES = [
     nav: '',
     robots: 'noindex',
     head: '    <script src="/assets/invite.js" defer></script>',
+  },
+  {
+    source: 'hosting/src/pages/frame.html',
+    output: 'frame/index.html',
+    title: 'Link a frame — NestPrep',
+    description: 'Link a NestPrep Home frame to your household.',
+    nav: '',
+    robots: 'noindex',
+    head: '    <script src="/assets/frame.js" defer></script>',
   },
   {
     source: 'hosting/src/pages/connect.html',
@@ -135,6 +153,20 @@ const PAGES = [
       `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-app-compat.js" defer></script>`,
       `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-auth-compat.js" defer></script>`,
       '    <script src="/assets/reset-password.js" defer></script>',
+    ].join('\n'),
+  },
+  {
+    source: 'hosting/src/pages/verify-email.html',
+    output: 'verify-email/index.html',
+    title: 'Confirm your email — NestPrep',
+    description: 'Confirm the email address on your NestPrep account.',
+    nav: '',
+    robots: 'noindex',
+    head: [
+      '    <meta name="referrer" content="no-referrer" />',
+      `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-app-compat.js" defer></script>`,
+      `    <script src="/__/firebase/${FIREBASE_WEB_SDK}/firebase-auth-compat.js" defer></script>`,
+      '    <script src="/assets/verify-email.js" defer></script>',
     ].join('\n'),
   },
   {

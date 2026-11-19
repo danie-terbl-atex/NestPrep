@@ -20,6 +20,16 @@ enum MemberColor {
     (color) => color.name == name,
     orElse: () => MemberColor.violet,
   );
+
+  /// A colour nobody in the household has yet, so a new face is told apart
+  /// at a glance; the palette's first once all ten are taken.
+  static MemberColor firstUnused(Iterable<MemberColor> taken) {
+    final used = taken.toSet();
+    return MemberColor.values.firstWhere(
+      (color) => !used.contains(color),
+      orElse: () => MemberColor.values.first,
+    );
+  }
 }
 
 @immutable

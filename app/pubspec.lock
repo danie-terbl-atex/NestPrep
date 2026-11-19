@@ -1453,7 +1453,7 @@ packages:
     source: hosted
     version: "1.6.0"
   qr:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: qr
       sha256: "5a1d2586170e172b8a8c8470bbbffd5eb0cd38a66c0d77155ea138d3af3a4445"
@@ -1508,6 +1508,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  shorebird_code_push:
+    dependency: "direct main"
+    description:
+      name: shorebird_code_push
+      sha256: "32df9946782c6ca95d7065c7f2156df74675e931b816d0dc391a3d8f8917930f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   sky_engine:
     dependency: transitive
     description: flutter

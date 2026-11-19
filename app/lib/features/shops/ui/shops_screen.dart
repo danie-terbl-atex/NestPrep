@@ -94,7 +94,7 @@ class _ShopsList extends StatelessWidget {
         const SizedBox(height: NestSpace.xs),
         Text(ShopsCopy.linkingNote, style: nest.text.bodySecondary),
         const SizedBox(height: NestSpace.xs),
-        Text(ShopsCopy.signInNote, style: nest.text.bodySecondary),
+        Text(ShopsCopy.signInNote(shops), style: nest.text.bodySecondary),
         if (!shopsUnlocked(context)) ...[
           const SizedBox(height: NestSpace.xs),
           Text(ShopsCopy.premiumNote, style: nest.text.bodySecondary),

@@ -139,7 +139,10 @@ void main() {
       expect(find.byKey(ValueKey('shops-first-${shop.code}')), findsOneWidget);
     }
     expect(find.text(ShopsCopy.linkingNote), findsOneWidget);
-    expect(find.text(ShopsCopy.signInNote), findsOneWidget);
+    expect(
+      find.text(ShopsCopy.signInNote(ProductRetailer.values)),
+      findsOneWidget,
+    );
 
     await bringIntoView(tester, linkRow(ProductRetailer.woolworths));
     expect(
@@ -433,4 +436,26 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  test('the sign-in note names only the shops on here (shops ADR-0004)', () {
+    expect(
+      ShopsCopy.signInNote(ProductRetailer.values),
+      'You sign in to Pick n Pay and Woolworths with them, and NestPrep never '
+      'sees your password. Checkers sends an SMS code, and its link lasts an '
+      'hour.',
+    );
+    expect(
+      ShopsCopy.signInNote(const [
+        ProductRetailer.checkers,
+        ProductRetailer.pickNPay,
+      ]),
+      'You sign in to Pick n Pay with it, and NestPrep never sees your '
+      'password. Checkers sends an SMS code, and its link lasts an hour.',
+    );
+    expect(
+      ShopsCopy.signInNote(const [ProductRetailer.woolworths]),
+      'You sign in to Woolworths with it, and NestPrep never sees your '
+      'password.',
+    );
+  });
 }

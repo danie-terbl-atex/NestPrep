@@ -17,8 +17,14 @@ final class FrameLinkController extends ChangeNotifier {
     required this._woolworthsStoreFor,
     required this.householdId,
     required this.helpers,
+    String? code,
   }) : _directory = photoFrameDirectory,
-       _repository = photoFrameRepository;
+       _repository = photoFrameRepository {
+    if (code case final code? when FrameCode.isComplete(code)) {
+      _code = code;
+      _step = FrameLinkStep.details;
+    }
+  }
 
   final PhotoFrameDirectory _directory;
   final PhotoFrameRepository _repository;
