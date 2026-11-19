@@ -22,9 +22,13 @@ enum ShopSwitch {
 /// (add-to-pnp ADR-0007, add-to-woolworths ADR-0001). *Plan my week* and the
 /// photo frames plan at Checkers and Pick n Pay only.
 enum ProductRetailer {
-  checkers('checkers', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off),
-  pickNPay('pickNPay', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off),
-  woolworths('woolworths', onAndroid: ShopSwitch.always, onIos: ShopSwitch.off);
+  checkers('checkers', onAndroid: ShopSwitch.always, onIos: ShopSwitch.always),
+  pickNPay('pickNPay', onAndroid: ShopSwitch.always, onIos: ShopSwitch.always),
+  woolworths(
+    'woolworths',
+    onAndroid: ShopSwitch.always,
+    onIos: ShopSwitch.always,
+  );
 
   const ProductRetailer(
     this.code, {

@@ -212,10 +212,10 @@ so the on-screen copy cannot tell you the backend was unreachable.
   (cart push, linking, frame search) follow `addToCheckers` / `addToPnp` / `addToWoolworths`, so to
   stop the server reaching a shop, switch that flag off. That also cuts the testers' builds, and it
   is the only cloud lever left over a shop held `always`.
-- **Version 1 on Android has every shop `always`** since patch 1 to 1.0.0+24 (2026-11-19, shops
-  ADR-0005): Checkers, Pick n Pay and Woolworths show on every Android phone on that release,
-  whatever `checkersShop` / `pnpShop` / `woolworthsShop` say (still false in production, which keeps
-  them hidden in 0.9.0 (15) and (16)). iOS is `off` for all three, and 1.0.0+22 was not patched.
+- **Version 1 has every shop `always` on both platforms** — Android since patch 1 and iOS since
+  patch 1 to 1.0.0+24 (2026-11-19, shops ADR-0005): Checkers, Pick n Pay and Woolworths show on
+  every phone on that release, whatever `checkersShop` / `pnpShop` / `woolworthsShop` say (still
+  false in production, which keeps them hidden in 0.9.0 (15) and (16)). 1.0.0+22 was not patched.
   The suite runs with every shop on `cloud` (`test/flutter_test_config.dart`), whatever the source
   ships with.
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
