@@ -6,5 +6,5 @@
 /// both in the same change.
 abstract final class AppVersion {
   static const name = '1.0.0';
-  static const build = 23;
+  static const build = 24;
 }
