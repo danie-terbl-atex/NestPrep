@@ -21,6 +21,10 @@
          required, so a phone with no camera can still install the app. -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <!-- Both scanners' activities lock to portrait, which Play reads as a
+         required portrait screen and hides the app from tablets, desktops
+         and XR. -->
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false"/>
 
     <!-- Notifications (notifications ADR-0001, ADR-0003): Android 13 and up
          asks the person, and the app asks only when they tap "Turn on
