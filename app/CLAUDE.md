@@ -211,6 +211,13 @@ so the on-screen copy cannot tell you the backend was unreachable.
   that platform only**. The Functions (cart push, linking, frame search) follow `addToCheckers` /
   `addToPnp` / `addToWoolworths`, so to stop the server reaching a shop, switch that flag off. That
   also cuts the testers' builds.
+- **Version 1 (1.0.0+22, Shorebird release, 2026-11-19) ships with every shop's `onAndroid` and
+  `onIos` false.** To turn a shop on for it, patch 1.0.0+22 with that shop's switch `true`. The cloud
+  flag must say on as well: the store-build flags `checkersShop` / `pnpShop` / `woolworthsShop` are
+  false in production, and switching them on also shows the shops in 0.9.0 (15) and (16). Otherwise
+  the same patch can point `switchOf` at the `addTo*` flags (on in production, read by the
+  testers' builds), and then no cloud change is needed. The suite runs with every shop connected
+  (`test/flutter_test_config.dart`), whatever the source ships with.
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
   headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
   `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system
