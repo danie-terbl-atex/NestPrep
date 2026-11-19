@@ -37,6 +37,7 @@ import {
 } from './frame_groceries';
 import { readFrameLunch, readFramePremium, type FrameLunch } from './frame_lunch_photos';
 import { readFrameMeals } from './frame_meal_photos';
+import { plannedMealIds } from './frame_meal_week';
 import {
   FRAME_LOCATION_LIMIT,
   FRAME_PLACE_LIMIT,
@@ -314,6 +315,17 @@ async function namesOf(
       return named === null ? [] : [[doc.id, named.name] as const];
     }),
   );
+}
+
+export async function readMealWeek(
+  store: Firestore,
+  home: DocumentReference,
+  monday: string,
+): Promise<MealDay> {
+  const plan = await home.collection('mealPlans').doc(monday).get();
+  const slots = parsed(planShape, plan.data())?.slots ?? {};
+  const { names, photos } = await readFrameMeals(store, home, plannedMealIds(slots));
+  return { slots, mealNames: names, photos };
 }
 
 async function readMeals(

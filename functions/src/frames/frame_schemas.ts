@@ -4,6 +4,7 @@ import { daysInMonth } from '../calendar_sync/zoned_time';
 import { PAGE_LINK_MAX } from '../shared/page_link';
 import { NOTE_MAX } from './frame_day';
 import { FRAME_SHARE_KINDS, type FrameShareKind } from './frame_documents';
+import { FRAME_MEAL_WEEKS } from './frame_meal_week';
 import { frameRecipeShareInput } from './frame_recipe';
 import { GROCERY_NAME_LIMIT, GROCERY_QUANTITY_LIMIT } from './frame_policy';
 import {
@@ -73,6 +74,9 @@ export const getFrameMonthInput = z.object({
   month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
 });
 export type GetFrameMonthInput = z.infer<typeof getFrameMonthInput>;
+
+export const getFrameMealsInput = z.object({ secret, week: z.enum(FRAME_MEAL_WEEKS) });
+export type GetFrameMealsInput = z.infer<typeof getFrameMealsInput>;
 
 export const getFramePhotosInput = z.object({ secret });
 export type GetFramePhotosInput = z.infer<typeof getFramePhotosInput>;

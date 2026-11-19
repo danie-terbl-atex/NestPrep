@@ -164,8 +164,9 @@ describe('every function — callable, trigger or schedule', () => {
     // (kid-routines ADR-0001). Household size: the trigger that counts a
     // household's people for the free tier's four (subscriptions ADR-0008).
     // A new account's welcome email through Resend (accounts ADR-0015).
+    // The frame's week of meals for its Meals overview (NestPrep-Home ADR-0029).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(146);
+    expect(endpoints()).toHaveLength(147);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {

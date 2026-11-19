@@ -354,6 +354,7 @@ describe('every callable declares what it may cost', () => {
         'getFrameUpdateApk',
         'getFrameDay',
         'getFrameLunchPhoto',
+        'getFrameMeals',
         'getFrameMonth',
         'getFrameRecipePhoto',
         'getFrameAvatar',

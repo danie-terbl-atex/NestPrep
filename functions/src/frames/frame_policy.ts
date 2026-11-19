@@ -67,6 +67,13 @@ export const FRAME_MONTH_PER_CREDENTIAL: RateLimitRule = {
   windowSeconds: 60 * 60,
 };
 
+/** A week of meals, kept fifteen minutes on the frame, while someone flips the overview (NestPrep-Home ADR-0029). */
+export const FRAME_MEALS_PER_CREDENTIAL: RateLimitRule = {
+  name: 'getFrameMeals:credential',
+  limit: 120,
+  windowSeconds: 60 * 60,
+};
+
 /** The album's list on a screensaver's start, and its refresh while it runs. */
 export const FRAME_PHOTOS_PER_CREDENTIAL: RateLimitRule = {
   name: 'getFramePhotos:credential',

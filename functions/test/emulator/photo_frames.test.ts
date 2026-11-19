@@ -419,6 +419,16 @@ async function monthOf(secret: string, month: string): Promise<Month> {
   return callAs<Month>(null, 'getFrameMonth', { secret, month });
 }
 
+interface Meals {
+  status: string;
+  week?: string;
+  days?: { date: string; slots: { slot: string; title: string; photo?: string }[] }[];
+}
+
+async function mealsOf(secret: string, week: string): Promise<Meals> {
+  return callAs<Meals>(null, 'getFrameMeals', { secret, week });
+}
+
 async function tick(secret: string, body: Record<string, unknown>): Promise<unknown> {
   return callAs(null, 'tickFrameItem', { secret, ...body });
 }
@@ -1659,6 +1669,46 @@ describe('a recipe shared from the app cooks along on the frame (photo-frames AD
 
     await frameOf(h, frameId).update({ 'panels.meals': false });
     expect((await recipePhotoOf({ secret, id: 'recipe-bobotie' })).status).toBe(404);
+  });
+
+  it('reads this week’s and next week’s meals for the overview, never further (NestPrep-Home ADR-0029)', async () => {
+    const h = await samsHousehold();
+    await givenBobotie();
+    const home = household(h.householdId);
+    await home
+      .collection('meals')
+      .doc('recipe-bobotie')
+      .set({ name: 'Bobotie', nameKey: 'bobotie', recipeId: 'bobotie' });
+    await home.collection('meals').doc('oats').set({ name: 'Oats', nameKey: 'oats' });
+    await home.collection('meals').doc('braai').set({ name: 'Braai', nameKey: 'braai' });
+    const monday = addDays(today(), 1 - weekdayOf(today()));
+    await home
+      .collection('mealPlans')
+      .doc(monday)
+      .set({ slots: { '1_breakfast': 'oats', '3_dinner': 'recipe-bobotie' } });
+    await home
+      .collection('mealPlans')
+      .doc(addDays(monday, 7))
+      .set({ slots: { '7_dinner': 'braai' } });
+    const { secret, frameId } = await linkedFrame(h, { ...PANELS, meals: true });
+
+    const thisWeek = await mealsOf(secret, 'this');
+    expect(thisWeek.week).toBe(monday);
+    expect(thisWeek.days?.map((day) => day.date)).toEqual(
+      Array.from({ length: 7 }, (_, offset) => addDays(monday, offset)),
+    );
+    expect(thisWeek.days?.[0]?.slots).toEqual([{ slot: 'breakfast', title: 'Oats' }]);
+    expect(thisWeek.days?.[2]?.slots).toEqual([
+      { slot: 'dinner', title: 'Bobotie', photo: 'recipe-bobotie' },
+    ]);
+    const nextWeek = await mealsOf(secret, 'next');
+    expect(nextWeek.week).toBe(addDays(monday, 7));
+    expect(nextWeek.days?.[6]?.slots).toEqual([{ slot: 'dinner', title: 'Braai' }]);
+    await expect(callAs(null, 'getFrameMeals', { secret, week: 'after' })).rejects.toThrow();
+
+    await frameOf(h, frameId).update({ 'panels.meals': false });
+    expect((await mealsOf(secret, 'this')).days).toEqual([]);
+    expect(await mealsOf(newSecret(), 'this')).toEqual({ status: 'unlinked' });
   });
 
   describe('a household’s own recipe (photo-frames ADR-0018)', () => {

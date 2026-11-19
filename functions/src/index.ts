@@ -165,6 +165,7 @@ export { startFramePairing } from './frames/start_frame_pairing';
 export { pollFramePairing } from './frames/poll_frame_pairing';
 export { claimFramePairing } from './frames/claim_frame_pairing';
 export { getFrameDay } from './frames/get_frame_day';
+export { getFrameMeals } from './frames/get_frame_meals';
 export { getFrameMonth } from './frames/get_frame_month';
 export { getFramePhotos } from './frames/get_frame_photos';
 export { getFramePhoto } from './frames/get_frame_photo';
