@@ -35,6 +35,19 @@ export const liveUserDirectory: UserDirectory = {
   },
 };
 
+export function registeredEmailsOf(user: SignInRecord): string[] {
+  const own = user.email === undefined ? null : normEmail(user.email);
+  return [...new Set([...(own === null ? [] : [own]), ...provenEmailsOf(user)])];
+}
+
+// Counts the sign-in email before its confirm link is clicked, so only the
+// claim made on opening the app may use it (subscriptions ADR-0012).
+export const registeredUserDirectory: UserDirectory = {
+  async provenEmails(uid) {
+    return registeredEmailsOf(await auth().getUser(uid));
+  },
+};
+
 export async function verifiedEmailHashes(
   store: Firestore,
   uid: string,

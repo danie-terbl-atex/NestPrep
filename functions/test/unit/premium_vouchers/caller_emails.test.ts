@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { provenEmailsOf } from '../../../src/premium_vouchers/caller_emails';
+import { provenEmailsOf, registeredEmailsOf } from '../../../src/premium_vouchers/caller_emails';
 import { testerUidsFrom } from '../../../src/premium_vouchers/premium_config';
 
 describe('the emails an account has proved', () => {
@@ -34,6 +34,22 @@ describe('the emails an account has proved', () => {
         providerData: [{ providerId: 'google.com', email: 'not an email' }],
       }),
     ).toEqual([]);
+  });
+});
+
+describe('the emails an account registered with', () => {
+  it('are the sign-in email before it is confirmed, and everything proved', () => {
+    expect(
+      registeredEmailsOf({
+        email: ' Sam@Example.com',
+        emailVerified: false,
+        providerData: [
+          { providerId: 'password', email: 'sam@example.com' },
+          { providerId: 'google.com', email: 'sam.g@example.com' },
+        ],
+      }),
+    ).toEqual(['sam@example.com', 'sam.g@example.com']);
+    expect(registeredEmailsOf({ emailVerified: false, providerData: [] })).toEqual([]);
   });
 });
 

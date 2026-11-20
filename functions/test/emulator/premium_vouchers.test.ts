@@ -20,6 +20,7 @@ import {
   closeAdmin,
   httpFunctionUrl,
   signUp,
+  signUpUnverified,
 } from './emulator_harness';
 import { createHousehold, expectRefusal } from './product_analytics_fixture';
 import {
@@ -33,7 +34,16 @@ import {
   redeemOnTheWeb,
   vouchersFor,
 } from './premium_vouchers_fixture';
-import { DAY_MS, aFamily, grantsOf, instant, isAbout, joins, read } from './referrals_fixture';
+import {
+  DAY_MS,
+  aFamily,
+  grantsOf,
+  instant,
+  isAbout,
+  joins,
+  opens,
+  read,
+} from './referrals_fixture';
 
 afterAll(closeAdmin);
 
@@ -168,6 +178,64 @@ describe('a frame voucher claimed into a household', () => {
       { voucherId, householdId: family.householdId },
     );
     expect(answer.queued).toBe(false);
+  });
+});
+
+describe('a frame voucher waiting for the email an account registered with', () => {
+  beforeEach(clearFirestore);
+
+  it('is added on opening the app, before the email is confirmed', async () => {
+    const admin = await signUpUnverified();
+    const { householdId } = await createHousehold(admin);
+    const first = await aFrameVoucher(admin.email.toUpperCase());
+    const second = await aFrameVoucher(admin.email, { days: 62 });
+    expect(await vouchersFor(admin)).toEqual([]);
+
+    await opens(admin, { admin, householdId });
+    await opens(admin, { admin, householdId });
+
+    expect(await read(`premiumVouchers/${first.voucherId}`)).toMatchObject({
+      status: 'claimed',
+      householdId,
+      claimedByUid: admin.uid,
+    });
+    expect((await read(`premiumVouchers/${second.voucherId}`))['status']).toBe('claimed');
+    expect(await grantsOf(householdId)).toHaveLength(2);
+    const entitlement = await read(`households/${householdId}/entitlement/current`);
+    expect(isAbout(entitlement['premiumUntil'], 155)).toBe(true);
+  });
+
+  it('stays waiting for an account in two households, and for another email', async () => {
+    const family = await aFamily();
+    const stranger = await aFrameVoucher('somebody-else@nestprep.test');
+    await opens(family.admin, family);
+    expect(await grantsOf(family.householdId)).toEqual([]);
+
+    await createHousehold(family.admin);
+    const mine = await aFrameVoucher(family.admin.email);
+    await opens(family.admin, family);
+
+    expect((await read(`premiumVouchers/${mine.voucherId}`))['status']).toBe('waiting');
+    expect((await read(`premiumVouchers/${stranger.voucherId}`))['status']).toBe('waiting');
+    expect(await grantsOf(family.householdId)).toEqual([]);
+  });
+
+  it('stays waiting for a helper, from a test order, and when it came from a code', async () => {
+    const family = await aFamily();
+    const helper = await joins(family, 'helper');
+    const helpers = await aFrameVoucher(helper.email);
+    const test = await aFrameVoucher(family.admin.email, { isTest: true });
+    const codeHash = await aCode('OPENED30');
+    await redeemOnTheWeb('OPENED30', family.admin.email);
+    const code = await codeVoucherOf(codeHash, family.admin.email);
+
+    await opens(helper, family);
+    await opens(family.admin, family);
+
+    for (const voucherId of [helpers.voucherId, test.voucherId, code]) {
+      expect((await read(`premiumVouchers/${voucherId}`))['status']).toBe('waiting');
+    }
+    expect(await grantsOf(family.householdId)).toEqual([]);
   });
 });
 

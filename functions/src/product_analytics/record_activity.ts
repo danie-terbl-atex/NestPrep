@@ -7,6 +7,8 @@ import { readHousehold, roleOf } from '../household/documents';
 import { refuse } from '../household/errors';
 import { findClaimedMember } from '../household/membership';
 import { parseInput, requireUid } from '../household/parse_input';
+import { claimRegisteredVouchersAfter } from '../premium_vouchers/claim_registered_vouchers';
+import { premiumEmailPepper } from '../premium_vouchers/premium_config';
 import { settleReferralAfter } from '../referrals/referral_settlement';
 import { stageMemberActive } from './household_week_ledger';
 import { countingZoneFor, weekKeyOf } from './iso_week';
@@ -28,7 +30,7 @@ export const recordActivityInput = z.object({
  * Idempotent: the member is added to a set, so the app calling twice in a day —
  * or a retry — changes nothing.
  */
-export const recordActivity = onCall(async (request) => {
+export const recordActivity = onCall({ secrets: [premiumEmailPepper] }, async (request) => {
   const uid = requireUid(request.auth);
   const { householdId } = parseInput(recordActivityInput, request.data);
   const store = db();
@@ -50,5 +52,6 @@ export const recordActivity = onCall(async (request) => {
   // Opening the app is also how a referred household shows it is a family
   // (subscriptions ADR-0002). Asked after, and never failing, the count.
   await settleReferralAfter(store, householdId, { kind: 'opened', uid }, new Date());
+  await claimRegisteredVouchersAfter(uid, householdId);
   return { week };
 });
