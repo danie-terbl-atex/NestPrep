@@ -1,10 +1,10 @@
-import { getAuth } from 'firebase-admin/auth';
 import { defineString } from 'firebase-functions/params';
 import { logger } from 'firebase-functions/v2';
 import { onCall } from 'firebase-functions/v2/https';
 
 import { parseInput } from '../household/parse_input';
 import { resendApiKey } from '../premium_vouchers/premium_config';
+import { auth } from '../shared/auth';
 import { clientAddress } from '../shared/client_address';
 import { configured } from '../shared/configured_value';
 import { resendEmailSender, silentEmailSender } from '../shared/email_sender';
@@ -29,9 +29,9 @@ const NO_RESET_FOR = new Set(['auth/user-not-found', 'auth/email-not-found', 'au
  */
 async function firebaseResetLink(email: string): Promise<string | null> {
   try {
-    const user = await getAuth().getUserByEmail(email);
+    const user = await auth().getUserByEmail(email);
     if (user.disabled) return null;
-    return await getAuth().generatePasswordResetLink(email);
+    return await auth().generatePasswordResetLink(email);
   } catch (error: unknown) {
     const code = (error as { code?: unknown }).code;
     if (NO_RESET_FOR.has(String(code))) return null;

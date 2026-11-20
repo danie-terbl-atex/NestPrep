@@ -27,4 +27,32 @@ export default defineConfig(
       '@typescript-eslint/explicit-function-return-type': 'error',
     },
   },
+  // The cloud has no default admin app: firebase-functions registers its own
+  // under a name, so a bare getAuth() or getFirestore() throws app/no-app live
+  // while the emulator, which always has a default app, passes.
+  {
+    files: ['src/**/*.ts'],
+    ignores: ['src/shared/auth.ts', 'src/shared/firestore.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'firebase-admin/auth',
+              importNames: ['getAuth'],
+              message: 'Use auth() from shared/auth.',
+              allowTypeImports: true,
+            },
+            {
+              name: 'firebase-admin/firestore',
+              importNames: ['getFirestore'],
+              message: 'Use db() from shared/firestore.',
+              allowTypeImports: true,
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
