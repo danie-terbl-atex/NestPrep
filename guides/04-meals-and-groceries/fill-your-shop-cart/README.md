@@ -6,7 +6,7 @@
 
 ## Steps
 1. **Lists → Groceries.** Tap the shop logo in the add field to turn on **Match as you type**. Matching Checkers products show as you type, or tap **Just add "…"**.
-2. For an item already on the list, tap the logo beside it (**Find at Checkers**).
+2. For an item already on the list, tap the item or the logo beside it (**Find at Checkers**). Only the circle ticks an item off. To match the whole list at once, tap **Find at Checkers** beside "N items not matched", check the products in **Match your list**, then **Match N items**.
 3. "At Checkers: {item}" shows products marked Best match (chosen by nestprep), Deal and Out of stock → **Pick**.
 4. The product now sits under the item, with **Change product** and **Remove product**.
 5. The quantity counts packs ("3 packs"); anything else counts as one pack.

@@ -9,11 +9,6 @@ abstract final class OwnRecipeCopy {
   // Finding them, and the upsell.
 
   static const addTitle = 'Add your own recipe';
-  static const addBody =
-      'Gran’s bobotie, the Sunday roast, that one from the magazine. Keep '
-      'them here, for your household only.';
-  static const premiumTag = 'Premium';
-  static const addAction = 'Add a recipe';
   static const unreadable =
       'Your own recipes didn’t load. The rest of the recipes are all here.';
 

@@ -12,6 +12,7 @@ import '../../add_to_checkers/ui/retailer_logo.dart';
 import '../../groceries/model/product_match.dart';
 import '../../household/model/household_view.dart';
 import '../../lunch_box/model/lunch_board.dart';
+import '../../lunch_box/state/lunch_board_controller.dart';
 import '../state/lunch_shop_choice.dart';
 
 /// Whether *Plan the week* offers Twig, and at which shop (lunch-box
@@ -32,6 +33,15 @@ abstract final class PlanWeekEntry {
   static Future<void> open(BuildContext context) => context.push<void>(
     PlanWeekRoute.pathFor(context.read<HouseholdView>().household.id),
   );
+
+  /// From a week whose school days have all gone: the board moves on a week
+  /// and the flow starts again there, in this one's place.
+  static void openNextWeek(BuildContext context) {
+    context.read<LunchBoardController>().goToNextWeek();
+    context.pushReplacement(
+      PlanWeekRoute.pathFor(context.read<HouseholdView>().household.id),
+    );
+  }
 }
 
 /// Twig's way in *Plan the week*'s chooser, led by the chosen shop's logo

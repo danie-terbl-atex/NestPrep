@@ -50,7 +50,6 @@ void main() {
   tearDown(() => harness.close());
 
   const addButton = ValueKey('own-recipes-add');
-  const card = ValueKey('own-recipes-card');
 
   Future<void> pump(
     WidgetTester tester, {
@@ -67,14 +66,16 @@ void main() {
     await pumpScreen(
       tester,
       Scaffold(
-        body: RecipeDiscoveryView(
-          onOpen: (_, _) {},
-          addEntry: OwnRecipesEntry(
-            onOpenBuilder: opened.add,
-            onImport: imported.add,
-            onImportPdf: () {},
-          ),
+        appBar: AppBar(
+          actions: [
+            OwnRecipesEntry(
+              onOpenBuilder: opened.add,
+              onImport: imported.add,
+              onImportPdf: () {},
+            ),
+          ],
         ),
+        body: RecipeDiscoveryView(onOpen: (_, _) {}),
       ),
       providers: [
         ...harness.providers,
@@ -107,12 +108,11 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a free household sees the upsell, and Add opens the paywall on '
-      'this feature', (tester) async {
+  testWidgets('for a free household, Add opens the paywall on this feature', (
+    tester,
+  ) async {
     await pump(tester, isPremium: false);
     await deliver(tester);
-    expect(find.byKey(card), findsOneWidget);
-    expect(find.text(OwnRecipeCopy.premiumTag), findsOneWidget);
 
     await tester.tap(find.byKey(addButton));
     await tester.pumpAndSettle();
@@ -129,7 +129,6 @@ void main() {
     Future<void> openWays(WidgetTester tester) async {
       await pump(tester);
       await deliver(tester);
-      expect(find.text(OwnRecipeCopy.premiumTag), findsNothing);
       await tester.tap(find.byKey(addButton));
       await tester.pumpAndSettle();
       expect(find.text(RecipeImportCopy.typeTitle), findsOneWidget);
@@ -178,12 +177,19 @@ void main() {
     });
   });
 
-  testWidgets('a household that already has some gets a plain button and the '
-      'shelf with one recipe on it', (tester) async {
+  testWidgets('the way to add is one button, and takes no room among the '
+      'recipes', (tester) async {
     await pump(tester);
     await deliver(tester, hasOwn: true);
     expect(find.byKey(addButton), findsOneWidget);
-    expect(find.byKey(card), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(RecipeDiscoveryView),
+        matching: find.byKey(addButton),
+      ),
+      findsNothing,
+    );
+    expect(find.bySemanticsLabel(OwnRecipeCopy.addTitle), findsOneWidget);
     expect(find.text(RecipeCopy.facet(RecipeFacet.ours)), findsOneWidget);
     await shelfInView(tester);
     expect(find.text(RecipeCopy.shelf(RecipeShelfKind.ours)), findsOneWidget);
@@ -193,7 +199,6 @@ void main() {
       'through the paywall', (tester) async {
     await pump(tester, isPremium: false);
     await deliver(tester, hasOwn: true);
-    expect(find.byKey(card), findsOneWidget);
 
     await tester.tap(find.byKey(addButton));
     await tester.pumpAndSettle();

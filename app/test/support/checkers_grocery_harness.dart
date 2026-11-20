@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/checkers_link_route.dart';
+import 'package:nestprep/features/add_to_checkers/data/checkers_area_preference.dart';
+import 'package:nestprep/features/add_to_checkers/data/checkers_directory.dart';
 import 'package:nestprep/features/add_to_checkers/data/checkers_place_resolver.dart';
+import 'package:nestprep/features/add_to_checkers/data/product_match_ranker.dart';
 import 'package:nestprep/features/add_to_checkers/data/retailer_catalogues.dart';
+import 'package:nestprep/features/add_to_checkers/data/retailer_preference.dart';
 import 'package:nestprep/features/add_to_checkers/model/retailer_switch.dart';
 import 'package:nestprep/features/add_to_checkers/state/cart_push_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/checkers_link_controller.dart';
@@ -13,9 +17,13 @@ import 'package:nestprep/features/add_to_checkers/state/product_type_ahead_contr
 import 'package:nestprep/features/add_to_checkers/state/retailer_choice_controller.dart';
 import 'package:nestprep/features/add_to_checkers/state/shop_carts.dart';
 import 'package:nestprep/features/add_to_checkers/ui/checkers_link_screen.dart';
+import 'package:nestprep/features/add_to_pnp/data/pnp_directory.dart';
+import 'package:nestprep/features/add_to_woolworths/data/woolworths_directory.dart';
+import 'package:nestprep/features/groceries/data/grocery_repository.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/features/groceries/state/grocery_list_controller.dart';
 import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
+import 'package:nestprep/features/live_location/data/location_source.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/flags/feature_flags.dart';
 import 'package:nestprep/shared/flags/feature_flags_controller.dart';
@@ -52,11 +60,7 @@ const pickedMilk = ProductMatch(
 final class CheckersGroceryHarness {
   CheckersGroceryHarness() {
     finder = ProductFinder(
-      catalogues: RetailerCatalogues({
-        ProductRetailer.checkers: catalogue,
-        ProductRetailer.pickNPay: pnpCatalogue,
-        ProductRetailer.woolworths: woolworthsCatalogue,
-      }),
+      catalogues: catalogues,
       placeResolver: CheckersPlaceResolver(
         locationSource: FakeLocationSource(),
         areaPreference: FakeCheckersAreaPreference(),
@@ -119,6 +123,11 @@ final class CheckersGroceryHarness {
   final pnpDirectory = FakePnpDirectory();
   final woolworthsCatalogue = FakeShopCatalogue();
   final woolworthsDirectory = FakeWoolworthsDirectory();
+  late final catalogues = RetailerCatalogues({
+    ProductRetailer.checkers: catalogue,
+    ProductRetailer.pickNPay: pnpCatalogue,
+    ProductRetailer.woolworths: woolworthsCatalogue,
+  });
   late final ProductFinder finder;
   late final ProductMatchController matches;
   late final ProductTypeAheadController typeAhead;
@@ -196,6 +205,17 @@ final class CheckersGroceryHarness {
         value: typeAhead,
       ),
       Provider<ShopCarts>.value(value: carts),
+      Provider<RetailerCatalogues>.value(value: catalogues),
+      Provider<CheckersAreaPreference>.value(
+        value: FakeCheckersAreaPreference(),
+      ),
+      Provider<RetailerPreference>.value(value: retailerPreference),
+      Provider<ProductMatchRanker>.value(value: ranker),
+      Provider<LocationSource>.value(value: FakeLocationSource()),
+      Provider<CheckersDirectory>.value(value: directory),
+      Provider<PnpDirectory>.value(value: pnpDirectory),
+      Provider<WoolworthsDirectory>.value(value: woolworthsDirectory),
+      Provider<GroceryRepository>.value(value: list.repository),
       ChangeNotifierProvider<RetailerChoiceController>.value(value: retailers),
       ChangeNotifierProvider<FeatureFlagsController>(
         create: (_) => testFlagsController(flags),

@@ -76,6 +76,7 @@ class MealsScreen extends StatelessWidget {
           ? NestDates.weekRange(context.watch<MealPlanController>().weekStart)
           : MealsCopy.recipesSubtitle,
       trailing: [
+        if (!isWeek && hasRecipes) ?recipesEntry,
         if (isWeek && canEdit)
           NestIconButton(
             icon: LucideIcons.bookOpen,
@@ -136,7 +137,6 @@ class MealsScreen extends StatelessWidget {
                   )
                 : hasRecipes
                 ? RecipeDiscoveryView(
-                    addEntry: recipesEntry,
                     onOpen: (recipe, heroTag) =>
                         onOpenRecipe(recipe.id, heroTag: heroTag),
                   )

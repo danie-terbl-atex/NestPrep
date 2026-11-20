@@ -64,6 +64,10 @@ final class RecipeShopController extends ChangeNotifier
   /// The lines that go on the list when it is added.
   int get includedCount => _lines.where((line) => line.isIncluded).length;
 
+  /// The included lines the shop had a product for.
+  int get matchableCount =>
+      _lines.where((line) => line.isIncluded && line.chosen != null).length;
+
   /// What the included products cost together at the shop today — an
   /// estimate, for one pack of each.
   Money? get estimate {

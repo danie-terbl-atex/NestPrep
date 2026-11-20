@@ -6,6 +6,8 @@ import '../../../shared/copy/checkers_copy.dart';
 import '../../../shared/copy/subscription_copy.dart';
 import '../../groceries/model/grocery_item.dart';
 import '../../groceries/model/product_match.dart';
+import '../../recipes/model/recipe_shop_line.dart';
+import '../../recipes/ui/recipe_shop_sheet.dart';
 import '../state/product_match_controller.dart';
 import '../state/retailer_choice_controller.dart';
 import '../state/shop_carts.dart';
@@ -17,7 +19,7 @@ import 'shops_lock.dart';
 /// switched on that has unbought items matched there — each sends only its
 /// own shop's items; an item matched elsewhere is not sent — then one quiet
 /// line for the unbought items nobody matched, with *Find at* the chosen
-/// shop, which opens the first of them.
+/// shop, which looks for all of them at once (groceries ADR-0009).
 class ShopCartsBar extends StatelessWidget {
   const ShopCartsBar({
     required this.householdId,
@@ -62,8 +64,9 @@ class ShopCartsBar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: NestSpace.lg),
             child: _Unmatched(
-              first: unmatched.first,
-              count: unmatched.length,
+              householdId: householdId,
+              items: unmatched,
+              shops: shops,
               isLocked: isLocked,
             ),
           ),
@@ -95,13 +98,15 @@ class ShopCartsBar extends StatelessWidget {
 
 class _Unmatched extends StatelessWidget {
   const _Unmatched({
-    required this.first,
-    required this.count,
+    required this.householdId,
+    required this.items,
+    required this.shops,
     required this.isLocked,
   });
 
-  final GroceryItem first;
-  final int count;
+  final String householdId;
+  final List<GroceryItem> items;
+  final List<ProductRetailer> shops;
   final bool isLocked;
 
   @override
@@ -113,7 +118,7 @@ class _Unmatched extends StatelessWidget {
       spacing: NestSpace.sm,
       children: [
         Text(
-          CheckersCopy.notMatched(count),
+          CheckersCopy.notMatched(items.length),
           style: nest.text.caption.copyWith(color: nest.colors.inkSecondary),
         ),
         Semantics(
@@ -125,16 +130,31 @@ class _Unmatched extends StatelessWidget {
             variant: NestButtonVariant.ghost,
             size: NestButtonSize.small,
             isExpanded: false,
-            onPressed: () => _find(context, chosen),
+            onPressed: () => _find(context),
           ),
         ),
       ],
     );
   }
 
-  Future<void> _find(BuildContext context, ProductRetailer chosen) async {
-    final controller = context.read<ProductMatchController>();
-    if (!await ensureShops(context)) return;
-    controller.lookFor(first, at: chosen);
+  Future<void> _find(BuildContext context) async {
+    final matches = context.read<ProductMatchController>();
+    if (!await ensureShops(context) || !context.mounted) return;
+    matches.dismiss();
+    await showRecipeShopSheet(
+      context,
+      householdId: householdId,
+      memberId: matches.memberId,
+      shops: shops,
+      purpose: RecipeShopPurpose.match,
+      lines: [
+        for (final (index, item) in items.indexed)
+          RecipeShopLine(
+            index: index,
+            name: item.name,
+            quantity: item.quantity,
+          ),
+      ],
+    );
   }
 }

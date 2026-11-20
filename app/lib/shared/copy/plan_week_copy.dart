@@ -92,6 +92,8 @@ abstract final class PlanWeekCopy {
         TreatDaysShortcut.everyDay => 'Every day',
       };
   static const draftAction = 'Get lunch ideas';
+  static const chooseAChild = 'Choose at least one child to get ideas.';
+  static const planNextWeekInstead = 'Plan next week instead';
 
   // ---- 2. ideas ----
   static const aisleTitle = 'Walking the lunchbox aisle…';
@@ -229,8 +231,7 @@ abstract final class PlanWeekCopy {
   };
   static const noDaysLeftTitle = 'This week’s school days have gone';
   static const noDaysLeft =
-      'Every school day this week has gone. Move the lunch board to next '
-      'week to plan that one.';
+      'Every school day this week has gone. Plan next week instead.';
   static String _gone(List<String> days) =>
       '${_run(days)} ${days.length == 1 ? 'has' : 'have'} gone.';
   static String _run(List<String> days) =>

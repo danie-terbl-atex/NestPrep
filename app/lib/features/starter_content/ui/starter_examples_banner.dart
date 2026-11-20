@@ -58,12 +58,33 @@ class _StarterExamplesBannerState extends State<StarterExamplesBanner> {
     if (!isAdmin || !widget.shownIds.any(StarterContent.isExample)) {
       return const SizedBox.shrink();
     }
+    final nest = NestTheme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: NestSpace.md),
-      child: NestBanner(
-        message: StarterCopy.bannerMessage,
-        actionLabel: StarterCopy.bannerAction,
-        onAction: _isClearing ? null : _clear,
+      padding: const EdgeInsets.only(bottom: NestSpace.xs),
+      child: Row(
+        children: [
+          Icon(
+            LucideIcons.info,
+            size: NestSize.iconSmall,
+            color: nest.colors.inkSecondary,
+          ),
+          const SizedBox(width: NestSpace.sm),
+          Expanded(
+            child: Text(
+              StarterCopy.bannerMessage,
+              style: nest.text.caption.copyWith(
+                color: nest.colors.inkSecondary,
+              ),
+            ),
+          ),
+          NestButton(
+            label: StarterCopy.bannerAction,
+            variant: NestButtonVariant.ghost,
+            size: NestButtonSize.small,
+            isExpanded: false,
+            onPressed: _isClearing ? null : _clear,
+          ),
+        ],
       ),
     );
   }

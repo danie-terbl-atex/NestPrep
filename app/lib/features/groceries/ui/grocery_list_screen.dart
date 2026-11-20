@@ -395,7 +395,8 @@ class _GroceryList extends StatelessWidget {
 
 /// One row of the list, with what Checkers adds to it when it is on: the
 /// chosen shop's logo (*Find at Checkers*) beside an unmatched item, and the
-/// picked product under it.
+/// picked product under it. While a shop can be asked, a tap on the row
+/// opens its products and closes them again (groceries ADR-0009).
 class _GroceryListRow extends StatelessWidget {
   const _GroceryListRow({
     required this.item,
@@ -409,17 +410,31 @@ class _GroceryListRow extends StatelessWidget {
   final bool canEdit;
 
   @override
-  Widget build(BuildContext context) => GroceryItemRow(
-    item: item,
-    trailing:
-        checkersOn &&
-            canEdit &&
-            !item.isBought &&
-            shownMatchOf(context, item) == null
-        ? FindAtCheckersButton(item: item)
-        : null,
-    footer: checkersOn
-        ? CheckersItemFooter(item: item, canEdit: canEdit)
-        : null,
-  );
+  Widget build(BuildContext context) {
+    final canMatch = checkersOn && canEdit && !item.isBought;
+    return GroceryItemRow(
+      item: item,
+      onTap: canMatch && shopsUnlocked(context)
+          ? () => _toggleProducts(context)
+          : null,
+      trailing: canMatch && shownMatchOf(context, item) == null
+          ? FindAtCheckersButton(item: item)
+          : null,
+      footer: checkersOn
+          ? CheckersItemFooter(item: item, canEdit: canEdit)
+          : null,
+    );
+  }
+
+  void _toggleProducts(BuildContext context) {
+    final matches = context.read<ProductMatchController>();
+    if (matches.target?.itemId == item.id) {
+      matches.dismiss();
+    } else {
+      matches.lookFor(
+        item,
+        at: context.read<RetailerChoiceController>().chosen,
+      );
+    }
+  }
 }

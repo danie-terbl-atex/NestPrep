@@ -10,6 +10,7 @@ import '../state/plan_week_controller.dart';
 import 'plan_week_budget_card.dart';
 import 'plan_week_child_rules_card.dart';
 import 'plan_week_days_left_note.dart';
+import 'plan_week_entry_card.dart';
 import 'plan_week_list_cart_card.dart';
 import 'plan_week_packing_section.dart';
 import 'plan_week_shop_card.dart';
@@ -99,14 +100,29 @@ class PlanWeekBriefPanel extends StatelessWidget {
         const SizedBox(height: NestSpace.md),
         const PlanWeekBudgetCard(),
         const SizedBox(height: NestSpace.xl),
-        NestStepActions(
-          nextKey: const ValueKey('plan-week-ideas'),
-          nextLabel: PlanWeekCopy.draftAction,
-          nextIcon: LucideIcons.sparkles,
-          onNext: chosen.isEmpty || daysLeft.isEmpty
-              ? null
-              : controller.draftIdeas,
-        ),
+        if (daysLeft.isEmpty)
+          NestStepActions(
+            nextKey: const ValueKey('plan-week-next-week'),
+            nextLabel: PlanWeekCopy.planNextWeekInstead,
+            nextIcon: LucideIcons.arrowRight,
+            onNext: () => PlanWeekEntry.openNextWeek(context),
+          )
+        else ...[
+          NestStepActions(
+            nextKey: const ValueKey('plan-week-ideas'),
+            nextLabel: PlanWeekCopy.draftAction,
+            nextIcon: LucideIcons.sparkles,
+            onNext: chosen.isEmpty ? null : controller.draftIdeas,
+          ),
+          if (chosen.isEmpty && board.children.isNotEmpty) ...[
+            const SizedBox(height: NestSpace.sm),
+            Text(
+              PlanWeekCopy.chooseAChild,
+              textAlign: TextAlign.center,
+              style: nest.text.caption,
+            ),
+          ],
+        ],
       ],
     );
   }

@@ -103,12 +103,38 @@ void main() {
     expect(find.byKey(const ValueKey('add-to-cart-checkers')), findsOneWidget);
   });
 
-  testWidgets('*Find at* on the unmatched line opens the first unmatched '
-      'item at the chosen shop', (tester) async {
+  testWidgets('*Find at* on the unmatched line looks for every unmatched '
+      'item, and matches them where they stand (groceries ADR-0009)', (
+    tester,
+  ) async {
     final h = await mixedList(tester);
+    final items = [...h.list.repository.items, groceryItem('pepper', id: 'p')];
+    h.list.repository.emitItems(items);
+    await tester.pumpAndSettle();
+    expect(find.text(CheckersCopy.notMatched(2)), findsOneWidget);
+
     await tapKey(tester, 'find-unmatched');
-    expect(h.matches.target?.itemId, 's');
-    expect(h.matches.target?.shop, ProductRetailer.checkers);
+    expect(find.text(RecipeShopCopy.matchSheetTitle), findsOneWidget);
+    expect([
+      for (final search in h.catalogue.searches) search.query,
+    ], containsAll(['salt', 'pepper']));
+    expect(h.matches.target, isNull);
+
+    expect(find.text(RecipeShopCopy.matchOnList(2)), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('recipe-shop-list')));
+    await tester.pump();
+    h.list.repository.emitItems(items);
+    await tester.pumpAndSettle();
+
+    expect(
+      [for (final set in h.list.repository.matchesSet) set.itemId],
+      ['s', 'p'],
+    );
+    expect(h.list.repository.added, isEmpty);
+    expect(
+      find.text(RecipeShopCopy.matched(2, ProductRetailer.checkers)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('every match line shows its shop', (tester) async {

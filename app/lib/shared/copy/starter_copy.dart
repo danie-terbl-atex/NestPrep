@@ -1,7 +1,7 @@
 /// The examples a new household starts with, and the notice that clears them
 /// (household ADR-0010). Each line that names a gesture names the one the row
-/// really has: a to-do opens its buttons on a tap, a grocery item ticks on a
-/// tap, and both open their editor when held.
+/// really has: a to-do opens its buttons on a tap, a grocery item ticks on
+/// its circle, and both open their editor when held.
 abstract final class StarterCopy {
   static const taskComplete = 'Tap me, then press Complete';
   static const taskEdit = 'Hold me down to edit or remove';
@@ -25,7 +25,7 @@ abstract final class StarterCopy {
   static const eventBraai = 'Braai with the cousins';
   static const eventBraaiNote = 'Bring the rolls.';
 
-  static const groceryTick = "Tap me when I'm in the trolley";
+  static const groceryTick = "Tick my circle when I'm in the trolley";
   static const groceryEdit = 'Hold me down to edit or remove';
   static const groceryMilk = 'Milk';
   static const groceryMilkQuantity = '2 l';
@@ -40,10 +40,8 @@ abstract final class StarterCopy {
   static const mealTomatoes = 'Chopped tomatoes';
   static const mealOnion = 'Onion';
 
-  static const bannerMessage =
-      'We added a few examples to show you around. Make them yours, or clear '
-      'them when you are ready.';
-  static const bannerAction = 'Clear';
+  static const bannerMessage = 'These are examples to show you around.';
+  static const bannerAction = 'Clear them';
   static const clearTitle = 'Clear the examples?';
   static const clearMessage =
       'This removes the example to-dos, events, groceries and dinner we added '

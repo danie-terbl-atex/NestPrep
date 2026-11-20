@@ -19,11 +19,13 @@ class RecipeShopRow extends StatelessWidget {
     required this.shop,
     required this.onToggle,
     required this.onChange,
+    this.purpose = RecipeShopPurpose.add,
     super.key,
   });
 
   final RecipeShopLine line;
   final ProductRetailer shop;
+  final RecipeShopPurpose purpose;
 
   /// Null once the lines are on the list.
   final VoidCallback? onToggle;
@@ -90,7 +92,12 @@ class RecipeShopRow extends StatelessWidget {
             child: AnimatedOpacity(
               duration: NestMotion.of(context).quick,
               opacity: line.isIncluded ? 1 : 0.5,
-              child: _Found(line: line, shop: shop, onChange: onChange),
+              child: _Found(
+                line: line,
+                shop: shop,
+                purpose: purpose,
+                onChange: onChange,
+              ),
             ),
           ),
         ],
@@ -101,10 +108,16 @@ class RecipeShopRow extends StatelessWidget {
 
 /// What the shop had for the line.
 class _Found extends StatelessWidget {
-  const _Found({required this.line, required this.shop, this.onChange});
+  const _Found({
+    required this.line,
+    required this.shop,
+    required this.purpose,
+    this.onChange,
+  });
 
   final RecipeShopLine line;
   final ProductRetailer shop;
+  final RecipeShopPurpose purpose;
   final VoidCallback? onChange;
 
   @override
@@ -137,9 +150,11 @@ class _Found extends StatelessWidget {
     }
     if (product == null) {
       return Text(
-        line.search == RecipeShopSearch.failed
-            ? RecipeShopCopy.failed
-            : RecipeShopCopy.notFound(shop),
+        RecipeShopCopy.unmatched(
+          shop,
+          purpose,
+          hasFailed: line.search == RecipeShopSearch.failed,
+        ),
         style: note,
       );
     }

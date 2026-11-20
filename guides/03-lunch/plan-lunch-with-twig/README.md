@@ -14,7 +14,7 @@
    - Packing chips: Prefer ready-made, 10 min prep max, Prep the night before, No fridge needed, and more.
    - **Treat days**: No treats / Fridays only / Every day.
 4. **Shop:** tap **Checkers** (or Pick n Pay, Woolworths), and use **Change area** if needed. Then **Set a budget** for the week.
-5. **Get lunch ideas.** "Walking the lunchbox aisle…" reads Checkers' own lunchbox shelves near you. Remove any idea or **Add your own idea**.
+5. **Get lunch ideas.** (Once every school day this week has gone, the button reads **Plan next week instead** and starts the same steps for next week.) "Walking the lunchbox aisle…" reads Checkers' own lunchbox shelves near you. Remove any idea or **Add your own idea**.
 6. **Look for N ideas at Checkers.** Twig checks every product against each child's rules, and shows why one was left out ("contains nuts", "out of stock").
 7. **The week:** tap anything to swap it. "The basket" shows whole packs at the till price → **Use this week**.
 8. **Done** ("Your week is planned · Planned by Twig"): **Add to my Checkers cart**, or **Add N products to the grocery list**.

@@ -12,9 +12,9 @@ import '../model/grocery_item.dart';
 import '../state/grocery_list_controller.dart';
 import 'grocery_item_sheet.dart';
 
-/// One line of the list. The whole row is the tick target, because that is the
-/// gesture a person standing in a shop makes; editing is a long press, so the
-/// two cannot be confused.
+/// One line of the list. The circle ticks; a tap on the rest of the row does
+/// [onTap] when a feature gives one, and ticks too when none does. Editing is
+/// a long press, so the two cannot be confused (groceries ADR-0009).
 ///
 /// Another feature can add to a row without the row knowing it: [trailing]
 /// sits beside the name, and [footer] below it, outside the tick target so a
@@ -22,12 +22,14 @@ import 'grocery_item_sheet.dart';
 class GroceryItemRow extends StatelessWidget {
   const GroceryItemRow({
     required this.item,
+    this.onTap,
     this.trailing,
     this.footer,
     super.key,
   });
 
   final GroceryItem item;
+  final VoidCallback? onTap;
   final Widget? trailing;
   final Widget? footer;
 
@@ -40,29 +42,46 @@ class GroceryItemRow extends StatelessWidget {
     final canEdit = view.permissions.canEdit(HouseholdArea.groceries);
 
     final below = footer;
+    final tick = canEdit ? () => controller.toggleBought(item) : null;
     final row = InkWell(
       borderRadius: BorderRadius.circular(NestRadius.lg),
-      onTap: canEdit ? () => controller.toggleBought(item) : null,
+      onTap: canEdit ? onTap ?? tick : null,
       onLongPress: canEdit
           ? () => showGroceryItemSheet(context: context, item: item)
           : null,
       child: Padding(
-        padding: const EdgeInsets.all(NestSpace.md),
+        padding: const EdgeInsetsDirectional.only(end: NestSpace.md),
         child: Row(
           children: [
             Semantics(
               checked: item.isBought,
               label: item.name,
               excludeSemantics: true,
-              child: Icon(
-                item.isBought ? LucideIcons.circleCheck : LucideIcons.circle,
-                color: item.isBought
-                    ? nest.colors.success
-                    : nest.colors.outlineStrong,
-                size: NestSize.iconLarge,
+              onTap: tick,
+              child: InkResponse(
+                key: ValueKey('grocery-tick-${item.id}'),
+                onTap: tick,
+                radius: NestSize.touchTarget / 2,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: NestSize.touchTarget,
+                    minHeight: NestSize.touchTarget,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(NestSpace.md),
+                    child: Icon(
+                      item.isBought
+                          ? LucideIcons.circleCheck
+                          : LucideIcons.circle,
+                      color: item.isBought
+                          ? nest.colors.success
+                          : nest.colors.outlineStrong,
+                      size: NestSize.iconLarge,
+                    ),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(width: NestSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

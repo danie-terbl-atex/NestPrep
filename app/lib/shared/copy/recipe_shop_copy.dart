@@ -1,4 +1,5 @@
 import '../../features/groceries/model/product_match.dart';
+import '../../features/recipes/model/recipe_shop_line.dart';
 import '../money/money.dart';
 import 'checkers_copy.dart';
 
@@ -20,6 +21,11 @@ abstract final class RecipeShopCopy {
 
   // ---- the sheet ----
   static const sheetTitle = 'Add to grocer';
+  static const matchSheetTitle = 'Match your list';
+  static String sheetTitleFor(RecipeShopPurpose purpose) => switch (purpose) {
+    RecipeShopPurpose.add => sheetTitle,
+    RecipeShopPurpose.match => matchSheetTitle,
+  };
   static String searching(ProductRetailer shop, int done, int total) =>
       'Looking at ${CheckersCopy.retailerName(shop)}… $done of $total';
   static String searchingSemantics(ProductRetailer shop, int done, int total) =>
@@ -34,6 +40,18 @@ abstract final class RecipeShopCopy {
       'by name.';
   static const failed =
       'This search didn’t work. It goes on your list by name.';
+  static String unmatched(
+    ProductRetailer shop,
+    RecipeShopPurpose purpose, {
+    required bool hasFailed,
+  }) => switch (purpose) {
+    RecipeShopPurpose.add => hasFailed ? failed : notFound(shop),
+    RecipeShopPurpose.match =>
+      hasFailed
+          ? 'This search didn’t work. It stays on your list as it is.'
+          : 'Not found at ${CheckersCopy.retailerName(shop)}. It stays on '
+                'your list as it is.',
+  };
   static const change = 'Change';
   static String changeTitle(String ingredient) => 'Products for $ingredient';
   static String includeLabel(String ingredient, bool isIncluded) =>
@@ -51,6 +69,13 @@ abstract final class RecipeShopCopy {
     0 => 'All of it was on your grocery list already.',
     1 => '1 item added to your grocery list.',
     _ => '$count items added to your grocery list.',
+  };
+  static String matchOnList(int count) =>
+      count == 1 ? 'Match 1 item' : 'Match $count items';
+  static String matched(int count, ProductRetailer shop) => switch (count) {
+    0 => '${CheckersCopy.retailerName(shop)} had nothing for these.',
+    1 => '1 item matched at ${CheckersCopy.retailerName(shop)}.',
+    _ => '$count items matched at ${CheckersCopy.retailerName(shop)}.',
   };
   static const nothingIncluded = 'Tick at least one item to add.';
   static const done = 'Done';

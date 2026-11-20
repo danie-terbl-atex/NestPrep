@@ -31,13 +31,16 @@ import 'recipe_shop_row.dart';
 /// needs is read from [context] first: a sheet is not under the page's
 /// providers. Answers how many lines went on the list, or null when none did.
 ///
-/// Snap a list opens it too, with a photo's lines (list-scan ADR-0001).
+/// Snap a list opens it too, with a photo's lines (list-scan ADR-0001), and
+/// so does the grocery list for the items nobody has matched, to
+/// [RecipeShopPurpose.match] them where they stand (groceries ADR-0009).
 Future<int?> showRecipeShopSheet(
   BuildContext context, {
   required String householdId,
   required String memberId,
   required List<ProductRetailer> shops,
   required List<RecipeShopLine> lines,
+  RecipeShopPurpose purpose = RecipeShopPurpose.add,
 }) async {
   final preference = context.read<RetailerPreference>();
   final groceryRepository = context.read<GroceryRepository>();
@@ -75,7 +78,7 @@ Future<int?> showRecipeShopSheet(
   }
   await showNestSheet<void>(
     context: context,
-    title: RecipeShopCopy.sheetTitle,
+    title: RecipeShopCopy.sheetTitleFor(purpose),
     builder: (_) => MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: controller),
@@ -84,6 +87,7 @@ Future<int?> showRecipeShopSheet(
       child: RecipeShopView(
         householdId: householdId,
         shops: shops,
+        purpose: purpose,
         onChooseShop: (shop) {
           unawaited(preference.write(householdId, shop));
           unawaited(controller.chooseShop(shop));
@@ -104,11 +108,13 @@ class RecipeShopView extends StatelessWidget {
     required this.householdId,
     required this.shops,
     required this.onChooseShop,
+    this.purpose = RecipeShopPurpose.add,
     super.key,
   });
 
   final String householdId;
   final List<ProductRetailer> shops;
+  final RecipeShopPurpose purpose;
   final ValueChanged<ProductRetailer> onChooseShop;
 
   @override
@@ -185,6 +191,7 @@ class RecipeShopView extends StatelessWidget {
                   key: ValueKey('recipe-shop-${line.index}'),
                   line: line,
                   shop: shop,
+                  purpose: purpose,
                   onToggle: isOnList
                       ? null
                       : () => controller.toggle(line.index),
@@ -196,7 +203,7 @@ class RecipeShopView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: NestSpace.md),
-        RecipeShopFooter(householdId: householdId),
+        RecipeShopFooter(householdId: householdId, purpose: purpose),
       ],
     );
   }

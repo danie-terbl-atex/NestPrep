@@ -3,6 +3,10 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../add_to_checkers/model/retailer_product.dart';
 
+/// What the sheet is for: lines to put on the grocery list, or items already
+/// on it that want a product (groceries ADR-0009).
+enum RecipeShopPurpose { add, match }
+
 /// Where one ingredient's search at the shop has got to.
 enum RecipeShopSearch { waiting, searching, found, notFound, failed }
 
