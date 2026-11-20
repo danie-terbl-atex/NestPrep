@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
+import { accountHeldElsewhere } from '../../src/calendar_sync/account_held_elsewhere';
 import { adminDb, callAs, clearFirestore, signUp } from './emulator_harness';
 import {
   CalendarServer,
@@ -204,5 +205,27 @@ describe('disconnectCalendar', () => {
       'notYourConnection',
     );
     expect(await syncedTitles(home.householdId)).toHaveLength(2);
+  });
+
+  it('knows when another connection, in any household, reads the same Google account', async () => {
+    const connectionOf = async (householdId: string, accountLabel: string): Promise<string> => {
+      const ref = adminDb()
+        .collection('households')
+        .doc(householdId)
+        .collection('calendarConnections')
+        .doc();
+      await ref.set({ provider: 'google', accountLabel });
+      return ref.id;
+    };
+    const mine = await connectionOf(home.householdId, 'sam@example.com');
+    const sam = { provider: 'google', accountLabel: 'sam@example.com' } as const;
+    expect(await accountHeldElsewhere(adminDb(), { ...sam, exceptConnectionId: mine })).toBe(false);
+
+    await connectionOf('another-household', 'sam@example.com');
+    expect(await accountHeldElsewhere(adminDb(), { ...sam, exceptConnectionId: mine })).toBe(true);
+    expect(await accountHeldElsewhere(adminDb(), { ...sam, provider: 'microsoft' })).toBe(false);
+    expect(await accountHeldElsewhere(adminDb(), { provider: 'google', accountLabel: '' })).toBe(
+      false,
+    );
   });
 });

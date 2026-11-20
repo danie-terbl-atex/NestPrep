@@ -4,5 +4,5 @@
 /// agree — and every signed-in account is asked again on its next open.
 abstract final class LegalVersions {
   static const int terms = 5;
-  static const int privacy = 7;
+  static const int privacy = 8;
 }

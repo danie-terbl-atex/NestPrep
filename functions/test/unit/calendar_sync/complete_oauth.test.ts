@@ -53,6 +53,7 @@ let created: NewConnection[];
 let synced: string[];
 let pending: PendingConnection | null;
 let member: boolean;
+let held: boolean;
 let deps: OAuthCompletionDeps;
 
 beforeEach(() => {
@@ -61,10 +62,12 @@ beforeEach(() => {
   synced = [];
   pending = PENDING;
   member = true;
+  held = false;
   deps = {
     consumePending: (): Promise<PendingConnection | null> => Promise.resolve(pending),
     connector: (): OAuthCalendar => connector,
     isStillMember: (): Promise<boolean> => Promise.resolve(member),
+    heldElsewhere: (): Promise<boolean> => Promise.resolve(held),
     createConnection: (connection): Promise<string> => {
       created.push(connection);
       return Promise.resolve('c-new');
@@ -132,6 +135,13 @@ describe('coming back from the provider', () => {
     expect(await completeOAuth(deps, query)).toEqual({ kind: 'expired' });
     expect(connector.revoked).toEqual(['refresh-1']);
     expect(created).toEqual([]);
+  });
+
+  it('keeps the grant of somebody removed meanwhile when another connection reads the account', async () => {
+    member = false;
+    held = true;
+    expect(await completeOAuth(deps, query)).toEqual({ kind: 'expired' });
+    expect(connector.revoked).toEqual([]);
   });
 });
 

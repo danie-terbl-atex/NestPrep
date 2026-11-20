@@ -1,10 +1,17 @@
 import type { Firestore } from 'firebase-admin/firestore';
 
 import { householdRef } from '../household/documents';
+import { accountHeldElsewhere } from './account_held_elsewhere';
 import { liveCalendarSources } from './calendar_sources';
 import { FirestoreSyncStore } from './firestore_sync_store';
 import { revokeBestEffort } from './revoke_best_effort';
-import { type Provider, SYNCED_EVENTS, connectionRef, secretRef } from './sync_documents';
+import {
+  OAUTH_PROVIDERS,
+  type Provider,
+  SYNCED_EVENTS,
+  connectionRef,
+  secretRef,
+} from './sync_documents';
 
 /** Imported events deleted per batch, and the most batches one removal will run. */
 const BATCH_SIZE = 400;
@@ -13,8 +20,10 @@ const MAX_BATCHES = 10;
 /**
  * Lets go of one connected calendar: the provider is told — best effort,
  * because a provider that is down must not keep a family's calendar connected
- * (calendar ADR-0003, BE-09) — its imported events go, then its credential and
- * the connection itself.
+ * (calendar ADR-0003, BE-09), and only when no other connection reads the same
+ * account, because the provider takes the grant back from all of them
+ * (ADR-0007) — its imported events go, then its credential and the connection
+ * itself.
  *
  * The events go first and the connection last, so an interruption leaves a
  * connection that can simply be removed again (BE-07). Disconnecting and
@@ -24,10 +33,20 @@ export async function removeCalendarConnection(
   store: Firestore,
   target: { householdId: string; connectionId: string; provider: Provider },
 ): Promise<number> {
-  const credential = await new FirestoreSyncStore(store).readCredential(target.connectionId);
+  const syncStore = new FirestoreSyncStore(store);
+  const credential = await syncStore.readCredential(target.connectionId);
   const source = liveCalendarSources(false).source(target.provider);
   if (credential !== null && source !== null) {
-    await revokeBestEffort(source, credential, target.provider);
+    const shared =
+      OAUTH_PROVIDERS.some((provider) => provider === target.provider) &&
+      (await accountHeldElsewhere(store, {
+        provider: target.provider,
+        accountLabel:
+          (await syncStore.readConnection(target.householdId, target.connectionId))?.accountLabel ??
+          '',
+        exceptConnectionId: target.connectionId,
+      }));
+    if (!shared) await revokeBestEffort(source, credential, target.provider);
   }
 
   const removed = await deleteImportedEvents(store, target.householdId, target.connectionId);

@@ -16,6 +16,8 @@ export interface OAuthCompletionDeps {
   consumePending(state: string): Promise<PendingConnection | null>;
   connector(provider: OAuthProvider): OAuthCalendar | null;
   isStillMember(householdId: string, uid: string): Promise<boolean>;
+  /** Whether a connection already reads this account, so its grant must stay. */
+  heldElsewhere(provider: OAuthProvider, accountLabel: string): Promise<boolean>;
   createConnection(connection: NewConnection): Promise<string>;
   /** The first sync. Its failure is recorded on the connection, not thrown here. */
   firstSync(householdId: string, connectionId: string): Promise<void>;
@@ -53,7 +55,9 @@ export async function completeOAuth(
   }
   // Ten minutes is long enough to have been removed from the household.
   if (!(await deps.isStillMember(pending.householdId, pending.uid))) {
-    await revokeBestEffort(connector, account.refreshToken, pending.provider);
+    if (!(await deps.heldElsewhere(pending.provider, account.accountLabel))) {
+      await revokeBestEffort(connector, account.refreshToken, pending.provider);
+    }
     return { kind: 'expired' };
   }
 

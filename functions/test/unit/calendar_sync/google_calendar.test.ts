@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  GOOGLE_CALENDAR_LIST_URL,
   GOOGLE_EVENTS_URL,
   GOOGLE_TOKEN_URL,
   GoogleCalendar,
+  googleEventsUrl,
   occurrenceFromGoogle,
 } from '../../../src/calendar_sync/google_calendar';
 import { toSyncedEvent } from '../../../src/calendar_sync/external_occurrence';
 import { HttpUnreachable } from '../../../src/shared/http_client';
+import type { HttpResponse } from '../../../src/shared/http_client';
 import { CLIENT, ScriptedHttp, formFields, json, windowIn } from './fakes';
 
 /**
@@ -15,6 +18,7 @@ import { CLIENT, ScriptedHttp, formFields, json, windowIn } from './fakes';
  * imported repeating event keeps its wall-clock time across a clocks change.
  */
 const TOKENS = json(200, { access_token: 'access', expires_in: 3599 });
+const GOOGLE = { ...CLIENT, otherCalendars: true };
 
 function googleWith(
   pages: unknown[],
@@ -23,23 +27,50 @@ function googleWith(
   let page = 0;
   const http = new ScriptedHttp((url) => {
     if (url === GOOGLE_TOKEN_URL) return tokens;
+    if (url.startsWith(GOOGLE_CALENDAR_LIST_URL)) return json(200, { items: [] });
     const next = pages[page];
     page++;
     return json(200, next);
   });
-  return { calendar: new GoogleCalendar(CLIENT, http), http };
+  return { calendar: new GoogleCalendar(GOOGLE, http), http };
+}
+
+const SHARED = 'family123@group.calendar.google.com';
+
+function swim(id: string): unknown {
+  return {
+    id,
+    summary: 'Swimming',
+    start: { dateTime: '2026-10-01T16:00:00+02:00' },
+    end: { dateTime: '2026-10-01T17:00:00+02:00' },
+  };
+}
+
+/** An account whose calendar list and each calendar's events are scripted by address. */
+function googleAccount(
+  list: HttpResponse,
+  events: Record<string, HttpResponse>,
+): { calendar: GoogleCalendar; http: ScriptedHttp } {
+  const http = new ScriptedHttp((url) => {
+    if (url === GOOGLE_TOKEN_URL) return TOKENS;
+    if (url.startsWith(GOOGLE_CALENDAR_LIST_URL)) return list;
+    const address = url.split('?')[0] ?? '';
+    return events[address] ?? json(200, { items: [] });
+  });
+  return { calendar: new GoogleCalendar(GOOGLE, http), http };
 }
 
 describe('connecting', () => {
   it('asks for read-only calendar access, offline, with PKCE', () => {
     const url = new URL(
-      new GoogleCalendar(CLIENT, new ScriptedHttp(() => TOKENS)).authorizationUrl({
+      new GoogleCalendar(GOOGLE, new ScriptedHttp(() => TOKENS)).authorizationUrl({
         state: 'state-1',
         codeChallenge: 'challenge',
         redirectUri: 'https://example.test/cb',
       }),
     );
     expect(url.searchParams.get('scope')).toContain('calendar.events.readonly');
+    expect(url.searchParams.get('scope')).toContain('calendar.calendarlist.readonly');
     expect(url.searchParams.get('scope')).not.toMatch(/calendar(\s|$)/);
     expect(url.searchParams.get('access_type')).toBe('offline');
     expect(url.searchParams.get('code_challenge_method')).toBe('S256');
@@ -52,7 +83,7 @@ describe('connecting', () => {
     const http = new ScriptedHttp(() =>
       json(200, { access_token: 'a', refresh_token: 'refresh-1', id_token: idToken }),
     );
-    const account = await new GoogleCalendar(CLIENT, http).exchangeCode({
+    const account = await new GoogleCalendar(GOOGLE, http).exchangeCode({
       code: 'code-1',
       codeVerifier: 'verifier-1',
       redirectUri: 'https://example.test/cb',
@@ -69,7 +100,7 @@ describe('connecting', () => {
 
   it('gives nothing back when Google hands no refresh token', async () => {
     const http = new ScriptedHttp(() => json(200, { access_token: 'a' }));
-    const account = await new GoogleCalendar(CLIENT, http).exchangeCode({
+    const account = await new GoogleCalendar(GOOGLE, http).exchangeCode({
       code: 'c',
       codeVerifier: 'v',
       redirectUri: 'r',
@@ -107,11 +138,83 @@ describe('reading the calendar', () => {
     expect(outcome.kind).toBe('ok');
     if (outcome.kind !== 'ok') return;
     expect(outcome.occurrences.map((o) => o.externalId)).toEqual(['a', 'b']);
-    const firstList = new URL(http.requests[1]?.url ?? '');
+    const firstList = new URL(http.requests[2]?.url ?? '');
     expect(`${firstList.origin}${firstList.pathname}`).toBe(GOOGLE_EVENTS_URL);
     expect(firstList.searchParams.get('singleEvents')).toBe('true');
-    expect(new URL(http.requests[2]?.url ?? '').searchParams.get('pageToken')).toBe('p2');
-    expect(http.requests[1]?.request.headers?.['Authorization']).toBe('Bearer access');
+    expect(new URL(http.requests[3]?.url ?? '').searchParams.get('pageToken')).toBe('p2');
+    expect(http.requests[2]?.request.headers?.['Authorization']).toBe('Bearer access');
+  });
+
+  it('reads every calendar the account has ticked, a shared one included', async () => {
+    const { calendar, http } = googleAccount(
+      json(200, {
+        items: [
+          { id: 'sam@example.com', primary: true, selected: true },
+          { id: SHARED, selected: true, accessRole: 'reader' },
+          { id: 'unticked@group.calendar.google.com', selected: false },
+          { id: 'left@group.calendar.google.com', selected: true, deleted: true },
+          { id: 'en.sa#holiday@group.v.calendar.google.com', selected: true },
+        ],
+      }),
+      {
+        [GOOGLE_EVENTS_URL]: json(200, { items: [swim('mine')] }),
+        [googleEventsUrl(SHARED)]: json(200, { items: [swim('ours'), swim('mine')] }),
+      },
+    );
+    const outcome = await calendar.fetchOccurrences('refresh-1', windowIn());
+    expect(outcome.kind).toBe('ok');
+    if (outcome.kind !== 'ok') return;
+    expect(outcome.occurrences.map((o) => o.externalId)).toEqual(['mine', 'ours', 'mine']);
+    const read = http.requests.slice(2).map((sent) => sent.url.split('?')[0]);
+    expect(read).toEqual([GOOGLE_EVENTS_URL, googleEventsUrl(SHARED)]);
+    expect(new URL(http.requests[1]?.url ?? '').searchParams.get('minAccessRole')).toBe('reader');
+  });
+
+  it('asks for and reads the primary calendar alone until the deployment switches the rest on', async () => {
+    const http = new ScriptedHttp((url) =>
+      url === GOOGLE_TOKEN_URL ? TOKENS : json(200, { items: [swim('mine')] }),
+    );
+    const calendar = new GoogleCalendar({ ...CLIENT, otherCalendars: false }, http);
+    const scope = new URL(
+      calendar.authorizationUrl({ state: 's', codeChallenge: 'c', redirectUri: 'r' }),
+    ).searchParams.get('scope');
+    expect(scope).not.toContain('calendarlist');
+    const outcome = await calendar.fetchOccurrences('refresh-1', windowIn());
+    expect(outcome.kind === 'ok' && outcome.occurrences).toHaveLength(1);
+    expect(http.requests.map((sent) => sent.url.split('?')[0])).toEqual([
+      GOOGLE_TOKEN_URL,
+      GOOGLE_EVENTS_URL,
+    ]);
+  });
+
+  it('reads the primary calendar alone for a grant from before the list was asked for', async () => {
+    const { calendar } = googleAccount(json(403, { error: { errors: [] } }), {
+      [GOOGLE_EVENTS_URL]: json(200, { items: [swim('mine')] }),
+    });
+    const outcome = await calendar.fetchOccurrences('refresh-1', windowIn());
+    expect(outcome.kind === 'ok' && outcome.occurrences.map((o) => o.externalId)).toEqual(['mine']);
+  });
+
+  it('leaves out a shared calendar that has just been taken away, and keeps the rest', async () => {
+    const { calendar } = googleAccount(json(200, { items: [{ id: SHARED, selected: true }] }), {
+      [GOOGLE_EVENTS_URL]: json(200, { items: [swim('mine')] }),
+      [googleEventsUrl(SHARED)]: json(404, {}),
+    });
+    const outcome = await calendar.fetchOccurrences('refresh-1', windowIn());
+    expect(outcome.kind === 'ok' && outcome.occurrences.map((o) => o.externalId)).toEqual(['mine']);
+  });
+
+  it('says unreachable, not revoked, when a shared calendar is down or Google is rate limiting', async () => {
+    const down = googleAccount(json(200, { items: [{ id: SHARED, selected: true }] }), {
+      [googleEventsUrl(SHARED)]: json(503, {}),
+    });
+    expect(await down.calendar.fetchOccurrences('r', windowIn())).toEqual({ kind: 'unreachable' });
+    const limited = googleAccount(json(200, { items: [] }), {
+      [GOOGLE_EVENTS_URL]: json(403, { error: { errors: [{ reason: 'rateLimitExceeded' }] } }),
+    });
+    expect(await limited.calendar.fetchOccurrences('r', windowIn())).toEqual({
+      kind: 'unreachable',
+    });
   });
 
   it('says revoked when Google refuses the refresh token', async () => {
@@ -121,20 +224,20 @@ describe('reading the calendar', () => {
 
   it('says revoked when a fresh token is refused by the calendar', async () => {
     const http = new ScriptedHttp((url) => (url === GOOGLE_TOKEN_URL ? TOKENS : json(403, {})));
-    expect(await new GoogleCalendar(CLIENT, http).fetchOccurrences('r', windowIn())).toEqual({
+    expect(await new GoogleCalendar(GOOGLE, http).fetchOccurrences('r', windowIn())).toEqual({
       kind: 'revoked',
     });
   });
 
   it('says unreachable when Google is down or does not answer', async () => {
     const down = new ScriptedHttp((url) => (url === GOOGLE_TOKEN_URL ? TOKENS : json(503, {})));
-    expect(await new GoogleCalendar(CLIENT, down).fetchOccurrences('r', windowIn())).toEqual({
+    expect(await new GoogleCalendar(GOOGLE, down).fetchOccurrences('r', windowIn())).toEqual({
       kind: 'unreachable',
     });
     const silent = new ScriptedHttp(() => {
       throw new HttpUnreachable('TimeoutError');
     });
-    expect(await new GoogleCalendar(CLIENT, silent).fetchOccurrences('r', windowIn())).toEqual({
+    expect(await new GoogleCalendar(GOOGLE, silent).fetchOccurrences('r', windowIn())).toEqual({
       kind: 'unreachable',
     });
   });

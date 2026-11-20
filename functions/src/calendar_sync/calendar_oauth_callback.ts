@@ -2,6 +2,7 @@ import { HttpsError, onRequest } from 'firebase-functions/v2/https';
 
 import { db } from '../shared/firestore';
 import { HOSTING_REGION } from '../shared/region';
+import { accountHeldElsewhere } from './account_held_elsewhere';
 import { callbackPage } from './callback_page';
 import { liveCalendarSources } from './calendar_sources';
 import { callerIn } from './caller_access';
@@ -43,6 +44,8 @@ export const calendarOAuthCallback = onRequest(
             throw error;
           }
         },
+        heldElsewhere: (provider, accountLabel) =>
+          accountHeldElsewhere(store, { provider, accountLabel }),
         createConnection: (connection) => createConnection(store, connection),
         firstSync: async (householdId, connectionId) => {
           await syncConnection(

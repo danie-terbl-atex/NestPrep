@@ -97,7 +97,7 @@ abstract final class CalendarSyncCopy {
   static String providerBlurb(CalendarProvider provider) => switch (provider) {
     CalendarProvider.apple =>
       'The calendars on this iPhone, iCloud and any accounts added to it.',
-    CalendarProvider.google => 'Your Google account’s main calendar.',
+    CalendarProvider.google => 'Your main calendar and the others you’ve ticked in Google, shared ones too.',
     CalendarProvider.microsoft => 'Work, school or Outlook.com.',
     CalendarProvider.ics =>
       'A shared iCloud calendar, or a school or club calendar link.',

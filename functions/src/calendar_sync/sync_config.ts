@@ -1,9 +1,8 @@
-import { defineSecret, defineString } from 'firebase-functions/params';
+import { defineBoolean, defineSecret, defineString } from 'firebase-functions/params';
 
 import { configured } from '../shared/configured_value';
 import { functionUrlFrom } from '../shared/function_url';
 import { HOSTING_REGION } from '../shared/region';
-import type { OAuthProvider } from './sync_documents';
 
 /**
  * Calendar sync's configuration, by name (BE-16, ENG-18). None of it has a
@@ -20,12 +19,20 @@ import type { OAuthProvider } from './sync_documents';
  * - `CALENDAR_FUNCTIONS_BASE_URL` — optional; the Hosting origin that rewrites
  *   to the OAuth callback and the feed. Google verifies the redirect's domain,
  *   so production sets it. Empty derives the `cloudfunctions.net` address.
+ * - `CALENDAR_GOOGLE_OTHER_CALENDARS` — whether Google is asked for the
+ *   account's calendar list and read beyond its primary calendar (calendar
+ *   ADR-0007). Off until the consent screen carries the list scope and the
+ *   privacy policy says so, because switching it on changes what a member is
+ *   asked to agree to.
  */
 export const googleClientId = defineString('CALENDAR_GOOGLE_CLIENT_ID', { default: '' });
 export const microsoftClientId = defineString('CALENDAR_MICROSOFT_CLIENT_ID', { default: '' });
 export const googleClientSecret = defineSecret('CALENDAR_GOOGLE_CLIENT_SECRET');
 export const microsoftClientSecret = defineSecret('CALENDAR_MICROSOFT_CLIENT_SECRET');
 export const functionsBaseUrl = defineString('CALENDAR_FUNCTIONS_BASE_URL', { default: '' });
+export const googleOtherCalendars = defineBoolean('CALENDAR_GOOGLE_OTHER_CALENDARS', {
+  default: false,
+});
 
 /** What the Functions that talk to a provider's token endpoint must be bound to. */
 export const PROVIDER_SECRETS = [googleClientSecret, microsoftClientSecret];
@@ -35,8 +42,15 @@ export interface OAuthClient {
   readonly clientSecret: string;
 }
 
+export interface GoogleClient extends OAuthClient {
+  readonly otherCalendars: boolean;
+}
+
 /** The OAuth clients that are configured; a provider missing here is not set up. */
-export type OAuthClients = Partial<Record<OAuthProvider, OAuthClient>>;
+export interface OAuthClients {
+  google?: GoogleClient;
+  microsoft?: OAuthClient;
+}
 
 /**
  * The OAuth clients as this instance sees them. [withSecrets] is false in the
@@ -51,6 +65,7 @@ export function oauthClients(withSecrets: boolean): OAuthClients {
     clients.google = {
       clientId: google,
       clientSecret: withSecrets ? (configured(googleClientSecret.value()) ?? '') : '',
+      otherCalendars: googleOtherCalendars.value(),
     };
   }
   if (microsoft !== null) {
