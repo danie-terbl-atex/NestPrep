@@ -218,6 +218,12 @@ so the on-screen copy cannot tell you the backend was unreachable.
   false in production, which keeps them hidden in 0.9.0 (15) and (16)). 1.0.0+22 was not patched.
   The suite runs with every shop on `cloud` (`test/flutter_test_config.dart`), whatever the source
   ships with.
+- **Premium vouchers are held on for Android in source** (subscriptions ADR-0011, patch 3 to
+  1.0.0+24, 2026-11-20). `premiumVouchers` is `false` in `appConfig/flags` for Apple's review, so
+  iOS offers nothing; Android offers whatever the cloud says, through `premiumVouchersAlwaysOn` in
+  `lib/features/subscriptions/ui/premium_vouchers_offered.dart`. To take the offer off Android,
+  empty that set and patch; to bring iOS on, set the cloud flag `true`. The suite runs with the set
+  empty (`test/flutter_test_config.dart`).
 - Fonts are bundled under `assets/fonts/` (DM Sans for UI, four static cuts; Fraunces 600 for
   headings and the wordmark, which keeps its `opsz` axis, so every Fraunces style sets
   `FontVariation('opsz', size)`; both OFL, Latin and Latin Extended subsets; design-system
