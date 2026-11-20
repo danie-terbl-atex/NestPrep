@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:nestprep/design/nest_kit.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
+import 'package:nestprep/features/subscriptions/ui/premium_vouchers_offered.dart';
 
 /// Runs before every test file under this folder. The welcome's orbit turns
 /// for as long as it is on screen (design-system ADR-0006), and `pumpAndSettle`
@@ -12,10 +13,12 @@ import 'package:nestprep/features/groceries/model/product_match.dart';
 /// Every shop follows its cloud switch here whatever the source ships with
 /// (shops ADR-0004, ADR-0005), so the shop features and their flags are tested
 /// however a store build holds them; the tests of the switch itself set their
-/// own.
+/// own. Premium vouchers follow their cloud switch here too (subscriptions
+/// ADR-0011).
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   NestMotion.debugHoldStill = true;
   ProductRetailer.debugSwitchOverride = everyShopConnected;
+  debugPremiumVouchersAlwaysOn = const {};
   await testMain();
 }
 
