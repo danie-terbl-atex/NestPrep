@@ -4,10 +4,10 @@ import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/log/app_log.dart';
-import '../../list_scan/model/list_photo.dart';
 import '../../subscriptions/model/premium_feature.dart';
 import '../model/recipe_draft_reading.dart';
 import '../model/recipe_page.dart';
+import '../model/recipe_snap.dart';
 import 'recipe_drafter.dart';
 
 final class CallableRecipeDrafter implements RecipeDrafter {
@@ -26,21 +26,10 @@ final class CallableRecipeDrafter implements RecipeDrafter {
   }) => _ask({'householdId': householdId, 'page': page.toWire()});
 
   @override
-  Future<RecipeDraftReading> fromPhoto({
+  Future<RecipeDraftReading> fromPhotos({
     required String householdId,
-    required ListPhoto photo,
-  }) async {
-    if (photo.isTooLarge) {
-      throw const ListScanFailure(ListScanProblem.listPhotoTooLarge);
-    }
-    return _ask({
-      'householdId': householdId,
-      'photo': {
-        'mimeType': ListPhoto.mimeType,
-        'data': base64Encode(photo.bytes),
-      },
-    });
-  }
+    required List<RecipeSnap> photos,
+  }) => _ask({'householdId': householdId, ...photosOnWire(photos)});
 
   Future<RecipeDraftReading> _ask(Map<String, Object?> input) async {
     try {
@@ -55,6 +44,22 @@ final class CallableRecipeDrafter implements RecipeDrafter {
       throw failureFromRecipeDraftCallable(error);
     }
   }
+}
+
+/// One ordinary photo goes whole, which the model reads more finely than
+/// parts; anything more goes as parts (recipes ADR-0010).
+Map<String, Object?> photosOnWire(List<RecipeSnap> photos) {
+  if (photos case [RecipeSnap(:final whole?)]) {
+    return {
+      'photo': {'mimeType': 'image/jpeg', 'data': base64Encode(whole)},
+    };
+  }
+  return {
+    'photos': [
+      for (final photo in photos)
+        {'parts': photo.parts.map(base64Encode).toList()},
+    ],
+  };
 }
 
 AppFailure failureFromRecipeDraftCallable(FirebaseFunctionsException error) {

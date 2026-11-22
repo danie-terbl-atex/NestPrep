@@ -7,6 +7,8 @@ import '../../../shared/failure/app_failure.dart';
 import '../../list_scan/data/list_photo_picker.dart';
 import '../../photo_frames/model/shared_page.dart';
 import '../data/page_link.dart';
+import '../model/recipe_snap.dart';
+import 'recipe_snap_strip.dart';
 
 class RecipeImportLinkPanel extends StatefulWidget {
   const RecipeImportLinkPanel({
@@ -104,41 +106,85 @@ class RecipeImportSnapPanel extends StatelessWidget {
   const RecipeImportSnapPanel({
     required this.failure,
     required this.isAiWelcome,
-    required this.onPick,
+    required this.snaps,
+    required this.isAdding,
+    required this.canAdd,
+    required this.onAdd,
+    required this.onRemove,
+    required this.onRead,
     super.key,
   });
 
   final AppFailure? failure;
   final bool isAiWelcome;
-  final ValueChanged<ListPhotoSource> onPick;
+  final List<RecipeSnap> snaps;
+  final bool isAdding;
+  final bool canAdd;
+  final ValueChanged<ListPhotoSource> onAdd;
+  final ValueChanged<RecipeSnap> onRemove;
+  final VoidCallback onRead;
 
   @override
-  Widget build(BuildContext context) => _StartList(
-    failure: failure,
-    hero: _Hero(
-      isAiWelcome: isAiWelcome,
-      icon: LucideIcons.camera,
-      title: RecipeImportCopy.snapHeroTitle,
-      body: RecipeImportCopy.snapHeroBody,
-    ),
-    privacy: RecipeImportCopy.photoPrivacyBody,
-    actions: [
-      NestButton(
-        key: const ValueKey('recipe-import-camera'),
-        label: RecipeImportCopy.takePhoto,
+  Widget build(BuildContext context) {
+    final nest = NestTheme.of(context);
+    final hasSnaps = snaps.isNotEmpty;
+    final mayAdd = canAdd && !isAdding;
+    return _StartList(
+      failure: failure,
+      hero: _Hero(
+        isAiWelcome: isAiWelcome,
         icon: LucideIcons.camera,
-        onPressed: () => onPick(ListPhotoSource.camera),
+        title: RecipeImportCopy.snapHeroTitle,
+        body: RecipeImportCopy.snapHeroBody,
       ),
-      const SizedBox(height: NestSpace.sm),
-      NestButton(
-        key: const ValueKey('recipe-import-photos'),
-        label: RecipeImportCopy.choosePhoto,
-        icon: LucideIcons.images,
-        variant: NestButtonVariant.tonal,
-        onPressed: () => onPick(ListPhotoSource.photos),
-      ),
-    ],
-  );
+      privacy: RecipeImportCopy.photoPrivacyBody,
+      actions: [
+        if (hasSnaps) ...[
+          RecipeSnapStrip(snaps: snaps, onRemove: isAdding ? null : onRemove),
+          const SizedBox(height: NestSpace.lg),
+          NestButton(
+            key: const ValueKey('recipe-import-read-photos'),
+            label: RecipeImportCopy.readPhotos,
+            icon: LucideIcons.sparkles,
+            onPressed: isAdding ? null : onRead,
+          ),
+          const SizedBox(height: NestSpace.sm),
+        ],
+        NestButton(
+          key: const ValueKey('recipe-import-camera'),
+          label: hasSnaps
+              ? RecipeImportCopy.takeAnother
+              : RecipeImportCopy.takePhoto,
+          icon: LucideIcons.camera,
+          variant: hasSnaps
+              ? NestButtonVariant.tonal
+              : NestButtonVariant.primary,
+          isLoading: isAdding,
+          onPressed: mayAdd ? () => onAdd(ListPhotoSource.camera) : null,
+        ),
+        const SizedBox(height: NestSpace.sm),
+        NestButton(
+          key: const ValueKey('recipe-import-photos'),
+          label: hasSnaps
+              ? RecipeImportCopy.chooseMore
+              : RecipeImportCopy.choosePhoto,
+          icon: LucideIcons.images,
+          variant: hasSnaps
+              ? NestButtonVariant.outline
+              : NestButtonVariant.tonal,
+          onPressed: mayAdd ? () => onAdd(ListPhotoSource.photos) : null,
+        ),
+        if (!canAdd) ...[
+          const SizedBox(height: NestSpace.sm),
+          Text(
+            RecipeImportCopy.snapsFull,
+            textAlign: TextAlign.center,
+            style: nest.text.caption.copyWith(color: nest.colors.inkSecondary),
+          ),
+        ],
+      ],
+    );
+  }
 }
 
 class _StartList extends StatelessWidget {

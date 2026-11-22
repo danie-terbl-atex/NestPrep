@@ -9,7 +9,7 @@ abstract final class RecipeImportCopy {
   static const linkTitle = 'From a link';
   static const linkBody = 'Paste a web page and we’ll fill the recipe in.';
   static const snapTitle = 'Snap it';
-  static const snapBody = 'A photo of a page or card, or a screenshot.';
+  static const snapBody = 'Photos of a page or card, or screenshots.';
   static const pdfTitle = 'From a PDF';
   static const pdfBody =
       'A cookbook or booklet. Add every recipe in it at once.';
@@ -32,19 +32,30 @@ abstract final class RecipeImportCopy {
   static const snapScreenTitle = 'Snap a recipe';
   static const snapHeroTitle = 'Snap the recipe';
   static const snapHeroBody =
-      'A photo of a cookbook or a recipe card, or a screenshot of a page. It '
-      'comes back filled in for you to check. Nothing is saved until you tap '
-      'Save.';
+      'Photos of a cookbook or a recipe card, or screenshots of a page. Add as '
+      'many as the recipe takes. It comes back filled in for you to check, and '
+      'nothing is saved until you tap Save.';
   static const takePhoto = 'Take a photo';
-  static const choosePhoto = 'Choose a photo or screenshot';
+  static const choosePhoto = 'Choose photos or screenshots';
+  static const takeAnother = 'Take another photo';
+  static const chooseMore = 'Add more from your photos';
+  static const readPhotos = 'Read this recipe';
+  static const snapsHint =
+      'Add every page or screenshot, in order. They’re read together as one '
+      'recipe.';
+  static const snapsFull = 'That’s as many as one recipe can take.';
+  static String snapsTitle(int count) =>
+      count == 1 ? '1 photo' : '$count photos';
+  static String snapNumbered(int number) => 'Photo $number';
+  static String removeSnap(int number) => 'Take out photo $number';
 
   static const privacyTitle = 'What leaves your phone';
   static const linkPrivacyBody =
       'The text of this page, read by Google’s Gemini in Europe and not kept. '
       'Nothing about your family goes with it.';
   static const photoPrivacyBody =
-      'Only the photo, read by Google’s Gemini in Europe and not kept. Nothing '
-      'about your family goes with it.';
+      'Only the photos, read by Google’s Gemini in Europe and not kept. '
+      'Nothing about your family goes with them.';
 
   // Working.
 
@@ -59,12 +70,12 @@ abstract final class RecipeImportCopy {
   static const snapScreenshot = 'Snap a screenshot';
   static const typeIt = 'Type it';
   static const tryAgain = 'Try again';
-  static const tryAnotherPhoto = 'Try another photo';
+  static const tryAnotherPhoto = 'Change the photos';
   static const stoppedTitle = 'That didn’t work';
-  static const notARecipePhotoTitle = 'That photo doesn’t look like a recipe';
+  static const notARecipePhotoTitle = 'That doesn’t look like a recipe';
   static const notARecipePhotoBody =
-      'A closer, brighter photo of the whole recipe usually does it, or type it '
-      'in yourself.';
+      'Closer, brighter photos of the whole recipe usually do it, or type it in '
+      'yourself.';
 
   static String title(RecipeImportProblem problem) => switch (problem) {
     RecipeImportProblem.pageRefused => 'This site wouldn’t let us read it',
@@ -72,6 +83,8 @@ abstract final class RecipeImportCopy {
     RecipeImportProblem.pageUnreachable => 'We couldn’t get to that page',
     RecipeImportProblem.linkNotPublic => 'That isn’t a public web page',
     RecipeImportProblem.noRecipe => 'That page doesn’t look like a recipe',
+    RecipeImportProblem.photoUnreadable => 'That photo couldn’t be read',
+    RecipeImportProblem.photosTooLong => 'That’s too much for one recipe',
   };
 
   static String problem(RecipeImportProblem problem) => switch (problem) {
@@ -90,6 +103,11 @@ abstract final class RecipeImportCopy {
     RecipeImportProblem.noRecipe =>
       'We couldn’t find a recipe on it. If there is one, snap a screenshot of '
           'it or type it in.',
+    RecipeImportProblem.photoUnreadable =>
+      'One of those isn’t a photo NestPrep can read, so it was left out.',
+    RecipeImportProblem.photosTooLong =>
+      'That’s more than one recipe can take, so the last photo was left out. '
+          'Crop it to the recipe, or take out a photo you don’t need.',
   };
 
   // The builder's row of a page's pictures.

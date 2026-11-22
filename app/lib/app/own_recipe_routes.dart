@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../features/household/model/household_view.dart';
-import '../features/list_scan/data/list_photo_picker.dart';
 import '../features/meal_planning/data/meal_repository.dart';
 import '../features/photo_frames/model/shared_pdf.dart';
 import '../features/recipes/data/own_recipe_photo_store.dart';
@@ -17,6 +16,7 @@ import '../features/recipes/data/recipe_page_reader.dart';
 import '../features/recipes/data/recipe_pdf.dart';
 import '../features/recipes/data/recipe_photo_picker.dart';
 import '../features/recipes/data/recipe_photo_source.dart';
+import '../features/recipes/data/recipe_snap_picker.dart';
 import '../features/recipes/data/shared_pdf_inbox.dart';
 import '../features/recipes/model/family_size.dart';
 import '../features/recipes/model/recipe.dart';
@@ -102,7 +102,7 @@ List<GoRoute> ownRecipeRoutes() => [
             create: (context) => RecipeImportController(
               pageReader: context.read<RecipePageReader>(),
               drafter: context.read<RecipeDrafter>(),
-              photoPicker: context.read<ListPhotoPicker>(),
+              snapPicker: context.read<RecipeSnapPicker>(),
               householdId: householdId,
               way: MealsRoute.importWayFrom(state),
             ),

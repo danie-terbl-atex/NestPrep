@@ -1,3 +1,25 @@
+# Snap a recipe from several photos or a long screenshot (recipes ADR-0010, proposed)
+
+Daniel 2026-11-21: Snap "is not working that well for people because you can only upload 1 image, and recipes are often multiple images and page scrolls long". Plan: `~/.claude/plans/playful-wandering-sunbeam-of-5f0fbdb3-270a-47f2-9ca2-14867579f92c.md`.
+
+- [x] Recipes ADR-0010 (proposed), written before the code and rewritten once the measurements changed the design
+- [x] Functions: `draftRecipe` takes `photos: [{parts}]` (1 to 8 photos, 40 parts of 160 KB) beside `page` and the old `photo`; `SNAP_SYSTEM` prompt; each part checked as a JPEG before a call is spent
+- [x] App: `RecipeSnapPictures` (cuts a photo into overlapping 1024 x 820 parts, keeps an ordinary one whole), `RecipeSnapPicker` (camera one, gallery several), the controller gathers then reads, the numbered strip with remove, new wording
+- [x] One ordinary photo still goes whole as `photo`; several, or a long screenshot, go as parts (`photosOnWire`)
+- [x] Measured on gemini-2.5-flash with a scored sample page: 0 wrong values from 13, 15 and 31 parts and from a dense page; the old path got 7 wrong on a 24-screen scroll; 1024 x 1280 parts misread a dense page and were dropped
+- [x] Tests: Functions unit 3040 green, lint clean, `own_recipes` emulator 40 of 40; app analyze 0, recipe tests 588 green
+- [x] Godfather: ADR-0010, recipes overview, Phase 6, a lesson on how Vertex reads one image against several
+- [ ] Deploy `draftRecipe` alone (additive; Daniel or the orchestrator), then call it once live with `photos`
+- [ ] On a phone, iOS and Android: two cookbook photos, four screenshots from the gallery, one long scrolling screenshot, remove one, reach eight. Not driven here: the system photo picker cannot be driven from this machine
+- [ ] Release the app (Dart only: a Shorebird patch to 1.0.0+24 can carry it), commit, accept ADR-0010
+
+## Review
+
+- The plan assumed every photo should be cut into parts, from ADR-0009's "flat ~258 tokens an image". Measuring showed that holds only when several images are sent; a lone image is tiled and read finely. Cutting a single ordinary photo would have made today's best case worse, so it is still sent whole.
+- Full `flutter test`: 22 failed of 6695, none in recipes. 20 fail the same on clean `5d8a8626`; the other 2 are `declared_packages_test`, which reads the frozen vault.
+- A wide photo of an open book is cut into columns as well as rows. That is tested for geometry only, not against the model.
+- The order the gallery returns several photos in was not checked on Android.
+
 # Deep links: a frame's QR opens Link a frame, invites are one tap and a QR (household ADR-0012, proposed)
 
 Daniel 2026-11-18: the frame QR scanned with the phone's camera opens NestPrep but not the linking screen; invites go out as "garbage text"; wants one-tap links and QR joining. Plan: `~/.claude/plans/crystalline-twirling-pizza.md`.

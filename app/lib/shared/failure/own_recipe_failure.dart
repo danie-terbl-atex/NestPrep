@@ -34,6 +34,8 @@ enum RecipeImportProblem {
   pageUnreachable,
   linkNotPublic,
   noRecipe,
+  photoUnreadable,
+  photosTooLong,
 }
 
 final class RecipeImportFailure extends AppFailure {

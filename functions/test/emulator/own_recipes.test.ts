@@ -572,6 +572,37 @@ describe('drafting a recipe', () => {
     expect(answer.imageUrls).toEqual([]);
   });
 
+  it('reads several photos, cut into parts, as one call', async () => {
+    const { sam, householdId } = await aPremiumHousehold();
+    await modelAnswers(CANNED);
+    const answer = await callAs<Proposal>(sam, 'draftRecipe', {
+      householdId,
+      photos: [{ parts: [JPEG_BASE64, JPEG_BASE64, JPEG_BASE64] }, { parts: [JPEG_BASE64] }],
+    });
+    expect(answer.recipe).toMatchObject({ origin: 'photo', sourceUrl: null, sourceName: null });
+    expect(answer.imageUrls).toEqual([]);
+    expect(answer.callsLeft).toBe(99);
+  });
+
+  it('refuses a part that is not a JPEG, or too many photos, before a call is spent', async () => {
+    const { sam, householdId } = await aPremiumHousehold();
+    await expectRefusal(
+      callAs(sam, 'draftRecipe', {
+        householdId,
+        photos: [{ parts: [JPEG_BASE64, 'iVBORw0KGgo='] }],
+      }),
+      'listPhotoNotSupported',
+    );
+    await expectRefusal(
+      callAs(sam, 'draftRecipe', {
+        householdId,
+        photos: Array.from({ length: 9 }, () => ({ parts: [JPEG_BASE64] })),
+      }),
+      'badRequest',
+    );
+    expect(await anyCallSpent(householdId)).toBe(false);
+  });
+
   it('refuses what is not a photo before a call is spent', async () => {
     const { sam, householdId } = await aPremiumHousehold();
     await expectRefusal(

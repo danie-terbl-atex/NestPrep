@@ -2,9 +2,15 @@ import { z } from 'zod';
 
 import { LIST_PHOTO_TYPES, MAX_BASE64_LENGTH } from '../list_scan/schemas';
 import { PAGE_LINK_MAX } from '../shared/page_link';
+import { MAX_REQUEST_BASE64 } from './recipe_document_schemas';
 
 export const MAX_PAGE_CHARS = 60_000;
 export const MAX_PAGE_IMAGES = 6;
+export const MAX_SNAP_PHOTOS = 8;
+export const MAX_SNAP_PARTS = 40;
+/** Forty parts of this size still fit a callable's request. */
+export const MAX_SNAP_PART_BYTES = 160 * 1024;
+const MAX_SNAP_PART_BASE64 = Math.ceil(MAX_SNAP_PART_BYTES / 3) * 4;
 const MAX_JSON_LD_BLOCKS = 10;
 const MAX_TITLE_CHARS = 300;
 
@@ -41,8 +47,33 @@ const photo = z.object({
   data: z.string().min(1).max(MAX_BASE64_LENGTH),
 });
 
+const snapPhoto = z.object({
+  parts: z.array(z.string().min(1).max(MAX_SNAP_PART_BASE64)).min(1).max(MAX_SNAP_PARTS),
+});
+export type SnapPhoto = z.infer<typeof snapPhoto>;
+
+const photos = z
+  .array(snapPhoto)
+  .min(1)
+  .max(MAX_SNAP_PHOTOS)
+  .refine((value) => partsOf(value).length <= MAX_SNAP_PARTS, { message: 'too many parts' })
+  .refine(
+    (value) => partsOf(value).reduce((total, part) => total + part.length, 0) <= MAX_REQUEST_BASE64,
+    { message: 'too much of the photos' },
+  );
+
+function partsOf(value: readonly SnapPhoto[]): string[] {
+  return value.flatMap(({ parts }) => parts);
+}
+
+/**
+ * `photo` is one picture whole, which Vertex reads finely when it is alone: every snap from a
+ * build up to 1.0.0+24, and one ordinary photo since. `photos` is anything more, cut into parts
+ * (recipes ADR-0010).
+ */
 export const draftRecipeInput = z.union([
   z.object({ householdId, page }),
+  z.object({ householdId, photos }),
   z.object({ householdId, photo }),
 ]);
 export type DraftRecipeInput = z.infer<typeof draftRecipeInput>;

@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/design/nest_kit.dart';
+import 'package:nestprep/features/recipes/data/recipe_snap_picker.dart';
 import 'package:nestprep/features/recipes/model/recipe_draft.dart';
 import 'package:nestprep/features/recipes/model/recipe_draft_reading.dart';
 import 'package:nestprep/features/recipes/model/recipe_import_way.dart';
 import 'package:nestprep/features/recipes/model/recipe_origin.dart';
+import 'package:nestprep/features/recipes/model/recipe_snap.dart';
 import 'package:nestprep/features/recipes/state/recipe_import_controller.dart';
 import 'package:nestprep/features/recipes/ui/recipe_import_screen.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
@@ -17,7 +20,6 @@ import 'package:nestprep/shared/copy/subscription_copy.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 import 'package:provider/provider.dart';
 
-import '../../../support/fake_list_scan.dart';
 import '../../../support/fake_recipe_import.dart';
 import '../../../support/household_fixtures.dart';
 import '../../../support/pump_screen.dart';
@@ -32,16 +34,18 @@ void main() {
   const retry = ValueKey('recipe-import-retry');
   const screenshot = ValueKey('recipe-import-screenshot');
   const type = ValueKey('recipe-import-type');
+  const camera = ValueKey('recipe-import-camera');
+  const readPhotos = ValueKey('recipe-import-read-photos');
 
   late FakeRecipePageReader reader;
   late FakeRecipeDrafter drafter;
-  late FakeListPhotoPicker picker;
+  late FakeRecipeSnapPicker picker;
   late List<RecipeDraft> opened;
 
   setUp(() {
     reader = FakeRecipePageReader();
     drafter = FakeRecipeDrafter();
-    picker = FakeListPhotoPicker();
+    picker = FakeRecipeSnapPicker();
     opened = [];
   });
 
@@ -64,7 +68,7 @@ void main() {
           create: (_) => RecipeImportController(
             pageReader: reader,
             drafter: drafter,
-            photoPicker: picker,
+            snapPicker: picker,
             householdId: Fixtures.householdId,
             way: way,
           ),
@@ -97,6 +101,12 @@ void main() {
     await tester.ensureVisible(find.byKey(readButton));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(readButton));
+  }
+
+  Future<void> tapReadPhotos(WidgetTester tester) async {
+    await tester.ensureVisible(find.byKey(readPhotos));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(readPhotos));
   }
 
   group('a link', () {
@@ -276,6 +286,8 @@ void main() {
       expect(drafter.photos, isEmpty);
 
       await tester.tap(find.byKey(const ValueKey('recipe-import-photos')));
+      await tester.pumpAndSettle();
+      await tapReadPhotos(tester);
       await frames(tester);
       expect(drafter.photos, hasLength(1));
       expect(opened.single.sourceUrl, 'https://www.allrecipes.com/recipe/1/');
@@ -325,37 +337,98 @@ void main() {
     });
   });
 
-  group('a photo', () {
-    testWidgets('says only the photo leaves, and sends nothing until picked', (
+  group('photos', () {
+    testWidgets('say only they leave, and send nothing until Read', (
       tester,
     ) async {
       await pump(tester, way: RecipeImportWay.snap);
       expect(find.text(RecipeImportCopy.photoPrivacyBody), findsOneWidget);
+      expect(find.byKey(readPhotos), findsNothing);
+
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.snapsTitle(1)), findsOneWidget);
+      expect(find.text(RecipeImportCopy.takeAnother), findsOneWidget);
       expect(drafter.photos, isEmpty);
 
-      await tester.tap(find.byKey(const ValueKey('recipe-import-camera')));
+      await tester.ensureVisible(find.byKey(camera));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.snapsTitle(2)), findsOneWidget);
+
+      await tapReadPhotos(tester);
       await frames(tester);
-      expect(drafter.photos.single, aListPhoto);
+      expect(drafter.photos.single, hasLength(2));
       expect(opened, hasLength(1));
+    });
+
+    testWidgets('one can be taken out again', (tester) async {
+      picker.next = RecipeSnapPick(snaps: [aSnap(), aSnap()]);
+      await pump(tester, way: RecipeImportWay.snap);
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel(RecipeImportCopy.removeSnap(2)));
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.snapsTitle(1)), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel(RecipeImportCopy.removeSnap(1)));
+      await tester.pumpAndSettle();
+      expect(find.byKey(readPhotos), findsNothing);
+      expect(find.text(RecipeImportCopy.takePhoto), findsOneWidget);
+    });
+
+    testWidgets('a full strip says so and offers no more', (tester) async {
+      picker.next = RecipeSnapPick(
+        snaps: List.generate(RecipeSnap.maxPhotos, (_) => aSnap()),
+      );
+      await pump(tester, way: RecipeImportWay.snap);
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.snapsFull), findsOneWidget);
+      expect(tester.widget<NestButton>(find.byKey(camera)).onPressed, isNull);
+    });
+
+    testWidgets('a photo left out is said above the ones kept', (tester) async {
+      picker.next = RecipeSnapPick(
+        snaps: [aSnap()],
+        problem: const RecipeImportFailure(RecipeImportProblem.photosTooLong),
+      );
+      await pump(tester, way: RecipeImportWay.snap);
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(RecipeImportCopy.problem(RecipeImportProblem.photosTooLong)),
+        findsOneWidget,
+      );
+      expect(find.text(RecipeImportCopy.snapsTitle(1)), findsOneWidget);
     });
 
     testWidgets('a free household meets the paywall before the picker', (
       tester,
     ) async {
       await pump(tester, way: RecipeImportWay.snap, isPremium: false);
-      await tester.tap(find.byKey(const ValueKey('recipe-import-camera')));
+      await tester.tap(find.byKey(camera));
       await tester.pumpAndSettle();
       expect(picker.asked, isEmpty);
       expect(drafter.photos, isEmpty);
     });
 
-    testWidgets('no recipe in it asks for another photo', (tester) async {
+    testWidgets('no recipe in them offers to change the photos, kept', (
+      tester,
+    ) async {
       drafter.reading = const RecipeDraftReading(draft: null, callsLeft: 1);
       await pump(tester, way: RecipeImportWay.snap);
-      await tester.tap(find.byKey(const ValueKey('recipe-import-camera')));
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      await tapReadPhotos(tester);
       await tester.pumpAndSettle();
       expect(find.text(RecipeImportCopy.notARecipePhotoTitle), findsOneWidget);
-      expect(find.text(RecipeImportCopy.tryAnotherPhoto), findsOneWidget);
+
+      await tester.tap(find.text(RecipeImportCopy.tryAnotherPhoto));
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.snapsTitle(1)), findsOneWidget);
     });
   });
 
@@ -374,12 +447,29 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('a photo', (tester) async {
+    testWidgets('photos, gathered', (tester) async {
+      picker.next = RecipeSnapPick(
+        snaps: List.generate(RecipeSnap.maxPhotos, (_) => aSnap()),
+      );
       await pump(
         tester,
         way: RecipeImportWay.snap,
         brightness: Brightness.dark,
         scale: 2,
+      );
+      expect(tester.takeException(), isNull);
+      final list = find.byType(Scrollable).first;
+      await tester.scrollUntilVisible(
+        find.byKey(camera),
+        200,
+        scrollable: list,
+      );
+      await tester.tap(find.byKey(camera));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text(RecipeImportCopy.snapsFull),
+        200,
+        scrollable: list,
       );
       expect(tester.takeException(), isNull);
     });

@@ -11,6 +11,7 @@ import '../features/recipes/data/callable_own_recipe_repository.dart';
 import '../features/recipes/data/callable_recipe_document_reader.dart';
 import '../features/recipes/data/callable_recipe_drafter.dart';
 import '../features/recipes/data/device_recipe_photo_picker.dart';
+import '../features/recipes/data/device_recipe_snap_picker.dart';
 import '../features/recipes/data/firestore_recipe_repository.dart';
 import '../features/recipes/data/guarded_web_fetch.dart';
 import '../features/recipes/data/own_recipe_photo_store.dart';
@@ -23,6 +24,7 @@ import '../features/recipes/data/recipe_pdf.dart';
 import '../features/recipes/data/recipe_photo_picker.dart';
 import '../features/recipes/data/recipe_photo_source.dart';
 import '../features/recipes/data/recipe_repository.dart';
+import '../features/recipes/data/recipe_snap_picker.dart';
 import '../features/recipes/data/shared_pdf_inbox.dart';
 import '../features/recipes/data/storage_own_recipe_photo_store.dart';
 import '../features/recipes/data/storage_recipe_photo_source.dart';
@@ -51,6 +53,7 @@ List<SingleChildWidget> recipeProviders() => [
         StorageOwnRecipePhotoStore(context.read<FirebaseStorage>()),
   ),
   Provider<RecipePhotoPicker>(create: (context) => DeviceRecipePhotoPicker()),
+  Provider<RecipeSnapPicker>(create: (context) => DeviceRecipeSnapPicker()),
   Provider<RecipeDrafter>(
     create: (context) =>
         CallableRecipeDrafter(context.read<FirebaseFunctions>()),

@@ -8,13 +8,18 @@ import { parseInput, requireUid } from '../household/parse_input';
 import { checkedListPhoto } from '../list_scan/list_photo';
 import { db } from '../shared/firestore';
 import { pageLink } from '../shared/page_link';
-import { draftFromPageRequest, draftFromPhotoRequest } from './draft_recipe_prompt';
+import {
+  draftFromPageRequest,
+  draftFromPhotoRequest,
+  draftFromPhotosRequest,
+} from './draft_recipe_prompt';
 import { draftFrom, draftReply, type RecipeDraft } from './draft_recipe_reply';
 import {
   MAX_PAGE_IMAGES,
   draftRecipeInput,
   type DraftPage,
   type DraftRecipeInput,
+  type SnapPhoto,
 } from './draft_recipe_schemas';
 import { refuseOwnRecipe } from './errors';
 import { ownRecipeEditorIn } from './own_recipe_caller';
@@ -64,6 +69,7 @@ export const draftRecipe = onCall(
     logger.info('recipe drafted', {
       householdId: input.householdId,
       origin: asked.origin,
+      images: asked.request.parts.filter(({ kind }) => kind === 'inline').length,
       isRecipe: draft !== null,
       lines: draft?.ingredients.length ?? 0,
       steps: draft?.steps.length ?? 0,
@@ -81,16 +87,19 @@ export const draftRecipe = onCall(
   },
 );
 
-function draftAsked(input: DraftRecipeInput): DraftAsked {
+export function draftAsked(input: DraftRecipeInput): DraftAsked {
   if ('page' in input) return pageAsked(input.page);
+  if ('photos' in input) return photoAsked(draftFromPhotosRequest(input.photos.map(checkedSnap)));
   const { mimeType, data } = input.photo;
-  return {
-    origin: 'photo',
-    sourceUrl: null,
-    sourceName: null,
-    imageUrls: [],
-    request: draftFromPhotoRequest(mimeType, checkedListPhoto(mimeType, data)),
-  };
+  return photoAsked(draftFromPhotoRequest(mimeType, checkedListPhoto(mimeType, data)));
+}
+
+function photoAsked(request: ModelRequest): DraftAsked {
+  return { origin: 'photo', sourceUrl: null, sourceName: null, imageUrls: [], request };
+}
+
+function checkedSnap(photo: SnapPhoto): SnapPhoto {
+  return { parts: photo.parts.map((part) => checkedListPhoto('image/jpeg', part)) };
 }
 
 function pageAsked(page: DraftPage): DraftAsked {

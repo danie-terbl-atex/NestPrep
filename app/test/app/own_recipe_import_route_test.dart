@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nestprep/app/meals_route.dart';
 import 'package:nestprep/app/own_recipe_routes.dart';
-import 'package:nestprep/features/list_scan/data/list_photo_picker.dart';
 import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/recipes/data/own_recipe_photo_store.dart';
 import 'package:nestprep/features/recipes/data/own_recipe_repository.dart';
@@ -15,6 +14,7 @@ import 'package:nestprep/features/recipes/data/recipe_image_fetcher.dart';
 import 'package:nestprep/features/recipes/data/recipe_page_reader.dart';
 import 'package:nestprep/features/recipes/data/recipe_photo_picker.dart';
 import 'package:nestprep/features/recipes/data/recipe_photo_source.dart';
+import 'package:nestprep/features/recipes/data/recipe_snap_picker.dart';
 import 'package:nestprep/features/recipes/model/recipe_draft_reading.dart';
 import 'package:nestprep/features/recipes/model/recipe_import_way.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
@@ -22,7 +22,6 @@ import 'package:nestprep/features/subscriptions/state/household_entitlement.dart
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:provider/provider.dart';
 
-import '../support/fake_list_scan.dart';
 import '../support/fake_meal_repository.dart';
 import '../support/fake_own_recipes.dart';
 import '../support/fake_recipe_import.dart';
@@ -76,7 +75,7 @@ void main() {
         Provider<RecipePageReader>.value(value: reader),
         Provider<RecipeDrafter>.value(value: drafter),
         Provider<RecipeImageFetcher>.value(value: images),
-        Provider<ListPhotoPicker>.value(value: FakeListPhotoPicker()),
+        Provider<RecipeSnapPicker>.value(value: FakeRecipeSnapPicker()),
         Provider<OwnRecipeRepository>.value(value: FakeOwnRecipeRepository()),
         Provider<OwnRecipePhotoStore>.value(value: FakeOwnRecipePhotoStore()),
         Provider<RecipePhotoPicker>.value(value: FakeRecipePhotoPicker()),

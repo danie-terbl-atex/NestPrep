@@ -1,6 +1,6 @@
-import '../../list_scan/model/list_photo.dart';
 import '../model/recipe_draft_reading.dart';
 import '../model/recipe_page.dart';
+import '../model/recipe_snap.dart';
 
 abstract interface class RecipeDrafter {
   Future<RecipeDraftReading> fromPage({
@@ -8,8 +8,9 @@ abstract interface class RecipeDrafter {
     required RecipePage page,
   });
 
-  Future<RecipeDraftReading> fromPhoto({
+  /// Every photo of one recipe, read together as one call.
+  Future<RecipeDraftReading> fromPhotos({
     required String householdId,
-    required ListPhoto photo,
+    required List<RecipeSnap> photos,
   });
 }

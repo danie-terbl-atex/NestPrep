@@ -13,7 +13,7 @@ import '../state/recipe_import_controller.dart';
 import 'recipe_import_panels.dart';
 import 'recipe_import_start_panel.dart';
 
-/// A link or a photo on its way to a filled builder (recipes ADR-0008). A
+/// A link or photos on their way to a filled builder (recipes ADR-0008). A
 /// [sharedLink] starts at once, because the share sheet has already said what
 /// leaves the phone; every other way starts on the panel that says it.
 class RecipeImportScreen extends StatefulWidget {
@@ -63,8 +63,8 @@ class _RecipeImportScreenState extends State<RecipeImportScreen> {
     if (mounted && await _mayStart()) await _controller.readLink(link);
   }
 
-  Future<void> _pick(ListPhotoSource source) async {
-    if (await _mayStart()) await _controller.pick(source);
+  Future<void> _addPhotos(ListPhotoSource source) async {
+    if (await _mayStart()) await _controller.addPhotos(source);
   }
 
   @override
@@ -92,7 +92,12 @@ class _RecipeImportScreenState extends State<RecipeImportScreen> {
                 RecipeImportWay.snap => RecipeImportSnapPanel(
                   failure: controller.failure,
                   isAiWelcome: controller.isAiWelcome,
-                  onPick: _pick,
+                  snaps: controller.snaps,
+                  isAdding: controller.isAdding,
+                  canAdd: controller.canAddPhoto,
+                  onAdd: _addPhotos,
+                  onRemove: controller.removePhoto,
+                  onRead: controller.readPhotos,
                 ),
               },
               RecipeImportStep.readingPage => const RecipeImportWorkingPanel(

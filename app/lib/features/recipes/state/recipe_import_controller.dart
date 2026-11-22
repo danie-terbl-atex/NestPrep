@@ -2,16 +2,17 @@ import 'package:flutter/foundation.dart';
 
 import '../../../shared/failure/app_failure.dart';
 import '../../list_scan/data/list_photo_picker.dart';
-import '../../list_scan/model/list_photo.dart';
 import '../data/page_link.dart';
 import '../data/recipe_drafter.dart';
 import '../data/recipe_page_reader.dart';
+import '../data/recipe_snap_picker.dart';
 import '../model/recipe_draft.dart';
 import '../model/recipe_draft_reading.dart';
 import '../model/recipe_form.dart';
 import '../model/recipe_import_way.dart';
 import '../model/recipe_origin.dart';
 import '../model/recipe_page.dart';
+import '../model/recipe_snap.dart';
 
 enum RecipeImportStep { start, readingPage, askingAi, stopped, done }
 
@@ -19,15 +20,15 @@ final class RecipeImportController extends ChangeNotifier {
   RecipeImportController({
     required RecipePageReader pageReader,
     required this._drafter,
-    required ListPhotoPicker photoPicker,
+    required RecipeSnapPicker snapPicker,
     required this.householdId,
     required this._way,
   }) : _reader = pageReader,
-       _picker = photoPicker;
+       _picker = snapPicker;
 
   final RecipePageReader _reader;
   final RecipeDrafter _drafter;
-  final ListPhotoPicker _picker;
+  final RecipeSnapPicker _picker;
   final String householdId;
 
   RecipeImportWay _way;
@@ -35,7 +36,8 @@ final class RecipeImportController extends ChangeNotifier {
   AppFailure? _failure;
   String? _link;
   RecipePage? _page;
-  ListPhoto? _photo;
+  final _snaps = <RecipeSnap>[];
+  bool _isAdding = false;
   RecipeDraft? _draft;
   int? _callsLeft;
   bool _isDisposed = false;
@@ -47,6 +49,17 @@ final class RecipeImportController extends ChangeNotifier {
   int? get callsLeft => _callsLeft;
 
   String? get carriedLink => _link;
+
+  List<RecipeSnap> get snaps => List.unmodifiable(_snaps);
+  bool get isAdding => _isAdding;
+
+  bool get canAddPhoto => _photoRoom > 0 && _partRoom > 0;
+
+  int get _photoRoom => RecipeSnap.maxPhotos - _snaps.length;
+
+  int get _partRoom =>
+      RecipeSnap.maxParts -
+      _snaps.fold(0, (total, snap) => total + snap.parts.length);
 
   bool get isAiWelcome => _step == RecipeImportStep.start && _failure == null;
 
@@ -83,7 +96,7 @@ final class RecipeImportController extends ChangeNotifier {
     final link = pageLink(raw);
     _link = link;
     _page = null;
-    _photo = null;
+    _snaps.clear();
     if (link == null) {
       return _stop(
         const RecipeImportFailure(RecipeImportProblem.linkNotPublic),
@@ -92,24 +105,42 @@ final class RecipeImportController extends ChangeNotifier {
     await _readPage(link);
   }
 
-  Future<void> pick(ListPhotoSource source) async {
-    if (_isBusy) return;
-    final ListPhoto? photo;
+  Future<void> addPhotos(ListPhotoSource source) async {
+    if (_isBusy || _isAdding || !canAddPhoto) return;
+    _isAdding = true;
+    _moveTo(RecipeImportStep.start);
+    AppFailure? problem;
     try {
-      photo = await _picker.pick(source);
+      final pick = await _picker.pick(
+        source,
+        photoRoom: _photoRoom,
+        partRoom: _partRoom,
+      );
+      _snaps.addAll(pick.snaps);
+      problem = pick.problem;
     } on AppFailure catch (failure) {
-      return _moveTo(RecipeImportStep.start, failure: failure);
+      problem = failure;
+    } finally {
+      _isAdding = false;
+      _moveTo(RecipeImportStep.start, failure: problem);
     }
-    if (photo == null) return;
-    _photo = photo;
-    await _askAboutPhoto(photo);
+  }
+
+  void removePhoto(RecipeSnap snap) {
+    if (_isBusy || !_snaps.remove(snap)) return;
+    _moveTo(RecipeImportStep.start);
+  }
+
+  Future<void> readPhotos() async {
+    if (_isBusy || _isAdding || _snaps.isEmpty) return;
+    await _askAboutPhotos();
   }
 
   Future<void> retry() async {
     if (!canRetry) return;
     // The page is kept: only the model is asked again, never the site.
     if (_page case final page?) return _askAboutPage(page);
-    if (_photo case final photo?) return _askAboutPhoto(photo);
+    if (_snaps.isNotEmpty) return _askAboutPhotos();
     if (_link case final link?) return _readPage(link);
   }
 
@@ -139,8 +170,8 @@ final class RecipeImportController extends ChangeNotifier {
   Future<void> _askAboutPage(RecipePage page) =>
       _ask(() => _drafter.fromPage(householdId: householdId, page: page));
 
-  Future<void> _askAboutPhoto(ListPhoto photo) =>
-      _ask(() => _drafter.fromPhoto(householdId: householdId, photo: photo));
+  Future<void> _askAboutPhotos() =>
+      _ask(() => _drafter.fromPhotos(householdId: householdId, photos: snaps));
 
   Future<void> _ask(Future<RecipeDraftReading> Function() asked) async {
     _moveTo(RecipeImportStep.askingAi);

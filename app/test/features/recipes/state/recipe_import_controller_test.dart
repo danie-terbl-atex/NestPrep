@@ -2,33 +2,34 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/list_scan/data/list_photo_picker.dart';
+import 'package:nestprep/features/recipes/data/recipe_snap_picker.dart';
 import 'package:nestprep/features/recipes/model/recipe_draft_reading.dart';
 import 'package:nestprep/features/recipes/model/recipe_form.dart';
 import 'package:nestprep/features/recipes/model/recipe_import_way.dart';
 import 'package:nestprep/features/recipes/model/recipe_origin.dart';
+import 'package:nestprep/features/recipes/model/recipe_snap.dart';
 import 'package:nestprep/features/recipes/state/recipe_import_controller.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
 
-import '../../../support/fake_list_scan.dart';
 import '../../../support/fake_recipe_import.dart';
 import '../../../support/household_fixtures.dart';
 
 void main() {
   late FakeRecipePageReader reader;
   late FakeRecipeDrafter drafter;
-  late FakeListPhotoPicker picker;
+  late FakeRecipeSnapPicker picker;
 
   setUp(() {
     reader = FakeRecipePageReader();
     drafter = FakeRecipeDrafter();
-    picker = FakeListPhotoPicker();
+    picker = FakeRecipeSnapPicker();
   });
 
   RecipeImportController make({RecipeImportWay way = RecipeImportWay.link}) {
     final controller = RecipeImportController(
       pageReader: reader,
       drafter: drafter,
-      photoPicker: picker,
+      snapPicker: picker,
       householdId: Fixtures.householdId,
       way: way,
     );
@@ -160,8 +161,9 @@ void main() {
       expect(controller.step, RecipeImportStep.start);
       expect(controller.failure, isNull);
 
-      await controller.pick(ListPhotoSource.photos);
-      expect(picker.asked, [ListPhotoSource.photos]);
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(picker.asked.single.source, ListPhotoSource.photos);
+      await controller.readPhotos();
       expect(drafter.photos, hasLength(1));
       final draft = controller.draft!;
       expect(draft.origin, RecipeOrigin.photo);
@@ -231,8 +233,10 @@ void main() {
     });
   });
 
-  group('a photo', () {
-    test('sends only once one is picked, and asks nothing of a site', () async {
+  group('photos', () {
+    RecipeImportController snapping() => make(way: RecipeImportWay.snap);
+
+    test('are gathered first, and only read when asked', () async {
       drafter.reading = RecipeDraftReading(
         draft: aBobotieDraft(
           origin: RecipeOrigin.photo,
@@ -241,19 +245,83 @@ void main() {
         ),
         callsLeft: 3,
       );
-      final controller = make(way: RecipeImportWay.snap);
-      await controller.pick(ListPhotoSource.camera);
-      expect(drafter.photos.single, aListPhoto);
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.camera);
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(controller.snaps, hasLength(2));
+      expect(controller.step, RecipeImportStep.start);
+      expect(drafter.photos, isEmpty);
+
+      await controller.readPhotos();
+      expect(drafter.photos.single, controller.snaps);
       expect(reader.asked, isEmpty);
       expect(controller.draft!.sourceUrl, isNull);
     });
 
-    test('backing out of the picker changes nothing', () async {
-      picker.next = null;
-      final controller = make(way: RecipeImportWay.snap);
-      await controller.pick(ListPhotoSource.camera);
-      expect(controller.step, RecipeImportStep.start);
+    test('the picker is told how much room is left', () async {
+      picker.next = RecipeSnapPick(snaps: [aSnap(parts: 3), aSnap(parts: 2)]);
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(picker.asked.map((ask) => (ask.photoRoom, ask.partRoom)), [
+        (RecipeSnap.maxPhotos, RecipeSnap.maxParts),
+        (RecipeSnap.maxPhotos - 2, RecipeSnap.maxParts - 5),
+      ]);
+    });
+
+    test('eight photos is full, and taking one out makes room', () async {
+      picker.next = RecipeSnapPick(
+        snaps: List.generate(RecipeSnap.maxPhotos, (_) => aSnap()),
+      );
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(controller.canAddPhoto, isFalse);
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(picker.asked, hasLength(1));
+
+      controller.removePhoto(controller.snaps.first);
+      expect(controller.snaps, hasLength(RecipeSnap.maxPhotos - 1));
+      expect(controller.canAddPhoto, isTrue);
+    });
+
+    test('forty parts is full too', () async {
+      picker.next = RecipeSnapPick(snaps: [aSnap(parts: RecipeSnap.maxParts)]);
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(controller.canAddPhoto, isFalse);
+    });
+
+    test('says it is adding while the photos are made ready', () async {
+      picker.gate = Completer<void>();
+      final controller = snapping();
+      final adding = controller.addPhotos(ListPhotoSource.photos);
+      expect(controller.isAdding, isTrue);
+      await controller.readPhotos();
+      picker.gate!.complete();
+      await adding;
+      expect(controller.isAdding, isFalse);
       expect(drafter.photos, isEmpty);
+    });
+
+    test('backing out of the picker changes nothing', () async {
+      picker.next = const RecipeSnapPick();
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.camera);
+      expect(controller.step, RecipeImportStep.start);
+      expect(controller.snaps, isEmpty);
+      expect(controller.failure, isNull);
+    });
+
+    test('a photo left out is said, and the others are kept', () async {
+      picker.next = RecipeSnapPick(
+        snaps: [aSnap()],
+        problem: const RecipeImportFailure(RecipeImportProblem.photosTooLong),
+      );
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      expect(controller.snaps, hasLength(1));
+      expect(controller.failure, isA<RecipeImportFailure>());
+      expect(controller.step, RecipeImportStep.start);
     });
 
     test(
@@ -262,21 +330,35 @@ void main() {
         picker.failWith = const ListScanFailure(
           ListScanProblem.pickerUnavailable,
         );
-        final controller = make(way: RecipeImportWay.snap);
-        await controller.pick(ListPhotoSource.camera);
+        final controller = snapping();
+        await controller.addPhotos(ListPhotoSource.camera);
         expect(controller.step, RecipeImportStep.start);
         expect(controller.failure, isA<ListScanFailure>());
+        expect(controller.isAdding, isFalse);
       },
     );
 
-    test('a model that did not answer retries the same photo', () async {
+    test('a model that did not answer retries the same photos', () async {
       drafter.failWith = const AiFailure(AiProblem.aiUnavailable);
-      final controller = make(way: RecipeImportWay.snap);
-      await controller.pick(ListPhotoSource.photos);
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      await controller.readPhotos();
       drafter.failWith = null;
       await controller.retry();
       expect(picker.asked, hasLength(1));
       expect(drafter.photos, hasLength(2));
+      expect(drafter.photos.last, drafter.photos.first);
+    });
+
+    test('changing the photos after a failure keeps them', () async {
+      drafter.reading = const RecipeDraftReading(draft: null, callsLeft: 1);
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      await controller.readPhotos();
+      expect(controller.step, RecipeImportStep.stopped);
+      controller.useScreenshot();
+      expect(controller.step, RecipeImportStep.start);
+      expect(controller.snaps, hasLength(1));
     });
   });
 
@@ -285,7 +367,7 @@ void main() {
     final controller = RecipeImportController(
       pageReader: reader,
       drafter: drafter,
-      photoPicker: picker,
+      snapPicker: picker,
       householdId: Fixtures.householdId,
       way: RecipeImportWay.link,
     );
