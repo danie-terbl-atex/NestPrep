@@ -69,6 +69,29 @@ void main() {
     expect(find.text('home'), findsOneWidget);
   });
 
+  testWidgets('asks again when the app comes back, and offers what arrived', (
+    tester,
+  ) async {
+    await openShell(tester, waiting: const []);
+    expect(find.text(PremiumVoucherCopy.sheetTitle), findsNothing);
+
+    premium.vouchers.waiting = [FakePremiumVoucherDirectory.frame];
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+
+    expect(premium.vouchers.listed, 2);
+    expect(find.text(PremiumVoucherCopy.sheetTitle), findsOneWidget);
+  });
+
+  testWidgets('switched off, coming back asks nothing either', (tester) async {
+    await openShell(tester, vouchersOn: false);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(premium.vouchers.listed, 0);
+  });
+
   testWidgets('with nothing waiting it opens nothing', (tester) async {
     await openShell(tester, waiting: const []);
     expect(premium.vouchers.listed, 1);

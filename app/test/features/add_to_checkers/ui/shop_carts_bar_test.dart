@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nestprep/features/add_to_checkers/ui/list_match_page.dart';
 import 'package:nestprep/features/add_to_checkers/ui/product_match_line.dart';
 import 'package:nestprep/features/add_to_checkers/ui/retailer_logo.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 import 'package:nestprep/shared/copy/app_copy.dart';
 import 'package:nestprep/shared/copy/basket_compare_copy.dart';
 import 'package:nestprep/shared/copy/checkers_copy.dart';
+import 'package:nestprep/shared/copy/list_match_copy.dart';
 import 'package:nestprep/shared/flags/feature_flag.dart';
 import 'package:nestprep/shared/money/money.dart';
 
@@ -103,38 +105,21 @@ void main() {
     expect(find.byKey(const ValueKey('add-to-cart-checkers')), findsOneWidget);
   });
 
-  testWidgets('*Find at* on the unmatched line looks for every unmatched '
-      'item, and matches them where they stand (groceries ADR-0009)', (
-    tester,
-  ) async {
+  testWidgets('*Find at* on the unmatched line opens the page that matches '
+      'them one at a time (groceries ADR-0010)', (tester) async {
     final h = await mixedList(tester);
-    final items = [...h.list.repository.items, groceryItem('pepper', id: 'p')];
-    h.list.repository.emitItems(items);
+    h.list.repository.emitItems([
+      ...h.list.repository.items,
+      groceryItem('pepper', id: 'p'),
+    ]);
     await tester.pumpAndSettle();
     expect(find.text(CheckersCopy.notMatched(2)), findsOneWidget);
 
     await tapKey(tester, 'find-unmatched');
-    expect(find.text(RecipeShopCopy.matchSheetTitle), findsOneWidget);
-    expect([
-      for (final search in h.catalogue.searches) search.query,
-    ], containsAll(['salt', 'pepper']));
+    expect(find.byType(ListMatchPage), findsOneWidget);
+    expect(find.text(ListMatchCopy.step(0, 2)), findsOneWidget);
     expect(h.matches.target, isNull);
-
-    expect(find.text(RecipeShopCopy.matchOnList(2)), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('recipe-shop-list')));
-    await tester.pump();
-    h.list.repository.emitItems(items);
-    await tester.pumpAndSettle();
-
-    expect(
-      [for (final set in h.list.repository.matchesSet) set.itemId],
-      ['s', 'p'],
-    );
     expect(h.list.repository.added, isEmpty);
-    expect(
-      find.text(RecipeShopCopy.matched(2, ProductRetailer.checkers)),
-      findsOneWidget,
-    );
   });
 
   testWidgets('every match line shows its shop', (tester) async {

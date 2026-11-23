@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1206" height="168" viewBox="0 0 1206 168">
+  <rect width="1206" height="168" fill="#FFF8ED"/>
+  <text x="78" y="102" font-family="Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="46" font-weight="500" fill="#1F1A1C" letter-spacing="0.5">9:41</text>
+  <circle cx="603" cy="86" r="25" fill="#0A0A0A"/>
+  <circle cx="596" cy="79" r="6" fill="#2A2A33"/>
+  <g fill="#1F1A1C" transform="translate(940 62)">
+    <path d="M24 46 L-3 9 A44 44 0 0 1 51 9 Z"/>
+    <path d="M70 46 L110 6 L110 46 Z"/>
+    <rect x="132" y="-2" width="26" height="48" rx="5"/>
+    <rect x="139" y="-7" width="12" height="6" rx="2"/>
+  </g>
+</svg>

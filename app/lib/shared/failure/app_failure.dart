@@ -261,6 +261,9 @@ enum CalendarSyncProblem {
   /// Nothing on the phone would open the provider's sign-in page.
   couldNotOpenBrowser,
 
+  /// No calendar app on the phone takes a subscription link.
+  noCalendarApp,
+
   /// This iPhone has not let NestPrep read its calendars; only Settings can
   /// change that now.
   appleCalendarDenied,

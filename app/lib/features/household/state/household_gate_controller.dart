@@ -33,6 +33,7 @@ final class HouseholdGateController extends ChangeNotifier {
   final String defaultTimeZone;
 
   bool _isBusy = false;
+  bool _isDisposed = false;
   AppFailure? _failure;
 
   bool get isBusy => _isBusy;
@@ -92,7 +93,15 @@ final class HouseholdGateController extends ChangeNotifier {
       return false;
     } finally {
       _isBusy = false;
-      notifyListeners();
+      // Success takes the screen, and this controller with it, off the router
+      // before the call has answered.
+      if (!_isDisposed) notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
@@ -7,6 +6,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
 import '../../../shared/format/nest_dates.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../household/model/household_view.dart';
 import '../model/vault_view.dart';
 import '../state/vault_view_log_controller.dart';
@@ -24,14 +24,7 @@ class VaultViewLogScreen extends StatelessWidget {
     final controller = context.watch<VaultViewLogController>();
     return NestScaffold(
       title: VaultCopy.logTitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

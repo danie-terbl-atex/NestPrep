@@ -171,6 +171,9 @@ abstract final class CalendarSyncCopy {
       'That calendar could not be reached just now. Try again in a moment.',
     CalendarSyncProblem.couldNotOpenBrowser =>
       'Nothing on this phone would open the sign-in page.',
+    CalendarSyncProblem.noCalendarApp =>
+      'No calendar app on this phone took the link. Copy the link and add '
+          'it in your calendar as a calendar from a URL.',
     CalendarSyncProblem.appleCalendarDenied =>
       'NestPrep is not allowed to read this iPhone’s calendars. Turn on '
           'Calendars for NestPrep in Settings, then try again.',

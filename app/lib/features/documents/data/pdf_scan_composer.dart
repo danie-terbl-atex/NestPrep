@@ -68,6 +68,7 @@ final class PdfScanComposer implements ScanComposer {
               interpolation: img.Interpolation.average,
             );
     }
+    upright.iccProfile = null;
     return CompressedPage(
       jpeg: img.encodeJpg(upright, quality: jpegQuality),
       width: upright.width,

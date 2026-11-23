@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../app/household_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../household/model/household_area.dart';
 import '../../household/model/household_view.dart';
 import '../../subscriptions/model/premium_feature.dart';
@@ -29,14 +30,7 @@ class PlacesScreen extends StatelessWidget {
     return NestScaffold(
       title: LocationCopy.places,
       subtitle: LocationCopy.placesBody,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       body: NestAsyncView<List<FamilyPlace>>(
         state: controller.view,
         isEmpty: (_) => false,

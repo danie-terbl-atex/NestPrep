@@ -61,6 +61,18 @@ void main() {
         expect(find.byTooltip(AppCopy.showPassword), findsNothing);
       });
 
+      testWidgets('a field with its label hidden still names itself', (
+        tester,
+      ) async {
+        await pumpKit(
+          tester,
+          const NestTextField(label: 'Name', isLabelShown: false),
+          brightness: brightness,
+        );
+        expect(find.text('Name'), findsNothing);
+        expect(find.bySemanticsLabel('Name'), findsOneWidget);
+      });
+
       testWidgets('a chip reports selection and taps', (tester) async {
         var taps = 0;
         await pumpKit(

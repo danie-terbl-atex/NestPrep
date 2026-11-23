@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../avatars/ui/nest_portrait_entry.dart';
 import '../model/frame_photo.dart';
@@ -20,14 +20,7 @@ class FramePhotosScreen extends StatelessWidget {
         controller.isLoaded && (!controller.isEmpty || controller.isAdding);
     return NestScaffold(
       title: PhotoFrameCopy.photosTitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: const [AccountMenuButton()],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

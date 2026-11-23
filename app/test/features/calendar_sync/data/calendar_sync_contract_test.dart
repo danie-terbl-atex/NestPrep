@@ -80,6 +80,7 @@ void main() {
     // These are the phone saying no, not a Function.
     const phoneOnly = {
       CalendarSyncProblem.couldNotOpenBrowser,
+      CalendarSyncProblem.noCalendarApp,
       CalendarSyncProblem.appleCalendarDenied,
       CalendarSyncProblem.appleCalendarRestricted,
       CalendarSyncProblem.noAppleCalendarChosen,

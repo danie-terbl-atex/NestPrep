@@ -428,6 +428,23 @@ void main() {
       await controller.subscribeToFeed();
       expect(opener.opened.single.toString(), 'webcal://feed.test/x');
     });
+
+    test('a phone with no calendar app for the link says so, and points at '
+        'the copy button', () async {
+      opener.opens = false;
+      final controller = controllerFor();
+      repository.emitFeed(const CalendarFeedLink('https://feed.test/x'));
+      await pumpEventQueue();
+      await controller.subscribeToFeed();
+      expect(
+        controller.actionFailure,
+        isA<CalendarSyncFailure>().having(
+          (failure) => failure.problem,
+          'problem',
+          CalendarSyncProblem.noCalendarApp,
+        ),
+      );
+    });
   });
 
   test('a status the build does not know reads as needing attention', () {

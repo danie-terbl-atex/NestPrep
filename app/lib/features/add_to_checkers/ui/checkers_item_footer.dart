@@ -19,11 +19,15 @@ class CheckersItemFooter extends StatelessWidget {
   const CheckersItemFooter({
     required this.item,
     required this.canEdit,
+    this.productsKey,
     super.key,
   });
 
   final GroceryItem item;
   final bool canEdit;
+
+  /// Marks the open products, so the list can measure them before they close.
+  final Key? productsKey;
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +47,12 @@ class CheckersItemFooter extends StatelessWidget {
             onChange: canChange ? () => _change(context, controller) : null,
             onClear: canChange ? () => controller.clear(item) : null,
           ),
-        if (isTarget) ...[
-          const SizedBox(height: NestSpace.sm),
-          const ProductMatchPanel(),
-        ],
+        if (isTarget)
+          Padding(
+            key: productsKey,
+            padding: const EdgeInsets.only(top: NestSpace.sm),
+            child: const ProductMatchPanel(),
+          ),
       ],
     );
   }

@@ -50,18 +50,12 @@ class _GroceryAddFieldState extends State<GroceryAddField> {
     final leading = widget.leading;
     final trailing = widget.trailing;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (leading != null) ...[
-          Padding(
-            padding: const EdgeInsets.only(bottom: NestSpace.xxs),
-            child: leading,
-          ),
-          const SizedBox(width: NestSpace.sm),
-        ],
+        if (leading != null) ...[leading, const SizedBox(width: NestSpace.sm)],
         Expanded(
           child: NestTextField(
             label: AppCopy.groceriesAdd,
+            isLabelShown: false,
             hint: AppCopy.groceriesAddHint,
             controller: _name,
             focusNode: _focus,
@@ -70,24 +64,18 @@ class _GroceryAddFieldState extends State<GroceryAddField> {
           ),
         ),
         const SizedBox(width: NestSpace.sm),
-        Padding(
-          padding: const EdgeInsets.only(bottom: NestSpace.xxs),
-          child: ListenableBuilder(
-            listenable: _name,
-            builder: (context, _) => NestIconButton(
-              icon: LucideIcons.plus,
-              label: AppCopy.groceriesAdd,
-              variant: NestIconButtonVariant.accent,
-              onPressed: _name.text.trim().isNotEmpty ? _submit : null,
-            ),
+        ListenableBuilder(
+          listenable: _name,
+          builder: (context, _) => NestIconButton(
+            icon: LucideIcons.plus,
+            label: AppCopy.groceriesAdd,
+            variant: NestIconButtonVariant.accent,
+            onPressed: _name.text.trim().isNotEmpty ? _submit : null,
           ),
         ),
         if (trailing != null) ...[
           const SizedBox(width: NestSpace.sm),
-          Padding(
-            padding: const EdgeInsets.only(bottom: NestSpace.xxs),
-            child: trailing,
-          ),
+          trailing,
         ],
       ],
     );

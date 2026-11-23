@@ -318,7 +318,28 @@ describe('a client metadata document', () => {
       commit: (): Promise<unknown[]> => Promise.resolve([]),
     }),
   } as unknown as Firestore;
-  const resolve = (document: Record<string, unknown>): Promise<ClientResolution> =>
+  const CHATGPT_ID = 'https://chatgpt.com/oauth/client.json';
+  const chatGptAsServed = {
+    client_id: CHATGPT_ID,
+    client_uri: 'https://chatgpt.com/',
+    redirect_uris: ['https://chatgpt.com/connector_platform_oauth_redirect'],
+    token_endpoint_auth_method: 'private_key_jwt',
+    token_endpoint_auth_methods_supported: ['none', 'private_key_jwt'],
+    grant_types: [
+      'authorization_code',
+      'refresh_token',
+      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+    ],
+    response_types: ['code'],
+    client_name: 'ChatGPT',
+    logo_uri: 'https://persistent.oaistatic.com/sonic/misc/openai-logo.png',
+    token_endpoint_auth_signing_alg: 'RS256',
+    jwks_uri: 'https://chatgpt.com/oauth/jwks.json',
+  };
+  const resolve = (
+    document: Record<string, unknown>,
+    clientId = CLAUDE_ID,
+  ): Promise<ClientResolution> =>
     resolveClient(
       {
         store: emptyStore,
@@ -327,12 +348,40 @@ describe('a client metadata document', () => {
         allowLocalDocuments: false,
         now: new Date('2026-10-29T20:00:00Z'),
       },
-      CLAUDE_ID,
+      clientId,
     );
 
   it('is accepted as Claude serves it, with grant types NestPrep never issues', async () => {
     const resolution = await resolve(claudeAsServed);
     expect(resolution).toMatchObject({ kind: 'client', client: { via: 'claude' } });
+  });
+
+  it('is accepted as ChatGPT serves it, a key-signing client that also signs in as a public one', async () => {
+    const resolution = await resolve(chatGptAsServed, CHATGPT_ID);
+    expect(resolution).toMatchObject({
+      kind: 'client',
+      client: { via: 'chatgpt', clientName: 'ChatGPT', host: 'chatgpt.com' },
+    });
+  });
+
+  it('is refused when it can only sign in with a key', async () => {
+    const keyOnly = {
+      ...chatGptAsServed,
+      token_endpoint_auth_methods_supported: ['private_key_jwt'],
+    };
+    expect(await resolve(keyOnly, CHATGPT_ID)).toEqual({
+      kind: 'unknown',
+      reason: 'documentShape',
+    });
+    expect(
+      await resolve(
+        { ...chatGptAsServed, token_endpoint_auth_methods_supported: undefined },
+        CHATGPT_ID,
+      ),
+    ).toEqual({
+      kind: 'unknown',
+      reason: 'documentShape',
+    });
   });
 
   it('is refused when it does not offer the code flow', async () => {

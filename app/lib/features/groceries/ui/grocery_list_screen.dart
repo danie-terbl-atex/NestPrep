@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -315,7 +317,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   );
 }
 
-class _GroceryList extends StatelessWidget {
+class _GroceryList extends StatefulWidget {
   const _GroceryList({
     required this.householdId,
     required this.view,
@@ -335,7 +337,61 @@ class _GroceryList extends StatelessWidget {
   final Widget? header;
 
   @override
+  State<_GroceryList> createState() => _GroceryListState();
+}
+
+class _GroceryListState extends State<_GroceryList> {
+  final _openProducts = GlobalKey();
+  ProductMatchController? _matches;
+  String? _openItemId;
+
+  @override
+  void initState() {
+    super.initState();
+    _matches = Provider.of<ProductMatchController?>(context, listen: false)
+      ?..addListener(_holdTappedRowStill);
+    _openItemId = _matches?.target?.itemId;
+  }
+
+  @override
+  void dispose() {
+    _matches?.removeListener(_holdTappedRowStill);
+    super.dispose();
+  }
+
+  /// Products closing above the row that was tapped would slide it up by
+  /// their height, often off the screen, so the list gives that height back
+  /// before the next frame.
+  void _holdTappedRowStill() {
+    final closing = _openItemId;
+    final opening = _matches?.target?.itemId;
+    _openItemId = opening;
+    if (closing == null || opening == null || closing == opening) return;
+    final order = [for (final item in widget.view.toBuy) item.id];
+    final closingAt = order.indexOf(closing);
+    if (closingAt < 0 || closingAt > order.indexOf(opening)) return;
+    final products = _openProducts.currentContext?.findRenderObject();
+    if (products is! RenderBox || !products.hasSize) return;
+    final position = Scrollable.of(_openProducts.currentContext!).position;
+    position.jumpTo(
+      math.max(
+        position.minScrollExtent,
+        position.pixels - products.size.height,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _GroceryList(
+      :householdId,
+      :view,
+      :checkersOn,
+      :canEdit,
+      :typeAhead,
+      :suggestions,
+      :header,
+    ) = widget;
     return ListView(
       padding: const EdgeInsets.only(bottom: NestSize.bottomBarHeight * 2),
       children: [
@@ -370,6 +426,7 @@ class _GroceryList extends StatelessWidget {
                 item: item,
                 checkersOn: checkersOn,
                 canEdit: canEdit,
+                productsKey: _openProducts,
               ),
             ),
         ],
@@ -402,12 +459,14 @@ class _GroceryListRow extends StatelessWidget {
     required this.item,
     required this.checkersOn,
     required this.canEdit,
+    this.productsKey,
     super.key,
   });
 
   final GroceryItem item;
   final bool checkersOn;
   final bool canEdit;
+  final Key? productsKey;
 
   @override
   Widget build(BuildContext context) {
@@ -421,7 +480,11 @@ class _GroceryListRow extends StatelessWidget {
           ? FindAtCheckersButton(item: item)
           : null,
       footer: checkersOn
-          ? CheckersItemFooter(item: item, canEdit: canEdit)
+          ? CheckersItemFooter(
+              item: item,
+              canEdit: canEdit,
+              productsKey: productsKey,
+            )
           : null,
     );
   }

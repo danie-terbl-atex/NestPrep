@@ -7,6 +7,7 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/kid_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/kid_device.dart';
 import '../model/kid_sign_in_entry.dart';
@@ -27,14 +28,7 @@ class KidSignInScreen extends StatelessWidget {
     final failure = controller.actionFailure;
     return NestScaffold(
       title: KidCopy.manageTitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: const [AccountMenuButton()],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

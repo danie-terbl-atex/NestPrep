@@ -419,6 +419,10 @@ frame's tests parse a byte-identical copy and the app's resolve the same looks
   `CALENDAR_MICROSOFT_CLIENT_SECRET=unset`, `SUBSCRIPTIONS_APPLE_PRIVATE_KEY=unset` and
   `CHECKERS_SESSION_KEY=unset`, `PNP_SESSION_KEY=unset`, `WOOLWORTHS_SESSION_KEY=unset` and `ASSISTANTS_TOKEN_KEY=unset` (the emulator then seals with a fixed local key) in
   `functions/.secret.local` (git-ignored).
+  **`PREMIUM_EMAIL_PEPPER` is the one that is not noise:** an account that may read it makes the
+  emulator hash with the real pepper while the tests hash with `EMULATOR_PEPPER`, and 25 of
+  `premium_vouchers.test.ts` fail with `notYourVoucher`. `PREMIUM_EMAIL_PEPPER=unset` in the same file
+  fixes it.
 - **Two emulator suites on one machine share project id `nestprep-643b7`.** The rules and emulator
   harnesses read `FIRESTORE_EMULATOR_HOST`, `FIREBASE_STORAGE_EMULATOR_HOST` and
   `FUNCTIONS_EMULATOR_HOST`; `emulators:exec` sets the first two but **not** the Functions one, so a

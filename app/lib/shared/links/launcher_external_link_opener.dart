@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'external_link_opener.dart';
@@ -8,7 +9,16 @@ import 'external_link_opener.dart';
 final class LauncherExternalLinkOpener implements ExternalLinkOpener {
   const LauncherExternalLinkOpener();
 
+  /// Android throws rather than answering false when no app takes the link —
+  /// a `webcal://` subscription on a phone with no calendar app that knows the
+  /// scheme. The exception's message carries the whole link, token included,
+  /// so it must never reach the crash report.
   @override
-  Future<bool> open(Uri link) =>
-      launchUrl(link, mode: LaunchMode.externalApplication);
+  Future<bool> open(Uri link) async {
+    try {
+      return await launchUrl(link, mode: LaunchMode.externalApplication);
+    } on PlatformException {
+      return false;
+    }
+  }
 }

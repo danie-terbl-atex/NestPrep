@@ -390,6 +390,19 @@ void main() {
       expect(tester.widget<NestButton>(find.byKey(camera)).onPressed, isNull);
     });
 
+    testWidgets('say they are being got ready until they are', (tester) async {
+      picker.gate = Completer<void>();
+      await pump(tester, way: RecipeImportWay.snap);
+      await tester.tap(find.byKey(camera));
+      await tester.pump();
+      expect(find.text(RecipeImportCopy.gettingPhotosReady), findsOneWidget);
+
+      picker.gate!.complete();
+      await tester.pumpAndSettle();
+      expect(find.text(RecipeImportCopy.gettingPhotosReady), findsNothing);
+      expect(find.text(RecipeImportCopy.snapsTitle(1)), findsOneWidget);
+    });
+
     testWidgets('a photo left out is said above the ones kept', (tester) async {
       picker.next = RecipeSnapPick(
         snaps: [aSnap()],

@@ -51,14 +51,28 @@ export const clientResponseTypes = z
   .max(10)
   .refine((types) => types.includes('code'));
 
-const clientDocument = z.object({
-  client_id: z.string(),
-  client_name: z.string().trim().min(1).max(100).optional(),
-  redirect_uris: z.array(z.string().max(2048)).min(1).max(20),
-  token_endpoint_auth_method: z.literal('none').optional(),
-  grant_types: clientGrantTypes.optional(),
-  response_types: clientResponseTypes.optional(),
-});
+/**
+ * NestPrep's clients are public, so a document must be able to use `none` at
+ * the token endpoint. ChatGPT's declares `private_key_jwt` and lists `none`
+ * among the methods it also supports, then uses `none` because that is all
+ * this server advertises.
+ */
+const clientDocument = z
+  .object({
+    client_id: z.string(),
+    client_name: z.string().trim().min(1).max(100).optional(),
+    redirect_uris: z.array(z.string().max(2048)).min(1).max(20),
+    token_endpoint_auth_method: z.string().max(200).optional(),
+    token_endpoint_auth_methods_supported: z.array(z.string().max(200)).max(10).optional(),
+    grant_types: clientGrantTypes.optional(),
+    response_types: clientResponseTypes.optional(),
+  })
+  .refine(
+    (document) =>
+      document.token_endpoint_auth_method === undefined ||
+      document.token_endpoint_auth_method === 'none' ||
+      document.token_endpoint_auth_methods_supported?.includes('none') === true,
+  );
 
 export async function resolveClient(
   lookup: ClientLookup,

@@ -6,6 +6,7 @@ import '../../../app/photo_frame_route.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/photo_frame.dart';
 import '../state/frame_photos_controller.dart';
@@ -48,14 +49,7 @@ class _PhotoFramesScreenState extends State<PhotoFramesScreen> {
     final failure = controller.actionFailure;
     return NestScaffold(
       title: PhotoFrameCopy.title,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: const [AccountMenuButton()],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

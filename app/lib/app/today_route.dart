@@ -29,7 +29,10 @@ import 'viewer_member.dart';
 GoRoute todayRoute() => GoRoute(
   path: '${HouseholdRoute.path}/${HouseholdTab.today.segment}',
   builder: (context, state) {
-    final view = context.read<HouseholdView>();
+    // Watched, not read: the screen draws a section per area the grant opens,
+    // so a grant that changes while Today is open must mount that section's
+    // controller in the same build.
+    final view = context.watch<HouseholdView>();
     final permissions = view.permissions;
     final householdId = HouseholdRoute.idFrom(state);
     final memberId = viewerMemberIdOf(context);

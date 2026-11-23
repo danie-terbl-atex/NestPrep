@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../model/family_roster.dart';
 import '../state/family_controller.dart';
 import '../state/member_health_controller.dart';
@@ -26,14 +26,7 @@ class FamilyMemberScreen extends StatelessWidget {
     final failure = family.actionFailure ?? health.actionFailure;
     return NestScaffold(
       title: FamilyCopy.title,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
-import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/vault_lock_state.dart';
 import '../state/vault_lock_controller.dart';
@@ -38,14 +37,7 @@ class _VaultLockScreenState extends State<VaultLockScreen> {
     final isAsking = lock.state == VaultLockState.unlocking;
     return NestScaffold(
       title: VaultCopy.homeTitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: const [AccountMenuButton()],
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),

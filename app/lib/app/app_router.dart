@@ -131,15 +131,18 @@ GoRouter createAppRouter(
       GoRoute(
         path: HouseholdGateScreen.path,
         builder: (context, state) => ChangeNotifierProvider(
-          create: (context) => HouseholdGateController(
-            householdDirectory: context.read<HouseholdDirectory>(),
-            starterContent: context.read<StarterContentRepository>(),
-            startsWithExamples: () => context
-                .read<FeatureFlagsController>()
-                .isOn(FeatureFlag.starterContent),
-            suggestedName: session.suggestedDisplayName,
-            defaultTimeZone: Household.defaultTimeZone,
-          ),
+          create: (context) {
+            // Read now: the answer is asked for after the household exists,
+            // when the router has already taken this screen away.
+            final flags = context.read<FeatureFlagsController>();
+            return HouseholdGateController(
+              householdDirectory: context.read<HouseholdDirectory>(),
+              starterContent: context.read<StarterContentRepository>(),
+              startsWithExamples: () => flags.isOn(FeatureFlag.starterContent),
+              suggestedName: session.suggestedDisplayName,
+              defaultTimeZone: Household.defaultTimeZone,
+            );
+          },
           child: const HouseholdGateScreen(),
         ),
       ),

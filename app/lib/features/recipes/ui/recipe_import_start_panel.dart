@@ -174,7 +174,15 @@ class RecipeImportSnapPanel extends StatelessWidget {
               : NestButtonVariant.tonal,
           onPressed: mayAdd ? () => onAdd(ListPhotoSource.photos) : null,
         ),
-        if (!canAdd) ...[
+        if (isAdding) ...[
+          const SizedBox(height: NestSpace.sm),
+          Text(
+            RecipeImportCopy.gettingPhotosReady,
+            key: const ValueKey('recipe-import-getting-ready'),
+            textAlign: TextAlign.center,
+            style: nest.text.caption.copyWith(color: nest.colors.inkSecondary),
+          ),
+        ] else if (!canAdd) ...[
           const SizedBox(height: NestSpace.sm),
           Text(
             RecipeImportCopy.snapsFull,

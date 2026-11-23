@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/time/calendar_date.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../model/weekly_numbers.dart';
 import '../state/beta_numbers_controller.dart';
 import 'weekly_numbers_card.dart';
@@ -28,14 +28,7 @@ class BetaNumbersScreen extends StatelessWidget {
     return NestScaffold(
       title: copy.title,
       subtitle: copy.subtitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       body: NestAsyncView<List<WeeklyNumbers>>(
         state: controller.weeks,
         isEmpty: (weeks) => weeks.isEmpty,

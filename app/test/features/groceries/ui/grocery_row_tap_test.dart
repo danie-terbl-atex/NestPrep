@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/groceries/model/product_match.dart';
 
 import '../../../support/checkers_grocery_harness.dart';
+import '../../../support/fake_checkers.dart';
 import '../../../support/grocery_list_harness.dart';
 
 /// What a tap on a grocery row does (groceries ADR-0009): with a shop to
@@ -65,5 +66,34 @@ void main() {
     await tap(tester, find.text('salt'));
     expect(h.list.repository.ticked.single.itemId, 's');
     expect(h.matches.target, isNull);
+  });
+
+  testWidgets('a row tapped below another row\'s open products stays where it '
+      'was tapped', (tester) async {
+    final h = CheckersGroceryHarness();
+    h.catalogue.products = [
+      for (var i = 0; i < 5; i++) checkersProduct('Milk $i', id: 'p$i'),
+    ];
+    await h.pump(tester);
+    h.list.repository.emitItems([
+      for (var i = 0; i < 12; i++) groceryItem('item $i', id: 'i$i'),
+    ]);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('item 0'));
+    await tester.pumpAndSettle();
+    await tester.dragUntilVisible(
+      find.text('item 2'),
+      find.byType(ListView),
+      const Offset(0, -80),
+    );
+    await tester.pumpAndSettle();
+    final before = tester.getTopLeft(find.text('item 2')).dy;
+
+    await tester.tap(find.text('item 2'));
+    await tester.pumpAndSettle();
+
+    expect(h.matches.target?.itemId, 'i2');
+    expect(tester.getTopLeft(find.text('item 2')).dy, closeTo(before, 1));
   });
 }

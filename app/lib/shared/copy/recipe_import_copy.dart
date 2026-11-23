@@ -44,6 +44,8 @@ abstract final class RecipeImportCopy {
       'Add every page or screenshot, in order. They’re read together as one '
       'recipe.';
   static const snapsFull = 'That’s as many as one recipe can take.';
+  static const gettingPhotosReady =
+      'Getting your photos ready. Long screenshots can take a little while.';
   static String snapsTitle(int count) =>
       count == 1 ? '1 photo' : '$count photos';
   static String snapNumbered(int number) => 'Photo $number';

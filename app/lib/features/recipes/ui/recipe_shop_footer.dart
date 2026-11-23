@@ -5,7 +5,6 @@ import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../add_to_checkers/state/shop_carts.dart';
 import '../../add_to_checkers/ui/shop_cart_push.dart';
-import '../model/recipe_shop_line.dart';
 import '../state/recipe_shop_controller.dart';
 
 /// What *Add to grocer* does with what it found (recipes ADR-0005): about
@@ -14,14 +13,9 @@ import '../state/recipe_shop_controller.dart';
 /// the list. A tap, never automatic. Once on the list it says how many went
 /// on, and the cart stays one tap away.
 class RecipeShopFooter extends StatelessWidget {
-  const RecipeShopFooter({
-    required this.householdId,
-    this.purpose = RecipeShopPurpose.add,
-    super.key,
-  });
+  const RecipeShopFooter({required this.householdId, super.key});
 
   final String householdId;
-  final RecipeShopPurpose purpose;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +27,7 @@ class RecipeShopFooter extends StatelessWidget {
     final estimate = controller.estimate;
     final added = controller.addedCount;
     final count = controller.includedCount;
-    final wanted = switch (purpose) {
-      RecipeShopPurpose.add => count,
-      RecipeShopPurpose.match => controller.matchableCount,
-    };
-    final canAdd = controller.isSettled && wanted > 0;
+    final canAdd = controller.isSettled && count > 0;
     final failure = controller.actionFailure;
     return ListenableBuilder(
       listenable: push,
@@ -60,20 +50,14 @@ class RecipeShopFooter extends StatelessWidget {
               Semantics(
                 liveRegion: true,
                 child: NestBanner(
-                  message: switch (purpose) {
-                    RecipeShopPurpose.add => RecipeShopCopy.added(added),
-                    RecipeShopPurpose.match => RecipeShopCopy.matched(
-                      controller.listed?.length ?? 0,
-                      shop,
-                    ),
-                  },
+                  message: RecipeShopCopy.added(added),
                   tone: NestBannerTone.success,
                 ),
               ),
               const SizedBox(height: NestSpace.md),
             ] else if (controller.isSettled) ...[
               Text(
-                wanted == 0
+                count == 0
                     ? RecipeShopCopy.nothingIncluded
                     : estimate == null
                     ? ''
@@ -96,14 +80,8 @@ class RecipeShopFooter extends StatelessWidget {
             if (added == null)
               NestButton(
                 key: const ValueKey('recipe-shop-list'),
-                label: switch (purpose) {
-                  RecipeShopPurpose.add => RecipeShopCopy.addToList(count),
-                  RecipeShopPurpose.match => RecipeShopCopy.matchOnList(wanted),
-                },
-                icon: switch (purpose) {
-                  RecipeShopPurpose.add => LucideIcons.listPlus,
-                  RecipeShopPurpose.match => LucideIcons.check,
-                },
+                label: RecipeShopCopy.addToList(count),
+                icon: LucideIcons.listPlus,
                 variant: NestButtonVariant.tonal,
                 isLoading: controller.isAdding,
                 onPressed: canAdd && !isBusy ? controller.addToList : null,

@@ -8,6 +8,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../model/document_library.dart';
 import '../state/document_library_controller.dart';
@@ -32,14 +33,7 @@ class DocumentLibraryScreen extends StatelessWidget {
     final householdId = controller.householdId;
     return NestScaffold(
       title: AppCopy.documentsTitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: [
         NestIconButton(
           icon: LucideIcons.search,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
@@ -7,6 +6,7 @@ import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/vault_copy.dart';
 import '../../../shared/failure/app_failure.dart';
 import '../../../shared/time/household_clock.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../../household/model/household_view.dart';
 import '../model/vault_shelf.dart';
@@ -39,14 +39,7 @@ class VaultPersonScreen extends StatelessWidget {
       title: member == null
           ? VaultCopy.homeTitle
           : VaultCopy.vaultOf(member.displayName),
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: [
         if (canManage) ...[
           NestIconButton(

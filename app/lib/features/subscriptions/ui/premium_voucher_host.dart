@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -15,9 +17,31 @@ class PremiumVoucherHost extends StatefulWidget {
   State<PremiumVoucherHost> createState() => _PremiumVoucherHostState();
 }
 
-class _PremiumVoucherHostState extends State<PremiumVoucherHost> {
+class _PremiumVoucherHostState extends State<PremiumVoucherHost>
+    with WidgetsBindingObserver {
   String? _attachedUid;
   bool _isOpening = false;
+  bool _isOffered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  // A voucher issued while the app was in the background is asked for again
+  // (subscriptions ADR-0013); the inbox otherwise asks once per account.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !_isOffered) return;
+    unawaited(context.read<PremiumVoucherInbox>().refresh());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   void _attach(PremiumVoucherInbox inbox, String uid) {
     if (_attachedUid == uid) return;
@@ -39,7 +63,8 @@ class _PremiumVoucherHostState extends State<PremiumVoucherHost> {
 
   @override
   Widget build(BuildContext context) {
-    if (premiumVouchersOffered(context)) {
+    _isOffered = premiumVouchersOffered(context);
+    if (_isOffered) {
       final inbox = context.watch<PremiumVoucherInbox>();
       _attach(inbox, context.watch<HouseholdView>().viewerUid);
       if (inbox.shouldOffer && !_isOpening) _offer();

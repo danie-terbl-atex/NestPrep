@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/copy/calendar_sync_copy.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../accounts/ui/account_menu_button.dart';
 import '../state/connected_calendars_controller.dart';
 import 'calendar_connect_list.dart';
@@ -25,14 +25,7 @@ class ConnectedCalendarsScreen extends StatelessWidget {
     return NestScaffold(
       title: CalendarSyncCopy.title,
       subtitle: CalendarSyncCopy.subtitle,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       trailing: const [AccountMenuButton()],
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),

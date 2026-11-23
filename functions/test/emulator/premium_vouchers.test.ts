@@ -1,6 +1,11 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
+import { registeredUserDirectory } from '../../src/premium_vouchers/caller_emails';
+import {
+  claimIssuedVouchers,
+  registeredAccountOf,
+} from '../../src/premium_vouchers/claim_registered_vouchers';
 import { claimVoucher } from '../../src/premium_vouchers/claim_voucher';
 import { EMULATOR_PEPPER } from '../../src/premium_vouchers/premium_config';
 import { voidVoucher } from '../../src/premium_vouchers/void_voucher';
@@ -233,6 +238,64 @@ describe('a frame voucher waiting for the email an account registered with', () 
     await opens(family.admin, family);
 
     for (const voucherId of [helpers.voucherId, test.voucherId, code]) {
+      expect((await read(`premiumVouchers/${voucherId}`))['status']).toBe('waiting');
+    }
+    expect(await grantsOf(family.householdId)).toEqual([]);
+  });
+});
+
+describe('a frame voucher issued for the email of an account already here', () => {
+  beforeEach(clearFirestore);
+
+  const issuedFor = (email: string): ReturnType<typeof claimIssuedVouchers> =>
+    claimIssuedVouchers(
+      {
+        store: adminDb(),
+        users: registeredUserDirectory,
+        pepper: EMULATOR_PEPPER,
+        testers: [],
+        now: new Date(),
+      },
+      registeredAccountOf,
+      email,
+    );
+
+  it('is added at once, with no app open after it', async () => {
+    const family = await aFamily();
+    await opens(family.admin, family);
+    const voucher = await aFrameVoucher(family.admin.email);
+
+    const result = await issuedFor(family.admin.email);
+
+    expect(result).toEqual({ householdId: family.householdId, claimed: [voucher.voucherId] });
+    expect(await read(`premiumVouchers/${voucher.voucherId}`)).toMatchObject({
+      status: 'claimed',
+      householdId: family.householdId,
+      claimedByUid: family.admin.uid,
+    });
+    const entitlement = await read(`households/${family.householdId}/entitlement/current`);
+    expect(isAbout(entitlement['premiumUntil'], 93)).toBe(true);
+    expect((await issuedFor(family.admin.email))?.claimed).toEqual([]);
+  });
+
+  it('stays waiting with no account, no household, two households, or a helper', async () => {
+    const stranger = await aFrameVoucher('nobody-yet@nestprep.test');
+    expect(await issuedFor('nobody-yet@nestprep.test')).toBeNull();
+
+    const homeless = await signUp();
+    const unhoused = await aFrameVoucher(homeless.email);
+    expect(await issuedFor(homeless.email)).toBeNull();
+
+    const family = await aFamily();
+    const helper = await joins(family, 'helper');
+    const helpers = await aFrameVoucher(helper.email);
+    await expect(issuedFor(helper.email)).rejects.toMatchObject({ code: 'permission-denied' });
+
+    await createHousehold(family.admin);
+    const second = await aFrameVoucher(family.admin.email);
+    expect(await issuedFor(family.admin.email)).toBeNull();
+
+    for (const { voucherId } of [stranger, unhoused, helpers, second]) {
       expect((await read(`premiumVouchers/${voucherId}`))['status']).toBe('waiting');
     }
     expect(await grantsOf(family.householdId)).toEqual([]);

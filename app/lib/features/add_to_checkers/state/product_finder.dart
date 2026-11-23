@@ -3,6 +3,7 @@ import '../../../shared/text/normalised_name.dart';
 import '../../groceries/model/product_match.dart';
 import '../data/checkers_place_resolver.dart';
 import '../data/product_match_ranker.dart';
+import '../data/retailer_catalogue.dart';
 import '../data/retailer_catalogues.dart';
 import '../model/checkers_area.dart';
 import '../model/checkers_place.dart';
@@ -48,8 +49,9 @@ final class ProductFinder {
   Future<List<RetailerProduct>> search(
     String query, {
     required ProductRetailer at,
+    int limit = RetailerCatalogue.defaultLimit,
   }) {
-    final key = (at, normalisedName(query));
+    final key = (at, normalisedName(query), limit);
     if (_searches[key] case final known?) return known;
     final found = _searchAt(key, query);
     _searches[key] = found;
@@ -61,7 +63,7 @@ final class ProductFinder {
       final place = _place ??= await _places.resolve(householdId);
       return await _catalogues
           .of(key.$1)
-          .search(query: query, near: place.coordinates);
+          .search(query: query, near: place.coordinates, limit: key.$3);
     } on AppFailure {
       _searches.removeWhere((cached, _) => cached == key);
       rethrow;
@@ -81,7 +83,11 @@ final class ProductFinder {
   Future<RankedProducts?> rank(String item, List<RetailerProduct> products) {
     final ranker = _ranker;
     if (ranker == null || products.isEmpty) return Future.value();
-    final key = (products.first.retailer, normalisedName(item));
+    final key = (
+      products.first.retailer,
+      normalisedName(item),
+      products.length,
+    );
     if (_ranks[key] case final known?) return known;
     final ranked = _rankWith(ranker, key, item, products);
     _ranks[key] = ranked;
@@ -123,4 +129,4 @@ final class ProductFinder {
   }
 }
 
-typedef _Key = (ProductRetailer, String);
+typedef _Key = (ProductRetailer, String, int);

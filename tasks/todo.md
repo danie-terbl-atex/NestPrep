@@ -1,3 +1,57 @@
+# Snap on build 26 fails, and a snap keeps no dish photo (recipes ADR-0011, proposed)
+
+Daniel 2026-11-23: on iPhone 1.0.0 (26) the multi-image Snap "throws errors"; and it never took the recipe's own photo from the uploaded images.
+
+- [x] Found: Vertex 400 "malformed or corrupted" on every multi-photo read from build 26 (Cloud Logging, six since 2026-11-22). Reproduced: `image` 4.10.1 writes an ICC profile without its sequence bytes
+- [x] Measured the dish box on a 1170 x 7800 sample: lone image 4 px off; several images 150-350 px off; a part alone exact
+- [x] Recipes ADR-0011 (proposed), before the code
+- [x] Functions: `checkedListPhoto` drops APP1-APP15; the draft picks `photo: {photo, part, box}`; parts get one tight box alone; `draftRecipe` 90 s; tests
+- [x] App: kept the in-flight ICC fix (another session's, uncommitted); `RecipeSnap.layout`; `RecipeSnapPictures.dishPhoto` grows across seams and cuts; reading parses `photo`; controller adds it to the draft; phone waits 100 s; tests
+- [x] Eval against Vertex: long scroll and three screenshots crop 874 and 876 rows against a true 875, no text; one screenshot read whole 4 px off; the stripped ICC file reads
+- [x] analyze 0; changed files formatted; Functions unit 3050/3050; `own_recipes` drafting emulator 6/6 (isolated ports, no Storage); app recipes 598 passed; full `flutter test` 22 failed = baseline, none mine
+- [x] Godfather: ADR-0011 (proposed), recipes overview, Phase 6, lesson; lint 0 errors
+- [x] Committed and pushed `61693ffb` (with the other session's ICC hunks)
+- [x] Deployed `draftRecipe` and `readShoppingList` from a clean checkout; called live with ICC-laden parts: 200, recipe and dish photo
+- [x] Shorebird iOS patch 1 to 1.0.0+26 (`ios-testflight`) on staging, from `release/testflight-1.0.0-26` + `02548cef`; shops `always`
+- [x] Patch 1 promoted to stable (Daniel, 2026-11-23); post-deploy logs clean apart from scanner GETs
+- [x] Snap says "Getting your photos ready…" while photos are picked and cut (uncommitted, not patched: Daniel said no push)
+- [ ] Device pass on build 26; accept ADR-0011
+
+## Review
+
+- The failure was never in the app's logic: Vertex refused the JPEGs. The log kept only `http 400`, so the cause came from sending the same bytes by hand with and without the profile.
+- Measuring changed the design twice. The draft's own box is 150-350 px off among several images, so parts get a second look alone. Neighbouring parts alone are no help: a part with only the top of the photo comes back null, and the advert's photo gets boxed. Seams are crossed by pixels on the phone instead.
+- Found by a test, not on the samples: `img.compositeImage` misplaces a source drawn at a negative offset. Parts are cropped to the overlap first.
+- Known limit: growing stops at a perfectly flat band inside a photo, losing only flat pixels.
+- Not on a device.
+
+
+# Groceries: no stray Add label, a tapped row stays put, and Find at becomes a stepper (groceries ADR-0010, proposed)
+
+Daniel 2026-11-22. Plan: `~/.claude/plans/nifty-kindling-dijkstra-of-89d391e3-806c-4923-8c8e-26d05ca4e388.md`.
+
+- [x] The "Add" label above the add field is gone (`NestTextField.isLabelShown`); grocery screenshots retaken
+- [x] A row tapped below another row's open products stays where it was tapped (`_GroceryListState._holdTappedRowStill`, failing test first: the row went 740 px up, off the screen)
+- [x] Groceries ADR-0010 (proposed), before the code
+- [x] `ListMatchController` and its tests (14)
+- [x] The page: step, grid, dock, summary; `ListMatchCopy`
+- [x] `ShopCartsBar` opens it, applies removals and the cart push; `ProductFinder` takes a limit
+- [x] `RecipeShopPurpose.match` removed
+- [x] Page tests (11: dark, 200%, 360 wide; dock measured per state), screenshots looked at (`design-review/list-match-*.png`)
+- [x] analyze 0, format on changed files only, full `flutter test`
+- [x] Godfather: ADR-0010, groceries and add-to-checkers overviews, lint, session log
+- [x] On the Android emulator against the local suite, with Checkers' real catalogue and Jev
+- [ ] On a phone, and in dark on a device
+- [ ] Commit, release (Dart only: a Shorebird patch can carry it), accept ADR-0010
+
+## Review
+
+- The row jump was reproduced before it was fixed: products open under a row above the tapped one closed and the list slid up by their height (740 px in the test). The list now gives that height back to the scroll position in the same frame. On the emulator the tapped row stayed at the same pixel.
+- Full `flutter test`: 6704 passed, 22 failed, the same count as the baseline recorded below for `5d8a8626`. None name a file this change touches; the three I suspected (`errors_are_never_swallowed`, `one_home_for_copy`, `app_router` groceries) fail on other sessions' files (`notification_host.dart`, `HomeCareRoutineCopy`, a missing `HomeCareLibraryRepository` provider).
+- Found on the device, fixed: tiles in one row ended at different heights; the progress row grew when the back arrow appeared; a per-kilogram price was counted in "one of each".
+- Left alone: a best match sold by weight is marked but not selected for the member, as a cart cannot take it as it is. A row opened near the foot of the screen still shows its products under the tab bar (open question on the groceries overview).
+- The emulator's demo data changed during the drive (one match, one item removed); the suite was not stopped with Ctrl+C, so nothing was exported.
+
 # Snap a recipe from several photos or a long screenshot (recipes ADR-0010, proposed)
 
 Daniel 2026-11-21: Snap "is not working that well for people because you can only upload 1 image, and recipes are often multiple images and page scrolls long". Plan: `~/.claude/plans/playful-wandering-sunbeam-of-5f0fbdb3-270a-47f2-9ca2-14867579f92c.md`.

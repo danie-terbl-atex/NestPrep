@@ -235,9 +235,7 @@ final class ConnectedCalendarsController extends ChangeNotifier
     if (feed == null) return;
     await runAction(() async {
       if (!await _opener.open(feed.subscription)) {
-        throw const CalendarSyncFailure(
-          CalendarSyncProblem.couldNotOpenBrowser,
-        );
+        throw const CalendarSyncFailure(CalendarSyncProblem.noCalendarApp);
       }
     });
   }

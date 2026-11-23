@@ -23,6 +23,7 @@ import 'package:nestprep/features/calendar/data/calendar_repository.dart';
 import 'package:nestprep/features/calendar/ui/calendar_screen.dart';
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_directory.dart';
 import 'package:nestprep/features/calendar_sync/data/calendar_sync_repository.dart';
+import 'package:nestprep/features/documents/data/document_directory.dart';
 import 'package:nestprep/features/family_profiles/data/child_profile_directory.dart';
 import 'package:nestprep/features/family_profiles/data/family_profile_repository.dart';
 import 'package:nestprep/features/family_profiles/ui/family_member_screen.dart';
@@ -32,8 +33,14 @@ import 'package:nestprep/features/groceries/ui/grocery_list_screen.dart';
 import 'package:nestprep/features/household/data/household_directory.dart';
 import 'package:nestprep/features/household/data/household_repository.dart';
 import 'package:nestprep/features/household/data/invite_sharer.dart';
+import 'package:nestprep/features/household/model/access_grant.dart';
+import 'package:nestprep/features/household/model/access_level.dart';
+import 'package:nestprep/features/household/model/household.dart';
+import 'package:nestprep/features/household/model/household_area.dart';
 import 'package:nestprep/features/household/model/member.dart';
+import 'package:nestprep/features/household/state/household_gate_controller.dart';
 import 'package:nestprep/features/household/state/pending_invite.dart';
+import 'package:nestprep/features/household/ui/household_gate_screen.dart';
 import 'package:nestprep/features/household/ui/household_more_screen.dart';
 import 'package:nestprep/features/household/ui/household_screen.dart';
 import 'package:nestprep/features/household/ui/household_size_lock.dart';
@@ -48,6 +55,10 @@ import 'package:nestprep/features/meal_planning/data/meal_repository.dart';
 import 'package:nestprep/features/meal_planning/model/meals_view.dart';
 import 'package:nestprep/features/meal_planning/model/week_plan.dart';
 import 'package:nestprep/features/meal_planning/ui/meals_screen.dart';
+import 'package:nestprep/features/nanny_hub/data/booking_repository.dart';
+import 'package:nestprep/features/nanny_hub/data/cache_warmer.dart';
+import 'package:nestprep/features/nanny_hub/data/offline_shelf.dart';
+import 'package:nestprep/features/nanny_hub/data/photo_store.dart';
 import 'package:nestprep/features/notifications/data/digest_prompt_store.dart';
 import 'package:nestprep/features/notifications/data/notification_repository.dart';
 import 'package:nestprep/features/photo_frames/data/photo_frame_repository.dart';
@@ -63,9 +74,12 @@ import 'package:nestprep/features/recipes/model/recipe.dart';
 import 'package:nestprep/features/recipes/ui/recipe_builder_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_picker_screen.dart';
 import 'package:nestprep/features/recipes/ui/recipe_screen.dart';
+import 'package:nestprep/features/starter_content/data/starter_content_repository.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement.dart';
 import 'package:nestprep/features/subscriptions/model/entitlement_status.dart';
 import 'package:nestprep/features/subscriptions/ui/plan_screen.dart';
+import 'package:nestprep/features/today/ui/today_agenda_section.dart';
+import 'package:nestprep/features/today/ui/today_lists_section.dart';
 import 'package:nestprep/features/today/ui/today_screen.dart';
 import 'package:nestprep/features/todos/data/todo_repository.dart';
 import 'package:nestprep/features/todos/ui/todo_screen.dart';
@@ -88,6 +102,7 @@ import '../support/fake_auth.dart';
 import '../support/fake_calendar_repository.dart';
 import '../support/fake_calendar_sync.dart';
 import '../support/fake_checkers.dart';
+import '../support/fake_documents.dart';
 import '../support/fake_family_profiles.dart';
 import '../support/fake_feature_flag_source.dart';
 import '../support/fake_grocery_repository.dart';
@@ -96,12 +111,15 @@ import '../support/fake_invite_sharer.dart';
 import '../support/fake_link_opener.dart';
 import '../support/fake_lunch_repository.dart';
 import '../support/fake_meal_repository.dart';
+import '../support/fake_nanny_access.dart';
+import '../support/fake_nanny_photos.dart';
 import '../support/fake_notifications.dart';
 import '../support/fake_own_recipes.dart';
 import '../support/fake_photo_frames.dart';
 import '../support/fake_product_analytics.dart';
 import '../support/fake_recipe_photos.dart';
 import '../support/fake_recipe_repository.dart';
+import '../support/fake_starter_content.dart';
 import '../support/fake_todo_repository.dart';
 import '../support/fake_two_homes.dart';
 import '../support/household_fixtures.dart';
@@ -133,6 +151,7 @@ void main() {
   late FakeFamilyProfileRepository familyProfiles;
   late FakeLunchRepository lunches;
   late FakeTwoHomesRepository twoHomes;
+  late FakeStarterContentRepository starterContent;
   late StreamController<Uri> links;
   late PendingInvite pendingInvite;
 
@@ -140,6 +159,7 @@ void main() {
     links = StreamController<Uri>.broadcast();
     pendingInvite = PendingInvite(links: links.stream);
     twoHomes = FakeTwoHomesRepository();
+    starterContent = FakeStarterContentRepository();
     activity = FakeActivityRecorder();
     betaNumbers = FakeBetaNumbersRepository(isReader: true);
     auth = FakeAuthGateway();
@@ -195,6 +215,14 @@ void main() {
         providers: [
           Provider<HouseholdRepository>.value(value: households),
           Provider<HouseholdDirectory>.value(value: directory),
+          Provider<StarterContentRepository>.value(value: starterContent),
+          // What the shell reads for a viewer who is not family (nanny-hub
+          // ADR-0006, ADR-0007).
+          Provider<BookingRepository>.value(value: FakeBookingRepository()),
+          Provider<CacheWarmer>.value(value: FakeCacheWarmer()),
+          Provider<OfflineShelf>.value(value: FakeOfflineShelf()),
+          Provider<PhotoStore>.value(value: FakePhotoStore()),
+          Provider<DocumentDirectory>.value(value: FakeDocumentDirectory()),
           Provider<CalendarRepository>.value(value: calendar),
           Provider<CalendarSyncRepository>.value(
             value: FakeCalendarSyncRepository(),
@@ -635,6 +663,79 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(TodayScreen), findsOneWidget);
+  });
+
+  // Both came from the crash report: a grant that opened while Today was on
+  // screen drew a section whose controller the route had never made.
+  testWidgets('Today follows a grant that opens while it is on screen', (
+    tester,
+  ) async {
+    Household householdWith(AccessLevel level) => Fixtures.helperView(
+      AccessGrant({HouseholdArea.calendar: level, HouseholdArea.todos: level}),
+    ).household;
+
+    await pumpApp(tester);
+    auth.emit(
+      const AuthUser(uid: Fixtures.thandiUid, email: 'thandi@nestprep.test'),
+    );
+    await settle(tester);
+    accounts.emit(
+      const Account(
+        id: Fixtures.thandiUid,
+        displayName: 'Thandi',
+        householdIds: [Fixtures.householdId],
+        activeHouseholdId: Fixtures.householdId,
+      ),
+    );
+    await settle(tester);
+    households.emitHousehold(householdWith(AccessLevel.none));
+    households.emitMembers([Fixtures.sam, Fixtures.thandi, Fixtures.kid]);
+    await settle(tester);
+    expect(find.byType(TodayScreen), findsOneWidget);
+    expect(find.byType(TodayTodoSection), findsNothing);
+
+    households.emitHousehold(householdWith(AccessLevel.view));
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(TodayAgendaSection), findsOneWidget);
+    expect(find.byType(TodayTodoSection), findsOneWidget);
+  });
+
+  // The household's first examples were never written when this threw: the
+  // session moves the router on before the create call has answered.
+  testWidgets('a household made at the gate gets its examples after the gate '
+      'has left the screen', (tester) async {
+    await pumpApp(tester);
+    auth.emit(const AuthUser(uid: Fixtures.samUid, email: 'sam@nestprep.test'));
+    await settle(tester);
+    accounts.emit(const Account(id: Fixtures.samUid, displayName: 'Sam'));
+    await settle(tester);
+    expect(find.byType(HouseholdGateScreen), findsOneWidget);
+
+    directory.gate = Completer<void>();
+    final creating = tester
+        .element(find.byType(HouseholdGateScreen))
+        .read<HouseholdGateController>()
+        .createHousehold(householdName: 'The Parkers', myName: 'Sam');
+    await tester.pump();
+    accounts.emit(
+      const Account(
+        id: Fixtures.samUid,
+        displayName: 'Sam',
+        householdIds: [Fixtures.householdId],
+        activeHouseholdId: Fixtures.householdId,
+      ),
+    );
+    await settle(tester);
+    expect(find.byType(HouseholdGateScreen), findsNothing);
+
+    directory.gate!.complete();
+    await tester.runAsync(() => creating);
+    await settle(tester);
+
+    expect(tester.takeException(), isNull);
+    expect(starterContent.seeded.single.householdId, 'h-new');
   });
 
   testWidgets(

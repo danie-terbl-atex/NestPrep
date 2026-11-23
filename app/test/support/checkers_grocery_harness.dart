@@ -200,6 +200,7 @@ final class CheckersGroceryHarness {
         value: list.controller,
       ),
       list.plans.provider,
+      Provider<ProductFinder>.value(value: finder),
       ChangeNotifierProvider<ProductMatchController>.value(value: matches),
       ChangeNotifierProvider<ProductTypeAheadController>.value(
         value: typeAhead,

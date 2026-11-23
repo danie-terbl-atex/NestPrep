@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../design/nest_kit.dart';
 import '../../../shared/copy/app_copy.dart';
 import '../../../shared/log/best_effort.dart';
+import '../../../shared/ui/back_leading.dart';
 import '../../subscriptions/model/premium_feature.dart';
 import '../../subscriptions/ui/premium_gate.dart';
 import '../model/coordinates.dart';
@@ -49,14 +50,7 @@ class _PlaceEditorScreenState extends State<PlaceEditorScreen> {
     final failure = controller.actionFailure;
     return NestScaffold(
       title: controller.isNew ? LocationCopy.addPlace : LocationCopy.editPlace,
-      leading: context.canPop()
-          ? NestIconButton(
-              icon: LucideIcons.arrowLeft,
-              label: AppCopy.back,
-              variant: NestIconButtonVariant.plain,
-              onPressed: context.pop,
-            )
-          : null,
+      leading: backLeading(context),
       body: ListView(
         padding: const EdgeInsets.only(bottom: NestSpace.huge),
         children: [

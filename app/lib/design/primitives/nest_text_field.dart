@@ -33,10 +33,15 @@ class NestTextField extends StatefulWidget {
     this.inputFormatters,
     this.textCapitalization = TextCapitalization.sentences,
     this.autofillHints,
+    this.isLabelShown = true,
     super.key,
   });
 
   final String label;
+
+  /// False where the place already says what the field is for; a screen
+  /// reader still hears [label].
+  final bool isLabelShown;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String? hint;
@@ -78,53 +83,58 @@ class _NestTextFieldState extends State<NestTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          widget.label,
-          style: nest.text.label.copyWith(color: c.inkSecondary),
-        ),
-        const SizedBox(height: NestSpace.sm),
-        TextField(
-          controller: widget.controller,
-          focusNode: widget.focusNode,
-          enabled: widget.enabled,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
-          inputFormatters: widget.inputFormatters,
-          textCapitalization: widget.textCapitalization,
-          obscureText: widget.obscureText && !_revealed,
-          autocorrect: !widget.obscureText,
-          enableSuggestions: !widget.obscureText,
-          autofillHints: widget.autofillHints,
-          maxLines: widget.maxLines,
-          autofocus: widget.autofocus,
-          onChanged: widget.onChanged,
-          onSubmitted: widget.onSubmitted,
-          style: nest.text.body,
-          decoration: InputDecoration(
-            hintText: widget.hint,
-            errorText: widget.errorText,
-            helperText: widget.helperText,
-            errorStyle: nest.text.caption.copyWith(color: c.danger),
-            helperStyle: nest.text.caption,
-            prefixIcon: widget.prefixIcon == null
-                ? null
-                : Icon(
-                    widget.prefixIcon,
-                    size: NestSize.iconMedium,
-                    color: c.inkTertiary,
-                  ),
-            suffixIcon: widget.obscureText
-                ? NestIconButton(
-                    icon: _revealed ? LucideIcons.eyeOff : LucideIcons.eye,
-                    label: _revealed
-                        ? AppCopy.hidePassword
-                        : AppCopy.showPassword,
-                    variant: NestIconButtonVariant.plain,
-                    onPressed: widget.enabled
-                        ? () => setState(() => _revealed = !_revealed)
-                        : null,
-                  )
-                : widget.suffix,
+        if (widget.isLabelShown) ...[
+          Text(
+            widget.label,
+            style: nest.text.label.copyWith(color: c.inkSecondary),
+          ),
+          const SizedBox(height: NestSpace.sm),
+        ],
+        Semantics(
+          label: widget.isLabelShown ? null : widget.label,
+          child: TextField(
+            controller: widget.controller,
+            focusNode: widget.focusNode,
+            enabled: widget.enabled,
+            keyboardType: widget.keyboardType,
+            textInputAction: widget.textInputAction,
+            inputFormatters: widget.inputFormatters,
+            textCapitalization: widget.textCapitalization,
+            obscureText: widget.obscureText && !_revealed,
+            autocorrect: !widget.obscureText,
+            enableSuggestions: !widget.obscureText,
+            autofillHints: widget.autofillHints,
+            maxLines: widget.maxLines,
+            autofocus: widget.autofocus,
+            onChanged: widget.onChanged,
+            onSubmitted: widget.onSubmitted,
+            style: nest.text.body,
+            decoration: InputDecoration(
+              hintText: widget.hint,
+              errorText: widget.errorText,
+              helperText: widget.helperText,
+              errorStyle: nest.text.caption.copyWith(color: c.danger),
+              helperStyle: nest.text.caption,
+              prefixIcon: widget.prefixIcon == null
+                  ? null
+                  : Icon(
+                      widget.prefixIcon,
+                      size: NestSize.iconMedium,
+                      color: c.inkTertiary,
+                    ),
+              suffixIcon: widget.obscureText
+                  ? NestIconButton(
+                      icon: _revealed ? LucideIcons.eyeOff : LucideIcons.eye,
+                      label: _revealed
+                          ? AppCopy.hidePassword
+                          : AppCopy.showPassword,
+                      variant: NestIconButtonVariant.plain,
+                      onPressed: widget.enabled
+                          ? () => setState(() => _revealed = !_revealed)
+                          : null,
+                    )
+                  : widget.suffix,
+            ),
           ),
         ),
       ],
