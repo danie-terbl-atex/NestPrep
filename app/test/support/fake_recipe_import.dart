@@ -52,6 +52,14 @@ RecipeDraft aBobotieDraft({
 RecipeSnap aSnap({int parts = 1}) => RecipeSnap(
   parts: List.filled(parts, Uint8List.fromList([0xff, 0xd8, 0xff, 0xe0])),
   thumbnail: _onePixel,
+  layout: RecipeSnapLayout(
+    width: 1024,
+    height: 820 + (parts - 1) * 722,
+    partWidth: 1024,
+    partHeight: 820,
+    lefts: const [0],
+    tops: [for (var at = 0; at < parts; at += 1) at * 722],
+  ),
 );
 
 /// A one-pixel PNG, so a strip can draw it.

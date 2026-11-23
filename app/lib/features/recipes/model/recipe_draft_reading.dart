@@ -1,15 +1,24 @@
 import '../../../shared/failure/app_failure.dart';
 import 'recipe_context.dart';
 import 'recipe_course.dart';
+import 'recipe_document.dart';
 import 'recipe_draft.dart';
 import 'recipe_ingredient.dart';
 import 'recipe_origin.dart';
+import 'recipe_snap.dart';
 
 final class RecipeDraftReading {
-  const RecipeDraftReading({required this.draft, required this.callsLeft});
+  const RecipeDraftReading({
+    required this.draft,
+    required this.callsLeft,
+    this.dish,
+  });
 
   final RecipeDraft? draft;
   final int callsLeft;
+
+  /// Where a snap's own photo of the dish is, when the model found one.
+  final RecipeSnapDish? dish;
 
   factory RecipeDraftReading.fromWire(Object? data) {
     if (data is! Map) throw _unreadable;
@@ -25,6 +34,7 @@ final class RecipeDraftReading {
     if (name is! String || name.trim().isEmpty) throw _unreadable;
     return RecipeDraftReading(
       callsLeft: callsLeft.toInt(),
+      dish: _dish(data['photo']),
       draft: RecipeDraft(
         name: name,
         summary: _text(recipe['summary']) ?? '',
@@ -51,6 +61,33 @@ final class RecipeDraftReading {
   }
 
   static const _unreadable = AiFailure(AiProblem.aiUnreadable);
+
+  static RecipeSnapDish? _dish(Object? value) {
+    if (value
+        case {
+          'photo': final int photo,
+          'box': [
+            final int top,
+            final int left,
+            final int bottom,
+            final int right,
+          ],
+        }
+        when bottom > top && right > left) {
+      final part = value['part'];
+      return RecipeSnapDish(
+        photo: photo,
+        part: part is int ? part : null,
+        box: DocumentPhotoBox(
+          top: top,
+          left: left,
+          bottom: bottom,
+          right: right,
+        ),
+      );
+    }
+    return null;
+  }
 
   static String? _text(Object? value) => value is String ? value : null;
 

@@ -17,6 +17,7 @@ void main() {
     int height, {
     bool asPng = false,
     bool gps = false,
+    bool profile = false,
   }) {
     final image = img.Image(width: width, height: height);
     // Gradients with a little texture — closer to a wall or a worktop than
@@ -26,6 +27,13 @@ void main() {
         ..r = pixel.x * 255 ~/ width
         ..g = pixel.y * 255 ~/ height
         ..b = ((pixel.x ~/ 40) + (pixel.y ~/ 40)).isEven ? 90 : 140;
+    }
+    if (profile) {
+      image.iccProfile = img.IccProfile(
+        'Display P3',
+        img.IccProfileCompression.none,
+        Uint8List(536),
+      );
     }
     if (gps) {
       image.exif.gpsIfd['GPSLatitude'] = img.IfdValueRational(26, 1);
@@ -67,6 +75,13 @@ void main() {
     expect(img.decodeJpg(source)!.exif.isEmpty, isFalse);
     final compressed = JpegCompressor.compressNow(source)!;
     expect(img.decodeJpg(compressed.bytes)!.exif.isEmpty, isTrue);
+  });
+
+  test('leaves a screenshot’s colour profile behind', () {
+    final compressed = JpegCompressor.compressNow(
+      photo(1206, 2622, asPng: true, profile: true),
+    )!;
+    expect(_carriesIccProfile(compressed.bytes), isFalse);
   });
 
   test('ends up well under what either feature keeps', () {
@@ -122,3 +137,8 @@ void main() {
     expect(named.aspectRatio, 0.75);
   });
 }
+
+/// `image` 4.10.1 writes a JPEG's ICC segment without its sequence bytes, and
+/// Vertex refuses the file as corrupt.
+bool _carriesIccProfile(Uint8List jpeg) =>
+    String.fromCharCodes(jpeg).contains('ICC_PROFILE');

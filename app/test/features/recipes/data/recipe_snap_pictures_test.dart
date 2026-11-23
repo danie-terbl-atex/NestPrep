@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:nestprep/features/recipes/data/recipe_snap_pictures.dart';
+import 'package:nestprep/features/recipes/model/recipe_document.dart';
 import 'package:nestprep/features/recipes/model/recipe_snap.dart';
 
 Uint8List _picture(int width, int height) =>
@@ -127,6 +128,102 @@ void main() {
       RecipeSnapPictures.cut(_picture(1170, 2532), partRoom: 3),
       isA<RecipeSnapReady>(),
     );
+  });
+
+  test('no part carries a screenshot’s colour profile', () {
+    final screenshot = img.Image(width: 1206, height: 2622)
+      ..iccProfile = img.IccProfile(
+        'Display P3',
+        img.IccProfileCompression.none,
+        Uint8List(536),
+      );
+    final cut = RecipeSnapPictures.cut(
+      img.encodePng(screenshot),
+      partRoom: RecipeSnap.maxParts,
+    );
+    final snap = (cut as RecipeSnapReady).snap;
+    for (final jpeg in [...snap.parts, snap.whole!, snap.thumbnail]) {
+      expect(String.fromCharCodes(jpeg).contains('ICC_PROFILE'), isFalse);
+    }
+  });
+
+  group('the dish’s photo, cut out of the parts', () {
+    /// A white page 1024 wide, three parts tall (tops 0, 698, 1396), with a
+    /// photograph at rows 500 to 1400 and columns 100 to 900: across a seam.
+    RecipeSnap page() {
+      final image = img.Image(width: 1024, height: 2216)
+        ..clear(img.ColorRgb8(255, 255, 255));
+      final random = Random(3);
+      for (var y = 500; y < 1400; y += 1) {
+        for (var x = 100; x < 900; x += 1) {
+          image.setPixelRgb(x, y, random.nextInt(200), 90, 60);
+        }
+      }
+      final cut = RecipeSnapPictures.cut(
+        img.encodePng(image),
+        partRoom: RecipeSnap.maxParts,
+      );
+      return (cut as RecipeSnapReady).snap;
+    }
+
+    (int, int) cutOut(RecipeSnap snap, RecipeSnapDish dish) {
+      final photo = img.decodeJpg(RecipeSnapPictures.dishPhoto(snap, dish)!)!;
+      return (photo.width, photo.height);
+    }
+
+    DocumentPhotoBox box(int top, int left, int bottom, int right) =>
+        DocumentPhotoBox(top: top, left: left, bottom: bottom, right: right);
+
+    test('remembers where every part sits', () {
+      final layout = page().layout;
+      expect((layout.width, layout.height), (1024, 2216));
+      expect(layout.tops, [0, 698, 1396]);
+      expect(layout.originOf(2), (0, 1396));
+    });
+
+    test('grows across a seam to the photograph’s real edge', () {
+      final (width, height) = cutOut(
+        page(),
+        RecipeSnapDish(photo: 1, part: 2, box: box(0, 98, 856, 879)),
+      );
+      expect(width, closeTo(800, 3));
+      expect(height, closeTo(900, 3));
+    });
+
+    test('stays inside its part when no edge is on a seam', () {
+      final (_, height) = cutOut(
+        page(),
+        RecipeSnapDish(photo: 1, part: 2, box: box(100, 98, 600, 879)),
+      );
+      expect(height, closeTo(410, 2));
+    });
+
+    test('a box on the photo read whole is the photo’s own', () {
+      final (width, height) = cutOut(
+        page(),
+        RecipeSnapDish(photo: 1, box: box(226, 98, 632, 879)),
+      );
+      expect(width, closeTo(800, 3));
+      expect(height, closeTo(900, 3));
+    });
+
+    test('is none for a part that is not there, or a sliver', () {
+      final snap = page();
+      expect(
+        RecipeSnapPictures.dishPhoto(
+          snap,
+          RecipeSnapDish(photo: 1, part: 4, box: box(0, 0, 500, 500)),
+        ),
+        isNull,
+      );
+      expect(
+        RecipeSnapPictures.dishPhoto(
+          snap,
+          RecipeSnapDish(photo: 1, part: 1, box: box(100, 100, 120, 900)),
+        ),
+        isNull,
+      );
+    });
   });
 
   test('bytes that are no picture are unreadable', () {

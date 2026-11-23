@@ -1,17 +1,25 @@
 import { describe, expect, it } from 'vitest';
 
+import {
+  ModelCallError,
+  type GenerativeModel,
+  type ModelReply,
+  type ModelRequest,
+} from '../../../src/ai/generative_model';
 import { vertexBody } from '../../../src/ai/vertex_model';
 import {
   DRAFT_RESPONSE_SCHEMA,
   DRAFT_RULES,
   DRAFT_SYSTEM,
+  SNAP_PARTS_SYSTEM,
+  SNAP_PHOTO_SYSTEM,
   SNAP_SYSTEM,
   draftFromPageRequest,
   draftFromPhotoRequest,
   draftFromPhotosRequest,
 } from '../../../src/recipes/draft_recipe_prompt';
 import { draftFrom, draftReply, type DraftReply } from '../../../src/recipes/draft_recipe_reply';
-import { draftAsked } from '../../../src/recipes/draft_recipe';
+import { DRAFT_LIMITS, draftAsked, readDraft } from '../../../src/recipes/draft_recipe';
 import {
   MAX_PAGE_CHARS,
   MAX_SNAP_PART_BYTES,
@@ -143,8 +151,23 @@ describe('what the model is sent', () => {
       'Photo 2:',
       'b1',
     ]);
-    expect(system).toBe(SNAP_SYSTEM);
+    expect(system).toBe(SNAP_PARTS_SYSTEM);
     expect(labels).toEqual({ feature: 'recipeImport' });
+  });
+
+  it('asks a snap, and only a snap, for the dish’s photograph', () => {
+    const photoIn = (request: ModelRequest): boolean =>
+      JSON.stringify(request.responseSchema).includes('"part"');
+    expect(SNAP_PARTS_SYSTEM).toContain(SNAP_SYSTEM);
+    expect(SNAP_PHOTO_SYSTEM).toContain(DRAFT_SYSTEM);
+    for (const system of [SNAP_PARTS_SYSTEM, SNAP_PHOTO_SYSTEM]) {
+      expect(system).toContain('never an advert, another recipe, a person');
+    }
+    expect(photoIn(draftFromPhotosRequest([{ parts: ['a1'] }]))).toBe(true);
+    expect(photoIn(draftFromPhotoRequest('image/jpeg', JPEG))).toBe(true);
+    expect(draftFromPhotoRequest('image/jpeg', JPEG).system).toBe(SNAP_PHOTO_SYSTEM);
+    expect(photoIn(draftFromPageRequest(page() as never))).toBe(false);
+    expect(draftFromPageRequest(page() as never).system).toBe(DRAFT_SYSTEM);
   });
 
   it('tells a snap that parts overlap, and keeps every drafting rule', () => {
@@ -173,6 +196,96 @@ describe('what the model is sent', () => {
     const schema = JSON.stringify(vertexBody(draftFromPageRequest(page() as never)));
     expect(schema).not.toContain('maxItems');
     expect(schema).toContain(JSON.stringify(INGREDIENT_UNITS));
+  });
+});
+
+function modelAnswering(
+  answer: (request: ModelRequest) => string | ModelCallError,
+): GenerativeModel & { asked: ModelRequest[] } {
+  const asked: ModelRequest[] = [];
+  return {
+    name: 'fake',
+    asked,
+    generate(request): Promise<ModelReply> {
+      asked.push(request);
+      const reply = answer(request);
+      if (reply instanceof ModelCallError) return Promise.reject(reply);
+      return Promise.resolve({
+        text: reply,
+        usage: { inputTokens: 100, outputTokens: 10 },
+        modelVersion: 'fake-1',
+      });
+    },
+  };
+}
+
+describe('the dish’s photograph on a snap', () => {
+  const quick = { ...DRAFT_LIMITS, draft: { ...DRAFT_LIMITS.draft, attempts: 1 } };
+  const recipe = (photo: unknown, isRecipe = true): string =>
+    JSON.stringify({ isRecipe, name: 'Trinchado', steps: ['Cook it.'], photo });
+  const parts = draftAsked({
+    householdId: 'h1',
+    photos: [{ parts: [JPEG, JPEG, JPEG] }, { parts: [JPEG] }],
+  });
+  const whole = draftAsked({ householdId: 'h1', photo: { mimeType: 'image/jpeg', data: JPEG } });
+
+  it('is boxed again on its part alone, and both requests are billed', async () => {
+    const model = modelAnswering((request) =>
+      request.mediaResolution === 'high'
+        ? JSON.stringify({ box: [0, 0, 787, 1000] })
+        : recipe({ photo: 1, part: 2, box: [300, 0, 600, 960] }),
+    );
+    const read = await readDraft(model, parts, quick);
+    expect(read.value.photo).toEqual({ photo: 1, part: 2, box: [0, 0, 787, 1000] });
+    expect(read.usage).toEqual({ inputTokens: 200, outputTokens: 20 });
+    expect(model.asked[1]?.parts).toEqual([
+      { kind: 'text', text: 'The dish: Trinchado' },
+      { kind: 'inline', mimeType: 'image/jpeg', base64: JPEG },
+    ]);
+  });
+
+  it('keeps the draft’s box for one photo read whole, asking nothing more', async () => {
+    const model = modelAnswering(() => recipe({ photo: 1, part: 1, box: [248, 35, 592, 1000] }));
+    const read = await readDraft(model, whole, quick);
+    expect(read.value.photo).toEqual({ photo: 1, part: null, box: [248, 35, 592, 1000] });
+    expect(model.asked).toHaveLength(1);
+  });
+
+  it('is none when the second look finds none, or fails, never the rough box', async () => {
+    for (const second of [JSON.stringify({ box: null }), new ModelCallError('blocked', 'no')]) {
+      const model = modelAnswering((request) =>
+        request.mediaResolution === 'high'
+          ? second
+          : recipe({ photo: 2, part: 1, box: [0, 0, 500, 500] }),
+      );
+      const read = await readDraft(model, parts, quick);
+      expect(read.value.photo).toBeNull();
+      expect(read.value.reply.name).toBe('Trinchado');
+    }
+  });
+
+  it('is none for a photo or part that was not sent, or for no recipe, asking nothing more', async () => {
+    for (const reply of [
+      recipe({ photo: 3, part: 1, box: [0, 0, 500, 500] }),
+      recipe({ photo: 2, part: 2, box: [0, 0, 500, 500] }),
+      recipe({ photo: 1, part: 1.5, box: [0, 0, 500, 500] }),
+      recipe({ photo: 1, part: 1, box: [0, 0, 500, 500] }, false),
+      recipe(null),
+    ]) {
+      const model = modelAnswering(() => reply);
+      expect((await readDraft(model, parts, quick)).value.photo).toBeNull();
+      expect(model.asked).toHaveLength(1);
+    }
+  });
+
+  it('is never asked of a page', async () => {
+    const model = modelAnswering(() => recipe({ photo: 1, part: 1, box: [0, 0, 500, 500] }));
+    const read = await readDraft(
+      model,
+      draftAsked({ householdId: 'h1', page: page() } as never),
+      quick,
+    );
+    expect(read.value.photo).toBeNull();
   });
 });
 

@@ -15,9 +15,9 @@ final class CallableRecipeDrafter implements RecipeDrafter {
 
   final FirebaseFunctions _functions;
 
-  /// A little past the Function's sixty seconds, so the phone hears its answer
-  /// rather than its own timeout.
-  static const _timeout = Duration(seconds: 70);
+  /// A little past the Function's ninety seconds, so the phone hears its
+  /// answer rather than its own timeout.
+  static const _timeout = Duration(seconds: 100);
 
   @override
   Future<RecipeDraftReading> fromPage({

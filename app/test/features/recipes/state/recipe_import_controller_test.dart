@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as img;
 import 'package:nestprep/features/list_scan/data/list_photo_picker.dart';
 import 'package:nestprep/features/recipes/data/recipe_snap_picker.dart';
+import 'package:nestprep/features/recipes/data/recipe_snap_pictures.dart';
+import 'package:nestprep/features/recipes/model/recipe_document.dart';
 import 'package:nestprep/features/recipes/model/recipe_draft_reading.dart';
 import 'package:nestprep/features/recipes/model/recipe_form.dart';
 import 'package:nestprep/features/recipes/model/recipe_import_way.dart';
@@ -256,6 +260,54 @@ void main() {
       expect(drafter.photos.single, controller.snaps);
       expect(reader.asked, isEmpty);
       expect(controller.draft!.sourceUrl, isNull);
+    });
+
+    test('the dish’s own photo is cut out and added to the draft', () async {
+      final screenshot = img.Image(width: 1024, height: 2216)
+        ..clear(img.ColorRgb8(255, 255, 255));
+      final grain = Random(5);
+      for (var y = 500; y < 1400; y += 1) {
+        for (var x = 0; x < 1024; x += 1) {
+          screenshot.setPixelRgb(x, y, 120 + grain.nextInt(100), 90, 60);
+        }
+      }
+      final cut = RecipeSnapPictures.cut(
+        img.encodePng(screenshot),
+        partRoom: RecipeSnap.maxParts,
+      );
+      picker.next = RecipeSnapPick(snaps: [(cut as RecipeSnapReady).snap]);
+      drafter.reading = RecipeDraftReading(
+        draft: aBobotieDraft(origin: RecipeOrigin.photo, sourceUrl: null),
+        callsLeft: 3,
+        dish: const RecipeSnapDish(
+          photo: 1,
+          part: 2,
+          box: DocumentPhotoBox(top: 0, left: 0, bottom: 856, right: 1000),
+        ),
+      );
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.photos);
+      await controller.readPhotos();
+
+      final hero = img.decodeJpg(controller.draft!.photos.single.hero.bytes)!;
+      expect(hero.width / hero.height, closeTo(1024 / 900, 0.02));
+    });
+
+    test('a dish photo that cannot be cut leaves the recipe as read', () async {
+      drafter.reading = RecipeDraftReading(
+        draft: aBobotieDraft(origin: RecipeOrigin.photo, sourceUrl: null),
+        callsLeft: 3,
+        dish: const RecipeSnapDish(
+          photo: 1,
+          part: 1,
+          box: DocumentPhotoBox(top: 0, left: 0, bottom: 500, right: 500),
+        ),
+      );
+      final controller = snapping();
+      await controller.addPhotos(ListPhotoSource.camera);
+      await controller.readPhotos();
+      expect(controller.step, RecipeImportStep.done);
+      expect(controller.draft!.photos, isEmpty);
     });
 
     test('the picker is told how much room is left', () async {

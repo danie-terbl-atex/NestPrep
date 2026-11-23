@@ -536,6 +536,7 @@ describe('drafting a recipe', () => {
         sourceName: 'drizzleanddip.com',
       },
       imageUrls: [],
+      photo: null,
       callsLeft: 99,
     });
     const recipes = await home(householdId).collection('recipes').count().get();
@@ -558,7 +559,13 @@ describe('drafting a recipe', () => {
     const { sam, householdId } = await aPremiumHousehold();
     await modelAnswers({ isRecipe: false });
     const answer = await draft(sam, householdId);
-    expect(answer).toEqual({ isRecipe: false, recipe: null, imageUrls: [], callsLeft: 99 });
+    expect(answer).toEqual({
+      isRecipe: false,
+      recipe: null,
+      imageUrls: [],
+      photo: null,
+      callsLeft: 99,
+    });
   });
 
   it('reads a photo, with no source and no images', async () => {
@@ -581,6 +588,25 @@ describe('drafting a recipe', () => {
     });
     expect(answer.recipe).toMatchObject({ origin: 'photo', sourceUrl: null, sourceName: null });
     expect(answer.imageUrls).toEqual([]);
+    expect(answer.callsLeft).toBe(99);
+  });
+
+  it('finds the dish’s photo on a part, boxing it again alone, for one call', async () => {
+    const { sam, householdId } = await aPremiumHousehold();
+    await adminDb()
+      .collection('aiEmulator')
+      .doc('recipeImport')
+      .set({
+        cycle: [
+          JSON.stringify({ ...CANNED, photo: { photo: 1, part: 2, box: [300, 0, 600, 960] } }),
+          JSON.stringify({ box: [0, 0, 787, 1000] }),
+        ],
+      });
+    const answer = await callAs<Proposal & { photo: unknown }>(sam, 'draftRecipe', {
+      householdId,
+      photos: [{ parts: [JPEG_BASE64, JPEG_BASE64, JPEG_BASE64] }],
+    });
+    expect(answer.photo).toEqual({ photo: 1, part: 2, box: [0, 0, 787, 1000] });
     expect(answer.callsLeft).toBe(99);
   });
 

@@ -10,6 +10,14 @@ RecipeSnap _snap(List<int> parts, {int? whole}) => RecipeSnap(
     for (final part in parts) Uint8List.fromList([part]),
   ],
   thumbnail: Uint8List(0),
+  layout: const RecipeSnapLayout(
+    width: 1024,
+    height: 820,
+    partWidth: 1024,
+    partHeight: 820,
+    lefts: [0],
+    tops: [0],
+  ),
   whole: whole == null ? null : Uint8List.fromList([whole]),
 );
 

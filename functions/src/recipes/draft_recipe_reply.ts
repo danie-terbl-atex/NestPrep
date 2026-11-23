@@ -31,6 +31,11 @@ export const draftReply = z.object({
 });
 export type DraftReply = z.infer<typeof draftReply>;
 
+export const snapDraftReply = draftReply.extend({
+  photo: z.object({ photo: z.number(), part: z.number(), box: z.array(z.number()) }).nullish(),
+});
+export type SnapDraftReply = z.infer<typeof snapDraftReply>;
+
 type Context = (typeof OWN_RECIPE_CONTEXTS)[number];
 
 export interface RecipeDraft {

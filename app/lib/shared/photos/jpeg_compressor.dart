@@ -90,7 +90,9 @@ final class JpegCompressor implements PhotoCompressor {
         interpolation: img.Interpolation.average,
       );
     }
-    upright.exif = img.ExifData();
+    upright
+      ..exif = img.ExifData()
+      ..iccProfile = null;
     return CompressedPhoto(
       bytes: img.encodeJpg(upright, quality: jpegQuality),
       width: upright.width,

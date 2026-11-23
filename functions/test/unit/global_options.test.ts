@@ -83,8 +83,8 @@ const LARGER: Record<string, { memoryMb: number; timeoutSeconds: number }> = {
   buildLunchWeek: { memoryMb: 512, timeoutSeconds: 60 },
   // An image takes far longer than a JSON answer (lunch-box ADR-0015).
   lunchPhoto: { memoryMb: 512, timeoutSeconds: 120 },
-  // Drafting a recipe waits on Vertex the same way (recipes ADR-0008).
-  draftRecipe: { memoryMb: 512, timeoutSeconds: 60 },
+  // Drafting a recipe waits on Vertex the same way, twice for a snap's photo (recipes ADR-0008, ADR-0011).
+  draftRecipe: { memoryMb: 512, timeoutSeconds: 90 },
   scanRecipeDocument: { memoryMb: 512, timeoutSeconds: 120 },
   draftDocumentRecipe: { memoryMb: 512, timeoutSeconds: 120 },
   // A creation reads its reference, draws, checks the picture and keeps it,

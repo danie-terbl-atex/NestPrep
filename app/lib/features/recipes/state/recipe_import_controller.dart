@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../shared/failure/app_failure.dart';
@@ -6,6 +8,7 @@ import '../data/page_link.dart';
 import '../data/recipe_drafter.dart';
 import '../data/recipe_page_reader.dart';
 import '../data/recipe_snap_picker.dart';
+import '../data/recipe_snap_pictures.dart';
 import '../model/recipe_draft.dart';
 import '../model/recipe_draft_reading.dart';
 import '../model/recipe_form.dart';
@@ -13,6 +16,7 @@ import '../model/recipe_import_way.dart';
 import '../model/recipe_origin.dart';
 import '../model/recipe_page.dart';
 import '../model/recipe_snap.dart';
+import 'recipe_photo_intake.dart';
 
 enum RecipeImportStep { start, readingPage, askingAi, stopped, done }
 
@@ -23,12 +27,14 @@ final class RecipeImportController extends ChangeNotifier {
     required RecipeSnapPicker snapPicker,
     required this.householdId,
     required this._way,
+    this._photoIntake = const RecipePhotoIntake(),
   }) : _reader = pageReader,
        _picker = snapPicker;
 
   final RecipePageReader _reader;
   final RecipeDrafter _drafter;
   final RecipeSnapPicker _picker;
+  final RecipePhotoIntake _photoIntake;
   final String householdId;
 
   RecipeImportWay _way;
@@ -170,10 +176,18 @@ final class RecipeImportController extends ChangeNotifier {
   Future<void> _askAboutPage(RecipePage page) =>
       _ask(() => _drafter.fromPage(householdId: householdId, page: page));
 
-  Future<void> _askAboutPhotos() =>
-      _ask(() => _drafter.fromPhotos(householdId: householdId, photos: snaps));
+  Future<void> _askAboutPhotos() {
+    final photos = snaps;
+    return _ask(
+      () => _drafter.fromPhotos(householdId: householdId, photos: photos),
+      photos: photos,
+    );
+  }
 
-  Future<void> _ask(Future<RecipeDraftReading> Function() asked) async {
+  Future<void> _ask(
+    Future<RecipeDraftReading> Function() asked, {
+    List<RecipeSnap> photos = const [],
+  }) async {
     _moveTo(RecipeImportStep.askingAi);
     try {
       final reading = await asked();
@@ -182,10 +196,31 @@ final class RecipeImportController extends ChangeNotifier {
       if (draft == null) {
         return _stop(const RecipeImportFailure(RecipeImportProblem.noRecipe));
       }
-      _draft = _withCarriedLink(draft);
+      _draft = _withCarriedLink(await _withDish(draft, reading.dish, photos));
       _moveTo(RecipeImportStep.done);
     } on AppFailure catch (failure) {
       _stop(failure);
+    }
+  }
+
+  /// A recipe the dish's photo could not be cut for is still the recipe.
+  Future<RecipeDraft> _withDish(
+    RecipeDraft draft,
+    RecipeSnapDish? dish,
+    List<RecipeSnap> photos,
+  ) async {
+    if (dish == null || dish.photo < 1 || dish.photo > photos.length) {
+      return draft;
+    }
+    final snap = photos[dish.photo - 1];
+    final cut = await Isolate.run(
+      () => RecipeSnapPictures.dishPhoto(snap, dish),
+    );
+    if (cut == null) return draft;
+    try {
+      return draft.withPhotos([await _photoIntake.cut(cut)]);
+    } on AppFailure {
+      return draft;
     }
   }
 

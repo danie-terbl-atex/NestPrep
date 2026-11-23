@@ -75,6 +75,46 @@ void main() {
       expect(draft.candidateImageUrls, ['https://cdn.example.com/a.jpg']);
     });
 
+    test('carries where a snap’s dish photo is, on a part or the whole', () {
+      final onPart = RecipeDraftReading.fromWire({
+        ..._reply(),
+        'photo': {
+          'photo': 2,
+          'part': 3,
+          'box': [0, 10, 787, 1000],
+        },
+      }).dish!;
+      expect((onPart.photo, onPart.part), (2, 3));
+      expect(
+        (onPart.box.top, onPart.box.left, onPart.box.bottom, onPart.box.right),
+        (0, 10, 787, 1000),
+      );
+      final whole = RecipeDraftReading.fromWire({
+        ..._reply(),
+        'photo': {
+          'photo': 1,
+          'part': null,
+          'box': [248, 35, 592, 1000],
+        },
+      }).dish!;
+      expect(whole.part, isNull);
+    });
+
+    test('has no dish photo for none, or for a box with no room', () {
+      expect(RecipeDraftReading.fromWire(_reply()).dish, isNull);
+      expect(
+        RecipeDraftReading.fromWire({
+          ..._reply(),
+          'photo': {
+            'photo': 1,
+            'part': 1,
+            'box': [500, 0, 400, 1000],
+          },
+        }).dish,
+        isNull,
+      );
+    });
+
     test('with no servings invents none', () {
       final reading = RecipeDraftReading.fromWire(
         _reply(recipe: {'servings': null}),
