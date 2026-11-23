@@ -1,3 +1,15 @@
+# A frame refuses every tick on a task whose assignees were all removed
+
+Daniel 2026-11-23: some frame tasks answer "Choose who did it in NestPrep." after a person is picked. "Make bed" in Terblanche is assigned only to a deleted member: the frame offers everyone, `tickFrameItem` credits nobody (`whoNeeded`).
+
+- [x] Todos ADR-0008 (proposed): removing a profile takes it off every task's and routine's assignees; a chore with none left is anybody's
+- [x] `tickFrameItem`: assignees no longer in the household fall back to everyone (`choreCreditable`), as the frame already shows
+- [x] `removeMember` drops the member from `tasks.assigneeIds` and `routines.defaultAssigneeIds` (`forgetAssignee`, paged)
+- [x] `backfill:removed-assignees` run on nestprep-643b7: 3 of 61 households, 6 tasks, 11 assignments cleaned; rerun finds 0
+- [x] Tests: build clean; unit 3413/3413; lint clean; `forgetAssignee` (450 tasks, two pages) and the backfill (dry, confirm, rerun) on a Firestore-only emulator on isolated ports. The new `membership.test.ts` removeMember case is written but not run: it needs Storage and Daniel's dev suite is up
+- [ ] Deploy `tickFrameItem` and `removeMember` (not done: Daniel's call); not committed
+
+
 # Snap on build 26 fails, and a snap keeps no dish photo (recipes ADR-0011, proposed)
 
 Daniel 2026-11-23: on iPhone 1.0.0 (26) the multi-image Snap "throws errors"; and it never took the recipe's own photo from the uploaded images.

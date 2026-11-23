@@ -294,6 +294,36 @@ describe('removeMember', () => {
     expect((await household.collection('memberHealth').doc(siblingId).get()).exists).toBe(true);
   });
 
+  it('takes them off every task and routine they were assigned (todos ADR-0008)', async () => {
+    const sam = await signUp();
+    const { householdId } = await createHousehold(sam);
+    const kidId = await addMember(householdId, 'Kid');
+    const siblingId = await addMember(householdId, 'Sibling');
+    const household = adminDb().collection('households').doc(householdId);
+    await household
+      .collection('tasks')
+      .doc('bed')
+      .set({ title: 'Make bed', assigneeIds: [kidId] });
+    await household
+      .collection('tasks')
+      .doc('dishes')
+      .set({ title: 'Dishes', assigneeIds: [kidId, siblingId] });
+    await household
+      .collection('routines')
+      .doc('mornings')
+      .set({ title: 'Mornings', defaultAssigneeIds: [siblingId, kidId] });
+
+    await callAs(sam, 'removeMember', { householdId, memberId: kidId });
+
+    expect((await household.collection('tasks').doc('bed').get()).get('assigneeIds')).toEqual([]);
+    expect((await household.collection('tasks').doc('dishes').get()).get('assigneeIds')).toEqual([
+      siblingId,
+    ]);
+    expect(
+      (await household.collection('routines').doc('mornings').get()).get('defaultAssigneeIds'),
+    ).toEqual([siblingId]);
+  });
+
   it('takes where they were with them (live-location ADR-0004)', async () => {
     const sam = await signUp();
     const { householdId } = await createHousehold(sam);

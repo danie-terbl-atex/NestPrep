@@ -2,7 +2,12 @@ import { HttpsError } from 'firebase-functions/v2/https';
 import { describe, expect, it } from 'vitest';
 
 import { tickFrameItemInput } from '../../../src/frames/frame_schemas';
-import { creditFor, inTickReach, nextTicks } from '../../../src/frames/frame_ticks';
+import {
+  choreCreditable,
+  creditFor,
+  inTickReach,
+  nextTicks,
+} from '../../../src/frames/frame_ticks';
 import { parseInput } from '../../../src/household/parse_input';
 
 /** A tick from the wall (photo-frames ADR-0007). */
@@ -50,6 +55,13 @@ describe('who a tick credits', () => {
 
   it('nobody when two of them share the first name', () => {
     expect(creditFor(['m-mia', 'm-mia2'], NAMES, 'Mia')).toBeNull();
+  });
+
+  it('anybody when every assignee has left the household (todos ADR-0008)', () => {
+    expect(choreCreditable(['m-gone'], NAMES)).toEqual(Object.keys(NAMES));
+    expect(choreCreditable([], NAMES)).toEqual(Object.keys(NAMES));
+    expect(choreCreditable(['m-gone', 'm-leo'], NAMES)).toEqual(['m-leo']);
+    expect(creditFor(choreCreditable(['m-gone'], NAMES), NAMES, 'Leo')).toBe('m-leo');
   });
 });
 

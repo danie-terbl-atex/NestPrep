@@ -35,7 +35,7 @@ import {
   type TickFrameItemInput,
   tickFrameItemInput,
 } from './frame_schemas';
-import { creditFor, inTickReach, nextTicks } from './frame_ticks';
+import { choreCreditable, creditFor, inTickReach, nextTicks } from './frame_ticks';
 
 export type TickFrameItemResult = { status: 'unlinked' } | { status: 'linked'; done: boolean };
 
@@ -143,11 +143,7 @@ async function creditedMember(
   by: string | null,
 ): Promise<string> {
   const { names } = await readMembers(home);
-  const eligible =
-    assigneeIds.length === 0
-      ? Object.keys(names)
-      : assigneeIds.filter((id) => names[id] !== undefined);
-  const memberId = creditFor(eligible, names, by);
+  const memberId = creditFor(choreCreditable(assigneeIds, names), names, by);
   if (memberId === null) throw refuseFrame('whoNeeded');
   return memberId;
 }

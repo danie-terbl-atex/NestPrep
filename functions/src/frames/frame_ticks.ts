@@ -27,6 +27,18 @@ export function creditFor(
   return matches.length === 1 ? (matches[0] ?? null) : null;
 }
 
+/**
+ * Who a chore may credit: its assignees still in the household, or everyone
+ * when none are, which is what the frame offers (todos ADR-0008).
+ */
+export function choreCreditable(
+  assigneeIds: readonly string[],
+  names: Readonly<Record<string, string>>,
+): string[] {
+  const present = assigneeIds.filter((id) => names[id] !== undefined);
+  return present.length === 0 ? Object.keys(names) : present;
+}
+
 /** Those of [ids] whose first name is [name], in any case. */
 export function membersNamed(
   ids: readonly string[],
