@@ -1,3 +1,14 @@
+# iOS 1.0.0+27 for external TestFlight: everything on, nothing sold (subscriptions ADR-0014)
+
+Daniel 2026-11-23: a tester build for frame buyers with every new feature, no subscriptions for sale.
+
+- [x] `99b0d104` (TestFlight build mode) brought onto master as `387a2250` at +27 (+26 went out from the release branch); analyze clean, subscriptions tests green, the 4 `test/app` failures are the same on `021b8c00`
+- [x] Every purchase path gated by `isTestFlightBuild` (offer bar, Restore/Manage, claims always offered); iOS shops `always` in source; `referralRewards` is off in appConfig/flags for everyone (left alone)
+- [x] `tools/shorebird.sh release ios-testflight`: Release 1.0.0+27 published. First run refused "kernels from more than one IPA build"; moved this run's two `.dart_tool/flutter_build` iOS dirs aside and the retry made one
+- [x] Uploaded 21:36 via `xcodebuild -exportArchive` (destination upload, Xcode's account, team UY92F2EKT8): Upload succeeded
+- [ ] Daniel: add build 27 to the external group in App Store Connect (no ASC API key on this Mac)
+- Patches for it: `tools/shorebird.sh patch ios-testflight 1.0.0+27`, never `patch ios`
+
 # A frame refuses every tick on a task whose assignees were all removed
 
 Daniel 2026-11-23: some frame tasks answer "Choose who did it in NestPrep." after a person is picked. "Make bed" in Terblanche is assigned only to a deleted member: the frame offers everyone, `tickFrameItem` credits nobody (`whoNeeded`).
@@ -7,7 +18,7 @@ Daniel 2026-11-23: some frame tasks answer "Choose who did it in NestPrep." afte
 - [x] `removeMember` drops the member from `tasks.assigneeIds` and `routines.defaultAssigneeIds` (`forgetAssignee`, paged)
 - [x] `backfill:removed-assignees` run on nestprep-643b7: 3 of 61 households, 6 tasks, 11 assignments cleaned; rerun finds 0
 - [x] Tests: build clean; unit 3413/3413; lint clean; `forgetAssignee` (450 tasks, two pages) and the backfill (dry, confirm, rerun) on a Firestore-only emulator on isolated ports. The new `membership.test.ts` removeMember case is written but not run: it needs Storage and Daniel's dev suite is up
-- [ ] Deploy `tickFrameItem` and `removeMember` (not done: Daniel's call); not committed
+- [x] Committed `ed795492`, pushed; deployed `tickFrameItem` (rev 00016) and `removeMember` to nestprep-643b7 from the clean tree at `387a2250`
 
 
 # Snap on build 26 fails, and a snap keeps no dish photo (recipes ADR-0011, proposed)
