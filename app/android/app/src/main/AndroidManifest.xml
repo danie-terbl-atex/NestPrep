@@ -95,6 +95,14 @@
                 <data android:mimeType="application/pdf"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RelaunchActivity"
+            android:exported="false"
+            android:process=":relaunch"
+            android:taskAffinity="io.nullstate.nestprep.relaunch"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- A push that names no channel, and the status-bar mark and tint every
              push uses (notifications ADR-0001). The channels themselves are
              created by MainActivity, with the app's own words. -->

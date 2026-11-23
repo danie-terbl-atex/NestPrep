@@ -195,10 +195,13 @@ so the on-screen copy cannot tell you the backend was unreachable.
   first. Android's output is `build/app/outputs/bundle/release/app-release.aab` and iOS's
   `build/ios/ipa/`. A build made any other way can never be patched. A Dart-only fix is
   `../tools/shorebird.sh patch <platform> <release-version>` (for example `0.9.0+22`), which goes to
-  **staging**. Check it with `shorebird preview --release-version <v> --track staging`, restarting
-  the app twice (a patch applies on the launch after it downloads), until About reads *patch N*. Then
-  promote it in console.shorebird.dev. A patch belongs to one release only and never carries over to
-  the next store version. Native code, assets, plugins and the Flutter version need a store build.
+  **staging**. Check it with `shorebird preview --release-version <v> --track staging`: once the
+  patch downloads, the app covers every screen with *Update installed* (foundation ADR-0026, at launch
+  or on coming back, at most every 15 minutes). Tap it: Android builds from ADR-0026 on relaunch
+  through `AppRestart.kt`'s `:relaunch` process; iOS and older Android builds close, so open the app
+  again. About then reads *patch N*. Then promote it in console.shorebird.dev. The card never shows
+  in a debug build, because the updater only exists in a Shorebird release. A patch belongs to one
+  release only and never carries over to the next store version. Native code, assets, plugins and the Flutter version need a store build.
   `shorebird` lives in `~/.shorebird/bin`. Never put its Flutter on PATH.
 - **Taking a broken shop off one platform** (shops ADR-0004, ADR-0005). Each `ProductRetailer`
   (`lib/features/groceries/model/product_match.dart`) carries a `ShopSwitch` per platform,

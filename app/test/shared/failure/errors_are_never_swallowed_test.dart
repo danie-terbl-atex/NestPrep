@@ -158,6 +158,9 @@ void main() {
     'controller.receive(shared.token)',
     // Cancelling a subscription in dispose. There is no screen left to tell.
     '_cancel()',
+    // The Shorebird patch check (foundation ADR-0026): the check and the
+    // relaunch probe run inside `bestEffort`, so the future cannot fail.
+    '_check(',
     // Decoding Twig's poses and rig layers ahead of time (design-system
     // ADR-0026). `precacheImage` reports a failed decode to FlutterError
     // itself and its future always completes, so there is nothing to escape

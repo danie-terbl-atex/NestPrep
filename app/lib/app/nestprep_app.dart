@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../design/nest_kit.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/app_update/ui/patch_restart_host.dart';
 import '../features/appearance/state/appearance_controller.dart';
 import '../features/household/state/pending_invite.dart';
 import '../shared/copy/app_copy.dart';
@@ -59,8 +60,12 @@ class _NestPrepRouterHostState extends State<_NestPrepRouterHost> {
           ThemeMode.system,
       routerConfig: _router,
       // Where a push meets the running app (notifications ADR-0001).
-      builder: (context, child) =>
-          NotificationHost(router: _router, child: child ?? const SizedBox()),
+      builder: (context, child) => PatchRestartHost(
+        child: NotificationHost(
+          router: _router,
+          child: child ?? const SizedBox(),
+        ),
+      ),
     );
   }
 }

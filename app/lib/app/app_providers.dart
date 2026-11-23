@@ -12,6 +12,8 @@ import '../features/accounts/data/auth_gateway.dart';
 import '../features/accounts/data/firebase_auth_gateway.dart';
 import '../features/accounts/data/firestore_account_repository.dart';
 import '../features/accounts/state/session_controller.dart';
+import '../features/app_update/data/app_restarter.dart';
+import '../features/app_update/data/patch_updates.dart';
 import '../features/calendar/data/calendar_repository.dart';
 import '../features/calendar/data/firestore_calendar_repository.dart';
 import '../features/calendar_sync/data/calendar_sync_directory.dart';
@@ -103,6 +105,8 @@ List<SingleChildWidget> appProviders(FirebaseServices services) => [
   Provider<FirebaseAuth>.value(value: services.auth),
   Provider<FirebaseFunctions>.value(value: services.functions),
   Provider<FirebaseStorage>.value(value: services.storage),
+  Provider<PatchUpdates>.value(value: const ShorebirdPatchUpdates()),
+  Provider<AppRestarter>.value(value: const PlatformAppRestarter()),
   // The V2 switches (foundation ADR-0014).
   ...featureFlagProviders(),
   Provider<AuthGateway>(

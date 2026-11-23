@@ -45,6 +45,7 @@ class MainActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         location = LocationChannel(this, flutterEngine.dartExecutor.binaryMessenger)
         sharedPdfs.register(flutterEngine.dartExecutor.binaryMessenger)
+        AppRestart.register(this, flutterEngine.dartExecutor.binaryMessenger)
         // The notification channels (`AndroidChannel` in the app) a person can
         // silence one by one in the phone's own settings (notifications
         // ADR-0001). Their names come from the app's copy; this only asks
