@@ -14,6 +14,7 @@ import '../../referrals/ui/referral_mention.dart';
 import '../../referrals/ui/referrals_offered.dart';
 import '../model/entitlement.dart';
 import '../model/premium_feature.dart';
+import '../model/test_flight_build.dart';
 import '../state/plan_controller.dart';
 import 'free_plan_card.dart';
 import 'paywall_page.dart';
@@ -104,7 +105,7 @@ class PlanBody extends StatelessWidget {
           const PremiumVoucherEntry(),
         ],
         const SizedBox(height: NestSpace.xl),
-        if (view.permissions.isFamily)
+        if (view.permissions.isFamily && !isTestFlightBuild)
           PlanActions(
             progress: controller.progress,
             onManage: canManage ? controller.manage : null,

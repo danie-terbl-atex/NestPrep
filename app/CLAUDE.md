@@ -203,6 +203,11 @@ so the on-screen copy cannot tell you the backend was unreachable.
   in a debug build, because the updater only exists in a Shorebird release. A patch belongs to one
   release only and never carries over to the next store version. Native code, assets, plugins and the Flutter version need a store build.
   `shorebird` lives in `~/.shorebird/bin`. Never put its Flutter on PATH.
+- **The TestFlight build** (subscriptions ADR-0014) is `../tools/shorebird.sh release ios-testflight`:
+  the iOS release with `NESTPREP_TESTFLIGHT=on` added, which sells nothing (no plans, Buy, Restore or
+  Manage; the paywall offers *Claim my Premium*) and offers Premium claims whatever
+  `premiumVouchers` says. Patch its releases with `patch ios-testflight <version>`, never `patch ios`,
+  or Shorebird refuses the defines. Never send it to App Review: it has no way to buy.
 - **Taking a broken shop off one platform** (shops ADR-0004, ADR-0005). Each `ProductRetailer`
   (`lib/features/groceries/model/product_match.dart`) carries a `ShopSwitch` per platform,
   `onAndroid` and `onIos`: `off` (never offered there), `cloud` (offered while its `appConfig/flags`

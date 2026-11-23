@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../shared/flags/feature_flag.dart';
 import '../../../shared/flags/feature_flags_controller.dart';
 import '../../household/model/household_view.dart';
+import '../model/test_flight_build.dart';
 
 /// The platforms that offer waiting Premium whatever `appConfig/flags` says
 /// (subscriptions ADR-0011): the cloud switch is held off for App Review
@@ -16,7 +17,8 @@ const premiumVouchersAlwaysOn = {TargetPlatform.android};
 Set<TargetPlatform>? debugPremiumVouchersAlwaysOn;
 
 bool premiumVouchersOffered(BuildContext context) =>
-    ((debugPremiumVouchersAlwaysOn ?? premiumVouchersAlwaysOn).contains(
+    (isTestFlightBuild ||
+        (debugPremiumVouchersAlwaysOn ?? premiumVouchersAlwaysOn).contains(
           defaultTargetPlatform,
         ) ||
         context.watch<FeatureFlagsController>().isOn(

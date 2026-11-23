@@ -15,7 +15,9 @@ import '../data/subscription_directory.dart';
 import '../model/premium_feature.dart';
 import '../model/premium_highlight.dart';
 import '../model/purchase_progress.dart';
+import '../model/test_flight_build.dart';
 import '../state/paywall_controller.dart';
+import '../state/premium_voucher_inbox.dart';
 import '../state/purchase_coordinator.dart';
 import 'highlights_offered.dart';
 import 'paywall_actions.dart';
@@ -23,6 +25,7 @@ import 'paywall_gallery.dart';
 import 'paywall_offer_bar.dart';
 import 'premium_highlights.dart';
 import 'premium_mark.dart';
+import 'premium_voucher_sheet.dart';
 
 /// Offers Premium as a page over everything, opened on the [feature] the
 /// person reached for or from the plan screen (subscriptions ADR-0001,
@@ -45,6 +48,17 @@ Future<bool> showPaywall(
   final onReferral = router != null && referralsOffered(context, listen: false)
       ? () => router.push(ReferralRoute.pathFor(householdId))
       : null;
+  final onClaim =
+      isTestFlightBuild && context.read<HouseholdView>().permissions.isFamily
+      ? () {
+          if (!context.mounted) return;
+          final inbox = context.read<PremiumVoucherInbox>();
+          showPremiumVoucherSheet(
+            context,
+            startWithEmail: inbox.waiting.isEmpty,
+          );
+        }
+      : null;
   final upgraded = await Navigator.of(context, rootNavigator: true).push<bool>(
     MaterialPageRoute(
       fullscreenDialog: true,
@@ -57,7 +71,7 @@ Future<bool> showPaywall(
           householdId: householdId,
           feature: feature,
         ),
-        child: PaywallPage(onReferral: onReferral),
+        child: PaywallPage(onReferral: onReferral, onClaim: onClaim),
       ),
     ),
   );
@@ -68,11 +82,15 @@ Future<bool> showPaywall(
 /// (design-system ADR-0025), photos of what Premium is, the whole Premium
 /// map as cards, and the plans with the button that buys docked at the foot.
 class PaywallPage extends StatelessWidget {
-  const PaywallPage({this.onReferral, super.key});
+  const PaywallPage({this.onReferral, this.onClaim, super.key});
 
   /// Opens *give a month, get a month* once the page has closed; null when
   /// it is not offered to this person.
   final VoidCallback? onReferral;
+
+  /// Opens the claim sheet once the page has closed, in the TestFlight build
+  /// only (ADR-0014); null for anybody who is not family.
+  final VoidCallback? onClaim;
 
   /// Past this the dock would take the page, so the offer scrolls with it.
   static const _dockTextScale = 1.3;
@@ -92,10 +110,17 @@ class PaywallPage extends StatelessWidget {
     final docks =
         MediaQuery.textScalerOf(context).scale(1) <= _dockTextScale &&
         MediaQuery.sizeOf(context).height >= _dockMinHeight;
-    final offerBar = PaywallOfferBar(
-      controller: controller,
-      isSideBySide: docks,
-    );
+    final Widget offerBar = isTestFlightBuild
+        ? PaywallClaimBar(
+            onClaim: switch (onClaim) {
+              final claim? => () {
+                Navigator.of(context).pop(false);
+                claim();
+              },
+              null => null,
+            },
+          )
+        : PaywallOfferBar(controller: controller, isSideBySide: docks);
     return NestScaffold(
       backdrop: const NestWaves(),
       leading: NestIconButton(
@@ -197,7 +222,7 @@ class _PaywallBody extends StatelessWidget {
                   const SizedBox(height: NestSpace.xl),
                   offerBar,
                 ],
-                if (isOnSale) ...[
+                if (isOnSale && !isTestFlightBuild) ...[
                   const SizedBox(height: NestSpace.lg),
                   PaywallAfterword(
                     progress: controller.progress,
@@ -217,6 +242,62 @@ class _PaywallBody extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Where the plans and the button that buys sit in every other build: Premium
+/// comes with a frame or a gift, and the way to claim it (ADR-0014).
+class PaywallClaimBar extends StatelessWidget {
+  const PaywallClaimBar({required this.onClaim, super.key});
+
+  final VoidCallback? onClaim;
+
+  @override
+  Widget build(BuildContext context) {
+    final claim = onClaim;
+    if (claim == null) {
+      return const NestBanner(message: SubscriptionCopy.claimAskAParent);
+    }
+    final nest = NestTheme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const NestIconTile(
+              icon: LucideIcons.gift,
+              tint: NestTileTint.butter,
+            ),
+            const SizedBox(width: NestSpace.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    SubscriptionCopy.claimTitle,
+                    style: nest.text.bodyStrong,
+                  ),
+                  Text(
+                    SubscriptionCopy.claimBody,
+                    style: nest.text.label.copyWith(
+                      color: nest.colors.inkSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: NestSpace.md),
+        NestButton(
+          key: const ValueKey('paywall-claim'),
+          label: SubscriptionCopy.claimAction,
+          icon: LucideIcons.gift,
+          onPressed: claim,
         ),
       ],
     );

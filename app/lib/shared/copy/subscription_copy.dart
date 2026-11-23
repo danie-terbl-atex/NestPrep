@@ -221,6 +221,16 @@ abstract final class SubscriptionCopy {
       'Premium is bought by a parent. Ask one of them to upgrade — it covers '
       'everyone in the household.';
 
+  // ---- the TestFlight build, which sells nothing (ADR-0014) ----
+  static const claimTitle = 'Premium comes with a nestprep frame';
+  static const claimBody =
+      'Bought a frame or got Premium as a gift? Claim it for everyone in '
+      'your household.';
+  static const claimAction = 'Claim my Premium';
+  static const claimAskAParent =
+      'Premium comes with a nestprep frame. Ask a parent to claim it for the '
+      'household.';
+
   static const notYetTitle = 'Premium isn’t available yet';
   static const notYetBody =
       'It is on its way. Everything on the free plan keeps working as it '

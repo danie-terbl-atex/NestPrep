@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Store releases and Dart patches for the NestPrep app, through Shorebird.
 #
-#   tools/shorebird.sh release android|ios
-#   tools/shorebird.sh patch android|ios <release-version> [staging|stable]
+#   tools/shorebird.sh release android|ios|ios-testflight
+#   tools/shorebird.sh patch android|ios|ios-testflight <release-version> [staging|stable]
 #
 # Shorebird refuses a patch whose defines differ from its release, so a release
 # built without NESTPREP_MAPS could never get the map back by patch: both go
-# through here. A patch goes to staging unless stable is named.
+# through here. A patch goes to staging unless stable is named. ios-testflight
+# is the iOS build for TestFlight, which sells nothing (subscriptions
+# ADR-0014); patch its releases as ios-testflight too.
 
 set -euo pipefail
 
@@ -23,7 +25,14 @@ cd "$(dirname "$0")/../app"
 
 action=${1:-}
 platform=${2:-}
-[[ $platform == android || $platform == ios ]] || usage
+case $platform in
+  android | ios) ;;
+  ios-testflight)
+    platform=ios
+    DEFINES+=(--dart-define=NESTPREP_TESTFLIGHT=on)
+    ;;
+  *) usage ;;
+esac
 
 case $action in
   release)
