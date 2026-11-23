@@ -54,7 +54,10 @@ export const addFrameGroceryItem = onCall(
     if (linked === null) return UNLINKED;
     if (linked.frame.groceries === null) throw refuseFrame('groceriesOff');
 
-    const { names, groceryEditors } = await readMembersWithGrants(linked.home);
+    const { names, groceryEditors } = await readMembersWithGrants(
+      linked.home,
+      linked.householdData,
+    );
     const addedBy = groceryAdderNamed(groceryEditors, names, input.by);
     const pick =
       input.product === null || !(await readFramePremium(store, linked.home))

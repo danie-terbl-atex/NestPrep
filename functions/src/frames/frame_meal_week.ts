@@ -1,5 +1,5 @@
 import { addDays } from '../calendar_sync/zoned_time';
-import { type MealDay, type MealSlot, MEAL_SLOTS, mondayOf } from './frame_day';
+import { type FrameMealSlot, type MealDay, MEAL_SLOTS, mealSlotsOn, mondayOf } from './frame_day';
 
 /**
  * A week of the household's meal plan for the frame's Meals overview
@@ -17,12 +17,6 @@ export interface FrameMealWeekSources {
   readonly week: string;
   /** Absent when the frame's meals panel is off. */
   readonly meals?: MealDay;
-}
-
-export interface FrameMealSlot {
-  readonly slot: MealSlot;
-  readonly title: string;
-  readonly photo?: string;
 }
 
 export interface FrameMeals {
@@ -50,14 +44,7 @@ export function assembleFrameMeals(sources: FrameMealWeekSources): FrameMeals {
       ? []
       : Array.from({ length: 7 }, (_, offset) => ({
           date: addDays(week, offset),
-          slots: MEAL_SLOTS.flatMap((slot): FrameMealSlot[] => {
-            const mealId = meals.slots[`${String(offset + 1)}_${slot}`];
-            const title = mealId === undefined ? undefined : meals.mealNames[mealId];
-            if (mealId === undefined || title === undefined) return [];
-            return [
-              meals.photos?.includes(mealId) ? { slot, title, photo: mealId } : { slot, title },
-            ];
-          }),
+          slots: mealSlotsOn(meals, offset + 1),
         }));
   return { status: 'linked', today, week, days };
 }

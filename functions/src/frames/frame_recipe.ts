@@ -22,44 +22,64 @@ export const frameRecipeShareInput = z.object({
 });
 export type FrameRecipeShareInput = z.infer<typeof frameRecipeShareInput>;
 
-export const frameRecipeDocument = z.object({
-  status: z.enum(FRAME_RECIPE_STATUSES),
-  name: z.string(),
-  summary: z.string(),
-  servings: z.number().int(),
-  prepMinutes: z.number().int(),
-  cookMinutes: z.number().int(),
-  difficulty: z.enum(DIFFICULTIES),
-  prepNote: z.string().nullable(),
+const text = z.string().trim().min(1);
+const textOrNull = z
+  .unknown()
+  .optional()
+  .transform((value) => {
+    const trimmed = typeof value === 'string' ? value.trim() : '';
+    return trimmed === '' ? null : trimmed;
+  });
+const positiveOrNull = z
+  .unknown()
+  .optional()
+  .transform((value) =>
+    typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null,
+  );
+
+const frameRecipeFields = {
+  name: text,
+  summary: textOrNull.transform((summary) => summary ?? ''),
+  servings: z.number().int().min(1).max(PEOPLE_MAX),
+  prepMinutes: z.number().int().min(0),
+  cookMinutes: z
+    .unknown()
+    .optional()
+    .transform((minutes) =>
+      Number.isInteger(minutes) && Number(minutes) > 0 ? Number(minutes) : 0,
+    ),
   ingredients: z.array(
     z.object({
-      name: z.string(),
-      quantity: z.number().nullable(),
-      note: z.string().nullable(),
-      group: z.string().nullable(),
+      name: text,
+      quantity: positiveOrNull,
+      unit: textOrNull,
+      note: textOrNull,
+      group: textOrNull,
     }),
   ),
-  steps: z.array(z.string()),
-  photo: z.object({ hero: z.string().min(1) }).nullable(),
+  steps: z.array(text),
+  photo: z
+    .object({ hero: z.string().min(1) })
+    .nullable()
+    .catch(null),
+  contexts: z
+    .array(z.unknown())
+    .catch([])
+    .transform((contexts) => contexts.filter((context) => typeof context === 'string')),
+};
+
+export const frameRecipeDocument = z.object({
+  status: z.enum(FRAME_RECIPE_STATUSES),
+  ...frameRecipeFields,
+  difficulty: z.enum(DIFFICULTIES).nullable().catch(null),
+  prepNote: textOrNull,
 });
 export type FrameRecipeDocument = z.infer<typeof frameRecipeDocument>;
 
-export type FrameRecipeSource = Omit<FrameRecipeDocument, 'status' | 'difficulty'> & {
-  readonly difficulty: FrameRecipeDocument['difficulty'] | null;
-};
+export type FrameRecipeSource = Omit<FrameRecipeDocument, 'status'>;
 
 export const ownRecipeFrameDocument = z
-  .object({
-    source: z.literal(OWN_SOURCE),
-    name: z.string(),
-    summary: z.string(),
-    servings: z.number().int(),
-    prepMinutes: z.number().int(),
-    cookMinutes: z.number().int(),
-    ingredients: frameRecipeDocument.shape.ingredients,
-    steps: z.array(z.string()),
-    photo: frameRecipeDocument.shape.photo,
-  })
+  .object({ source: z.literal(OWN_SOURCE), ...frameRecipeFields })
   .transform((recipe): FrameRecipeSource => ({ ...recipe, difficulty: null, prepNote: null }));
 
 const frameStepTimer = z.object({

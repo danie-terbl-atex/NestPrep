@@ -27,6 +27,8 @@ import {
 import { weeklyOn } from '../recurrence_shape';
 import { eventually } from './product_analytics_fixture';
 import {
+  PROJECT_ID,
+  type TestUser,
   adminDb,
   adminStorage,
   callAs,
@@ -64,7 +66,13 @@ interface Day {
   helper?: { name: string; items: Record<string, unknown>[]; shift?: { on: boolean } };
   meals?: { slots: Record<string, unknown>[] };
   lunch?: { boxes: { name: string; photo?: string }[] };
-  groceries?: { shop: string; by: string[]; toBuy: Record<string, unknown>[] };
+  groceries?: {
+    shop: string;
+    by: string[];
+    toBuy: Record<string, unknown>[];
+    bought: Record<string, unknown>[];
+  };
+  recipes?: { planners: string[] };
   people?: { home?: Record<string, unknown>; people: Record<string, unknown>[] };
   routines?: {
     id: string;
@@ -422,7 +430,7 @@ async function monthOf(secret: string, month: string): Promise<Month> {
 interface Meals {
   status: string;
   week?: string;
-  days?: { date: string; slots: { slot: string; title: string; photo?: string }[] }[];
+  days?: { date: string; slots: Record<string, unknown>[] }[];
 }
 
 async function mealsOf(secret: string, week: string): Promise<Meals> {
@@ -1988,6 +1996,7 @@ describe('a frame adds groceries (photo-frames ADR-0012)', () => {
       shop: 'checkers',
       by: ['Sam', 'Thandi'],
       toBuy: [],
+      bought: [],
     });
 
     const { products = [] } = await search(secret, ' milk ');
@@ -2241,5 +2250,455 @@ describe('a frame runs a child’s routine (photo-frames ADR-0021)', () => {
       tick(secret, { kind: 'kidRoutine', id: 'morning', date: today(), done: true, by: 'Mia' }),
       'itemNotFound',
     );
+  });
+});
+
+describe('a frame ticks groceries off (photo-frames ADR-0023)', () => {
+  async function given(h: Household): Promise<{ secret: string; frameId: string; thandi: string }> {
+    const thandi = await addProfile(h.householdId, 'Thandi', 'helper');
+    await joinAs(h.sam, h.householdId, thandi);
+    const linked = await linkedFrame(h, { ...PANELS, todos: false });
+    await frameOf(h, linked.frameId).update({ groceries: { shop: 'checkers', area: 'capeTown' } });
+    const list = household(h.householdId).collection('groceryItems');
+    await list.doc('milk').set({
+      name: 'Milk',
+      quantity: '2 L',
+      addedBy: h.samMemberId,
+      addedAt: Timestamp.fromMillis(Date.now() - 30 * 86_400_000),
+      boughtAt: null,
+      boughtBy: null,
+      sourceKey: null,
+      sourceWeek: null,
+      sourceNote: null,
+    });
+    await list.doc('old-bread').set({
+      name: 'Bread',
+      quantity: null,
+      addedBy: h.samMemberId,
+      addedAt: Timestamp.fromMillis(Date.now() - 3 * 86_400_000),
+      boughtAt: Timestamp.fromMillis(Date.now() - 2 * 86_400_000),
+      boughtBy: h.samMemberId,
+      sourceKey: null,
+      sourceWeek: null,
+      sourceNote: null,
+    });
+    return { ...linked, thandi };
+  }
+
+  const milk = (h: Household): DocumentReference =>
+    household(h.householdId).collection('groceryItems').doc('milk');
+
+  it('writes the app’s own pair for the editor named, and the day shows it bought', async () => {
+    const h = await samsHousehold();
+    const { secret, thandi } = await given(h);
+    const body = { kind: 'grocery', id: 'milk', done: true };
+    await expectRefusal(tick(secret, body), 'whoNeeded');
+    await expectRefusal(tick(secret, { ...body, by: 'Leo' }), 'whoNeeded');
+
+    expect(await tick(secret, { ...body, by: 'thandi', date: '2020-01-01' })).toEqual({
+      status: 'linked',
+      done: true,
+    });
+    const bought = (await milk(h).get()).data();
+    expect(bought?.['boughtBy']).toBe(thandi);
+    expect(bought?.['boughtAt']).toBeInstanceOf(Timestamp);
+    expect(Object.keys(bought ?? {}).sort()).toEqual(
+      [
+        'addedAt',
+        'addedBy',
+        'boughtAt',
+        'boughtBy',
+        'name',
+        'quantity',
+        'sourceKey',
+        'sourceNote',
+        'sourceWeek',
+      ].sort(),
+    );
+    const day = await dayOf(secret);
+    expect(day.groceries?.toBuy).toEqual([]);
+    expect(day.groceries?.bought).toEqual([
+      { id: 'milk', name: 'Milk', quantity: '2 L', by: 'Thandi' },
+    ]);
+
+    expect(await tick(secret, { ...body, by: 'Sam' })).toEqual({ status: 'linked', done: true });
+    expect((await milk(h).get()).get('boughtBy')).toBe(thandi);
+  });
+
+  it('unticks back to both null, needs nobody to say who, and a retry is harmless', async () => {
+    const h = await samsHousehold();
+    const { secret } = await given(h);
+    await tick(secret, { kind: 'grocery', id: 'milk', done: true, by: 'Sam' });
+    const body = { kind: 'grocery', id: 'milk', done: false };
+    expect(await tick(secret, body)).toEqual({ status: 'linked', done: false });
+    expect(await tick(secret, body)).toEqual({ status: 'linked', done: false });
+    const item = (await milk(h).get()).data();
+    expect([item?.['boughtAt'], item?.['boughtBy']]).toEqual([null, null]);
+    const day = await dayOf(secret);
+    expect(day.groceries?.bought).toEqual([]);
+    expect(day.groceries?.toBuy.map((row) => row['id'])).toEqual(['milk']);
+  });
+
+  it('credits the one groceries editor without asking', async () => {
+    const h = await samsHousehold();
+    const { secret, frameId } = await linkedFrame(h, { ...PANELS, todos: false });
+    await frameOf(h, frameId).update({ groceries: { shop: 'checkers', area: 'capeTown' } });
+    await household(h.householdId)
+      .collection('groceryItems')
+      .doc('eggs')
+      .set({ name: 'Eggs', boughtAt: null, boughtBy: null, addedAt: new Date() });
+    expect(await tick(secret, { kind: 'grocery', id: 'eggs', done: true })).toEqual({
+      status: 'linked',
+      done: true,
+    });
+    const eggs = await household(h.householdId).collection('groceryItems').doc('eggs').get();
+    expect(eggs.get('boughtBy')).toBe(h.samMemberId);
+  });
+
+  it('refuses an item that is not there, and a frame that does not do groceries', async () => {
+    const h = await samsHousehold();
+    const { secret, frameId } = await given(h);
+    await expectRefusal(
+      tick(secret, { kind: 'grocery', id: 'nope', done: true, by: 'Sam' }),
+      'itemNotFound',
+    );
+    await frameOf(h, frameId).update({ groceries: null });
+    await expectRefusal(
+      tick(secret, { kind: 'grocery', id: 'milk', done: true, by: 'Sam' }),
+      'groceriesOff',
+    );
+    expect((await milk(h).get()).get('boughtBy')).toBeNull();
+  });
+});
+
+const FIRESTORE_HOST = process.env['FIRESTORE_EMULATOR_HOST'] ?? '127.0.0.1:8080';
+
+function asMember(user: TestUser, path: string, init: RequestInit = {}): Promise<Response> {
+  return fetch(
+    `http://${FIRESTORE_HOST}/v1/projects/${PROJECT_ID}/databases/(default)/documents/${path}`,
+    {
+      ...init,
+      headers: {
+        ...Object.fromEntries(new Headers(init.headers)),
+        Authorization: `Bearer ${user.idToken}`,
+      },
+    },
+  );
+}
+
+describe('a frame browses, cooks and plans recipes (photo-frames ADR-0024, ADR-0025)', () => {
+  const OWN_ID = 'own-0123456789abcdef0123';
+  const CARD = 'recipes/bobotie/card-0123abcd.jpg';
+  const BOBOTIE = {
+    status: 'published',
+    name: 'Bobotie',
+    summary: 'Spiced mince under a golden custard.',
+    contexts: ['dinner'],
+    servings: 6,
+    prepMinutes: 20,
+    cookMinutes: 40,
+    difficulty: 'easy',
+    prepNote: null,
+    dietTags: [],
+    ingredients: [
+      { name: 'Beef mince', quantity: 1, unit: 'kg', note: null, group: null },
+      { name: 'Milk', quantity: 1, unit: 'cup', note: null, group: null },
+      { name: 'Salt', quantity: null, unit: null, note: 'to taste', group: null },
+    ],
+    steps: ['Brown the mince.', 'Bake for 35–40 minutes, until set.'],
+    photo: { card: CARD, hero: 'recipes/bobotie/hero-0123abcd.jpg' },
+  };
+  const OWN = {
+    source: 'own',
+    name: 'Gran’s pap',
+    summary: '',
+    contexts: ['breakfast'],
+    servings: 2,
+    prepMinutes: 5,
+    cookMinutes: 10,
+    dietTags: [],
+    ingredients: [{ name: 'Maize meal', quantity: 1, unit: 'cup', note: null, group: null }],
+    steps: ['Stir.'],
+    photo: null,
+  };
+
+  interface Recipes {
+    status: string;
+    unchanged?: true;
+    version?: string;
+    recipes?: Record<string, unknown>[];
+  }
+
+  async function given(h: Household): Promise<{ secret: string; frameId: string; pat: TestUser }> {
+    await setPremium(h, true);
+    const patId = await addProfile(h.householdId, 'Pat Parker', 'parent');
+    const pat = await joinAs(h.sam, h.householdId, patId);
+    await addProfile(h.householdId, 'Leo', 'kid');
+    await addProfile(h.householdId, 'Thandi', 'helper');
+    const recipes = adminDb().collection('recipes');
+    await recipes.doc('bobotie').set(BOBOTIE);
+    await recipes.doc('chakalaka').set({ ...BOBOTIE, name: 'Chakalaka', status: 'retired' });
+    const own = household(h.householdId).collection('recipes');
+    await own.doc(OWN_ID).set(OWN);
+    await own.doc('ai-0123456789abcdef0123').set({ ...OWN, source: 'ai', name: 'AI stew' });
+    for (const bucket of ['nestprep-643b7.appspot.com', 'nestprep-643b7.firebasestorage.app']) {
+      await adminStorage()
+        .bucket(bucket)
+        .file(CARD)
+        .save(BEACH, { contentType: 'image/jpeg', resumable: false });
+    }
+    const linked = await linkedFrame(h, { ...PANELS, meals: true });
+    return { ...linked, pat };
+  }
+
+  const listOf = (secret: string, version?: string): Promise<Recipes> =>
+    callAs<Recipes>(null, 'getFrameRecipes', {
+      secret,
+      ...(version === undefined ? {} : { version }),
+    });
+  const recipeOf = (
+    secret: string,
+    body: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> => callAs(null, 'getFrameRecipe', { secret, ...body });
+  const plan = (secret: string, body: Record<string, unknown>): Promise<unknown> =>
+    callAs(null, 'planFrameMeal', {
+      secret,
+      requestId: randomBytes(9).toString('base64url'),
+      ...body,
+    });
+  const photoOf = (secret: string, id: string): Promise<Response> =>
+    fetch(httpFunctionUrl('getFrameRecipePhoto'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret, id }),
+    });
+
+  it('is nowhere for a free household', async () => {
+    const h = await samsHousehold();
+    const { secret } = await linkedFrame(h, { ...PANELS, meals: true });
+    await adminDb().collection('recipes').doc('bobotie').set(BOBOTIE);
+    expect(await dayOf(secret)).not.toHaveProperty('recipes');
+    await expectRefusal(listOf(secret), 'recipesOff');
+    await expectRefusal(recipeOf(secret, { id: 'bobotie' }), 'recipesOff');
+    await expectRefusal(
+      plan(secret, { id: 'bobotie', date: today(), slot: 'dinner', by: 'Sam' }),
+      'recipesOff',
+    );
+    expect((await photoOf(secret, 'recipe-bobotie')).status).toBe(404);
+  });
+
+  it('lists the published catalogue and the household’s own, versioned, and cooks one scaled to the family', async () => {
+    const h = await samsHousehold();
+    const { secret, frameId } = await given(h);
+    expect((await dayOf(secret)).recipes).toEqual({ planners: ['Pat', 'Sam'] });
+
+    const list = await listOf(secret);
+    expect(list.status).toBe('linked');
+    expect(list.recipes).toEqual([
+      {
+        id: 'bobotie',
+        household: false,
+        name: 'Bobotie',
+        contexts: ['dinner'],
+        minutes: 60,
+        servings: 6,
+        photo: true,
+        diet: [],
+      },
+      {
+        id: OWN_ID,
+        household: true,
+        name: 'Gran’s pap',
+        contexts: ['breakfast'],
+        minutes: 15,
+        servings: 2,
+        photo: false,
+        diet: [],
+      },
+    ]);
+    expect(await listOf(secret, list.version)).toEqual({ status: 'linked', unchanged: true });
+
+    const cooked = await recipeOf(secret, { id: 'bobotie' });
+    expect(cooked).toMatchObject({
+      status: 'linked',
+      recipe: {
+        recipeId: 'bobotie',
+        name: 'Bobotie',
+        people: 3,
+        servings: 6,
+        photo: true,
+        ingredients: [
+          { group: null, amount: '500 g', name: 'Beef mince', note: null },
+          { group: null, amount: '1/2 cup', name: 'Milk', note: null },
+          { group: null, amount: null, name: 'Salt', note: 'to taste' },
+        ],
+      },
+    });
+    expect(await recipeOf(secret, { id: OWN_ID, household: true })).toMatchObject({
+      recipe: { recipeId: OWN_ID, people: 3, ingredients: [{ amount: '1 1/2 cups' }] },
+    });
+    await expectRefusal(recipeOf(secret, { id: 'chakalaka' }), 'recipeNotFound');
+    await expectRefusal(recipeOf(secret, { id: OWN_ID }), 'recipeNotFound');
+    await expectRefusal(
+      recipeOf(secret, { id: 'ai-0123456789abcdef0123', household: true }),
+      'recipeNotFound',
+    );
+
+    const photo = await photoOf(secret, 'recipe-bobotie');
+    expect(photo.status).toBe(200);
+    expect(photo.headers.get('content-type')).toBe('image/jpeg');
+    expect((await photoOf(secret, 'recipe-chakalaka')).status).toBe(404);
+    await frameOf(h, frameId).update({ 'panels.meals': false });
+    expect((await photoOf(secret, 'recipe-bobotie')).status).toBe(404);
+    await expectRefusal(listOf(secret), 'recipesOff');
+  });
+
+  it('plans a recipe as the app does, links the slot to it, and clears it', async () => {
+    const h = await samsHousehold();
+    const { secret, pat } = await given(h);
+    const home = household(h.householdId);
+    const date = today();
+    const monday = addDays(date, 1 - weekdayOf(date));
+    const key = `${String(weekdayOf(date))}_dinner`;
+    await home
+      .collection('mealPlans')
+      .doc(monday)
+      .set({ slots: { '1_lunch': 'toasties' } });
+    await home.collection('meals').doc('toasties').set({ name: 'Toasties', nameKey: 'toasties' });
+
+    await expectRefusal(plan(secret, { id: 'bobotie', date, slot: 'dinner' }), 'whoNeeded');
+    expect(await plan(secret, { id: 'bobotie', date, slot: 'dinner', by: 'Pat' })).toEqual({
+      status: 'linked',
+    });
+    const meal = (await home.collection('meals').doc('recipe-bobotie').get()).data();
+    const patId = (await home.collection('members').where('displayName', '==', 'Pat Parker').get())
+      .docs[0]?.id;
+    expect(meal).toMatchObject({
+      name: 'Bobotie',
+      nameKey: 'bobotie',
+      addedBy: patId,
+      recipeId: 'bobotie',
+      ingredients: [
+        { name: 'Beef mince', amount: 500, unit: 'g' },
+        { name: 'Milk', amount: 0.5, unit: 'cup' },
+        { name: 'Salt', amount: null, unit: null },
+      ],
+    });
+    expect(meal?.['createdAt']).toBeInstanceOf(Timestamp);
+    expect(Object.keys(meal ?? {}).sort()).toEqual(
+      ['addedBy', 'createdAt', 'ingredients', 'name', 'nameKey', 'recipeId'].sort(),
+    );
+    expect((await home.collection('mealPlans').doc(monday).get()).data()).toEqual({
+      slots: { '1_lunch': 'toasties', [key]: 'recipe-bobotie' },
+    });
+
+    const renamed = await asMember(
+      pat,
+      `households/${h.householdId}/meals/recipe-bobotie?updateMask.fieldPaths=name&updateMask.fieldPaths=nameKey`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: {
+            name: { stringValue: 'Ouma’s bobotie' },
+            nameKey: { stringValue: 'ouma’s bobotie' },
+          },
+        }),
+      },
+    );
+    expect(renamed.status).toBe(200);
+    const replanned = await asMember(
+      pat,
+      `households/${h.householdId}/mealPlans/${monday}?updateMask.fieldPaths=${encodeURIComponent('slots.`2_lunch`')}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: { slots: { mapValue: { fields: { '2_lunch': { stringValue: 'toasties' } } } } },
+        }),
+      },
+    );
+    expect(replanned.status).toBe(200);
+
+    const linkedSlot = {
+      slot: 'dinner',
+      title: 'Ouma’s bobotie',
+      photo: 'recipe-bobotie',
+      recipe: { id: 'bobotie', household: false },
+    };
+    const week = await mealsOf(secret, 'this');
+    expect(week.days?.[weekdayOf(date) - 1]?.slots).toContainEqual(linkedSlot);
+    expect((await dayOf(secret)).meals?.slots).toContainEqual(linkedSlot);
+
+    await home.collection('meals').doc('recipe-bobotie').update({ ingredients: [] });
+    const nextMonday = addDays(monday, 7);
+    expect(
+      await plan(secret, { id: 'bobotie', date: nextMonday, slot: 'lunch', by: 'Sam' }),
+    ).toEqual({ status: 'linked' });
+    const again = (await home.collection('meals').doc('recipe-bobotie').get()).data();
+    expect(again).toMatchObject({ name: 'Ouma’s bobotie', addedBy: patId });
+    expect((again?.['ingredients'] as unknown[]).length).toBe(3);
+    expect((await home.collection('mealPlans').doc(nextMonday).get()).data()).toEqual({
+      slots: { '1_lunch': 'recipe-bobotie' },
+    });
+
+    expect(await plan(secret, { id: null, date, slot: 'dinner', by: 'Sam' })).toEqual({
+      status: 'linked',
+    });
+    expect((await home.collection('mealPlans').doc(monday).get()).get(`slots.${key}`)).toBe('');
+  });
+
+  it('plans an own recipe by its household link', async () => {
+    const h = await samsHousehold();
+    const { secret } = await given(h);
+    const date = today();
+    await plan(secret, { id: OWN_ID, household: true, date, slot: 'breakfast', by: 'Sam' });
+    const meal = await household(h.householdId).collection('meals').doc(`recipe-${OWN_ID}`).get();
+    expect(meal.data()).toMatchObject({
+      name: 'Gran’s pap',
+      householdRecipeId: OWN_ID,
+      addedBy: h.samMemberId,
+      ingredients: [{ name: 'Maize meal', amount: 1.5, unit: 'cup' }],
+    });
+    expect(meal.get('recipeId')).toBeUndefined();
+  });
+
+  it('applies a request once, and refuses what is out of reach or not there', async () => {
+    const h = await samsHousehold();
+    const { secret } = await given(h);
+    const home = household(h.householdId);
+    const date = today();
+    const monday = addDays(date, 1 - weekdayOf(date));
+    const key = `${String(weekdayOf(date))}_dinner`;
+    const body = { requestId: 'retry-0001', id: 'bobotie', date, slot: 'dinner', by: 'Sam' };
+    expect(await callAs(null, 'planFrameMeal', { secret, ...body })).toEqual({ status: 'linked' });
+    await home
+      .collection('mealPlans')
+      .doc(monday)
+      .update({ [`slots.${key}`]: 'toasties' });
+    expect(await callAs(null, 'planFrameMeal', { secret, ...body })).toEqual({ status: 'linked' });
+    expect((await home.collection('mealPlans').doc(monday).get()).get(`slots.${key}`)).toBe(
+      'toasties',
+    );
+
+    await expectRefusal(
+      plan(secret, { id: 'bobotie', date: addDays(monday, 14), slot: 'dinner', by: 'Sam' }),
+      'itemOutOfReach',
+    );
+    await expectRefusal(
+      plan(secret, { id: 'bobotie', date: addDays(monday, -1), slot: 'dinner', by: 'Sam' }),
+      'itemOutOfReach',
+    );
+    await expectRefusal(
+      plan(secret, { id: 'chakalaka', date, slot: 'dinner', by: 'Sam' }),
+      'recipeNotFound',
+    );
+    await expectRefusal(
+      plan(secret, { id: 'bobotie', date, slot: 'dinner', by: 'Thandi' }),
+      'whoNeeded',
+    );
+    expect(await callAs(null, 'planFrameMeal', { secret: newSecret(), ...body })).toEqual({
+      status: 'unlinked',
+    });
   });
 });

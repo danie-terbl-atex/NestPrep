@@ -223,5 +223,8 @@ abstract final class PhotoFrameCopy {
       'That person can’t add to the grocery list. Choose someone who can.',
     PhotoFrameProblem.shopUnavailable =>
       'The shop isn’t answering just now. Try again in a moment.',
+    PhotoFrameProblem.recipesOff =>
+      'This frame doesn’t show recipes. They need Premium and Meals switched '
+          'on in the frame’s settings.',
   };
 }

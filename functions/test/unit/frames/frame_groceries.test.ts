@@ -1,3 +1,4 @@
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { HttpsError } from 'firebase-functions/v2/https';
 import { describe, expect, it } from 'vitest';
 
@@ -9,21 +10,26 @@ import {
   frameGroceryItemDocument,
   frameProductMatch,
   frameProductsInOrder,
+  frameStoredGroceryItem,
   groceriesEditors,
   groceriesPanel,
   groceryAdderNamed,
+  groceryTickFields,
   sameItemOnList,
   searchableProducts,
 } from '../../../src/frames/frame_groceries';
 import {
   FRAME_ADD_GROCERY_PER_CREDENTIAL,
   FRAME_SEARCH_PRODUCTS_PER_CREDENTIAL,
+  FRAME_TICK_PER_CREDENTIAL,
 } from '../../../src/frames/frame_policy';
 import {
   type AddFrameGroceryItemInput,
   addFrameGroceryItemInput,
   searchFrameProductsInput,
+  tickFrameItemInput,
 } from '../../../src/frames/frame_schemas';
+import { creditFor } from '../../../src/frames/frame_ticks';
 import type { FrameShopProduct } from '../../../src/frames/frame_shop_catalogue';
 import { ROLE_DEFAULTS, uniformGrant } from '../../../src/household/access';
 import { parseInput } from '../../../src/household/parse_input';
@@ -457,6 +463,7 @@ describe('the day', () => {
         },
         { id: 'i1', name: 'Eggs', product: { name: 'Eggs 6' } },
       ],
+      bought: [],
     });
   });
 
@@ -465,6 +472,126 @@ describe('the day', () => {
       shop: 'checkers',
       by: [],
       toBuy: [],
+      bought: [],
+    });
+  });
+
+  it('carries what was bought in the last day, newest first, by whoever bought it', () => {
+    const now = Date.parse('2026-11-23T12:00:00Z');
+    const at = (hoursAgo: number): Timestamp => Timestamp.fromMillis(now - hoursAgo * 3_600_000);
+    const panel = groceriesPanel(
+      {
+        shop: 'checkers',
+        editors: [],
+        boughtSince: now - 24 * 3_600_000,
+        items: [
+          { id: 'b2', name: 'Bread', boughtBy: 'm-gone', boughtAt: at(5) },
+          { id: 'b3', name: 'Milk', quantity: '2 L', boughtBy: 'm-sam', boughtAt: at(1) },
+          { id: 'b1', name: 'Unticked since', boughtBy: null, boughtAt: null },
+          { id: 'old', name: 'Rice', boughtBy: 'm-sam', boughtAt: at(25) },
+          { id: 'no-time', name: 'Tea', boughtBy: 'm-sam' },
+          {
+            id: 'b0',
+            name: 'Eggs',
+            boughtBy: 'm-thandi',
+            boughtAt: at(23),
+            productMatch: { retailer: 'checkers', name: 'Eggs 6', brand: 'Nulaid', imageId: null },
+          },
+        ],
+      },
+      NAMES,
+    );
+    expect(panel.toBuy.map(({ id }) => id)).toEqual(['b1']);
+    expect(panel.bought).toEqual([
+      { id: 'b3', name: 'Milk', quantity: '2 L', by: 'Sam' },
+      { id: 'b2', name: 'Bread' },
+      { id: 'b0', name: 'Eggs', product: { name: 'Eggs 6', brand: 'Nulaid' }, by: 'Thandi' },
+    ]);
+  });
+
+  it('keeps at most fifty of them', () => {
+    const now = Date.now();
+    const items = Array.from({ length: 60 }, (_, index) => ({
+      id: `i${String(index)}`,
+      name: 'Item',
+      boughtBy: 'm-sam',
+      boughtAt: Timestamp.fromMillis(now - index * 1000),
+    }));
+    const panel = groceriesPanel(
+      { shop: 'checkers', editors: [], items, boughtSince: now - 86_400_000 },
+      NAMES,
+    );
+    expect(panel.bought).toHaveLength(50);
+    expect(panel.bought[0]?.id).toBe('i0');
+  });
+
+  it('reads a buyer’s time leniently, as the app writes it', () => {
+    expect(
+      frameStoredGroceryItem.parse({ name: 'Milk', boughtAt: 'yesterday' }).boughtAt,
+    ).toBeNull();
+  });
+});
+
+describe('a grocery ticked at the wall', () => {
+  const unbought = { name: 'Milk', boughtBy: null };
+  const bought = { name: 'Milk', boughtBy: 'm-sam' };
+
+  it('writes the app’s pair: the server’s time and the buyer', () => {
+    const fields = groceryTickFields(unbought, 'm-thandi');
+    expect(fields).toEqual({ boughtAt: FieldValue.serverTimestamp(), boughtBy: 'm-thandi' });
+    expect(Object.keys(fields ?? {}).sort()).toEqual(['boughtAt', 'boughtBy']);
+  });
+
+  it('unticks both back to null', () => {
+    expect(groceryTickFields(bought, null)).toEqual({ boughtAt: null, boughtBy: null });
+    expect(groceryTickFields({ name: 'Milk' }, 'm-sam')).not.toBeNull();
+  });
+
+  it('leaves an item already in the asked state alone, so a retry writes nothing', () => {
+    expect(groceryTickFields(bought, 'm-thandi')).toBeNull();
+    expect(groceryTickFields(unbought, null)).toBeNull();
+    expect(groceryTickFields({ name: 'Milk' }, null)).toBeNull();
+  });
+
+  it('credits the one groceries editor, or the one named, and asks otherwise', () => {
+    expect(creditFor(['m-sam'], NAMES, null)).toBe('m-sam');
+    expect(creditFor(['m-sam', 'm-thandi'], NAMES, 'thandi')).toBe('m-thandi');
+    expect(creditFor(['m-sam', 'm-thandi'], NAMES, null)).toBeNull();
+    expect(creditFor(['m-sam', 'm-thandi'], NAMES, 'Gran')).toBeNull();
+    expect(creditFor([], NAMES, 'Sam')).toBeNull();
+  });
+});
+
+describe('a grocery tick at the edge', () => {
+  const body = { secret: SECRET, kind: 'grocery', id: 'item-1', done: true };
+
+  it('needs no date, and ignores one sent', () => {
+    expect(parseInput(tickFrameItemInput, body)).toEqual(body);
+    expect(parseInput(tickFrameItemInput, { ...body, date: '2020-01-01', by: 'Sam' })).toEqual({
+      ...body,
+      date: '2020-01-01',
+      by: 'Sam',
+    });
+  });
+
+  it('names a document, nothing deeper', () => {
+    for (const id of ['a/b', 'a/b/c', '..', 'milk ', 'x'.repeat(65)]) {
+      expect(() => parseInput(tickFrameItemInput, { ...body, id })).toThrow(HttpsError);
+    }
+    expect(parseInput(tickFrameItemInput, { ...body, id: 'Ab_9-z' }).id).toBe('Ab_9-z');
+  });
+
+  it('still needs a date for every other kind', () => {
+    expect(() => parseInput(tickFrameItemInput, { ...body, kind: 'task' })).toThrow(HttpsError);
+    expect(() => parseInput(tickFrameItemInput, { ...body, kind: 'pantry' })).toThrow(HttpsError);
+    expect(() => parseInput(tickFrameItemInput, { ...body, id: '' })).toThrow(HttpsError);
+  });
+
+  it('counts against the tick limit', () => {
+    expect(FRAME_TICK_PER_CREDENTIAL).toEqual({
+      name: 'tickFrameItem:credential',
+      limit: 240,
+      windowSeconds: 3600,
     });
   });
 });

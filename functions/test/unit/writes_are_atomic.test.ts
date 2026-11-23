@@ -344,7 +344,9 @@ describe('every callable declares what it may cost', () => {
         // which only family may put on the wall (C-0023 rev 9), streams a
         // shared recipe's photo (photo-frames ADR-0013), and searches the
         // family's shop and adds to the grocery list in the name of whoever
-        // says they are adding it (photo-frames ADR-0012). Its update agent
+        // says they are adding it (photo-frames ADR-0012). It browses the
+        // household's recipes, cooks one scaled on the server and plans one in
+        // the name of a meals editor (photo-frames ADR-0024, ADR-0025). Its update agent
         // registers by its own secret, is offered releases no rule could
         // choose, streams the APK and reports installs that halt a rollout.
         'addFrameEvent',
@@ -357,6 +359,9 @@ describe('every callable declares what it may cost', () => {
         'getFrameMeals',
         'getFrameMonth',
         'getFrameRecipePhoto',
+        'getFrameRecipe',
+        'getFrameRecipes',
+        'planFrameMeal',
         'getFrameAvatar',
         // A job's photo for the helper's day, and her clock at the wall
         // (photo-frames ADR-0020).

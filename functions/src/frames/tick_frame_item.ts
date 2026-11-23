@@ -21,10 +21,20 @@ import {
   frameJobShape,
   handInFields,
 } from './frame_jobs';
+import { GROCERY_ITEMS, frameStoredGroceryItem, groceryTickFields } from './frame_groceries';
 import { frameKidRoutineShape, frameKidRoutineTickShape } from './frame_kid_routines';
 import { FRAME_DEVICE_OPTIONS, FRAME_TICK_PER_CREDENTIAL } from './frame_policy';
-import { homeCareRoutineShape, homeCareTickShape, readMembers } from './frame_reads';
-import { tickFrameItemInput, type TickFrameItemInput } from './frame_schemas';
+import {
+  homeCareRoutineShape,
+  homeCareTickShape,
+  readMembers,
+  readMembersWithGrants,
+} from './frame_reads';
+import {
+  type TickFrameGroceryInput,
+  type TickFrameItemInput,
+  tickFrameItemInput,
+} from './frame_schemas';
 import { creditFor, inTickReach, nextTicks } from './frame_ticks';
 
 export type TickFrameItemResult = { status: 'unlinked' } | { status: 'linked'; done: boolean };
@@ -44,6 +54,9 @@ export const tickFrameItem = onCall(
     const store = db();
     const linked = await readLinkedFrame(store, input.secret, FRAME_TICK_PER_CREDENTIAL);
     if (linked === null) return UNLINKED;
+    if (input.kind === 'grocery') {
+      return { status: 'linked', done: await tickGrocery(store, linked, input) };
+    }
     if (!inTickReach(input.date, linked.clock.date)) throw refuseFrame('itemOutOfReach');
 
     const tick = {
@@ -94,6 +107,34 @@ async function tickTask(
     });
   });
   return true;
+}
+
+async function tickGrocery(
+  store: Firestore,
+  { frame, home, householdData }: LinkedFrame,
+  input: TickFrameGroceryInput,
+): Promise<boolean> {
+  if (frame.groceries === null) throw refuseFrame('groceriesOff');
+  const boughtBy = input.done ? await groceryBuyer(home, householdData, input.by ?? null) : null;
+  const ref = home.collection(GROCERY_ITEMS).doc(input.id);
+  await store.runTransaction(async (transaction) => {
+    const item = parsed(frameStoredGroceryItem, (await transaction.get(ref)).data());
+    if (item === null) throw refuseFrame('itemNotFound');
+    const fields = groceryTickFields(item, boughtBy);
+    if (fields !== null) transaction.update(ref, fields);
+  });
+  return input.done;
+}
+
+async function groceryBuyer(
+  home: DocumentReference,
+  householdData: LinkedFrame['householdData'],
+  by: string | null,
+): Promise<string> {
+  const { names, groceryEditors } = await readMembersWithGrants(home, householdData);
+  const memberId = creditFor(groceryEditors, names, by);
+  if (memberId === null) throw refuseFrame('whoNeeded');
+  return memberId;
 }
 
 async function creditedMember(

@@ -25,6 +25,7 @@ enum PhotoFrameProblem {
   groceriesOff,
   notAllowedToAddGroceries,
   shopUnavailable,
+  recipesOff,
 }
 
 final class PhotoFrameFailure extends AppFailure {

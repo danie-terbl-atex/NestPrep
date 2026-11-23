@@ -35,6 +35,7 @@ export const FRAME_REFUSALS = {
   groceriesOff: ['failed-precondition', 'This frame does not add groceries.'],
   notAllowedToAddGroceries: ['permission-denied', 'That person may not add to the grocery list.'],
   shopUnavailable: ['unavailable', 'The shop is not answering right now.'],
+  recipesOff: ['failed-precondition', 'This frame does not show recipes.'],
 } as const satisfies Record<string, readonly [FunctionsErrorCode, string]>;
 
 export type FrameRefusal = keyof typeof FRAME_REFUSALS;

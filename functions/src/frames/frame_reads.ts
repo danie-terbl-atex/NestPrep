@@ -35,6 +35,8 @@ import {
   frameStoredGroceryItem,
   groceriesEditors,
 } from './frame_groceries';
+import { MEAL_PLANS, mealsEditorsOf } from './frame_recipes';
+import { familySizeOf } from '../recipes/recipe_scale';
 import { readFrameLunch, readFramePremium, type FrameLunch } from './frame_lunch_photos';
 import { readFrameMeals } from './frame_meal_photos';
 import { plannedMealIds } from './frame_meal_week';
@@ -47,6 +49,7 @@ import {
 } from './frame_people';
 import type { FrameMonthSources } from './frame_month';
 import {
+  FRAME_BOUGHT_WINDOW_MS,
   FRAME_DAY_AHEAD,
   FRAME_GROCERY_READ_LIMIT,
   FRAME_OVERDUE_DAYS,
@@ -119,6 +122,7 @@ type Sources = Pick<
   | 'lunchPhotos'
   | 'groceries'
   | 'people'
+  | 'planners'
 >;
 
 export async function readFrameSources(
@@ -127,12 +131,23 @@ export async function readFrameSources(
   panels: FramePanels,
   today: string,
   groceries: FrameGroceries | null = null,
+  householdData?: Readonly<Record<string, unknown>>,
 ): Promise<Sources> {
   const helperId = panels.helperMemberId;
   const premium =
-    panels.lunch || panels.people ? readFramePremium(store, home) : Promise.resolve(false);
+    panels.lunch || panels.people || panels.meals
+      ? readFramePremium(store, home)
+      : Promise.resolve(false);
+  const cooks = panels.meals
+    ? premium.catch((error: unknown) => {
+        logger.warn('frame entitlement read failed', { error: String(error) });
+        return false;
+      })
+    : Promise.resolve(false);
   const memberRead =
-    addsEvents(panels) || groceries !== null ? readMembersWithGrants(home) : readMembers(home);
+    addsEvents(panels) || groceries !== null || panels.meals
+      ? readMembersWithGrants(home, householdData)
+      : readMembers(home);
   const [
     members,
     events,
@@ -150,7 +165,7 @@ export async function readFrameSources(
     panels.todos || helperId !== null
       ? readChoreRecords(home, today, addDays(today, -FRAME_OVERDUE_DAYS))
       : undefined,
-    panels.meals ? readMeals(store, home, today) : undefined,
+    panels.meals ? readMeals(store, home, today, cooks) : undefined,
     helperId === null ? undefined : readHomeCare(store, home, helperId, today),
     panels.lunch ? readLunch(store, home, today, premium) : undefined,
     groceries === null ? undefined : readGroceryItems(home),
@@ -165,9 +180,14 @@ export async function readFrameSources(
           })
       : undefined,
   ]);
-  const { groceryEditors, ...people } = { groceryEditors: [], ...members };
+  const { groceryEditors, mealsEditors, ...people } = {
+    groceryEditors: [],
+    mealsEditors: [],
+    ...members,
+  };
   return {
     ...people,
+    ...(panels.meals && (await cooks) ? { planners: mealsEditors } : {}),
     ...(events === undefined ? {} : { events }),
     ...(chores === undefined ? {} : { chores }),
     ...(meals === undefined ? {} : { meals }),
@@ -175,7 +195,14 @@ export async function readFrameSources(
     ...lunch,
     ...(groceries === null || groceryItems === undefined
       ? {}
-      : { groceries: { shop: groceries.shop, editors: groceryEditors, items: groceryItems } }),
+      : {
+          groceries: {
+            shop: groceries.shop,
+            editors: groceryEditors,
+            items: groceryItems,
+            boughtSince: Date.now() - FRAME_BOUGHT_WINDOW_MS,
+          },
+        }),
     ...(whereabouts === undefined ? {} : { people: whereabouts }),
     ...(kidRoutines === undefined ? {} : { kidRoutines }),
     ...(rewards === undefined ? {} : { rewards }),
@@ -285,19 +312,48 @@ export async function readMembers(home: DocumentReference): Promise<MemberSource
  * The members, which of them may add an event from the frame (photo-frames
  * ADR-0008) and which may add to the grocery list (ADR-0012).
  */
-export async function readMembersWithGrants(home: DocumentReference): Promise<
+export async function readMembersWithGrants(
+  home: DocumentReference,
+  householdData?: Readonly<Record<string, unknown>>,
+): Promise<
   MemberSources & {
     readonly adders: string[];
     readonly groceryEditors: string[];
+    readonly mealsEditors: string[];
   }
 > {
-  const [snapshot, members] = await Promise.all([home.get(), readMemberRecords(home)]);
-  const household = parsed(storedHousehold, snapshot.data());
+  const [data, members] = await Promise.all([
+    householdData ?? home.get().then((snapshot) => snapshot.data()),
+    readMemberRecords(home),
+  ]);
+  const household = parsed(storedHousehold, data);
   return {
     ...namesAndColors(members),
     adders: household === null ? [] : calendarEditors(household, members),
     groceryEditors: household === null ? [] : groceriesEditors(household, members),
+    mealsEditors: household === null ? [] : mealsEditorsOf(household, members),
   };
+}
+
+export async function readMealPlanners(
+  home: DocumentReference,
+  householdData: Readonly<Record<string, unknown>>,
+): Promise<{
+  readonly names: Readonly<Record<string, string>>;
+  readonly planners: string[];
+  readonly familySize: number;
+}> {
+  const members = await readMemberRecords(home);
+  const household = parsed(storedHousehold, householdData);
+  return {
+    names: namesAndColors(members).names,
+    planners: household === null ? [] : mealsEditorsOf(household, members),
+    familySize: familySizeOf(members.map(({ role }) => role)),
+  };
+}
+
+export async function readFamilySize(home: DocumentReference): Promise<number> {
+  return familySizeOf((await readMemberRecords(home)).map(({ role }) => role));
 }
 
 async function namesOf(
@@ -321,24 +377,33 @@ export async function readMealWeek(
   store: Firestore,
   home: DocumentReference,
   monday: string,
+  premium: Promise<boolean>,
 ): Promise<MealDay> {
-  const plan = await home.collection('mealPlans').doc(monday).get();
+  const plan = await home.collection(MEAL_PLANS).doc(monday).get();
   const slots = parsed(planShape, plan.data())?.slots ?? {};
-  const { names, photos } = await readFrameMeals(store, home, plannedMealIds(slots));
-  return { slots, mealNames: names, photos };
+  return mealDayOf(slots, readFrameMeals(store, home, plannedMealIds(slots)), premium);
 }
 
 async function readMeals(
   store: Firestore,
   home: DocumentReference,
   today: string,
+  premium: Promise<boolean>,
 ): Promise<MealDay> {
-  const plan = await home.collection('mealPlans').doc(mondayOf(today)).get();
+  const plan = await home.collection(MEAL_PLANS).doc(mondayOf(today)).get();
   const slots = parsed(planShape, plan.data())?.slots ?? {};
   const weekday = String(weekdayOf(today));
   const todays = MEAL_SLOTS.flatMap((slot) => slots[`${weekday}_${slot}`] ?? []);
-  const { names, photos } = await readFrameMeals(store, home, todays);
-  return { slots, mealNames: names, photos };
+  return mealDayOf(slots, readFrameMeals(store, home, todays), premium);
+}
+
+async function mealDayOf(
+  slots: Record<string, string>,
+  meals: ReturnType<typeof readFrameMeals>,
+  premium: Promise<boolean>,
+): Promise<MealDay> {
+  const [{ names, photos, recipes }, cooks] = await Promise.all([meals, premium]);
+  return { slots, mealNames: names, photos, ...(cooks ? { recipes } : {}) };
 }
 
 async function readHomeCare(

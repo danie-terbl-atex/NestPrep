@@ -161,6 +161,31 @@ export const FRAME_ADD_GROCERY_PER_CREDENTIAL: RateLimitRule = {
   windowSeconds: 60 * 60,
 };
 
+export const FRAME_RECIPES_PER_CREDENTIAL: RateLimitRule = {
+  name: 'getFrameRecipes:credential',
+  limit: 60,
+  windowSeconds: 60 * 60,
+};
+
+export const FRAME_RECIPE_PER_CREDENTIAL: RateLimitRule = {
+  name: 'getFrameRecipe:credential',
+  limit: 120,
+  windowSeconds: 60 * 60,
+};
+
+export const FRAME_PLAN_MEAL_PER_CREDENTIAL: RateLimitRule = {
+  name: 'planFrameMeal:credential',
+  limit: 60,
+  windowSeconds: 60 * 60,
+};
+
+export const FRAME_CATALOGUE_RECIPE_LIMIT = 300;
+
+export const FRAME_REQUEST_LIFETIME_MS = 24 * 60 * 60 * 1000;
+
+export const FRAME_BOUGHT_WINDOW_MS = 24 * 60 * 60 * 1000;
+export const FRAME_BOUGHT_LIMIT = 50;
+
 /** A grocery name is also its normalised key, which the grocery rules cap at 80; the app's bound on a quantity. */
 export const GROCERY_NAME_LIMIT = 80;
 export const GROCERY_QUANTITY_LIMIT = 40;
@@ -198,7 +223,7 @@ export const FRAME_SHARE_WAIT_PER_CREDENTIAL: RateLimitRule = {
 
 export const FRAME_RECIPE_PHOTO_PER_CREDENTIAL: RateLimitRule = {
   name: 'getFrameRecipePhoto:credential',
-  limit: 60,
+  limit: 600,
   windowSeconds: 60 * 60,
 };
 

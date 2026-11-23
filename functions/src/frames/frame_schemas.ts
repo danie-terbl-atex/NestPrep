@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { daysInMonth } from '../calendar_sync/zoned_time';
 import { PAGE_LINK_MAX } from '../shared/page_link';
-import { NOTE_MAX } from './frame_day';
+import { MEAL_SLOTS, NOTE_MAX } from './frame_day';
 import { FRAME_SHARE_KINDS, type FrameShareKind } from './frame_documents';
 import { FRAME_MEAL_WEEKS } from './frame_meal_week';
 import { frameRecipeShareInput } from './frame_recipe';
@@ -87,18 +87,33 @@ export const FRAME_PHOTO_ID = /^[A-Za-z0-9_-]{8,64}$/;
 export const getFramePhotoInput = z.object({ secret, id: z.string().regex(FRAME_PHOTO_ID) });
 export type GetFramePhotoInput = z.infer<typeof getFramePhotoInput>;
 
-export const tickFrameItemInput = z.object({
-  secret,
-  kind: z.enum(['task', 'routine', 'job', 'kidRoutine']),
-  id,
-  date: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
-  done: z.boolean(),
-  /** A first name as the day prints it; needed only when more than one person could have done it. */
-  by: z.string().trim().min(1).max(60).nullable().optional(),
-  /** One routine step; absent ticks or unticks every step. A kid routine's `by` is its child. */
-  step: id.nullable().optional(),
-});
-export type TickFrameItemInput = z.infer<typeof tickFrameItemInput>;
+const isoDate = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/);
+/** A first name as the day prints it; needed only when more than one person could have done it. */
+const tickBy = z.string().trim().min(1).max(60).nullable().optional();
+
+export const tickFrameItemInput = z.discriminatedUnion('kind', [
+  z.object({
+    secret,
+    kind: z.enum(['task', 'routine', 'job', 'kidRoutine']),
+    id,
+    date: isoDate,
+    done: z.boolean(),
+    by: tickBy,
+    /** One routine step; absent ticks or unticks every step. A kid routine's `by` is its child. */
+    step: id.nullable().optional(),
+  }),
+  z.object({
+    secret,
+    kind: z.literal('grocery'),
+    id: z.string().regex(/^[A-Za-z0-9_-]{1,64}$/),
+    date: isoDate.optional(),
+    done: z.boolean(),
+    by: tickBy,
+  }),
+]);
+export type TickFrameInput = z.infer<typeof tickFrameItemInput>;
+export type TickFrameItemInput = Exclude<TickFrameInput, { kind: 'grocery' }>;
+export type TickFrameGroceryInput = Extract<TickFrameInput, { kind: 'grocery' }>;
 
 /** Clock the frame's helper in (`on`) or out (photo-frames ADR-0020). */
 export const setFrameShiftInput = z.object({ secret, on: z.boolean() });
@@ -248,6 +263,35 @@ export const addFrameGroceryItemInput = z.object({
     .transform(orNull),
 });
 export type AddFrameGroceryItemInput = z.infer<typeof addFrameGroceryItemInput>;
+
+export const getFrameRecipesInput = z.object({
+  secret,
+  version: z.string().max(64).nullish().transform(orNull),
+});
+export type GetFrameRecipesInput = z.infer<typeof getFrameRecipesInput>;
+
+const recipeId = z
+  .string()
+  .max(60)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const household = z
+  .boolean()
+  .nullish()
+  .transform((value) => value === true);
+
+export const getFrameRecipeInput = z.object({ secret, id: recipeId, household });
+export type GetFrameRecipeInput = z.infer<typeof getFrameRecipeInput>;
+
+export const planFrameMealInput = z.object({
+  secret,
+  requestId: z.string().regex(/^[A-Za-z0-9_-]{8,64}$/),
+  id: recipeId.nullable(),
+  household,
+  date: z.string().refine(isCalendarDate),
+  slot: z.enum(MEAL_SLOTS),
+  by: name.nullish().transform(orNull),
+});
+export type PlanFrameMealInput = z.infer<typeof planFrameMealInput>;
 
 export const unlinkFrameInput = z.object({ secret });
 export type UnlinkFrameInput = z.infer<typeof unlinkFrameInput>;

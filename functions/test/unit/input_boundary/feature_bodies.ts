@@ -48,7 +48,10 @@ import {
   claimFramePairingInput,
   getFrameDayInput,
   getFramePhotosInput,
+  getFrameRecipeInput,
+  getFrameRecipesInput,
   getFrameUpdateApkInput,
+  planFrameMealInput,
   pollFramePairingInput,
   reportFrameUpdateInput,
   startFramePairingInput,
@@ -352,6 +355,18 @@ export const featureBodies = {
     body: { secret: FRAME_SECRET, kind: 'task', id: 'task-1', date: '2026-10-25', done: true },
   },
   setFrameShift: { schema: setFrameShiftInput, body: { secret: FRAME_SECRET, on: true } },
+  getFrameRecipes: { schema: getFrameRecipesInput, body: { secret: FRAME_SECRET } },
+  getFrameRecipe: { schema: getFrameRecipeInput, body: { secret: FRAME_SECRET, id: 'bunny-chow' } },
+  planFrameMeal: {
+    schema: planFrameMealInput,
+    body: {
+      secret: FRAME_SECRET,
+      requestId: 'req-00001',
+      id: 'bunny-chow',
+      date: '2026-11-24',
+      slot: 'dinner',
+    },
+  },
   // The times, note and repeat are optional; their cases are in `frames/frame_events.test.ts`.
   addFrameEvent: {
     schema: addFrameEventInput,

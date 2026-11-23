@@ -106,12 +106,25 @@ export interface HomeCareDay {
   readonly shiftStartedAt?: Date | null;
 }
 
+export interface FrameRecipeLink {
+  readonly id: string;
+  readonly household: boolean;
+}
+
 export interface MealDay {
   /** This week's plan, `{isoWeekday}_{slot}` → mealId. */
   readonly slots: Readonly<Record<string, string>>;
   /** mealId → its name. */
   readonly mealNames: Readonly<Record<string, string>>;
   readonly photos?: readonly string[];
+  readonly recipes?: Readonly<Record<string, FrameRecipeLink>>;
+}
+
+export interface FrameMealSlot {
+  readonly slot: MealSlot;
+  readonly title: string;
+  readonly photo?: string;
+  readonly recipe?: FrameRecipeLink;
 }
 
 export interface FrameDaySources {
@@ -150,6 +163,7 @@ export interface FrameDaySources {
   readonly kidRoutines?: KidRoutineSources;
   /** The reward shelf and the kids' stars, read only while the frame shows chores (rev 22). */
   readonly rewards?: RewardSources;
+  readonly planners?: readonly string[];
 }
 
 export interface FrameEvent {
@@ -226,9 +240,8 @@ export interface FrameDay {
     readonly items: (FrameItem & { readonly detail?: string })[];
     readonly shift?: FrameShift;
   };
-  readonly meals?: {
-    readonly slots: { readonly slot: MealSlot; readonly title: string; readonly photo?: string }[];
-  };
+  readonly meals?: { readonly slots: FrameMealSlot[] };
+  readonly recipes?: { readonly planners: string[] };
   readonly lunch?: { readonly boxes: FrameLunchBox[] };
   readonly sharing?: true;
   /** The frame's shop, who may say they are adding, and what is still to buy (ADR-0012). */
@@ -256,7 +269,9 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
     refreshAfterSeconds: refreshAfterSeconds(sources.localMinute),
     ...(sources.screensaver === null ? {} : { screensaver: sources.screensaver }),
     ...(panels.calendar ? { calendar: calendarPanel(sources) } : {}),
-    ...(addsEvents(panels) ? { addEvents: { by: addersOf(sources) } } : {}),
+    ...(addsEvents(panels)
+      ? { addEvents: { by: firstNamesSorted(sources.adders ?? [], sources.names) } }
+      : {}),
     ...(panels.todos ? { todos: todosPanel(sources) } : {}),
     ...(helperId !== null && helperName !== undefined
       ? {
@@ -268,6 +283,9 @@ export function assembleFrameDay(sources: FrameDaySources): FrameDay {
         }
       : {}),
     ...(panels.meals ? { meals: mealsPanel(sources) } : {}),
+    ...(panels.meals && sources.planners !== undefined
+      ? { recipes: { planners: firstNamesSorted(sources.planners, sources.names) } }
+      : {}),
     ...(panels.lunch && sources.lunch !== undefined ? { lunch: lunchPanel(sources) } : {}),
     ...(panels.share ? { sharing: true as const } : {}),
     ...(sources.groceries === undefined
@@ -350,10 +368,10 @@ function kidRoutinesOf(sources: FrameDaySources, routines: KidRoutineSources): F
   return kidRoutinesPanel(routines, sources.today, kidNames, clockTime);
 }
 
-function addersOf(sources: FrameDaySources): string[] {
-  return (sources.adders ?? [])
+function firstNamesSorted(ids: readonly string[], names: FrameDaySources['names']): string[] {
+  return ids
     .flatMap((id) => {
-      const name = firstName(sources.names[id] ?? '');
+      const name = firstName(names[id] ?? '');
       return name === '' ? [] : [{ name }];
     })
     .sort(byName)
@@ -553,15 +571,24 @@ export function mondayOf(today: string): string {
 function mealsPanel(sources: FrameDaySources): NonNullable<FrameDay['meals']> {
   const plan = sources.meals;
   if (plan === undefined) return { slots: [] };
-  const weekday = weekdayOf(sources.today);
-  return {
-    slots: MEAL_SLOTS.flatMap((slot) => {
-      const mealId = plan.slots[`${String(weekday)}_${slot}`];
-      const title = mealId === undefined ? undefined : plan.mealNames[mealId];
-      if (mealId === undefined || title === undefined) return [];
-      return [plan.photos?.includes(mealId) ? { slot, title, photo: mealId } : { slot, title }];
-    }),
-  };
+  return { slots: mealSlotsOn(plan, weekdayOf(sources.today)) };
+}
+
+export function mealSlotsOn(plan: MealDay, weekday: number): FrameMealSlot[] {
+  return MEAL_SLOTS.flatMap((slot) => {
+    const mealId = plan.slots[`${String(weekday)}_${slot}`];
+    const title = mealId === undefined ? undefined : plan.mealNames[mealId];
+    if (mealId === undefined || title === undefined) return [];
+    const recipe = plan.recipes?.[mealId];
+    return [
+      {
+        slot,
+        title,
+        ...(plan.photos?.includes(mealId) === true ? { photo: mealId } : {}),
+        ...(recipe === undefined ? {} : { recipe }),
+      },
+    ];
+  });
 }
 
 /** Today's box per child by first name; a weekend has none. */

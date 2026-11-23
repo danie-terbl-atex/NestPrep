@@ -343,6 +343,12 @@
       "indexes": []
     },
     {
+      "collectionGroup": "frameRequests",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
       "collectionGroup": "calendarConnections",
       "fieldPath": "accountLabel",
       "indexes": [

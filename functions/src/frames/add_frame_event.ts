@@ -38,7 +38,7 @@ export const addFrameEvent = onCall(
     if (!addsEvents(linked.frame.panels)) throw refuseFrame('addingOff');
     if (!inEventReach(input.date, linked.clock.date)) throw refuseFrame('eventOutOfReach');
 
-    const { names, adders } = await readMembersWithGrants(linked.home);
+    const { names, adders } = await readMembersWithGrants(linked.home, linked.householdData);
     const createdBy = adderNamed(adders, names, input.by);
     const memberIds = peopleNamed(input.who, names);
 

@@ -1,3 +1,4 @@
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { z } from 'zod';
 
 import { normalisedName } from '../home_care/restock_decision';
@@ -5,7 +6,12 @@ import type { RankedMatch } from '../checkers/match_decisions';
 import { type MemberRecord, type StoredHousehold, recipientsOf } from '../notifications/recipients';
 import { firstName } from './frame_day';
 import { refuseFrame } from './frame_errors';
-import { FRAME_BEST_MATCH_FIT, FRAME_PRODUCT_LIMIT, type FrameGroceryShop } from './frame_policy';
+import {
+  FRAME_BEST_MATCH_FIT,
+  FRAME_BOUGHT_LIMIT,
+  FRAME_PRODUCT_LIMIT,
+  type FrameGroceryShop,
+} from './frame_policy';
 import type { AddFrameGroceryItemInput, FrameProductPick } from './frame_schemas';
 import { type FrameShopProduct, productImageUrl } from './frame_shop_catalogue';
 import { membersNamed } from './frame_ticks';
@@ -22,6 +28,7 @@ export const frameStoredGroceryItem = z.object({
   name: z.string().min(1),
   quantity: z.string().nullable().optional().catch(null),
   boughtBy: z.string().nullable().optional(),
+  boughtAt: z.instanceof(Timestamp).nullable().optional().catch(null),
   productMatch: z
     .object({
       retailer: z.string(),
@@ -131,16 +138,30 @@ export interface FrameGroceriesDay {
   readonly shop: FrameGroceryShop;
   readonly by: string[];
   readonly toBuy: FrameGroceryRow[];
+  readonly bought: (FrameGroceryRow & { readonly by?: string })[];
 }
+
+type StoredRow = FrameStoredGroceryItem & { readonly id: string };
 
 export interface FrameGroceriesSources {
   readonly shop: FrameGroceryShop;
   readonly editors: readonly string[];
   /** Newest first, as read. */
-  readonly items: readonly (FrameStoredGroceryItem & { readonly id: string })[];
+  readonly items: readonly StoredRow[];
+  readonly boughtSince?: number;
 }
 
-function groceryRow(item: FrameStoredGroceryItem & { readonly id: string }): FrameGroceryRow {
+export function groceryTickFields(
+  item: FrameStoredGroceryItem,
+  boughtBy: string | null,
+): Record<string, unknown> | null {
+  if (isUnbought(item) === (boughtBy === null)) return null;
+  return boughtBy === null
+    ? { boughtAt: null, boughtBy: null }
+    : { boughtAt: FieldValue.serverTimestamp(), boughtBy };
+}
+
+function groceryRow(item: StoredRow): FrameGroceryRow {
   const quantity = item.quantity?.trim() ?? '';
   const match = item.productMatch ?? null;
   const imageUrl = match === null ? null : productImageUrl(match.retailer, match.imageId ?? null);
@@ -161,6 +182,19 @@ function groceryRow(item: FrameStoredGroceryItem & { readonly id: string }): Fra
   };
 }
 
+function boughtSince(sources: FrameGroceriesSources): StoredRow[] {
+  const since = sources.boughtSince;
+  if (since === undefined) return [];
+  return sources.items
+    .flatMap((item) => {
+      const at = item.boughtAt?.toMillis();
+      return isUnbought(item) || at === undefined || at < since ? [] : [{ item, at }];
+    })
+    .sort((a, b) => b.at - a.at)
+    .slice(0, FRAME_BOUGHT_LIMIT)
+    .map(({ item }) => item);
+}
+
 /** What the wall shows of the list: who may add, and what is still to buy. */
 export function groceriesPanel(
   sources: FrameGroceriesSources,
@@ -174,6 +208,10 @@ export function groceriesPanel(
     shop: sources.shop,
     by,
     toBuy: sources.items.filter(isUnbought).map(groceryRow),
+    bought: boughtSince(sources).map((item) => {
+      const buyer = firstName(names[item.boughtBy ?? ''] ?? '');
+      return { ...groceryRow(item), ...(buyer === '' ? {} : { by: buyer }) };
+    }),
   };
 }
 

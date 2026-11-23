@@ -27,7 +27,14 @@ export const getFrameDay = onCall(
     if (linked === null) return UNLINKED;
     const { frame, home, clock } = linked;
 
-    const sources = await readFrameSources(store, home, frame.panels, clock.date, frame.groceries);
+    const sources = await readFrameSources(
+      store,
+      home,
+      frame.panels,
+      clock.date,
+      frame.groceries,
+      linked.householdData,
+    );
     return assembleFrameDay({
       householdName: linked.householdName,
       frameName: frame.name,

@@ -21,6 +21,7 @@ export interface LinkedFrame {
   readonly frame: FrameDocument;
   readonly home: DocumentReference;
   readonly householdName: string;
+  readonly householdData: Readonly<Record<string, unknown>>;
   readonly timeZone: string | null;
   readonly clock: WallClock;
 }
@@ -64,13 +65,15 @@ export async function readLinkedFrame(
   if (frame === null) return null;
 
   const home = householdRef(store, credential.householdId);
-  const household = parsed(householdShape, (await home.get()).data());
+  const householdData = (await home.get()).data() ?? {};
+  const household = parsed(householdShape, householdData);
   if (household === null) return null;
   return {
     frameId: credential.frameId,
     frame,
     home,
     householdName: household.name,
+    householdData,
     timeZone: household.timeZone ?? null,
     clock: wallClockOf(now, knownZoneOr(household.timeZone)),
   };

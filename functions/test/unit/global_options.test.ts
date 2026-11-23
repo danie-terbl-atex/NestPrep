@@ -165,8 +165,10 @@ describe('every function — callable, trigger or schedule', () => {
     // household's people for the free tier's four (subscriptions ADR-0008).
     // A new account's welcome email through Resend (accounts ADR-0015).
     // The frame's week of meals for its Meals overview (NestPrep-Home ADR-0029).
+    // The frame's recipes, one scaled to the family, and a recipe planned on a
+    // day (photo-frames ADR-0024, ADR-0025).
     // A feature adds its count and its line.
-    expect(endpoints()).toHaveLength(147);
+    expect(endpoints()).toHaveLength(150);
   });
 
   it('runs in the database region, except a schedule and the site’s rewrite targets', () => {
