@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nestprep/features/photo_frames/model/frame_photo.dart';
+import 'package:nestprep/features/photo_frames/model/frame_screensaver.dart';
 import 'package:nestprep/features/photo_frames/state/frame_photos_controller.dart';
 import 'package:nestprep/shared/async/async_state.dart';
 import 'package:nestprep/shared/failure/app_failure.dart';
@@ -14,6 +15,7 @@ void main() {
   late FakeFramePhotoPicker picker;
   late FakeFramePhotoCompressor compressor;
   late FakeDocumentDirectory directory;
+  late FakePhotoFrameRepository frames;
   late FramePhotosController controller;
 
   Future<void> build([List<FramePhoto> album = const []]) async {
@@ -23,6 +25,7 @@ void main() {
       picker: picker,
       compressor: compressor,
       directory: directory,
+      frames: frames,
     );
     await pumpEventQueue();
   }
@@ -31,6 +34,7 @@ void main() {
     picker = FakeFramePhotoPicker();
     compressor = FakeFramePhotoCompressor();
     directory = FakeDocumentDirectory();
+    frames = FakePhotoFrameRepository();
   });
 
   tearDown(() => controller.dispose());
@@ -188,6 +192,65 @@ void main() {
       store.holdAdds!.complete();
       await first;
       expect(controller.count, 1);
+    });
+  });
+
+  group('switching screensavers on', () {
+    test(
+      'added photos switch on every frame whose screensaver is off',
+      () async {
+        const chosen = FrameScreensaver(idleMinutes: 30, secondsPerPhoto: 60);
+        frames.frames = [
+          FrameFixtures.frame(id: 'frame-lounge', name: 'Lounge'),
+          FrameFixtures.frame(name: 'Kitchen', screensaver: chosen),
+          FrameFixtures.frame(id: 'frame-study', name: 'Study'),
+        ];
+        await build();
+        picker.pickPhotos(2);
+
+        await controller.addFromLibrary();
+
+        expect(frames.switchedOn, [FrameScreensaver.whenPhotosAdded]);
+        expect(controller.screensaversSwitchedOn, ['Lounge', 'Study']);
+        expect(
+          {for (final frame in frames.frames) frame.name: frame.screensaver},
+          {
+            'Lounge': FrameScreensaver.whenPhotosAdded,
+            'Kitchen': chosen,
+            'Study': FrameScreensaver.whenPhotosAdded,
+          },
+        );
+
+        controller.dismissScreensaversSwitchedOn();
+        expect(controller.screensaversSwitchedOn, isEmpty);
+      },
+    );
+
+    test('nothing added leaves the frames alone', () async {
+      frames.frames = [FrameFixtures.frame()];
+      await build();
+      picker.pickPhotos(1);
+      compressor.refuse.add(0);
+
+      await controller.addFromLibrary();
+
+      expect(frames.switchedOn, isEmpty);
+      expect(controller.screensaversSwitchedOn, isEmpty);
+    });
+
+    test('a refused switch is said, and the photos stay added', () async {
+      frames
+        ..frames = [FrameFixtures.frame()]
+        ..failWrites = const PermissionDeniedFailure();
+      await build();
+      picker.pickPhotos(1);
+
+      await controller.addFromLibrary();
+
+      expect(controller.count, 1);
+      expect(controller.lastAdd, (added: 1, skipped: 0, hitLimit: false));
+      expect(controller.actionFailure, isA<PermissionDeniedFailure>());
+      expect(controller.screensaversSwitchedOn, isEmpty);
     });
   });
 

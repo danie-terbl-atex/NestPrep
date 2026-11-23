@@ -24,6 +24,7 @@ abstract class FrameScreensaver with _$FrameScreensaver {
   }
 
   static const off = FrameScreensaver();
+  static const whenPhotosAdded = FrameScreensaver(idleMinutes: 10);
   static const idleMinuteChoices = [0, 1, 2, 5, 10, 15, 30, 60];
   static const secondsPerPhotoChoices = [10, 20, 30, 60];
   static const defaultSecondsPerPhoto = 20;

@@ -18,6 +18,7 @@ void main() {
   late FakeFramePhotoStore store;
   late FakeFramePhotoPicker picker;
   late FakeFramePhotoCompressor compressor;
+  late FakePhotoFrameRepository frames;
   late FramePhotosController controller;
 
   void build(List<FramePhoto> album) {
@@ -26,12 +27,14 @@ void main() {
       store: store,
       picker: picker,
       compressor: compressor,
+      frames: frames,
     );
   }
 
   setUp(() {
     picker = FakeFramePhotoPicker();
     compressor = FakeFramePhotoCompressor();
+    frames = FakePhotoFrameRepository();
   });
 
   tearDown(() => controller.dispose());
@@ -159,6 +162,26 @@ void main() {
       find.text(
         PhotoFrameCopy.addReport((added: 2, skipped: 1, hitLimit: false)),
       ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text(PhotoFrameCopy.done));
+    await tester.pumpAndSettle();
+    expect(find.byType(NestBanner), findsNothing);
+  });
+
+  testWidgets('frames it switched on are named, with where to change it', (
+    tester,
+  ) async {
+    frames.frames = [FrameFixtures.frame(name: 'Kitchen')];
+    build(const []);
+    picker.pickPhotos(1);
+    await pump(tester);
+
+    await tester.tap(find.text(PhotoFrameCopy.addPhotos));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(PhotoFrameCopy.screensaversOn(['Kitchen'])),
       findsOneWidget,
     );
     await tester.tap(find.text(PhotoFrameCopy.done));

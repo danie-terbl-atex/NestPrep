@@ -1,8 +1,9 @@
 import '../../features/photo_frames/model/frame_photo.dart';
+import '../../features/photo_frames/model/frame_screensaver.dart';
 import '../failure/app_failure.dart';
 
 abstract final class PhotoFrameCopy {
-  static const title = 'Photo frames';
+  static const title = 'Nest Frames';
   static const openFromHouseholdBody = 'Put the family’s day on the wall';
 
   // ---- the frames ----
@@ -97,10 +98,10 @@ abstract final class PhotoFrameCopy {
   static String openingOn(String name) => 'Opening on $name';
   static const noSharingFrames = 'No frame opens recipes or pages yet';
   static const noSharingFramesBody =
-      'Go to More → Photo frames, tap a frame and switch on “$share”.';
+      'Go to More → Nest Frames, tap a frame and switch on “$share”.';
   static const noSharingFramesQuiet =
       'None of your frames opens pages yet. You can switch that on under More '
-      '→ Photo frames.';
+      '→ Nest Frames.';
   static const shareOnlyFamily =
       'Only family can send to a frame. Ask a parent to send it.';
   static const noLinkShared =
@@ -129,7 +130,9 @@ abstract final class PhotoFrameCopy {
 
   // ---- the album ----
   static const photosTitle = 'Screensaver photos';
-  static const photosIntro = 'Your frames show these when nobody’s using them.';
+  static const photosIntro =
+      'Your frames show these when nobody’s using them. Change when and for '
+      'how long in each frame’s settings.';
   static const photosEmptyTitle = 'No photos yet';
   static const photosEmptyBody =
       'Add a few favourites and every frame cycles through them when the '
@@ -140,6 +143,21 @@ abstract final class PhotoFrameCopy {
   static const albumFullHint = 'The album is full. Remove a few to add more.';
   static const albumEntryEmpty = 'None yet. Add a few for the screensaver';
   static const albumEntryBody = 'What frames show when nobody’s using them';
+  static String screensaversOn(List<String> frames) {
+    const timing = FrameScreensaver.whenPhotosAdded;
+    final which = switch (frames) {
+      [final only] => only,
+      [final first, final second] => '$first and $second',
+      _ => '${frames.length} frames',
+    };
+    final settings = frames.length == 1
+        ? 'the frame’s settings'
+        : 'each frame’s settings';
+    return 'Screensaver on for $which: your photos after '
+        '${timing.idleMinutes} quiet minutes, ${timing.secondsPerPhoto} '
+        'seconds each. Change it in $settings.';
+  }
+
   static String photoLabel(int position) => 'Photo $position';
   static const photoLoading = 'Photo loading';
   static const photoFailed = 'Didn’t load';
@@ -176,7 +194,7 @@ abstract final class PhotoFrameCopy {
     PhotoFrameProblem.notFamily =>
       'Only a parent can link or change a frame. Ask one to do it.',
     PhotoFrameProblem.framesOff =>
-      'Photo frames are resting for now. Try again a little later.',
+      'Nest Frames are resting for now. Try again a little later.',
     PhotoFrameProblem.frameCodeNotFound =>
       'That code didn’t match a frame. Check the letters and try again.',
     PhotoFrameProblem.frameCodeExpired =>

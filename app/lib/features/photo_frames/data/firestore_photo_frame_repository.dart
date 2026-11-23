@@ -74,6 +74,29 @@ final class FirestorePhotoFrameRepository implements PhotoFrameRepository {
   };
 
   @override
+  Future<List<String>> switchOnScreensavers({
+    required String householdId,
+    required FrameScreensaver screensaver,
+  }) async {
+    try {
+      final snapshot = await _frames(householdId)
+          .limit(PhotoFrameRepository.frameLimit)
+          .get();
+      final off = [
+        for (final doc in snapshot.docs)
+          if (!doc.data().screensaver.isOn) doc,
+      ];
+      await Future.wait([
+        for (final doc in off)
+          doc.reference.update({'screensaver': screensaver.toJson()}),
+      ]);
+      return [for (final doc in off) doc.data().name]..sort();
+    } on FirebaseException catch (error) {
+      throw failureFromFirebase(error);
+    }
+  }
+
+  @override
   Future<void> setGroceries({
     required String householdId,
     required String frameId,

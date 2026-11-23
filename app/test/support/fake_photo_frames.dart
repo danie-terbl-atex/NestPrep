@@ -39,6 +39,8 @@ final class FakePhotoFrameRepository implements PhotoFrameRepository {
         })
       >[];
   final unlinked = <String>[];
+  List<PhotoFrame> frames = const [];
+  final switchedOn = <FrameScreensaver>[];
   AppFailure? failGroceriesWith;
   final groceriesSet = <({String frameId, FrameGroceries? groceries})>[];
 
@@ -67,6 +69,26 @@ final class FakePhotoFrameRepository implements PhotoFrameRepository {
       screensaver: screensaver,
       groceries: groceries,
     ));
+  }
+
+  @override
+  Future<List<String>> switchOnScreensavers({
+    required String householdId,
+    required FrameScreensaver screensaver,
+  }) async {
+    _answer();
+    final off = [
+      for (final frame in frames)
+        if (!frame.screensaver.isOn) frame,
+    ];
+    frames = [
+      for (final frame in frames)
+        frame.screensaver.isOn
+            ? frame
+            : frame.copyWith(screensaver: screensaver),
+    ];
+    switchedOn.add(screensaver);
+    return [for (final frame in off) frame.name]..sort();
   }
 
   @override
@@ -301,9 +323,11 @@ abstract final class FramePhotoFixtures {
     FakeFramePhotoPicker? picker,
     PhotoCompressor? compressor,
     FakeDocumentDirectory? directory,
+    FakePhotoFrameRepository? frames,
   }) => FramePhotosController(
     photoStore: store ?? FakeFramePhotoStore(),
     photoPicker: picker ?? FakeFramePhotoPicker(),
+    frameRepository: frames ?? FakePhotoFrameRepository(),
     documentDirectory: directory ?? FakeDocumentDirectory(),
     householdId: Fixtures.householdId,
     uploaderUid: Fixtures.samUid,

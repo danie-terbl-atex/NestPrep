@@ -15,6 +15,11 @@ abstract interface class PhotoFrameRepository {
     required FrameGroceries? groceries,
   });
 
+  Future<List<String>> switchOnScreensavers({
+    required String householdId,
+    required FrameScreensaver screensaver,
+  });
+
   Future<void> setGroceries({
     required String householdId,
     required String frameId,

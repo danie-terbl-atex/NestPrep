@@ -10,19 +10,23 @@ import '../../../shared/state/action_failure.dart';
 import '../../documents/data/document_directory.dart';
 import '../data/frame_photo_picker.dart';
 import '../data/frame_photo_store.dart';
+import '../data/photo_frame_repository.dart';
 import '../model/frame_photo.dart';
+import '../model/frame_screensaver.dart';
 
 final class FramePhotosController extends ChangeNotifier
     with ActionFailureHolder {
   FramePhotosController({
     required FramePhotoStore photoStore,
     required FramePhotoPicker photoPicker,
+    required PhotoFrameRepository frameRepository,
     required DocumentDirectory documentDirectory,
     required this.householdId,
     required this.uploaderUid,
     this._compressor = framePhotoCompressor,
   }) : _store = photoStore,
        _picker = photoPicker,
+       _frames = frameRepository,
        _directory = documentDirectory {
     unawaited(_load());
   }
@@ -40,6 +44,7 @@ final class FramePhotosController extends ChangeNotifier
 
   final FramePhotoStore _store;
   final FramePhotoPicker _picker;
+  final PhotoFrameRepository _frames;
   final DocumentDirectory _directory;
   final PhotoCompressor _compressor;
   final String householdId;
@@ -49,6 +54,7 @@ final class FramePhotosController extends ChangeNotifier
   final _thumbnails = <String, AsyncState<Uint8List>>{};
   FramePhotoProgress? _adding;
   FramePhotoAddReport? _lastAdd;
+  List<String> _switchedOn = const [];
   String? _removingId;
   Future<void>? _access;
   var _isDisposed = false;
@@ -73,6 +79,8 @@ final class FramePhotosController extends ChangeNotifier
   bool get isAdding => _adding != null;
 
   FramePhotoAddReport? get lastAdd => _lastAdd;
+
+  List<String> get screensaversSwitchedOn => _switchedOn;
 
   String? get removingId => _removingId;
 
@@ -106,9 +114,16 @@ final class FramePhotosController extends ChangeNotifier
     _notify();
   }
 
+  void dismissScreensaversSwitchedOn() {
+    if (_switchedOn.isEmpty) return;
+    _switchedOn = const [];
+    _notify();
+  }
+
   Future<void> addFromLibrary() async {
     if (!isLoaded || isBusy) return;
     _lastAdd = null;
+    _switchedOn = const [];
     final room = photoLimit - count;
     if (room <= 0) {
       recordFailure(const FramePhotoFailure(FramePhotoProblem.albumFull));
@@ -139,6 +154,12 @@ final class FramePhotosController extends ChangeNotifier
         );
         _notify();
       }
+      if (added == 0) return;
+      _switchedOn = await _frames.switchOnScreensavers(
+        householdId: householdId,
+        screensaver: FrameScreensaver.whenPhotosAdded,
+      );
+      _notify();
     });
   }
 

@@ -30,6 +30,7 @@ ShellRoute photoFrameRoute() => ShellRoute(
           create: (context) => FramePhotosController(
             photoStore: context.read<FramePhotoStore>(),
             photoPicker: context.read<FramePhotoPicker>(),
+            frameRepository: context.read<PhotoFrameRepository>(),
             documentDirectory: context.read<DocumentDirectory>(),
             householdId: householdId,
             uploaderUid: view.viewerUid,

@@ -79,10 +79,25 @@ class _Notice extends StatelessWidget {
             onAction: controller.dismissReport,
           )
         : null;
-    if (banner == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: NestSpace.lg),
-      child: banner,
+    final switchedOn = controller.screensaversSwitchedOn;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final notice in [
+          ?banner,
+          if (switchedOn.isNotEmpty)
+            NestBanner(
+              message: PhotoFrameCopy.screensaversOn(switchedOn),
+              tone: NestBannerTone.success,
+              actionLabel: PhotoFrameCopy.done,
+              onAction: controller.dismissScreensaversSwitchedOn,
+            ),
+        ])
+          Padding(
+            padding: const EdgeInsets.only(bottom: NestSpace.lg),
+            child: notice,
+          ),
+      ],
     );
   }
 }
